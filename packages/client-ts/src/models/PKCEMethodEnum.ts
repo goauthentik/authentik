@@ -12,19 +12,17 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const PKCEMethodEnum = {
-    None: 'none',
-    Plain: 'plain',
-    S256: 'S256',
-    UnknownDefaultOpenApi: '11184809'
+    None: "none",
+    Plain: "plain",
+    S256: "S256",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type PKCEMethodEnum = typeof PKCEMethodEnum[keyof typeof PKCEMethodEnum];
-
+export type PKCEMethodEnum = (typeof PKCEMethodEnum)[keyof typeof PKCEMethodEnum];
 
 export function instanceOfPKCEMethodEnum(value: any): boolean {
     for (const key in PKCEMethodEnum) {
@@ -41,7 +39,10 @@ export function PKCEMethodEnumFromJSON(json: any): PKCEMethodEnum {
     return PKCEMethodEnumFromJSONTyped(json, false);
 }
 
-export function PKCEMethodEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): PKCEMethodEnum {
+export function PKCEMethodEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PKCEMethodEnum {
     return json as PKCEMethodEnum;
 }
 
@@ -49,7 +50,9 @@ export function PKCEMethodEnumToJSON(value?: PKCEMethodEnum | null): any {
     return value as any;
 }
 
-export function PKCEMethodEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): PKCEMethodEnum {
+export function PKCEMethodEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): PKCEMethodEnum {
     return value as PKCEMethodEnum;
 }
-

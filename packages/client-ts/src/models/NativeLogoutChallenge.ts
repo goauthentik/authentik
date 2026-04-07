@@ -12,28 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
-import type { SAMLBindingsEnum } from './SAMLBindingsEnum';
-import {
-    SAMLBindingsEnumFromJSON,
-    SAMLBindingsEnumFromJSONTyped,
-    SAMLBindingsEnumToJSON,
-    SAMLBindingsEnumToJSONTyped,
-} from './SAMLBindingsEnum';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
+import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
+import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
 
 /**
  * Challenge for native browser logout
@@ -42,74 +25,72 @@ import {
  */
 export interface NativeLogoutChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof NativeLogoutChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NativeLogoutChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof NativeLogoutChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {string}
      * @memberof NativeLogoutChallenge
      */
     providerName?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof NativeLogoutChallenge
      */
     isComplete?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NativeLogoutChallenge
      */
     postUrl?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NativeLogoutChallenge
      */
     redirectUrl?: string;
     /**
-     * 
+     *
      * @type {SAMLBindingsEnum}
      * @memberof NativeLogoutChallenge
      */
     samlBinding?: SAMLBindingsEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NativeLogoutChallenge
      */
     samlRequest?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NativeLogoutChallenge
      */
     samlResponse?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NativeLogoutChallenge
      */
     samlRelayState?: string;
 }
-
-
 
 /**
  * Check if a given object implements the NativeLogoutChallenge interface.
@@ -122,23 +103,29 @@ export function NativeLogoutChallengeFromJSON(json: any): NativeLogoutChallenge 
     return NativeLogoutChallengeFromJSONTyped(json, false);
 }
 
-export function NativeLogoutChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): NativeLogoutChallenge {
+export function NativeLogoutChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): NativeLogoutChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'providerName': json['provider_name'] == null ? undefined : json['provider_name'],
-        'isComplete': json['is_complete'] == null ? undefined : json['is_complete'],
-        'postUrl': json['post_url'] == null ? undefined : json['post_url'],
-        'redirectUrl': json['redirect_url'] == null ? undefined : json['redirect_url'],
-        'samlBinding': json['saml_binding'] == null ? undefined : SAMLBindingsEnumFromJSON(json['saml_binding']),
-        'samlRequest': json['saml_request'] == null ? undefined : json['saml_request'],
-        'samlResponse': json['saml_response'] == null ? undefined : json['saml_response'],
-        'samlRelayState': json['saml_relay_state'] == null ? undefined : json['saml_relay_state'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        providerName: json["provider_name"] == null ? undefined : json["provider_name"],
+        isComplete: json["is_complete"] == null ? undefined : json["is_complete"],
+        postUrl: json["post_url"] == null ? undefined : json["post_url"],
+        redirectUrl: json["redirect_url"] == null ? undefined : json["redirect_url"],
+        samlBinding:
+            json["saml_binding"] == null
+                ? undefined
+                : SAMLBindingsEnumFromJSON(json["saml_binding"]),
+        samlRequest: json["saml_request"] == null ? undefined : json["saml_request"],
+        samlResponse: json["saml_response"] == null ? undefined : json["saml_response"],
+        samlRelayState: json["saml_relay_state"] == null ? undefined : json["saml_relay_state"],
     };
 }
 
@@ -146,24 +133,25 @@ export function NativeLogoutChallengeToJSON(json: any): NativeLogoutChallenge {
     return NativeLogoutChallengeToJSONTyped(json, false);
 }
 
-export function NativeLogoutChallengeToJSONTyped(value?: NativeLogoutChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function NativeLogoutChallengeToJSONTyped(
+    value?: NativeLogoutChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'provider_name': value['providerName'],
-        'is_complete': value['isComplete'],
-        'post_url': value['postUrl'],
-        'redirect_url': value['redirectUrl'],
-        'saml_binding': SAMLBindingsEnumToJSON(value['samlBinding']),
-        'saml_request': value['samlRequest'],
-        'saml_response': value['samlResponse'],
-        'saml_relay_state': value['samlRelayState'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        provider_name: value["providerName"],
+        is_complete: value["isComplete"],
+        post_url: value["postUrl"],
+        redirect_url: value["redirectUrl"],
+        saml_binding: SAMLBindingsEnumToJSON(value["samlBinding"]),
+        saml_request: value["samlRequest"],
+        saml_response: value["samlResponse"],
+        saml_relay_state: value["samlRelayState"],
     };
 }
-

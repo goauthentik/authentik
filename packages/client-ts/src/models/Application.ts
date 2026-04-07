@@ -12,28 +12,12 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PolicyEngineMode } from './PolicyEngineMode';
-import {
-    PolicyEngineModeFromJSON,
-    PolicyEngineModeFromJSONTyped,
-    PolicyEngineModeToJSON,
-    PolicyEngineModeToJSONTyped,
-} from './PolicyEngineMode';
-import type { ThemedUrls } from './ThemedUrls';
-import {
-    ThemedUrlsFromJSON,
-    ThemedUrlsFromJSONTyped,
-    ThemedUrlsToJSON,
-    ThemedUrlsToJSONTyped,
-} from './ThemedUrls';
-import type { Provider } from './Provider';
-import {
-    ProviderFromJSON,
-    ProviderFromJSONTyped,
-    ProviderToJSON,
-    ProviderToJSONTyped,
-} from './Provider';
+import type { PolicyEngineMode } from "./PolicyEngineMode";
+import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
+import type { Provider } from "./Provider";
+import { ProviderFromJSON } from "./Provider";
+import type { ThemedUrls } from "./ThemedUrls";
+import { ThemedUrlsFromJSON } from "./ThemedUrls";
 
 /**
  * Application Serializer
@@ -42,7 +26,7 @@ import {
  */
 export interface Application {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Application
      */
@@ -60,25 +44,25 @@ export interface Application {
      */
     slug: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Application
      */
     provider?: number | null;
     /**
-     * 
+     *
      * @type {Provider}
      * @memberof Application
      */
     readonly providerObj: Provider | null;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof Application
      */
     backchannelProviders?: Array<number>;
     /**
-     * 
+     *
      * @type {Array<Provider>}
      * @memberof Application
      */
@@ -96,13 +80,13 @@ export interface Application {
      */
     openInNewTab?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Application
      */
     metaLaunchUrl?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Application
      */
@@ -114,51 +98,50 @@ export interface Application {
      */
     readonly metaIconUrl: string | null;
     /**
-     * 
+     *
      * @type {ThemedUrls}
      * @memberof Application
      */
     readonly metaIconThemedUrls: ThemedUrls | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Application
      */
     metaDescription?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Application
      */
     metaPublisher?: string;
     /**
-     * 
+     *
      * @type {PolicyEngineMode}
      * @memberof Application
      */
     policyEngineMode?: PolicyEngineMode;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Application
      */
     group?: string;
 }
 
-
-
 /**
  * Check if a given object implements the Application interface.
  */
 export function instanceOfApplication(value: object): value is Application {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('slug' in value) || value['slug'] === undefined) return false;
-    if (!('providerObj' in value) || value['providerObj'] === undefined) return false;
-    if (!('backchannelProvidersObj' in value) || value['backchannelProvidersObj'] === undefined) return false;
-    if (!('launchUrl' in value) || value['launchUrl'] === undefined) return false;
-    if (!('metaIconUrl' in value) || value['metaIconUrl'] === undefined) return false;
-    if (!('metaIconThemedUrls' in value) || value['metaIconThemedUrls'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("slug" in value) || value["slug"] === undefined) return false;
+    if (!("providerObj" in value) || value["providerObj"] === undefined) return false;
+    if (!("backchannelProvidersObj" in value) || value["backchannelProvidersObj"] === undefined)
+        return false;
+    if (!("launchUrl" in value) || value["launchUrl"] === undefined) return false;
+    if (!("metaIconUrl" in value) || value["metaIconUrl"] === undefined) return false;
+    if (!("metaIconThemedUrls" in value) || value["metaIconThemedUrls"] === undefined) return false;
     return true;
 }
 
@@ -171,24 +154,29 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'slug': json['slug'],
-        'provider': json['provider'] == null ? undefined : json['provider'],
-        'providerObj': ProviderFromJSON(json['provider_obj']),
-        'backchannelProviders': json['backchannel_providers'] == null ? undefined : json['backchannel_providers'],
-        'backchannelProvidersObj': ((json['backchannel_providers_obj'] as Array<any>).map(ProviderFromJSON)),
-        'launchUrl': json['launch_url'],
-        'openInNewTab': json['open_in_new_tab'] == null ? undefined : json['open_in_new_tab'],
-        'metaLaunchUrl': json['meta_launch_url'] == null ? undefined : json['meta_launch_url'],
-        'metaIcon': json['meta_icon'] == null ? undefined : json['meta_icon'],
-        'metaIconUrl': json['meta_icon_url'],
-        'metaIconThemedUrls': ThemedUrlsFromJSON(json['meta_icon_themed_urls']),
-        'metaDescription': json['meta_description'] == null ? undefined : json['meta_description'],
-        'metaPublisher': json['meta_publisher'] == null ? undefined : json['meta_publisher'],
-        'policyEngineMode': json['policy_engine_mode'] == null ? undefined : PolicyEngineModeFromJSON(json['policy_engine_mode']),
-        'group': json['group'] == null ? undefined : json['group'],
+        pk: json["pk"],
+        name: json["name"],
+        slug: json["slug"],
+        provider: json["provider"] == null ? undefined : json["provider"],
+        providerObj: ProviderFromJSON(json["provider_obj"]),
+        backchannelProviders:
+            json["backchannel_providers"] == null ? undefined : json["backchannel_providers"],
+        backchannelProvidersObj: (json["backchannel_providers_obj"] as Array<any>).map(
+            ProviderFromJSON,
+        ),
+        launchUrl: json["launch_url"],
+        openInNewTab: json["open_in_new_tab"] == null ? undefined : json["open_in_new_tab"],
+        metaLaunchUrl: json["meta_launch_url"] == null ? undefined : json["meta_launch_url"],
+        metaIcon: json["meta_icon"] == null ? undefined : json["meta_icon"],
+        metaIconUrl: json["meta_icon_url"],
+        metaIconThemedUrls: ThemedUrlsFromJSON(json["meta_icon_themed_urls"]),
+        metaDescription: json["meta_description"] == null ? undefined : json["meta_description"],
+        metaPublisher: json["meta_publisher"] == null ? undefined : json["meta_publisher"],
+        policyEngineMode:
+            json["policy_engine_mode"] == null
+                ? undefined
+                : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
+        group: json["group"] == null ? undefined : json["group"],
     };
 }
 
@@ -196,24 +184,33 @@ export function ApplicationToJSON(json: any): Application {
     return ApplicationToJSONTyped(json, false);
 }
 
-export function ApplicationToJSONTyped(value?: Omit<Application, 'pk'|'provider_obj'|'backchannel_providers_obj'|'launch_url'|'meta_icon_url'|'meta_icon_themed_urls'> | null, ignoreDiscriminator: boolean = false): any {
+export function ApplicationToJSONTyped(
+    value?: Omit<
+        Application,
+        | "pk"
+        | "provider_obj"
+        | "backchannel_providers_obj"
+        | "launch_url"
+        | "meta_icon_url"
+        | "meta_icon_themed_urls"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'slug': value['slug'],
-        'provider': value['provider'],
-        'backchannel_providers': value['backchannelProviders'],
-        'open_in_new_tab': value['openInNewTab'],
-        'meta_launch_url': value['metaLaunchUrl'],
-        'meta_icon': value['metaIcon'],
-        'meta_description': value['metaDescription'],
-        'meta_publisher': value['metaPublisher'],
-        'policy_engine_mode': PolicyEngineModeToJSON(value['policyEngineMode']),
-        'group': value['group'],
+        name: value["name"],
+        slug: value["slug"],
+        provider: value["provider"],
+        backchannel_providers: value["backchannelProviders"],
+        open_in_new_tab: value["openInNewTab"],
+        meta_launch_url: value["metaLaunchUrl"],
+        meta_icon: value["metaIcon"],
+        meta_description: value["metaDescription"],
+        meta_publisher: value["metaPublisher"],
+        policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
+        group: value["group"],
     };
 }
-

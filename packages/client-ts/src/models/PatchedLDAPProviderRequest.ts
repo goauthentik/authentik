@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LDAPAPIAccessMode } from './LDAPAPIAccessMode';
-import {
-    LDAPAPIAccessModeFromJSON,
-    LDAPAPIAccessModeFromJSONTyped,
-    LDAPAPIAccessModeToJSON,
-    LDAPAPIAccessModeToJSONTyped,
-} from './LDAPAPIAccessMode';
+import type { LDAPAPIAccessMode } from "./LDAPAPIAccessMode";
+import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAccessMode";
 
 /**
  * LDAPProvider Serializer
@@ -28,7 +22,7 @@ import {
  */
 export interface PatchedLDAPProviderRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedLDAPProviderRequest
      */
@@ -52,7 +46,7 @@ export interface PatchedLDAPProviderRequest {
      */
     invalidationFlow?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedLDAPProviderRequest
      */
@@ -64,13 +58,13 @@ export interface PatchedLDAPProviderRequest {
      */
     baseDn?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedLDAPProviderRequest
      */
     certificate?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedLDAPProviderRequest
      */
@@ -88,13 +82,13 @@ export interface PatchedLDAPProviderRequest {
      */
     gidStartNumber?: number;
     /**
-     * 
+     *
      * @type {LDAPAPIAccessMode}
      * @memberof PatchedLDAPProviderRequest
      */
     searchMode?: LDAPAPIAccessMode;
     /**
-     * 
+     *
      * @type {LDAPAPIAccessMode}
      * @memberof PatchedLDAPProviderRequest
      */
@@ -107,12 +101,12 @@ export interface PatchedLDAPProviderRequest {
     mfaSupport?: boolean;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedLDAPProviderRequest interface.
  */
-export function instanceOfPatchedLDAPProviderRequest(value: object): value is PatchedLDAPProviderRequest {
+export function instanceOfPatchedLDAPProviderRequest(
+    value: object,
+): value is PatchedLDAPProviderRequest {
     return true;
 }
 
@@ -120,25 +114,33 @@ export function PatchedLDAPProviderRequestFromJSON(json: any): PatchedLDAPProvid
     return PatchedLDAPProviderRequestFromJSONTyped(json, false);
 }
 
-export function PatchedLDAPProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedLDAPProviderRequest {
+export function PatchedLDAPProviderRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedLDAPProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'authorizationFlow': json['authorization_flow'] == null ? undefined : json['authorization_flow'],
-        'invalidationFlow': json['invalidation_flow'] == null ? undefined : json['invalidation_flow'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'baseDn': json['base_dn'] == null ? undefined : json['base_dn'],
-        'certificate': json['certificate'] == null ? undefined : json['certificate'],
-        'tlsServerName': json['tls_server_name'] == null ? undefined : json['tls_server_name'],
-        'uidStartNumber': json['uid_start_number'] == null ? undefined : json['uid_start_number'],
-        'gidStartNumber': json['gid_start_number'] == null ? undefined : json['gid_start_number'],
-        'searchMode': json['search_mode'] == null ? undefined : LDAPAPIAccessModeFromJSON(json['search_mode']),
-        'bindMode': json['bind_mode'] == null ? undefined : LDAPAPIAccessModeFromJSON(json['bind_mode']),
-        'mfaSupport': json['mfa_support'] == null ? undefined : json['mfa_support'],
+        name: json["name"] == null ? undefined : json["name"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        authorizationFlow:
+            json["authorization_flow"] == null ? undefined : json["authorization_flow"],
+        invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        baseDn: json["base_dn"] == null ? undefined : json["base_dn"],
+        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        tlsServerName: json["tls_server_name"] == null ? undefined : json["tls_server_name"],
+        uidStartNumber: json["uid_start_number"] == null ? undefined : json["uid_start_number"],
+        gidStartNumber: json["gid_start_number"] == null ? undefined : json["gid_start_number"],
+        searchMode:
+            json["search_mode"] == null
+                ? undefined
+                : LDAPAPIAccessModeFromJSON(json["search_mode"]),
+        bindMode:
+            json["bind_mode"] == null ? undefined : LDAPAPIAccessModeFromJSON(json["bind_mode"]),
+        mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
     };
 }
 
@@ -146,26 +148,27 @@ export function PatchedLDAPProviderRequestToJSON(json: any): PatchedLDAPProvider
     return PatchedLDAPProviderRequestToJSONTyped(json, false);
 }
 
-export function PatchedLDAPProviderRequestToJSONTyped(value?: PatchedLDAPProviderRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedLDAPProviderRequestToJSONTyped(
+    value?: PatchedLDAPProviderRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'authentication_flow': value['authenticationFlow'],
-        'authorization_flow': value['authorizationFlow'],
-        'invalidation_flow': value['invalidationFlow'],
-        'property_mappings': value['propertyMappings'],
-        'base_dn': value['baseDn'],
-        'certificate': value['certificate'],
-        'tls_server_name': value['tlsServerName'],
-        'uid_start_number': value['uidStartNumber'],
-        'gid_start_number': value['gidStartNumber'],
-        'search_mode': LDAPAPIAccessModeToJSON(value['searchMode']),
-        'bind_mode': LDAPAPIAccessModeToJSON(value['bindMode']),
-        'mfa_support': value['mfaSupport'],
+        name: value["name"],
+        authentication_flow: value["authenticationFlow"],
+        authorization_flow: value["authorizationFlow"],
+        invalidation_flow: value["invalidationFlow"],
+        property_mappings: value["propertyMappings"],
+        base_dn: value["baseDn"],
+        certificate: value["certificate"],
+        tls_server_name: value["tlsServerName"],
+        uid_start_number: value["uidStartNumber"],
+        gid_start_number: value["gidStartNumber"],
+        search_mode: LDAPAPIAccessModeToJSON(value["searchMode"]),
+        bind_mode: LDAPAPIAccessModeToJSON(value["bindMode"]),
+        mfa_support: value["mfaSupport"],
     };
 }
-

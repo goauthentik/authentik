@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { TokenModel } from './TokenModel';
-import {
-    TokenModelFromJSON,
-    TokenModelFromJSONTyped,
-    TokenModelToJSON,
-    TokenModelToJSONTyped,
-} from './TokenModel';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { TokenModel } from "./TokenModel";
+import { TokenModelFromJSON, TokenModelToJSON } from "./TokenModel";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedTokenModelList
  */
 export interface PaginatedTokenModelList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedTokenModelList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<TokenModel>}
      * @memberof PaginatedTokenModelList
      */
     results: Array<TokenModel>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedTokenModelList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedTokenModelList interface.
  */
 export function instanceOfPaginatedTokenModelList(value: object): value is PaginatedTokenModelList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedTokenModelListFromJSON(json: any): PaginatedTokenModelL
     return PaginatedTokenModelListFromJSONTyped(json, false);
 }
 
-export function PaginatedTokenModelListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedTokenModelList {
+export function PaginatedTokenModelListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedTokenModelList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(TokenModelFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(TokenModelFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedTokenModelListToJSON(json: any): PaginatedTokenModelLis
     return PaginatedTokenModelListToJSONTyped(json, false);
 }
 
-export function PaginatedTokenModelListToJSONTyped(value?: PaginatedTokenModelList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedTokenModelListToJSONTyped(
+    value?: PaginatedTokenModelList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(TokenModelToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(TokenModelToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

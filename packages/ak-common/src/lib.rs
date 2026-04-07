@@ -3,7 +3,11 @@
 pub mod arbiter;
 pub use arbiter::{Arbiter, Event, Tasks};
 pub mod config;
+pub mod mode;
+pub use mode::Mode;
+pub mod tls;
 pub mod tokio;
+pub mod tracing;
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 

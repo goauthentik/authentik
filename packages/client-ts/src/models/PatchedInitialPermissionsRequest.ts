@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * InitialPermissions serializer
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedInitialPermissionsRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedInitialPermissionsRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedInitialPermissionsRequest
      */
     role?: string;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof PatchedInitialPermissionsRequest
      */
@@ -42,40 +41,49 @@ export interface PatchedInitialPermissionsRequest {
 /**
  * Check if a given object implements the PatchedInitialPermissionsRequest interface.
  */
-export function instanceOfPatchedInitialPermissionsRequest(value: object): value is PatchedInitialPermissionsRequest {
+export function instanceOfPatchedInitialPermissionsRequest(
+    value: object,
+): value is PatchedInitialPermissionsRequest {
     return true;
 }
 
-export function PatchedInitialPermissionsRequestFromJSON(json: any): PatchedInitialPermissionsRequest {
+export function PatchedInitialPermissionsRequestFromJSON(
+    json: any,
+): PatchedInitialPermissionsRequest {
     return PatchedInitialPermissionsRequestFromJSONTyped(json, false);
 }
 
-export function PatchedInitialPermissionsRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedInitialPermissionsRequest {
+export function PatchedInitialPermissionsRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedInitialPermissionsRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'role': json['role'] == null ? undefined : json['role'],
-        'permissions': json['permissions'] == null ? undefined : json['permissions'],
+        name: json["name"] == null ? undefined : json["name"],
+        role: json["role"] == null ? undefined : json["role"],
+        permissions: json["permissions"] == null ? undefined : json["permissions"],
     };
 }
 
-export function PatchedInitialPermissionsRequestToJSON(json: any): PatchedInitialPermissionsRequest {
+export function PatchedInitialPermissionsRequestToJSON(
+    json: any,
+): PatchedInitialPermissionsRequest {
     return PatchedInitialPermissionsRequestToJSONTyped(json, false);
 }
 
-export function PatchedInitialPermissionsRequestToJSONTyped(value?: PatchedInitialPermissionsRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedInitialPermissionsRequestToJSONTyped(
+    value?: PatchedInitialPermissionsRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'role': value['role'],
-        'permissions': value['permissions'],
+        name: value["name"],
+        role: value["role"],
+        permissions: value["permissions"],
     };
 }
-

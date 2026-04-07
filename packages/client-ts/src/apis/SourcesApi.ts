@@ -12,354 +12,227 @@
  * Do not edit the class manually.
  */
 
-
-import * as runtime from '../runtime';
 import type {
-  BindingTypeEnum,
-  DigestAlgorithmEnum,
-  GenericError,
-  GroupKerberosSourceConnection,
-  GroupKerberosSourceConnectionRequest,
-  GroupLDAPSourceConnection,
-  GroupLDAPSourceConnectionRequest,
-  GroupMatchingModeEnum,
-  GroupOAuthSourceConnection,
-  GroupOAuthSourceConnectionRequest,
-  GroupPlexSourceConnection,
-  GroupPlexSourceConnectionRequest,
-  GroupSAMLSourceConnection,
-  GroupSAMLSourceConnectionRequest,
-  GroupSourceConnection,
-  GroupSourceConnectionRequest,
-  GroupTelegramSourceConnection,
-  GroupTelegramSourceConnectionRequest,
-  KadminTypeEnum,
-  KerberosSource,
-  KerberosSourceRequest,
-  LDAPDebug,
-  LDAPSource,
-  LDAPSourceRequest,
-  OAuthSource,
-  OAuthSourceRequest,
-  PaginatedGroupKerberosSourceConnectionList,
-  PaginatedGroupLDAPSourceConnectionList,
-  PaginatedGroupOAuthSourceConnectionList,
-  PaginatedGroupPlexSourceConnectionList,
-  PaginatedGroupSAMLSourceConnectionList,
-  PaginatedGroupSourceConnectionList,
-  PaginatedGroupTelegramSourceConnectionList,
-  PaginatedKerberosSourceList,
-  PaginatedLDAPSourceList,
-  PaginatedOAuthSourceList,
-  PaginatedPlexSourceList,
-  PaginatedSAMLSourceList,
-  PaginatedSCIMSourceGroupList,
-  PaginatedSCIMSourceList,
-  PaginatedSCIMSourceUserList,
-  PaginatedSourceList,
-  PaginatedTelegramSourceList,
-  PaginatedUserKerberosSourceConnectionList,
-  PaginatedUserLDAPSourceConnectionList,
-  PaginatedUserOAuthSourceConnectionList,
-  PaginatedUserPlexSourceConnectionList,
-  PaginatedUserSAMLSourceConnectionList,
-  PaginatedUserSourceConnectionList,
-  PaginatedUserTelegramSourceConnectionList,
-  PatchedGroupKerberosSourceConnectionRequest,
-  PatchedGroupLDAPSourceConnectionRequest,
-  PatchedGroupOAuthSourceConnectionRequest,
-  PatchedGroupPlexSourceConnectionRequest,
-  PatchedGroupSAMLSourceConnectionRequest,
-  PatchedGroupSourceConnectionRequest,
-  PatchedGroupTelegramSourceConnectionRequest,
-  PatchedKerberosSourceRequest,
-  PatchedLDAPSourceRequest,
-  PatchedOAuthSourceRequest,
-  PatchedPlexSourceRequest,
-  PatchedSAMLSourceRequest,
-  PatchedSCIMSourceGroupRequest,
-  PatchedSCIMSourceRequest,
-  PatchedSCIMSourceUserRequest,
-  PatchedTelegramSourceRequest,
-  PatchedUserKerberosSourceConnectionRequest,
-  PatchedUserLDAPSourceConnectionRequest,
-  PatchedUserOAuthSourceConnectionRequest,
-  PatchedUserPlexSourceConnectionRequest,
-  PatchedUserSAMLSourceConnectionRequest,
-  PatchedUserSourceConnectionRequest,
-  PatchedUserTelegramSourceConnectionRequest,
-  PlexSource,
-  PlexSourceRequest,
-  PlexTokenRedeemRequest,
-  PolicyEngineMode,
-  RedirectChallenge,
-  SAMLMetadata,
-  SAMLNameIDPolicyEnum,
-  SAMLSource,
-  SAMLSourceRequest,
-  SCIMSource,
-  SCIMSourceGroup,
-  SCIMSourceGroupRequest,
-  SCIMSourceRequest,
-  SCIMSourceUser,
-  SCIMSourceUserRequest,
-  SignatureAlgorithmEnum,
-  Source,
-  SourceType,
-  SyncStatus,
-  TelegramAuthRequest,
-  TelegramSource,
-  TelegramSourceRequest,
-  TypeCreate,
-  UsedBy,
-  UserKerberosSourceConnection,
-  UserKerberosSourceConnectionRequest,
-  UserLDAPSourceConnection,
-  UserLDAPSourceConnectionRequest,
-  UserMatchingModeEnum,
-  UserOAuthSourceConnection,
-  UserOAuthSourceConnectionRequest,
-  UserPlexSourceConnection,
-  UserPlexSourceConnectionRequest,
-  UserSAMLSourceConnection,
-  UserSAMLSourceConnectionRequest,
-  UserSetting,
-  UserSourceConnection,
-  UserSourceConnectionRequest,
-  UserTelegramSourceConnection,
-  UserTelegramSourceConnectionRequest,
-  ValidationError,
-} from '../models/index';
+    BindingTypeEnum,
+    DigestAlgorithmEnum,
+    GroupKerberosSourceConnection,
+    GroupKerberosSourceConnectionRequest,
+    GroupLDAPSourceConnection,
+    GroupLDAPSourceConnectionRequest,
+    GroupMatchingModeEnum,
+    GroupOAuthSourceConnection,
+    GroupOAuthSourceConnectionRequest,
+    GroupPlexSourceConnection,
+    GroupPlexSourceConnectionRequest,
+    GroupSAMLSourceConnection,
+    GroupSAMLSourceConnectionRequest,
+    GroupSourceConnection,
+    GroupSourceConnectionRequest,
+    GroupTelegramSourceConnection,
+    GroupTelegramSourceConnectionRequest,
+    KadminTypeEnum,
+    KerberosSource,
+    KerberosSourceRequest,
+    LDAPDebug,
+    LDAPSource,
+    LDAPSourceRequest,
+    OAuthSource,
+    OAuthSourceRequest,
+    PaginatedGroupKerberosSourceConnectionList,
+    PaginatedGroupLDAPSourceConnectionList,
+    PaginatedGroupOAuthSourceConnectionList,
+    PaginatedGroupPlexSourceConnectionList,
+    PaginatedGroupSAMLSourceConnectionList,
+    PaginatedGroupSourceConnectionList,
+    PaginatedGroupTelegramSourceConnectionList,
+    PaginatedKerberosSourceList,
+    PaginatedLDAPSourceList,
+    PaginatedOAuthSourceList,
+    PaginatedPlexSourceList,
+    PaginatedSAMLSourceList,
+    PaginatedSCIMSourceGroupList,
+    PaginatedSCIMSourceList,
+    PaginatedSCIMSourceUserList,
+    PaginatedSourceList,
+    PaginatedTelegramSourceList,
+    PaginatedUserKerberosSourceConnectionList,
+    PaginatedUserLDAPSourceConnectionList,
+    PaginatedUserOAuthSourceConnectionList,
+    PaginatedUserPlexSourceConnectionList,
+    PaginatedUserSAMLSourceConnectionList,
+    PaginatedUserSourceConnectionList,
+    PaginatedUserTelegramSourceConnectionList,
+    PatchedGroupKerberosSourceConnectionRequest,
+    PatchedGroupLDAPSourceConnectionRequest,
+    PatchedGroupOAuthSourceConnectionRequest,
+    PatchedGroupPlexSourceConnectionRequest,
+    PatchedGroupSAMLSourceConnectionRequest,
+    PatchedGroupSourceConnectionRequest,
+    PatchedGroupTelegramSourceConnectionRequest,
+    PatchedKerberosSourceRequest,
+    PatchedLDAPSourceRequest,
+    PatchedOAuthSourceRequest,
+    PatchedPlexSourceRequest,
+    PatchedSAMLSourceRequest,
+    PatchedSCIMSourceGroupRequest,
+    PatchedSCIMSourceRequest,
+    PatchedSCIMSourceUserRequest,
+    PatchedTelegramSourceRequest,
+    PatchedUserKerberosSourceConnectionRequest,
+    PatchedUserLDAPSourceConnectionRequest,
+    PatchedUserOAuthSourceConnectionRequest,
+    PatchedUserPlexSourceConnectionRequest,
+    PatchedUserSAMLSourceConnectionRequest,
+    PatchedUserSourceConnectionRequest,
+    PatchedUserTelegramSourceConnectionRequest,
+    PlexSource,
+    PlexSourceRequest,
+    PlexTokenRedeemRequest,
+    PolicyEngineMode,
+    RedirectChallenge,
+    SAMLMetadata,
+    SAMLNameIDPolicyEnum,
+    SAMLSource,
+    SAMLSourceRequest,
+    SCIMSource,
+    SCIMSourceGroup,
+    SCIMSourceGroupRequest,
+    SCIMSourceRequest,
+    SCIMSourceUser,
+    SCIMSourceUserRequest,
+    SignatureAlgorithmEnum,
+    Source,
+    SourceType,
+    SyncStatus,
+    TelegramAuthRequest,
+    TelegramSource,
+    TelegramSourceRequest,
+    TypeCreate,
+    UsedBy,
+    UserKerberosSourceConnection,
+    UserKerberosSourceConnectionRequest,
+    UserLDAPSourceConnection,
+    UserLDAPSourceConnectionRequest,
+    UserMatchingModeEnum,
+    UserOAuthSourceConnection,
+    UserOAuthSourceConnectionRequest,
+    UserPlexSourceConnection,
+    UserPlexSourceConnectionRequest,
+    UserSAMLSourceConnection,
+    UserSAMLSourceConnectionRequest,
+    UserSetting,
+    UserSourceConnection,
+    UserSourceConnectionRequest,
+    UserTelegramSourceConnection,
+    UserTelegramSourceConnectionRequest,
+} from "../models/index";
 import {
-    BindingTypeEnumFromJSON,
-    BindingTypeEnumToJSON,
-    DigestAlgorithmEnumFromJSON,
-    DigestAlgorithmEnumToJSON,
-    GenericErrorFromJSON,
-    GenericErrorToJSON,
     GroupKerberosSourceConnectionFromJSON,
-    GroupKerberosSourceConnectionToJSON,
-    GroupKerberosSourceConnectionRequestFromJSON,
     GroupKerberosSourceConnectionRequestToJSON,
     GroupLDAPSourceConnectionFromJSON,
-    GroupLDAPSourceConnectionToJSON,
-    GroupLDAPSourceConnectionRequestFromJSON,
     GroupLDAPSourceConnectionRequestToJSON,
-    GroupMatchingModeEnumFromJSON,
-    GroupMatchingModeEnumToJSON,
     GroupOAuthSourceConnectionFromJSON,
-    GroupOAuthSourceConnectionToJSON,
-    GroupOAuthSourceConnectionRequestFromJSON,
     GroupOAuthSourceConnectionRequestToJSON,
     GroupPlexSourceConnectionFromJSON,
-    GroupPlexSourceConnectionToJSON,
-    GroupPlexSourceConnectionRequestFromJSON,
     GroupPlexSourceConnectionRequestToJSON,
     GroupSAMLSourceConnectionFromJSON,
-    GroupSAMLSourceConnectionToJSON,
-    GroupSAMLSourceConnectionRequestFromJSON,
     GroupSAMLSourceConnectionRequestToJSON,
     GroupSourceConnectionFromJSON,
-    GroupSourceConnectionToJSON,
-    GroupSourceConnectionRequestFromJSON,
     GroupSourceConnectionRequestToJSON,
     GroupTelegramSourceConnectionFromJSON,
-    GroupTelegramSourceConnectionToJSON,
-    GroupTelegramSourceConnectionRequestFromJSON,
     GroupTelegramSourceConnectionRequestToJSON,
-    KadminTypeEnumFromJSON,
-    KadminTypeEnumToJSON,
     KerberosSourceFromJSON,
-    KerberosSourceToJSON,
-    KerberosSourceRequestFromJSON,
     KerberosSourceRequestToJSON,
     LDAPDebugFromJSON,
-    LDAPDebugToJSON,
     LDAPSourceFromJSON,
-    LDAPSourceToJSON,
-    LDAPSourceRequestFromJSON,
     LDAPSourceRequestToJSON,
     OAuthSourceFromJSON,
-    OAuthSourceToJSON,
-    OAuthSourceRequestFromJSON,
     OAuthSourceRequestToJSON,
     PaginatedGroupKerberosSourceConnectionListFromJSON,
-    PaginatedGroupKerberosSourceConnectionListToJSON,
     PaginatedGroupLDAPSourceConnectionListFromJSON,
-    PaginatedGroupLDAPSourceConnectionListToJSON,
     PaginatedGroupOAuthSourceConnectionListFromJSON,
-    PaginatedGroupOAuthSourceConnectionListToJSON,
     PaginatedGroupPlexSourceConnectionListFromJSON,
-    PaginatedGroupPlexSourceConnectionListToJSON,
     PaginatedGroupSAMLSourceConnectionListFromJSON,
-    PaginatedGroupSAMLSourceConnectionListToJSON,
     PaginatedGroupSourceConnectionListFromJSON,
-    PaginatedGroupSourceConnectionListToJSON,
     PaginatedGroupTelegramSourceConnectionListFromJSON,
-    PaginatedGroupTelegramSourceConnectionListToJSON,
     PaginatedKerberosSourceListFromJSON,
-    PaginatedKerberosSourceListToJSON,
     PaginatedLDAPSourceListFromJSON,
-    PaginatedLDAPSourceListToJSON,
     PaginatedOAuthSourceListFromJSON,
-    PaginatedOAuthSourceListToJSON,
     PaginatedPlexSourceListFromJSON,
-    PaginatedPlexSourceListToJSON,
     PaginatedSAMLSourceListFromJSON,
-    PaginatedSAMLSourceListToJSON,
     PaginatedSCIMSourceGroupListFromJSON,
-    PaginatedSCIMSourceGroupListToJSON,
     PaginatedSCIMSourceListFromJSON,
-    PaginatedSCIMSourceListToJSON,
     PaginatedSCIMSourceUserListFromJSON,
-    PaginatedSCIMSourceUserListToJSON,
     PaginatedSourceListFromJSON,
-    PaginatedSourceListToJSON,
     PaginatedTelegramSourceListFromJSON,
-    PaginatedTelegramSourceListToJSON,
     PaginatedUserKerberosSourceConnectionListFromJSON,
-    PaginatedUserKerberosSourceConnectionListToJSON,
     PaginatedUserLDAPSourceConnectionListFromJSON,
-    PaginatedUserLDAPSourceConnectionListToJSON,
     PaginatedUserOAuthSourceConnectionListFromJSON,
-    PaginatedUserOAuthSourceConnectionListToJSON,
     PaginatedUserPlexSourceConnectionListFromJSON,
-    PaginatedUserPlexSourceConnectionListToJSON,
     PaginatedUserSAMLSourceConnectionListFromJSON,
-    PaginatedUserSAMLSourceConnectionListToJSON,
     PaginatedUserSourceConnectionListFromJSON,
-    PaginatedUserSourceConnectionListToJSON,
     PaginatedUserTelegramSourceConnectionListFromJSON,
-    PaginatedUserTelegramSourceConnectionListToJSON,
-    PatchedGroupKerberosSourceConnectionRequestFromJSON,
     PatchedGroupKerberosSourceConnectionRequestToJSON,
-    PatchedGroupLDAPSourceConnectionRequestFromJSON,
     PatchedGroupLDAPSourceConnectionRequestToJSON,
-    PatchedGroupOAuthSourceConnectionRequestFromJSON,
     PatchedGroupOAuthSourceConnectionRequestToJSON,
-    PatchedGroupPlexSourceConnectionRequestFromJSON,
     PatchedGroupPlexSourceConnectionRequestToJSON,
-    PatchedGroupSAMLSourceConnectionRequestFromJSON,
     PatchedGroupSAMLSourceConnectionRequestToJSON,
-    PatchedGroupSourceConnectionRequestFromJSON,
     PatchedGroupSourceConnectionRequestToJSON,
-    PatchedGroupTelegramSourceConnectionRequestFromJSON,
     PatchedGroupTelegramSourceConnectionRequestToJSON,
-    PatchedKerberosSourceRequestFromJSON,
     PatchedKerberosSourceRequestToJSON,
-    PatchedLDAPSourceRequestFromJSON,
     PatchedLDAPSourceRequestToJSON,
-    PatchedOAuthSourceRequestFromJSON,
     PatchedOAuthSourceRequestToJSON,
-    PatchedPlexSourceRequestFromJSON,
     PatchedPlexSourceRequestToJSON,
-    PatchedSAMLSourceRequestFromJSON,
     PatchedSAMLSourceRequestToJSON,
-    PatchedSCIMSourceGroupRequestFromJSON,
     PatchedSCIMSourceGroupRequestToJSON,
-    PatchedSCIMSourceRequestFromJSON,
     PatchedSCIMSourceRequestToJSON,
-    PatchedSCIMSourceUserRequestFromJSON,
     PatchedSCIMSourceUserRequestToJSON,
-    PatchedTelegramSourceRequestFromJSON,
     PatchedTelegramSourceRequestToJSON,
-    PatchedUserKerberosSourceConnectionRequestFromJSON,
     PatchedUserKerberosSourceConnectionRequestToJSON,
-    PatchedUserLDAPSourceConnectionRequestFromJSON,
     PatchedUserLDAPSourceConnectionRequestToJSON,
-    PatchedUserOAuthSourceConnectionRequestFromJSON,
     PatchedUserOAuthSourceConnectionRequestToJSON,
-    PatchedUserPlexSourceConnectionRequestFromJSON,
     PatchedUserPlexSourceConnectionRequestToJSON,
-    PatchedUserSAMLSourceConnectionRequestFromJSON,
     PatchedUserSAMLSourceConnectionRequestToJSON,
-    PatchedUserSourceConnectionRequestFromJSON,
     PatchedUserSourceConnectionRequestToJSON,
-    PatchedUserTelegramSourceConnectionRequestFromJSON,
     PatchedUserTelegramSourceConnectionRequestToJSON,
     PlexSourceFromJSON,
-    PlexSourceToJSON,
-    PlexSourceRequestFromJSON,
     PlexSourceRequestToJSON,
-    PlexTokenRedeemRequestFromJSON,
     PlexTokenRedeemRequestToJSON,
-    PolicyEngineModeFromJSON,
-    PolicyEngineModeToJSON,
     RedirectChallengeFromJSON,
-    RedirectChallengeToJSON,
     SAMLMetadataFromJSON,
-    SAMLMetadataToJSON,
-    SAMLNameIDPolicyEnumFromJSON,
-    SAMLNameIDPolicyEnumToJSON,
     SAMLSourceFromJSON,
-    SAMLSourceToJSON,
-    SAMLSourceRequestFromJSON,
     SAMLSourceRequestToJSON,
     SCIMSourceFromJSON,
-    SCIMSourceToJSON,
     SCIMSourceGroupFromJSON,
-    SCIMSourceGroupToJSON,
-    SCIMSourceGroupRequestFromJSON,
     SCIMSourceGroupRequestToJSON,
-    SCIMSourceRequestFromJSON,
     SCIMSourceRequestToJSON,
     SCIMSourceUserFromJSON,
-    SCIMSourceUserToJSON,
-    SCIMSourceUserRequestFromJSON,
     SCIMSourceUserRequestToJSON,
-    SignatureAlgorithmEnumFromJSON,
-    SignatureAlgorithmEnumToJSON,
     SourceFromJSON,
-    SourceToJSON,
     SourceTypeFromJSON,
-    SourceTypeToJSON,
     SyncStatusFromJSON,
-    SyncStatusToJSON,
-    TelegramAuthRequestFromJSON,
     TelegramAuthRequestToJSON,
     TelegramSourceFromJSON,
-    TelegramSourceToJSON,
-    TelegramSourceRequestFromJSON,
     TelegramSourceRequestToJSON,
     TypeCreateFromJSON,
-    TypeCreateToJSON,
     UsedByFromJSON,
-    UsedByToJSON,
     UserKerberosSourceConnectionFromJSON,
-    UserKerberosSourceConnectionToJSON,
-    UserKerberosSourceConnectionRequestFromJSON,
     UserKerberosSourceConnectionRequestToJSON,
     UserLDAPSourceConnectionFromJSON,
-    UserLDAPSourceConnectionToJSON,
-    UserLDAPSourceConnectionRequestFromJSON,
     UserLDAPSourceConnectionRequestToJSON,
-    UserMatchingModeEnumFromJSON,
-    UserMatchingModeEnumToJSON,
     UserOAuthSourceConnectionFromJSON,
-    UserOAuthSourceConnectionToJSON,
-    UserOAuthSourceConnectionRequestFromJSON,
     UserOAuthSourceConnectionRequestToJSON,
     UserPlexSourceConnectionFromJSON,
-    UserPlexSourceConnectionToJSON,
-    UserPlexSourceConnectionRequestFromJSON,
     UserPlexSourceConnectionRequestToJSON,
     UserSAMLSourceConnectionFromJSON,
-    UserSAMLSourceConnectionToJSON,
-    UserSAMLSourceConnectionRequestFromJSON,
     UserSAMLSourceConnectionRequestToJSON,
     UserSettingFromJSON,
-    UserSettingToJSON,
     UserSourceConnectionFromJSON,
-    UserSourceConnectionToJSON,
-    UserSourceConnectionRequestFromJSON,
     UserSourceConnectionRequestToJSON,
     UserTelegramSourceConnectionFromJSON,
-    UserTelegramSourceConnectionToJSON,
-    UserTelegramSourceConnectionRequestFromJSON,
     UserTelegramSourceConnectionRequestToJSON,
-    ValidationErrorFromJSON,
-    ValidationErrorToJSON,
-} from '../models/index';
+} from "../models/index";
+import * as runtime from "../runtime";
 
 export interface SourcesAllDestroyRequest {
     slug: string;
@@ -1309,18 +1182,19 @@ export interface SourcesUserConnectionsTelegramUsedByListRequest {
 }
 
 /**
- * 
+ *
  */
 export class SourcesApi extends runtime.BaseAPI {
-
     /**
      * Creates request options for sourcesAllDestroy without sending the request
      */
-    async sourcesAllDestroyRequestOpts(requestParameters: SourcesAllDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesAllDestroyRequestOpts(
+        requestParameters: SourcesAllDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesAllDestroy().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesAllDestroy().',
             );
         }
 
@@ -1338,11 +1212,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/all/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1351,7 +1228,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Prevent deletion of built-in sources
      */
-    async sourcesAllDestroyRaw(requestParameters: SourcesAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async sourcesAllDestroyRaw(
+        requestParameters: SourcesAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.sourcesAllDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1361,46 +1241,51 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Prevent deletion of built-in sources
      */
-    async sourcesAllDestroy(requestParameters: SourcesAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesAllDestroy(
+        requestParameters: SourcesAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesAllDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesAllList without sending the request
      */
-    async sourcesAllListRequestOpts(requestParameters: SourcesAllListRequest): Promise<runtime.RequestOpts> {
+    async sourcesAllListRequestOpts(
+        requestParameters: SourcesAllListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['managed'] != null) {
-            queryParameters['managed'] = requestParameters['managed'];
+        if (requestParameters["managed"] != null) {
+            queryParameters["managed"] = requestParameters["managed"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['pbmUuid'] != null) {
-            queryParameters['pbm_uuid'] = requestParameters['pbmUuid'];
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['slug'] != null) {
-            queryParameters['slug'] = requestParameters['slug'];
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1418,7 +1303,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1427,17 +1312,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesAllListRaw(requestParameters: SourcesAllListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSourceList>> {
+    async sourcesAllListRaw(
+        requestParameters: SourcesAllListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSourceList>> {
         const requestOptions = await this.sourcesAllListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSourceListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSourceListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Source Viewset
      */
-    async sourcesAllList(requestParameters: SourcesAllListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSourceList> {
+    async sourcesAllList(
+        requestParameters: SourcesAllListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSourceList> {
         const response = await this.sourcesAllListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1445,11 +1338,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesAllRetrieve without sending the request
      */
-    async sourcesAllRetrieveRequestOpts(requestParameters: SourcesAllRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesAllRetrieveRequestOpts(
+        requestParameters: SourcesAllRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesAllRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesAllRetrieve().',
             );
         }
 
@@ -1467,11 +1362,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/all/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1480,7 +1378,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesAllRetrieveRaw(requestParameters: SourcesAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Source>> {
+    async sourcesAllRetrieveRaw(
+        requestParameters: SourcesAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Source>> {
         const requestOptions = await this.sourcesAllRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1490,7 +1391,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesAllRetrieve(requestParameters: SourcesAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Source> {
+    async sourcesAllRetrieve(
+        requestParameters: SourcesAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Source> {
         const response = await this.sourcesAllRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1516,7 +1420,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1525,17 +1429,23 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get all creatable types
      */
-    async sourcesAllTypesListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
+    async sourcesAllTypesListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
         const requestOptions = await this.sourcesAllTypesListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TypeCreateFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(TypeCreateFromJSON),
+        );
     }
 
     /**
      * Get all creatable types
      */
-    async sourcesAllTypesList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TypeCreate>> {
+    async sourcesAllTypesList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<TypeCreate>> {
         const response = await this.sourcesAllTypesListRaw(initOverrides);
         return await response.value();
     }
@@ -1543,11 +1453,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesAllUsedByList without sending the request
      */
-    async sourcesAllUsedByListRequestOpts(requestParameters: SourcesAllUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesAllUsedByListRequestOpts(
+        requestParameters: SourcesAllUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesAllUsedByList().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesAllUsedByList().',
             );
         }
 
@@ -1565,11 +1477,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/all/{slug}/used_by/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1578,7 +1493,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesAllUsedByListRaw(requestParameters: SourcesAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async sourcesAllUsedByListRaw(
+        requestParameters: SourcesAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.sourcesAllUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1588,7 +1506,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesAllUsedByList(requestParameters: SourcesAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async sourcesAllUsedByList(
+        requestParameters: SourcesAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.sourcesAllUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1614,7 +1535,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1623,17 +1544,23 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get all sources the user can configure
      */
-    async sourcesAllUserSettingsListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UserSetting>>> {
+    async sourcesAllUserSettingsListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UserSetting>>> {
         const requestOptions = await this.sourcesAllUserSettingsListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UserSettingFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(UserSettingFromJSON),
+        );
     }
 
     /**
      * Get all sources the user can configure
      */
-    async sourcesAllUserSettingsList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UserSetting>> {
+    async sourcesAllUserSettingsList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UserSetting>> {
         const response = await this.sourcesAllUserSettingsListRaw(initOverrides);
         return await response.value();
     }
@@ -1641,11 +1568,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesGroupConnectionsAllDestroy without sending the request
      */
-    async sourcesGroupConnectionsAllDestroyRequestOpts(requestParameters: SourcesGroupConnectionsAllDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsAllDestroyRequestOpts(
+        requestParameters: SourcesGroupConnectionsAllDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllDestroy().',
             );
         }
 
@@ -1663,11 +1592,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1676,8 +1605,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsAllDestroyRaw(requestParameters: SourcesGroupConnectionsAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesGroupConnectionsAllDestroyRequestOpts(requestParameters);
+    async sourcesGroupConnectionsAllDestroyRaw(
+        requestParameters: SourcesGroupConnectionsAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsAllDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1686,38 +1619,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsAllDestroy(requestParameters: SourcesGroupConnectionsAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesGroupConnectionsAllDestroy(
+        requestParameters: SourcesGroupConnectionsAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesGroupConnectionsAllDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsAllList without sending the request
      */
-    async sourcesGroupConnectionsAllListRequestOpts(requestParameters: SourcesGroupConnectionsAllListRequest): Promise<runtime.RequestOpts> {
+    async sourcesGroupConnectionsAllListRequestOpts(
+        requestParameters: SourcesGroupConnectionsAllListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['group'] != null) {
-            queryParameters['group'] = requestParameters['group'];
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1735,7 +1673,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1744,29 +1682,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsAllListRaw(requestParameters: SourcesGroupConnectionsAllListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGroupSourceConnectionList>> {
-        const requestOptions = await this.sourcesGroupConnectionsAllListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsAllListRaw(
+        requestParameters: SourcesGroupConnectionsAllListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGroupSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsAllListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGroupSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGroupSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsAllList(requestParameters: SourcesGroupConnectionsAllListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGroupSourceConnectionList> {
-        const response = await this.sourcesGroupConnectionsAllListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsAllList(
+        requestParameters: SourcesGroupConnectionsAllListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGroupSourceConnectionList> {
+        const response = await this.sourcesGroupConnectionsAllListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsAllPartialUpdate without sending the request
      */
-    async sourcesGroupConnectionsAllPartialUpdateRequestOpts(requestParameters: SourcesGroupConnectionsAllPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsAllPartialUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsAllPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllPartialUpdate().',
             );
         }
 
@@ -1774,7 +1726,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1786,43 +1738,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGroupSourceConnectionRequestToJSON(requestParameters['patchedGroupSourceConnectionRequest']),
+            body: PatchedGroupSourceConnectionRequestToJSON(
+                requestParameters["patchedGroupSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsAllPartialUpdateRaw(requestParameters: SourcesGroupConnectionsAllPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsAllPartialUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsAllPartialUpdateRaw(
+        requestParameters: SourcesGroupConnectionsAllPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsAllPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsAllPartialUpdate(requestParameters: SourcesGroupConnectionsAllPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupSourceConnection> {
-        const response = await this.sourcesGroupConnectionsAllPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsAllPartialUpdate(
+        requestParameters: SourcesGroupConnectionsAllPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupSourceConnection> {
+        const response = await this.sourcesGroupConnectionsAllPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsAllRetrieve without sending the request
      */
-    async sourcesGroupConnectionsAllRetrieveRequestOpts(requestParameters: SourcesGroupConnectionsAllRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsAllRetrieveRequestOpts(
+        requestParameters: SourcesGroupConnectionsAllRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllRetrieve().',
             );
         }
 
@@ -1840,11 +1808,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1853,36 +1821,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsAllRetrieveRaw(requestParameters: SourcesGroupConnectionsAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsAllRetrieveRequestOpts(requestParameters);
+    async sourcesGroupConnectionsAllRetrieveRaw(
+        requestParameters: SourcesGroupConnectionsAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsAllRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsAllRetrieve(requestParameters: SourcesGroupConnectionsAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupSourceConnection> {
-        const response = await this.sourcesGroupConnectionsAllRetrieveRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsAllRetrieve(
+        requestParameters: SourcesGroupConnectionsAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupSourceConnection> {
+        const response = await this.sourcesGroupConnectionsAllRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsAllUpdate without sending the request
      */
-    async sourcesGroupConnectionsAllUpdateRequestOpts(requestParameters: SourcesGroupConnectionsAllUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsAllUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsAllUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllUpdate().',
             );
         }
 
-        if (requestParameters['groupSourceConnectionRequest'] == null) {
+        if (requestParameters["groupSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupSourceConnectionRequest',
-                'Required parameter "groupSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsAllUpdate().'
+                "groupSourceConnectionRequest",
+                'Required parameter "groupSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsAllUpdate().',
             );
         }
 
@@ -1890,7 +1872,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1902,43 +1884,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupSourceConnectionRequestToJSON(requestParameters['groupSourceConnectionRequest']),
+            body: GroupSourceConnectionRequestToJSON(
+                requestParameters["groupSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsAllUpdateRaw(requestParameters: SourcesGroupConnectionsAllUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsAllUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsAllUpdateRaw(
+        requestParameters: SourcesGroupConnectionsAllUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsAllUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsAllUpdate(requestParameters: SourcesGroupConnectionsAllUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupSourceConnection> {
-        const response = await this.sourcesGroupConnectionsAllUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsAllUpdate(
+        requestParameters: SourcesGroupConnectionsAllUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupSourceConnection> {
+        const response = await this.sourcesGroupConnectionsAllUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsAllUsedByList without sending the request
      */
-    async sourcesGroupConnectionsAllUsedByListRequestOpts(requestParameters: SourcesGroupConnectionsAllUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsAllUsedByListRequestOpts(
+        requestParameters: SourcesGroupConnectionsAllUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsAllUsedByList().',
             );
         }
 
@@ -1956,11 +1954,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/all/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1969,8 +1967,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsAllUsedByListRaw(requestParameters: SourcesGroupConnectionsAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesGroupConnectionsAllUsedByListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsAllUsedByListRaw(
+        requestParameters: SourcesGroupConnectionsAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsAllUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -1979,19 +1981,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsAllUsedByList(requestParameters: SourcesGroupConnectionsAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsAllUsedByListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsAllUsedByList(
+        requestParameters: SourcesGroupConnectionsAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesGroupConnectionsAllUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsKerberosCreate without sending the request
      */
-    async sourcesGroupConnectionsKerberosCreateRequestOpts(requestParameters: SourcesGroupConnectionsKerberosCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['groupKerberosSourceConnectionRequest'] == null) {
+    async sourcesGroupConnectionsKerberosCreateRequestOpts(
+        requestParameters: SourcesGroupConnectionsKerberosCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["groupKerberosSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupKerberosSourceConnectionRequest',
-                'Required parameter "groupKerberosSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsKerberosCreate().'
+                "groupKerberosSourceConnectionRequest",
+                'Required parameter "groupKerberosSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsKerberosCreate().',
             );
         }
 
@@ -1999,7 +2009,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2014,39 +2024,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupKerberosSourceConnectionRequestToJSON(requestParameters['groupKerberosSourceConnectionRequest']),
+            body: GroupKerberosSourceConnectionRequestToJSON(
+                requestParameters["groupKerberosSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosCreateRaw(requestParameters: SourcesGroupConnectionsKerberosCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupKerberosSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsKerberosCreateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsKerberosCreateRaw(
+        requestParameters: SourcesGroupConnectionsKerberosCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupKerberosSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsKerberosCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupKerberosSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupKerberosSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosCreate(requestParameters: SourcesGroupConnectionsKerberosCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupKerberosSourceConnection> {
-        const response = await this.sourcesGroupConnectionsKerberosCreateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsKerberosCreate(
+        requestParameters: SourcesGroupConnectionsKerberosCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupKerberosSourceConnection> {
+        const response = await this.sourcesGroupConnectionsKerberosCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsKerberosDestroy without sending the request
      */
-    async sourcesGroupConnectionsKerberosDestroyRequestOpts(requestParameters: SourcesGroupConnectionsKerberosDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsKerberosDestroyRequestOpts(
+        requestParameters: SourcesGroupConnectionsKerberosDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosDestroy().',
             );
         }
 
@@ -2064,11 +2090,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2077,8 +2103,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosDestroyRaw(requestParameters: SourcesGroupConnectionsKerberosDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesGroupConnectionsKerberosDestroyRequestOpts(requestParameters);
+    async sourcesGroupConnectionsKerberosDestroyRaw(
+        requestParameters: SourcesGroupConnectionsKerberosDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsKerberosDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2087,38 +2117,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosDestroy(requestParameters: SourcesGroupConnectionsKerberosDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesGroupConnectionsKerberosDestroy(
+        requestParameters: SourcesGroupConnectionsKerberosDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesGroupConnectionsKerberosDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsKerberosList without sending the request
      */
-    async sourcesGroupConnectionsKerberosListRequestOpts(requestParameters: SourcesGroupConnectionsKerberosListRequest): Promise<runtime.RequestOpts> {
+    async sourcesGroupConnectionsKerberosListRequestOpts(
+        requestParameters: SourcesGroupConnectionsKerberosListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['group'] != null) {
-            queryParameters['group'] = requestParameters['group'];
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2136,7 +2171,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2145,29 +2180,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosListRaw(requestParameters: SourcesGroupConnectionsKerberosListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGroupKerberosSourceConnectionList>> {
-        const requestOptions = await this.sourcesGroupConnectionsKerberosListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsKerberosListRaw(
+        requestParameters: SourcesGroupConnectionsKerberosListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGroupKerberosSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsKerberosListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGroupKerberosSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGroupKerberosSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosList(requestParameters: SourcesGroupConnectionsKerberosListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGroupKerberosSourceConnectionList> {
-        const response = await this.sourcesGroupConnectionsKerberosListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsKerberosList(
+        requestParameters: SourcesGroupConnectionsKerberosListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGroupKerberosSourceConnectionList> {
+        const response = await this.sourcesGroupConnectionsKerberosListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsKerberosPartialUpdate without sending the request
      */
-    async sourcesGroupConnectionsKerberosPartialUpdateRequestOpts(requestParameters: SourcesGroupConnectionsKerberosPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsKerberosPartialUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsKerberosPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosPartialUpdate().',
             );
         }
 
@@ -2175,7 +2224,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2187,43 +2236,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGroupKerberosSourceConnectionRequestToJSON(requestParameters['patchedGroupKerberosSourceConnectionRequest']),
+            body: PatchedGroupKerberosSourceConnectionRequestToJSON(
+                requestParameters["patchedGroupKerberosSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosPartialUpdateRaw(requestParameters: SourcesGroupConnectionsKerberosPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupKerberosSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsKerberosPartialUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsKerberosPartialUpdateRaw(
+        requestParameters: SourcesGroupConnectionsKerberosPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupKerberosSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsKerberosPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupKerberosSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupKerberosSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosPartialUpdate(requestParameters: SourcesGroupConnectionsKerberosPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupKerberosSourceConnection> {
-        const response = await this.sourcesGroupConnectionsKerberosPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsKerberosPartialUpdate(
+        requestParameters: SourcesGroupConnectionsKerberosPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupKerberosSourceConnection> {
+        const response = await this.sourcesGroupConnectionsKerberosPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsKerberosRetrieve without sending the request
      */
-    async sourcesGroupConnectionsKerberosRetrieveRequestOpts(requestParameters: SourcesGroupConnectionsKerberosRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsKerberosRetrieveRequestOpts(
+        requestParameters: SourcesGroupConnectionsKerberosRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosRetrieve().',
             );
         }
 
@@ -2241,11 +2306,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2254,36 +2319,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosRetrieveRaw(requestParameters: SourcesGroupConnectionsKerberosRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupKerberosSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsKerberosRetrieveRequestOpts(requestParameters);
+    async sourcesGroupConnectionsKerberosRetrieveRaw(
+        requestParameters: SourcesGroupConnectionsKerberosRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupKerberosSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsKerberosRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupKerberosSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupKerberosSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosRetrieve(requestParameters: SourcesGroupConnectionsKerberosRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupKerberosSourceConnection> {
-        const response = await this.sourcesGroupConnectionsKerberosRetrieveRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsKerberosRetrieve(
+        requestParameters: SourcesGroupConnectionsKerberosRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupKerberosSourceConnection> {
+        const response = await this.sourcesGroupConnectionsKerberosRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsKerberosUpdate without sending the request
      */
-    async sourcesGroupConnectionsKerberosUpdateRequestOpts(requestParameters: SourcesGroupConnectionsKerberosUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsKerberosUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsKerberosUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosUpdate().',
             );
         }
 
-        if (requestParameters['groupKerberosSourceConnectionRequest'] == null) {
+        if (requestParameters["groupKerberosSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupKerberosSourceConnectionRequest',
-                'Required parameter "groupKerberosSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsKerberosUpdate().'
+                "groupKerberosSourceConnectionRequest",
+                'Required parameter "groupKerberosSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsKerberosUpdate().',
             );
         }
 
@@ -2291,7 +2370,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2303,43 +2382,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupKerberosSourceConnectionRequestToJSON(requestParameters['groupKerberosSourceConnectionRequest']),
+            body: GroupKerberosSourceConnectionRequestToJSON(
+                requestParameters["groupKerberosSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosUpdateRaw(requestParameters: SourcesGroupConnectionsKerberosUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupKerberosSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsKerberosUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsKerberosUpdateRaw(
+        requestParameters: SourcesGroupConnectionsKerberosUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupKerberosSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsKerberosUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupKerberosSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupKerberosSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsKerberosUpdate(requestParameters: SourcesGroupConnectionsKerberosUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupKerberosSourceConnection> {
-        const response = await this.sourcesGroupConnectionsKerberosUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsKerberosUpdate(
+        requestParameters: SourcesGroupConnectionsKerberosUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupKerberosSourceConnection> {
+        const response = await this.sourcesGroupConnectionsKerberosUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsKerberosUsedByList without sending the request
      */
-    async sourcesGroupConnectionsKerberosUsedByListRequestOpts(requestParameters: SourcesGroupConnectionsKerberosUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsKerberosUsedByListRequestOpts(
+        requestParameters: SourcesGroupConnectionsKerberosUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsKerberosUsedByList().',
             );
         }
 
@@ -2357,11 +2452,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/kerberos/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2370,8 +2465,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsKerberosUsedByListRaw(requestParameters: SourcesGroupConnectionsKerberosUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesGroupConnectionsKerberosUsedByListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsKerberosUsedByListRaw(
+        requestParameters: SourcesGroupConnectionsKerberosUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsKerberosUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2380,19 +2479,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsKerberosUsedByList(requestParameters: SourcesGroupConnectionsKerberosUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsKerberosUsedByListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsKerberosUsedByList(
+        requestParameters: SourcesGroupConnectionsKerberosUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesGroupConnectionsKerberosUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsLdapCreate without sending the request
      */
-    async sourcesGroupConnectionsLdapCreateRequestOpts(requestParameters: SourcesGroupConnectionsLdapCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['groupLDAPSourceConnectionRequest'] == null) {
+    async sourcesGroupConnectionsLdapCreateRequestOpts(
+        requestParameters: SourcesGroupConnectionsLdapCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["groupLDAPSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupLDAPSourceConnectionRequest',
-                'Required parameter "groupLDAPSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsLdapCreate().'
+                "groupLDAPSourceConnectionRequest",
+                'Required parameter "groupLDAPSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsLdapCreate().',
             );
         }
 
@@ -2400,7 +2507,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2415,39 +2522,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupLDAPSourceConnectionRequestToJSON(requestParameters['groupLDAPSourceConnectionRequest']),
+            body: GroupLDAPSourceConnectionRequestToJSON(
+                requestParameters["groupLDAPSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapCreateRaw(requestParameters: SourcesGroupConnectionsLdapCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupLDAPSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsLdapCreateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsLdapCreateRaw(
+        requestParameters: SourcesGroupConnectionsLdapCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupLDAPSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsLdapCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupLDAPSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupLDAPSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapCreate(requestParameters: SourcesGroupConnectionsLdapCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupLDAPSourceConnection> {
-        const response = await this.sourcesGroupConnectionsLdapCreateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsLdapCreate(
+        requestParameters: SourcesGroupConnectionsLdapCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupLDAPSourceConnection> {
+        const response = await this.sourcesGroupConnectionsLdapCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsLdapDestroy without sending the request
      */
-    async sourcesGroupConnectionsLdapDestroyRequestOpts(requestParameters: SourcesGroupConnectionsLdapDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsLdapDestroyRequestOpts(
+        requestParameters: SourcesGroupConnectionsLdapDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapDestroy().',
             );
         }
 
@@ -2465,11 +2588,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2478,8 +2601,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapDestroyRaw(requestParameters: SourcesGroupConnectionsLdapDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesGroupConnectionsLdapDestroyRequestOpts(requestParameters);
+    async sourcesGroupConnectionsLdapDestroyRaw(
+        requestParameters: SourcesGroupConnectionsLdapDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsLdapDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2488,38 +2615,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapDestroy(requestParameters: SourcesGroupConnectionsLdapDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesGroupConnectionsLdapDestroy(
+        requestParameters: SourcesGroupConnectionsLdapDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesGroupConnectionsLdapDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsLdapList without sending the request
      */
-    async sourcesGroupConnectionsLdapListRequestOpts(requestParameters: SourcesGroupConnectionsLdapListRequest): Promise<runtime.RequestOpts> {
+    async sourcesGroupConnectionsLdapListRequestOpts(
+        requestParameters: SourcesGroupConnectionsLdapListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['group'] != null) {
-            queryParameters['group'] = requestParameters['group'];
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2537,7 +2669,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2546,29 +2678,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapListRaw(requestParameters: SourcesGroupConnectionsLdapListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGroupLDAPSourceConnectionList>> {
-        const requestOptions = await this.sourcesGroupConnectionsLdapListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsLdapListRaw(
+        requestParameters: SourcesGroupConnectionsLdapListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGroupLDAPSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsLdapListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGroupLDAPSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGroupLDAPSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapList(requestParameters: SourcesGroupConnectionsLdapListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGroupLDAPSourceConnectionList> {
-        const response = await this.sourcesGroupConnectionsLdapListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsLdapList(
+        requestParameters: SourcesGroupConnectionsLdapListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGroupLDAPSourceConnectionList> {
+        const response = await this.sourcesGroupConnectionsLdapListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsLdapPartialUpdate without sending the request
      */
-    async sourcesGroupConnectionsLdapPartialUpdateRequestOpts(requestParameters: SourcesGroupConnectionsLdapPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsLdapPartialUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsLdapPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapPartialUpdate().',
             );
         }
 
@@ -2576,7 +2722,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2588,43 +2734,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGroupLDAPSourceConnectionRequestToJSON(requestParameters['patchedGroupLDAPSourceConnectionRequest']),
+            body: PatchedGroupLDAPSourceConnectionRequestToJSON(
+                requestParameters["patchedGroupLDAPSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapPartialUpdateRaw(requestParameters: SourcesGroupConnectionsLdapPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupLDAPSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsLdapPartialUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsLdapPartialUpdateRaw(
+        requestParameters: SourcesGroupConnectionsLdapPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupLDAPSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsLdapPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupLDAPSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupLDAPSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapPartialUpdate(requestParameters: SourcesGroupConnectionsLdapPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupLDAPSourceConnection> {
-        const response = await this.sourcesGroupConnectionsLdapPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsLdapPartialUpdate(
+        requestParameters: SourcesGroupConnectionsLdapPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupLDAPSourceConnection> {
+        const response = await this.sourcesGroupConnectionsLdapPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsLdapRetrieve without sending the request
      */
-    async sourcesGroupConnectionsLdapRetrieveRequestOpts(requestParameters: SourcesGroupConnectionsLdapRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsLdapRetrieveRequestOpts(
+        requestParameters: SourcesGroupConnectionsLdapRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapRetrieve().',
             );
         }
 
@@ -2642,11 +2804,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2655,36 +2817,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapRetrieveRaw(requestParameters: SourcesGroupConnectionsLdapRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupLDAPSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsLdapRetrieveRequestOpts(requestParameters);
+    async sourcesGroupConnectionsLdapRetrieveRaw(
+        requestParameters: SourcesGroupConnectionsLdapRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupLDAPSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsLdapRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupLDAPSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupLDAPSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapRetrieve(requestParameters: SourcesGroupConnectionsLdapRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupLDAPSourceConnection> {
-        const response = await this.sourcesGroupConnectionsLdapRetrieveRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsLdapRetrieve(
+        requestParameters: SourcesGroupConnectionsLdapRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupLDAPSourceConnection> {
+        const response = await this.sourcesGroupConnectionsLdapRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsLdapUpdate without sending the request
      */
-    async sourcesGroupConnectionsLdapUpdateRequestOpts(requestParameters: SourcesGroupConnectionsLdapUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsLdapUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsLdapUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapUpdate().',
             );
         }
 
-        if (requestParameters['groupLDAPSourceConnectionRequest'] == null) {
+        if (requestParameters["groupLDAPSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupLDAPSourceConnectionRequest',
-                'Required parameter "groupLDAPSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsLdapUpdate().'
+                "groupLDAPSourceConnectionRequest",
+                'Required parameter "groupLDAPSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsLdapUpdate().',
             );
         }
 
@@ -2692,7 +2868,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2704,43 +2880,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupLDAPSourceConnectionRequestToJSON(requestParameters['groupLDAPSourceConnectionRequest']),
+            body: GroupLDAPSourceConnectionRequestToJSON(
+                requestParameters["groupLDAPSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapUpdateRaw(requestParameters: SourcesGroupConnectionsLdapUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupLDAPSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsLdapUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsLdapUpdateRaw(
+        requestParameters: SourcesGroupConnectionsLdapUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupLDAPSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsLdapUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupLDAPSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupLDAPSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsLdapUpdate(requestParameters: SourcesGroupConnectionsLdapUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupLDAPSourceConnection> {
-        const response = await this.sourcesGroupConnectionsLdapUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsLdapUpdate(
+        requestParameters: SourcesGroupConnectionsLdapUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupLDAPSourceConnection> {
+        const response = await this.sourcesGroupConnectionsLdapUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsLdapUsedByList without sending the request
      */
-    async sourcesGroupConnectionsLdapUsedByListRequestOpts(requestParameters: SourcesGroupConnectionsLdapUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsLdapUsedByListRequestOpts(
+        requestParameters: SourcesGroupConnectionsLdapUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsLdapUsedByList().',
             );
         }
 
@@ -2758,11 +2950,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/ldap/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2771,8 +2963,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsLdapUsedByListRaw(requestParameters: SourcesGroupConnectionsLdapUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesGroupConnectionsLdapUsedByListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsLdapUsedByListRaw(
+        requestParameters: SourcesGroupConnectionsLdapUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsLdapUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2781,19 +2977,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsLdapUsedByList(requestParameters: SourcesGroupConnectionsLdapUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsLdapUsedByListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsLdapUsedByList(
+        requestParameters: SourcesGroupConnectionsLdapUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesGroupConnectionsLdapUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsOauthCreate without sending the request
      */
-    async sourcesGroupConnectionsOauthCreateRequestOpts(requestParameters: SourcesGroupConnectionsOauthCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['groupOAuthSourceConnectionRequest'] == null) {
+    async sourcesGroupConnectionsOauthCreateRequestOpts(
+        requestParameters: SourcesGroupConnectionsOauthCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["groupOAuthSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupOAuthSourceConnectionRequest',
-                'Required parameter "groupOAuthSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsOauthCreate().'
+                "groupOAuthSourceConnectionRequest",
+                'Required parameter "groupOAuthSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsOauthCreate().',
             );
         }
 
@@ -2801,7 +3005,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2816,39 +3020,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupOAuthSourceConnectionRequestToJSON(requestParameters['groupOAuthSourceConnectionRequest']),
+            body: GroupOAuthSourceConnectionRequestToJSON(
+                requestParameters["groupOAuthSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthCreateRaw(requestParameters: SourcesGroupConnectionsOauthCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupOAuthSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsOauthCreateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsOauthCreateRaw(
+        requestParameters: SourcesGroupConnectionsOauthCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupOAuthSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsOauthCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupOAuthSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupOAuthSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthCreate(requestParameters: SourcesGroupConnectionsOauthCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupOAuthSourceConnection> {
-        const response = await this.sourcesGroupConnectionsOauthCreateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsOauthCreate(
+        requestParameters: SourcesGroupConnectionsOauthCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupOAuthSourceConnection> {
+        const response = await this.sourcesGroupConnectionsOauthCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsOauthDestroy without sending the request
      */
-    async sourcesGroupConnectionsOauthDestroyRequestOpts(requestParameters: SourcesGroupConnectionsOauthDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsOauthDestroyRequestOpts(
+        requestParameters: SourcesGroupConnectionsOauthDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthDestroy().',
             );
         }
 
@@ -2866,11 +3086,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2879,8 +3099,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthDestroyRaw(requestParameters: SourcesGroupConnectionsOauthDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesGroupConnectionsOauthDestroyRequestOpts(requestParameters);
+    async sourcesGroupConnectionsOauthDestroyRaw(
+        requestParameters: SourcesGroupConnectionsOauthDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsOauthDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2889,38 +3113,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthDestroy(requestParameters: SourcesGroupConnectionsOauthDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesGroupConnectionsOauthDestroy(
+        requestParameters: SourcesGroupConnectionsOauthDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesGroupConnectionsOauthDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsOauthList without sending the request
      */
-    async sourcesGroupConnectionsOauthListRequestOpts(requestParameters: SourcesGroupConnectionsOauthListRequest): Promise<runtime.RequestOpts> {
+    async sourcesGroupConnectionsOauthListRequestOpts(
+        requestParameters: SourcesGroupConnectionsOauthListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['group'] != null) {
-            queryParameters['group'] = requestParameters['group'];
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2938,7 +3167,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2947,29 +3176,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthListRaw(requestParameters: SourcesGroupConnectionsOauthListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGroupOAuthSourceConnectionList>> {
-        const requestOptions = await this.sourcesGroupConnectionsOauthListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsOauthListRaw(
+        requestParameters: SourcesGroupConnectionsOauthListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGroupOAuthSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsOauthListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGroupOAuthSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGroupOAuthSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthList(requestParameters: SourcesGroupConnectionsOauthListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGroupOAuthSourceConnectionList> {
-        const response = await this.sourcesGroupConnectionsOauthListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsOauthList(
+        requestParameters: SourcesGroupConnectionsOauthListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGroupOAuthSourceConnectionList> {
+        const response = await this.sourcesGroupConnectionsOauthListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsOauthPartialUpdate without sending the request
      */
-    async sourcesGroupConnectionsOauthPartialUpdateRequestOpts(requestParameters: SourcesGroupConnectionsOauthPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsOauthPartialUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsOauthPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthPartialUpdate().',
             );
         }
 
@@ -2977,7 +3220,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2989,43 +3232,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGroupOAuthSourceConnectionRequestToJSON(requestParameters['patchedGroupOAuthSourceConnectionRequest']),
+            body: PatchedGroupOAuthSourceConnectionRequestToJSON(
+                requestParameters["patchedGroupOAuthSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthPartialUpdateRaw(requestParameters: SourcesGroupConnectionsOauthPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupOAuthSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsOauthPartialUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsOauthPartialUpdateRaw(
+        requestParameters: SourcesGroupConnectionsOauthPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupOAuthSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsOauthPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupOAuthSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupOAuthSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthPartialUpdate(requestParameters: SourcesGroupConnectionsOauthPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupOAuthSourceConnection> {
-        const response = await this.sourcesGroupConnectionsOauthPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsOauthPartialUpdate(
+        requestParameters: SourcesGroupConnectionsOauthPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupOAuthSourceConnection> {
+        const response = await this.sourcesGroupConnectionsOauthPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsOauthRetrieve without sending the request
      */
-    async sourcesGroupConnectionsOauthRetrieveRequestOpts(requestParameters: SourcesGroupConnectionsOauthRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsOauthRetrieveRequestOpts(
+        requestParameters: SourcesGroupConnectionsOauthRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthRetrieve().',
             );
         }
 
@@ -3043,11 +3302,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3056,36 +3315,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthRetrieveRaw(requestParameters: SourcesGroupConnectionsOauthRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupOAuthSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsOauthRetrieveRequestOpts(requestParameters);
+    async sourcesGroupConnectionsOauthRetrieveRaw(
+        requestParameters: SourcesGroupConnectionsOauthRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupOAuthSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsOauthRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupOAuthSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupOAuthSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthRetrieve(requestParameters: SourcesGroupConnectionsOauthRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupOAuthSourceConnection> {
-        const response = await this.sourcesGroupConnectionsOauthRetrieveRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsOauthRetrieve(
+        requestParameters: SourcesGroupConnectionsOauthRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupOAuthSourceConnection> {
+        const response = await this.sourcesGroupConnectionsOauthRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsOauthUpdate without sending the request
      */
-    async sourcesGroupConnectionsOauthUpdateRequestOpts(requestParameters: SourcesGroupConnectionsOauthUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsOauthUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsOauthUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthUpdate().',
             );
         }
 
-        if (requestParameters['groupOAuthSourceConnectionRequest'] == null) {
+        if (requestParameters["groupOAuthSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupOAuthSourceConnectionRequest',
-                'Required parameter "groupOAuthSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsOauthUpdate().'
+                "groupOAuthSourceConnectionRequest",
+                'Required parameter "groupOAuthSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsOauthUpdate().',
             );
         }
 
@@ -3093,7 +3366,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3105,43 +3378,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupOAuthSourceConnectionRequestToJSON(requestParameters['groupOAuthSourceConnectionRequest']),
+            body: GroupOAuthSourceConnectionRequestToJSON(
+                requestParameters["groupOAuthSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthUpdateRaw(requestParameters: SourcesGroupConnectionsOauthUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupOAuthSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsOauthUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsOauthUpdateRaw(
+        requestParameters: SourcesGroupConnectionsOauthUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupOAuthSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsOauthUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupOAuthSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupOAuthSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsOauthUpdate(requestParameters: SourcesGroupConnectionsOauthUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupOAuthSourceConnection> {
-        const response = await this.sourcesGroupConnectionsOauthUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsOauthUpdate(
+        requestParameters: SourcesGroupConnectionsOauthUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupOAuthSourceConnection> {
+        const response = await this.sourcesGroupConnectionsOauthUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsOauthUsedByList without sending the request
      */
-    async sourcesGroupConnectionsOauthUsedByListRequestOpts(requestParameters: SourcesGroupConnectionsOauthUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsOauthUsedByListRequestOpts(
+        requestParameters: SourcesGroupConnectionsOauthUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsOauthUsedByList().',
             );
         }
 
@@ -3159,11 +3448,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/oauth/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3172,8 +3461,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsOauthUsedByListRaw(requestParameters: SourcesGroupConnectionsOauthUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesGroupConnectionsOauthUsedByListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsOauthUsedByListRaw(
+        requestParameters: SourcesGroupConnectionsOauthUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsOauthUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -3182,19 +3475,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsOauthUsedByList(requestParameters: SourcesGroupConnectionsOauthUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsOauthUsedByListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsOauthUsedByList(
+        requestParameters: SourcesGroupConnectionsOauthUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesGroupConnectionsOauthUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsPlexCreate without sending the request
      */
-    async sourcesGroupConnectionsPlexCreateRequestOpts(requestParameters: SourcesGroupConnectionsPlexCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['groupPlexSourceConnectionRequest'] == null) {
+    async sourcesGroupConnectionsPlexCreateRequestOpts(
+        requestParameters: SourcesGroupConnectionsPlexCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["groupPlexSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupPlexSourceConnectionRequest',
-                'Required parameter "groupPlexSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsPlexCreate().'
+                "groupPlexSourceConnectionRequest",
+                'Required parameter "groupPlexSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsPlexCreate().',
             );
         }
 
@@ -3202,7 +3503,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3217,39 +3518,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupPlexSourceConnectionRequestToJSON(requestParameters['groupPlexSourceConnectionRequest']),
+            body: GroupPlexSourceConnectionRequestToJSON(
+                requestParameters["groupPlexSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexCreateRaw(requestParameters: SourcesGroupConnectionsPlexCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupPlexSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsPlexCreateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsPlexCreateRaw(
+        requestParameters: SourcesGroupConnectionsPlexCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupPlexSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsPlexCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupPlexSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupPlexSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexCreate(requestParameters: SourcesGroupConnectionsPlexCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupPlexSourceConnection> {
-        const response = await this.sourcesGroupConnectionsPlexCreateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsPlexCreate(
+        requestParameters: SourcesGroupConnectionsPlexCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupPlexSourceConnection> {
+        const response = await this.sourcesGroupConnectionsPlexCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsPlexDestroy without sending the request
      */
-    async sourcesGroupConnectionsPlexDestroyRequestOpts(requestParameters: SourcesGroupConnectionsPlexDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsPlexDestroyRequestOpts(
+        requestParameters: SourcesGroupConnectionsPlexDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexDestroy().',
             );
         }
 
@@ -3267,11 +3584,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3280,8 +3597,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexDestroyRaw(requestParameters: SourcesGroupConnectionsPlexDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesGroupConnectionsPlexDestroyRequestOpts(requestParameters);
+    async sourcesGroupConnectionsPlexDestroyRaw(
+        requestParameters: SourcesGroupConnectionsPlexDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsPlexDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3290,38 +3611,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexDestroy(requestParameters: SourcesGroupConnectionsPlexDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesGroupConnectionsPlexDestroy(
+        requestParameters: SourcesGroupConnectionsPlexDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesGroupConnectionsPlexDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsPlexList without sending the request
      */
-    async sourcesGroupConnectionsPlexListRequestOpts(requestParameters: SourcesGroupConnectionsPlexListRequest): Promise<runtime.RequestOpts> {
+    async sourcesGroupConnectionsPlexListRequestOpts(
+        requestParameters: SourcesGroupConnectionsPlexListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['group'] != null) {
-            queryParameters['group'] = requestParameters['group'];
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3339,7 +3665,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3348,29 +3674,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexListRaw(requestParameters: SourcesGroupConnectionsPlexListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGroupPlexSourceConnectionList>> {
-        const requestOptions = await this.sourcesGroupConnectionsPlexListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsPlexListRaw(
+        requestParameters: SourcesGroupConnectionsPlexListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGroupPlexSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsPlexListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGroupPlexSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGroupPlexSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexList(requestParameters: SourcesGroupConnectionsPlexListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGroupPlexSourceConnectionList> {
-        const response = await this.sourcesGroupConnectionsPlexListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsPlexList(
+        requestParameters: SourcesGroupConnectionsPlexListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGroupPlexSourceConnectionList> {
+        const response = await this.sourcesGroupConnectionsPlexListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsPlexPartialUpdate without sending the request
      */
-    async sourcesGroupConnectionsPlexPartialUpdateRequestOpts(requestParameters: SourcesGroupConnectionsPlexPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsPlexPartialUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsPlexPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexPartialUpdate().',
             );
         }
 
@@ -3378,7 +3718,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3390,43 +3730,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGroupPlexSourceConnectionRequestToJSON(requestParameters['patchedGroupPlexSourceConnectionRequest']),
+            body: PatchedGroupPlexSourceConnectionRequestToJSON(
+                requestParameters["patchedGroupPlexSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexPartialUpdateRaw(requestParameters: SourcesGroupConnectionsPlexPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupPlexSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsPlexPartialUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsPlexPartialUpdateRaw(
+        requestParameters: SourcesGroupConnectionsPlexPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupPlexSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsPlexPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupPlexSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupPlexSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexPartialUpdate(requestParameters: SourcesGroupConnectionsPlexPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupPlexSourceConnection> {
-        const response = await this.sourcesGroupConnectionsPlexPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsPlexPartialUpdate(
+        requestParameters: SourcesGroupConnectionsPlexPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupPlexSourceConnection> {
+        const response = await this.sourcesGroupConnectionsPlexPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsPlexRetrieve without sending the request
      */
-    async sourcesGroupConnectionsPlexRetrieveRequestOpts(requestParameters: SourcesGroupConnectionsPlexRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsPlexRetrieveRequestOpts(
+        requestParameters: SourcesGroupConnectionsPlexRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexRetrieve().',
             );
         }
 
@@ -3444,11 +3800,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3457,36 +3813,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexRetrieveRaw(requestParameters: SourcesGroupConnectionsPlexRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupPlexSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsPlexRetrieveRequestOpts(requestParameters);
+    async sourcesGroupConnectionsPlexRetrieveRaw(
+        requestParameters: SourcesGroupConnectionsPlexRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupPlexSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsPlexRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupPlexSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupPlexSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexRetrieve(requestParameters: SourcesGroupConnectionsPlexRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupPlexSourceConnection> {
-        const response = await this.sourcesGroupConnectionsPlexRetrieveRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsPlexRetrieve(
+        requestParameters: SourcesGroupConnectionsPlexRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupPlexSourceConnection> {
+        const response = await this.sourcesGroupConnectionsPlexRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsPlexUpdate without sending the request
      */
-    async sourcesGroupConnectionsPlexUpdateRequestOpts(requestParameters: SourcesGroupConnectionsPlexUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsPlexUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsPlexUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexUpdate().',
             );
         }
 
-        if (requestParameters['groupPlexSourceConnectionRequest'] == null) {
+        if (requestParameters["groupPlexSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupPlexSourceConnectionRequest',
-                'Required parameter "groupPlexSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsPlexUpdate().'
+                "groupPlexSourceConnectionRequest",
+                'Required parameter "groupPlexSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsPlexUpdate().',
             );
         }
 
@@ -3494,7 +3864,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3506,43 +3876,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupPlexSourceConnectionRequestToJSON(requestParameters['groupPlexSourceConnectionRequest']),
+            body: GroupPlexSourceConnectionRequestToJSON(
+                requestParameters["groupPlexSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexUpdateRaw(requestParameters: SourcesGroupConnectionsPlexUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupPlexSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsPlexUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsPlexUpdateRaw(
+        requestParameters: SourcesGroupConnectionsPlexUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupPlexSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsPlexUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupPlexSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupPlexSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsPlexUpdate(requestParameters: SourcesGroupConnectionsPlexUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupPlexSourceConnection> {
-        const response = await this.sourcesGroupConnectionsPlexUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsPlexUpdate(
+        requestParameters: SourcesGroupConnectionsPlexUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupPlexSourceConnection> {
+        const response = await this.sourcesGroupConnectionsPlexUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsPlexUsedByList without sending the request
      */
-    async sourcesGroupConnectionsPlexUsedByListRequestOpts(requestParameters: SourcesGroupConnectionsPlexUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsPlexUsedByListRequestOpts(
+        requestParameters: SourcesGroupConnectionsPlexUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsPlexUsedByList().',
             );
         }
 
@@ -3560,11 +3946,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/plex/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3573,8 +3959,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsPlexUsedByListRaw(requestParameters: SourcesGroupConnectionsPlexUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesGroupConnectionsPlexUsedByListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsPlexUsedByListRaw(
+        requestParameters: SourcesGroupConnectionsPlexUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsPlexUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -3583,19 +3973,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsPlexUsedByList(requestParameters: SourcesGroupConnectionsPlexUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsPlexUsedByListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsPlexUsedByList(
+        requestParameters: SourcesGroupConnectionsPlexUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesGroupConnectionsPlexUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsSamlCreate without sending the request
      */
-    async sourcesGroupConnectionsSamlCreateRequestOpts(requestParameters: SourcesGroupConnectionsSamlCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['groupSAMLSourceConnectionRequest'] == null) {
+    async sourcesGroupConnectionsSamlCreateRequestOpts(
+        requestParameters: SourcesGroupConnectionsSamlCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["groupSAMLSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupSAMLSourceConnectionRequest',
-                'Required parameter "groupSAMLSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsSamlCreate().'
+                "groupSAMLSourceConnectionRequest",
+                'Required parameter "groupSAMLSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsSamlCreate().',
             );
         }
 
@@ -3603,7 +4001,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3618,39 +4016,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupSAMLSourceConnectionRequestToJSON(requestParameters['groupSAMLSourceConnectionRequest']),
+            body: GroupSAMLSourceConnectionRequestToJSON(
+                requestParameters["groupSAMLSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlCreateRaw(requestParameters: SourcesGroupConnectionsSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupSAMLSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsSamlCreateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsSamlCreateRaw(
+        requestParameters: SourcesGroupConnectionsSamlCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupSAMLSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsSamlCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupSAMLSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupSAMLSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlCreate(requestParameters: SourcesGroupConnectionsSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupSAMLSourceConnection> {
-        const response = await this.sourcesGroupConnectionsSamlCreateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsSamlCreate(
+        requestParameters: SourcesGroupConnectionsSamlCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupSAMLSourceConnection> {
+        const response = await this.sourcesGroupConnectionsSamlCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsSamlDestroy without sending the request
      */
-    async sourcesGroupConnectionsSamlDestroyRequestOpts(requestParameters: SourcesGroupConnectionsSamlDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsSamlDestroyRequestOpts(
+        requestParameters: SourcesGroupConnectionsSamlDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlDestroy().',
             );
         }
 
@@ -3668,11 +4082,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3681,8 +4095,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlDestroyRaw(requestParameters: SourcesGroupConnectionsSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesGroupConnectionsSamlDestroyRequestOpts(requestParameters);
+    async sourcesGroupConnectionsSamlDestroyRaw(
+        requestParameters: SourcesGroupConnectionsSamlDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsSamlDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3691,38 +4109,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlDestroy(requestParameters: SourcesGroupConnectionsSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesGroupConnectionsSamlDestroy(
+        requestParameters: SourcesGroupConnectionsSamlDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesGroupConnectionsSamlDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsSamlList without sending the request
      */
-    async sourcesGroupConnectionsSamlListRequestOpts(requestParameters: SourcesGroupConnectionsSamlListRequest): Promise<runtime.RequestOpts> {
+    async sourcesGroupConnectionsSamlListRequestOpts(
+        requestParameters: SourcesGroupConnectionsSamlListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['group'] != null) {
-            queryParameters['group'] = requestParameters['group'];
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3740,7 +4163,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3749,29 +4172,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlListRaw(requestParameters: SourcesGroupConnectionsSamlListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGroupSAMLSourceConnectionList>> {
-        const requestOptions = await this.sourcesGroupConnectionsSamlListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsSamlListRaw(
+        requestParameters: SourcesGroupConnectionsSamlListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGroupSAMLSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsSamlListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGroupSAMLSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGroupSAMLSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlList(requestParameters: SourcesGroupConnectionsSamlListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGroupSAMLSourceConnectionList> {
-        const response = await this.sourcesGroupConnectionsSamlListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsSamlList(
+        requestParameters: SourcesGroupConnectionsSamlListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGroupSAMLSourceConnectionList> {
+        const response = await this.sourcesGroupConnectionsSamlListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsSamlPartialUpdate without sending the request
      */
-    async sourcesGroupConnectionsSamlPartialUpdateRequestOpts(requestParameters: SourcesGroupConnectionsSamlPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsSamlPartialUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsSamlPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlPartialUpdate().',
             );
         }
 
@@ -3779,7 +4216,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3791,43 +4228,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGroupSAMLSourceConnectionRequestToJSON(requestParameters['patchedGroupSAMLSourceConnectionRequest']),
+            body: PatchedGroupSAMLSourceConnectionRequestToJSON(
+                requestParameters["patchedGroupSAMLSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlPartialUpdateRaw(requestParameters: SourcesGroupConnectionsSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupSAMLSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsSamlPartialUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsSamlPartialUpdateRaw(
+        requestParameters: SourcesGroupConnectionsSamlPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupSAMLSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsSamlPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupSAMLSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupSAMLSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlPartialUpdate(requestParameters: SourcesGroupConnectionsSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupSAMLSourceConnection> {
-        const response = await this.sourcesGroupConnectionsSamlPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsSamlPartialUpdate(
+        requestParameters: SourcesGroupConnectionsSamlPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupSAMLSourceConnection> {
+        const response = await this.sourcesGroupConnectionsSamlPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsSamlRetrieve without sending the request
      */
-    async sourcesGroupConnectionsSamlRetrieveRequestOpts(requestParameters: SourcesGroupConnectionsSamlRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsSamlRetrieveRequestOpts(
+        requestParameters: SourcesGroupConnectionsSamlRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlRetrieve().',
             );
         }
 
@@ -3845,11 +4298,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3858,36 +4311,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlRetrieveRaw(requestParameters: SourcesGroupConnectionsSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupSAMLSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsSamlRetrieveRequestOpts(requestParameters);
+    async sourcesGroupConnectionsSamlRetrieveRaw(
+        requestParameters: SourcesGroupConnectionsSamlRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupSAMLSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsSamlRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupSAMLSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupSAMLSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlRetrieve(requestParameters: SourcesGroupConnectionsSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupSAMLSourceConnection> {
-        const response = await this.sourcesGroupConnectionsSamlRetrieveRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsSamlRetrieve(
+        requestParameters: SourcesGroupConnectionsSamlRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupSAMLSourceConnection> {
+        const response = await this.sourcesGroupConnectionsSamlRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsSamlUpdate without sending the request
      */
-    async sourcesGroupConnectionsSamlUpdateRequestOpts(requestParameters: SourcesGroupConnectionsSamlUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsSamlUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsSamlUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlUpdate().',
             );
         }
 
-        if (requestParameters['groupSAMLSourceConnectionRequest'] == null) {
+        if (requestParameters["groupSAMLSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupSAMLSourceConnectionRequest',
-                'Required parameter "groupSAMLSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsSamlUpdate().'
+                "groupSAMLSourceConnectionRequest",
+                'Required parameter "groupSAMLSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsSamlUpdate().',
             );
         }
 
@@ -3895,7 +4362,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3907,43 +4374,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupSAMLSourceConnectionRequestToJSON(requestParameters['groupSAMLSourceConnectionRequest']),
+            body: GroupSAMLSourceConnectionRequestToJSON(
+                requestParameters["groupSAMLSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlUpdateRaw(requestParameters: SourcesGroupConnectionsSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupSAMLSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsSamlUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsSamlUpdateRaw(
+        requestParameters: SourcesGroupConnectionsSamlUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupSAMLSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsSamlUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupSAMLSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupSAMLSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsSamlUpdate(requestParameters: SourcesGroupConnectionsSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupSAMLSourceConnection> {
-        const response = await this.sourcesGroupConnectionsSamlUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsSamlUpdate(
+        requestParameters: SourcesGroupConnectionsSamlUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupSAMLSourceConnection> {
+        const response = await this.sourcesGroupConnectionsSamlUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsSamlUsedByList without sending the request
      */
-    async sourcesGroupConnectionsSamlUsedByListRequestOpts(requestParameters: SourcesGroupConnectionsSamlUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsSamlUsedByListRequestOpts(
+        requestParameters: SourcesGroupConnectionsSamlUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsSamlUsedByList().',
             );
         }
 
@@ -3961,11 +4444,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/saml/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3974,8 +4457,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsSamlUsedByListRaw(requestParameters: SourcesGroupConnectionsSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesGroupConnectionsSamlUsedByListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsSamlUsedByListRaw(
+        requestParameters: SourcesGroupConnectionsSamlUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsSamlUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -3984,19 +4471,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsSamlUsedByList(requestParameters: SourcesGroupConnectionsSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsSamlUsedByListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsSamlUsedByList(
+        requestParameters: SourcesGroupConnectionsSamlUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesGroupConnectionsSamlUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsTelegramCreate without sending the request
      */
-    async sourcesGroupConnectionsTelegramCreateRequestOpts(requestParameters: SourcesGroupConnectionsTelegramCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['groupTelegramSourceConnectionRequest'] == null) {
+    async sourcesGroupConnectionsTelegramCreateRequestOpts(
+        requestParameters: SourcesGroupConnectionsTelegramCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["groupTelegramSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupTelegramSourceConnectionRequest',
-                'Required parameter "groupTelegramSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsTelegramCreate().'
+                "groupTelegramSourceConnectionRequest",
+                'Required parameter "groupTelegramSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsTelegramCreate().',
             );
         }
 
@@ -4004,7 +4499,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4019,39 +4514,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupTelegramSourceConnectionRequestToJSON(requestParameters['groupTelegramSourceConnectionRequest']),
+            body: GroupTelegramSourceConnectionRequestToJSON(
+                requestParameters["groupTelegramSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramCreateRaw(requestParameters: SourcesGroupConnectionsTelegramCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupTelegramSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsTelegramCreateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsTelegramCreateRaw(
+        requestParameters: SourcesGroupConnectionsTelegramCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupTelegramSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsTelegramCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupTelegramSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupTelegramSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramCreate(requestParameters: SourcesGroupConnectionsTelegramCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupTelegramSourceConnection> {
-        const response = await this.sourcesGroupConnectionsTelegramCreateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsTelegramCreate(
+        requestParameters: SourcesGroupConnectionsTelegramCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupTelegramSourceConnection> {
+        const response = await this.sourcesGroupConnectionsTelegramCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsTelegramDestroy without sending the request
      */
-    async sourcesGroupConnectionsTelegramDestroyRequestOpts(requestParameters: SourcesGroupConnectionsTelegramDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsTelegramDestroyRequestOpts(
+        requestParameters: SourcesGroupConnectionsTelegramDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramDestroy().',
             );
         }
 
@@ -4069,11 +4580,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4082,8 +4593,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramDestroyRaw(requestParameters: SourcesGroupConnectionsTelegramDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesGroupConnectionsTelegramDestroyRequestOpts(requestParameters);
+    async sourcesGroupConnectionsTelegramDestroyRaw(
+        requestParameters: SourcesGroupConnectionsTelegramDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsTelegramDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -4092,38 +4607,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramDestroy(requestParameters: SourcesGroupConnectionsTelegramDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesGroupConnectionsTelegramDestroy(
+        requestParameters: SourcesGroupConnectionsTelegramDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesGroupConnectionsTelegramDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsTelegramList without sending the request
      */
-    async sourcesGroupConnectionsTelegramListRequestOpts(requestParameters: SourcesGroupConnectionsTelegramListRequest): Promise<runtime.RequestOpts> {
+    async sourcesGroupConnectionsTelegramListRequestOpts(
+        requestParameters: SourcesGroupConnectionsTelegramListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['group'] != null) {
-            queryParameters['group'] = requestParameters['group'];
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4141,7 +4661,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4150,29 +4670,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramListRaw(requestParameters: SourcesGroupConnectionsTelegramListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGroupTelegramSourceConnectionList>> {
-        const requestOptions = await this.sourcesGroupConnectionsTelegramListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsTelegramListRaw(
+        requestParameters: SourcesGroupConnectionsTelegramListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGroupTelegramSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsTelegramListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGroupTelegramSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGroupTelegramSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramList(requestParameters: SourcesGroupConnectionsTelegramListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGroupTelegramSourceConnectionList> {
-        const response = await this.sourcesGroupConnectionsTelegramListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsTelegramList(
+        requestParameters: SourcesGroupConnectionsTelegramListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGroupTelegramSourceConnectionList> {
+        const response = await this.sourcesGroupConnectionsTelegramListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsTelegramPartialUpdate without sending the request
      */
-    async sourcesGroupConnectionsTelegramPartialUpdateRequestOpts(requestParameters: SourcesGroupConnectionsTelegramPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsTelegramPartialUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsTelegramPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramPartialUpdate().',
             );
         }
 
@@ -4180,7 +4714,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4192,43 +4726,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGroupTelegramSourceConnectionRequestToJSON(requestParameters['patchedGroupTelegramSourceConnectionRequest']),
+            body: PatchedGroupTelegramSourceConnectionRequestToJSON(
+                requestParameters["patchedGroupTelegramSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramPartialUpdateRaw(requestParameters: SourcesGroupConnectionsTelegramPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupTelegramSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsTelegramPartialUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsTelegramPartialUpdateRaw(
+        requestParameters: SourcesGroupConnectionsTelegramPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupTelegramSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsTelegramPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupTelegramSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupTelegramSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramPartialUpdate(requestParameters: SourcesGroupConnectionsTelegramPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupTelegramSourceConnection> {
-        const response = await this.sourcesGroupConnectionsTelegramPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsTelegramPartialUpdate(
+        requestParameters: SourcesGroupConnectionsTelegramPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupTelegramSourceConnection> {
+        const response = await this.sourcesGroupConnectionsTelegramPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsTelegramRetrieve without sending the request
      */
-    async sourcesGroupConnectionsTelegramRetrieveRequestOpts(requestParameters: SourcesGroupConnectionsTelegramRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsTelegramRetrieveRequestOpts(
+        requestParameters: SourcesGroupConnectionsTelegramRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramRetrieve().',
             );
         }
 
@@ -4246,11 +4796,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4259,36 +4809,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramRetrieveRaw(requestParameters: SourcesGroupConnectionsTelegramRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupTelegramSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsTelegramRetrieveRequestOpts(requestParameters);
+    async sourcesGroupConnectionsTelegramRetrieveRaw(
+        requestParameters: SourcesGroupConnectionsTelegramRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupTelegramSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsTelegramRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupTelegramSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupTelegramSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramRetrieve(requestParameters: SourcesGroupConnectionsTelegramRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupTelegramSourceConnection> {
-        const response = await this.sourcesGroupConnectionsTelegramRetrieveRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsTelegramRetrieve(
+        requestParameters: SourcesGroupConnectionsTelegramRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupTelegramSourceConnection> {
+        const response = await this.sourcesGroupConnectionsTelegramRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsTelegramUpdate without sending the request
      */
-    async sourcesGroupConnectionsTelegramUpdateRequestOpts(requestParameters: SourcesGroupConnectionsTelegramUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsTelegramUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsTelegramUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramUpdate().',
             );
         }
 
-        if (requestParameters['groupTelegramSourceConnectionRequest'] == null) {
+        if (requestParameters["groupTelegramSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'groupTelegramSourceConnectionRequest',
-                'Required parameter "groupTelegramSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsTelegramUpdate().'
+                "groupTelegramSourceConnectionRequest",
+                'Required parameter "groupTelegramSourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsTelegramUpdate().',
             );
         }
 
@@ -4296,7 +4860,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4308,43 +4872,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: GroupTelegramSourceConnectionRequestToJSON(requestParameters['groupTelegramSourceConnectionRequest']),
+            body: GroupTelegramSourceConnectionRequestToJSON(
+                requestParameters["groupTelegramSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramUpdateRaw(requestParameters: SourcesGroupConnectionsTelegramUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GroupTelegramSourceConnection>> {
-        const requestOptions = await this.sourcesGroupConnectionsTelegramUpdateRequestOpts(requestParameters);
+    async sourcesGroupConnectionsTelegramUpdateRaw(
+        requestParameters: SourcesGroupConnectionsTelegramUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupTelegramSourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsTelegramUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GroupTelegramSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupTelegramSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Group-source connection Viewset
      */
-    async sourcesGroupConnectionsTelegramUpdate(requestParameters: SourcesGroupConnectionsTelegramUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GroupTelegramSourceConnection> {
-        const response = await this.sourcesGroupConnectionsTelegramUpdateRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsTelegramUpdate(
+        requestParameters: SourcesGroupConnectionsTelegramUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupTelegramSourceConnection> {
+        const response = await this.sourcesGroupConnectionsTelegramUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesGroupConnectionsTelegramUsedByList without sending the request
      */
-    async sourcesGroupConnectionsTelegramUsedByListRequestOpts(requestParameters: SourcesGroupConnectionsTelegramUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesGroupConnectionsTelegramUsedByListRequestOpts(
+        requestParameters: SourcesGroupConnectionsTelegramUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsTelegramUsedByList().',
             );
         }
 
@@ -4362,11 +4942,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/telegram/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4375,8 +4955,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsTelegramUsedByListRaw(requestParameters: SourcesGroupConnectionsTelegramUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesGroupConnectionsTelegramUsedByListRequestOpts(requestParameters);
+    async sourcesGroupConnectionsTelegramUsedByListRaw(
+        requestParameters: SourcesGroupConnectionsTelegramUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsTelegramUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -4385,19 +4969,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesGroupConnectionsTelegramUsedByList(requestParameters: SourcesGroupConnectionsTelegramUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesGroupConnectionsTelegramUsedByListRaw(requestParameters, initOverrides);
+    async sourcesGroupConnectionsTelegramUsedByList(
+        requestParameters: SourcesGroupConnectionsTelegramUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesGroupConnectionsTelegramUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesKerberosCreate without sending the request
      */
-    async sourcesKerberosCreateRequestOpts(requestParameters: SourcesKerberosCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['kerberosSourceRequest'] == null) {
+    async sourcesKerberosCreateRequestOpts(
+        requestParameters: SourcesKerberosCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["kerberosSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'kerberosSourceRequest',
-                'Required parameter "kerberosSourceRequest" was null or undefined when calling sourcesKerberosCreate().'
+                "kerberosSourceRequest",
+                'Required parameter "kerberosSourceRequest" was null or undefined when calling sourcesKerberosCreate().',
             );
         }
 
@@ -4405,7 +4997,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4420,27 +5012,35 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: KerberosSourceRequestToJSON(requestParameters['kerberosSourceRequest']),
+            body: KerberosSourceRequestToJSON(requestParameters["kerberosSourceRequest"]),
         };
     }
 
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosCreateRaw(requestParameters: SourcesKerberosCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KerberosSource>> {
+    async sourcesKerberosCreateRaw(
+        requestParameters: SourcesKerberosCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<KerberosSource>> {
         const requestOptions = await this.sourcesKerberosCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => KerberosSourceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            KerberosSourceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosCreate(requestParameters: SourcesKerberosCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KerberosSource> {
+    async sourcesKerberosCreate(
+        requestParameters: SourcesKerberosCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<KerberosSource> {
         const response = await this.sourcesKerberosCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4448,11 +5048,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesKerberosDestroy without sending the request
      */
-    async sourcesKerberosDestroyRequestOpts(requestParameters: SourcesKerberosDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesKerberosDestroyRequestOpts(
+        requestParameters: SourcesKerberosDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesKerberosDestroy().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesKerberosDestroy().',
             );
         }
 
@@ -4470,11 +5072,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4483,7 +5088,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosDestroyRaw(requestParameters: SourcesKerberosDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async sourcesKerberosDestroyRaw(
+        requestParameters: SourcesKerberosDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.sourcesKerberosDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4493,74 +5101,80 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosDestroy(requestParameters: SourcesKerberosDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesKerberosDestroy(
+        requestParameters: SourcesKerberosDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesKerberosDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesKerberosList without sending the request
      */
-    async sourcesKerberosListRequestOpts(requestParameters: SourcesKerberosListRequest): Promise<runtime.RequestOpts> {
+    async sourcesKerberosListRequestOpts(
+        requestParameters: SourcesKerberosListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['enabled'] != null) {
-            queryParameters['enabled'] = requestParameters['enabled'];
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
         }
 
-        if (requestParameters['kadminType'] != null) {
-            queryParameters['kadmin_type'] = requestParameters['kadminType'];
+        if (requestParameters["kadminType"] != null) {
+            queryParameters["kadmin_type"] = requestParameters["kadminType"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['passwordLoginUpdateInternalPassword'] != null) {
-            queryParameters['password_login_update_internal_password'] = requestParameters['passwordLoginUpdateInternalPassword'];
+        if (requestParameters["passwordLoginUpdateInternalPassword"] != null) {
+            queryParameters["password_login_update_internal_password"] =
+                requestParameters["passwordLoginUpdateInternalPassword"];
         }
 
-        if (requestParameters['pbmUuid'] != null) {
-            queryParameters['pbm_uuid'] = requestParameters['pbmUuid'];
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
         }
 
-        if (requestParameters['realm'] != null) {
-            queryParameters['realm'] = requestParameters['realm'];
+        if (requestParameters["realm"] != null) {
+            queryParameters["realm"] = requestParameters["realm"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['slug'] != null) {
-            queryParameters['slug'] = requestParameters['slug'];
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
         }
 
-        if (requestParameters['spnegoServerName'] != null) {
-            queryParameters['spnego_server_name'] = requestParameters['spnegoServerName'];
+        if (requestParameters["spnegoServerName"] != null) {
+            queryParameters["spnego_server_name"] = requestParameters["spnegoServerName"];
         }
 
-        if (requestParameters['syncPrincipal'] != null) {
-            queryParameters['sync_principal'] = requestParameters['syncPrincipal'];
+        if (requestParameters["syncPrincipal"] != null) {
+            queryParameters["sync_principal"] = requestParameters["syncPrincipal"];
         }
 
-        if (requestParameters['syncUsers'] != null) {
-            queryParameters['sync_users'] = requestParameters['syncUsers'];
+        if (requestParameters["syncUsers"] != null) {
+            queryParameters["sync_users"] = requestParameters["syncUsers"];
         }
 
-        if (requestParameters['syncUsersPassword'] != null) {
-            queryParameters['sync_users_password'] = requestParameters['syncUsersPassword'];
+        if (requestParameters["syncUsersPassword"] != null) {
+            queryParameters["sync_users_password"] = requestParameters["syncUsersPassword"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4578,7 +5192,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4587,17 +5201,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosListRaw(requestParameters: SourcesKerberosListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedKerberosSourceList>> {
+    async sourcesKerberosListRaw(
+        requestParameters: SourcesKerberosListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedKerberosSourceList>> {
         const requestOptions = await this.sourcesKerberosListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedKerberosSourceListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedKerberosSourceListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosList(requestParameters: SourcesKerberosListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedKerberosSourceList> {
+    async sourcesKerberosList(
+        requestParameters: SourcesKerberosListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedKerberosSourceList> {
         const response = await this.sourcesKerberosListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4605,11 +5227,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesKerberosPartialUpdate without sending the request
      */
-    async sourcesKerberosPartialUpdateRequestOpts(requestParameters: SourcesKerberosPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesKerberosPartialUpdateRequestOpts(
+        requestParameters: SourcesKerberosPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesKerberosPartialUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesKerberosPartialUpdate().',
             );
         }
 
@@ -4617,7 +5241,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4629,43 +5253,62 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedKerberosSourceRequestToJSON(requestParameters['patchedKerberosSourceRequest']),
+            body: PatchedKerberosSourceRequestToJSON(
+                requestParameters["patchedKerberosSourceRequest"],
+            ),
         };
     }
 
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosPartialUpdateRaw(requestParameters: SourcesKerberosPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KerberosSource>> {
-        const requestOptions = await this.sourcesKerberosPartialUpdateRequestOpts(requestParameters);
+    async sourcesKerberosPartialUpdateRaw(
+        requestParameters: SourcesKerberosPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<KerberosSource>> {
+        const requestOptions =
+            await this.sourcesKerberosPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => KerberosSourceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            KerberosSourceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosPartialUpdate(requestParameters: SourcesKerberosPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KerberosSource> {
-        const response = await this.sourcesKerberosPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesKerberosPartialUpdate(
+        requestParameters: SourcesKerberosPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<KerberosSource> {
+        const response = await this.sourcesKerberosPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesKerberosRetrieve without sending the request
      */
-    async sourcesKerberosRetrieveRequestOpts(requestParameters: SourcesKerberosRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesKerberosRetrieveRequestOpts(
+        requestParameters: SourcesKerberosRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesKerberosRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesKerberosRetrieve().',
             );
         }
 
@@ -4683,11 +5326,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4696,17 +5342,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosRetrieveRaw(requestParameters: SourcesKerberosRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KerberosSource>> {
+    async sourcesKerberosRetrieveRaw(
+        requestParameters: SourcesKerberosRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<KerberosSource>> {
         const requestOptions = await this.sourcesKerberosRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => KerberosSourceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            KerberosSourceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosRetrieve(requestParameters: SourcesKerberosRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KerberosSource> {
+    async sourcesKerberosRetrieve(
+        requestParameters: SourcesKerberosRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<KerberosSource> {
         const response = await this.sourcesKerberosRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4714,11 +5368,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesKerberosSyncStatusRetrieve without sending the request
      */
-    async sourcesKerberosSyncStatusRetrieveRequestOpts(requestParameters: SourcesKerberosSyncStatusRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesKerberosSyncStatusRetrieveRequestOpts(
+        requestParameters: SourcesKerberosSyncStatusRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesKerberosSyncStatusRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesKerberosSyncStatusRetrieve().',
             );
         }
 
@@ -4736,11 +5392,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/sync/status/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4749,8 +5408,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync status
      */
-    async sourcesKerberosSyncStatusRetrieveRaw(requestParameters: SourcesKerberosSyncStatusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SyncStatus>> {
-        const requestOptions = await this.sourcesKerberosSyncStatusRetrieveRequestOpts(requestParameters);
+    async sourcesKerberosSyncStatusRetrieveRaw(
+        requestParameters: SourcesKerberosSyncStatusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SyncStatus>> {
+        const requestOptions =
+            await this.sourcesKerberosSyncStatusRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SyncStatusFromJSON(jsonValue));
@@ -4759,26 +5422,34 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync status
      */
-    async sourcesKerberosSyncStatusRetrieve(requestParameters: SourcesKerberosSyncStatusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SyncStatus> {
-        const response = await this.sourcesKerberosSyncStatusRetrieveRaw(requestParameters, initOverrides);
+    async sourcesKerberosSyncStatusRetrieve(
+        requestParameters: SourcesKerberosSyncStatusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SyncStatus> {
+        const response = await this.sourcesKerberosSyncStatusRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesKerberosUpdate without sending the request
      */
-    async sourcesKerberosUpdateRequestOpts(requestParameters: SourcesKerberosUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesKerberosUpdateRequestOpts(
+        requestParameters: SourcesKerberosUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesKerberosUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesKerberosUpdate().',
             );
         }
 
-        if (requestParameters['kerberosSourceRequest'] == null) {
+        if (requestParameters["kerberosSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'kerberosSourceRequest',
-                'Required parameter "kerberosSourceRequest" was null or undefined when calling sourcesKerberosUpdate().'
+                "kerberosSourceRequest",
+                'Required parameter "kerberosSourceRequest" was null or undefined when calling sourcesKerberosUpdate().',
             );
         }
 
@@ -4786,7 +5457,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4798,31 +5469,42 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: KerberosSourceRequestToJSON(requestParameters['kerberosSourceRequest']),
+            body: KerberosSourceRequestToJSON(requestParameters["kerberosSourceRequest"]),
         };
     }
 
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosUpdateRaw(requestParameters: SourcesKerberosUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KerberosSource>> {
+    async sourcesKerberosUpdateRaw(
+        requestParameters: SourcesKerberosUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<KerberosSource>> {
         const requestOptions = await this.sourcesKerberosUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => KerberosSourceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            KerberosSourceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Kerberos Source Viewset
      */
-    async sourcesKerberosUpdate(requestParameters: SourcesKerberosUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KerberosSource> {
+    async sourcesKerberosUpdate(
+        requestParameters: SourcesKerberosUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<KerberosSource> {
         const response = await this.sourcesKerberosUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4830,11 +5512,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesKerberosUsedByList without sending the request
      */
-    async sourcesKerberosUsedByListRequestOpts(requestParameters: SourcesKerberosUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesKerberosUsedByListRequestOpts(
+        requestParameters: SourcesKerberosUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesKerberosUsedByList().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesKerberosUsedByList().',
             );
         }
 
@@ -4852,11 +5536,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/used_by/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4865,7 +5552,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesKerberosUsedByListRaw(requestParameters: SourcesKerberosUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async sourcesKerberosUsedByListRaw(
+        requestParameters: SourcesKerberosUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.sourcesKerberosUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4875,7 +5565,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesKerberosUsedByList(requestParameters: SourcesKerberosUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async sourcesKerberosUsedByList(
+        requestParameters: SourcesKerberosUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.sourcesKerberosUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4883,11 +5576,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesLdapCreate without sending the request
      */
-    async sourcesLdapCreateRequestOpts(requestParameters: SourcesLdapCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['lDAPSourceRequest'] == null) {
+    async sourcesLdapCreateRequestOpts(
+        requestParameters: SourcesLdapCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["lDAPSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'lDAPSourceRequest',
-                'Required parameter "lDAPSourceRequest" was null or undefined when calling sourcesLdapCreate().'
+                "lDAPSourceRequest",
+                'Required parameter "lDAPSourceRequest" was null or undefined when calling sourcesLdapCreate().',
             );
         }
 
@@ -4895,7 +5590,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4910,17 +5605,20 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: LDAPSourceRequestToJSON(requestParameters['lDAPSourceRequest']),
+            body: LDAPSourceRequestToJSON(requestParameters["lDAPSourceRequest"]),
         };
     }
 
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapCreateRaw(requestParameters: SourcesLdapCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPSource>> {
+    async sourcesLdapCreateRaw(
+        requestParameters: SourcesLdapCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPSource>> {
         const requestOptions = await this.sourcesLdapCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4930,7 +5628,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapCreate(requestParameters: SourcesLdapCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPSource> {
+    async sourcesLdapCreate(
+        requestParameters: SourcesLdapCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPSource> {
         const response = await this.sourcesLdapCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4938,11 +5639,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesLdapDebugRetrieve without sending the request
      */
-    async sourcesLdapDebugRetrieveRequestOpts(requestParameters: SourcesLdapDebugRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesLdapDebugRetrieveRequestOpts(
+        requestParameters: SourcesLdapDebugRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesLdapDebugRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesLdapDebugRetrieve().',
             );
         }
 
@@ -4960,11 +5663,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/debug/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4973,7 +5679,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get raw LDAP data to debug
      */
-    async sourcesLdapDebugRetrieveRaw(requestParameters: SourcesLdapDebugRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPDebug>> {
+    async sourcesLdapDebugRetrieveRaw(
+        requestParameters: SourcesLdapDebugRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPDebug>> {
         const requestOptions = await this.sourcesLdapDebugRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4983,7 +5692,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get raw LDAP data to debug
      */
-    async sourcesLdapDebugRetrieve(requestParameters: SourcesLdapDebugRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPDebug> {
+    async sourcesLdapDebugRetrieve(
+        requestParameters: SourcesLdapDebugRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPDebug> {
         const response = await this.sourcesLdapDebugRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4991,11 +5703,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesLdapDestroy without sending the request
      */
-    async sourcesLdapDestroyRequestOpts(requestParameters: SourcesLdapDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesLdapDestroyRequestOpts(
+        requestParameters: SourcesLdapDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesLdapDestroy().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesLdapDestroy().',
             );
         }
 
@@ -5013,11 +5727,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5026,7 +5743,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapDestroyRaw(requestParameters: SourcesLdapDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async sourcesLdapDestroyRaw(
+        requestParameters: SourcesLdapDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.sourcesLdapDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5036,138 +5756,146 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapDestroy(requestParameters: SourcesLdapDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesLdapDestroy(
+        requestParameters: SourcesLdapDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesLdapDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesLdapList without sending the request
      */
-    async sourcesLdapListRequestOpts(requestParameters: SourcesLdapListRequest): Promise<runtime.RequestOpts> {
+    async sourcesLdapListRequestOpts(
+        requestParameters: SourcesLdapListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['additionalGroupDn'] != null) {
-            queryParameters['additional_group_dn'] = requestParameters['additionalGroupDn'];
+        if (requestParameters["additionalGroupDn"] != null) {
+            queryParameters["additional_group_dn"] = requestParameters["additionalGroupDn"];
         }
 
-        if (requestParameters['additionalUserDn'] != null) {
-            queryParameters['additional_user_dn'] = requestParameters['additionalUserDn'];
+        if (requestParameters["additionalUserDn"] != null) {
+            queryParameters["additional_user_dn"] = requestParameters["additionalUserDn"];
         }
 
-        if (requestParameters['baseDn'] != null) {
-            queryParameters['base_dn'] = requestParameters['baseDn'];
+        if (requestParameters["baseDn"] != null) {
+            queryParameters["base_dn"] = requestParameters["baseDn"];
         }
 
-        if (requestParameters['bindCn'] != null) {
-            queryParameters['bind_cn'] = requestParameters['bindCn'];
+        if (requestParameters["bindCn"] != null) {
+            queryParameters["bind_cn"] = requestParameters["bindCn"];
         }
 
-        if (requestParameters['clientCertificate'] != null) {
-            queryParameters['client_certificate'] = requestParameters['clientCertificate'];
+        if (requestParameters["clientCertificate"] != null) {
+            queryParameters["client_certificate"] = requestParameters["clientCertificate"];
         }
 
-        if (requestParameters['deleteNotFoundObjects'] != null) {
-            queryParameters['delete_not_found_objects'] = requestParameters['deleteNotFoundObjects'];
+        if (requestParameters["deleteNotFoundObjects"] != null) {
+            queryParameters["delete_not_found_objects"] =
+                requestParameters["deleteNotFoundObjects"];
         }
 
-        if (requestParameters['enabled'] != null) {
-            queryParameters['enabled'] = requestParameters['enabled'];
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
         }
 
-        if (requestParameters['groupMembershipField'] != null) {
-            queryParameters['group_membership_field'] = requestParameters['groupMembershipField'];
+        if (requestParameters["groupMembershipField"] != null) {
+            queryParameters["group_membership_field"] = requestParameters["groupMembershipField"];
         }
 
-        if (requestParameters['groupObjectFilter'] != null) {
-            queryParameters['group_object_filter'] = requestParameters['groupObjectFilter'];
+        if (requestParameters["groupObjectFilter"] != null) {
+            queryParameters["group_object_filter"] = requestParameters["groupObjectFilter"];
         }
 
-        if (requestParameters['groupPropertyMappings'] != null) {
-            queryParameters['group_property_mappings'] = requestParameters['groupPropertyMappings'];
+        if (requestParameters["groupPropertyMappings"] != null) {
+            queryParameters["group_property_mappings"] = requestParameters["groupPropertyMappings"];
         }
 
-        if (requestParameters['lookupGroupsFromUser'] != null) {
-            queryParameters['lookup_groups_from_user'] = requestParameters['lookupGroupsFromUser'];
+        if (requestParameters["lookupGroupsFromUser"] != null) {
+            queryParameters["lookup_groups_from_user"] = requestParameters["lookupGroupsFromUser"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['objectUniquenessField'] != null) {
-            queryParameters['object_uniqueness_field'] = requestParameters['objectUniquenessField'];
+        if (requestParameters["objectUniquenessField"] != null) {
+            queryParameters["object_uniqueness_field"] = requestParameters["objectUniquenessField"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['passwordLoginUpdateInternalPassword'] != null) {
-            queryParameters['password_login_update_internal_password'] = requestParameters['passwordLoginUpdateInternalPassword'];
+        if (requestParameters["passwordLoginUpdateInternalPassword"] != null) {
+            queryParameters["password_login_update_internal_password"] =
+                requestParameters["passwordLoginUpdateInternalPassword"];
         }
 
-        if (requestParameters['pbmUuid'] != null) {
-            queryParameters['pbm_uuid'] = requestParameters['pbmUuid'];
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
         }
 
-        if (requestParameters['peerCertificate'] != null) {
-            queryParameters['peer_certificate'] = requestParameters['peerCertificate'];
+        if (requestParameters["peerCertificate"] != null) {
+            queryParameters["peer_certificate"] = requestParameters["peerCertificate"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['serverUri'] != null) {
-            queryParameters['server_uri'] = requestParameters['serverUri'];
+        if (requestParameters["serverUri"] != null) {
+            queryParameters["server_uri"] = requestParameters["serverUri"];
         }
 
-        if (requestParameters['slug'] != null) {
-            queryParameters['slug'] = requestParameters['slug'];
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
         }
 
-        if (requestParameters['sni'] != null) {
-            queryParameters['sni'] = requestParameters['sni'];
+        if (requestParameters["sni"] != null) {
+            queryParameters["sni"] = requestParameters["sni"];
         }
 
-        if (requestParameters['startTls'] != null) {
-            queryParameters['start_tls'] = requestParameters['startTls'];
+        if (requestParameters["startTls"] != null) {
+            queryParameters["start_tls"] = requestParameters["startTls"];
         }
 
-        if (requestParameters['syncGroups'] != null) {
-            queryParameters['sync_groups'] = requestParameters['syncGroups'];
+        if (requestParameters["syncGroups"] != null) {
+            queryParameters["sync_groups"] = requestParameters["syncGroups"];
         }
 
-        if (requestParameters['syncParentGroup'] != null) {
-            queryParameters['sync_parent_group'] = requestParameters['syncParentGroup'];
+        if (requestParameters["syncParentGroup"] != null) {
+            queryParameters["sync_parent_group"] = requestParameters["syncParentGroup"];
         }
 
-        if (requestParameters['syncUsers'] != null) {
-            queryParameters['sync_users'] = requestParameters['syncUsers'];
+        if (requestParameters["syncUsers"] != null) {
+            queryParameters["sync_users"] = requestParameters["syncUsers"];
         }
 
-        if (requestParameters['syncUsersPassword'] != null) {
-            queryParameters['sync_users_password'] = requestParameters['syncUsersPassword'];
+        if (requestParameters["syncUsersPassword"] != null) {
+            queryParameters["sync_users_password"] = requestParameters["syncUsersPassword"];
         }
 
-        if (requestParameters['userMembershipAttribute'] != null) {
-            queryParameters['user_membership_attribute'] = requestParameters['userMembershipAttribute'];
+        if (requestParameters["userMembershipAttribute"] != null) {
+            queryParameters["user_membership_attribute"] =
+                requestParameters["userMembershipAttribute"];
         }
 
-        if (requestParameters['userObjectFilter'] != null) {
-            queryParameters['user_object_filter'] = requestParameters['userObjectFilter'];
+        if (requestParameters["userObjectFilter"] != null) {
+            queryParameters["user_object_filter"] = requestParameters["userObjectFilter"];
         }
 
-        if (requestParameters['userPropertyMappings'] != null) {
-            queryParameters['user_property_mappings'] = requestParameters['userPropertyMappings'];
+        if (requestParameters["userPropertyMappings"] != null) {
+            queryParameters["user_property_mappings"] = requestParameters["userPropertyMappings"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5185,7 +5913,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5194,17 +5922,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapListRaw(requestParameters: SourcesLdapListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedLDAPSourceList>> {
+    async sourcesLdapListRaw(
+        requestParameters: SourcesLdapListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedLDAPSourceList>> {
         const requestOptions = await this.sourcesLdapListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedLDAPSourceListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedLDAPSourceListFromJSON(jsonValue),
+        );
     }
 
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapList(requestParameters: SourcesLdapListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedLDAPSourceList> {
+    async sourcesLdapList(
+        requestParameters: SourcesLdapListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedLDAPSourceList> {
         const response = await this.sourcesLdapListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5212,11 +5948,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesLdapPartialUpdate without sending the request
      */
-    async sourcesLdapPartialUpdateRequestOpts(requestParameters: SourcesLdapPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesLdapPartialUpdateRequestOpts(
+        requestParameters: SourcesLdapPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesLdapPartialUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesLdapPartialUpdate().',
             );
         }
 
@@ -5224,7 +5962,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5236,21 +5974,27 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedLDAPSourceRequestToJSON(requestParameters['patchedLDAPSourceRequest']),
+            body: PatchedLDAPSourceRequestToJSON(requestParameters["patchedLDAPSourceRequest"]),
         };
     }
 
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapPartialUpdateRaw(requestParameters: SourcesLdapPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPSource>> {
+    async sourcesLdapPartialUpdateRaw(
+        requestParameters: SourcesLdapPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPSource>> {
         const requestOptions = await this.sourcesLdapPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5260,7 +6004,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapPartialUpdate(requestParameters: SourcesLdapPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPSource> {
+    async sourcesLdapPartialUpdate(
+        requestParameters: SourcesLdapPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPSource> {
         const response = await this.sourcesLdapPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5268,11 +6015,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesLdapRetrieve without sending the request
      */
-    async sourcesLdapRetrieveRequestOpts(requestParameters: SourcesLdapRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesLdapRetrieveRequestOpts(
+        requestParameters: SourcesLdapRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesLdapRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesLdapRetrieve().',
             );
         }
 
@@ -5290,11 +6039,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5303,7 +6055,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapRetrieveRaw(requestParameters: SourcesLdapRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPSource>> {
+    async sourcesLdapRetrieveRaw(
+        requestParameters: SourcesLdapRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPSource>> {
         const requestOptions = await this.sourcesLdapRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5313,7 +6068,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapRetrieve(requestParameters: SourcesLdapRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPSource> {
+    async sourcesLdapRetrieve(
+        requestParameters: SourcesLdapRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPSource> {
         const response = await this.sourcesLdapRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5321,11 +6079,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesLdapSyncStatusRetrieve without sending the request
      */
-    async sourcesLdapSyncStatusRetrieveRequestOpts(requestParameters: SourcesLdapSyncStatusRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesLdapSyncStatusRetrieveRequestOpts(
+        requestParameters: SourcesLdapSyncStatusRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesLdapSyncStatusRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesLdapSyncStatusRetrieve().',
             );
         }
 
@@ -5343,11 +6103,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/sync/status/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5356,8 +6119,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync status
      */
-    async sourcesLdapSyncStatusRetrieveRaw(requestParameters: SourcesLdapSyncStatusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SyncStatus>> {
-        const requestOptions = await this.sourcesLdapSyncStatusRetrieveRequestOpts(requestParameters);
+    async sourcesLdapSyncStatusRetrieveRaw(
+        requestParameters: SourcesLdapSyncStatusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SyncStatus>> {
+        const requestOptions =
+            await this.sourcesLdapSyncStatusRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SyncStatusFromJSON(jsonValue));
@@ -5366,26 +6133,34 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync status
      */
-    async sourcesLdapSyncStatusRetrieve(requestParameters: SourcesLdapSyncStatusRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SyncStatus> {
-        const response = await this.sourcesLdapSyncStatusRetrieveRaw(requestParameters, initOverrides);
+    async sourcesLdapSyncStatusRetrieve(
+        requestParameters: SourcesLdapSyncStatusRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SyncStatus> {
+        const response = await this.sourcesLdapSyncStatusRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesLdapUpdate without sending the request
      */
-    async sourcesLdapUpdateRequestOpts(requestParameters: SourcesLdapUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesLdapUpdateRequestOpts(
+        requestParameters: SourcesLdapUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesLdapUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesLdapUpdate().',
             );
         }
 
-        if (requestParameters['lDAPSourceRequest'] == null) {
+        if (requestParameters["lDAPSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'lDAPSourceRequest',
-                'Required parameter "lDAPSourceRequest" was null or undefined when calling sourcesLdapUpdate().'
+                "lDAPSourceRequest",
+                'Required parameter "lDAPSourceRequest" was null or undefined when calling sourcesLdapUpdate().',
             );
         }
 
@@ -5393,7 +6168,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5405,21 +6180,27 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: LDAPSourceRequestToJSON(requestParameters['lDAPSourceRequest']),
+            body: LDAPSourceRequestToJSON(requestParameters["lDAPSourceRequest"]),
         };
     }
 
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapUpdateRaw(requestParameters: SourcesLdapUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPSource>> {
+    async sourcesLdapUpdateRaw(
+        requestParameters: SourcesLdapUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPSource>> {
         const requestOptions = await this.sourcesLdapUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5429,7 +6210,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * LDAP Source Viewset
      */
-    async sourcesLdapUpdate(requestParameters: SourcesLdapUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPSource> {
+    async sourcesLdapUpdate(
+        requestParameters: SourcesLdapUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPSource> {
         const response = await this.sourcesLdapUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5437,11 +6221,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesLdapUsedByList without sending the request
      */
-    async sourcesLdapUsedByListRequestOpts(requestParameters: SourcesLdapUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesLdapUsedByListRequestOpts(
+        requestParameters: SourcesLdapUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesLdapUsedByList().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesLdapUsedByList().',
             );
         }
 
@@ -5459,11 +6245,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/used_by/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5472,7 +6261,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesLdapUsedByListRaw(requestParameters: SourcesLdapUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async sourcesLdapUsedByListRaw(
+        requestParameters: SourcesLdapUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.sourcesLdapUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5482,7 +6274,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesLdapUsedByList(requestParameters: SourcesLdapUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async sourcesLdapUsedByList(
+        requestParameters: SourcesLdapUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.sourcesLdapUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5490,11 +6285,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesOauthCreate without sending the request
      */
-    async sourcesOauthCreateRequestOpts(requestParameters: SourcesOauthCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['oAuthSourceRequest'] == null) {
+    async sourcesOauthCreateRequestOpts(
+        requestParameters: SourcesOauthCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["oAuthSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'oAuthSourceRequest',
-                'Required parameter "oAuthSourceRequest" was null or undefined when calling sourcesOauthCreate().'
+                "oAuthSourceRequest",
+                'Required parameter "oAuthSourceRequest" was null or undefined when calling sourcesOauthCreate().',
             );
         }
 
@@ -5502,7 +6299,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5517,17 +6314,20 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: OAuthSourceRequestToJSON(requestParameters['oAuthSourceRequest']),
+            body: OAuthSourceRequestToJSON(requestParameters["oAuthSourceRequest"]),
         };
     }
 
     /**
      * Source Viewset
      */
-    async sourcesOauthCreateRaw(requestParameters: SourcesOauthCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuthSource>> {
+    async sourcesOauthCreateRaw(
+        requestParameters: SourcesOauthCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuthSource>> {
         const requestOptions = await this.sourcesOauthCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5537,7 +6337,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesOauthCreate(requestParameters: SourcesOauthCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuthSource> {
+    async sourcesOauthCreate(
+        requestParameters: SourcesOauthCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuthSource> {
         const response = await this.sourcesOauthCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5545,11 +6348,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesOauthDestroy without sending the request
      */
-    async sourcesOauthDestroyRequestOpts(requestParameters: SourcesOauthDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesOauthDestroyRequestOpts(
+        requestParameters: SourcesOauthDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesOauthDestroy().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesOauthDestroy().',
             );
         }
 
@@ -5567,11 +6372,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/oauth/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5580,7 +6388,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesOauthDestroyRaw(requestParameters: SourcesOauthDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async sourcesOauthDestroyRaw(
+        requestParameters: SourcesOauthDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.sourcesOauthDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5590,98 +6401,103 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesOauthDestroy(requestParameters: SourcesOauthDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesOauthDestroy(
+        requestParameters: SourcesOauthDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesOauthDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesOauthList without sending the request
      */
-    async sourcesOauthListRequestOpts(requestParameters: SourcesOauthListRequest): Promise<runtime.RequestOpts> {
+    async sourcesOauthListRequestOpts(
+        requestParameters: SourcesOauthListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['accessTokenUrl'] != null) {
-            queryParameters['access_token_url'] = requestParameters['accessTokenUrl'];
+        if (requestParameters["accessTokenUrl"] != null) {
+            queryParameters["access_token_url"] = requestParameters["accessTokenUrl"];
         }
 
-        if (requestParameters['additionalScopes'] != null) {
-            queryParameters['additional_scopes'] = requestParameters['additionalScopes'];
+        if (requestParameters["additionalScopes"] != null) {
+            queryParameters["additional_scopes"] = requestParameters["additionalScopes"];
         }
 
-        if (requestParameters['authenticationFlow'] != null) {
-            queryParameters['authentication_flow'] = requestParameters['authenticationFlow'];
+        if (requestParameters["authenticationFlow"] != null) {
+            queryParameters["authentication_flow"] = requestParameters["authenticationFlow"];
         }
 
-        if (requestParameters['authorizationUrl'] != null) {
-            queryParameters['authorization_url'] = requestParameters['authorizationUrl'];
+        if (requestParameters["authorizationUrl"] != null) {
+            queryParameters["authorization_url"] = requestParameters["authorizationUrl"];
         }
 
-        if (requestParameters['consumerKey'] != null) {
-            queryParameters['consumer_key'] = requestParameters['consumerKey'];
+        if (requestParameters["consumerKey"] != null) {
+            queryParameters["consumer_key"] = requestParameters["consumerKey"];
         }
 
-        if (requestParameters['enabled'] != null) {
-            queryParameters['enabled'] = requestParameters['enabled'];
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
         }
 
-        if (requestParameters['enrollmentFlow'] != null) {
-            queryParameters['enrollment_flow'] = requestParameters['enrollmentFlow'];
+        if (requestParameters["enrollmentFlow"] != null) {
+            queryParameters["enrollment_flow"] = requestParameters["enrollmentFlow"];
         }
 
-        if (requestParameters['groupMatchingMode'] != null) {
-            queryParameters['group_matching_mode'] = requestParameters['groupMatchingMode'];
+        if (requestParameters["groupMatchingMode"] != null) {
+            queryParameters["group_matching_mode"] = requestParameters["groupMatchingMode"];
         }
 
-        if (requestParameters['hasJwks'] != null) {
-            queryParameters['has_jwks'] = requestParameters['hasJwks'];
+        if (requestParameters["hasJwks"] != null) {
+            queryParameters["has_jwks"] = requestParameters["hasJwks"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['pbmUuid'] != null) {
-            queryParameters['pbm_uuid'] = requestParameters['pbmUuid'];
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
         }
 
-        if (requestParameters['policyEngineMode'] != null) {
-            queryParameters['policy_engine_mode'] = requestParameters['policyEngineMode'];
+        if (requestParameters["policyEngineMode"] != null) {
+            queryParameters["policy_engine_mode"] = requestParameters["policyEngineMode"];
         }
 
-        if (requestParameters['profileUrl'] != null) {
-            queryParameters['profile_url'] = requestParameters['profileUrl'];
+        if (requestParameters["profileUrl"] != null) {
+            queryParameters["profile_url"] = requestParameters["profileUrl"];
         }
 
-        if (requestParameters['providerType'] != null) {
-            queryParameters['provider_type'] = requestParameters['providerType'];
+        if (requestParameters["providerType"] != null) {
+            queryParameters["provider_type"] = requestParameters["providerType"];
         }
 
-        if (requestParameters['requestTokenUrl'] != null) {
-            queryParameters['request_token_url'] = requestParameters['requestTokenUrl'];
+        if (requestParameters["requestTokenUrl"] != null) {
+            queryParameters["request_token_url"] = requestParameters["requestTokenUrl"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['slug'] != null) {
-            queryParameters['slug'] = requestParameters['slug'];
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
         }
 
-        if (requestParameters['userMatchingMode'] != null) {
-            queryParameters['user_matching_mode'] = requestParameters['userMatchingMode'];
+        if (requestParameters["userMatchingMode"] != null) {
+            queryParameters["user_matching_mode"] = requestParameters["userMatchingMode"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5699,7 +6515,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5708,17 +6524,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesOauthListRaw(requestParameters: SourcesOauthListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedOAuthSourceList>> {
+    async sourcesOauthListRaw(
+        requestParameters: SourcesOauthListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedOAuthSourceList>> {
         const requestOptions = await this.sourcesOauthListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedOAuthSourceListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedOAuthSourceListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Source Viewset
      */
-    async sourcesOauthList(requestParameters: SourcesOauthListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedOAuthSourceList> {
+    async sourcesOauthList(
+        requestParameters: SourcesOauthListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedOAuthSourceList> {
         const response = await this.sourcesOauthListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5726,11 +6550,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesOauthPartialUpdate without sending the request
      */
-    async sourcesOauthPartialUpdateRequestOpts(requestParameters: SourcesOauthPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesOauthPartialUpdateRequestOpts(
+        requestParameters: SourcesOauthPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesOauthPartialUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesOauthPartialUpdate().',
             );
         }
 
@@ -5738,7 +6564,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5750,21 +6576,27 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/oauth/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedOAuthSourceRequestToJSON(requestParameters['patchedOAuthSourceRequest']),
+            body: PatchedOAuthSourceRequestToJSON(requestParameters["patchedOAuthSourceRequest"]),
         };
     }
 
     /**
      * Source Viewset
      */
-    async sourcesOauthPartialUpdateRaw(requestParameters: SourcesOauthPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuthSource>> {
+    async sourcesOauthPartialUpdateRaw(
+        requestParameters: SourcesOauthPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuthSource>> {
         const requestOptions = await this.sourcesOauthPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5774,7 +6606,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesOauthPartialUpdate(requestParameters: SourcesOauthPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuthSource> {
+    async sourcesOauthPartialUpdate(
+        requestParameters: SourcesOauthPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuthSource> {
         const response = await this.sourcesOauthPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5782,11 +6617,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesOauthRetrieve without sending the request
      */
-    async sourcesOauthRetrieveRequestOpts(requestParameters: SourcesOauthRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesOauthRetrieveRequestOpts(
+        requestParameters: SourcesOauthRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesOauthRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesOauthRetrieve().',
             );
         }
 
@@ -5804,11 +6641,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/oauth/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5817,7 +6657,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesOauthRetrieveRaw(requestParameters: SourcesOauthRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuthSource>> {
+    async sourcesOauthRetrieveRaw(
+        requestParameters: SourcesOauthRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuthSource>> {
         const requestOptions = await this.sourcesOauthRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5827,7 +6670,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesOauthRetrieve(requestParameters: SourcesOauthRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuthSource> {
+    async sourcesOauthRetrieve(
+        requestParameters: SourcesOauthRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuthSource> {
         const response = await this.sourcesOauthRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5835,11 +6681,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesOauthSourceTypesList without sending the request
      */
-    async sourcesOauthSourceTypesListRequestOpts(requestParameters: SourcesOauthSourceTypesListRequest): Promise<runtime.RequestOpts> {
+    async sourcesOauthSourceTypesListRequestOpts(
+        requestParameters: SourcesOauthSourceTypesListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5857,7 +6705,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5866,36 +6714,49 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get all creatable source types. If ?name is set, only returns the type for <name>. If <name> isn\'t found, returns the default type.
      */
-    async sourcesOauthSourceTypesListRaw(requestParameters: SourcesOauthSourceTypesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<SourceType>>> {
+    async sourcesOauthSourceTypesListRaw(
+        requestParameters: SourcesOauthSourceTypesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<SourceType>>> {
         const requestOptions = await this.sourcesOauthSourceTypesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(SourceTypeFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(SourceTypeFromJSON),
+        );
     }
 
     /**
      * Get all creatable source types. If ?name is set, only returns the type for <name>. If <name> isn\'t found, returns the default type.
      */
-    async sourcesOauthSourceTypesList(requestParameters: SourcesOauthSourceTypesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<SourceType>> {
-        const response = await this.sourcesOauthSourceTypesListRaw(requestParameters, initOverrides);
+    async sourcesOauthSourceTypesList(
+        requestParameters: SourcesOauthSourceTypesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<SourceType>> {
+        const response = await this.sourcesOauthSourceTypesListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesOauthUpdate without sending the request
      */
-    async sourcesOauthUpdateRequestOpts(requestParameters: SourcesOauthUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesOauthUpdateRequestOpts(
+        requestParameters: SourcesOauthUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesOauthUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesOauthUpdate().',
             );
         }
 
-        if (requestParameters['oAuthSourceRequest'] == null) {
+        if (requestParameters["oAuthSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'oAuthSourceRequest',
-                'Required parameter "oAuthSourceRequest" was null or undefined when calling sourcesOauthUpdate().'
+                "oAuthSourceRequest",
+                'Required parameter "oAuthSourceRequest" was null or undefined when calling sourcesOauthUpdate().',
             );
         }
 
@@ -5903,7 +6764,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5915,21 +6776,27 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/oauth/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: OAuthSourceRequestToJSON(requestParameters['oAuthSourceRequest']),
+            body: OAuthSourceRequestToJSON(requestParameters["oAuthSourceRequest"]),
         };
     }
 
     /**
      * Source Viewset
      */
-    async sourcesOauthUpdateRaw(requestParameters: SourcesOauthUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OAuthSource>> {
+    async sourcesOauthUpdateRaw(
+        requestParameters: SourcesOauthUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OAuthSource>> {
         const requestOptions = await this.sourcesOauthUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5939,7 +6806,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async sourcesOauthUpdate(requestParameters: SourcesOauthUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OAuthSource> {
+    async sourcesOauthUpdate(
+        requestParameters: SourcesOauthUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OAuthSource> {
         const response = await this.sourcesOauthUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5947,11 +6817,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesOauthUsedByList without sending the request
      */
-    async sourcesOauthUsedByListRequestOpts(requestParameters: SourcesOauthUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesOauthUsedByListRequestOpts(
+        requestParameters: SourcesOauthUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesOauthUsedByList().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesOauthUsedByList().',
             );
         }
 
@@ -5969,11 +6841,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/oauth/{slug}/used_by/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5982,7 +6857,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesOauthUsedByListRaw(requestParameters: SourcesOauthUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async sourcesOauthUsedByListRaw(
+        requestParameters: SourcesOauthUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.sourcesOauthUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5992,7 +6870,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesOauthUsedByList(requestParameters: SourcesOauthUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async sourcesOauthUsedByList(
+        requestParameters: SourcesOauthUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.sourcesOauthUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6000,11 +6881,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesPlexCreate without sending the request
      */
-    async sourcesPlexCreateRequestOpts(requestParameters: SourcesPlexCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['plexSourceRequest'] == null) {
+    async sourcesPlexCreateRequestOpts(
+        requestParameters: SourcesPlexCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["plexSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'plexSourceRequest',
-                'Required parameter "plexSourceRequest" was null or undefined when calling sourcesPlexCreate().'
+                "plexSourceRequest",
+                'Required parameter "plexSourceRequest" was null or undefined when calling sourcesPlexCreate().',
             );
         }
 
@@ -6012,7 +6895,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6027,17 +6910,20 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PlexSourceRequestToJSON(requestParameters['plexSourceRequest']),
+            body: PlexSourceRequestToJSON(requestParameters["plexSourceRequest"]),
         };
     }
 
     /**
      * Plex source Viewset
      */
-    async sourcesPlexCreateRaw(requestParameters: SourcesPlexCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PlexSource>> {
+    async sourcesPlexCreateRaw(
+        requestParameters: SourcesPlexCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PlexSource>> {
         const requestOptions = await this.sourcesPlexCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6047,7 +6933,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Plex source Viewset
      */
-    async sourcesPlexCreate(requestParameters: SourcesPlexCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PlexSource> {
+    async sourcesPlexCreate(
+        requestParameters: SourcesPlexCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PlexSource> {
         const response = await this.sourcesPlexCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6055,11 +6944,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesPlexDestroy without sending the request
      */
-    async sourcesPlexDestroyRequestOpts(requestParameters: SourcesPlexDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesPlexDestroyRequestOpts(
+        requestParameters: SourcesPlexDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesPlexDestroy().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesPlexDestroy().',
             );
         }
 
@@ -6077,11 +6968,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/plex/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6090,7 +6984,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Plex source Viewset
      */
-    async sourcesPlexDestroyRaw(requestParameters: SourcesPlexDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async sourcesPlexDestroyRaw(
+        requestParameters: SourcesPlexDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.sourcesPlexDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6100,74 +6997,79 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Plex source Viewset
      */
-    async sourcesPlexDestroy(requestParameters: SourcesPlexDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesPlexDestroy(
+        requestParameters: SourcesPlexDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesPlexDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesPlexList without sending the request
      */
-    async sourcesPlexListRequestOpts(requestParameters: SourcesPlexListRequest): Promise<runtime.RequestOpts> {
+    async sourcesPlexListRequestOpts(
+        requestParameters: SourcesPlexListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['allowFriends'] != null) {
-            queryParameters['allow_friends'] = requestParameters['allowFriends'];
+        if (requestParameters["allowFriends"] != null) {
+            queryParameters["allow_friends"] = requestParameters["allowFriends"];
         }
 
-        if (requestParameters['authenticationFlow'] != null) {
-            queryParameters['authentication_flow'] = requestParameters['authenticationFlow'];
+        if (requestParameters["authenticationFlow"] != null) {
+            queryParameters["authentication_flow"] = requestParameters["authenticationFlow"];
         }
 
-        if (requestParameters['clientId'] != null) {
-            queryParameters['client_id'] = requestParameters['clientId'];
+        if (requestParameters["clientId"] != null) {
+            queryParameters["client_id"] = requestParameters["clientId"];
         }
 
-        if (requestParameters['enabled'] != null) {
-            queryParameters['enabled'] = requestParameters['enabled'];
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
         }
 
-        if (requestParameters['enrollmentFlow'] != null) {
-            queryParameters['enrollment_flow'] = requestParameters['enrollmentFlow'];
+        if (requestParameters["enrollmentFlow"] != null) {
+            queryParameters["enrollment_flow"] = requestParameters["enrollmentFlow"];
         }
 
-        if (requestParameters['groupMatchingMode'] != null) {
-            queryParameters['group_matching_mode'] = requestParameters['groupMatchingMode'];
+        if (requestParameters["groupMatchingMode"] != null) {
+            queryParameters["group_matching_mode"] = requestParameters["groupMatchingMode"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['pbmUuid'] != null) {
-            queryParameters['pbm_uuid'] = requestParameters['pbmUuid'];
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
         }
 
-        if (requestParameters['policyEngineMode'] != null) {
-            queryParameters['policy_engine_mode'] = requestParameters['policyEngineMode'];
+        if (requestParameters["policyEngineMode"] != null) {
+            queryParameters["policy_engine_mode"] = requestParameters["policyEngineMode"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['slug'] != null) {
-            queryParameters['slug'] = requestParameters['slug'];
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
         }
 
-        if (requestParameters['userMatchingMode'] != null) {
-            queryParameters['user_matching_mode'] = requestParameters['userMatchingMode'];
+        if (requestParameters["userMatchingMode"] != null) {
+            queryParameters["user_matching_mode"] = requestParameters["userMatchingMode"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6185,7 +7087,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6194,17 +7096,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Plex source Viewset
      */
-    async sourcesPlexListRaw(requestParameters: SourcesPlexListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPlexSourceList>> {
+    async sourcesPlexListRaw(
+        requestParameters: SourcesPlexListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPlexSourceList>> {
         const requestOptions = await this.sourcesPlexListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPlexSourceListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPlexSourceListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Plex source Viewset
      */
-    async sourcesPlexList(requestParameters: SourcesPlexListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPlexSourceList> {
+    async sourcesPlexList(
+        requestParameters: SourcesPlexListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPlexSourceList> {
         const response = await this.sourcesPlexListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6212,11 +7122,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesPlexPartialUpdate without sending the request
      */
-    async sourcesPlexPartialUpdateRequestOpts(requestParameters: SourcesPlexPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesPlexPartialUpdateRequestOpts(
+        requestParameters: SourcesPlexPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesPlexPartialUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesPlexPartialUpdate().',
             );
         }
 
@@ -6224,7 +7136,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6236,21 +7148,27 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/plex/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedPlexSourceRequestToJSON(requestParameters['patchedPlexSourceRequest']),
+            body: PatchedPlexSourceRequestToJSON(requestParameters["patchedPlexSourceRequest"]),
         };
     }
 
     /**
      * Plex source Viewset
      */
-    async sourcesPlexPartialUpdateRaw(requestParameters: SourcesPlexPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PlexSource>> {
+    async sourcesPlexPartialUpdateRaw(
+        requestParameters: SourcesPlexPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PlexSource>> {
         const requestOptions = await this.sourcesPlexPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6260,7 +7178,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Plex source Viewset
      */
-    async sourcesPlexPartialUpdate(requestParameters: SourcesPlexPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PlexSource> {
+    async sourcesPlexPartialUpdate(
+        requestParameters: SourcesPlexPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PlexSource> {
         const response = await this.sourcesPlexPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6268,23 +7189,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesPlexRedeemTokenAuthenticatedCreate without sending the request
      */
-    async sourcesPlexRedeemTokenAuthenticatedCreateRequestOpts(requestParameters: SourcesPlexRedeemTokenAuthenticatedCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['plexTokenRedeemRequest'] == null) {
+    async sourcesPlexRedeemTokenAuthenticatedCreateRequestOpts(
+        requestParameters: SourcesPlexRedeemTokenAuthenticatedCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["plexTokenRedeemRequest"] == null) {
             throw new runtime.RequiredError(
-                'plexTokenRedeemRequest',
-                'Required parameter "plexTokenRedeemRequest" was null or undefined when calling sourcesPlexRedeemTokenAuthenticatedCreate().'
+                "plexTokenRedeemRequest",
+                'Required parameter "plexTokenRedeemRequest" was null or undefined when calling sourcesPlexRedeemTokenAuthenticatedCreate().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['slug'] != null) {
-            queryParameters['slug'] = requestParameters['slug'];
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6299,18 +7222,22 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PlexTokenRedeemRequestToJSON(requestParameters['plexTokenRedeemRequest']),
+            body: PlexTokenRedeemRequestToJSON(requestParameters["plexTokenRedeemRequest"]),
         };
     }
 
     /**
      * Redeem a plex token for an authenticated user, creating a connection
      */
-    async sourcesPlexRedeemTokenAuthenticatedCreateRaw(requestParameters: SourcesPlexRedeemTokenAuthenticatedCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesPlexRedeemTokenAuthenticatedCreateRequestOpts(requestParameters);
+    async sourcesPlexRedeemTokenAuthenticatedCreateRaw(
+        requestParameters: SourcesPlexRedeemTokenAuthenticatedCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesPlexRedeemTokenAuthenticatedCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -6319,30 +7246,35 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Redeem a plex token for an authenticated user, creating a connection
      */
-    async sourcesPlexRedeemTokenAuthenticatedCreate(requestParameters: SourcesPlexRedeemTokenAuthenticatedCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesPlexRedeemTokenAuthenticatedCreate(
+        requestParameters: SourcesPlexRedeemTokenAuthenticatedCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesPlexRedeemTokenAuthenticatedCreateRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesPlexRedeemTokenCreate without sending the request
      */
-    async sourcesPlexRedeemTokenCreateRequestOpts(requestParameters: SourcesPlexRedeemTokenCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['plexTokenRedeemRequest'] == null) {
+    async sourcesPlexRedeemTokenCreateRequestOpts(
+        requestParameters: SourcesPlexRedeemTokenCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["plexTokenRedeemRequest"] == null) {
             throw new runtime.RequiredError(
-                'plexTokenRedeemRequest',
-                'Required parameter "plexTokenRedeemRequest" was null or undefined when calling sourcesPlexRedeemTokenCreate().'
+                "plexTokenRedeemRequest",
+                'Required parameter "plexTokenRedeemRequest" was null or undefined when calling sourcesPlexRedeemTokenCreate().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['slug'] != null) {
-            queryParameters['slug'] = requestParameters['slug'];
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6357,39 +7289,53 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PlexTokenRedeemRequestToJSON(requestParameters['plexTokenRedeemRequest']),
+            body: PlexTokenRedeemRequestToJSON(requestParameters["plexTokenRedeemRequest"]),
         };
     }
 
     /**
      * Redeem a plex token, check it\'s access to resources against what\'s allowed for the source, and redirect to an authentication/enrollment flow.
      */
-    async sourcesPlexRedeemTokenCreateRaw(requestParameters: SourcesPlexRedeemTokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RedirectChallenge>> {
-        const requestOptions = await this.sourcesPlexRedeemTokenCreateRequestOpts(requestParameters);
+    async sourcesPlexRedeemTokenCreateRaw(
+        requestParameters: SourcesPlexRedeemTokenCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RedirectChallenge>> {
+        const requestOptions =
+            await this.sourcesPlexRedeemTokenCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RedirectChallengeFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RedirectChallengeFromJSON(jsonValue),
+        );
     }
 
     /**
      * Redeem a plex token, check it\'s access to resources against what\'s allowed for the source, and redirect to an authentication/enrollment flow.
      */
-    async sourcesPlexRedeemTokenCreate(requestParameters: SourcesPlexRedeemTokenCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RedirectChallenge> {
-        const response = await this.sourcesPlexRedeemTokenCreateRaw(requestParameters, initOverrides);
+    async sourcesPlexRedeemTokenCreate(
+        requestParameters: SourcesPlexRedeemTokenCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RedirectChallenge> {
+        const response = await this.sourcesPlexRedeemTokenCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesPlexRetrieve without sending the request
      */
-    async sourcesPlexRetrieveRequestOpts(requestParameters: SourcesPlexRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesPlexRetrieveRequestOpts(
+        requestParameters: SourcesPlexRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesPlexRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesPlexRetrieve().',
             );
         }
 
@@ -6407,11 +7353,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/plex/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6420,7 +7369,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Plex source Viewset
      */
-    async sourcesPlexRetrieveRaw(requestParameters: SourcesPlexRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PlexSource>> {
+    async sourcesPlexRetrieveRaw(
+        requestParameters: SourcesPlexRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PlexSource>> {
         const requestOptions = await this.sourcesPlexRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6430,7 +7382,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Plex source Viewset
      */
-    async sourcesPlexRetrieve(requestParameters: SourcesPlexRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PlexSource> {
+    async sourcesPlexRetrieve(
+        requestParameters: SourcesPlexRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PlexSource> {
         const response = await this.sourcesPlexRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6438,18 +7393,20 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesPlexUpdate without sending the request
      */
-    async sourcesPlexUpdateRequestOpts(requestParameters: SourcesPlexUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesPlexUpdateRequestOpts(
+        requestParameters: SourcesPlexUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesPlexUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesPlexUpdate().',
             );
         }
 
-        if (requestParameters['plexSourceRequest'] == null) {
+        if (requestParameters["plexSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'plexSourceRequest',
-                'Required parameter "plexSourceRequest" was null or undefined when calling sourcesPlexUpdate().'
+                "plexSourceRequest",
+                'Required parameter "plexSourceRequest" was null or undefined when calling sourcesPlexUpdate().',
             );
         }
 
@@ -6457,7 +7414,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6469,21 +7426,27 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/plex/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: PlexSourceRequestToJSON(requestParameters['plexSourceRequest']),
+            body: PlexSourceRequestToJSON(requestParameters["plexSourceRequest"]),
         };
     }
 
     /**
      * Plex source Viewset
      */
-    async sourcesPlexUpdateRaw(requestParameters: SourcesPlexUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PlexSource>> {
+    async sourcesPlexUpdateRaw(
+        requestParameters: SourcesPlexUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PlexSource>> {
         const requestOptions = await this.sourcesPlexUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6493,7 +7456,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Plex source Viewset
      */
-    async sourcesPlexUpdate(requestParameters: SourcesPlexUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PlexSource> {
+    async sourcesPlexUpdate(
+        requestParameters: SourcesPlexUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PlexSource> {
         const response = await this.sourcesPlexUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6501,11 +7467,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesPlexUsedByList without sending the request
      */
-    async sourcesPlexUsedByListRequestOpts(requestParameters: SourcesPlexUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesPlexUsedByListRequestOpts(
+        requestParameters: SourcesPlexUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesPlexUsedByList().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesPlexUsedByList().',
             );
         }
 
@@ -6523,11 +7491,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/plex/{slug}/used_by/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6536,7 +7507,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesPlexUsedByListRaw(requestParameters: SourcesPlexUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async sourcesPlexUsedByListRaw(
+        requestParameters: SourcesPlexUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.sourcesPlexUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6546,7 +7520,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesPlexUsedByList(requestParameters: SourcesPlexUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async sourcesPlexUsedByList(
+        requestParameters: SourcesPlexUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.sourcesPlexUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6554,11 +7531,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesSamlCreate without sending the request
      */
-    async sourcesSamlCreateRequestOpts(requestParameters: SourcesSamlCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['sAMLSourceRequest'] == null) {
+    async sourcesSamlCreateRequestOpts(
+        requestParameters: SourcesSamlCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["sAMLSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'sAMLSourceRequest',
-                'Required parameter "sAMLSourceRequest" was null or undefined when calling sourcesSamlCreate().'
+                "sAMLSourceRequest",
+                'Required parameter "sAMLSourceRequest" was null or undefined when calling sourcesSamlCreate().',
             );
         }
 
@@ -6566,7 +7545,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6581,17 +7560,20 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SAMLSourceRequestToJSON(requestParameters['sAMLSourceRequest']),
+            body: SAMLSourceRequestToJSON(requestParameters["sAMLSourceRequest"]),
         };
     }
 
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlCreateRaw(requestParameters: SourcesSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLSource>> {
+    async sourcesSamlCreateRaw(
+        requestParameters: SourcesSamlCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLSource>> {
         const requestOptions = await this.sourcesSamlCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6601,7 +7583,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlCreate(requestParameters: SourcesSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLSource> {
+    async sourcesSamlCreate(
+        requestParameters: SourcesSamlCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLSource> {
         const response = await this.sourcesSamlCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6609,11 +7594,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesSamlDestroy without sending the request
      */
-    async sourcesSamlDestroyRequestOpts(requestParameters: SourcesSamlDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesSamlDestroyRequestOpts(
+        requestParameters: SourcesSamlDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesSamlDestroy().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlDestroy().',
             );
         }
 
@@ -6631,11 +7618,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6644,7 +7634,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlDestroyRaw(requestParameters: SourcesSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async sourcesSamlDestroyRaw(
+        requestParameters: SourcesSamlDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.sourcesSamlDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6654,126 +7647,132 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlDestroy(requestParameters: SourcesSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesSamlDestroy(
+        requestParameters: SourcesSamlDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesSamlDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesSamlList without sending the request
      */
-    async sourcesSamlListRequestOpts(requestParameters: SourcesSamlListRequest): Promise<runtime.RequestOpts> {
+    async sourcesSamlListRequestOpts(
+        requestParameters: SourcesSamlListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['allowIdpInitiated'] != null) {
-            queryParameters['allow_idp_initiated'] = requestParameters['allowIdpInitiated'];
+        if (requestParameters["allowIdpInitiated"] != null) {
+            queryParameters["allow_idp_initiated"] = requestParameters["allowIdpInitiated"];
         }
 
-        if (requestParameters['authenticationFlow'] != null) {
-            queryParameters['authentication_flow'] = requestParameters['authenticationFlow'];
+        if (requestParameters["authenticationFlow"] != null) {
+            queryParameters["authentication_flow"] = requestParameters["authenticationFlow"];
         }
 
-        if (requestParameters['bindingType'] != null) {
-            queryParameters['binding_type'] = requestParameters['bindingType'];
+        if (requestParameters["bindingType"] != null) {
+            queryParameters["binding_type"] = requestParameters["bindingType"];
         }
 
-        if (requestParameters['digestAlgorithm'] != null) {
-            queryParameters['digest_algorithm'] = requestParameters['digestAlgorithm'];
+        if (requestParameters["digestAlgorithm"] != null) {
+            queryParameters["digest_algorithm"] = requestParameters["digestAlgorithm"];
         }
 
-        if (requestParameters['enabled'] != null) {
-            queryParameters['enabled'] = requestParameters['enabled'];
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
         }
 
-        if (requestParameters['enrollmentFlow'] != null) {
-            queryParameters['enrollment_flow'] = requestParameters['enrollmentFlow'];
+        if (requestParameters["enrollmentFlow"] != null) {
+            queryParameters["enrollment_flow"] = requestParameters["enrollmentFlow"];
         }
 
-        if (requestParameters['forceAuthn'] != null) {
-            queryParameters['force_authn'] = requestParameters['forceAuthn'];
+        if (requestParameters["forceAuthn"] != null) {
+            queryParameters["force_authn"] = requestParameters["forceAuthn"];
         }
 
-        if (requestParameters['issuer'] != null) {
-            queryParameters['issuer'] = requestParameters['issuer'];
+        if (requestParameters["issuer"] != null) {
+            queryParameters["issuer"] = requestParameters["issuer"];
         }
 
-        if (requestParameters['managed'] != null) {
-            queryParameters['managed'] = requestParameters['managed'];
+        if (requestParameters["managed"] != null) {
+            queryParameters["managed"] = requestParameters["managed"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['nameIdPolicy'] != null) {
-            queryParameters['name_id_policy'] = requestParameters['nameIdPolicy'];
+        if (requestParameters["nameIdPolicy"] != null) {
+            queryParameters["name_id_policy"] = requestParameters["nameIdPolicy"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['pbmUuid'] != null) {
-            queryParameters['pbm_uuid'] = requestParameters['pbmUuid'];
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
         }
 
-        if (requestParameters['policyEngineMode'] != null) {
-            queryParameters['policy_engine_mode'] = requestParameters['policyEngineMode'];
+        if (requestParameters["policyEngineMode"] != null) {
+            queryParameters["policy_engine_mode"] = requestParameters["policyEngineMode"];
         }
 
-        if (requestParameters['preAuthenticationFlow'] != null) {
-            queryParameters['pre_authentication_flow'] = requestParameters['preAuthenticationFlow'];
+        if (requestParameters["preAuthenticationFlow"] != null) {
+            queryParameters["pre_authentication_flow"] = requestParameters["preAuthenticationFlow"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['signatureAlgorithm'] != null) {
-            queryParameters['signature_algorithm'] = requestParameters['signatureAlgorithm'];
+        if (requestParameters["signatureAlgorithm"] != null) {
+            queryParameters["signature_algorithm"] = requestParameters["signatureAlgorithm"];
         }
 
-        if (requestParameters['signedAssertion'] != null) {
-            queryParameters['signed_assertion'] = requestParameters['signedAssertion'];
+        if (requestParameters["signedAssertion"] != null) {
+            queryParameters["signed_assertion"] = requestParameters["signedAssertion"];
         }
 
-        if (requestParameters['signedResponse'] != null) {
-            queryParameters['signed_response'] = requestParameters['signedResponse'];
+        if (requestParameters["signedResponse"] != null) {
+            queryParameters["signed_response"] = requestParameters["signedResponse"];
         }
 
-        if (requestParameters['signingKp'] != null) {
-            queryParameters['signing_kp'] = requestParameters['signingKp'];
+        if (requestParameters["signingKp"] != null) {
+            queryParameters["signing_kp"] = requestParameters["signingKp"];
         }
 
-        if (requestParameters['sloUrl'] != null) {
-            queryParameters['slo_url'] = requestParameters['sloUrl'];
+        if (requestParameters["sloUrl"] != null) {
+            queryParameters["slo_url"] = requestParameters["sloUrl"];
         }
 
-        if (requestParameters['slug'] != null) {
-            queryParameters['slug'] = requestParameters['slug'];
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
         }
 
-        if (requestParameters['ssoUrl'] != null) {
-            queryParameters['sso_url'] = requestParameters['ssoUrl'];
+        if (requestParameters["ssoUrl"] != null) {
+            queryParameters["sso_url"] = requestParameters["ssoUrl"];
         }
 
-        if (requestParameters['temporaryUserDeleteAfter'] != null) {
-            queryParameters['temporary_user_delete_after'] = requestParameters['temporaryUserDeleteAfter'];
+        if (requestParameters["temporaryUserDeleteAfter"] != null) {
+            queryParameters["temporary_user_delete_after"] =
+                requestParameters["temporaryUserDeleteAfter"];
         }
 
-        if (requestParameters['userMatchingMode'] != null) {
-            queryParameters['user_matching_mode'] = requestParameters['userMatchingMode'];
+        if (requestParameters["userMatchingMode"] != null) {
+            queryParameters["user_matching_mode"] = requestParameters["userMatchingMode"];
         }
 
-        if (requestParameters['verificationKp'] != null) {
-            queryParameters['verification_kp'] = requestParameters['verificationKp'];
+        if (requestParameters["verificationKp"] != null) {
+            queryParameters["verification_kp"] = requestParameters["verificationKp"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6791,7 +7790,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6800,17 +7799,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlListRaw(requestParameters: SourcesSamlListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSAMLSourceList>> {
+    async sourcesSamlListRaw(
+        requestParameters: SourcesSamlListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSAMLSourceList>> {
         const requestOptions = await this.sourcesSamlListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSAMLSourceListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSAMLSourceListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlList(requestParameters: SourcesSamlListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSAMLSourceList> {
+    async sourcesSamlList(
+        requestParameters: SourcesSamlListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSAMLSourceList> {
         const response = await this.sourcesSamlListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6818,11 +7825,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesSamlMetadataRetrieve without sending the request
      */
-    async sourcesSamlMetadataRetrieveRequestOpts(requestParameters: SourcesSamlMetadataRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesSamlMetadataRetrieveRequestOpts(
+        requestParameters: SourcesSamlMetadataRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesSamlMetadataRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlMetadataRetrieve().',
             );
         }
 
@@ -6840,11 +7849,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/metadata/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6853,29 +7865,42 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Return metadata as XML string
      */
-    async sourcesSamlMetadataRetrieveRaw(requestParameters: SourcesSamlMetadataRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLMetadata>> {
+    async sourcesSamlMetadataRetrieveRaw(
+        requestParameters: SourcesSamlMetadataRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLMetadata>> {
         const requestOptions = await this.sourcesSamlMetadataRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SAMLMetadataFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SAMLMetadataFromJSON(jsonValue),
+        );
     }
 
     /**
      * Return metadata as XML string
      */
-    async sourcesSamlMetadataRetrieve(requestParameters: SourcesSamlMetadataRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLMetadata> {
-        const response = await this.sourcesSamlMetadataRetrieveRaw(requestParameters, initOverrides);
+    async sourcesSamlMetadataRetrieve(
+        requestParameters: SourcesSamlMetadataRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLMetadata> {
+        const response = await this.sourcesSamlMetadataRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesSamlPartialUpdate without sending the request
      */
-    async sourcesSamlPartialUpdateRequestOpts(requestParameters: SourcesSamlPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesSamlPartialUpdateRequestOpts(
+        requestParameters: SourcesSamlPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesSamlPartialUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlPartialUpdate().',
             );
         }
 
@@ -6883,7 +7908,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6895,21 +7920,27 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSAMLSourceRequestToJSON(requestParameters['patchedSAMLSourceRequest']),
+            body: PatchedSAMLSourceRequestToJSON(requestParameters["patchedSAMLSourceRequest"]),
         };
     }
 
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlPartialUpdateRaw(requestParameters: SourcesSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLSource>> {
+    async sourcesSamlPartialUpdateRaw(
+        requestParameters: SourcesSamlPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLSource>> {
         const requestOptions = await this.sourcesSamlPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6919,7 +7950,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlPartialUpdate(requestParameters: SourcesSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLSource> {
+    async sourcesSamlPartialUpdate(
+        requestParameters: SourcesSamlPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLSource> {
         const response = await this.sourcesSamlPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6927,11 +7961,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesSamlRetrieve without sending the request
      */
-    async sourcesSamlRetrieveRequestOpts(requestParameters: SourcesSamlRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesSamlRetrieveRequestOpts(
+        requestParameters: SourcesSamlRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesSamlRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlRetrieve().',
             );
         }
 
@@ -6949,11 +7985,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6962,7 +8001,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlRetrieveRaw(requestParameters: SourcesSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLSource>> {
+    async sourcesSamlRetrieveRaw(
+        requestParameters: SourcesSamlRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLSource>> {
         const requestOptions = await this.sourcesSamlRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6972,7 +8014,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlRetrieve(requestParameters: SourcesSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLSource> {
+    async sourcesSamlRetrieve(
+        requestParameters: SourcesSamlRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLSource> {
         const response = await this.sourcesSamlRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6980,18 +8025,20 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesSamlUpdate without sending the request
      */
-    async sourcesSamlUpdateRequestOpts(requestParameters: SourcesSamlUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesSamlUpdateRequestOpts(
+        requestParameters: SourcesSamlUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesSamlUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlUpdate().',
             );
         }
 
-        if (requestParameters['sAMLSourceRequest'] == null) {
+        if (requestParameters["sAMLSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'sAMLSourceRequest',
-                'Required parameter "sAMLSourceRequest" was null or undefined when calling sourcesSamlUpdate().'
+                "sAMLSourceRequest",
+                'Required parameter "sAMLSourceRequest" was null or undefined when calling sourcesSamlUpdate().',
             );
         }
 
@@ -6999,7 +8046,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7011,21 +8058,27 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: SAMLSourceRequestToJSON(requestParameters['sAMLSourceRequest']),
+            body: SAMLSourceRequestToJSON(requestParameters["sAMLSourceRequest"]),
         };
     }
 
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlUpdateRaw(requestParameters: SourcesSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SAMLSource>> {
+    async sourcesSamlUpdateRaw(
+        requestParameters: SourcesSamlUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SAMLSource>> {
         const requestOptions = await this.sourcesSamlUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7035,7 +8088,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SAMLSource Viewset
      */
-    async sourcesSamlUpdate(requestParameters: SourcesSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SAMLSource> {
+    async sourcesSamlUpdate(
+        requestParameters: SourcesSamlUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SAMLSource> {
         const response = await this.sourcesSamlUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7043,11 +8099,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesSamlUsedByList without sending the request
      */
-    async sourcesSamlUsedByListRequestOpts(requestParameters: SourcesSamlUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesSamlUsedByListRequestOpts(
+        requestParameters: SourcesSamlUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesSamlUsedByList().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesSamlUsedByList().',
             );
         }
 
@@ -7065,11 +8123,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/used_by/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7078,7 +8139,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesSamlUsedByListRaw(requestParameters: SourcesSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async sourcesSamlUsedByListRaw(
+        requestParameters: SourcesSamlUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.sourcesSamlUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7088,7 +8152,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesSamlUsedByList(requestParameters: SourcesSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async sourcesSamlUsedByList(
+        requestParameters: SourcesSamlUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.sourcesSamlUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7096,11 +8163,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimCreate without sending the request
      */
-    async sourcesScimCreateRequestOpts(requestParameters: SourcesScimCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['sCIMSourceRequest'] == null) {
+    async sourcesScimCreateRequestOpts(
+        requestParameters: SourcesScimCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["sCIMSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'sCIMSourceRequest',
-                'Required parameter "sCIMSourceRequest" was null or undefined when calling sourcesScimCreate().'
+                "sCIMSourceRequest",
+                'Required parameter "sCIMSourceRequest" was null or undefined when calling sourcesScimCreate().',
             );
         }
 
@@ -7108,7 +8177,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7123,17 +8192,20 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMSourceRequestToJSON(requestParameters['sCIMSourceRequest']),
+            body: SCIMSourceRequestToJSON(requestParameters["sCIMSourceRequest"]),
         };
     }
 
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimCreateRaw(requestParameters: SourcesScimCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSource>> {
+    async sourcesScimCreateRaw(
+        requestParameters: SourcesScimCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSource>> {
         const requestOptions = await this.sourcesScimCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7143,7 +8215,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimCreate(requestParameters: SourcesScimCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSource> {
+    async sourcesScimCreate(
+        requestParameters: SourcesScimCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSource> {
         const response = await this.sourcesScimCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7151,11 +8226,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimDestroy without sending the request
      */
-    async sourcesScimDestroyRequestOpts(requestParameters: SourcesScimDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesScimDestroyRequestOpts(
+        requestParameters: SourcesScimDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesScimDestroy().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesScimDestroy().',
             );
         }
 
@@ -7173,11 +8250,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7186,7 +8266,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimDestroyRaw(requestParameters: SourcesScimDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async sourcesScimDestroyRaw(
+        requestParameters: SourcesScimDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.sourcesScimDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7196,18 +8279,23 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimDestroy(requestParameters: SourcesScimDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesScimDestroy(
+        requestParameters: SourcesScimDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesScimDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesScimGroupsCreate without sending the request
      */
-    async sourcesScimGroupsCreateRequestOpts(requestParameters: SourcesScimGroupsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['sCIMSourceGroupRequest'] == null) {
+    async sourcesScimGroupsCreateRequestOpts(
+        requestParameters: SourcesScimGroupsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["sCIMSourceGroupRequest"] == null) {
             throw new runtime.RequiredError(
-                'sCIMSourceGroupRequest',
-                'Required parameter "sCIMSourceGroupRequest" was null or undefined when calling sourcesScimGroupsCreate().'
+                "sCIMSourceGroupRequest",
+                'Required parameter "sCIMSourceGroupRequest" was null or undefined when calling sourcesScimGroupsCreate().',
             );
         }
 
@@ -7215,7 +8303,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7230,27 +8318,35 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMSourceGroupRequestToJSON(requestParameters['sCIMSourceGroupRequest']),
+            body: SCIMSourceGroupRequestToJSON(requestParameters["sCIMSourceGroupRequest"]),
         };
     }
 
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsCreateRaw(requestParameters: SourcesScimGroupsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourceGroup>> {
+    async sourcesScimGroupsCreateRaw(
+        requestParameters: SourcesScimGroupsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSourceGroup>> {
         const requestOptions = await this.sourcesScimGroupsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourceGroupFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMSourceGroupFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsCreate(requestParameters: SourcesScimGroupsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourceGroup> {
+    async sourcesScimGroupsCreate(
+        requestParameters: SourcesScimGroupsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSourceGroup> {
         const response = await this.sourcesScimGroupsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7258,11 +8354,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimGroupsDestroy without sending the request
      */
-    async sourcesScimGroupsDestroyRequestOpts(requestParameters: SourcesScimGroupsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesScimGroupsDestroyRequestOpts(
+        requestParameters: SourcesScimGroupsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesScimGroupsDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesScimGroupsDestroy().',
             );
         }
 
@@ -7280,11 +8378,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7293,7 +8391,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsDestroyRaw(requestParameters: SourcesScimGroupsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async sourcesScimGroupsDestroyRaw(
+        requestParameters: SourcesScimGroupsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.sourcesScimGroupsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7303,42 +8404,47 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsDestroy(requestParameters: SourcesScimGroupsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesScimGroupsDestroy(
+        requestParameters: SourcesScimGroupsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesScimGroupsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesScimGroupsList without sending the request
      */
-    async sourcesScimGroupsListRequestOpts(requestParameters: SourcesScimGroupsListRequest): Promise<runtime.RequestOpts> {
+    async sourcesScimGroupsListRequestOpts(
+        requestParameters: SourcesScimGroupsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['groupGroupUuid'] != null) {
-            queryParameters['group__group_uuid'] = requestParameters['groupGroupUuid'];
+        if (requestParameters["groupGroupUuid"] != null) {
+            queryParameters["group__group_uuid"] = requestParameters["groupGroupUuid"];
         }
 
-        if (requestParameters['groupName'] != null) {
-            queryParameters['group__name'] = requestParameters['groupName'];
+        if (requestParameters["groupName"] != null) {
+            queryParameters["group__name"] = requestParameters["groupName"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -7356,7 +8462,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7365,17 +8471,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsListRaw(requestParameters: SourcesScimGroupsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSCIMSourceGroupList>> {
+    async sourcesScimGroupsListRaw(
+        requestParameters: SourcesScimGroupsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSCIMSourceGroupList>> {
         const requestOptions = await this.sourcesScimGroupsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSCIMSourceGroupListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSCIMSourceGroupListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsList(requestParameters: SourcesScimGroupsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSCIMSourceGroupList> {
+    async sourcesScimGroupsList(
+        requestParameters: SourcesScimGroupsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSCIMSourceGroupList> {
         const response = await this.sourcesScimGroupsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7383,11 +8497,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimGroupsPartialUpdate without sending the request
      */
-    async sourcesScimGroupsPartialUpdateRequestOpts(requestParameters: SourcesScimGroupsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesScimGroupsPartialUpdateRequestOpts(
+        requestParameters: SourcesScimGroupsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesScimGroupsPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesScimGroupsPartialUpdate().',
             );
         }
 
@@ -7395,7 +8511,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7407,43 +8523,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSCIMSourceGroupRequestToJSON(requestParameters['patchedSCIMSourceGroupRequest']),
+            body: PatchedSCIMSourceGroupRequestToJSON(
+                requestParameters["patchedSCIMSourceGroupRequest"],
+            ),
         };
     }
 
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsPartialUpdateRaw(requestParameters: SourcesScimGroupsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourceGroup>> {
-        const requestOptions = await this.sourcesScimGroupsPartialUpdateRequestOpts(requestParameters);
+    async sourcesScimGroupsPartialUpdateRaw(
+        requestParameters: SourcesScimGroupsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSourceGroup>> {
+        const requestOptions =
+            await this.sourcesScimGroupsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourceGroupFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMSourceGroupFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsPartialUpdate(requestParameters: SourcesScimGroupsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourceGroup> {
-        const response = await this.sourcesScimGroupsPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesScimGroupsPartialUpdate(
+        requestParameters: SourcesScimGroupsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSourceGroup> {
+        const response = await this.sourcesScimGroupsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesScimGroupsRetrieve without sending the request
      */
-    async sourcesScimGroupsRetrieveRequestOpts(requestParameters: SourcesScimGroupsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesScimGroupsRetrieveRequestOpts(
+        requestParameters: SourcesScimGroupsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesScimGroupsRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesScimGroupsRetrieve().',
             );
         }
 
@@ -7461,11 +8593,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7474,17 +8606,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsRetrieveRaw(requestParameters: SourcesScimGroupsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourceGroup>> {
+    async sourcesScimGroupsRetrieveRaw(
+        requestParameters: SourcesScimGroupsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSourceGroup>> {
         const requestOptions = await this.sourcesScimGroupsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourceGroupFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMSourceGroupFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsRetrieve(requestParameters: SourcesScimGroupsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourceGroup> {
+    async sourcesScimGroupsRetrieve(
+        requestParameters: SourcesScimGroupsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSourceGroup> {
         const response = await this.sourcesScimGroupsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7492,18 +8632,20 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimGroupsUpdate without sending the request
      */
-    async sourcesScimGroupsUpdateRequestOpts(requestParameters: SourcesScimGroupsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesScimGroupsUpdateRequestOpts(
+        requestParameters: SourcesScimGroupsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesScimGroupsUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesScimGroupsUpdate().',
             );
         }
 
-        if (requestParameters['sCIMSourceGroupRequest'] == null) {
+        if (requestParameters["sCIMSourceGroupRequest"] == null) {
             throw new runtime.RequiredError(
-                'sCIMSourceGroupRequest',
-                'Required parameter "sCIMSourceGroupRequest" was null or undefined when calling sourcesScimGroupsUpdate().'
+                "sCIMSourceGroupRequest",
+                'Required parameter "sCIMSourceGroupRequest" was null or undefined when calling sourcesScimGroupsUpdate().',
             );
         }
 
@@ -7511,7 +8653,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7523,31 +8665,39 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMSourceGroupRequestToJSON(requestParameters['sCIMSourceGroupRequest']),
+            body: SCIMSourceGroupRequestToJSON(requestParameters["sCIMSourceGroupRequest"]),
         };
     }
 
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsUpdateRaw(requestParameters: SourcesScimGroupsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourceGroup>> {
+    async sourcesScimGroupsUpdateRaw(
+        requestParameters: SourcesScimGroupsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSourceGroup>> {
         const requestOptions = await this.sourcesScimGroupsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourceGroupFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMSourceGroupFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSourceGroup Viewset
      */
-    async sourcesScimGroupsUpdate(requestParameters: SourcesScimGroupsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourceGroup> {
+    async sourcesScimGroupsUpdate(
+        requestParameters: SourcesScimGroupsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSourceGroup> {
         const response = await this.sourcesScimGroupsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7555,11 +8705,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimGroupsUsedByList without sending the request
      */
-    async sourcesScimGroupsUsedByListRequestOpts(requestParameters: SourcesScimGroupsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesScimGroupsUsedByListRequestOpts(
+        requestParameters: SourcesScimGroupsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesScimGroupsUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesScimGroupsUsedByList().',
             );
         }
 
@@ -7577,11 +8729,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_groups/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7590,7 +8742,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesScimGroupsUsedByListRaw(requestParameters: SourcesScimGroupsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async sourcesScimGroupsUsedByListRaw(
+        requestParameters: SourcesScimGroupsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.sourcesScimGroupsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7600,43 +8755,51 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesScimGroupsUsedByList(requestParameters: SourcesScimGroupsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesScimGroupsUsedByListRaw(requestParameters, initOverrides);
+    async sourcesScimGroupsUsedByList(
+        requestParameters: SourcesScimGroupsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesScimGroupsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesScimList without sending the request
      */
-    async sourcesScimListRequestOpts(requestParameters: SourcesScimListRequest): Promise<runtime.RequestOpts> {
+    async sourcesScimListRequestOpts(
+        requestParameters: SourcesScimListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['pbmUuid'] != null) {
-            queryParameters['pbm_uuid'] = requestParameters['pbmUuid'];
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['slug'] != null) {
-            queryParameters['slug'] = requestParameters['slug'];
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -7654,7 +8817,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7663,17 +8826,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimListRaw(requestParameters: SourcesScimListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSCIMSourceList>> {
+    async sourcesScimListRaw(
+        requestParameters: SourcesScimListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSCIMSourceList>> {
         const requestOptions = await this.sourcesScimListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSCIMSourceListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSCIMSourceListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimList(requestParameters: SourcesScimListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSCIMSourceList> {
+    async sourcesScimList(
+        requestParameters: SourcesScimListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSCIMSourceList> {
         const response = await this.sourcesScimListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7681,11 +8852,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimPartialUpdate without sending the request
      */
-    async sourcesScimPartialUpdateRequestOpts(requestParameters: SourcesScimPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesScimPartialUpdateRequestOpts(
+        requestParameters: SourcesScimPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesScimPartialUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesScimPartialUpdate().',
             );
         }
 
@@ -7693,7 +8866,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7705,21 +8878,27 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSCIMSourceRequestToJSON(requestParameters['patchedSCIMSourceRequest']),
+            body: PatchedSCIMSourceRequestToJSON(requestParameters["patchedSCIMSourceRequest"]),
         };
     }
 
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimPartialUpdateRaw(requestParameters: SourcesScimPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSource>> {
+    async sourcesScimPartialUpdateRaw(
+        requestParameters: SourcesScimPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSource>> {
         const requestOptions = await this.sourcesScimPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7729,7 +8908,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimPartialUpdate(requestParameters: SourcesScimPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSource> {
+    async sourcesScimPartialUpdate(
+        requestParameters: SourcesScimPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSource> {
         const response = await this.sourcesScimPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7737,11 +8919,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimRetrieve without sending the request
      */
-    async sourcesScimRetrieveRequestOpts(requestParameters: SourcesScimRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesScimRetrieveRequestOpts(
+        requestParameters: SourcesScimRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesScimRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesScimRetrieve().',
             );
         }
 
@@ -7759,11 +8943,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7772,7 +8959,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimRetrieveRaw(requestParameters: SourcesScimRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSource>> {
+    async sourcesScimRetrieveRaw(
+        requestParameters: SourcesScimRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSource>> {
         const requestOptions = await this.sourcesScimRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7782,7 +8972,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimRetrieve(requestParameters: SourcesScimRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSource> {
+    async sourcesScimRetrieve(
+        requestParameters: SourcesScimRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSource> {
         const response = await this.sourcesScimRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7790,18 +8983,20 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimUpdate without sending the request
      */
-    async sourcesScimUpdateRequestOpts(requestParameters: SourcesScimUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesScimUpdateRequestOpts(
+        requestParameters: SourcesScimUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesScimUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesScimUpdate().',
             );
         }
 
-        if (requestParameters['sCIMSourceRequest'] == null) {
+        if (requestParameters["sCIMSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'sCIMSourceRequest',
-                'Required parameter "sCIMSourceRequest" was null or undefined when calling sourcesScimUpdate().'
+                "sCIMSourceRequest",
+                'Required parameter "sCIMSourceRequest" was null or undefined when calling sourcesScimUpdate().',
             );
         }
 
@@ -7809,7 +9004,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7821,21 +9016,27 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMSourceRequestToJSON(requestParameters['sCIMSourceRequest']),
+            body: SCIMSourceRequestToJSON(requestParameters["sCIMSourceRequest"]),
         };
     }
 
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimUpdateRaw(requestParameters: SourcesScimUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSource>> {
+    async sourcesScimUpdateRaw(
+        requestParameters: SourcesScimUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSource>> {
         const requestOptions = await this.sourcesScimUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7845,7 +9046,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSource Viewset
      */
-    async sourcesScimUpdate(requestParameters: SourcesScimUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSource> {
+    async sourcesScimUpdate(
+        requestParameters: SourcesScimUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSource> {
         const response = await this.sourcesScimUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7853,11 +9057,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimUsedByList without sending the request
      */
-    async sourcesScimUsedByListRequestOpts(requestParameters: SourcesScimUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesScimUsedByListRequestOpts(
+        requestParameters: SourcesScimUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesScimUsedByList().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesScimUsedByList().',
             );
         }
 
@@ -7875,11 +9081,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim/{slug}/used_by/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7888,7 +9097,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesScimUsedByListRaw(requestParameters: SourcesScimUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async sourcesScimUsedByListRaw(
+        requestParameters: SourcesScimUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.sourcesScimUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7898,7 +9110,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesScimUsedByList(requestParameters: SourcesScimUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async sourcesScimUsedByList(
+        requestParameters: SourcesScimUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.sourcesScimUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7906,11 +9121,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimUsersCreate without sending the request
      */
-    async sourcesScimUsersCreateRequestOpts(requestParameters: SourcesScimUsersCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['sCIMSourceUserRequest'] == null) {
+    async sourcesScimUsersCreateRequestOpts(
+        requestParameters: SourcesScimUsersCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["sCIMSourceUserRequest"] == null) {
             throw new runtime.RequiredError(
-                'sCIMSourceUserRequest',
-                'Required parameter "sCIMSourceUserRequest" was null or undefined when calling sourcesScimUsersCreate().'
+                "sCIMSourceUserRequest",
+                'Required parameter "sCIMSourceUserRequest" was null or undefined when calling sourcesScimUsersCreate().',
             );
         }
 
@@ -7918,7 +9135,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7933,27 +9150,35 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMSourceUserRequestToJSON(requestParameters['sCIMSourceUserRequest']),
+            body: SCIMSourceUserRequestToJSON(requestParameters["sCIMSourceUserRequest"]),
         };
     }
 
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersCreateRaw(requestParameters: SourcesScimUsersCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourceUser>> {
+    async sourcesScimUsersCreateRaw(
+        requestParameters: SourcesScimUsersCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSourceUser>> {
         const requestOptions = await this.sourcesScimUsersCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourceUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMSourceUserFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersCreate(requestParameters: SourcesScimUsersCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourceUser> {
+    async sourcesScimUsersCreate(
+        requestParameters: SourcesScimUsersCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSourceUser> {
         const response = await this.sourcesScimUsersCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7961,11 +9186,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimUsersDestroy without sending the request
      */
-    async sourcesScimUsersDestroyRequestOpts(requestParameters: SourcesScimUsersDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesScimUsersDestroyRequestOpts(
+        requestParameters: SourcesScimUsersDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesScimUsersDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesScimUsersDestroy().',
             );
         }
 
@@ -7983,11 +9210,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7996,7 +9223,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersDestroyRaw(requestParameters: SourcesScimUsersDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async sourcesScimUsersDestroyRaw(
+        requestParameters: SourcesScimUsersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.sourcesScimUsersDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -8006,42 +9236,47 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersDestroy(requestParameters: SourcesScimUsersDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesScimUsersDestroy(
+        requestParameters: SourcesScimUsersDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesScimUsersDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesScimUsersList without sending the request
      */
-    async sourcesScimUsersListRequestOpts(requestParameters: SourcesScimUsersListRequest): Promise<runtime.RequestOpts> {
+    async sourcesScimUsersListRequestOpts(
+        requestParameters: SourcesScimUsersListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
-        if (requestParameters['userId'] != null) {
-            queryParameters['user__id'] = requestParameters['userId'];
+        if (requestParameters["userId"] != null) {
+            queryParameters["user__id"] = requestParameters["userId"];
         }
 
-        if (requestParameters['userUsername'] != null) {
-            queryParameters['user__username'] = requestParameters['userUsername'];
+        if (requestParameters["userUsername"] != null) {
+            queryParameters["user__username"] = requestParameters["userUsername"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -8059,7 +9294,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8068,17 +9303,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersListRaw(requestParameters: SourcesScimUsersListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSCIMSourceUserList>> {
+    async sourcesScimUsersListRaw(
+        requestParameters: SourcesScimUsersListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSCIMSourceUserList>> {
         const requestOptions = await this.sourcesScimUsersListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSCIMSourceUserListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSCIMSourceUserListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersList(requestParameters: SourcesScimUsersListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSCIMSourceUserList> {
+    async sourcesScimUsersList(
+        requestParameters: SourcesScimUsersListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSCIMSourceUserList> {
         const response = await this.sourcesScimUsersListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8086,11 +9329,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimUsersPartialUpdate without sending the request
      */
-    async sourcesScimUsersPartialUpdateRequestOpts(requestParameters: SourcesScimUsersPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesScimUsersPartialUpdateRequestOpts(
+        requestParameters: SourcesScimUsersPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesScimUsersPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesScimUsersPartialUpdate().',
             );
         }
 
@@ -8098,7 +9343,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8110,43 +9355,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSCIMSourceUserRequestToJSON(requestParameters['patchedSCIMSourceUserRequest']),
+            body: PatchedSCIMSourceUserRequestToJSON(
+                requestParameters["patchedSCIMSourceUserRequest"],
+            ),
         };
     }
 
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersPartialUpdateRaw(requestParameters: SourcesScimUsersPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourceUser>> {
-        const requestOptions = await this.sourcesScimUsersPartialUpdateRequestOpts(requestParameters);
+    async sourcesScimUsersPartialUpdateRaw(
+        requestParameters: SourcesScimUsersPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSourceUser>> {
+        const requestOptions =
+            await this.sourcesScimUsersPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourceUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMSourceUserFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersPartialUpdate(requestParameters: SourcesScimUsersPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourceUser> {
-        const response = await this.sourcesScimUsersPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesScimUsersPartialUpdate(
+        requestParameters: SourcesScimUsersPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSourceUser> {
+        const response = await this.sourcesScimUsersPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesScimUsersRetrieve without sending the request
      */
-    async sourcesScimUsersRetrieveRequestOpts(requestParameters: SourcesScimUsersRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesScimUsersRetrieveRequestOpts(
+        requestParameters: SourcesScimUsersRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesScimUsersRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesScimUsersRetrieve().',
             );
         }
 
@@ -8164,11 +9425,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8177,17 +9438,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersRetrieveRaw(requestParameters: SourcesScimUsersRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourceUser>> {
+    async sourcesScimUsersRetrieveRaw(
+        requestParameters: SourcesScimUsersRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSourceUser>> {
         const requestOptions = await this.sourcesScimUsersRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourceUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMSourceUserFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersRetrieve(requestParameters: SourcesScimUsersRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourceUser> {
+    async sourcesScimUsersRetrieve(
+        requestParameters: SourcesScimUsersRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSourceUser> {
         const response = await this.sourcesScimUsersRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8195,18 +9464,20 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimUsersUpdate without sending the request
      */
-    async sourcesScimUsersUpdateRequestOpts(requestParameters: SourcesScimUsersUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesScimUsersUpdateRequestOpts(
+        requestParameters: SourcesScimUsersUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesScimUsersUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesScimUsersUpdate().',
             );
         }
 
-        if (requestParameters['sCIMSourceUserRequest'] == null) {
+        if (requestParameters["sCIMSourceUserRequest"] == null) {
             throw new runtime.RequiredError(
-                'sCIMSourceUserRequest',
-                'Required parameter "sCIMSourceUserRequest" was null or undefined when calling sourcesScimUsersUpdate().'
+                "sCIMSourceUserRequest",
+                'Required parameter "sCIMSourceUserRequest" was null or undefined when calling sourcesScimUsersUpdate().',
             );
         }
 
@@ -8214,7 +9485,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8226,31 +9497,39 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: SCIMSourceUserRequestToJSON(requestParameters['sCIMSourceUserRequest']),
+            body: SCIMSourceUserRequestToJSON(requestParameters["sCIMSourceUserRequest"]),
         };
     }
 
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersUpdateRaw(requestParameters: SourcesScimUsersUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SCIMSourceUser>> {
+    async sourcesScimUsersUpdateRaw(
+        requestParameters: SourcesScimUsersUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SCIMSourceUser>> {
         const requestOptions = await this.sourcesScimUsersUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SCIMSourceUserFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            SCIMSourceUserFromJSON(jsonValue),
+        );
     }
 
     /**
      * SCIMSourceUser Viewset
      */
-    async sourcesScimUsersUpdate(requestParameters: SourcesScimUsersUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SCIMSourceUser> {
+    async sourcesScimUsersUpdate(
+        requestParameters: SourcesScimUsersUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SCIMSourceUser> {
         const response = await this.sourcesScimUsersUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8258,11 +9537,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesScimUsersUsedByList without sending the request
      */
-    async sourcesScimUsersUsedByListRequestOpts(requestParameters: SourcesScimUsersUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesScimUsersUsedByListRequestOpts(
+        requestParameters: SourcesScimUsersUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesScimUsersUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesScimUsersUsedByList().',
             );
         }
 
@@ -8280,11 +9561,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_users/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8293,7 +9574,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesScimUsersUsedByListRaw(requestParameters: SourcesScimUsersUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async sourcesScimUsersUsedByListRaw(
+        requestParameters: SourcesScimUsersUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.sourcesScimUsersUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -8303,7 +9587,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesScimUsersUsedByList(requestParameters: SourcesScimUsersUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async sourcesScimUsersUsedByList(
+        requestParameters: SourcesScimUsersUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.sourcesScimUsersUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8311,18 +9598,20 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesTelegramConnectUserCreate without sending the request
      */
-    async sourcesTelegramConnectUserCreateRequestOpts(requestParameters: SourcesTelegramConnectUserCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesTelegramConnectUserCreateRequestOpts(
+        requestParameters: SourcesTelegramConnectUserCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesTelegramConnectUserCreate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesTelegramConnectUserCreate().',
             );
         }
 
-        if (requestParameters['telegramAuthRequest'] == null) {
+        if (requestParameters["telegramAuthRequest"] == null) {
             throw new runtime.RequiredError(
-                'telegramAuthRequest',
-                'Required parameter "telegramAuthRequest" was null or undefined when calling sourcesTelegramConnectUserCreate().'
+                "telegramAuthRequest",
+                'Required parameter "telegramAuthRequest" was null or undefined when calling sourcesTelegramConnectUserCreate().',
             );
         }
 
@@ -8330,7 +9619,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8342,43 +9631,60 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/connect_user/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: TelegramAuthRequestToJSON(requestParameters['telegramAuthRequest']),
+            body: TelegramAuthRequestToJSON(requestParameters["telegramAuthRequest"]),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramConnectUserCreateRaw(requestParameters: SourcesTelegramConnectUserCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserTelegramSourceConnection>> {
-        const requestOptions = await this.sourcesTelegramConnectUserCreateRequestOpts(requestParameters);
+    async sourcesTelegramConnectUserCreateRaw(
+        requestParameters: SourcesTelegramConnectUserCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserTelegramSourceConnection>> {
+        const requestOptions =
+            await this.sourcesTelegramConnectUserCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserTelegramSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserTelegramSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramConnectUserCreate(requestParameters: SourcesTelegramConnectUserCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserTelegramSourceConnection> {
-        const response = await this.sourcesTelegramConnectUserCreateRaw(requestParameters, initOverrides);
+    async sourcesTelegramConnectUserCreate(
+        requestParameters: SourcesTelegramConnectUserCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserTelegramSourceConnection> {
+        const response = await this.sourcesTelegramConnectUserCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesTelegramCreate without sending the request
      */
-    async sourcesTelegramCreateRequestOpts(requestParameters: SourcesTelegramCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['telegramSourceRequest'] == null) {
+    async sourcesTelegramCreateRequestOpts(
+        requestParameters: SourcesTelegramCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["telegramSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'telegramSourceRequest',
-                'Required parameter "telegramSourceRequest" was null or undefined when calling sourcesTelegramCreate().'
+                "telegramSourceRequest",
+                'Required parameter "telegramSourceRequest" was null or undefined when calling sourcesTelegramCreate().',
             );
         }
 
@@ -8386,7 +9692,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8401,27 +9707,35 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: TelegramSourceRequestToJSON(requestParameters['telegramSourceRequest']),
+            body: TelegramSourceRequestToJSON(requestParameters["telegramSourceRequest"]),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramCreateRaw(requestParameters: SourcesTelegramCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TelegramSource>> {
+    async sourcesTelegramCreateRaw(
+        requestParameters: SourcesTelegramCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<TelegramSource>> {
         const requestOptions = await this.sourcesTelegramCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TelegramSourceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            TelegramSourceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramCreate(requestParameters: SourcesTelegramCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TelegramSource> {
+    async sourcesTelegramCreate(
+        requestParameters: SourcesTelegramCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<TelegramSource> {
         const response = await this.sourcesTelegramCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8429,11 +9743,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesTelegramDestroy without sending the request
      */
-    async sourcesTelegramDestroyRequestOpts(requestParameters: SourcesTelegramDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesTelegramDestroyRequestOpts(
+        requestParameters: SourcesTelegramDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesTelegramDestroy().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesTelegramDestroy().',
             );
         }
 
@@ -8451,11 +9767,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8464,7 +9783,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramDestroyRaw(requestParameters: SourcesTelegramDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async sourcesTelegramDestroyRaw(
+        requestParameters: SourcesTelegramDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.sourcesTelegramDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -8474,74 +9796,79 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramDestroy(requestParameters: SourcesTelegramDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesTelegramDestroy(
+        requestParameters: SourcesTelegramDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesTelegramDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesTelegramList without sending the request
      */
-    async sourcesTelegramListRequestOpts(requestParameters: SourcesTelegramListRequest): Promise<runtime.RequestOpts> {
+    async sourcesTelegramListRequestOpts(
+        requestParameters: SourcesTelegramListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['authenticationFlow'] != null) {
-            queryParameters['authentication_flow'] = requestParameters['authenticationFlow'];
+        if (requestParameters["authenticationFlow"] != null) {
+            queryParameters["authentication_flow"] = requestParameters["authenticationFlow"];
         }
 
-        if (requestParameters['botUsername'] != null) {
-            queryParameters['bot_username'] = requestParameters['botUsername'];
+        if (requestParameters["botUsername"] != null) {
+            queryParameters["bot_username"] = requestParameters["botUsername"];
         }
 
-        if (requestParameters['enabled'] != null) {
-            queryParameters['enabled'] = requestParameters['enabled'];
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
         }
 
-        if (requestParameters['enrollmentFlow'] != null) {
-            queryParameters['enrollment_flow'] = requestParameters['enrollmentFlow'];
+        if (requestParameters["enrollmentFlow"] != null) {
+            queryParameters["enrollment_flow"] = requestParameters["enrollmentFlow"];
         }
 
-        if (requestParameters['groupMatchingMode'] != null) {
-            queryParameters['group_matching_mode'] = requestParameters['groupMatchingMode'];
+        if (requestParameters["groupMatchingMode"] != null) {
+            queryParameters["group_matching_mode"] = requestParameters["groupMatchingMode"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['pbmUuid'] != null) {
-            queryParameters['pbm_uuid'] = requestParameters['pbmUuid'];
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
         }
 
-        if (requestParameters['policyEngineMode'] != null) {
-            queryParameters['policy_engine_mode'] = requestParameters['policyEngineMode'];
+        if (requestParameters["policyEngineMode"] != null) {
+            queryParameters["policy_engine_mode"] = requestParameters["policyEngineMode"];
         }
 
-        if (requestParameters['requestMessageAccess'] != null) {
-            queryParameters['request_message_access'] = requestParameters['requestMessageAccess'];
+        if (requestParameters["requestMessageAccess"] != null) {
+            queryParameters["request_message_access"] = requestParameters["requestMessageAccess"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['slug'] != null) {
-            queryParameters['slug'] = requestParameters['slug'];
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
         }
 
-        if (requestParameters['userMatchingMode'] != null) {
-            queryParameters['user_matching_mode'] = requestParameters['userMatchingMode'];
+        if (requestParameters["userMatchingMode"] != null) {
+            queryParameters["user_matching_mode"] = requestParameters["userMatchingMode"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -8559,7 +9886,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8568,17 +9895,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramListRaw(requestParameters: SourcesTelegramListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedTelegramSourceList>> {
+    async sourcesTelegramListRaw(
+        requestParameters: SourcesTelegramListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedTelegramSourceList>> {
         const requestOptions = await this.sourcesTelegramListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedTelegramSourceListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedTelegramSourceListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramList(requestParameters: SourcesTelegramListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedTelegramSourceList> {
+    async sourcesTelegramList(
+        requestParameters: SourcesTelegramListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedTelegramSourceList> {
         const response = await this.sourcesTelegramListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8586,11 +9921,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesTelegramPartialUpdate without sending the request
      */
-    async sourcesTelegramPartialUpdateRequestOpts(requestParameters: SourcesTelegramPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesTelegramPartialUpdateRequestOpts(
+        requestParameters: SourcesTelegramPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesTelegramPartialUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesTelegramPartialUpdate().',
             );
         }
 
@@ -8598,7 +9935,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8610,43 +9947,62 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedTelegramSourceRequestToJSON(requestParameters['patchedTelegramSourceRequest']),
+            body: PatchedTelegramSourceRequestToJSON(
+                requestParameters["patchedTelegramSourceRequest"],
+            ),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramPartialUpdateRaw(requestParameters: SourcesTelegramPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TelegramSource>> {
-        const requestOptions = await this.sourcesTelegramPartialUpdateRequestOpts(requestParameters);
+    async sourcesTelegramPartialUpdateRaw(
+        requestParameters: SourcesTelegramPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<TelegramSource>> {
+        const requestOptions =
+            await this.sourcesTelegramPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TelegramSourceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            TelegramSourceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramPartialUpdate(requestParameters: SourcesTelegramPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TelegramSource> {
-        const response = await this.sourcesTelegramPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesTelegramPartialUpdate(
+        requestParameters: SourcesTelegramPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<TelegramSource> {
+        const response = await this.sourcesTelegramPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesTelegramRetrieve without sending the request
      */
-    async sourcesTelegramRetrieveRequestOpts(requestParameters: SourcesTelegramRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesTelegramRetrieveRequestOpts(
+        requestParameters: SourcesTelegramRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesTelegramRetrieve().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesTelegramRetrieve().',
             );
         }
 
@@ -8664,11 +10020,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8677,17 +10036,25 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramRetrieveRaw(requestParameters: SourcesTelegramRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TelegramSource>> {
+    async sourcesTelegramRetrieveRaw(
+        requestParameters: SourcesTelegramRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<TelegramSource>> {
         const requestOptions = await this.sourcesTelegramRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TelegramSourceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            TelegramSourceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramRetrieve(requestParameters: SourcesTelegramRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TelegramSource> {
+    async sourcesTelegramRetrieve(
+        requestParameters: SourcesTelegramRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<TelegramSource> {
         const response = await this.sourcesTelegramRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8695,18 +10062,20 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesTelegramUpdate without sending the request
      */
-    async sourcesTelegramUpdateRequestOpts(requestParameters: SourcesTelegramUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesTelegramUpdateRequestOpts(
+        requestParameters: SourcesTelegramUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesTelegramUpdate().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesTelegramUpdate().',
             );
         }
 
-        if (requestParameters['telegramSourceRequest'] == null) {
+        if (requestParameters["telegramSourceRequest"] == null) {
             throw new runtime.RequiredError(
-                'telegramSourceRequest',
-                'Required parameter "telegramSourceRequest" was null or undefined when calling sourcesTelegramUpdate().'
+                "telegramSourceRequest",
+                'Required parameter "telegramSourceRequest" was null or undefined when calling sourcesTelegramUpdate().',
             );
         }
 
@@ -8714,7 +10083,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8726,31 +10095,42 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: TelegramSourceRequestToJSON(requestParameters['telegramSourceRequest']),
+            body: TelegramSourceRequestToJSON(requestParameters["telegramSourceRequest"]),
         };
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramUpdateRaw(requestParameters: SourcesTelegramUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TelegramSource>> {
+    async sourcesTelegramUpdateRaw(
+        requestParameters: SourcesTelegramUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<TelegramSource>> {
         const requestOptions = await this.sourcesTelegramUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TelegramSourceFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            TelegramSourceFromJSON(jsonValue),
+        );
     }
 
     /**
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
-    async sourcesTelegramUpdate(requestParameters: SourcesTelegramUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TelegramSource> {
+    async sourcesTelegramUpdate(
+        requestParameters: SourcesTelegramUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<TelegramSource> {
         const response = await this.sourcesTelegramUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8758,11 +10138,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesTelegramUsedByList without sending the request
      */
-    async sourcesTelegramUsedByListRequestOpts(requestParameters: SourcesTelegramUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['slug'] == null) {
+    async sourcesTelegramUsedByListRequestOpts(
+        requestParameters: SourcesTelegramUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
-                'slug',
-                'Required parameter "slug" was null or undefined when calling sourcesTelegramUsedByList().'
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesTelegramUsedByList().',
             );
         }
 
@@ -8780,11 +10162,14 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/used_by/`;
-        urlPath = urlPath.replace(`{${"slug"}}`, encodeURIComponent(String(requestParameters['slug'])));
+        urlPath = urlPath.replace(
+            `{${"slug"}}`,
+            encodeURIComponent(String(requestParameters["slug"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8793,7 +10178,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesTelegramUsedByListRaw(requestParameters: SourcesTelegramUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async sourcesTelegramUsedByListRaw(
+        requestParameters: SourcesTelegramUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.sourcesTelegramUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -8803,7 +10191,10 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesTelegramUsedByList(requestParameters: SourcesTelegramUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async sourcesTelegramUsedByList(
+        requestParameters: SourcesTelegramUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.sourcesTelegramUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8811,11 +10202,13 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Creates request options for sourcesUserConnectionsAllDestroy without sending the request
      */
-    async sourcesUserConnectionsAllDestroyRequestOpts(requestParameters: SourcesUserConnectionsAllDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsAllDestroyRequestOpts(
+        requestParameters: SourcesUserConnectionsAllDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllDestroy().',
             );
         }
 
@@ -8833,11 +10226,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8846,8 +10239,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsAllDestroyRaw(requestParameters: SourcesUserConnectionsAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesUserConnectionsAllDestroyRequestOpts(requestParameters);
+    async sourcesUserConnectionsAllDestroyRaw(
+        requestParameters: SourcesUserConnectionsAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsAllDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -8856,38 +10253,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsAllDestroy(requestParameters: SourcesUserConnectionsAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesUserConnectionsAllDestroy(
+        requestParameters: SourcesUserConnectionsAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesUserConnectionsAllDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesUserConnectionsAllList without sending the request
      */
-    async sourcesUserConnectionsAllListRequestOpts(requestParameters: SourcesUserConnectionsAllListRequest): Promise<runtime.RequestOpts> {
+    async sourcesUserConnectionsAllListRequestOpts(
+        requestParameters: SourcesUserConnectionsAllListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -8905,7 +10307,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8914,29 +10316,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsAllListRaw(requestParameters: SourcesUserConnectionsAllListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserSourceConnectionList>> {
-        const requestOptions = await this.sourcesUserConnectionsAllListRequestOpts(requestParameters);
+    async sourcesUserConnectionsAllListRaw(
+        requestParameters: SourcesUserConnectionsAllListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsAllListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsAllList(requestParameters: SourcesUserConnectionsAllListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserSourceConnectionList> {
-        const response = await this.sourcesUserConnectionsAllListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsAllList(
+        requestParameters: SourcesUserConnectionsAllListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserSourceConnectionList> {
+        const response = await this.sourcesUserConnectionsAllListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsAllPartialUpdate without sending the request
      */
-    async sourcesUserConnectionsAllPartialUpdateRequestOpts(requestParameters: SourcesUserConnectionsAllPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsAllPartialUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsAllPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllPartialUpdate().',
             );
         }
 
@@ -8944,7 +10360,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8956,43 +10372,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserSourceConnectionRequestToJSON(requestParameters['patchedUserSourceConnectionRequest']),
+            body: PatchedUserSourceConnectionRequestToJSON(
+                requestParameters["patchedUserSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsAllPartialUpdateRaw(requestParameters: SourcesUserConnectionsAllPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsAllPartialUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsAllPartialUpdateRaw(
+        requestParameters: SourcesUserConnectionsAllPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsAllPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsAllPartialUpdate(requestParameters: SourcesUserConnectionsAllPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSourceConnection> {
-        const response = await this.sourcesUserConnectionsAllPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsAllPartialUpdate(
+        requestParameters: SourcesUserConnectionsAllPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserSourceConnection> {
+        const response = await this.sourcesUserConnectionsAllPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsAllRetrieve without sending the request
      */
-    async sourcesUserConnectionsAllRetrieveRequestOpts(requestParameters: SourcesUserConnectionsAllRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsAllRetrieveRequestOpts(
+        requestParameters: SourcesUserConnectionsAllRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllRetrieve().',
             );
         }
 
@@ -9010,11 +10442,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9023,36 +10455,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsAllRetrieveRaw(requestParameters: SourcesUserConnectionsAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsAllRetrieveRequestOpts(requestParameters);
+    async sourcesUserConnectionsAllRetrieveRaw(
+        requestParameters: SourcesUserConnectionsAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsAllRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsAllRetrieve(requestParameters: SourcesUserConnectionsAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSourceConnection> {
-        const response = await this.sourcesUserConnectionsAllRetrieveRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsAllRetrieve(
+        requestParameters: SourcesUserConnectionsAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserSourceConnection> {
+        const response = await this.sourcesUserConnectionsAllRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsAllUpdate without sending the request
      */
-    async sourcesUserConnectionsAllUpdateRequestOpts(requestParameters: SourcesUserConnectionsAllUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsAllUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsAllUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllUpdate().',
             );
         }
 
-        if (requestParameters['userSourceConnectionRequest'] == null) {
+        if (requestParameters["userSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userSourceConnectionRequest',
-                'Required parameter "userSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsAllUpdate().'
+                "userSourceConnectionRequest",
+                'Required parameter "userSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsAllUpdate().',
             );
         }
 
@@ -9060,7 +10506,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9072,43 +10518,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserSourceConnectionRequestToJSON(requestParameters['userSourceConnectionRequest']),
+            body: UserSourceConnectionRequestToJSON(
+                requestParameters["userSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsAllUpdateRaw(requestParameters: SourcesUserConnectionsAllUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsAllUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsAllUpdateRaw(
+        requestParameters: SourcesUserConnectionsAllUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsAllUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsAllUpdate(requestParameters: SourcesUserConnectionsAllUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSourceConnection> {
-        const response = await this.sourcesUserConnectionsAllUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsAllUpdate(
+        requestParameters: SourcesUserConnectionsAllUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserSourceConnection> {
+        const response = await this.sourcesUserConnectionsAllUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsAllUsedByList without sending the request
      */
-    async sourcesUserConnectionsAllUsedByListRequestOpts(requestParameters: SourcesUserConnectionsAllUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsAllUsedByListRequestOpts(
+        requestParameters: SourcesUserConnectionsAllUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsAllUsedByList().',
             );
         }
 
@@ -9126,11 +10588,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/all/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9139,8 +10601,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsAllUsedByListRaw(requestParameters: SourcesUserConnectionsAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesUserConnectionsAllUsedByListRequestOpts(requestParameters);
+    async sourcesUserConnectionsAllUsedByListRaw(
+        requestParameters: SourcesUserConnectionsAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsAllUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -9149,19 +10615,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsAllUsedByList(requestParameters: SourcesUserConnectionsAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsAllUsedByListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsAllUsedByList(
+        requestParameters: SourcesUserConnectionsAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesUserConnectionsAllUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsKerberosCreate without sending the request
      */
-    async sourcesUserConnectionsKerberosCreateRequestOpts(requestParameters: SourcesUserConnectionsKerberosCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['userKerberosSourceConnectionRequest'] == null) {
+    async sourcesUserConnectionsKerberosCreateRequestOpts(
+        requestParameters: SourcesUserConnectionsKerberosCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userKerberosSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userKerberosSourceConnectionRequest',
-                'Required parameter "userKerberosSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsKerberosCreate().'
+                "userKerberosSourceConnectionRequest",
+                'Required parameter "userKerberosSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsKerberosCreate().',
             );
         }
 
@@ -9169,7 +10643,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9184,39 +10658,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserKerberosSourceConnectionRequestToJSON(requestParameters['userKerberosSourceConnectionRequest']),
+            body: UserKerberosSourceConnectionRequestToJSON(
+                requestParameters["userKerberosSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosCreateRaw(requestParameters: SourcesUserConnectionsKerberosCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserKerberosSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsKerberosCreateRequestOpts(requestParameters);
+    async sourcesUserConnectionsKerberosCreateRaw(
+        requestParameters: SourcesUserConnectionsKerberosCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserKerberosSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsKerberosCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserKerberosSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserKerberosSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosCreate(requestParameters: SourcesUserConnectionsKerberosCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserKerberosSourceConnection> {
-        const response = await this.sourcesUserConnectionsKerberosCreateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsKerberosCreate(
+        requestParameters: SourcesUserConnectionsKerberosCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserKerberosSourceConnection> {
+        const response = await this.sourcesUserConnectionsKerberosCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsKerberosDestroy without sending the request
      */
-    async sourcesUserConnectionsKerberosDestroyRequestOpts(requestParameters: SourcesUserConnectionsKerberosDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsKerberosDestroyRequestOpts(
+        requestParameters: SourcesUserConnectionsKerberosDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosDestroy().',
             );
         }
 
@@ -9234,11 +10724,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9247,8 +10737,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosDestroyRaw(requestParameters: SourcesUserConnectionsKerberosDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesUserConnectionsKerberosDestroyRequestOpts(requestParameters);
+    async sourcesUserConnectionsKerberosDestroyRaw(
+        requestParameters: SourcesUserConnectionsKerberosDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsKerberosDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -9257,38 +10751,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosDestroy(requestParameters: SourcesUserConnectionsKerberosDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesUserConnectionsKerberosDestroy(
+        requestParameters: SourcesUserConnectionsKerberosDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesUserConnectionsKerberosDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesUserConnectionsKerberosList without sending the request
      */
-    async sourcesUserConnectionsKerberosListRequestOpts(requestParameters: SourcesUserConnectionsKerberosListRequest): Promise<runtime.RequestOpts> {
+    async sourcesUserConnectionsKerberosListRequestOpts(
+        requestParameters: SourcesUserConnectionsKerberosListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -9306,7 +10805,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9315,29 +10814,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosListRaw(requestParameters: SourcesUserConnectionsKerberosListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserKerberosSourceConnectionList>> {
-        const requestOptions = await this.sourcesUserConnectionsKerberosListRequestOpts(requestParameters);
+    async sourcesUserConnectionsKerberosListRaw(
+        requestParameters: SourcesUserConnectionsKerberosListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserKerberosSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsKerberosListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserKerberosSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserKerberosSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosList(requestParameters: SourcesUserConnectionsKerberosListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserKerberosSourceConnectionList> {
-        const response = await this.sourcesUserConnectionsKerberosListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsKerberosList(
+        requestParameters: SourcesUserConnectionsKerberosListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserKerberosSourceConnectionList> {
+        const response = await this.sourcesUserConnectionsKerberosListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsKerberosPartialUpdate without sending the request
      */
-    async sourcesUserConnectionsKerberosPartialUpdateRequestOpts(requestParameters: SourcesUserConnectionsKerberosPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsKerberosPartialUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsKerberosPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosPartialUpdate().',
             );
         }
 
@@ -9345,7 +10858,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9357,43 +10870,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserKerberosSourceConnectionRequestToJSON(requestParameters['patchedUserKerberosSourceConnectionRequest']),
+            body: PatchedUserKerberosSourceConnectionRequestToJSON(
+                requestParameters["patchedUserKerberosSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosPartialUpdateRaw(requestParameters: SourcesUserConnectionsKerberosPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserKerberosSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsKerberosPartialUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsKerberosPartialUpdateRaw(
+        requestParameters: SourcesUserConnectionsKerberosPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserKerberosSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsKerberosPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserKerberosSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserKerberosSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosPartialUpdate(requestParameters: SourcesUserConnectionsKerberosPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserKerberosSourceConnection> {
-        const response = await this.sourcesUserConnectionsKerberosPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsKerberosPartialUpdate(
+        requestParameters: SourcesUserConnectionsKerberosPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserKerberosSourceConnection> {
+        const response = await this.sourcesUserConnectionsKerberosPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsKerberosRetrieve without sending the request
      */
-    async sourcesUserConnectionsKerberosRetrieveRequestOpts(requestParameters: SourcesUserConnectionsKerberosRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsKerberosRetrieveRequestOpts(
+        requestParameters: SourcesUserConnectionsKerberosRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosRetrieve().',
             );
         }
 
@@ -9411,11 +10940,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9424,36 +10953,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosRetrieveRaw(requestParameters: SourcesUserConnectionsKerberosRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserKerberosSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsKerberosRetrieveRequestOpts(requestParameters);
+    async sourcesUserConnectionsKerberosRetrieveRaw(
+        requestParameters: SourcesUserConnectionsKerberosRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserKerberosSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsKerberosRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserKerberosSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserKerberosSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosRetrieve(requestParameters: SourcesUserConnectionsKerberosRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserKerberosSourceConnection> {
-        const response = await this.sourcesUserConnectionsKerberosRetrieveRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsKerberosRetrieve(
+        requestParameters: SourcesUserConnectionsKerberosRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserKerberosSourceConnection> {
+        const response = await this.sourcesUserConnectionsKerberosRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsKerberosUpdate without sending the request
      */
-    async sourcesUserConnectionsKerberosUpdateRequestOpts(requestParameters: SourcesUserConnectionsKerberosUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsKerberosUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsKerberosUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosUpdate().',
             );
         }
 
-        if (requestParameters['userKerberosSourceConnectionRequest'] == null) {
+        if (requestParameters["userKerberosSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userKerberosSourceConnectionRequest',
-                'Required parameter "userKerberosSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsKerberosUpdate().'
+                "userKerberosSourceConnectionRequest",
+                'Required parameter "userKerberosSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsKerberosUpdate().',
             );
         }
 
@@ -9461,7 +11004,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9473,43 +11016,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserKerberosSourceConnectionRequestToJSON(requestParameters['userKerberosSourceConnectionRequest']),
+            body: UserKerberosSourceConnectionRequestToJSON(
+                requestParameters["userKerberosSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosUpdateRaw(requestParameters: SourcesUserConnectionsKerberosUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserKerberosSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsKerberosUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsKerberosUpdateRaw(
+        requestParameters: SourcesUserConnectionsKerberosUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserKerberosSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsKerberosUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserKerberosSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserKerberosSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsKerberosUpdate(requestParameters: SourcesUserConnectionsKerberosUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserKerberosSourceConnection> {
-        const response = await this.sourcesUserConnectionsKerberosUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsKerberosUpdate(
+        requestParameters: SourcesUserConnectionsKerberosUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserKerberosSourceConnection> {
+        const response = await this.sourcesUserConnectionsKerberosUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsKerberosUsedByList without sending the request
      */
-    async sourcesUserConnectionsKerberosUsedByListRequestOpts(requestParameters: SourcesUserConnectionsKerberosUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsKerberosUsedByListRequestOpts(
+        requestParameters: SourcesUserConnectionsKerberosUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsKerberosUsedByList().',
             );
         }
 
@@ -9527,11 +11086,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/kerberos/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9540,8 +11099,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsKerberosUsedByListRaw(requestParameters: SourcesUserConnectionsKerberosUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesUserConnectionsKerberosUsedByListRequestOpts(requestParameters);
+    async sourcesUserConnectionsKerberosUsedByListRaw(
+        requestParameters: SourcesUserConnectionsKerberosUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsKerberosUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -9550,19 +11113,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsKerberosUsedByList(requestParameters: SourcesUserConnectionsKerberosUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsKerberosUsedByListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsKerberosUsedByList(
+        requestParameters: SourcesUserConnectionsKerberosUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesUserConnectionsKerberosUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsLdapCreate without sending the request
      */
-    async sourcesUserConnectionsLdapCreateRequestOpts(requestParameters: SourcesUserConnectionsLdapCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['userLDAPSourceConnectionRequest'] == null) {
+    async sourcesUserConnectionsLdapCreateRequestOpts(
+        requestParameters: SourcesUserConnectionsLdapCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userLDAPSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userLDAPSourceConnectionRequest',
-                'Required parameter "userLDAPSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsLdapCreate().'
+                "userLDAPSourceConnectionRequest",
+                'Required parameter "userLDAPSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsLdapCreate().',
             );
         }
 
@@ -9570,7 +11141,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9585,39 +11156,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserLDAPSourceConnectionRequestToJSON(requestParameters['userLDAPSourceConnectionRequest']),
+            body: UserLDAPSourceConnectionRequestToJSON(
+                requestParameters["userLDAPSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapCreateRaw(requestParameters: SourcesUserConnectionsLdapCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLDAPSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsLdapCreateRequestOpts(requestParameters);
+    async sourcesUserConnectionsLdapCreateRaw(
+        requestParameters: SourcesUserConnectionsLdapCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLDAPSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsLdapCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLDAPSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLDAPSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapCreate(requestParameters: SourcesUserConnectionsLdapCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLDAPSourceConnection> {
-        const response = await this.sourcesUserConnectionsLdapCreateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsLdapCreate(
+        requestParameters: SourcesUserConnectionsLdapCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLDAPSourceConnection> {
+        const response = await this.sourcesUserConnectionsLdapCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsLdapDestroy without sending the request
      */
-    async sourcesUserConnectionsLdapDestroyRequestOpts(requestParameters: SourcesUserConnectionsLdapDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsLdapDestroyRequestOpts(
+        requestParameters: SourcesUserConnectionsLdapDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapDestroy().',
             );
         }
 
@@ -9635,11 +11222,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9648,8 +11235,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapDestroyRaw(requestParameters: SourcesUserConnectionsLdapDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesUserConnectionsLdapDestroyRequestOpts(requestParameters);
+    async sourcesUserConnectionsLdapDestroyRaw(
+        requestParameters: SourcesUserConnectionsLdapDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsLdapDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -9658,38 +11249,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapDestroy(requestParameters: SourcesUserConnectionsLdapDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesUserConnectionsLdapDestroy(
+        requestParameters: SourcesUserConnectionsLdapDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesUserConnectionsLdapDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesUserConnectionsLdapList without sending the request
      */
-    async sourcesUserConnectionsLdapListRequestOpts(requestParameters: SourcesUserConnectionsLdapListRequest): Promise<runtime.RequestOpts> {
+    async sourcesUserConnectionsLdapListRequestOpts(
+        requestParameters: SourcesUserConnectionsLdapListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -9707,7 +11303,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9716,29 +11312,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapListRaw(requestParameters: SourcesUserConnectionsLdapListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserLDAPSourceConnectionList>> {
-        const requestOptions = await this.sourcesUserConnectionsLdapListRequestOpts(requestParameters);
+    async sourcesUserConnectionsLdapListRaw(
+        requestParameters: SourcesUserConnectionsLdapListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserLDAPSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsLdapListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserLDAPSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserLDAPSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapList(requestParameters: SourcesUserConnectionsLdapListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserLDAPSourceConnectionList> {
-        const response = await this.sourcesUserConnectionsLdapListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsLdapList(
+        requestParameters: SourcesUserConnectionsLdapListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserLDAPSourceConnectionList> {
+        const response = await this.sourcesUserConnectionsLdapListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsLdapPartialUpdate without sending the request
      */
-    async sourcesUserConnectionsLdapPartialUpdateRequestOpts(requestParameters: SourcesUserConnectionsLdapPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsLdapPartialUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsLdapPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapPartialUpdate().',
             );
         }
 
@@ -9746,7 +11356,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9758,43 +11368,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserLDAPSourceConnectionRequestToJSON(requestParameters['patchedUserLDAPSourceConnectionRequest']),
+            body: PatchedUserLDAPSourceConnectionRequestToJSON(
+                requestParameters["patchedUserLDAPSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapPartialUpdateRaw(requestParameters: SourcesUserConnectionsLdapPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLDAPSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsLdapPartialUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsLdapPartialUpdateRaw(
+        requestParameters: SourcesUserConnectionsLdapPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLDAPSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsLdapPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLDAPSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLDAPSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapPartialUpdate(requestParameters: SourcesUserConnectionsLdapPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLDAPSourceConnection> {
-        const response = await this.sourcesUserConnectionsLdapPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsLdapPartialUpdate(
+        requestParameters: SourcesUserConnectionsLdapPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLDAPSourceConnection> {
+        const response = await this.sourcesUserConnectionsLdapPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsLdapRetrieve without sending the request
      */
-    async sourcesUserConnectionsLdapRetrieveRequestOpts(requestParameters: SourcesUserConnectionsLdapRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsLdapRetrieveRequestOpts(
+        requestParameters: SourcesUserConnectionsLdapRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapRetrieve().',
             );
         }
 
@@ -9812,11 +11438,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9825,36 +11451,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapRetrieveRaw(requestParameters: SourcesUserConnectionsLdapRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLDAPSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsLdapRetrieveRequestOpts(requestParameters);
+    async sourcesUserConnectionsLdapRetrieveRaw(
+        requestParameters: SourcesUserConnectionsLdapRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLDAPSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsLdapRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLDAPSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLDAPSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapRetrieve(requestParameters: SourcesUserConnectionsLdapRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLDAPSourceConnection> {
-        const response = await this.sourcesUserConnectionsLdapRetrieveRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsLdapRetrieve(
+        requestParameters: SourcesUserConnectionsLdapRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLDAPSourceConnection> {
+        const response = await this.sourcesUserConnectionsLdapRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsLdapUpdate without sending the request
      */
-    async sourcesUserConnectionsLdapUpdateRequestOpts(requestParameters: SourcesUserConnectionsLdapUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsLdapUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsLdapUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapUpdate().',
             );
         }
 
-        if (requestParameters['userLDAPSourceConnectionRequest'] == null) {
+        if (requestParameters["userLDAPSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userLDAPSourceConnectionRequest',
-                'Required parameter "userLDAPSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsLdapUpdate().'
+                "userLDAPSourceConnectionRequest",
+                'Required parameter "userLDAPSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsLdapUpdate().',
             );
         }
 
@@ -9862,7 +11502,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9874,43 +11514,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserLDAPSourceConnectionRequestToJSON(requestParameters['userLDAPSourceConnectionRequest']),
+            body: UserLDAPSourceConnectionRequestToJSON(
+                requestParameters["userLDAPSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapUpdateRaw(requestParameters: SourcesUserConnectionsLdapUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLDAPSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsLdapUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsLdapUpdateRaw(
+        requestParameters: SourcesUserConnectionsLdapUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLDAPSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsLdapUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLDAPSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLDAPSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsLdapUpdate(requestParameters: SourcesUserConnectionsLdapUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLDAPSourceConnection> {
-        const response = await this.sourcesUserConnectionsLdapUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsLdapUpdate(
+        requestParameters: SourcesUserConnectionsLdapUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLDAPSourceConnection> {
+        const response = await this.sourcesUserConnectionsLdapUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsLdapUsedByList without sending the request
      */
-    async sourcesUserConnectionsLdapUsedByListRequestOpts(requestParameters: SourcesUserConnectionsLdapUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsLdapUsedByListRequestOpts(
+        requestParameters: SourcesUserConnectionsLdapUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsLdapUsedByList().',
             );
         }
 
@@ -9928,11 +11584,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/ldap/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9941,8 +11597,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsLdapUsedByListRaw(requestParameters: SourcesUserConnectionsLdapUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesUserConnectionsLdapUsedByListRequestOpts(requestParameters);
+    async sourcesUserConnectionsLdapUsedByListRaw(
+        requestParameters: SourcesUserConnectionsLdapUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsLdapUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -9951,19 +11611,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsLdapUsedByList(requestParameters: SourcesUserConnectionsLdapUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsLdapUsedByListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsLdapUsedByList(
+        requestParameters: SourcesUserConnectionsLdapUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesUserConnectionsLdapUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsOauthCreate without sending the request
      */
-    async sourcesUserConnectionsOauthCreateRequestOpts(requestParameters: SourcesUserConnectionsOauthCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['userOAuthSourceConnectionRequest'] == null) {
+    async sourcesUserConnectionsOauthCreateRequestOpts(
+        requestParameters: SourcesUserConnectionsOauthCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userOAuthSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userOAuthSourceConnectionRequest',
-                'Required parameter "userOAuthSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsOauthCreate().'
+                "userOAuthSourceConnectionRequest",
+                'Required parameter "userOAuthSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsOauthCreate().',
             );
         }
 
@@ -9971,7 +11639,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9986,39 +11654,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserOAuthSourceConnectionRequestToJSON(requestParameters['userOAuthSourceConnectionRequest']),
+            body: UserOAuthSourceConnectionRequestToJSON(
+                requestParameters["userOAuthSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthCreateRaw(requestParameters: SourcesUserConnectionsOauthCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserOAuthSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsOauthCreateRequestOpts(requestParameters);
+    async sourcesUserConnectionsOauthCreateRaw(
+        requestParameters: SourcesUserConnectionsOauthCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserOAuthSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsOauthCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserOAuthSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserOAuthSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthCreate(requestParameters: SourcesUserConnectionsOauthCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserOAuthSourceConnection> {
-        const response = await this.sourcesUserConnectionsOauthCreateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsOauthCreate(
+        requestParameters: SourcesUserConnectionsOauthCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserOAuthSourceConnection> {
+        const response = await this.sourcesUserConnectionsOauthCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsOauthDestroy without sending the request
      */
-    async sourcesUserConnectionsOauthDestroyRequestOpts(requestParameters: SourcesUserConnectionsOauthDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsOauthDestroyRequestOpts(
+        requestParameters: SourcesUserConnectionsOauthDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthDestroy().',
             );
         }
 
@@ -10036,11 +11720,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10049,8 +11733,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthDestroyRaw(requestParameters: SourcesUserConnectionsOauthDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesUserConnectionsOauthDestroyRequestOpts(requestParameters);
+    async sourcesUserConnectionsOauthDestroyRaw(
+        requestParameters: SourcesUserConnectionsOauthDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsOauthDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -10059,38 +11747,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthDestroy(requestParameters: SourcesUserConnectionsOauthDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesUserConnectionsOauthDestroy(
+        requestParameters: SourcesUserConnectionsOauthDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesUserConnectionsOauthDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesUserConnectionsOauthList without sending the request
      */
-    async sourcesUserConnectionsOauthListRequestOpts(requestParameters: SourcesUserConnectionsOauthListRequest): Promise<runtime.RequestOpts> {
+    async sourcesUserConnectionsOauthListRequestOpts(
+        requestParameters: SourcesUserConnectionsOauthListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -10108,7 +11801,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10117,29 +11810,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthListRaw(requestParameters: SourcesUserConnectionsOauthListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserOAuthSourceConnectionList>> {
-        const requestOptions = await this.sourcesUserConnectionsOauthListRequestOpts(requestParameters);
+    async sourcesUserConnectionsOauthListRaw(
+        requestParameters: SourcesUserConnectionsOauthListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserOAuthSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsOauthListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserOAuthSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserOAuthSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthList(requestParameters: SourcesUserConnectionsOauthListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserOAuthSourceConnectionList> {
-        const response = await this.sourcesUserConnectionsOauthListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsOauthList(
+        requestParameters: SourcesUserConnectionsOauthListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserOAuthSourceConnectionList> {
+        const response = await this.sourcesUserConnectionsOauthListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsOauthPartialUpdate without sending the request
      */
-    async sourcesUserConnectionsOauthPartialUpdateRequestOpts(requestParameters: SourcesUserConnectionsOauthPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsOauthPartialUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsOauthPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthPartialUpdate().',
             );
         }
 
@@ -10147,7 +11854,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10159,43 +11866,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserOAuthSourceConnectionRequestToJSON(requestParameters['patchedUserOAuthSourceConnectionRequest']),
+            body: PatchedUserOAuthSourceConnectionRequestToJSON(
+                requestParameters["patchedUserOAuthSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthPartialUpdateRaw(requestParameters: SourcesUserConnectionsOauthPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserOAuthSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsOauthPartialUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsOauthPartialUpdateRaw(
+        requestParameters: SourcesUserConnectionsOauthPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserOAuthSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsOauthPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserOAuthSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserOAuthSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthPartialUpdate(requestParameters: SourcesUserConnectionsOauthPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserOAuthSourceConnection> {
-        const response = await this.sourcesUserConnectionsOauthPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsOauthPartialUpdate(
+        requestParameters: SourcesUserConnectionsOauthPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserOAuthSourceConnection> {
+        const response = await this.sourcesUserConnectionsOauthPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsOauthRetrieve without sending the request
      */
-    async sourcesUserConnectionsOauthRetrieveRequestOpts(requestParameters: SourcesUserConnectionsOauthRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsOauthRetrieveRequestOpts(
+        requestParameters: SourcesUserConnectionsOauthRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthRetrieve().',
             );
         }
 
@@ -10213,11 +11936,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10226,36 +11949,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthRetrieveRaw(requestParameters: SourcesUserConnectionsOauthRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserOAuthSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsOauthRetrieveRequestOpts(requestParameters);
+    async sourcesUserConnectionsOauthRetrieveRaw(
+        requestParameters: SourcesUserConnectionsOauthRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserOAuthSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsOauthRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserOAuthSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserOAuthSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthRetrieve(requestParameters: SourcesUserConnectionsOauthRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserOAuthSourceConnection> {
-        const response = await this.sourcesUserConnectionsOauthRetrieveRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsOauthRetrieve(
+        requestParameters: SourcesUserConnectionsOauthRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserOAuthSourceConnection> {
+        const response = await this.sourcesUserConnectionsOauthRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsOauthUpdate without sending the request
      */
-    async sourcesUserConnectionsOauthUpdateRequestOpts(requestParameters: SourcesUserConnectionsOauthUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsOauthUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsOauthUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthUpdate().',
             );
         }
 
-        if (requestParameters['userOAuthSourceConnectionRequest'] == null) {
+        if (requestParameters["userOAuthSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userOAuthSourceConnectionRequest',
-                'Required parameter "userOAuthSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsOauthUpdate().'
+                "userOAuthSourceConnectionRequest",
+                'Required parameter "userOAuthSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsOauthUpdate().',
             );
         }
 
@@ -10263,7 +12000,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10275,43 +12012,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserOAuthSourceConnectionRequestToJSON(requestParameters['userOAuthSourceConnectionRequest']),
+            body: UserOAuthSourceConnectionRequestToJSON(
+                requestParameters["userOAuthSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthUpdateRaw(requestParameters: SourcesUserConnectionsOauthUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserOAuthSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsOauthUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsOauthUpdateRaw(
+        requestParameters: SourcesUserConnectionsOauthUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserOAuthSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsOauthUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserOAuthSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserOAuthSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsOauthUpdate(requestParameters: SourcesUserConnectionsOauthUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserOAuthSourceConnection> {
-        const response = await this.sourcesUserConnectionsOauthUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsOauthUpdate(
+        requestParameters: SourcesUserConnectionsOauthUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserOAuthSourceConnection> {
+        const response = await this.sourcesUserConnectionsOauthUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsOauthUsedByList without sending the request
      */
-    async sourcesUserConnectionsOauthUsedByListRequestOpts(requestParameters: SourcesUserConnectionsOauthUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsOauthUsedByListRequestOpts(
+        requestParameters: SourcesUserConnectionsOauthUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsOauthUsedByList().',
             );
         }
 
@@ -10329,11 +12082,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/oauth/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10342,8 +12095,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsOauthUsedByListRaw(requestParameters: SourcesUserConnectionsOauthUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesUserConnectionsOauthUsedByListRequestOpts(requestParameters);
+    async sourcesUserConnectionsOauthUsedByListRaw(
+        requestParameters: SourcesUserConnectionsOauthUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsOauthUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -10352,19 +12109,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsOauthUsedByList(requestParameters: SourcesUserConnectionsOauthUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsOauthUsedByListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsOauthUsedByList(
+        requestParameters: SourcesUserConnectionsOauthUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesUserConnectionsOauthUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsPlexCreate without sending the request
      */
-    async sourcesUserConnectionsPlexCreateRequestOpts(requestParameters: SourcesUserConnectionsPlexCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['userPlexSourceConnectionRequest'] == null) {
+    async sourcesUserConnectionsPlexCreateRequestOpts(
+        requestParameters: SourcesUserConnectionsPlexCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userPlexSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userPlexSourceConnectionRequest',
-                'Required parameter "userPlexSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsPlexCreate().'
+                "userPlexSourceConnectionRequest",
+                'Required parameter "userPlexSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsPlexCreate().',
             );
         }
 
@@ -10372,7 +12137,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10387,39 +12152,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserPlexSourceConnectionRequestToJSON(requestParameters['userPlexSourceConnectionRequest']),
+            body: UserPlexSourceConnectionRequestToJSON(
+                requestParameters["userPlexSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexCreateRaw(requestParameters: SourcesUserConnectionsPlexCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserPlexSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsPlexCreateRequestOpts(requestParameters);
+    async sourcesUserConnectionsPlexCreateRaw(
+        requestParameters: SourcesUserConnectionsPlexCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserPlexSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsPlexCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserPlexSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserPlexSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexCreate(requestParameters: SourcesUserConnectionsPlexCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserPlexSourceConnection> {
-        const response = await this.sourcesUserConnectionsPlexCreateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsPlexCreate(
+        requestParameters: SourcesUserConnectionsPlexCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserPlexSourceConnection> {
+        const response = await this.sourcesUserConnectionsPlexCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsPlexDestroy without sending the request
      */
-    async sourcesUserConnectionsPlexDestroyRequestOpts(requestParameters: SourcesUserConnectionsPlexDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsPlexDestroyRequestOpts(
+        requestParameters: SourcesUserConnectionsPlexDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexDestroy().',
             );
         }
 
@@ -10437,11 +12218,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10450,8 +12231,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexDestroyRaw(requestParameters: SourcesUserConnectionsPlexDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesUserConnectionsPlexDestroyRequestOpts(requestParameters);
+    async sourcesUserConnectionsPlexDestroyRaw(
+        requestParameters: SourcesUserConnectionsPlexDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsPlexDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -10460,38 +12245,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexDestroy(requestParameters: SourcesUserConnectionsPlexDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesUserConnectionsPlexDestroy(
+        requestParameters: SourcesUserConnectionsPlexDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesUserConnectionsPlexDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesUserConnectionsPlexList without sending the request
      */
-    async sourcesUserConnectionsPlexListRequestOpts(requestParameters: SourcesUserConnectionsPlexListRequest): Promise<runtime.RequestOpts> {
+    async sourcesUserConnectionsPlexListRequestOpts(
+        requestParameters: SourcesUserConnectionsPlexListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -10509,7 +12299,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10518,29 +12308,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexListRaw(requestParameters: SourcesUserConnectionsPlexListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserPlexSourceConnectionList>> {
-        const requestOptions = await this.sourcesUserConnectionsPlexListRequestOpts(requestParameters);
+    async sourcesUserConnectionsPlexListRaw(
+        requestParameters: SourcesUserConnectionsPlexListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserPlexSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsPlexListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserPlexSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserPlexSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexList(requestParameters: SourcesUserConnectionsPlexListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserPlexSourceConnectionList> {
-        const response = await this.sourcesUserConnectionsPlexListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsPlexList(
+        requestParameters: SourcesUserConnectionsPlexListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserPlexSourceConnectionList> {
+        const response = await this.sourcesUserConnectionsPlexListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsPlexPartialUpdate without sending the request
      */
-    async sourcesUserConnectionsPlexPartialUpdateRequestOpts(requestParameters: SourcesUserConnectionsPlexPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsPlexPartialUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsPlexPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexPartialUpdate().',
             );
         }
 
@@ -10548,7 +12352,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10560,43 +12364,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserPlexSourceConnectionRequestToJSON(requestParameters['patchedUserPlexSourceConnectionRequest']),
+            body: PatchedUserPlexSourceConnectionRequestToJSON(
+                requestParameters["patchedUserPlexSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexPartialUpdateRaw(requestParameters: SourcesUserConnectionsPlexPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserPlexSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsPlexPartialUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsPlexPartialUpdateRaw(
+        requestParameters: SourcesUserConnectionsPlexPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserPlexSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsPlexPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserPlexSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserPlexSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexPartialUpdate(requestParameters: SourcesUserConnectionsPlexPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserPlexSourceConnection> {
-        const response = await this.sourcesUserConnectionsPlexPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsPlexPartialUpdate(
+        requestParameters: SourcesUserConnectionsPlexPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserPlexSourceConnection> {
+        const response = await this.sourcesUserConnectionsPlexPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsPlexRetrieve without sending the request
      */
-    async sourcesUserConnectionsPlexRetrieveRequestOpts(requestParameters: SourcesUserConnectionsPlexRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsPlexRetrieveRequestOpts(
+        requestParameters: SourcesUserConnectionsPlexRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexRetrieve().',
             );
         }
 
@@ -10614,11 +12434,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10627,36 +12447,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexRetrieveRaw(requestParameters: SourcesUserConnectionsPlexRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserPlexSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsPlexRetrieveRequestOpts(requestParameters);
+    async sourcesUserConnectionsPlexRetrieveRaw(
+        requestParameters: SourcesUserConnectionsPlexRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserPlexSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsPlexRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserPlexSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserPlexSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexRetrieve(requestParameters: SourcesUserConnectionsPlexRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserPlexSourceConnection> {
-        const response = await this.sourcesUserConnectionsPlexRetrieveRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsPlexRetrieve(
+        requestParameters: SourcesUserConnectionsPlexRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserPlexSourceConnection> {
+        const response = await this.sourcesUserConnectionsPlexRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsPlexUpdate without sending the request
      */
-    async sourcesUserConnectionsPlexUpdateRequestOpts(requestParameters: SourcesUserConnectionsPlexUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsPlexUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsPlexUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexUpdate().',
             );
         }
 
-        if (requestParameters['userPlexSourceConnectionRequest'] == null) {
+        if (requestParameters["userPlexSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userPlexSourceConnectionRequest',
-                'Required parameter "userPlexSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsPlexUpdate().'
+                "userPlexSourceConnectionRequest",
+                'Required parameter "userPlexSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsPlexUpdate().',
             );
         }
 
@@ -10664,7 +12498,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10676,43 +12510,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserPlexSourceConnectionRequestToJSON(requestParameters['userPlexSourceConnectionRequest']),
+            body: UserPlexSourceConnectionRequestToJSON(
+                requestParameters["userPlexSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexUpdateRaw(requestParameters: SourcesUserConnectionsPlexUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserPlexSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsPlexUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsPlexUpdateRaw(
+        requestParameters: SourcesUserConnectionsPlexUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserPlexSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsPlexUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserPlexSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserPlexSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsPlexUpdate(requestParameters: SourcesUserConnectionsPlexUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserPlexSourceConnection> {
-        const response = await this.sourcesUserConnectionsPlexUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsPlexUpdate(
+        requestParameters: SourcesUserConnectionsPlexUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserPlexSourceConnection> {
+        const response = await this.sourcesUserConnectionsPlexUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsPlexUsedByList without sending the request
      */
-    async sourcesUserConnectionsPlexUsedByListRequestOpts(requestParameters: SourcesUserConnectionsPlexUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsPlexUsedByListRequestOpts(
+        requestParameters: SourcesUserConnectionsPlexUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsPlexUsedByList().',
             );
         }
 
@@ -10730,11 +12580,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/plex/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10743,8 +12593,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsPlexUsedByListRaw(requestParameters: SourcesUserConnectionsPlexUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesUserConnectionsPlexUsedByListRequestOpts(requestParameters);
+    async sourcesUserConnectionsPlexUsedByListRaw(
+        requestParameters: SourcesUserConnectionsPlexUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsPlexUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -10753,19 +12607,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsPlexUsedByList(requestParameters: SourcesUserConnectionsPlexUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsPlexUsedByListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsPlexUsedByList(
+        requestParameters: SourcesUserConnectionsPlexUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesUserConnectionsPlexUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsSamlCreate without sending the request
      */
-    async sourcesUserConnectionsSamlCreateRequestOpts(requestParameters: SourcesUserConnectionsSamlCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['userSAMLSourceConnectionRequest'] == null) {
+    async sourcesUserConnectionsSamlCreateRequestOpts(
+        requestParameters: SourcesUserConnectionsSamlCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userSAMLSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userSAMLSourceConnectionRequest',
-                'Required parameter "userSAMLSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsSamlCreate().'
+                "userSAMLSourceConnectionRequest",
+                'Required parameter "userSAMLSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsSamlCreate().',
             );
         }
 
@@ -10773,7 +12635,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10788,39 +12650,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserSAMLSourceConnectionRequestToJSON(requestParameters['userSAMLSourceConnectionRequest']),
+            body: UserSAMLSourceConnectionRequestToJSON(
+                requestParameters["userSAMLSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlCreateRaw(requestParameters: SourcesUserConnectionsSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSAMLSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsSamlCreateRequestOpts(requestParameters);
+    async sourcesUserConnectionsSamlCreateRaw(
+        requestParameters: SourcesUserConnectionsSamlCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserSAMLSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsSamlCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserSAMLSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserSAMLSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlCreate(requestParameters: SourcesUserConnectionsSamlCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSAMLSourceConnection> {
-        const response = await this.sourcesUserConnectionsSamlCreateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsSamlCreate(
+        requestParameters: SourcesUserConnectionsSamlCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserSAMLSourceConnection> {
+        const response = await this.sourcesUserConnectionsSamlCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsSamlDestroy without sending the request
      */
-    async sourcesUserConnectionsSamlDestroyRequestOpts(requestParameters: SourcesUserConnectionsSamlDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsSamlDestroyRequestOpts(
+        requestParameters: SourcesUserConnectionsSamlDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlDestroy().',
             );
         }
 
@@ -10838,11 +12716,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10851,8 +12729,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlDestroyRaw(requestParameters: SourcesUserConnectionsSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesUserConnectionsSamlDestroyRequestOpts(requestParameters);
+    async sourcesUserConnectionsSamlDestroyRaw(
+        requestParameters: SourcesUserConnectionsSamlDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsSamlDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -10861,38 +12743,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlDestroy(requestParameters: SourcesUserConnectionsSamlDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesUserConnectionsSamlDestroy(
+        requestParameters: SourcesUserConnectionsSamlDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesUserConnectionsSamlDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesUserConnectionsSamlList without sending the request
      */
-    async sourcesUserConnectionsSamlListRequestOpts(requestParameters: SourcesUserConnectionsSamlListRequest): Promise<runtime.RequestOpts> {
+    async sourcesUserConnectionsSamlListRequestOpts(
+        requestParameters: SourcesUserConnectionsSamlListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -10910,7 +12797,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10919,29 +12806,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlListRaw(requestParameters: SourcesUserConnectionsSamlListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserSAMLSourceConnectionList>> {
-        const requestOptions = await this.sourcesUserConnectionsSamlListRequestOpts(requestParameters);
+    async sourcesUserConnectionsSamlListRaw(
+        requestParameters: SourcesUserConnectionsSamlListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserSAMLSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsSamlListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserSAMLSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserSAMLSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlList(requestParameters: SourcesUserConnectionsSamlListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserSAMLSourceConnectionList> {
-        const response = await this.sourcesUserConnectionsSamlListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsSamlList(
+        requestParameters: SourcesUserConnectionsSamlListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserSAMLSourceConnectionList> {
+        const response = await this.sourcesUserConnectionsSamlListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsSamlPartialUpdate without sending the request
      */
-    async sourcesUserConnectionsSamlPartialUpdateRequestOpts(requestParameters: SourcesUserConnectionsSamlPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsSamlPartialUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsSamlPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlPartialUpdate().',
             );
         }
 
@@ -10949,7 +12850,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10961,43 +12862,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserSAMLSourceConnectionRequestToJSON(requestParameters['patchedUserSAMLSourceConnectionRequest']),
+            body: PatchedUserSAMLSourceConnectionRequestToJSON(
+                requestParameters["patchedUserSAMLSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlPartialUpdateRaw(requestParameters: SourcesUserConnectionsSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSAMLSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsSamlPartialUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsSamlPartialUpdateRaw(
+        requestParameters: SourcesUserConnectionsSamlPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserSAMLSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsSamlPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserSAMLSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserSAMLSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlPartialUpdate(requestParameters: SourcesUserConnectionsSamlPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSAMLSourceConnection> {
-        const response = await this.sourcesUserConnectionsSamlPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsSamlPartialUpdate(
+        requestParameters: SourcesUserConnectionsSamlPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserSAMLSourceConnection> {
+        const response = await this.sourcesUserConnectionsSamlPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsSamlRetrieve without sending the request
      */
-    async sourcesUserConnectionsSamlRetrieveRequestOpts(requestParameters: SourcesUserConnectionsSamlRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsSamlRetrieveRequestOpts(
+        requestParameters: SourcesUserConnectionsSamlRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlRetrieve().',
             );
         }
 
@@ -11015,11 +12932,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11028,36 +12945,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlRetrieveRaw(requestParameters: SourcesUserConnectionsSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSAMLSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsSamlRetrieveRequestOpts(requestParameters);
+    async sourcesUserConnectionsSamlRetrieveRaw(
+        requestParameters: SourcesUserConnectionsSamlRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserSAMLSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsSamlRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserSAMLSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserSAMLSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlRetrieve(requestParameters: SourcesUserConnectionsSamlRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSAMLSourceConnection> {
-        const response = await this.sourcesUserConnectionsSamlRetrieveRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsSamlRetrieve(
+        requestParameters: SourcesUserConnectionsSamlRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserSAMLSourceConnection> {
+        const response = await this.sourcesUserConnectionsSamlRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsSamlUpdate without sending the request
      */
-    async sourcesUserConnectionsSamlUpdateRequestOpts(requestParameters: SourcesUserConnectionsSamlUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsSamlUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsSamlUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlUpdate().',
             );
         }
 
-        if (requestParameters['userSAMLSourceConnectionRequest'] == null) {
+        if (requestParameters["userSAMLSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userSAMLSourceConnectionRequest',
-                'Required parameter "userSAMLSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsSamlUpdate().'
+                "userSAMLSourceConnectionRequest",
+                'Required parameter "userSAMLSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsSamlUpdate().',
             );
         }
 
@@ -11065,7 +12996,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11077,43 +13008,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserSAMLSourceConnectionRequestToJSON(requestParameters['userSAMLSourceConnectionRequest']),
+            body: UserSAMLSourceConnectionRequestToJSON(
+                requestParameters["userSAMLSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlUpdateRaw(requestParameters: SourcesUserConnectionsSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSAMLSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsSamlUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsSamlUpdateRaw(
+        requestParameters: SourcesUserConnectionsSamlUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserSAMLSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsSamlUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserSAMLSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserSAMLSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsSamlUpdate(requestParameters: SourcesUserConnectionsSamlUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSAMLSourceConnection> {
-        const response = await this.sourcesUserConnectionsSamlUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsSamlUpdate(
+        requestParameters: SourcesUserConnectionsSamlUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserSAMLSourceConnection> {
+        const response = await this.sourcesUserConnectionsSamlUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsSamlUsedByList without sending the request
      */
-    async sourcesUserConnectionsSamlUsedByListRequestOpts(requestParameters: SourcesUserConnectionsSamlUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsSamlUsedByListRequestOpts(
+        requestParameters: SourcesUserConnectionsSamlUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsSamlUsedByList().',
             );
         }
 
@@ -11131,11 +13078,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/saml/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11144,8 +13091,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsSamlUsedByListRaw(requestParameters: SourcesUserConnectionsSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesUserConnectionsSamlUsedByListRequestOpts(requestParameters);
+    async sourcesUserConnectionsSamlUsedByListRaw(
+        requestParameters: SourcesUserConnectionsSamlUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsSamlUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -11154,19 +13105,27 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsSamlUsedByList(requestParameters: SourcesUserConnectionsSamlUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsSamlUsedByListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsSamlUsedByList(
+        requestParameters: SourcesUserConnectionsSamlUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesUserConnectionsSamlUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsTelegramCreate without sending the request
      */
-    async sourcesUserConnectionsTelegramCreateRequestOpts(requestParameters: SourcesUserConnectionsTelegramCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['userTelegramSourceConnectionRequest'] == null) {
+    async sourcesUserConnectionsTelegramCreateRequestOpts(
+        requestParameters: SourcesUserConnectionsTelegramCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userTelegramSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userTelegramSourceConnectionRequest',
-                'Required parameter "userTelegramSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsTelegramCreate().'
+                "userTelegramSourceConnectionRequest",
+                'Required parameter "userTelegramSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsTelegramCreate().',
             );
         }
 
@@ -11174,7 +13133,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11189,39 +13148,55 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserTelegramSourceConnectionRequestToJSON(requestParameters['userTelegramSourceConnectionRequest']),
+            body: UserTelegramSourceConnectionRequestToJSON(
+                requestParameters["userTelegramSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramCreateRaw(requestParameters: SourcesUserConnectionsTelegramCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserTelegramSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsTelegramCreateRequestOpts(requestParameters);
+    async sourcesUserConnectionsTelegramCreateRaw(
+        requestParameters: SourcesUserConnectionsTelegramCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserTelegramSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsTelegramCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserTelegramSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserTelegramSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramCreate(requestParameters: SourcesUserConnectionsTelegramCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserTelegramSourceConnection> {
-        const response = await this.sourcesUserConnectionsTelegramCreateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsTelegramCreate(
+        requestParameters: SourcesUserConnectionsTelegramCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserTelegramSourceConnection> {
+        const response = await this.sourcesUserConnectionsTelegramCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsTelegramDestroy without sending the request
      */
-    async sourcesUserConnectionsTelegramDestroyRequestOpts(requestParameters: SourcesUserConnectionsTelegramDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsTelegramDestroyRequestOpts(
+        requestParameters: SourcesUserConnectionsTelegramDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramDestroy().',
             );
         }
 
@@ -11239,11 +13214,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11252,8 +13227,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramDestroyRaw(requestParameters: SourcesUserConnectionsTelegramDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.sourcesUserConnectionsTelegramDestroyRequestOpts(requestParameters);
+    async sourcesUserConnectionsTelegramDestroyRaw(
+        requestParameters: SourcesUserConnectionsTelegramDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsTelegramDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -11262,38 +13241,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramDestroy(requestParameters: SourcesUserConnectionsTelegramDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async sourcesUserConnectionsTelegramDestroy(
+        requestParameters: SourcesUserConnectionsTelegramDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.sourcesUserConnectionsTelegramDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for sourcesUserConnectionsTelegramList without sending the request
      */
-    async sourcesUserConnectionsTelegramListRequestOpts(requestParameters: SourcesUserConnectionsTelegramListRequest): Promise<runtime.RequestOpts> {
+    async sourcesUserConnectionsTelegramListRequestOpts(
+        requestParameters: SourcesUserConnectionsTelegramListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sourceSlug'] != null) {
-            queryParameters['source__slug'] = requestParameters['sourceSlug'];
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -11311,7 +13295,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11320,29 +13304,43 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramListRaw(requestParameters: SourcesUserConnectionsTelegramListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserTelegramSourceConnectionList>> {
-        const requestOptions = await this.sourcesUserConnectionsTelegramListRequestOpts(requestParameters);
+    async sourcesUserConnectionsTelegramListRaw(
+        requestParameters: SourcesUserConnectionsTelegramListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserTelegramSourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsTelegramListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserTelegramSourceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserTelegramSourceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramList(requestParameters: SourcesUserConnectionsTelegramListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserTelegramSourceConnectionList> {
-        const response = await this.sourcesUserConnectionsTelegramListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsTelegramList(
+        requestParameters: SourcesUserConnectionsTelegramListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserTelegramSourceConnectionList> {
+        const response = await this.sourcesUserConnectionsTelegramListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsTelegramPartialUpdate without sending the request
      */
-    async sourcesUserConnectionsTelegramPartialUpdateRequestOpts(requestParameters: SourcesUserConnectionsTelegramPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsTelegramPartialUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsTelegramPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramPartialUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramPartialUpdate().',
             );
         }
 
@@ -11350,7 +13348,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11362,43 +13360,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserTelegramSourceConnectionRequestToJSON(requestParameters['patchedUserTelegramSourceConnectionRequest']),
+            body: PatchedUserTelegramSourceConnectionRequestToJSON(
+                requestParameters["patchedUserTelegramSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramPartialUpdateRaw(requestParameters: SourcesUserConnectionsTelegramPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserTelegramSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsTelegramPartialUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsTelegramPartialUpdateRaw(
+        requestParameters: SourcesUserConnectionsTelegramPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserTelegramSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsTelegramPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserTelegramSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserTelegramSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramPartialUpdate(requestParameters: SourcesUserConnectionsTelegramPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserTelegramSourceConnection> {
-        const response = await this.sourcesUserConnectionsTelegramPartialUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsTelegramPartialUpdate(
+        requestParameters: SourcesUserConnectionsTelegramPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserTelegramSourceConnection> {
+        const response = await this.sourcesUserConnectionsTelegramPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsTelegramRetrieve without sending the request
      */
-    async sourcesUserConnectionsTelegramRetrieveRequestOpts(requestParameters: SourcesUserConnectionsTelegramRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsTelegramRetrieveRequestOpts(
+        requestParameters: SourcesUserConnectionsTelegramRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramRetrieve().',
             );
         }
 
@@ -11416,11 +13430,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11429,36 +13443,50 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramRetrieveRaw(requestParameters: SourcesUserConnectionsTelegramRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserTelegramSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsTelegramRetrieveRequestOpts(requestParameters);
+    async sourcesUserConnectionsTelegramRetrieveRaw(
+        requestParameters: SourcesUserConnectionsTelegramRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserTelegramSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsTelegramRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserTelegramSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserTelegramSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramRetrieve(requestParameters: SourcesUserConnectionsTelegramRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserTelegramSourceConnection> {
-        const response = await this.sourcesUserConnectionsTelegramRetrieveRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsTelegramRetrieve(
+        requestParameters: SourcesUserConnectionsTelegramRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserTelegramSourceConnection> {
+        const response = await this.sourcesUserConnectionsTelegramRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsTelegramUpdate without sending the request
      */
-    async sourcesUserConnectionsTelegramUpdateRequestOpts(requestParameters: SourcesUserConnectionsTelegramUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsTelegramUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsTelegramUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramUpdate().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramUpdate().',
             );
         }
 
-        if (requestParameters['userTelegramSourceConnectionRequest'] == null) {
+        if (requestParameters["userTelegramSourceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'userTelegramSourceConnectionRequest',
-                'Required parameter "userTelegramSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsTelegramUpdate().'
+                "userTelegramSourceConnectionRequest",
+                'Required parameter "userTelegramSourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsTelegramUpdate().',
             );
         }
 
@@ -11466,7 +13494,7 @@ export class SourcesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11478,43 +13506,59 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserTelegramSourceConnectionRequestToJSON(requestParameters['userTelegramSourceConnectionRequest']),
+            body: UserTelegramSourceConnectionRequestToJSON(
+                requestParameters["userTelegramSourceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramUpdateRaw(requestParameters: SourcesUserConnectionsTelegramUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserTelegramSourceConnection>> {
-        const requestOptions = await this.sourcesUserConnectionsTelegramUpdateRequestOpts(requestParameters);
+    async sourcesUserConnectionsTelegramUpdateRaw(
+        requestParameters: SourcesUserConnectionsTelegramUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserTelegramSourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsTelegramUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserTelegramSourceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserTelegramSourceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * User-source connection Viewset
      */
-    async sourcesUserConnectionsTelegramUpdate(requestParameters: SourcesUserConnectionsTelegramUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserTelegramSourceConnection> {
-        const response = await this.sourcesUserConnectionsTelegramUpdateRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsTelegramUpdate(
+        requestParameters: SourcesUserConnectionsTelegramUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserTelegramSourceConnection> {
+        const response = await this.sourcesUserConnectionsTelegramUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for sourcesUserConnectionsTelegramUsedByList without sending the request
      */
-    async sourcesUserConnectionsTelegramUsedByListRequestOpts(requestParameters: SourcesUserConnectionsTelegramUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async sourcesUserConnectionsTelegramUsedByListRequestOpts(
+        requestParameters: SourcesUserConnectionsTelegramUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsTelegramUsedByList().',
             );
         }
 
@@ -11532,11 +13576,11 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/telegram/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11545,8 +13589,12 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsTelegramUsedByListRaw(requestParameters: SourcesUserConnectionsTelegramUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.sourcesUserConnectionsTelegramUsedByListRequestOpts(requestParameters);
+    async sourcesUserConnectionsTelegramUsedByListRaw(
+        requestParameters: SourcesUserConnectionsTelegramUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsTelegramUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -11555,9 +13603,14 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async sourcesUserConnectionsTelegramUsedByList(requestParameters: SourcesUserConnectionsTelegramUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.sourcesUserConnectionsTelegramUsedByListRaw(requestParameters, initOverrides);
+    async sourcesUserConnectionsTelegramUsedByList(
+        requestParameters: SourcesUserConnectionsTelegramUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesUserConnectionsTelegramUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
-
 }

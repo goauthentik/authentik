@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Generic cache stats for an object
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface Cache {
     /**
-     * 
+     *
      * @type {number}
      * @memberof Cache
      */
@@ -31,7 +30,7 @@ export interface Cache {
  * Check if a given object implements the Cache interface.
  */
 export function instanceOfCache(value: object): value is Cache {
-    if (!('count' in value) || value['count'] === undefined) return false;
+    if (!("count" in value) || value["count"] === undefined) return false;
     return true;
 }
 
@@ -44,8 +43,7 @@ export function CacheFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cac
         return json;
     }
     return {
-        
-        'count': json['count'],
+        count: json["count"],
     };
 }
 
@@ -53,13 +51,13 @@ export function CacheToJSON(json: any): Cache {
     return CacheToJSONTyped(json, false);
 }
 
-export function CacheToJSONTyped(value?: Omit<Cache, 'count'> | null, ignoreDiscriminator: boolean = false): any {
+export function CacheToJSONTyped(
+    value?: Omit<Cache, "count"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

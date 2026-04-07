@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { MicrosoftEntraProviderGroup } from './MicrosoftEntraProviderGroup';
+import type { MicrosoftEntraProviderGroup } from "./MicrosoftEntraProviderGroup";
 import {
     MicrosoftEntraProviderGroupFromJSON,
-    MicrosoftEntraProviderGroupFromJSONTyped,
     MicrosoftEntraProviderGroupToJSON,
-    MicrosoftEntraProviderGroupToJSONTyped,
-} from './MicrosoftEntraProviderGroup';
+} from "./MicrosoftEntraProviderGroup";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedMicrosoftEntraProviderGroupList
  */
 export interface PaginatedMicrosoftEntraProviderGroupList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedMicrosoftEntraProviderGroupList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<MicrosoftEntraProviderGroup>}
      * @memberof PaginatedMicrosoftEntraProviderGroupList
      */
     results: Array<MicrosoftEntraProviderGroup>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedMicrosoftEntraProviderGroupList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedMicrosoftEntraProviderGroupList interface.
  */
-export function instanceOfPaginatedMicrosoftEntraProviderGroupList(value: object): value is PaginatedMicrosoftEntraProviderGroupList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedMicrosoftEntraProviderGroupList(
+    value: object,
+): value is PaginatedMicrosoftEntraProviderGroupList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedMicrosoftEntraProviderGroupListFromJSON(json: any): PaginatedMicrosoftEntraProviderGroupList {
+export function PaginatedMicrosoftEntraProviderGroupListFromJSON(
+    json: any,
+): PaginatedMicrosoftEntraProviderGroupList {
     return PaginatedMicrosoftEntraProviderGroupListFromJSONTyped(json, false);
 }
 
-export function PaginatedMicrosoftEntraProviderGroupListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedMicrosoftEntraProviderGroupList {
+export function PaginatedMicrosoftEntraProviderGroupListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedMicrosoftEntraProviderGroupList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(MicrosoftEntraProviderGroupFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(MicrosoftEntraProviderGroupFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedMicrosoftEntraProviderGroupListToJSON(json: any): PaginatedMicrosoftEntraProviderGroupList {
+export function PaginatedMicrosoftEntraProviderGroupListToJSON(
+    json: any,
+): PaginatedMicrosoftEntraProviderGroupList {
     return PaginatedMicrosoftEntraProviderGroupListToJSONTyped(json, false);
 }
 
-export function PaginatedMicrosoftEntraProviderGroupListToJSONTyped(value?: PaginatedMicrosoftEntraProviderGroupList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedMicrosoftEntraProviderGroupListToJSONTyped(
+    value?: PaginatedMicrosoftEntraProviderGroupList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(MicrosoftEntraProviderGroupToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(MicrosoftEntraProviderGroupToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

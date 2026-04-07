@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for totp authenticator devices
  * @export
@@ -31,7 +30,7 @@ export interface TOTPDeviceRequest {
  * Check if a given object implements the TOTPDeviceRequest interface.
  */
 export function instanceOfTOTPDeviceRequest(value: object): value is TOTPDeviceRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -39,13 +38,15 @@ export function TOTPDeviceRequestFromJSON(json: any): TOTPDeviceRequest {
     return TOTPDeviceRequestFromJSONTyped(json, false);
 }
 
-export function TOTPDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TOTPDeviceRequest {
+export function TOTPDeviceRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): TOTPDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
+        name: json["name"],
     };
 }
 
@@ -53,14 +54,15 @@ export function TOTPDeviceRequestToJSON(json: any): TOTPDeviceRequest {
     return TOTPDeviceRequestToJSONTyped(json, false);
 }
 
-export function TOTPDeviceRequestToJSONTyped(value?: TOTPDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
+export function TOTPDeviceRequestToJSONTyped(
+    value?: TOTPDeviceRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

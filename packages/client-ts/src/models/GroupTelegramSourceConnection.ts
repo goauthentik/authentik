@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Source } from './Source';
-import {
-    SourceFromJSON,
-    SourceFromJSONTyped,
-    SourceToJSON,
-    SourceToJSONTyped,
-} from './Source';
+import type { Source } from "./Source";
+import { SourceFromJSON } from "./Source";
 
 /**
  * Group Source Connection
@@ -28,43 +22,43 @@ import {
  */
 export interface GroupTelegramSourceConnection {
     /**
-     * 
+     *
      * @type {number}
      * @memberof GroupTelegramSourceConnection
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupTelegramSourceConnection
      */
     group: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupTelegramSourceConnection
      */
     source: string;
     /**
-     * 
+     *
      * @type {Source}
      * @memberof GroupTelegramSourceConnection
      */
     readonly sourceObj: Source;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupTelegramSourceConnection
      */
     identifier: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof GroupTelegramSourceConnection
      */
     readonly created: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof GroupTelegramSourceConnection
      */
@@ -74,14 +68,16 @@ export interface GroupTelegramSourceConnection {
 /**
  * Check if a given object implements the GroupTelegramSourceConnection interface.
  */
-export function instanceOfGroupTelegramSourceConnection(value: object): value is GroupTelegramSourceConnection {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('sourceObj' in value) || value['sourceObj'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
-    if (!('created' in value) || value['created'] === undefined) return false;
-    if (!('lastUpdated' in value) || value['lastUpdated'] === undefined) return false;
+export function instanceOfGroupTelegramSourceConnection(
+    value: object,
+): value is GroupTelegramSourceConnection {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("sourceObj" in value) || value["sourceObj"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
     return true;
 }
 
@@ -89,19 +85,21 @@ export function GroupTelegramSourceConnectionFromJSON(json: any): GroupTelegramS
     return GroupTelegramSourceConnectionFromJSONTyped(json, false);
 }
 
-export function GroupTelegramSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupTelegramSourceConnection {
+export function GroupTelegramSourceConnectionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GroupTelegramSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'group': json['group'],
-        'source': json['source'],
-        'sourceObj': SourceFromJSON(json['source_obj']),
-        'identifier': json['identifier'],
-        'created': (new Date(json['created'])),
-        'lastUpdated': (new Date(json['last_updated'])),
+        pk: json["pk"],
+        group: json["group"],
+        source: json["source"],
+        sourceObj: SourceFromJSON(json["source_obj"]),
+        identifier: json["identifier"],
+        created: new Date(json["created"]),
+        lastUpdated: new Date(json["last_updated"]),
     };
 }
 
@@ -109,16 +107,20 @@ export function GroupTelegramSourceConnectionToJSON(json: any): GroupTelegramSou
     return GroupTelegramSourceConnectionToJSONTyped(json, false);
 }
 
-export function GroupTelegramSourceConnectionToJSONTyped(value?: Omit<GroupTelegramSourceConnection, 'pk'|'source_obj'|'created'|'last_updated'> | null, ignoreDiscriminator: boolean = false): any {
+export function GroupTelegramSourceConnectionToJSONTyped(
+    value?: Omit<
+        GroupTelegramSourceConnection,
+        "pk" | "source_obj" | "created" | "last_updated"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

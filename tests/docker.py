@@ -1,6 +1,5 @@
 """authentik e2e testing utilities"""
 
-from os import environ
 from time import sleep
 from typing import Any
 from unittest.case import TestCase
@@ -12,8 +11,6 @@ from docker.models.networks import Network
 
 from authentik.lib.generators import generate_id
 from authentik.root.test_runner import get_docker_tag
-
-IS_CI = "CI" in environ
 
 
 class DockerTestCase(TestCase):

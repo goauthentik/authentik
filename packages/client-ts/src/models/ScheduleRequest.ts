@@ -12,15 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface ScheduleRequest
  */
 export interface ScheduleRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ScheduleRequest
      */
@@ -43,7 +42,7 @@ export interface ScheduleRequest {
  * Check if a given object implements the ScheduleRequest interface.
  */
 export function instanceOfScheduleRequest(value: object): value is ScheduleRequest {
-    if (!('crontab' in value) || value['crontab'] === undefined) return false;
+    if (!("crontab" in value) || value["crontab"] === undefined) return false;
     return true;
 }
 
@@ -51,15 +50,17 @@ export function ScheduleRequestFromJSON(json: any): ScheduleRequest {
     return ScheduleRequestFromJSONTyped(json, false);
 }
 
-export function ScheduleRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ScheduleRequest {
+export function ScheduleRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ScheduleRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'relObjId': json['rel_obj_id'] == null ? undefined : json['rel_obj_id'],
-        'crontab': json['crontab'],
-        'paused': json['paused'] == null ? undefined : json['paused'],
+        relObjId: json["rel_obj_id"] == null ? undefined : json["rel_obj_id"],
+        crontab: json["crontab"],
+        paused: json["paused"] == null ? undefined : json["paused"],
     };
 }
 
@@ -67,16 +68,17 @@ export function ScheduleRequestToJSON(json: any): ScheduleRequest {
     return ScheduleRequestToJSONTyped(json, false);
 }
 
-export function ScheduleRequestToJSONTyped(value?: ScheduleRequest | null, ignoreDiscriminator: boolean = false): any {
+export function ScheduleRequestToJSONTyped(
+    value?: ScheduleRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'rel_obj_id': value['relObjId'],
-        'crontab': value['crontab'],
-        'paused': value['paused'],
+        rel_obj_id: value["relObjId"],
+        crontab: value["crontab"],
+        paused: value["paused"],
     };
 }
-

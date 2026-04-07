@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -20,31 +19,31 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedUserOAuthSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedUserOAuthSourceConnectionRequest
      */
     user?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserOAuthSourceConnectionRequest
      */
     source?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserOAuthSourceConnectionRequest
      */
     identifier?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserOAuthSourceConnectionRequest
      */
     accessToken?: string | null;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof PatchedUserOAuthSourceConnectionRequest
      */
@@ -54,44 +53,53 @@ export interface PatchedUserOAuthSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedUserOAuthSourceConnectionRequest interface.
  */
-export function instanceOfPatchedUserOAuthSourceConnectionRequest(value: object): value is PatchedUserOAuthSourceConnectionRequest {
+export function instanceOfPatchedUserOAuthSourceConnectionRequest(
+    value: object,
+): value is PatchedUserOAuthSourceConnectionRequest {
     return true;
 }
 
-export function PatchedUserOAuthSourceConnectionRequestFromJSON(json: any): PatchedUserOAuthSourceConnectionRequest {
+export function PatchedUserOAuthSourceConnectionRequestFromJSON(
+    json: any,
+): PatchedUserOAuthSourceConnectionRequest {
     return PatchedUserOAuthSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserOAuthSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserOAuthSourceConnectionRequest {
+export function PatchedUserOAuthSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedUserOAuthSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'user': json['user'] == null ? undefined : json['user'],
-        'source': json['source'] == null ? undefined : json['source'],
-        'identifier': json['identifier'] == null ? undefined : json['identifier'],
-        'accessToken': json['access_token'] == null ? undefined : json['access_token'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
+        user: json["user"] == null ? undefined : json["user"],
+        source: json["source"] == null ? undefined : json["source"],
+        identifier: json["identifier"] == null ? undefined : json["identifier"],
+        accessToken: json["access_token"] == null ? undefined : json["access_token"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
     };
 }
 
-export function PatchedUserOAuthSourceConnectionRequestToJSON(json: any): PatchedUserOAuthSourceConnectionRequest {
+export function PatchedUserOAuthSourceConnectionRequestToJSON(
+    json: any,
+): PatchedUserOAuthSourceConnectionRequest {
     return PatchedUserOAuthSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserOAuthSourceConnectionRequestToJSONTyped(value?: PatchedUserOAuthSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedUserOAuthSourceConnectionRequestToJSONTyped(
+    value?: PatchedUserOAuthSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
-        'access_token': value['accessToken'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
+        access_token: value["accessToken"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
     };
 }
-

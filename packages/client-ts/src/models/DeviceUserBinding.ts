@@ -12,35 +12,14 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialUser } from './PartialUser';
-import {
-    PartialUserFromJSON,
-    PartialUserFromJSONTyped,
-    PartialUserToJSON,
-    PartialUserToJSONTyped,
-} from './PartialUser';
-import type { Policy } from './Policy';
-import {
-    PolicyFromJSON,
-    PolicyFromJSONTyped,
-    PolicyToJSON,
-    PolicyToJSONTyped,
-} from './Policy';
-import type { Connector } from './Connector';
-import {
-    ConnectorFromJSON,
-    ConnectorFromJSONTyped,
-    ConnectorToJSON,
-    ConnectorToJSONTyped,
-} from './Connector';
-import type { PartialGroup } from './PartialGroup';
-import {
-    PartialGroupFromJSON,
-    PartialGroupFromJSONTyped,
-    PartialGroupToJSON,
-    PartialGroupToJSONTyped,
-} from './PartialGroup';
+import type { Connector } from "./Connector";
+import { ConnectorFromJSON } from "./Connector";
+import type { PartialGroup } from "./PartialGroup";
+import { PartialGroupFromJSON } from "./PartialGroup";
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
+import type { Policy } from "./Policy";
+import { PolicyFromJSON } from "./Policy";
 
 /**
  * PolicyBinding Serializer
@@ -49,49 +28,49 @@ import {
  */
 export interface DeviceUserBinding {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceUserBinding
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceUserBinding
      */
     policy?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceUserBinding
      */
     group?: string | null;
     /**
-     * 
+     *
      * @type {number}
      * @memberof DeviceUserBinding
      */
     user?: number | null;
     /**
-     * 
+     *
      * @type {Policy}
      * @memberof DeviceUserBinding
      */
     readonly policyObj: Policy;
     /**
-     * 
+     *
      * @type {PartialGroup}
      * @memberof DeviceUserBinding
      */
     readonly groupObj: PartialGroup;
     /**
-     * 
+     *
      * @type {PartialUser}
      * @memberof DeviceUserBinding
      */
     readonly userObj: PartialUser;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceUserBinding
      */
@@ -103,13 +82,13 @@ export interface DeviceUserBinding {
      */
     negate?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof DeviceUserBinding
      */
     enabled?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof DeviceUserBinding
      */
@@ -127,19 +106,19 @@ export interface DeviceUserBinding {
      */
     failureResult?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof DeviceUserBinding
      */
     isPrimary?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceUserBinding
      */
     readonly connector: string | null;
     /**
-     * 
+     *
      * @type {Connector}
      * @memberof DeviceUserBinding
      */
@@ -150,14 +129,14 @@ export interface DeviceUserBinding {
  * Check if a given object implements the DeviceUserBinding interface.
  */
 export function instanceOfDeviceUserBinding(value: object): value is DeviceUserBinding {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('policyObj' in value) || value['policyObj'] === undefined) return false;
-    if (!('groupObj' in value) || value['groupObj'] === undefined) return false;
-    if (!('userObj' in value) || value['userObj'] === undefined) return false;
-    if (!('target' in value) || value['target'] === undefined) return false;
-    if (!('order' in value) || value['order'] === undefined) return false;
-    if (!('connector' in value) || value['connector'] === undefined) return false;
-    if (!('connectorObj' in value) || value['connectorObj'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("policyObj" in value) || value["policyObj"] === undefined) return false;
+    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
+    if (!("userObj" in value) || value["userObj"] === undefined) return false;
+    if (!("target" in value) || value["target"] === undefined) return false;
+    if (!("order" in value) || value["order"] === undefined) return false;
+    if (!("connector" in value) || value["connector"] === undefined) return false;
+    if (!("connectorObj" in value) || value["connectorObj"] === undefined) return false;
     return true;
 }
 
@@ -165,28 +144,30 @@ export function DeviceUserBindingFromJSON(json: any): DeviceUserBinding {
     return DeviceUserBindingFromJSONTyped(json, false);
 }
 
-export function DeviceUserBindingFromJSONTyped(json: any, ignoreDiscriminator: boolean): DeviceUserBinding {
+export function DeviceUserBindingFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DeviceUserBinding {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'policy': json['policy'] == null ? undefined : json['policy'],
-        'group': json['group'] == null ? undefined : json['group'],
-        'user': json['user'] == null ? undefined : json['user'],
-        'policyObj': PolicyFromJSON(json['policy_obj']),
-        'groupObj': PartialGroupFromJSON(json['group_obj']),
-        'userObj': PartialUserFromJSON(json['user_obj']),
-        'target': json['target'],
-        'negate': json['negate'] == null ? undefined : json['negate'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'order': json['order'],
-        'timeout': json['timeout'] == null ? undefined : json['timeout'],
-        'failureResult': json['failure_result'] == null ? undefined : json['failure_result'],
-        'isPrimary': json['is_primary'] == null ? undefined : json['is_primary'],
-        'connector': json['connector'],
-        'connectorObj': ConnectorFromJSON(json['connector_obj']),
+        pk: json["pk"],
+        policy: json["policy"] == null ? undefined : json["policy"],
+        group: json["group"] == null ? undefined : json["group"],
+        user: json["user"] == null ? undefined : json["user"],
+        policyObj: PolicyFromJSON(json["policy_obj"]),
+        groupObj: PartialGroupFromJSON(json["group_obj"]),
+        userObj: PartialUserFromJSON(json["user_obj"]),
+        target: json["target"],
+        negate: json["negate"] == null ? undefined : json["negate"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        order: json["order"],
+        timeout: json["timeout"] == null ? undefined : json["timeout"],
+        failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
+        isPrimary: json["is_primary"] == null ? undefined : json["is_primary"],
+        connector: json["connector"],
+        connectorObj: ConnectorFromJSON(json["connector_obj"]),
     };
 }
 
@@ -194,23 +175,27 @@ export function DeviceUserBindingToJSON(json: any): DeviceUserBinding {
     return DeviceUserBindingToJSONTyped(json, false);
 }
 
-export function DeviceUserBindingToJSONTyped(value?: Omit<DeviceUserBinding, 'pk'|'policy_obj'|'group_obj'|'user_obj'|'connector'|'connector_obj'> | null, ignoreDiscriminator: boolean = false): any {
+export function DeviceUserBindingToJSONTyped(
+    value?: Omit<
+        DeviceUserBinding,
+        "pk" | "policy_obj" | "group_obj" | "user_obj" | "connector" | "connector_obj"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'policy': value['policy'],
-        'group': value['group'],
-        'user': value['user'],
-        'target': value['target'],
-        'negate': value['negate'],
-        'enabled': value['enabled'],
-        'order': value['order'],
-        'timeout': value['timeout'],
-        'failure_result': value['failureResult'],
-        'is_primary': value['isPrimary'],
+        policy: value["policy"],
+        group: value["group"],
+        user: value["user"],
+        target: value["target"],
+        negate: value["negate"],
+        enabled: value["enabled"],
+        order: value["order"],
+        timeout: value["timeout"],
+        failure_result: value["failureResult"],
+        is_primary: value["isPrimary"],
     };
 }
-

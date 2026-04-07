@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialUser } from './PartialUser';
-import {
-    PartialUserFromJSON,
-    PartialUserFromJSONTyped,
-    PartialUserToJSON,
-    PartialUserToJSONTyped,
-} from './PartialUser';
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * GoogleWorkspaceProviderUser Serializer
@@ -28,53 +22,55 @@ import {
  */
 export interface GoogleWorkspaceProviderUser {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProviderUser
      */
     readonly id: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProviderUser
      */
     googleId: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof GoogleWorkspaceProviderUser
      */
     user: number;
     /**
-     * 
+     *
      * @type {PartialUser}
      * @memberof GoogleWorkspaceProviderUser
      */
     readonly userObj: PartialUser;
     /**
-     * 
+     *
      * @type {number}
      * @memberof GoogleWorkspaceProviderUser
      */
     provider: number;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof GoogleWorkspaceProviderUser
      */
-    readonly attributes: { [key: string]: any; };
+    readonly attributes: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the GoogleWorkspaceProviderUser interface.
  */
-export function instanceOfGoogleWorkspaceProviderUser(value: object): value is GoogleWorkspaceProviderUser {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('googleId' in value) || value['googleId'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('userObj' in value) || value['userObj'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('attributes' in value) || value['attributes'] === undefined) return false;
+export function instanceOfGoogleWorkspaceProviderUser(
+    value: object,
+): value is GoogleWorkspaceProviderUser {
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("googleId" in value) || value["googleId"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("userObj" in value) || value["userObj"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
 }
 
@@ -82,18 +78,20 @@ export function GoogleWorkspaceProviderUserFromJSON(json: any): GoogleWorkspaceP
     return GoogleWorkspaceProviderUserFromJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleWorkspaceProviderUser {
+export function GoogleWorkspaceProviderUserFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GoogleWorkspaceProviderUser {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'googleId': json['google_id'],
-        'user': json['user'],
-        'userObj': PartialUserFromJSON(json['user_obj']),
-        'provider': json['provider'],
-        'attributes': json['attributes'],
+        id: json["id"],
+        googleId: json["google_id"],
+        user: json["user"],
+        userObj: PartialUserFromJSON(json["user_obj"]),
+        provider: json["provider"],
+        attributes: json["attributes"],
     };
 }
 
@@ -101,16 +99,17 @@ export function GoogleWorkspaceProviderUserToJSON(json: any): GoogleWorkspacePro
     return GoogleWorkspaceProviderUserToJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderUserToJSONTyped(value?: Omit<GoogleWorkspaceProviderUser, 'id'|'user_obj'|'attributes'> | null, ignoreDiscriminator: boolean = false): any {
+export function GoogleWorkspaceProviderUserToJSONTyped(
+    value?: Omit<GoogleWorkspaceProviderUser, "id" | "user_obj" | "attributes"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'google_id': value['googleId'],
-        'user': value['user'],
-        'provider': value['provider'],
+        google_id: value["googleId"],
+        user: value["user"],
+        provider: value["provider"],
     };
 }
-

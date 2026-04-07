@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Show token's current key
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface TokenView {
     /**
-     * 
+     *
      * @type {string}
      * @memberof TokenView
      */
@@ -31,7 +30,7 @@ export interface TokenView {
  * Check if a given object implements the TokenView interface.
  */
 export function instanceOfTokenView(value: object): value is TokenView {
-    if (!('key' in value) || value['key'] === undefined) return false;
+    if (!("key" in value) || value["key"] === undefined) return false;
     return true;
 }
 
@@ -44,8 +43,7 @@ export function TokenViewFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        
-        'key': json['key'],
+        key: json["key"],
     };
 }
 
@@ -53,13 +51,13 @@ export function TokenViewToJSON(json: any): TokenView {
     return TokenViewToJSONTyped(json, false);
 }
 
-export function TokenViewToJSONTyped(value?: Omit<TokenView, 'key'> | null, ignoreDiscriminator: boolean = false): any {
+export function TokenViewToJSONTyped(
+    value?: Omit<TokenView, "key"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SAML Provider Metadata serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface SAMLMetadata {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SAMLMetadata
      */
     readonly metadata: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SAMLMetadata
      */
@@ -37,8 +36,8 @@ export interface SAMLMetadata {
  * Check if a given object implements the SAMLMetadata interface.
  */
 export function instanceOfSAMLMetadata(value: object): value is SAMLMetadata {
-    if (!('metadata' in value) || value['metadata'] === undefined) return false;
-    if (!('downloadUrl' in value) || value['downloadUrl'] === undefined) return false;
+    if (!("metadata" in value) || value["metadata"] === undefined) return false;
+    if (!("downloadUrl" in value) || value["downloadUrl"] === undefined) return false;
     return true;
 }
 
@@ -51,9 +50,8 @@ export function SAMLMetadataFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        
-        'metadata': json['metadata'],
-        'downloadUrl': json['download_url'],
+        metadata: json["metadata"],
+        downloadUrl: json["download_url"],
     };
 }
 
@@ -61,13 +59,13 @@ export function SAMLMetadataToJSON(json: any): SAMLMetadata {
     return SAMLMetadataToJSONTyped(json, false);
 }
 
-export function SAMLMetadataToJSONTyped(value?: Omit<SAMLMetadata, 'metadata'|'download_url'> | null, ignoreDiscriminator: boolean = false): any {
+export function SAMLMetadataToJSONTyped(
+    value?: Omit<SAMLMetadata, "metadata" | "download_url"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-
