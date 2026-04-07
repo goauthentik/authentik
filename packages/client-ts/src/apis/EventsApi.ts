@@ -12,96 +12,60 @@
  * Do not edit the class manually.
  */
 
-
-import * as runtime from '../runtime';
 import type {
-  DataExport,
-  Event,
-  EventActions,
-  EventRequest,
-  EventStats,
-  EventTopPerUser,
-  EventVolume,
-  GenericError,
-  Notification,
-  NotificationRequest,
-  NotificationRule,
-  NotificationRuleRequest,
-  NotificationTransport,
-  NotificationTransportRequest,
-  NotificationTransportTest,
-  PaginatedEventList,
-  PaginatedNotificationList,
-  PaginatedNotificationRuleList,
-  PaginatedNotificationTransportList,
-  PatchedEventRequest,
-  PatchedNotificationRequest,
-  PatchedNotificationRuleRequest,
-  PatchedNotificationTransportRequest,
-  SeverityEnum,
-  TransportModeEnum,
-  TypeCreate,
-  UsedBy,
-  ValidationError,
-} from '../models/index';
+    DataExport,
+    Event,
+    EventActions,
+    EventRequest,
+    EventStats,
+    EventTopPerUser,
+    EventVolume,
+    Notification,
+    NotificationRequest,
+    NotificationRule,
+    NotificationRuleRequest,
+    NotificationTransport,
+    NotificationTransportRequest,
+    NotificationTransportTest,
+    PaginatedEventList,
+    PaginatedNotificationList,
+    PaginatedNotificationRuleList,
+    PaginatedNotificationTransportList,
+    PatchedEventRequest,
+    PatchedNotificationRequest,
+    PatchedNotificationRuleRequest,
+    PatchedNotificationTransportRequest,
+    SeverityEnum,
+    TransportModeEnum,
+    TypeCreate,
+    UsedBy,
+} from "../models/index";
 import {
     DataExportFromJSON,
-    DataExportToJSON,
     EventFromJSON,
-    EventToJSON,
-    EventActionsFromJSON,
-    EventActionsToJSON,
-    EventRequestFromJSON,
     EventRequestToJSON,
     EventStatsFromJSON,
-    EventStatsToJSON,
     EventTopPerUserFromJSON,
-    EventTopPerUserToJSON,
     EventVolumeFromJSON,
-    EventVolumeToJSON,
-    GenericErrorFromJSON,
-    GenericErrorToJSON,
     NotificationFromJSON,
-    NotificationToJSON,
-    NotificationRequestFromJSON,
     NotificationRequestToJSON,
     NotificationRuleFromJSON,
-    NotificationRuleToJSON,
-    NotificationRuleRequestFromJSON,
     NotificationRuleRequestToJSON,
     NotificationTransportFromJSON,
-    NotificationTransportToJSON,
-    NotificationTransportRequestFromJSON,
     NotificationTransportRequestToJSON,
     NotificationTransportTestFromJSON,
-    NotificationTransportTestToJSON,
     PaginatedEventListFromJSON,
-    PaginatedEventListToJSON,
     PaginatedNotificationListFromJSON,
-    PaginatedNotificationListToJSON,
     PaginatedNotificationRuleListFromJSON,
-    PaginatedNotificationRuleListToJSON,
     PaginatedNotificationTransportListFromJSON,
-    PaginatedNotificationTransportListToJSON,
-    PatchedEventRequestFromJSON,
     PatchedEventRequestToJSON,
-    PatchedNotificationRequestFromJSON,
     PatchedNotificationRequestToJSON,
-    PatchedNotificationRuleRequestFromJSON,
     PatchedNotificationRuleRequestToJSON,
-    PatchedNotificationTransportRequestFromJSON,
     PatchedNotificationTransportRequestToJSON,
-    SeverityEnumFromJSON,
-    SeverityEnumToJSON,
-    TransportModeEnumFromJSON,
-    TransportModeEnumToJSON,
     TypeCreateFromJSON,
-    TypeCreateToJSON,
     UsedByFromJSON,
-    UsedByToJSON,
-    ValidationErrorFromJSON,
-    ValidationErrorToJSON,
-} from '../models/index';
+} from "../models/index";
+import * as runtime from "../runtime";
 
 export interface EventsEventsCreateRequest {
     eventRequest: EventRequest;
@@ -307,10 +271,9 @@ export interface EventsTransportsUsedByListRequest {
 }
 
 /**
- * 
+ *
  */
 export class EventsApi extends runtime.BaseAPI {
-
     /**
      * Creates request options for eventsEventsActionsList without sending the request
      */
@@ -332,7 +295,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -341,17 +304,23 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get all actions
      */
-    async eventsEventsActionsListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
+    async eventsEventsActionsListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
         const requestOptions = await this.eventsEventsActionsListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TypeCreateFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(TypeCreateFromJSON),
+        );
     }
 
     /**
      * Get all actions
      */
-    async eventsEventsActionsList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TypeCreate>> {
+    async eventsEventsActionsList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<TypeCreate>> {
         const response = await this.eventsEventsActionsListRaw(initOverrides);
         return await response.value();
     }
@@ -359,11 +328,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsEventsCreate without sending the request
      */
-    async eventsEventsCreateRequestOpts(requestParameters: EventsEventsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['eventRequest'] == null) {
+    async eventsEventsCreateRequestOpts(
+        requestParameters: EventsEventsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["eventRequest"] == null) {
             throw new runtime.RequiredError(
-                'eventRequest',
-                'Required parameter "eventRequest" was null or undefined when calling eventsEventsCreate().'
+                "eventRequest",
+                'Required parameter "eventRequest" was null or undefined when calling eventsEventsCreate().',
             );
         }
 
@@ -371,7 +342,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -386,17 +357,20 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: EventRequestToJSON(requestParameters['eventRequest']),
+            body: EventRequestToJSON(requestParameters["eventRequest"]),
         };
     }
 
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsCreateRaw(requestParameters: EventsEventsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Event>> {
+    async eventsEventsCreateRaw(
+        requestParameters: EventsEventsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Event>> {
         const requestOptions = await this.eventsEventsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -406,7 +380,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsCreate(requestParameters: EventsEventsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Event> {
+    async eventsEventsCreate(
+        requestParameters: EventsEventsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Event> {
         const response = await this.eventsEventsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -414,11 +391,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsEventsDestroy without sending the request
      */
-    async eventsEventsDestroyRequestOpts(requestParameters: EventsEventsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['eventUuid'] == null) {
+    async eventsEventsDestroyRequestOpts(
+        requestParameters: EventsEventsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["eventUuid"] == null) {
             throw new runtime.RequiredError(
-                'eventUuid',
-                'Required parameter "eventUuid" was null or undefined when calling eventsEventsDestroy().'
+                "eventUuid",
+                'Required parameter "eventUuid" was null or undefined when calling eventsEventsDestroy().',
             );
         }
 
@@ -436,11 +415,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/events/{event_uuid}/`;
-        urlPath = urlPath.replace(`{${"event_uuid"}}`, encodeURIComponent(String(requestParameters['eventUuid'])));
+        urlPath = urlPath.replace(
+            `{${"event_uuid"}}`,
+            encodeURIComponent(String(requestParameters["eventUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -449,7 +431,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsDestroyRaw(requestParameters: EventsEventsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async eventsEventsDestroyRaw(
+        requestParameters: EventsEventsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.eventsEventsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -459,62 +444,67 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsDestroy(requestParameters: EventsEventsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async eventsEventsDestroy(
+        requestParameters: EventsEventsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.eventsEventsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for eventsEventsExportCreate without sending the request
      */
-    async eventsEventsExportCreateRequestOpts(requestParameters: EventsEventsExportCreateRequest): Promise<runtime.RequestOpts> {
+    async eventsEventsExportCreateRequestOpts(
+        requestParameters: EventsEventsExportCreateRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['action'] != null) {
-            queryParameters['action'] = requestParameters['action'];
+        if (requestParameters["action"] != null) {
+            queryParameters["action"] = requestParameters["action"];
         }
 
-        if (requestParameters['actions'] != null) {
-            queryParameters['actions'] = requestParameters['actions'];
+        if (requestParameters["actions"] != null) {
+            queryParameters["actions"] = requestParameters["actions"];
         }
 
-        if (requestParameters['brandName'] != null) {
-            queryParameters['brand_name'] = requestParameters['brandName'];
+        if (requestParameters["brandName"] != null) {
+            queryParameters["brand_name"] = requestParameters["brandName"];
         }
 
-        if (requestParameters['clientIp'] != null) {
-            queryParameters['client_ip'] = requestParameters['clientIp'];
+        if (requestParameters["clientIp"] != null) {
+            queryParameters["client_ip"] = requestParameters["clientIp"];
         }
 
-        if (requestParameters['contextAuthorizedApp'] != null) {
-            queryParameters['context_authorized_app'] = requestParameters['contextAuthorizedApp'];
+        if (requestParameters["contextAuthorizedApp"] != null) {
+            queryParameters["context_authorized_app"] = requestParameters["contextAuthorizedApp"];
         }
 
-        if (requestParameters['contextDevice'] != null) {
-            queryParameters['context_device'] = requestParameters['contextDevice'];
+        if (requestParameters["contextDevice"] != null) {
+            queryParameters["context_device"] = requestParameters["contextDevice"];
         }
 
-        if (requestParameters['contextModelApp'] != null) {
-            queryParameters['context_model_app'] = requestParameters['contextModelApp'];
+        if (requestParameters["contextModelApp"] != null) {
+            queryParameters["context_model_app"] = requestParameters["contextModelApp"];
         }
 
-        if (requestParameters['contextModelName'] != null) {
-            queryParameters['context_model_name'] = requestParameters['contextModelName'];
+        if (requestParameters["contextModelName"] != null) {
+            queryParameters["context_model_name"] = requestParameters["contextModelName"];
         }
 
-        if (requestParameters['contextModelPk'] != null) {
-            queryParameters['context_model_pk'] = requestParameters['contextModelPk'];
+        if (requestParameters["contextModelPk"] != null) {
+            queryParameters["context_model_pk"] = requestParameters["contextModelPk"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['username'] != null) {
-            queryParameters['username'] = requestParameters['username'];
+        if (requestParameters["username"] != null) {
+            queryParameters["username"] = requestParameters["username"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -532,7 +522,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -541,7 +531,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Create a data export for this data type. Note that the export is generated asynchronously: this method returns a `DataExport` object that will initially have `completed=false` as well as the permanent URL to that object in the `Location` header. You can poll that URL until `completed=true`, at which point the `file_url` property will contain a URL to download
      */
-    async eventsEventsExportCreateRaw(requestParameters: EventsEventsExportCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataExport>> {
+    async eventsEventsExportCreateRaw(
+        requestParameters: EventsEventsExportCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DataExport>> {
         const requestOptions = await this.eventsEventsExportCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -551,7 +544,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Create a data export for this data type. Note that the export is generated asynchronously: this method returns a `DataExport` object that will initially have `completed=false` as well as the permanent URL to that object in the `Location` header. You can poll that URL until `completed=true`, at which point the `file_url` property will contain a URL to download
      */
-    async eventsEventsExportCreate(requestParameters: EventsEventsExportCreateRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataExport> {
+    async eventsEventsExportCreate(
+        requestParameters: EventsEventsExportCreateRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DataExport> {
         const response = await this.eventsEventsExportCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -559,63 +555,65 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsEventsList without sending the request
      */
-    async eventsEventsListRequestOpts(requestParameters: EventsEventsListRequest): Promise<runtime.RequestOpts> {
+    async eventsEventsListRequestOpts(
+        requestParameters: EventsEventsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['action'] != null) {
-            queryParameters['action'] = requestParameters['action'];
+        if (requestParameters["action"] != null) {
+            queryParameters["action"] = requestParameters["action"];
         }
 
-        if (requestParameters['actions'] != null) {
-            queryParameters['actions'] = requestParameters['actions'];
+        if (requestParameters["actions"] != null) {
+            queryParameters["actions"] = requestParameters["actions"];
         }
 
-        if (requestParameters['brandName'] != null) {
-            queryParameters['brand_name'] = requestParameters['brandName'];
+        if (requestParameters["brandName"] != null) {
+            queryParameters["brand_name"] = requestParameters["brandName"];
         }
 
-        if (requestParameters['clientIp'] != null) {
-            queryParameters['client_ip'] = requestParameters['clientIp'];
+        if (requestParameters["clientIp"] != null) {
+            queryParameters["client_ip"] = requestParameters["clientIp"];
         }
 
-        if (requestParameters['contextAuthorizedApp'] != null) {
-            queryParameters['context_authorized_app'] = requestParameters['contextAuthorizedApp'];
+        if (requestParameters["contextAuthorizedApp"] != null) {
+            queryParameters["context_authorized_app"] = requestParameters["contextAuthorizedApp"];
         }
 
-        if (requestParameters['contextDevice'] != null) {
-            queryParameters['context_device'] = requestParameters['contextDevice'];
+        if (requestParameters["contextDevice"] != null) {
+            queryParameters["context_device"] = requestParameters["contextDevice"];
         }
 
-        if (requestParameters['contextModelApp'] != null) {
-            queryParameters['context_model_app'] = requestParameters['contextModelApp'];
+        if (requestParameters["contextModelApp"] != null) {
+            queryParameters["context_model_app"] = requestParameters["contextModelApp"];
         }
 
-        if (requestParameters['contextModelName'] != null) {
-            queryParameters['context_model_name'] = requestParameters['contextModelName'];
+        if (requestParameters["contextModelName"] != null) {
+            queryParameters["context_model_name"] = requestParameters["contextModelName"];
         }
 
-        if (requestParameters['contextModelPk'] != null) {
-            queryParameters['context_model_pk'] = requestParameters['contextModelPk'];
+        if (requestParameters["contextModelPk"] != null) {
+            queryParameters["context_model_pk"] = requestParameters["contextModelPk"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['username'] != null) {
-            queryParameters['username'] = requestParameters['username'];
+        if (requestParameters["username"] != null) {
+            queryParameters["username"] = requestParameters["username"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -633,7 +631,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -642,17 +640,25 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsListRaw(requestParameters: EventsEventsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedEventList>> {
+    async eventsEventsListRaw(
+        requestParameters: EventsEventsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedEventList>> {
         const requestOptions = await this.eventsEventsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedEventListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedEventListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsList(requestParameters: EventsEventsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedEventList> {
+    async eventsEventsList(
+        requestParameters: EventsEventsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedEventList> {
         const response = await this.eventsEventsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -660,11 +666,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsEventsPartialUpdate without sending the request
      */
-    async eventsEventsPartialUpdateRequestOpts(requestParameters: EventsEventsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['eventUuid'] == null) {
+    async eventsEventsPartialUpdateRequestOpts(
+        requestParameters: EventsEventsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["eventUuid"] == null) {
             throw new runtime.RequiredError(
-                'eventUuid',
-                'Required parameter "eventUuid" was null or undefined when calling eventsEventsPartialUpdate().'
+                "eventUuid",
+                'Required parameter "eventUuid" was null or undefined when calling eventsEventsPartialUpdate().',
             );
         }
 
@@ -672,7 +680,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -684,21 +692,27 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/events/{event_uuid}/`;
-        urlPath = urlPath.replace(`{${"event_uuid"}}`, encodeURIComponent(String(requestParameters['eventUuid'])));
+        urlPath = urlPath.replace(
+            `{${"event_uuid"}}`,
+            encodeURIComponent(String(requestParameters["eventUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedEventRequestToJSON(requestParameters['patchedEventRequest']),
+            body: PatchedEventRequestToJSON(requestParameters["patchedEventRequest"]),
         };
     }
 
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsPartialUpdateRaw(requestParameters: EventsEventsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Event>> {
+    async eventsEventsPartialUpdateRaw(
+        requestParameters: EventsEventsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Event>> {
         const requestOptions = await this.eventsEventsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -708,7 +722,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsPartialUpdate(requestParameters: EventsEventsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Event> {
+    async eventsEventsPartialUpdate(
+        requestParameters: EventsEventsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Event> {
         const response = await this.eventsEventsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -716,11 +733,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsEventsRetrieve without sending the request
      */
-    async eventsEventsRetrieveRequestOpts(requestParameters: EventsEventsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['eventUuid'] == null) {
+    async eventsEventsRetrieveRequestOpts(
+        requestParameters: EventsEventsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["eventUuid"] == null) {
             throw new runtime.RequiredError(
-                'eventUuid',
-                'Required parameter "eventUuid" was null or undefined when calling eventsEventsRetrieve().'
+                "eventUuid",
+                'Required parameter "eventUuid" was null or undefined when calling eventsEventsRetrieve().',
             );
         }
 
@@ -738,11 +757,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/events/{event_uuid}/`;
-        urlPath = urlPath.replace(`{${"event_uuid"}}`, encodeURIComponent(String(requestParameters['eventUuid'])));
+        urlPath = urlPath.replace(
+            `{${"event_uuid"}}`,
+            encodeURIComponent(String(requestParameters["eventUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -751,7 +773,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsRetrieveRaw(requestParameters: EventsEventsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Event>> {
+    async eventsEventsRetrieveRaw(
+        requestParameters: EventsEventsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Event>> {
         const requestOptions = await this.eventsEventsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -761,7 +786,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsRetrieve(requestParameters: EventsEventsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Event> {
+    async eventsEventsRetrieve(
+        requestParameters: EventsEventsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Event> {
         const response = await this.eventsEventsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -769,66 +797,68 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsEventsStatsRetrieve without sending the request
      */
-    async eventsEventsStatsRetrieveRequestOpts(requestParameters: EventsEventsStatsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['countSteps'] == null) {
+    async eventsEventsStatsRetrieveRequestOpts(
+        requestParameters: EventsEventsStatsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["countSteps"] == null) {
             throw new runtime.RequiredError(
-                'countSteps',
-                'Required parameter "countSteps" was null or undefined when calling eventsEventsStatsRetrieve().'
+                "countSteps",
+                'Required parameter "countSteps" was null or undefined when calling eventsEventsStatsRetrieve().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['action'] != null) {
-            queryParameters['action'] = requestParameters['action'];
+        if (requestParameters["action"] != null) {
+            queryParameters["action"] = requestParameters["action"];
         }
 
-        if (requestParameters['actions'] != null) {
-            queryParameters['actions'] = requestParameters['actions'];
+        if (requestParameters["actions"] != null) {
+            queryParameters["actions"] = requestParameters["actions"];
         }
 
-        if (requestParameters['brandName'] != null) {
-            queryParameters['brand_name'] = requestParameters['brandName'];
+        if (requestParameters["brandName"] != null) {
+            queryParameters["brand_name"] = requestParameters["brandName"];
         }
 
-        if (requestParameters['clientIp'] != null) {
-            queryParameters['client_ip'] = requestParameters['clientIp'];
+        if (requestParameters["clientIp"] != null) {
+            queryParameters["client_ip"] = requestParameters["clientIp"];
         }
 
-        if (requestParameters['contextAuthorizedApp'] != null) {
-            queryParameters['context_authorized_app'] = requestParameters['contextAuthorizedApp'];
+        if (requestParameters["contextAuthorizedApp"] != null) {
+            queryParameters["context_authorized_app"] = requestParameters["contextAuthorizedApp"];
         }
 
-        if (requestParameters['contextDevice'] != null) {
-            queryParameters['context_device'] = requestParameters['contextDevice'];
+        if (requestParameters["contextDevice"] != null) {
+            queryParameters["context_device"] = requestParameters["contextDevice"];
         }
 
-        if (requestParameters['contextModelApp'] != null) {
-            queryParameters['context_model_app'] = requestParameters['contextModelApp'];
+        if (requestParameters["contextModelApp"] != null) {
+            queryParameters["context_model_app"] = requestParameters["contextModelApp"];
         }
 
-        if (requestParameters['contextModelName'] != null) {
-            queryParameters['context_model_name'] = requestParameters['contextModelName'];
+        if (requestParameters["contextModelName"] != null) {
+            queryParameters["context_model_name"] = requestParameters["contextModelName"];
         }
 
-        if (requestParameters['contextModelPk'] != null) {
-            queryParameters['context_model_pk'] = requestParameters['contextModelPk'];
+        if (requestParameters["contextModelPk"] != null) {
+            queryParameters["context_model_pk"] = requestParameters["contextModelPk"];
         }
 
-        if (requestParameters['countSteps'] != null) {
-            queryParameters['count_steps'] = requestParameters['countSteps'];
+        if (requestParameters["countSteps"] != null) {
+            queryParameters["count_steps"] = requestParameters["countSteps"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['username'] != null) {
-            queryParameters['username'] = requestParameters['username'];
+        if (requestParameters["username"] != null) {
+            queryParameters["username"] = requestParameters["username"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -846,7 +876,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -855,7 +885,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get event stats for specified filters and count steps
      */
-    async eventsEventsStatsRetrieveRaw(requestParameters: EventsEventsStatsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EventStats>> {
+    async eventsEventsStatsRetrieveRaw(
+        requestParameters: EventsEventsStatsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EventStats>> {
         const requestOptions = await this.eventsEventsStatsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -865,7 +898,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get event stats for specified filters and count steps
      */
-    async eventsEventsStatsRetrieve(requestParameters: EventsEventsStatsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EventStats> {
+    async eventsEventsStatsRetrieve(
+        requestParameters: EventsEventsStatsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EventStats> {
         const response = await this.eventsEventsStatsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -873,15 +909,17 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsEventsTopPerUserList without sending the request
      */
-    async eventsEventsTopPerUserListRequestOpts(requestParameters: EventsEventsTopPerUserListRequest): Promise<runtime.RequestOpts> {
+    async eventsEventsTopPerUserListRequestOpts(
+        requestParameters: EventsEventsTopPerUserListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['action'] != null) {
-            queryParameters['action'] = requestParameters['action'];
+        if (requestParameters["action"] != null) {
+            queryParameters["action"] = requestParameters["action"];
         }
 
-        if (requestParameters['topN'] != null) {
-            queryParameters['top_n'] = requestParameters['topN'];
+        if (requestParameters["topN"] != null) {
+            queryParameters["top_n"] = requestParameters["topN"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -899,7 +937,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -908,17 +946,25 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get the top_n events grouped by user count
      */
-    async eventsEventsTopPerUserListRaw(requestParameters: EventsEventsTopPerUserListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EventTopPerUser>>> {
+    async eventsEventsTopPerUserListRaw(
+        requestParameters: EventsEventsTopPerUserListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<EventTopPerUser>>> {
         const requestOptions = await this.eventsEventsTopPerUserListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EventTopPerUserFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(EventTopPerUserFromJSON),
+        );
     }
 
     /**
      * Get the top_n events grouped by user count
      */
-    async eventsEventsTopPerUserList(requestParameters: EventsEventsTopPerUserListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EventTopPerUser>> {
+    async eventsEventsTopPerUserList(
+        requestParameters: EventsEventsTopPerUserListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<EventTopPerUser>> {
         const response = await this.eventsEventsTopPerUserListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -926,18 +972,20 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsEventsUpdate without sending the request
      */
-    async eventsEventsUpdateRequestOpts(requestParameters: EventsEventsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['eventUuid'] == null) {
+    async eventsEventsUpdateRequestOpts(
+        requestParameters: EventsEventsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["eventUuid"] == null) {
             throw new runtime.RequiredError(
-                'eventUuid',
-                'Required parameter "eventUuid" was null or undefined when calling eventsEventsUpdate().'
+                "eventUuid",
+                'Required parameter "eventUuid" was null or undefined when calling eventsEventsUpdate().',
             );
         }
 
-        if (requestParameters['eventRequest'] == null) {
+        if (requestParameters["eventRequest"] == null) {
             throw new runtime.RequiredError(
-                'eventRequest',
-                'Required parameter "eventRequest" was null or undefined when calling eventsEventsUpdate().'
+                "eventRequest",
+                'Required parameter "eventRequest" was null or undefined when calling eventsEventsUpdate().',
             );
         }
 
@@ -945,7 +993,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -957,21 +1005,27 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/events/{event_uuid}/`;
-        urlPath = urlPath.replace(`{${"event_uuid"}}`, encodeURIComponent(String(requestParameters['eventUuid'])));
+        urlPath = urlPath.replace(
+            `{${"event_uuid"}}`,
+            encodeURIComponent(String(requestParameters["eventUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: EventRequestToJSON(requestParameters['eventRequest']),
+            body: EventRequestToJSON(requestParameters["eventRequest"]),
         };
     }
 
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsUpdateRaw(requestParameters: EventsEventsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Event>> {
+    async eventsEventsUpdateRaw(
+        requestParameters: EventsEventsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Event>> {
         const requestOptions = await this.eventsEventsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -981,7 +1035,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Event Read-Only Viewset
      */
-    async eventsEventsUpdate(requestParameters: EventsEventsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Event> {
+    async eventsEventsUpdate(
+        requestParameters: EventsEventsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Event> {
         const response = await this.eventsEventsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -989,59 +1046,61 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsEventsVolumeList without sending the request
      */
-    async eventsEventsVolumeListRequestOpts(requestParameters: EventsEventsVolumeListRequest): Promise<runtime.RequestOpts> {
+    async eventsEventsVolumeListRequestOpts(
+        requestParameters: EventsEventsVolumeListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['action'] != null) {
-            queryParameters['action'] = requestParameters['action'];
+        if (requestParameters["action"] != null) {
+            queryParameters["action"] = requestParameters["action"];
         }
 
-        if (requestParameters['actions'] != null) {
-            queryParameters['actions'] = requestParameters['actions'];
+        if (requestParameters["actions"] != null) {
+            queryParameters["actions"] = requestParameters["actions"];
         }
 
-        if (requestParameters['brandName'] != null) {
-            queryParameters['brand_name'] = requestParameters['brandName'];
+        if (requestParameters["brandName"] != null) {
+            queryParameters["brand_name"] = requestParameters["brandName"];
         }
 
-        if (requestParameters['clientIp'] != null) {
-            queryParameters['client_ip'] = requestParameters['clientIp'];
+        if (requestParameters["clientIp"] != null) {
+            queryParameters["client_ip"] = requestParameters["clientIp"];
         }
 
-        if (requestParameters['contextAuthorizedApp'] != null) {
-            queryParameters['context_authorized_app'] = requestParameters['contextAuthorizedApp'];
+        if (requestParameters["contextAuthorizedApp"] != null) {
+            queryParameters["context_authorized_app"] = requestParameters["contextAuthorizedApp"];
         }
 
-        if (requestParameters['contextDevice'] != null) {
-            queryParameters['context_device'] = requestParameters['contextDevice'];
+        if (requestParameters["contextDevice"] != null) {
+            queryParameters["context_device"] = requestParameters["contextDevice"];
         }
 
-        if (requestParameters['contextModelApp'] != null) {
-            queryParameters['context_model_app'] = requestParameters['contextModelApp'];
+        if (requestParameters["contextModelApp"] != null) {
+            queryParameters["context_model_app"] = requestParameters["contextModelApp"];
         }
 
-        if (requestParameters['contextModelName'] != null) {
-            queryParameters['context_model_name'] = requestParameters['contextModelName'];
+        if (requestParameters["contextModelName"] != null) {
+            queryParameters["context_model_name"] = requestParameters["contextModelName"];
         }
 
-        if (requestParameters['contextModelPk'] != null) {
-            queryParameters['context_model_pk'] = requestParameters['contextModelPk'];
+        if (requestParameters["contextModelPk"] != null) {
+            queryParameters["context_model_pk"] = requestParameters["contextModelPk"];
         }
 
-        if (requestParameters['historyDays'] != null) {
-            queryParameters['history_days'] = requestParameters['historyDays'];
+        if (requestParameters["historyDays"] != null) {
+            queryParameters["history_days"] = requestParameters["historyDays"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['username'] != null) {
-            queryParameters['username'] = requestParameters['username'];
+        if (requestParameters["username"] != null) {
+            queryParameters["username"] = requestParameters["username"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1059,7 +1118,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1068,17 +1127,25 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get event volume for specified filters and timeframe
      */
-    async eventsEventsVolumeListRaw(requestParameters: EventsEventsVolumeListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EventVolume>>> {
+    async eventsEventsVolumeListRaw(
+        requestParameters: EventsEventsVolumeListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<EventVolume>>> {
         const requestOptions = await this.eventsEventsVolumeListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EventVolumeFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(EventVolumeFromJSON),
+        );
     }
 
     /**
      * Get event volume for specified filters and timeframe
      */
-    async eventsEventsVolumeList(requestParameters: EventsEventsVolumeListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EventVolume>> {
+    async eventsEventsVolumeList(
+        requestParameters: EventsEventsVolumeListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<EventVolume>> {
         const response = await this.eventsEventsVolumeListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1086,11 +1153,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsNotificationsDestroy without sending the request
      */
-    async eventsNotificationsDestroyRequestOpts(requestParameters: EventsNotificationsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsNotificationsDestroyRequestOpts(
+        requestParameters: EventsNotificationsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsNotificationsDestroy().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsNotificationsDestroy().',
             );
         }
 
@@ -1108,11 +1177,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/notifications/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1121,7 +1193,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Notification Viewset
      */
-    async eventsNotificationsDestroyRaw(requestParameters: EventsNotificationsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async eventsNotificationsDestroyRaw(
+        requestParameters: EventsNotificationsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.eventsNotificationsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1131,54 +1206,59 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Notification Viewset
      */
-    async eventsNotificationsDestroy(requestParameters: EventsNotificationsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async eventsNotificationsDestroy(
+        requestParameters: EventsNotificationsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.eventsNotificationsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for eventsNotificationsList without sending the request
      */
-    async eventsNotificationsListRequestOpts(requestParameters: EventsNotificationsListRequest): Promise<runtime.RequestOpts> {
+    async eventsNotificationsListRequestOpts(
+        requestParameters: EventsNotificationsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['body'] != null) {
-            queryParameters['body'] = requestParameters['body'];
+        if (requestParameters["body"] != null) {
+            queryParameters["body"] = requestParameters["body"];
         }
 
-        if (requestParameters['created'] != null) {
-            queryParameters['created'] = (requestParameters['created'] as any).toISOString();
+        if (requestParameters["created"] != null) {
+            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
         }
 
-        if (requestParameters['event'] != null) {
-            queryParameters['event'] = requestParameters['event'];
+        if (requestParameters["event"] != null) {
+            queryParameters["event"] = requestParameters["event"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['seen'] != null) {
-            queryParameters['seen'] = requestParameters['seen'];
+        if (requestParameters["seen"] != null) {
+            queryParameters["seen"] = requestParameters["seen"];
         }
 
-        if (requestParameters['severity'] != null) {
-            queryParameters['severity'] = requestParameters['severity'];
+        if (requestParameters["severity"] != null) {
+            queryParameters["severity"] = requestParameters["severity"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1196,7 +1276,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1205,17 +1285,25 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Notification Viewset
      */
-    async eventsNotificationsListRaw(requestParameters: EventsNotificationsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedNotificationList>> {
+    async eventsNotificationsListRaw(
+        requestParameters: EventsNotificationsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedNotificationList>> {
         const requestOptions = await this.eventsNotificationsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedNotificationListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedNotificationListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Notification Viewset
      */
-    async eventsNotificationsList(requestParameters: EventsNotificationsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedNotificationList> {
+    async eventsNotificationsList(
+        requestParameters: EventsNotificationsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedNotificationList> {
         const response = await this.eventsNotificationsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1241,7 +1329,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1250,7 +1338,9 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Mark all the user\'s notifications as seen
      */
-    async eventsNotificationsMarkAllSeenCreateRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async eventsNotificationsMarkAllSeenCreateRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.eventsNotificationsMarkAllSeenCreateRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1260,18 +1350,22 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Mark all the user\'s notifications as seen
      */
-    async eventsNotificationsMarkAllSeenCreate(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async eventsNotificationsMarkAllSeenCreate(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.eventsNotificationsMarkAllSeenCreateRaw(initOverrides);
     }
 
     /**
      * Creates request options for eventsNotificationsPartialUpdate without sending the request
      */
-    async eventsNotificationsPartialUpdateRequestOpts(requestParameters: EventsNotificationsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsNotificationsPartialUpdateRequestOpts(
+        requestParameters: EventsNotificationsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsNotificationsPartialUpdate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsNotificationsPartialUpdate().',
             );
         }
 
@@ -1279,7 +1373,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1291,43 +1385,60 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/notifications/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedNotificationRequestToJSON(requestParameters['patchedNotificationRequest']),
+            body: PatchedNotificationRequestToJSON(requestParameters["patchedNotificationRequest"]),
         };
     }
 
     /**
      * Notification Viewset
      */
-    async eventsNotificationsPartialUpdateRaw(requestParameters: EventsNotificationsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Notification>> {
-        const requestOptions = await this.eventsNotificationsPartialUpdateRequestOpts(requestParameters);
+    async eventsNotificationsPartialUpdateRaw(
+        requestParameters: EventsNotificationsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Notification>> {
+        const requestOptions =
+            await this.eventsNotificationsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationFromJSON(jsonValue),
+        );
     }
 
     /**
      * Notification Viewset
      */
-    async eventsNotificationsPartialUpdate(requestParameters: EventsNotificationsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Notification> {
-        const response = await this.eventsNotificationsPartialUpdateRaw(requestParameters, initOverrides);
+    async eventsNotificationsPartialUpdate(
+        requestParameters: EventsNotificationsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Notification> {
+        const response = await this.eventsNotificationsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for eventsNotificationsRetrieve without sending the request
      */
-    async eventsNotificationsRetrieveRequestOpts(requestParameters: EventsNotificationsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsNotificationsRetrieveRequestOpts(
+        requestParameters: EventsNotificationsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsNotificationsRetrieve().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsNotificationsRetrieve().',
             );
         }
 
@@ -1345,11 +1456,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/notifications/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1358,29 +1472,42 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Notification Viewset
      */
-    async eventsNotificationsRetrieveRaw(requestParameters: EventsNotificationsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Notification>> {
+    async eventsNotificationsRetrieveRaw(
+        requestParameters: EventsNotificationsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Notification>> {
         const requestOptions = await this.eventsNotificationsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationFromJSON(jsonValue),
+        );
     }
 
     /**
      * Notification Viewset
      */
-    async eventsNotificationsRetrieve(requestParameters: EventsNotificationsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Notification> {
-        const response = await this.eventsNotificationsRetrieveRaw(requestParameters, initOverrides);
+    async eventsNotificationsRetrieve(
+        requestParameters: EventsNotificationsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Notification> {
+        const response = await this.eventsNotificationsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for eventsNotificationsUpdate without sending the request
      */
-    async eventsNotificationsUpdateRequestOpts(requestParameters: EventsNotificationsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsNotificationsUpdateRequestOpts(
+        requestParameters: EventsNotificationsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsNotificationsUpdate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsNotificationsUpdate().',
             );
         }
 
@@ -1388,7 +1515,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1400,31 +1527,42 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/notifications/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: NotificationRequestToJSON(requestParameters['notificationRequest']),
+            body: NotificationRequestToJSON(requestParameters["notificationRequest"]),
         };
     }
 
     /**
      * Notification Viewset
      */
-    async eventsNotificationsUpdateRaw(requestParameters: EventsNotificationsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Notification>> {
+    async eventsNotificationsUpdateRaw(
+        requestParameters: EventsNotificationsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Notification>> {
         const requestOptions = await this.eventsNotificationsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationFromJSON(jsonValue),
+        );
     }
 
     /**
      * Notification Viewset
      */
-    async eventsNotificationsUpdate(requestParameters: EventsNotificationsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Notification> {
+    async eventsNotificationsUpdate(
+        requestParameters: EventsNotificationsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Notification> {
         const response = await this.eventsNotificationsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1432,11 +1570,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsNotificationsUsedByList without sending the request
      */
-    async eventsNotificationsUsedByListRequestOpts(requestParameters: EventsNotificationsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsNotificationsUsedByListRequestOpts(
+        requestParameters: EventsNotificationsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsNotificationsUsedByList().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsNotificationsUsedByList().',
             );
         }
 
@@ -1454,11 +1594,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/notifications/{uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1467,8 +1610,12 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async eventsNotificationsUsedByListRaw(requestParameters: EventsNotificationsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.eventsNotificationsUsedByListRequestOpts(requestParameters);
+    async eventsNotificationsUsedByListRaw(
+        requestParameters: EventsNotificationsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.eventsNotificationsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -1477,19 +1624,27 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async eventsNotificationsUsedByList(requestParameters: EventsNotificationsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.eventsNotificationsUsedByListRaw(requestParameters, initOverrides);
+    async eventsNotificationsUsedByList(
+        requestParameters: EventsNotificationsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.eventsNotificationsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for eventsRulesCreate without sending the request
      */
-    async eventsRulesCreateRequestOpts(requestParameters: EventsRulesCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['notificationRuleRequest'] == null) {
+    async eventsRulesCreateRequestOpts(
+        requestParameters: EventsRulesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["notificationRuleRequest"] == null) {
             throw new runtime.RequiredError(
-                'notificationRuleRequest',
-                'Required parameter "notificationRuleRequest" was null or undefined when calling eventsRulesCreate().'
+                "notificationRuleRequest",
+                'Required parameter "notificationRuleRequest" was null or undefined when calling eventsRulesCreate().',
             );
         }
 
@@ -1497,7 +1652,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1512,27 +1667,35 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: NotificationRuleRequestToJSON(requestParameters['notificationRuleRequest']),
+            body: NotificationRuleRequestToJSON(requestParameters["notificationRuleRequest"]),
         };
     }
 
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesCreateRaw(requestParameters: EventsRulesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationRule>> {
+    async eventsRulesCreateRaw(
+        requestParameters: EventsRulesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<NotificationRule>> {
         const requestOptions = await this.eventsRulesCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationRuleFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationRuleFromJSON(jsonValue),
+        );
     }
 
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesCreate(requestParameters: EventsRulesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationRule> {
+    async eventsRulesCreate(
+        requestParameters: EventsRulesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<NotificationRule> {
         const response = await this.eventsRulesCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1540,11 +1703,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsRulesDestroy without sending the request
      */
-    async eventsRulesDestroyRequestOpts(requestParameters: EventsRulesDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['pbmUuid'] == null) {
+    async eventsRulesDestroyRequestOpts(
+        requestParameters: EventsRulesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
             throw new runtime.RequiredError(
-                'pbmUuid',
-                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesDestroy().'
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesDestroy().',
             );
         }
 
@@ -1562,11 +1727,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/rules/{pbm_uuid}/`;
-        urlPath = urlPath.replace(`{${"pbm_uuid"}}`, encodeURIComponent(String(requestParameters['pbmUuid'])));
+        urlPath = urlPath.replace(
+            `{${"pbm_uuid"}}`,
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1575,7 +1743,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesDestroyRaw(requestParameters: EventsRulesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async eventsRulesDestroyRaw(
+        requestParameters: EventsRulesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.eventsRulesDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1585,42 +1756,47 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesDestroy(requestParameters: EventsRulesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async eventsRulesDestroy(
+        requestParameters: EventsRulesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.eventsRulesDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for eventsRulesList without sending the request
      */
-    async eventsRulesListRequestOpts(requestParameters: EventsRulesListRequest): Promise<runtime.RequestOpts> {
+    async eventsRulesListRequestOpts(
+        requestParameters: EventsRulesListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['destinationGroupName'] != null) {
-            queryParameters['destination_group__name'] = requestParameters['destinationGroupName'];
+        if (requestParameters["destinationGroupName"] != null) {
+            queryParameters["destination_group__name"] = requestParameters["destinationGroupName"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['severity'] != null) {
-            queryParameters['severity'] = requestParameters['severity'];
+        if (requestParameters["severity"] != null) {
+            queryParameters["severity"] = requestParameters["severity"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1638,7 +1814,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1647,17 +1823,25 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesListRaw(requestParameters: EventsRulesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedNotificationRuleList>> {
+    async eventsRulesListRaw(
+        requestParameters: EventsRulesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedNotificationRuleList>> {
         const requestOptions = await this.eventsRulesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedNotificationRuleListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedNotificationRuleListFromJSON(jsonValue),
+        );
     }
 
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesList(requestParameters: EventsRulesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedNotificationRuleList> {
+    async eventsRulesList(
+        requestParameters: EventsRulesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedNotificationRuleList> {
         const response = await this.eventsRulesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1665,11 +1849,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsRulesPartialUpdate without sending the request
      */
-    async eventsRulesPartialUpdateRequestOpts(requestParameters: EventsRulesPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['pbmUuid'] == null) {
+    async eventsRulesPartialUpdateRequestOpts(
+        requestParameters: EventsRulesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
             throw new runtime.RequiredError(
-                'pbmUuid',
-                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesPartialUpdate().'
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesPartialUpdate().',
             );
         }
 
@@ -1677,7 +1863,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1689,31 +1875,44 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/rules/{pbm_uuid}/`;
-        urlPath = urlPath.replace(`{${"pbm_uuid"}}`, encodeURIComponent(String(requestParameters['pbmUuid'])));
+        urlPath = urlPath.replace(
+            `{${"pbm_uuid"}}`,
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedNotificationRuleRequestToJSON(requestParameters['patchedNotificationRuleRequest']),
+            body: PatchedNotificationRuleRequestToJSON(
+                requestParameters["patchedNotificationRuleRequest"],
+            ),
         };
     }
 
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesPartialUpdateRaw(requestParameters: EventsRulesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationRule>> {
+    async eventsRulesPartialUpdateRaw(
+        requestParameters: EventsRulesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<NotificationRule>> {
         const requestOptions = await this.eventsRulesPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationRuleFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationRuleFromJSON(jsonValue),
+        );
     }
 
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesPartialUpdate(requestParameters: EventsRulesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationRule> {
+    async eventsRulesPartialUpdate(
+        requestParameters: EventsRulesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<NotificationRule> {
         const response = await this.eventsRulesPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1721,11 +1920,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsRulesRetrieve without sending the request
      */
-    async eventsRulesRetrieveRequestOpts(requestParameters: EventsRulesRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['pbmUuid'] == null) {
+    async eventsRulesRetrieveRequestOpts(
+        requestParameters: EventsRulesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
             throw new runtime.RequiredError(
-                'pbmUuid',
-                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesRetrieve().'
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesRetrieve().',
             );
         }
 
@@ -1743,11 +1944,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/rules/{pbm_uuid}/`;
-        urlPath = urlPath.replace(`{${"pbm_uuid"}}`, encodeURIComponent(String(requestParameters['pbmUuid'])));
+        urlPath = urlPath.replace(
+            `{${"pbm_uuid"}}`,
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1756,17 +1960,25 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesRetrieveRaw(requestParameters: EventsRulesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationRule>> {
+    async eventsRulesRetrieveRaw(
+        requestParameters: EventsRulesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<NotificationRule>> {
         const requestOptions = await this.eventsRulesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationRuleFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationRuleFromJSON(jsonValue),
+        );
     }
 
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesRetrieve(requestParameters: EventsRulesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationRule> {
+    async eventsRulesRetrieve(
+        requestParameters: EventsRulesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<NotificationRule> {
         const response = await this.eventsRulesRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1774,18 +1986,20 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsRulesUpdate without sending the request
      */
-    async eventsRulesUpdateRequestOpts(requestParameters: EventsRulesUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['pbmUuid'] == null) {
+    async eventsRulesUpdateRequestOpts(
+        requestParameters: EventsRulesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
             throw new runtime.RequiredError(
-                'pbmUuid',
-                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesUpdate().'
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesUpdate().',
             );
         }
 
-        if (requestParameters['notificationRuleRequest'] == null) {
+        if (requestParameters["notificationRuleRequest"] == null) {
             throw new runtime.RequiredError(
-                'notificationRuleRequest',
-                'Required parameter "notificationRuleRequest" was null or undefined when calling eventsRulesUpdate().'
+                "notificationRuleRequest",
+                'Required parameter "notificationRuleRequest" was null or undefined when calling eventsRulesUpdate().',
             );
         }
 
@@ -1793,7 +2007,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1805,31 +2019,42 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/rules/{pbm_uuid}/`;
-        urlPath = urlPath.replace(`{${"pbm_uuid"}}`, encodeURIComponent(String(requestParameters['pbmUuid'])));
+        urlPath = urlPath.replace(
+            `{${"pbm_uuid"}}`,
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: NotificationRuleRequestToJSON(requestParameters['notificationRuleRequest']),
+            body: NotificationRuleRequestToJSON(requestParameters["notificationRuleRequest"]),
         };
     }
 
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesUpdateRaw(requestParameters: EventsRulesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationRule>> {
+    async eventsRulesUpdateRaw(
+        requestParameters: EventsRulesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<NotificationRule>> {
         const requestOptions = await this.eventsRulesUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationRuleFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationRuleFromJSON(jsonValue),
+        );
     }
 
     /**
      * NotificationRule Viewset
      */
-    async eventsRulesUpdate(requestParameters: EventsRulesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationRule> {
+    async eventsRulesUpdate(
+        requestParameters: EventsRulesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<NotificationRule> {
         const response = await this.eventsRulesUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1837,11 +2062,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsRulesUsedByList without sending the request
      */
-    async eventsRulesUsedByListRequestOpts(requestParameters: EventsRulesUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['pbmUuid'] == null) {
+    async eventsRulesUsedByListRequestOpts(
+        requestParameters: EventsRulesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
             throw new runtime.RequiredError(
-                'pbmUuid',
-                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesUsedByList().'
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling eventsRulesUsedByList().',
             );
         }
 
@@ -1859,11 +2086,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/rules/{pbm_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"pbm_uuid"}}`, encodeURIComponent(String(requestParameters['pbmUuid'])));
+        urlPath = urlPath.replace(
+            `{${"pbm_uuid"}}`,
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1872,7 +2102,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async eventsRulesUsedByListRaw(requestParameters: EventsRulesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async eventsRulesUsedByListRaw(
+        requestParameters: EventsRulesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.eventsRulesUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1882,7 +2115,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async eventsRulesUsedByList(requestParameters: EventsRulesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async eventsRulesUsedByList(
+        requestParameters: EventsRulesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.eventsRulesUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1890,11 +2126,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsTransportsCreate without sending the request
      */
-    async eventsTransportsCreateRequestOpts(requestParameters: EventsTransportsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['notificationTransportRequest'] == null) {
+    async eventsTransportsCreateRequestOpts(
+        requestParameters: EventsTransportsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["notificationTransportRequest"] == null) {
             throw new runtime.RequiredError(
-                'notificationTransportRequest',
-                'Required parameter "notificationTransportRequest" was null or undefined when calling eventsTransportsCreate().'
+                "notificationTransportRequest",
+                'Required parameter "notificationTransportRequest" was null or undefined when calling eventsTransportsCreate().',
             );
         }
 
@@ -1902,7 +2140,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1917,27 +2155,37 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: NotificationTransportRequestToJSON(requestParameters['notificationTransportRequest']),
+            body: NotificationTransportRequestToJSON(
+                requestParameters["notificationTransportRequest"],
+            ),
         };
     }
 
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsCreateRaw(requestParameters: EventsTransportsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationTransport>> {
+    async eventsTransportsCreateRaw(
+        requestParameters: EventsTransportsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<NotificationTransport>> {
         const requestOptions = await this.eventsTransportsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationTransportFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationTransportFromJSON(jsonValue),
+        );
     }
 
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsCreate(requestParameters: EventsTransportsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationTransport> {
+    async eventsTransportsCreate(
+        requestParameters: EventsTransportsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<NotificationTransport> {
         const response = await this.eventsTransportsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1945,11 +2193,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsTransportsDestroy without sending the request
      */
-    async eventsTransportsDestroyRequestOpts(requestParameters: EventsTransportsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsTransportsDestroyRequestOpts(
+        requestParameters: EventsTransportsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsTransportsDestroy().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsTransportsDestroy().',
             );
         }
 
@@ -1967,11 +2217,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1980,7 +2233,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsDestroyRaw(requestParameters: EventsTransportsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async eventsTransportsDestroyRaw(
+        requestParameters: EventsTransportsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.eventsTransportsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1990,46 +2246,51 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsDestroy(requestParameters: EventsTransportsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async eventsTransportsDestroy(
+        requestParameters: EventsTransportsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.eventsTransportsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for eventsTransportsList without sending the request
      */
-    async eventsTransportsListRequestOpts(requestParameters: EventsTransportsListRequest): Promise<runtime.RequestOpts> {
+    async eventsTransportsListRequestOpts(
+        requestParameters: EventsTransportsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['mode'] != null) {
-            queryParameters['mode'] = requestParameters['mode'];
+        if (requestParameters["mode"] != null) {
+            queryParameters["mode"] = requestParameters["mode"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sendOnce'] != null) {
-            queryParameters['send_once'] = requestParameters['sendOnce'];
+        if (requestParameters["sendOnce"] != null) {
+            queryParameters["send_once"] = requestParameters["sendOnce"];
         }
 
-        if (requestParameters['webhookUrl'] != null) {
-            queryParameters['webhook_url'] = requestParameters['webhookUrl'];
+        if (requestParameters["webhookUrl"] != null) {
+            queryParameters["webhook_url"] = requestParameters["webhookUrl"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2047,7 +2308,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2056,17 +2317,25 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsListRaw(requestParameters: EventsTransportsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedNotificationTransportList>> {
+    async eventsTransportsListRaw(
+        requestParameters: EventsTransportsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedNotificationTransportList>> {
         const requestOptions = await this.eventsTransportsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedNotificationTransportListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedNotificationTransportListFromJSON(jsonValue),
+        );
     }
 
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsList(requestParameters: EventsTransportsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedNotificationTransportList> {
+    async eventsTransportsList(
+        requestParameters: EventsTransportsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedNotificationTransportList> {
         const response = await this.eventsTransportsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2074,11 +2343,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsTransportsPartialUpdate without sending the request
      */
-    async eventsTransportsPartialUpdateRequestOpts(requestParameters: EventsTransportsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsTransportsPartialUpdateRequestOpts(
+        requestParameters: EventsTransportsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsTransportsPartialUpdate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsTransportsPartialUpdate().',
             );
         }
 
@@ -2086,7 +2357,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2098,43 +2369,62 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedNotificationTransportRequestToJSON(requestParameters['patchedNotificationTransportRequest']),
+            body: PatchedNotificationTransportRequestToJSON(
+                requestParameters["patchedNotificationTransportRequest"],
+            ),
         };
     }
 
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsPartialUpdateRaw(requestParameters: EventsTransportsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationTransport>> {
-        const requestOptions = await this.eventsTransportsPartialUpdateRequestOpts(requestParameters);
+    async eventsTransportsPartialUpdateRaw(
+        requestParameters: EventsTransportsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<NotificationTransport>> {
+        const requestOptions =
+            await this.eventsTransportsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationTransportFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationTransportFromJSON(jsonValue),
+        );
     }
 
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsPartialUpdate(requestParameters: EventsTransportsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationTransport> {
-        const response = await this.eventsTransportsPartialUpdateRaw(requestParameters, initOverrides);
+    async eventsTransportsPartialUpdate(
+        requestParameters: EventsTransportsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<NotificationTransport> {
+        const response = await this.eventsTransportsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for eventsTransportsRetrieve without sending the request
      */
-    async eventsTransportsRetrieveRequestOpts(requestParameters: EventsTransportsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsTransportsRetrieveRequestOpts(
+        requestParameters: EventsTransportsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsTransportsRetrieve().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsTransportsRetrieve().',
             );
         }
 
@@ -2152,11 +2442,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2165,17 +2458,25 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsRetrieveRaw(requestParameters: EventsTransportsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationTransport>> {
+    async eventsTransportsRetrieveRaw(
+        requestParameters: EventsTransportsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<NotificationTransport>> {
         const requestOptions = await this.eventsTransportsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationTransportFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationTransportFromJSON(jsonValue),
+        );
     }
 
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsRetrieve(requestParameters: EventsTransportsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationTransport> {
+    async eventsTransportsRetrieve(
+        requestParameters: EventsTransportsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<NotificationTransport> {
         const response = await this.eventsTransportsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2183,11 +2484,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsTransportsTestCreate without sending the request
      */
-    async eventsTransportsTestCreateRequestOpts(requestParameters: EventsTransportsTestCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsTransportsTestCreateRequestOpts(
+        requestParameters: EventsTransportsTestCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsTransportsTestCreate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsTransportsTestCreate().',
             );
         }
 
@@ -2205,11 +2508,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/test/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2218,17 +2524,25 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Send example notification using selected transport. Requires Modify permissions.
      */
-    async eventsTransportsTestCreateRaw(requestParameters: EventsTransportsTestCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationTransportTest>> {
+    async eventsTransportsTestCreateRaw(
+        requestParameters: EventsTransportsTestCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<NotificationTransportTest>> {
         const requestOptions = await this.eventsTransportsTestCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationTransportTestFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationTransportTestFromJSON(jsonValue),
+        );
     }
 
     /**
      * Send example notification using selected transport. Requires Modify permissions.
      */
-    async eventsTransportsTestCreate(requestParameters: EventsTransportsTestCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationTransportTest> {
+    async eventsTransportsTestCreate(
+        requestParameters: EventsTransportsTestCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<NotificationTransportTest> {
         const response = await this.eventsTransportsTestCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2236,18 +2550,20 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsTransportsUpdate without sending the request
      */
-    async eventsTransportsUpdateRequestOpts(requestParameters: EventsTransportsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsTransportsUpdateRequestOpts(
+        requestParameters: EventsTransportsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsTransportsUpdate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsTransportsUpdate().',
             );
         }
 
-        if (requestParameters['notificationTransportRequest'] == null) {
+        if (requestParameters["notificationTransportRequest"] == null) {
             throw new runtime.RequiredError(
-                'notificationTransportRequest',
-                'Required parameter "notificationTransportRequest" was null or undefined when calling eventsTransportsUpdate().'
+                "notificationTransportRequest",
+                'Required parameter "notificationTransportRequest" was null or undefined when calling eventsTransportsUpdate().',
             );
         }
 
@@ -2255,7 +2571,7 @@ export class EventsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2267,31 +2583,44 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: NotificationTransportRequestToJSON(requestParameters['notificationTransportRequest']),
+            body: NotificationTransportRequestToJSON(
+                requestParameters["notificationTransportRequest"],
+            ),
         };
     }
 
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsUpdateRaw(requestParameters: EventsTransportsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<NotificationTransport>> {
+    async eventsTransportsUpdateRaw(
+        requestParameters: EventsTransportsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<NotificationTransport>> {
         const requestOptions = await this.eventsTransportsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => NotificationTransportFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            NotificationTransportFromJSON(jsonValue),
+        );
     }
 
     /**
      * NotificationTransport Viewset
      */
-    async eventsTransportsUpdate(requestParameters: EventsTransportsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<NotificationTransport> {
+    async eventsTransportsUpdate(
+        requestParameters: EventsTransportsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<NotificationTransport> {
         const response = await this.eventsTransportsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2299,11 +2628,13 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Creates request options for eventsTransportsUsedByList without sending the request
      */
-    async eventsTransportsUsedByListRequestOpts(requestParameters: EventsTransportsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async eventsTransportsUsedByListRequestOpts(
+        requestParameters: EventsTransportsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling eventsTransportsUsedByList().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling eventsTransportsUsedByList().',
             );
         }
 
@@ -2321,11 +2652,14 @@ export class EventsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/events/transports/{uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2334,7 +2668,10 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async eventsTransportsUsedByListRaw(requestParameters: EventsTransportsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async eventsTransportsUsedByListRaw(
+        requestParameters: EventsTransportsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.eventsTransportsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2344,9 +2681,11 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async eventsTransportsUsedByList(requestParameters: EventsTransportsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async eventsTransportsUsedByList(
+        requestParameters: EventsTransportsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.eventsTransportsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
-
 }

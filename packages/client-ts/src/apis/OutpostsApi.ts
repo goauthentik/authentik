@@ -12,90 +12,59 @@
  * Do not edit the class manually.
  */
 
-
-import * as runtime from '../runtime';
 import type {
-  DockerServiceConnection,
-  DockerServiceConnectionRequest,
-  GenericError,
-  KubernetesServiceConnection,
-  KubernetesServiceConnectionRequest,
-  LDAPCheckAccess,
-  Outpost,
-  OutpostDefaultConfig,
-  OutpostHealth,
-  OutpostRequest,
-  PaginatedDockerServiceConnectionList,
-  PaginatedKubernetesServiceConnectionList,
-  PaginatedLDAPOutpostConfigList,
-  PaginatedOutpostList,
-  PaginatedProxyOutpostConfigList,
-  PaginatedRadiusOutpostConfigList,
-  PaginatedServiceConnectionList,
-  PatchedDockerServiceConnectionRequest,
-  PatchedKubernetesServiceConnectionRequest,
-  PatchedOutpostRequest,
-  RadiusCheckAccess,
-  ServiceConnection,
-  ServiceConnectionState,
-  TypeCreate,
-  UsedBy,
-  ValidationError,
-} from '../models/index';
+    DockerServiceConnection,
+    DockerServiceConnectionRequest,
+    KubernetesServiceConnection,
+    KubernetesServiceConnectionRequest,
+    LDAPCheckAccess,
+    Outpost,
+    OutpostDefaultConfig,
+    OutpostHealth,
+    OutpostRequest,
+    PaginatedDockerServiceConnectionList,
+    PaginatedKubernetesServiceConnectionList,
+    PaginatedLDAPOutpostConfigList,
+    PaginatedOutpostList,
+    PaginatedProxyOutpostConfigList,
+    PaginatedRadiusOutpostConfigList,
+    PaginatedServiceConnectionList,
+    PatchedDockerServiceConnectionRequest,
+    PatchedKubernetesServiceConnectionRequest,
+    PatchedOutpostRequest,
+    RadiusCheckAccess,
+    ServiceConnection,
+    ServiceConnectionState,
+    TypeCreate,
+    UsedBy,
+} from "../models/index";
 import {
     DockerServiceConnectionFromJSON,
-    DockerServiceConnectionToJSON,
-    DockerServiceConnectionRequestFromJSON,
     DockerServiceConnectionRequestToJSON,
-    GenericErrorFromJSON,
-    GenericErrorToJSON,
     KubernetesServiceConnectionFromJSON,
-    KubernetesServiceConnectionToJSON,
-    KubernetesServiceConnectionRequestFromJSON,
     KubernetesServiceConnectionRequestToJSON,
     LDAPCheckAccessFromJSON,
-    LDAPCheckAccessToJSON,
-    OutpostFromJSON,
-    OutpostToJSON,
     OutpostDefaultConfigFromJSON,
-    OutpostDefaultConfigToJSON,
+    OutpostFromJSON,
     OutpostHealthFromJSON,
-    OutpostHealthToJSON,
-    OutpostRequestFromJSON,
     OutpostRequestToJSON,
     PaginatedDockerServiceConnectionListFromJSON,
-    PaginatedDockerServiceConnectionListToJSON,
     PaginatedKubernetesServiceConnectionListFromJSON,
-    PaginatedKubernetesServiceConnectionListToJSON,
     PaginatedLDAPOutpostConfigListFromJSON,
-    PaginatedLDAPOutpostConfigListToJSON,
     PaginatedOutpostListFromJSON,
-    PaginatedOutpostListToJSON,
     PaginatedProxyOutpostConfigListFromJSON,
-    PaginatedProxyOutpostConfigListToJSON,
     PaginatedRadiusOutpostConfigListFromJSON,
-    PaginatedRadiusOutpostConfigListToJSON,
     PaginatedServiceConnectionListFromJSON,
-    PaginatedServiceConnectionListToJSON,
-    PatchedDockerServiceConnectionRequestFromJSON,
     PatchedDockerServiceConnectionRequestToJSON,
-    PatchedKubernetesServiceConnectionRequestFromJSON,
     PatchedKubernetesServiceConnectionRequestToJSON,
-    PatchedOutpostRequestFromJSON,
     PatchedOutpostRequestToJSON,
     RadiusCheckAccessFromJSON,
-    RadiusCheckAccessToJSON,
     ServiceConnectionFromJSON,
-    ServiceConnectionToJSON,
     ServiceConnectionStateFromJSON,
-    ServiceConnectionStateToJSON,
     TypeCreateFromJSON,
-    TypeCreateToJSON,
     UsedByFromJSON,
-    UsedByToJSON,
-    ValidationErrorFromJSON,
-    ValidationErrorToJSON,
-} from '../models/index';
+} from "../models/index";
+import * as runtime from "../runtime";
 
 export interface OutpostsInstancesCreateRequest {
     outpostRequest: OutpostRequest;
@@ -284,18 +253,19 @@ export interface OutpostsServiceConnectionsKubernetesUsedByListRequest {
 }
 
 /**
- * 
+ *
  */
 export class OutpostsApi extends runtime.BaseAPI {
-
     /**
      * Creates request options for outpostsInstancesCreate without sending the request
      */
-    async outpostsInstancesCreateRequestOpts(requestParameters: OutpostsInstancesCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['outpostRequest'] == null) {
+    async outpostsInstancesCreateRequestOpts(
+        requestParameters: OutpostsInstancesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["outpostRequest"] == null) {
             throw new runtime.RequiredError(
-                'outpostRequest',
-                'Required parameter "outpostRequest" was null or undefined when calling outpostsInstancesCreate().'
+                "outpostRequest",
+                'Required parameter "outpostRequest" was null or undefined when calling outpostsInstancesCreate().',
             );
         }
 
@@ -303,7 +273,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -318,17 +288,20 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: OutpostRequestToJSON(requestParameters['outpostRequest']),
+            body: OutpostRequestToJSON(requestParameters["outpostRequest"]),
         };
     }
 
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesCreateRaw(requestParameters: OutpostsInstancesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Outpost>> {
+    async outpostsInstancesCreateRaw(
+        requestParameters: OutpostsInstancesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Outpost>> {
         const requestOptions = await this.outpostsInstancesCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -338,7 +311,10 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesCreate(requestParameters: OutpostsInstancesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Outpost> {
+    async outpostsInstancesCreate(
+        requestParameters: OutpostsInstancesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Outpost> {
         const response = await this.outpostsInstancesCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -364,7 +340,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -373,17 +349,23 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Global default outpost config
      */
-    async outpostsInstancesDefaultSettingsRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OutpostDefaultConfig>> {
+    async outpostsInstancesDefaultSettingsRetrieveRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<OutpostDefaultConfig>> {
         const requestOptions = await this.outpostsInstancesDefaultSettingsRetrieveRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OutpostDefaultConfigFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            OutpostDefaultConfigFromJSON(jsonValue),
+        );
     }
 
     /**
      * Global default outpost config
      */
-    async outpostsInstancesDefaultSettingsRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OutpostDefaultConfig> {
+    async outpostsInstancesDefaultSettingsRetrieve(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<OutpostDefaultConfig> {
         const response = await this.outpostsInstancesDefaultSettingsRetrieveRaw(initOverrides);
         return await response.value();
     }
@@ -391,11 +373,13 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Creates request options for outpostsInstancesDestroy without sending the request
      */
-    async outpostsInstancesDestroyRequestOpts(requestParameters: OutpostsInstancesDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsInstancesDestroyRequestOpts(
+        requestParameters: OutpostsInstancesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsInstancesDestroy().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsInstancesDestroy().',
             );
         }
 
@@ -413,11 +397,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -426,7 +413,10 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesDestroyRaw(requestParameters: OutpostsInstancesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async outpostsInstancesDestroyRaw(
+        requestParameters: OutpostsInstancesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.outpostsInstancesDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -436,61 +426,68 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesDestroy(requestParameters: OutpostsInstancesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async outpostsInstancesDestroy(
+        requestParameters: OutpostsInstancesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.outpostsInstancesDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for outpostsInstancesHealthList without sending the request
      */
-    async outpostsInstancesHealthListRequestOpts(requestParameters: OutpostsInstancesHealthListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsInstancesHealthListRequestOpts(
+        requestParameters: OutpostsInstancesHealthListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsInstancesHealthList().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsInstancesHealthList().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['managedIcontains'] != null) {
-            queryParameters['managed__icontains'] = requestParameters['managedIcontains'];
+        if (requestParameters["managedIcontains"] != null) {
+            queryParameters["managed__icontains"] = requestParameters["managedIcontains"];
         }
 
-        if (requestParameters['managedIexact'] != null) {
-            queryParameters['managed__iexact'] = requestParameters['managedIexact'];
+        if (requestParameters["managedIexact"] != null) {
+            queryParameters["managed__iexact"] = requestParameters["managedIexact"];
         }
 
-        if (requestParameters['nameIcontains'] != null) {
-            queryParameters['name__icontains'] = requestParameters['nameIcontains'];
+        if (requestParameters["nameIcontains"] != null) {
+            queryParameters["name__icontains"] = requestParameters["nameIcontains"];
         }
 
-        if (requestParameters['nameIexact'] != null) {
-            queryParameters['name__iexact'] = requestParameters['nameIexact'];
+        if (requestParameters["nameIexact"] != null) {
+            queryParameters["name__iexact"] = requestParameters["nameIexact"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['providersIsnull'] != null) {
-            queryParameters['providers__isnull'] = requestParameters['providersIsnull'];
+        if (requestParameters["providersIsnull"] != null) {
+            queryParameters["providers__isnull"] = requestParameters["providersIsnull"];
         }
 
-        if (requestParameters['providersByPk'] != null) {
-            queryParameters['providers_by_pk'] = requestParameters['providersByPk'];
+        if (requestParameters["providersByPk"] != null) {
+            queryParameters["providers_by_pk"] = requestParameters["providersByPk"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['serviceConnectionNameIcontains'] != null) {
-            queryParameters['service_connection__name__icontains'] = requestParameters['serviceConnectionNameIcontains'];
+        if (requestParameters["serviceConnectionNameIcontains"] != null) {
+            queryParameters["service_connection__name__icontains"] =
+                requestParameters["serviceConnectionNameIcontains"];
         }
 
-        if (requestParameters['serviceConnectionNameIexact'] != null) {
-            queryParameters['service_connection__name__iexact'] = requestParameters['serviceConnectionNameIexact'];
+        if (requestParameters["serviceConnectionNameIexact"] != null) {
+            queryParameters["service_connection__name__iexact"] =
+                requestParameters["serviceConnectionNameIexact"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -505,11 +502,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/health/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -518,73 +518,88 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get outposts current health
      */
-    async outpostsInstancesHealthListRaw(requestParameters: OutpostsInstancesHealthListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<OutpostHealth>>> {
+    async outpostsInstancesHealthListRaw(
+        requestParameters: OutpostsInstancesHealthListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<OutpostHealth>>> {
         const requestOptions = await this.outpostsInstancesHealthListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(OutpostHealthFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(OutpostHealthFromJSON),
+        );
     }
 
     /**
      * Get outposts current health
      */
-    async outpostsInstancesHealthList(requestParameters: OutpostsInstancesHealthListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<OutpostHealth>> {
-        const response = await this.outpostsInstancesHealthListRaw(requestParameters, initOverrides);
+    async outpostsInstancesHealthList(
+        requestParameters: OutpostsInstancesHealthListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<OutpostHealth>> {
+        const response = await this.outpostsInstancesHealthListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsInstancesList without sending the request
      */
-    async outpostsInstancesListRequestOpts(requestParameters: OutpostsInstancesListRequest): Promise<runtime.RequestOpts> {
+    async outpostsInstancesListRequestOpts(
+        requestParameters: OutpostsInstancesListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['managedIcontains'] != null) {
-            queryParameters['managed__icontains'] = requestParameters['managedIcontains'];
+        if (requestParameters["managedIcontains"] != null) {
+            queryParameters["managed__icontains"] = requestParameters["managedIcontains"];
         }
 
-        if (requestParameters['managedIexact'] != null) {
-            queryParameters['managed__iexact'] = requestParameters['managedIexact'];
+        if (requestParameters["managedIexact"] != null) {
+            queryParameters["managed__iexact"] = requestParameters["managedIexact"];
         }
 
-        if (requestParameters['nameIcontains'] != null) {
-            queryParameters['name__icontains'] = requestParameters['nameIcontains'];
+        if (requestParameters["nameIcontains"] != null) {
+            queryParameters["name__icontains"] = requestParameters["nameIcontains"];
         }
 
-        if (requestParameters['nameIexact'] != null) {
-            queryParameters['name__iexact'] = requestParameters['nameIexact'];
+        if (requestParameters["nameIexact"] != null) {
+            queryParameters["name__iexact"] = requestParameters["nameIexact"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['providersIsnull'] != null) {
-            queryParameters['providers__isnull'] = requestParameters['providersIsnull'];
+        if (requestParameters["providersIsnull"] != null) {
+            queryParameters["providers__isnull"] = requestParameters["providersIsnull"];
         }
 
-        if (requestParameters['providersByPk'] != null) {
-            queryParameters['providers_by_pk'] = requestParameters['providersByPk'];
+        if (requestParameters["providersByPk"] != null) {
+            queryParameters["providers_by_pk"] = requestParameters["providersByPk"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['serviceConnectionNameIcontains'] != null) {
-            queryParameters['service_connection__name__icontains'] = requestParameters['serviceConnectionNameIcontains'];
+        if (requestParameters["serviceConnectionNameIcontains"] != null) {
+            queryParameters["service_connection__name__icontains"] =
+                requestParameters["serviceConnectionNameIcontains"];
         }
 
-        if (requestParameters['serviceConnectionNameIexact'] != null) {
-            queryParameters['service_connection__name__iexact'] = requestParameters['serviceConnectionNameIexact'];
+        if (requestParameters["serviceConnectionNameIexact"] != null) {
+            queryParameters["service_connection__name__iexact"] =
+                requestParameters["serviceConnectionNameIexact"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -602,7 +617,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -611,17 +626,25 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesListRaw(requestParameters: OutpostsInstancesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedOutpostList>> {
+    async outpostsInstancesListRaw(
+        requestParameters: OutpostsInstancesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedOutpostList>> {
         const requestOptions = await this.outpostsInstancesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedOutpostListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedOutpostListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesList(requestParameters: OutpostsInstancesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedOutpostList> {
+    async outpostsInstancesList(
+        requestParameters: OutpostsInstancesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedOutpostList> {
         const response = await this.outpostsInstancesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -629,11 +652,13 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Creates request options for outpostsInstancesPartialUpdate without sending the request
      */
-    async outpostsInstancesPartialUpdateRequestOpts(requestParameters: OutpostsInstancesPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsInstancesPartialUpdateRequestOpts(
+        requestParameters: OutpostsInstancesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsInstancesPartialUpdate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsInstancesPartialUpdate().',
             );
         }
 
@@ -641,7 +666,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -653,22 +678,29 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedOutpostRequestToJSON(requestParameters['patchedOutpostRequest']),
+            body: PatchedOutpostRequestToJSON(requestParameters["patchedOutpostRequest"]),
         };
     }
 
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesPartialUpdateRaw(requestParameters: OutpostsInstancesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Outpost>> {
-        const requestOptions = await this.outpostsInstancesPartialUpdateRequestOpts(requestParameters);
+    async outpostsInstancesPartialUpdateRaw(
+        requestParameters: OutpostsInstancesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Outpost>> {
+        const requestOptions =
+            await this.outpostsInstancesPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => OutpostFromJSON(jsonValue));
@@ -677,19 +709,27 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesPartialUpdate(requestParameters: OutpostsInstancesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Outpost> {
-        const response = await this.outpostsInstancesPartialUpdateRaw(requestParameters, initOverrides);
+    async outpostsInstancesPartialUpdate(
+        requestParameters: OutpostsInstancesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Outpost> {
+        const response = await this.outpostsInstancesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsInstancesRetrieve without sending the request
      */
-    async outpostsInstancesRetrieveRequestOpts(requestParameters: OutpostsInstancesRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsInstancesRetrieveRequestOpts(
+        requestParameters: OutpostsInstancesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsInstancesRetrieve().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsInstancesRetrieve().',
             );
         }
 
@@ -707,11 +747,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -720,7 +763,10 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesRetrieveRaw(requestParameters: OutpostsInstancesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Outpost>> {
+    async outpostsInstancesRetrieveRaw(
+        requestParameters: OutpostsInstancesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Outpost>> {
         const requestOptions = await this.outpostsInstancesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -730,7 +776,10 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesRetrieve(requestParameters: OutpostsInstancesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Outpost> {
+    async outpostsInstancesRetrieve(
+        requestParameters: OutpostsInstancesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Outpost> {
         const response = await this.outpostsInstancesRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -738,18 +787,20 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Creates request options for outpostsInstancesUpdate without sending the request
      */
-    async outpostsInstancesUpdateRequestOpts(requestParameters: OutpostsInstancesUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsInstancesUpdateRequestOpts(
+        requestParameters: OutpostsInstancesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsInstancesUpdate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsInstancesUpdate().',
             );
         }
 
-        if (requestParameters['outpostRequest'] == null) {
+        if (requestParameters["outpostRequest"] == null) {
             throw new runtime.RequiredError(
-                'outpostRequest',
-                'Required parameter "outpostRequest" was null or undefined when calling outpostsInstancesUpdate().'
+                "outpostRequest",
+                'Required parameter "outpostRequest" was null or undefined when calling outpostsInstancesUpdate().',
             );
         }
 
@@ -757,7 +808,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -769,21 +820,27 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: OutpostRequestToJSON(requestParameters['outpostRequest']),
+            body: OutpostRequestToJSON(requestParameters["outpostRequest"]),
         };
     }
 
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesUpdateRaw(requestParameters: OutpostsInstancesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Outpost>> {
+    async outpostsInstancesUpdateRaw(
+        requestParameters: OutpostsInstancesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Outpost>> {
         const requestOptions = await this.outpostsInstancesUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -793,7 +850,10 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Outpost Viewset
      */
-    async outpostsInstancesUpdate(requestParameters: OutpostsInstancesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Outpost> {
+    async outpostsInstancesUpdate(
+        requestParameters: OutpostsInstancesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Outpost> {
         const response = await this.outpostsInstancesUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -801,11 +861,13 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Creates request options for outpostsInstancesUsedByList without sending the request
      */
-    async outpostsInstancesUsedByListRequestOpts(requestParameters: OutpostsInstancesUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsInstancesUsedByListRequestOpts(
+        requestParameters: OutpostsInstancesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsInstancesUsedByList().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsInstancesUsedByList().',
             );
         }
 
@@ -823,11 +885,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/instances/{uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -836,7 +901,10 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async outpostsInstancesUsedByListRaw(requestParameters: OutpostsInstancesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async outpostsInstancesUsedByListRaw(
+        requestParameters: OutpostsInstancesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.outpostsInstancesUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -846,26 +914,34 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async outpostsInstancesUsedByList(requestParameters: OutpostsInstancesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.outpostsInstancesUsedByListRaw(requestParameters, initOverrides);
+    async outpostsInstancesUsedByList(
+        requestParameters: OutpostsInstancesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.outpostsInstancesUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsLdapAccessCheck without sending the request
      */
-    async outpostsLdapAccessCheckRequestOpts(requestParameters: OutpostsLdapAccessCheckRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async outpostsLdapAccessCheckRequestOpts(
+        requestParameters: OutpostsLdapAccessCheckRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling outpostsLdapAccessCheck().'
+                "id",
+                'Required parameter "id" was null or undefined when calling outpostsLdapAccessCheck().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['appSlug'] != null) {
-            queryParameters['app_slug'] = requestParameters['appSlug'];
+        if (requestParameters["appSlug"] != null) {
+            queryParameters["app_slug"] = requestParameters["appSlug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -880,11 +956,11 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/ldap/{id}/check_access/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -893,17 +969,25 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Check access to a single application by slug
      */
-    async outpostsLdapAccessCheckRaw(requestParameters: OutpostsLdapAccessCheckRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LDAPCheckAccess>> {
+    async outpostsLdapAccessCheckRaw(
+        requestParameters: OutpostsLdapAccessCheckRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<LDAPCheckAccess>> {
         const requestOptions = await this.outpostsLdapAccessCheckRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LDAPCheckAccessFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            LDAPCheckAccessFromJSON(jsonValue),
+        );
     }
 
     /**
      * Check access to a single application by slug
      */
-    async outpostsLdapAccessCheck(requestParameters: OutpostsLdapAccessCheckRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LDAPCheckAccess> {
+    async outpostsLdapAccessCheck(
+        requestParameters: OutpostsLdapAccessCheckRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<LDAPCheckAccess> {
         const response = await this.outpostsLdapAccessCheckRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -911,27 +995,29 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Creates request options for outpostsLdapList without sending the request
      */
-    async outpostsLdapListRequestOpts(requestParameters: OutpostsLdapListRequest): Promise<runtime.RequestOpts> {
+    async outpostsLdapListRequestOpts(
+        requestParameters: OutpostsLdapListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -949,7 +1035,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -958,17 +1044,25 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * LDAPProvider Viewset
      */
-    async outpostsLdapListRaw(requestParameters: OutpostsLdapListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedLDAPOutpostConfigList>> {
+    async outpostsLdapListRaw(
+        requestParameters: OutpostsLdapListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedLDAPOutpostConfigList>> {
         const requestOptions = await this.outpostsLdapListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedLDAPOutpostConfigListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedLDAPOutpostConfigListFromJSON(jsonValue),
+        );
     }
 
     /**
      * LDAPProvider Viewset
      */
-    async outpostsLdapList(requestParameters: OutpostsLdapListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedLDAPOutpostConfigList> {
+    async outpostsLdapList(
+        requestParameters: OutpostsLdapListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedLDAPOutpostConfigList> {
         const response = await this.outpostsLdapListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -976,27 +1070,29 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Creates request options for outpostsProxyList without sending the request
      */
-    async outpostsProxyListRequestOpts(requestParameters: OutpostsProxyListRequest): Promise<runtime.RequestOpts> {
+    async outpostsProxyListRequestOpts(
+        requestParameters: OutpostsProxyListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1014,7 +1110,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1023,17 +1119,25 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * ProxyProvider Viewset
      */
-    async outpostsProxyListRaw(requestParameters: OutpostsProxyListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedProxyOutpostConfigList>> {
+    async outpostsProxyListRaw(
+        requestParameters: OutpostsProxyListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedProxyOutpostConfigList>> {
         const requestOptions = await this.outpostsProxyListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedProxyOutpostConfigListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedProxyOutpostConfigListFromJSON(jsonValue),
+        );
     }
 
     /**
      * ProxyProvider Viewset
      */
-    async outpostsProxyList(requestParameters: OutpostsProxyListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedProxyOutpostConfigList> {
+    async outpostsProxyList(
+        requestParameters: OutpostsProxyListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedProxyOutpostConfigList> {
         const response = await this.outpostsProxyListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1041,18 +1145,20 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Creates request options for outpostsRadiusAccessCheck without sending the request
      */
-    async outpostsRadiusAccessCheckRequestOpts(requestParameters: OutpostsRadiusAccessCheckRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async outpostsRadiusAccessCheckRequestOpts(
+        requestParameters: OutpostsRadiusAccessCheckRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling outpostsRadiusAccessCheck().'
+                "id",
+                'Required parameter "id" was null or undefined when calling outpostsRadiusAccessCheck().',
             );
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters['appSlug'] != null) {
-            queryParameters['app_slug'] = requestParameters['appSlug'];
+        if (requestParameters["appSlug"] != null) {
+            queryParameters["app_slug"] = requestParameters["appSlug"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1067,11 +1173,11 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/radius/{id}/check_access/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1080,17 +1186,25 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Check access to a single application by slug
      */
-    async outpostsRadiusAccessCheckRaw(requestParameters: OutpostsRadiusAccessCheckRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RadiusCheckAccess>> {
+    async outpostsRadiusAccessCheckRaw(
+        requestParameters: OutpostsRadiusAccessCheckRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RadiusCheckAccess>> {
         const requestOptions = await this.outpostsRadiusAccessCheckRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RadiusCheckAccessFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RadiusCheckAccessFromJSON(jsonValue),
+        );
     }
 
     /**
      * Check access to a single application by slug
      */
-    async outpostsRadiusAccessCheck(requestParameters: OutpostsRadiusAccessCheckRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RadiusCheckAccess> {
+    async outpostsRadiusAccessCheck(
+        requestParameters: OutpostsRadiusAccessCheckRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RadiusCheckAccess> {
         const response = await this.outpostsRadiusAccessCheckRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1098,27 +1212,29 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Creates request options for outpostsRadiusList without sending the request
      */
-    async outpostsRadiusListRequestOpts(requestParameters: OutpostsRadiusListRequest): Promise<runtime.RequestOpts> {
+    async outpostsRadiusListRequestOpts(
+        requestParameters: OutpostsRadiusListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1136,7 +1252,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1145,17 +1261,25 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * RadiusProvider Viewset
      */
-    async outpostsRadiusListRaw(requestParameters: OutpostsRadiusListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRadiusOutpostConfigList>> {
+    async outpostsRadiusListRaw(
+        requestParameters: OutpostsRadiusListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedRadiusOutpostConfigList>> {
         const requestOptions = await this.outpostsRadiusListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRadiusOutpostConfigListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedRadiusOutpostConfigListFromJSON(jsonValue),
+        );
     }
 
     /**
      * RadiusProvider Viewset
      */
-    async outpostsRadiusList(requestParameters: OutpostsRadiusListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRadiusOutpostConfigList> {
+    async outpostsRadiusList(
+        requestParameters: OutpostsRadiusListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedRadiusOutpostConfigList> {
         const response = await this.outpostsRadiusListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1163,11 +1287,13 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Creates request options for outpostsServiceConnectionsAllDestroy without sending the request
      */
-    async outpostsServiceConnectionsAllDestroyRequestOpts(requestParameters: OutpostsServiceConnectionsAllDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsAllDestroyRequestOpts(
+        requestParameters: OutpostsServiceConnectionsAllDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsAllDestroy().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsAllDestroy().',
             );
         }
 
@@ -1185,11 +1311,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/all/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1198,8 +1327,12 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * ServiceConnection Viewset
      */
-    async outpostsServiceConnectionsAllDestroyRaw(requestParameters: OutpostsServiceConnectionsAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.outpostsServiceConnectionsAllDestroyRequestOpts(requestParameters);
+    async outpostsServiceConnectionsAllDestroyRaw(
+        requestParameters: OutpostsServiceConnectionsAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsAllDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1208,34 +1341,39 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * ServiceConnection Viewset
      */
-    async outpostsServiceConnectionsAllDestroy(requestParameters: OutpostsServiceConnectionsAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async outpostsServiceConnectionsAllDestroy(
+        requestParameters: OutpostsServiceConnectionsAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.outpostsServiceConnectionsAllDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsAllList without sending the request
      */
-    async outpostsServiceConnectionsAllListRequestOpts(requestParameters: OutpostsServiceConnectionsAllListRequest): Promise<runtime.RequestOpts> {
+    async outpostsServiceConnectionsAllListRequestOpts(
+        requestParameters: OutpostsServiceConnectionsAllListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1253,7 +1391,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1262,29 +1400,43 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * ServiceConnection Viewset
      */
-    async outpostsServiceConnectionsAllListRaw(requestParameters: OutpostsServiceConnectionsAllListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedServiceConnectionList>> {
-        const requestOptions = await this.outpostsServiceConnectionsAllListRequestOpts(requestParameters);
+    async outpostsServiceConnectionsAllListRaw(
+        requestParameters: OutpostsServiceConnectionsAllListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedServiceConnectionList>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsAllListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedServiceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedServiceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * ServiceConnection Viewset
      */
-    async outpostsServiceConnectionsAllList(requestParameters: OutpostsServiceConnectionsAllListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedServiceConnectionList> {
-        const response = await this.outpostsServiceConnectionsAllListRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsAllList(
+        requestParameters: OutpostsServiceConnectionsAllListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedServiceConnectionList> {
+        const response = await this.outpostsServiceConnectionsAllListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsAllRetrieve without sending the request
      */
-    async outpostsServiceConnectionsAllRetrieveRequestOpts(requestParameters: OutpostsServiceConnectionsAllRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsAllRetrieveRequestOpts(
+        requestParameters: OutpostsServiceConnectionsAllRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsAllRetrieve().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsAllRetrieve().',
             );
         }
 
@@ -1302,11 +1454,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/all/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1315,29 +1470,43 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * ServiceConnection Viewset
      */
-    async outpostsServiceConnectionsAllRetrieveRaw(requestParameters: OutpostsServiceConnectionsAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ServiceConnection>> {
-        const requestOptions = await this.outpostsServiceConnectionsAllRetrieveRequestOpts(requestParameters);
+    async outpostsServiceConnectionsAllRetrieveRaw(
+        requestParameters: OutpostsServiceConnectionsAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ServiceConnection>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsAllRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ServiceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ServiceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * ServiceConnection Viewset
      */
-    async outpostsServiceConnectionsAllRetrieve(requestParameters: OutpostsServiceConnectionsAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ServiceConnection> {
-        const response = await this.outpostsServiceConnectionsAllRetrieveRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsAllRetrieve(
+        requestParameters: OutpostsServiceConnectionsAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ServiceConnection> {
+        const response = await this.outpostsServiceConnectionsAllRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsAllStateRetrieve without sending the request
      */
-    async outpostsServiceConnectionsAllStateRetrieveRequestOpts(requestParameters: OutpostsServiceConnectionsAllStateRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsAllStateRetrieveRequestOpts(
+        requestParameters: OutpostsServiceConnectionsAllStateRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsAllStateRetrieve().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsAllStateRetrieve().',
             );
         }
 
@@ -1355,11 +1524,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/all/{uuid}/state/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1368,18 +1540,30 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get the service connection\'s state
      */
-    async outpostsServiceConnectionsAllStateRetrieveRaw(requestParameters: OutpostsServiceConnectionsAllStateRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ServiceConnectionState>> {
-        const requestOptions = await this.outpostsServiceConnectionsAllStateRetrieveRequestOpts(requestParameters);
+    async outpostsServiceConnectionsAllStateRetrieveRaw(
+        requestParameters: OutpostsServiceConnectionsAllStateRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ServiceConnectionState>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsAllStateRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ServiceConnectionStateFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ServiceConnectionStateFromJSON(jsonValue),
+        );
     }
 
     /**
      * Get the service connection\'s state
      */
-    async outpostsServiceConnectionsAllStateRetrieve(requestParameters: OutpostsServiceConnectionsAllStateRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ServiceConnectionState> {
-        const response = await this.outpostsServiceConnectionsAllStateRetrieveRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsAllStateRetrieve(
+        requestParameters: OutpostsServiceConnectionsAllStateRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ServiceConnectionState> {
+        const response = await this.outpostsServiceConnectionsAllStateRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
@@ -1404,7 +1588,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1413,17 +1597,23 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get all creatable types
      */
-    async outpostsServiceConnectionsAllTypesListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
+    async outpostsServiceConnectionsAllTypesListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
         const requestOptions = await this.outpostsServiceConnectionsAllTypesListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TypeCreateFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(TypeCreateFromJSON),
+        );
     }
 
     /**
      * Get all creatable types
      */
-    async outpostsServiceConnectionsAllTypesList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TypeCreate>> {
+    async outpostsServiceConnectionsAllTypesList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<TypeCreate>> {
         const response = await this.outpostsServiceConnectionsAllTypesListRaw(initOverrides);
         return await response.value();
     }
@@ -1431,11 +1621,13 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Creates request options for outpostsServiceConnectionsAllUsedByList without sending the request
      */
-    async outpostsServiceConnectionsAllUsedByListRequestOpts(requestParameters: OutpostsServiceConnectionsAllUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsAllUsedByListRequestOpts(
+        requestParameters: OutpostsServiceConnectionsAllUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsAllUsedByList().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsAllUsedByList().',
             );
         }
 
@@ -1453,11 +1645,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/all/{uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1466,8 +1661,12 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async outpostsServiceConnectionsAllUsedByListRaw(requestParameters: OutpostsServiceConnectionsAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.outpostsServiceConnectionsAllUsedByListRequestOpts(requestParameters);
+    async outpostsServiceConnectionsAllUsedByListRaw(
+        requestParameters: OutpostsServiceConnectionsAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsAllUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -1476,19 +1675,27 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async outpostsServiceConnectionsAllUsedByList(requestParameters: OutpostsServiceConnectionsAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.outpostsServiceConnectionsAllUsedByListRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsAllUsedByList(
+        requestParameters: OutpostsServiceConnectionsAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.outpostsServiceConnectionsAllUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsDockerCreate without sending the request
      */
-    async outpostsServiceConnectionsDockerCreateRequestOpts(requestParameters: OutpostsServiceConnectionsDockerCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['dockerServiceConnectionRequest'] == null) {
+    async outpostsServiceConnectionsDockerCreateRequestOpts(
+        requestParameters: OutpostsServiceConnectionsDockerCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["dockerServiceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'dockerServiceConnectionRequest',
-                'Required parameter "dockerServiceConnectionRequest" was null or undefined when calling outpostsServiceConnectionsDockerCreate().'
+                "dockerServiceConnectionRequest",
+                'Required parameter "dockerServiceConnectionRequest" was null or undefined when calling outpostsServiceConnectionsDockerCreate().',
             );
         }
 
@@ -1496,7 +1703,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1511,39 +1718,55 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: DockerServiceConnectionRequestToJSON(requestParameters['dockerServiceConnectionRequest']),
+            body: DockerServiceConnectionRequestToJSON(
+                requestParameters["dockerServiceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerCreateRaw(requestParameters: OutpostsServiceConnectionsDockerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DockerServiceConnection>> {
-        const requestOptions = await this.outpostsServiceConnectionsDockerCreateRequestOpts(requestParameters);
+    async outpostsServiceConnectionsDockerCreateRaw(
+        requestParameters: OutpostsServiceConnectionsDockerCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DockerServiceConnection>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsDockerCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => DockerServiceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            DockerServiceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerCreate(requestParameters: OutpostsServiceConnectionsDockerCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DockerServiceConnection> {
-        const response = await this.outpostsServiceConnectionsDockerCreateRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsDockerCreate(
+        requestParameters: OutpostsServiceConnectionsDockerCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DockerServiceConnection> {
+        const response = await this.outpostsServiceConnectionsDockerCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsDockerDestroy without sending the request
      */
-    async outpostsServiceConnectionsDockerDestroyRequestOpts(requestParameters: OutpostsServiceConnectionsDockerDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsDockerDestroyRequestOpts(
+        requestParameters: OutpostsServiceConnectionsDockerDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerDestroy().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerDestroy().',
             );
         }
 
@@ -1561,11 +1784,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/docker/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1574,8 +1800,12 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerDestroyRaw(requestParameters: OutpostsServiceConnectionsDockerDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.outpostsServiceConnectionsDockerDestroyRequestOpts(requestParameters);
+    async outpostsServiceConnectionsDockerDestroyRaw(
+        requestParameters: OutpostsServiceConnectionsDockerDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsDockerDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1584,50 +1814,55 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerDestroy(requestParameters: OutpostsServiceConnectionsDockerDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async outpostsServiceConnectionsDockerDestroy(
+        requestParameters: OutpostsServiceConnectionsDockerDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.outpostsServiceConnectionsDockerDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsDockerList without sending the request
      */
-    async outpostsServiceConnectionsDockerListRequestOpts(requestParameters: OutpostsServiceConnectionsDockerListRequest): Promise<runtime.RequestOpts> {
+    async outpostsServiceConnectionsDockerListRequestOpts(
+        requestParameters: OutpostsServiceConnectionsDockerListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['local'] != null) {
-            queryParameters['local'] = requestParameters['local'];
+        if (requestParameters["local"] != null) {
+            queryParameters["local"] = requestParameters["local"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['tlsAuthentication'] != null) {
-            queryParameters['tls_authentication'] = requestParameters['tlsAuthentication'];
+        if (requestParameters["tlsAuthentication"] != null) {
+            queryParameters["tls_authentication"] = requestParameters["tlsAuthentication"];
         }
 
-        if (requestParameters['tlsVerification'] != null) {
-            queryParameters['tls_verification'] = requestParameters['tlsVerification'];
+        if (requestParameters["tlsVerification"] != null) {
+            queryParameters["tls_verification"] = requestParameters["tlsVerification"];
         }
 
-        if (requestParameters['url'] != null) {
-            queryParameters['url'] = requestParameters['url'];
+        if (requestParameters["url"] != null) {
+            queryParameters["url"] = requestParameters["url"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1645,7 +1880,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1654,29 +1889,43 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerListRaw(requestParameters: OutpostsServiceConnectionsDockerListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedDockerServiceConnectionList>> {
-        const requestOptions = await this.outpostsServiceConnectionsDockerListRequestOpts(requestParameters);
+    async outpostsServiceConnectionsDockerListRaw(
+        requestParameters: OutpostsServiceConnectionsDockerListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedDockerServiceConnectionList>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsDockerListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedDockerServiceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedDockerServiceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerList(requestParameters: OutpostsServiceConnectionsDockerListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedDockerServiceConnectionList> {
-        const response = await this.outpostsServiceConnectionsDockerListRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsDockerList(
+        requestParameters: OutpostsServiceConnectionsDockerListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedDockerServiceConnectionList> {
+        const response = await this.outpostsServiceConnectionsDockerListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsDockerPartialUpdate without sending the request
      */
-    async outpostsServiceConnectionsDockerPartialUpdateRequestOpts(requestParameters: OutpostsServiceConnectionsDockerPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsDockerPartialUpdateRequestOpts(
+        requestParameters: OutpostsServiceConnectionsDockerPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerPartialUpdate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerPartialUpdate().',
             );
         }
 
@@ -1684,7 +1933,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1696,43 +1945,62 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/docker/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedDockerServiceConnectionRequestToJSON(requestParameters['patchedDockerServiceConnectionRequest']),
+            body: PatchedDockerServiceConnectionRequestToJSON(
+                requestParameters["patchedDockerServiceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerPartialUpdateRaw(requestParameters: OutpostsServiceConnectionsDockerPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DockerServiceConnection>> {
-        const requestOptions = await this.outpostsServiceConnectionsDockerPartialUpdateRequestOpts(requestParameters);
+    async outpostsServiceConnectionsDockerPartialUpdateRaw(
+        requestParameters: OutpostsServiceConnectionsDockerPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DockerServiceConnection>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsDockerPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => DockerServiceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            DockerServiceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerPartialUpdate(requestParameters: OutpostsServiceConnectionsDockerPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DockerServiceConnection> {
-        const response = await this.outpostsServiceConnectionsDockerPartialUpdateRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsDockerPartialUpdate(
+        requestParameters: OutpostsServiceConnectionsDockerPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DockerServiceConnection> {
+        const response = await this.outpostsServiceConnectionsDockerPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsDockerRetrieve without sending the request
      */
-    async outpostsServiceConnectionsDockerRetrieveRequestOpts(requestParameters: OutpostsServiceConnectionsDockerRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsDockerRetrieveRequestOpts(
+        requestParameters: OutpostsServiceConnectionsDockerRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerRetrieve().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerRetrieve().',
             );
         }
 
@@ -1750,11 +2018,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/docker/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1763,36 +2034,50 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerRetrieveRaw(requestParameters: OutpostsServiceConnectionsDockerRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DockerServiceConnection>> {
-        const requestOptions = await this.outpostsServiceConnectionsDockerRetrieveRequestOpts(requestParameters);
+    async outpostsServiceConnectionsDockerRetrieveRaw(
+        requestParameters: OutpostsServiceConnectionsDockerRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DockerServiceConnection>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsDockerRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => DockerServiceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            DockerServiceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerRetrieve(requestParameters: OutpostsServiceConnectionsDockerRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DockerServiceConnection> {
-        const response = await this.outpostsServiceConnectionsDockerRetrieveRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsDockerRetrieve(
+        requestParameters: OutpostsServiceConnectionsDockerRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DockerServiceConnection> {
+        const response = await this.outpostsServiceConnectionsDockerRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsDockerUpdate without sending the request
      */
-    async outpostsServiceConnectionsDockerUpdateRequestOpts(requestParameters: OutpostsServiceConnectionsDockerUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsDockerUpdateRequestOpts(
+        requestParameters: OutpostsServiceConnectionsDockerUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerUpdate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerUpdate().',
             );
         }
 
-        if (requestParameters['dockerServiceConnectionRequest'] == null) {
+        if (requestParameters["dockerServiceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'dockerServiceConnectionRequest',
-                'Required parameter "dockerServiceConnectionRequest" was null or undefined when calling outpostsServiceConnectionsDockerUpdate().'
+                "dockerServiceConnectionRequest",
+                'Required parameter "dockerServiceConnectionRequest" was null or undefined when calling outpostsServiceConnectionsDockerUpdate().',
             );
         }
 
@@ -1800,7 +2085,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1812,43 +2097,62 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/docker/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: DockerServiceConnectionRequestToJSON(requestParameters['dockerServiceConnectionRequest']),
+            body: DockerServiceConnectionRequestToJSON(
+                requestParameters["dockerServiceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerUpdateRaw(requestParameters: OutpostsServiceConnectionsDockerUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DockerServiceConnection>> {
-        const requestOptions = await this.outpostsServiceConnectionsDockerUpdateRequestOpts(requestParameters);
+    async outpostsServiceConnectionsDockerUpdateRaw(
+        requestParameters: OutpostsServiceConnectionsDockerUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DockerServiceConnection>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsDockerUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => DockerServiceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            DockerServiceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * DockerServiceConnection Viewset
      */
-    async outpostsServiceConnectionsDockerUpdate(requestParameters: OutpostsServiceConnectionsDockerUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DockerServiceConnection> {
-        const response = await this.outpostsServiceConnectionsDockerUpdateRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsDockerUpdate(
+        requestParameters: OutpostsServiceConnectionsDockerUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DockerServiceConnection> {
+        const response = await this.outpostsServiceConnectionsDockerUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsDockerUsedByList without sending the request
      */
-    async outpostsServiceConnectionsDockerUsedByListRequestOpts(requestParameters: OutpostsServiceConnectionsDockerUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsDockerUsedByListRequestOpts(
+        requestParameters: OutpostsServiceConnectionsDockerUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerUsedByList().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsDockerUsedByList().',
             );
         }
 
@@ -1866,11 +2170,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/docker/{uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1879,8 +2186,12 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async outpostsServiceConnectionsDockerUsedByListRaw(requestParameters: OutpostsServiceConnectionsDockerUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.outpostsServiceConnectionsDockerUsedByListRequestOpts(requestParameters);
+    async outpostsServiceConnectionsDockerUsedByListRaw(
+        requestParameters: OutpostsServiceConnectionsDockerUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsDockerUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -1889,19 +2200,27 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async outpostsServiceConnectionsDockerUsedByList(requestParameters: OutpostsServiceConnectionsDockerUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.outpostsServiceConnectionsDockerUsedByListRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsDockerUsedByList(
+        requestParameters: OutpostsServiceConnectionsDockerUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.outpostsServiceConnectionsDockerUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsKubernetesCreate without sending the request
      */
-    async outpostsServiceConnectionsKubernetesCreateRequestOpts(requestParameters: OutpostsServiceConnectionsKubernetesCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['kubernetesServiceConnectionRequest'] == null) {
+    async outpostsServiceConnectionsKubernetesCreateRequestOpts(
+        requestParameters: OutpostsServiceConnectionsKubernetesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["kubernetesServiceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'kubernetesServiceConnectionRequest',
-                'Required parameter "kubernetesServiceConnectionRequest" was null or undefined when calling outpostsServiceConnectionsKubernetesCreate().'
+                "kubernetesServiceConnectionRequest",
+                'Required parameter "kubernetesServiceConnectionRequest" was null or undefined when calling outpostsServiceConnectionsKubernetesCreate().',
             );
         }
 
@@ -1909,7 +2228,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1924,39 +2243,55 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: KubernetesServiceConnectionRequestToJSON(requestParameters['kubernetesServiceConnectionRequest']),
+            body: KubernetesServiceConnectionRequestToJSON(
+                requestParameters["kubernetesServiceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesCreateRaw(requestParameters: OutpostsServiceConnectionsKubernetesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KubernetesServiceConnection>> {
-        const requestOptions = await this.outpostsServiceConnectionsKubernetesCreateRequestOpts(requestParameters);
+    async outpostsServiceConnectionsKubernetesCreateRaw(
+        requestParameters: OutpostsServiceConnectionsKubernetesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<KubernetesServiceConnection>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsKubernetesCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => KubernetesServiceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            KubernetesServiceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesCreate(requestParameters: OutpostsServiceConnectionsKubernetesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KubernetesServiceConnection> {
-        const response = await this.outpostsServiceConnectionsKubernetesCreateRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsKubernetesCreate(
+        requestParameters: OutpostsServiceConnectionsKubernetesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<KubernetesServiceConnection> {
+        const response = await this.outpostsServiceConnectionsKubernetesCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsKubernetesDestroy without sending the request
      */
-    async outpostsServiceConnectionsKubernetesDestroyRequestOpts(requestParameters: OutpostsServiceConnectionsKubernetesDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsKubernetesDestroyRequestOpts(
+        requestParameters: OutpostsServiceConnectionsKubernetesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesDestroy().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesDestroy().',
             );
         }
 
@@ -1974,11 +2309,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/kubernetes/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1987,8 +2325,12 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesDestroyRaw(requestParameters: OutpostsServiceConnectionsKubernetesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.outpostsServiceConnectionsKubernetesDestroyRequestOpts(requestParameters);
+    async outpostsServiceConnectionsKubernetesDestroyRaw(
+        requestParameters: OutpostsServiceConnectionsKubernetesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsKubernetesDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1997,38 +2339,43 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesDestroy(requestParameters: OutpostsServiceConnectionsKubernetesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async outpostsServiceConnectionsKubernetesDestroy(
+        requestParameters: OutpostsServiceConnectionsKubernetesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.outpostsServiceConnectionsKubernetesDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsKubernetesList without sending the request
      */
-    async outpostsServiceConnectionsKubernetesListRequestOpts(requestParameters: OutpostsServiceConnectionsKubernetesListRequest): Promise<runtime.RequestOpts> {
+    async outpostsServiceConnectionsKubernetesListRequestOpts(
+        requestParameters: OutpostsServiceConnectionsKubernetesListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['local'] != null) {
-            queryParameters['local'] = requestParameters['local'];
+        if (requestParameters["local"] != null) {
+            queryParameters["local"] = requestParameters["local"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2046,7 +2393,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2055,29 +2402,43 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesListRaw(requestParameters: OutpostsServiceConnectionsKubernetesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedKubernetesServiceConnectionList>> {
-        const requestOptions = await this.outpostsServiceConnectionsKubernetesListRequestOpts(requestParameters);
+    async outpostsServiceConnectionsKubernetesListRaw(
+        requestParameters: OutpostsServiceConnectionsKubernetesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedKubernetesServiceConnectionList>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsKubernetesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedKubernetesServiceConnectionListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedKubernetesServiceConnectionListFromJSON(jsonValue),
+        );
     }
 
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesList(requestParameters: OutpostsServiceConnectionsKubernetesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedKubernetesServiceConnectionList> {
-        const response = await this.outpostsServiceConnectionsKubernetesListRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsKubernetesList(
+        requestParameters: OutpostsServiceConnectionsKubernetesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedKubernetesServiceConnectionList> {
+        const response = await this.outpostsServiceConnectionsKubernetesListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsKubernetesPartialUpdate without sending the request
      */
-    async outpostsServiceConnectionsKubernetesPartialUpdateRequestOpts(requestParameters: OutpostsServiceConnectionsKubernetesPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsKubernetesPartialUpdateRequestOpts(
+        requestParameters: OutpostsServiceConnectionsKubernetesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesPartialUpdate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesPartialUpdate().',
             );
         }
 
@@ -2085,7 +2446,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2097,43 +2458,64 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/kubernetes/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedKubernetesServiceConnectionRequestToJSON(requestParameters['patchedKubernetesServiceConnectionRequest']),
+            body: PatchedKubernetesServiceConnectionRequestToJSON(
+                requestParameters["patchedKubernetesServiceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesPartialUpdateRaw(requestParameters: OutpostsServiceConnectionsKubernetesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KubernetesServiceConnection>> {
-        const requestOptions = await this.outpostsServiceConnectionsKubernetesPartialUpdateRequestOpts(requestParameters);
+    async outpostsServiceConnectionsKubernetesPartialUpdateRaw(
+        requestParameters: OutpostsServiceConnectionsKubernetesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<KubernetesServiceConnection>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsKubernetesPartialUpdateRequestOpts(
+                requestParameters,
+            );
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => KubernetesServiceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            KubernetesServiceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesPartialUpdate(requestParameters: OutpostsServiceConnectionsKubernetesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KubernetesServiceConnection> {
-        const response = await this.outpostsServiceConnectionsKubernetesPartialUpdateRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsKubernetesPartialUpdate(
+        requestParameters: OutpostsServiceConnectionsKubernetesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<KubernetesServiceConnection> {
+        const response = await this.outpostsServiceConnectionsKubernetesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsKubernetesRetrieve without sending the request
      */
-    async outpostsServiceConnectionsKubernetesRetrieveRequestOpts(requestParameters: OutpostsServiceConnectionsKubernetesRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsKubernetesRetrieveRequestOpts(
+        requestParameters: OutpostsServiceConnectionsKubernetesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesRetrieve().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesRetrieve().',
             );
         }
 
@@ -2151,11 +2533,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/kubernetes/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2164,36 +2549,50 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesRetrieveRaw(requestParameters: OutpostsServiceConnectionsKubernetesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KubernetesServiceConnection>> {
-        const requestOptions = await this.outpostsServiceConnectionsKubernetesRetrieveRequestOpts(requestParameters);
+    async outpostsServiceConnectionsKubernetesRetrieveRaw(
+        requestParameters: OutpostsServiceConnectionsKubernetesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<KubernetesServiceConnection>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsKubernetesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => KubernetesServiceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            KubernetesServiceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesRetrieve(requestParameters: OutpostsServiceConnectionsKubernetesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KubernetesServiceConnection> {
-        const response = await this.outpostsServiceConnectionsKubernetesRetrieveRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsKubernetesRetrieve(
+        requestParameters: OutpostsServiceConnectionsKubernetesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<KubernetesServiceConnection> {
+        const response = await this.outpostsServiceConnectionsKubernetesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsKubernetesUpdate without sending the request
      */
-    async outpostsServiceConnectionsKubernetesUpdateRequestOpts(requestParameters: OutpostsServiceConnectionsKubernetesUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsKubernetesUpdateRequestOpts(
+        requestParameters: OutpostsServiceConnectionsKubernetesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesUpdate().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesUpdate().',
             );
         }
 
-        if (requestParameters['kubernetesServiceConnectionRequest'] == null) {
+        if (requestParameters["kubernetesServiceConnectionRequest"] == null) {
             throw new runtime.RequiredError(
-                'kubernetesServiceConnectionRequest',
-                'Required parameter "kubernetesServiceConnectionRequest" was null or undefined when calling outpostsServiceConnectionsKubernetesUpdate().'
+                "kubernetesServiceConnectionRequest",
+                'Required parameter "kubernetesServiceConnectionRequest" was null or undefined when calling outpostsServiceConnectionsKubernetesUpdate().',
             );
         }
 
@@ -2201,7 +2600,7 @@ export class OutpostsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2213,43 +2612,62 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/kubernetes/{uuid}/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: KubernetesServiceConnectionRequestToJSON(requestParameters['kubernetesServiceConnectionRequest']),
+            body: KubernetesServiceConnectionRequestToJSON(
+                requestParameters["kubernetesServiceConnectionRequest"],
+            ),
         };
     }
 
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesUpdateRaw(requestParameters: OutpostsServiceConnectionsKubernetesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<KubernetesServiceConnection>> {
-        const requestOptions = await this.outpostsServiceConnectionsKubernetesUpdateRequestOpts(requestParameters);
+    async outpostsServiceConnectionsKubernetesUpdateRaw(
+        requestParameters: OutpostsServiceConnectionsKubernetesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<KubernetesServiceConnection>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsKubernetesUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => KubernetesServiceConnectionFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            KubernetesServiceConnectionFromJSON(jsonValue),
+        );
     }
 
     /**
      * KubernetesServiceConnection Viewset
      */
-    async outpostsServiceConnectionsKubernetesUpdate(requestParameters: OutpostsServiceConnectionsKubernetesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<KubernetesServiceConnection> {
-        const response = await this.outpostsServiceConnectionsKubernetesUpdateRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsKubernetesUpdate(
+        requestParameters: OutpostsServiceConnectionsKubernetesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<KubernetesServiceConnection> {
+        const response = await this.outpostsServiceConnectionsKubernetesUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for outpostsServiceConnectionsKubernetesUsedByList without sending the request
      */
-    async outpostsServiceConnectionsKubernetesUsedByListRequestOpts(requestParameters: OutpostsServiceConnectionsKubernetesUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uuid'] == null) {
+    async outpostsServiceConnectionsKubernetesUsedByListRequestOpts(
+        requestParameters: OutpostsServiceConnectionsKubernetesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
             throw new runtime.RequiredError(
-                'uuid',
-                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesUsedByList().'
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling outpostsServiceConnectionsKubernetesUsedByList().',
             );
         }
 
@@ -2267,11 +2685,14 @@ export class OutpostsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/outposts/service_connections/kubernetes/{uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2280,8 +2701,12 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async outpostsServiceConnectionsKubernetesUsedByListRaw(requestParameters: OutpostsServiceConnectionsKubernetesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.outpostsServiceConnectionsKubernetesUsedByListRequestOpts(requestParameters);
+    async outpostsServiceConnectionsKubernetesUsedByListRaw(
+        requestParameters: OutpostsServiceConnectionsKubernetesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.outpostsServiceConnectionsKubernetesUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2290,9 +2715,14 @@ export class OutpostsApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async outpostsServiceConnectionsKubernetesUsedByList(requestParameters: OutpostsServiceConnectionsKubernetesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.outpostsServiceConnectionsKubernetesUsedByListRaw(requestParameters, initOverrides);
+    async outpostsServiceConnectionsKubernetesUsedByList(
+        requestParameters: OutpostsServiceConnectionsKubernetesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.outpostsServiceConnectionsKubernetesUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
-
 }

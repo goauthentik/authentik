@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { User } from './User';
-import {
-    UserFromJSON,
-    UserFromJSONTyped,
-    UserToJSON,
-    UserToJSONTyped,
-} from './User';
-import type { OAuth2Provider } from './OAuth2Provider';
-import {
-    OAuth2ProviderFromJSON,
-    OAuth2ProviderFromJSONTyped,
-    OAuth2ProviderToJSON,
-    OAuth2ProviderToJSONTyped,
-} from './OAuth2Provider';
+import type { OAuth2Provider } from "./OAuth2Provider";
+import { OAuth2ProviderFromJSON, OAuth2ProviderToJSON } from "./OAuth2Provider";
+import type { User } from "./User";
+import { UserFromJSON, UserToJSON } from "./User";
 
 /**
  * Serializer for BaseGrantModel and RefreshToken
@@ -35,19 +24,19 @@ import {
  */
 export interface TokenModel {
     /**
-     * 
+     *
      * @type {number}
      * @memberof TokenModel
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {OAuth2Provider}
      * @memberof TokenModel
      */
     provider: OAuth2Provider;
     /**
-     * 
+     *
      * @type {User}
      * @memberof TokenModel
      */
@@ -59,13 +48,13 @@ export interface TokenModel {
      */
     readonly isExpired: boolean;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof TokenModel
      */
     expires?: Date | null;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof TokenModel
      */
@@ -77,7 +66,7 @@ export interface TokenModel {
      */
     readonly idToken: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof TokenModel
      */
@@ -88,12 +77,12 @@ export interface TokenModel {
  * Check if a given object implements the TokenModel interface.
  */
 export function instanceOfTokenModel(value: object): value is TokenModel {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('isExpired' in value) || value['isExpired'] === undefined) return false;
-    if (!('scope' in value) || value['scope'] === undefined) return false;
-    if (!('idToken' in value) || value['idToken'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("isExpired" in value) || value["isExpired"] === undefined) return false;
+    if (!("scope" in value) || value["scope"] === undefined) return false;
+    if (!("idToken" in value) || value["idToken"] === undefined) return false;
     return true;
 }
 
@@ -106,15 +95,14 @@ export function TokenModelFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'provider': OAuth2ProviderFromJSON(json['provider']),
-        'user': UserFromJSON(json['user']),
-        'isExpired': json['is_expired'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
-        'scope': json['scope'],
-        'idToken': json['id_token'],
-        'revoked': json['revoked'] == null ? undefined : json['revoked'],
+        pk: json["pk"],
+        provider: OAuth2ProviderFromJSON(json["provider"]),
+        user: UserFromJSON(json["user"]),
+        isExpired: json["is_expired"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        scope: json["scope"],
+        idToken: json["id_token"],
+        revoked: json["revoked"] == null ? undefined : json["revoked"],
     };
 }
 
@@ -122,18 +110,19 @@ export function TokenModelToJSON(json: any): TokenModel {
     return TokenModelToJSONTyped(json, false);
 }
 
-export function TokenModelToJSONTyped(value?: Omit<TokenModel, 'pk'|'is_expired'|'id_token'> | null, ignoreDiscriminator: boolean = false): any {
+export function TokenModelToJSONTyped(
+    value?: Omit<TokenModel, "pk" | "is_expired" | "id_token"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'provider': OAuth2ProviderToJSON(value['provider']),
-        'user': UserToJSON(value['user']),
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
-        'scope': value['scope'],
-        'revoked': value['revoked'],
+        provider: OAuth2ProviderToJSON(value["provider"]),
+        user: UserToJSON(value["user"]),
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        scope: value["scope"],
+        revoked: value["revoked"],
     };
 }
-

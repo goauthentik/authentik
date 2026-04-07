@@ -6,7 +6,7 @@ import pytest
 from cryptography.hazmat.backends.openssl.backend import backend
 
 from authentik import authentik_full_version
-from tests.e2e.utils import get_local_ip
+from tests.decorators import get_local_ip
 
 IS_CI = "CI" in environ
 

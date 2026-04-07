@@ -16,20 +16,20 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
+import renderDescriptionList from "#components/DescriptionList";
+
 import { ModelEnum, ProvidersApi, SSFProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
@@ -53,13 +53,12 @@ export class SSFProviderViewPage extends AKElement {
         PFButton,
         PFPage,
         PFGrid,
-        PFContent,
         PFCard,
         PFDescriptionList,
         PFForm,
         PFFormControl,
-        PFBanner,
-        PFDivider,
+        PFList,
+        PFList,
     ];
 
     constructor() {
@@ -119,72 +118,70 @@ export class SSFProviderViewPage extends AKElement {
             return nothing;
         }
         const [appLabel, modelName] = ModelEnum.AuthentikProvidersSsfSsfprovider.split(".");
-        return html`<div slot="header" class="pf-c-banner pf-m-info">
-                ${msg("SSF Provider is in preview.")}
-                <a href="mailto:hello+feature/ssf@goauthentik.io">${msg("Send us feedback!")}</a>
+        return html`<div
+            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+        >
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl">
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList([
+                        [msg("Name"), html`${this.provider.name}`],
+                        [
+                            msg("URL"),
+                            html`<input
+                                class="pf-c-form-control pf-m-monospace"
+                                readonly
+                                type="text"
+                                value=${this.provider.ssfUrl || ""}
+                                placeholder=${this.provider.ssfUrl
+                                    ? msg("SSF URL")
+                                    : msg("No assigned application")}
+                            />`,
+                        ],
+                        [
+                            msg("Federated OAuth2/OpenID Providers"),
+                            (this.provider.oidcAuthProvidersObj || []).length > 0
+                                ? html`<ul class="pf-c-list">
+                                      ${this.provider.oidcAuthProvidersObj.map((provider) => {
+                                          return html`
+                                              <li>
+                                                  <a href="#/core/providers/${provider.pk}">
+                                                      ${provider.name}
+                                                  </a>
+                                              </li>
+                                          `;
+                                      })}
+                                  </ul>`
+                                : html`-`,
+                        ],
+                        [
+                            msg("Related actions"),
+                            html`<ak-forms-modal>
+                                <span slot="submit">${msg("Save Changes")}</span>
+                                <span slot="header">${msg("Update SSF Provider")}</span>
+                                <ak-provider-ssf-form slot="form" .instancePk=${this.provider.pk}>
+                                </ak-provider-ssf-form>
+                                <button slot="trigger" class="pf-c-button pf-m-primary pf-m-block">
+                                    ${msg("Edit")}
+                                </button>
+                            </ak-forms-modal>`,
+                        ],
+                    ])}
+                </div>
             </div>
-            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div
-                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
-                >
-                    <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.name}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("URL")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <input
-                                            class="pf-c-form-control pf-m-monospace"
-                                            readonly
-                                            type="text"
-                                            value=${this.provider.ssfUrl || ""}
-                                            placeholder=${this.provider.ssfUrl
-                                                ? msg("SSF URL")
-                                                : msg("No assigned application")}
-                                        />
-                                    </div>
-                                </dd>
-                            </div>
-                        </dl>
-                    </div>
-                    <div class="pf-c-card__footer">
-                        <ak-forms-modal>
-                            <span slot="submit">${msg("Save Changes")}</span>
-                            <span slot="header">${msg("Update SSF Provider")}</span>
-                            <ak-provider-ssf-form slot="form" .instancePk=${this.provider.pk || 0}>
-                            </ak-provider-ssf-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
-                            </button>
-                        </ak-forms-modal>
-                    </div>
-                </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-8-col-on-2xl">
-                    <div class="pf-c-card__title">${msg("Streams")}</div>
-                    <ak-provider-ssf-stream-list .providerId=${this.providerID}>
-                    </ak-provider-ssf-stream-list>
-                </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col-on-2xl">
-                    <div class="pf-c-card__title">${msg("Tasks")}</div>
-                    <ak-task-list
-                        .relObjAppLabel=${appLabel}
-                        .relObjModel=${modelName}
-                        .relObjId="${this.provider.pk}"
-                    ></ak-task-list>
-                </div>
-            </div>`;
+            <div class="pf-c-card pf-l-grid__item pf-m-8-col-on-2xl">
+                <div class="pf-c-card__title">${msg("Streams")}</div>
+                <ak-provider-ssf-stream-list .providerId=${this.providerID}>
+                </ak-provider-ssf-stream-list>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col-on-2xl">
+                <div class="pf-c-card__title">${msg("Tasks")}</div>
+                <ak-task-list
+                    .relObjAppLabel=${appLabel}
+                    .relObjModel=${modelName}
+                    .relObjId="${this.provider.pk}"
+                ></ak-task-list>
+            </div>
+        </div>`;
     }
 }
 

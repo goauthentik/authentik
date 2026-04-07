@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * DummyStage Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface DummyStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DummyStageRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof DummyStageRequest
      */
@@ -37,7 +36,7 @@ export interface DummyStageRequest {
  * Check if a given object implements the DummyStageRequest interface.
  */
 export function instanceOfDummyStageRequest(value: object): value is DummyStageRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -45,14 +44,16 @@ export function DummyStageRequestFromJSON(json: any): DummyStageRequest {
     return DummyStageRequestFromJSONTyped(json, false);
 }
 
-export function DummyStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DummyStageRequest {
+export function DummyStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DummyStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'throwError': json['throw_error'] == null ? undefined : json['throw_error'],
+        name: json["name"],
+        throwError: json["throw_error"] == null ? undefined : json["throw_error"],
     };
 }
 
@@ -60,15 +61,16 @@ export function DummyStageRequestToJSON(json: any): DummyStageRequest {
     return DummyStageRequestToJSONTyped(json, false);
 }
 
-export function DummyStageRequestToJSONTyped(value?: DummyStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function DummyStageRequestToJSONTyped(
+    value?: DummyStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'throw_error': value['throwError'],
+        name: value["name"],
+        throw_error: value["throwError"],
     };
 }
-

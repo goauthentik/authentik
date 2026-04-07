@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Source } from './Source';
-import {
-    SourceFromJSON,
-    SourceFromJSONTyped,
-    SourceToJSON,
-    SourceToJSONTyped,
-} from './Source';
+import type { Source } from "./Source";
+import { SourceFromJSON } from "./Source";
 
 /**
  * Group Source Connection
@@ -28,43 +22,43 @@ import {
  */
 export interface GroupSourceConnection {
     /**
-     * 
+     *
      * @type {number}
      * @memberof GroupSourceConnection
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupSourceConnection
      */
     group: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupSourceConnection
      */
     source: string;
     /**
-     * 
+     *
      * @type {Source}
      * @memberof GroupSourceConnection
      */
     readonly sourceObj: Source;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupSourceConnection
      */
     identifier: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof GroupSourceConnection
      */
     readonly created: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof GroupSourceConnection
      */
@@ -75,13 +69,13 @@ export interface GroupSourceConnection {
  * Check if a given object implements the GroupSourceConnection interface.
  */
 export function instanceOfGroupSourceConnection(value: object): value is GroupSourceConnection {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('sourceObj' in value) || value['sourceObj'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
-    if (!('created' in value) || value['created'] === undefined) return false;
-    if (!('lastUpdated' in value) || value['lastUpdated'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("sourceObj" in value) || value["sourceObj"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
     return true;
 }
 
@@ -89,19 +83,21 @@ export function GroupSourceConnectionFromJSON(json: any): GroupSourceConnection 
     return GroupSourceConnectionFromJSONTyped(json, false);
 }
 
-export function GroupSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupSourceConnection {
+export function GroupSourceConnectionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GroupSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'group': json['group'],
-        'source': json['source'],
-        'sourceObj': SourceFromJSON(json['source_obj']),
-        'identifier': json['identifier'],
-        'created': (new Date(json['created'])),
-        'lastUpdated': (new Date(json['last_updated'])),
+        pk: json["pk"],
+        group: json["group"],
+        source: json["source"],
+        sourceObj: SourceFromJSON(json["source_obj"]),
+        identifier: json["identifier"],
+        created: new Date(json["created"]),
+        lastUpdated: new Date(json["last_updated"]),
     };
 }
 
@@ -109,16 +105,17 @@ export function GroupSourceConnectionToJSON(json: any): GroupSourceConnection {
     return GroupSourceConnectionToJSONTyped(json, false);
 }
 
-export function GroupSourceConnectionToJSONTyped(value?: Omit<GroupSourceConnection, 'pk'|'source_obj'|'created'|'last_updated'> | null, ignoreDiscriminator: boolean = false): any {
+export function GroupSourceConnectionToJSONTyped(
+    value?: Omit<GroupSourceConnection, "pk" | "source_obj" | "created" | "last_updated"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Pseudo class for autosubmit response
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface AutoSubmitChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AutoSubmitChallengeResponseRequest
      */
@@ -30,36 +29,45 @@ export interface AutoSubmitChallengeResponseRequest {
 /**
  * Check if a given object implements the AutoSubmitChallengeResponseRequest interface.
  */
-export function instanceOfAutoSubmitChallengeResponseRequest(value: object): value is AutoSubmitChallengeResponseRequest {
+export function instanceOfAutoSubmitChallengeResponseRequest(
+    value: object,
+): value is AutoSubmitChallengeResponseRequest {
     return true;
 }
 
-export function AutoSubmitChallengeResponseRequestFromJSON(json: any): AutoSubmitChallengeResponseRequest {
+export function AutoSubmitChallengeResponseRequestFromJSON(
+    json: any,
+): AutoSubmitChallengeResponseRequest {
     return AutoSubmitChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function AutoSubmitChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AutoSubmitChallengeResponseRequest {
+export function AutoSubmitChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AutoSubmitChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'component': json['component'] == null ? undefined : json['component'],
+        component: json["component"] == null ? undefined : json["component"],
     };
 }
 
-export function AutoSubmitChallengeResponseRequestToJSON(json: any): AutoSubmitChallengeResponseRequest {
+export function AutoSubmitChallengeResponseRequestToJSON(
+    json: any,
+): AutoSubmitChallengeResponseRequest {
     return AutoSubmitChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function AutoSubmitChallengeResponseRequestToJSONTyped(value?: AutoSubmitChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function AutoSubmitChallengeResponseRequestToJSONTyped(
+    value?: AutoSubmitChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'component': value['component'],
+        component: value["component"],
     };
 }
-

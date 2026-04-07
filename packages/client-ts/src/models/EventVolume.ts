@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { EventActions } from './EventActions';
-import {
-    EventActionsFromJSON,
-    EventActionsFromJSONTyped,
-    EventActionsToJSON,
-    EventActionsToJSONTyped,
-} from './EventActions';
+import type { EventActions } from "./EventActions";
+import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 
 /**
  * Count of events of action created on day for a single event action
@@ -28,34 +22,32 @@ import {
  */
 export interface EventVolume {
     /**
-     * 
+     *
      * @type {EventActions}
      * @memberof EventVolume
      */
     action: EventActions;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof EventVolume
      */
     time: Date;
     /**
-     * 
+     *
      * @type {number}
      * @memberof EventVolume
      */
     count: number;
 }
 
-
-
 /**
  * Check if a given object implements the EventVolume interface.
  */
 export function instanceOfEventVolume(value: object): value is EventVolume {
-    if (!('action' in value) || value['action'] === undefined) return false;
-    if (!('time' in value) || value['time'] === undefined) return false;
-    if (!('count' in value) || value['count'] === undefined) return false;
+    if (!("action" in value) || value["action"] === undefined) return false;
+    if (!("time" in value) || value["time"] === undefined) return false;
+    if (!("count" in value) || value["count"] === undefined) return false;
     return true;
 }
 
@@ -68,10 +60,9 @@ export function EventVolumeFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'action': EventActionsFromJSON(json['action']),
-        'time': (new Date(json['time'])),
-        'count': json['count'],
+        action: EventActionsFromJSON(json["action"]),
+        time: new Date(json["time"]),
+        count: json["count"],
     };
 }
 
@@ -79,16 +70,17 @@ export function EventVolumeToJSON(json: any): EventVolume {
     return EventVolumeToJSONTyped(json, false);
 }
 
-export function EventVolumeToJSONTyped(value?: EventVolume | null, ignoreDiscriminator: boolean = false): any {
+export function EventVolumeToJSONTyped(
+    value?: EventVolume | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'action': EventActionsToJSON(value['action']),
-        'time': value['time'].toISOString(),
-        'count': value['count'],
+        action: EventActionsToJSON(value["action"]),
+        time: value["time"].toISOString(),
+        count: value["count"],
     };
 }
-

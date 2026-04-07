@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { TOTPDevice } from './TOTPDevice';
-import {
-    TOTPDeviceFromJSON,
-    TOTPDeviceFromJSONTyped,
-    TOTPDeviceToJSON,
-    TOTPDeviceToJSONTyped,
-} from './TOTPDevice';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { TOTPDevice } from "./TOTPDevice";
+import { TOTPDeviceFromJSON, TOTPDeviceToJSON } from "./TOTPDevice";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedTOTPDeviceList
  */
 export interface PaginatedTOTPDeviceList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedTOTPDeviceList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<TOTPDevice>}
      * @memberof PaginatedTOTPDeviceList
      */
     results: Array<TOTPDevice>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedTOTPDeviceList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedTOTPDeviceList interface.
  */
 export function instanceOfPaginatedTOTPDeviceList(value: object): value is PaginatedTOTPDeviceList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedTOTPDeviceListFromJSON(json: any): PaginatedTOTPDeviceL
     return PaginatedTOTPDeviceListFromJSONTyped(json, false);
 }
 
-export function PaginatedTOTPDeviceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedTOTPDeviceList {
+export function PaginatedTOTPDeviceListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedTOTPDeviceList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(TOTPDeviceFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(TOTPDeviceFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedTOTPDeviceListToJSON(json: any): PaginatedTOTPDeviceLis
     return PaginatedTOTPDeviceListToJSONTyped(json, false);
 }
 
-export function PaginatedTOTPDeviceListToJSONTyped(value?: PaginatedTOTPDeviceList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedTOTPDeviceListToJSONTyped(
+    value?: PaginatedTOTPDeviceList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(TOTPDeviceToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(TOTPDeviceToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

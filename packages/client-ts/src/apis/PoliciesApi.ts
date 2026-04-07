@@ -12,159 +12,104 @@
  * Do not edit the class manually.
  */
 
-
-import * as runtime from '../runtime';
 import type {
-  Cache,
-  DetailedCountry,
-  DummyPolicy,
-  DummyPolicyRequest,
-  EventActions,
-  EventMatcherPolicy,
-  EventMatcherPolicyRequest,
-  ExpressionPolicy,
-  ExpressionPolicyRequest,
-  GenericError,
-  GeoIPPolicy,
-  GeoIPPolicyRequest,
-  PaginatedDummyPolicyList,
-  PaginatedEventMatcherPolicyList,
-  PaginatedExpressionPolicyList,
-  PaginatedGeoIPPolicyList,
-  PaginatedPasswordExpiryPolicyList,
-  PaginatedPasswordPolicyList,
-  PaginatedPolicyBindingList,
-  PaginatedPolicyList,
-  PaginatedReputationList,
-  PaginatedReputationPolicyList,
-  PaginatedUniquePasswordPolicyList,
-  PasswordExpiryPolicy,
-  PasswordExpiryPolicyRequest,
-  PasswordPolicy,
-  PasswordPolicyRequest,
-  PatchedDummyPolicyRequest,
-  PatchedEventMatcherPolicyRequest,
-  PatchedExpressionPolicyRequest,
-  PatchedGeoIPPolicyRequest,
-  PatchedPasswordExpiryPolicyRequest,
-  PatchedPasswordPolicyRequest,
-  PatchedPolicyBindingRequest,
-  PatchedReputationPolicyRequest,
-  PatchedUniquePasswordPolicyRequest,
-  Policy,
-  PolicyBinding,
-  PolicyBindingRequest,
-  PolicyTestRequest,
-  PolicyTestResult,
-  Reputation,
-  ReputationPolicy,
-  ReputationPolicyRequest,
-  TypeCreate,
-  UniquePasswordPolicy,
-  UniquePasswordPolicyRequest,
-  UsedBy,
-  ValidationError,
-} from '../models/index';
+    Cache,
+    DetailedCountry,
+    DummyPolicy,
+    DummyPolicyRequest,
+    EventActions,
+    EventMatcherPolicy,
+    EventMatcherPolicyRequest,
+    ExpressionPolicy,
+    ExpressionPolicyRequest,
+    GeoIPPolicy,
+    GeoIPPolicyRequest,
+    PaginatedDummyPolicyList,
+    PaginatedEventMatcherPolicyList,
+    PaginatedExpressionPolicyList,
+    PaginatedGeoIPPolicyList,
+    PaginatedPasswordExpiryPolicyList,
+    PaginatedPasswordPolicyList,
+    PaginatedPolicyBindingList,
+    PaginatedPolicyList,
+    PaginatedReputationList,
+    PaginatedReputationPolicyList,
+    PaginatedUniquePasswordPolicyList,
+    PasswordExpiryPolicy,
+    PasswordExpiryPolicyRequest,
+    PasswordPolicy,
+    PasswordPolicyRequest,
+    PatchedDummyPolicyRequest,
+    PatchedEventMatcherPolicyRequest,
+    PatchedExpressionPolicyRequest,
+    PatchedGeoIPPolicyRequest,
+    PatchedPasswordExpiryPolicyRequest,
+    PatchedPasswordPolicyRequest,
+    PatchedPolicyBindingRequest,
+    PatchedReputationPolicyRequest,
+    PatchedUniquePasswordPolicyRequest,
+    Policy,
+    PolicyBinding,
+    PolicyBindingRequest,
+    PolicyTestRequest,
+    PolicyTestResult,
+    Reputation,
+    ReputationPolicy,
+    ReputationPolicyRequest,
+    TypeCreate,
+    UniquePasswordPolicy,
+    UniquePasswordPolicyRequest,
+    UsedBy,
+} from "../models/index";
 import {
     CacheFromJSON,
-    CacheToJSON,
     DetailedCountryFromJSON,
-    DetailedCountryToJSON,
     DummyPolicyFromJSON,
-    DummyPolicyToJSON,
-    DummyPolicyRequestFromJSON,
     DummyPolicyRequestToJSON,
-    EventActionsFromJSON,
-    EventActionsToJSON,
     EventMatcherPolicyFromJSON,
-    EventMatcherPolicyToJSON,
-    EventMatcherPolicyRequestFromJSON,
     EventMatcherPolicyRequestToJSON,
     ExpressionPolicyFromJSON,
-    ExpressionPolicyToJSON,
-    ExpressionPolicyRequestFromJSON,
     ExpressionPolicyRequestToJSON,
-    GenericErrorFromJSON,
-    GenericErrorToJSON,
     GeoIPPolicyFromJSON,
-    GeoIPPolicyToJSON,
-    GeoIPPolicyRequestFromJSON,
     GeoIPPolicyRequestToJSON,
     PaginatedDummyPolicyListFromJSON,
-    PaginatedDummyPolicyListToJSON,
     PaginatedEventMatcherPolicyListFromJSON,
-    PaginatedEventMatcherPolicyListToJSON,
     PaginatedExpressionPolicyListFromJSON,
-    PaginatedExpressionPolicyListToJSON,
     PaginatedGeoIPPolicyListFromJSON,
-    PaginatedGeoIPPolicyListToJSON,
     PaginatedPasswordExpiryPolicyListFromJSON,
-    PaginatedPasswordExpiryPolicyListToJSON,
     PaginatedPasswordPolicyListFromJSON,
-    PaginatedPasswordPolicyListToJSON,
     PaginatedPolicyBindingListFromJSON,
-    PaginatedPolicyBindingListToJSON,
     PaginatedPolicyListFromJSON,
-    PaginatedPolicyListToJSON,
     PaginatedReputationListFromJSON,
-    PaginatedReputationListToJSON,
     PaginatedReputationPolicyListFromJSON,
-    PaginatedReputationPolicyListToJSON,
     PaginatedUniquePasswordPolicyListFromJSON,
-    PaginatedUniquePasswordPolicyListToJSON,
     PasswordExpiryPolicyFromJSON,
-    PasswordExpiryPolicyToJSON,
-    PasswordExpiryPolicyRequestFromJSON,
     PasswordExpiryPolicyRequestToJSON,
     PasswordPolicyFromJSON,
-    PasswordPolicyToJSON,
-    PasswordPolicyRequestFromJSON,
     PasswordPolicyRequestToJSON,
-    PatchedDummyPolicyRequestFromJSON,
     PatchedDummyPolicyRequestToJSON,
-    PatchedEventMatcherPolicyRequestFromJSON,
     PatchedEventMatcherPolicyRequestToJSON,
-    PatchedExpressionPolicyRequestFromJSON,
     PatchedExpressionPolicyRequestToJSON,
-    PatchedGeoIPPolicyRequestFromJSON,
     PatchedGeoIPPolicyRequestToJSON,
-    PatchedPasswordExpiryPolicyRequestFromJSON,
     PatchedPasswordExpiryPolicyRequestToJSON,
-    PatchedPasswordPolicyRequestFromJSON,
     PatchedPasswordPolicyRequestToJSON,
-    PatchedPolicyBindingRequestFromJSON,
     PatchedPolicyBindingRequestToJSON,
-    PatchedReputationPolicyRequestFromJSON,
     PatchedReputationPolicyRequestToJSON,
-    PatchedUniquePasswordPolicyRequestFromJSON,
     PatchedUniquePasswordPolicyRequestToJSON,
-    PolicyFromJSON,
-    PolicyToJSON,
     PolicyBindingFromJSON,
-    PolicyBindingToJSON,
-    PolicyBindingRequestFromJSON,
     PolicyBindingRequestToJSON,
-    PolicyTestRequestFromJSON,
+    PolicyFromJSON,
     PolicyTestRequestToJSON,
     PolicyTestResultFromJSON,
-    PolicyTestResultToJSON,
     ReputationFromJSON,
-    ReputationToJSON,
     ReputationPolicyFromJSON,
-    ReputationPolicyToJSON,
-    ReputationPolicyRequestFromJSON,
     ReputationPolicyRequestToJSON,
     TypeCreateFromJSON,
-    TypeCreateToJSON,
     UniquePasswordPolicyFromJSON,
-    UniquePasswordPolicyToJSON,
-    UniquePasswordPolicyRequestFromJSON,
     UniquePasswordPolicyRequestToJSON,
     UsedByFromJSON,
-    UsedByToJSON,
-    ValidationErrorFromJSON,
-    ValidationErrorToJSON,
-} from '../models/index';
+} from "../models/index";
+import * as runtime from "../runtime";
 
 export interface PoliciesAllDestroyRequest {
     policyUuid: string;
@@ -584,10 +529,9 @@ export interface PoliciesUniquePasswordUsedByListRequest {
 }
 
 /**
- * 
+ *
  */
 export class PoliciesApi extends runtime.BaseAPI {
-
     /**
      * Creates request options for policiesAllCacheClearCreate without sending the request
      */
@@ -609,7 +553,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -618,7 +562,9 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Clear policy cache
      */
-    async policiesAllCacheClearCreateRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async policiesAllCacheClearCreateRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.policiesAllCacheClearCreateRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -628,7 +574,9 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Clear policy cache
      */
-    async policiesAllCacheClearCreate(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesAllCacheClearCreate(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesAllCacheClearCreateRaw(initOverrides);
     }
 
@@ -653,7 +601,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -662,7 +610,9 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Info about cached policies
      */
-    async policiesAllCacheInfoRetrieveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Cache>> {
+    async policiesAllCacheInfoRetrieveRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Cache>> {
         const requestOptions = await this.policiesAllCacheInfoRetrieveRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
@@ -672,7 +622,9 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Info about cached policies
      */
-    async policiesAllCacheInfoRetrieve(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Cache> {
+    async policiesAllCacheInfoRetrieve(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Cache> {
         const response = await this.policiesAllCacheInfoRetrieveRaw(initOverrides);
         return await response.value();
     }
@@ -680,11 +632,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesAllDestroy without sending the request
      */
-    async policiesAllDestroyRequestOpts(requestParameters: PoliciesAllDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesAllDestroyRequestOpts(
+        requestParameters: PoliciesAllDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesAllDestroy().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesAllDestroy().',
             );
         }
 
@@ -702,11 +656,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/all/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -715,7 +672,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Policy Viewset
      */
-    async policiesAllDestroyRaw(requestParameters: PoliciesAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async policiesAllDestroyRaw(
+        requestParameters: PoliciesAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.policiesAllDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -725,38 +685,43 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Policy Viewset
      */
-    async policiesAllDestroy(requestParameters: PoliciesAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesAllDestroy(
+        requestParameters: PoliciesAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesAllDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for policiesAllList without sending the request
      */
-    async policiesAllListRequestOpts(requestParameters: PoliciesAllListRequest): Promise<runtime.RequestOpts> {
+    async policiesAllListRequestOpts(
+        requestParameters: PoliciesAllListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['bindingsIsnull'] != null) {
-            queryParameters['bindings__isnull'] = requestParameters['bindingsIsnull'];
+        if (requestParameters["bindingsIsnull"] != null) {
+            queryParameters["bindings__isnull"] = requestParameters["bindingsIsnull"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['promptstageIsnull'] != null) {
-            queryParameters['promptstage__isnull'] = requestParameters['promptstageIsnull'];
+        if (requestParameters["promptstageIsnull"] != null) {
+            queryParameters["promptstage__isnull"] = requestParameters["promptstageIsnull"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -774,7 +739,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -783,17 +748,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Policy Viewset
      */
-    async policiesAllListRaw(requestParameters: PoliciesAllListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPolicyList>> {
+    async policiesAllListRaw(
+        requestParameters: PoliciesAllListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPolicyList>> {
         const requestOptions = await this.policiesAllListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPolicyListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPolicyListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Policy Viewset
      */
-    async policiesAllList(requestParameters: PoliciesAllListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPolicyList> {
+    async policiesAllList(
+        requestParameters: PoliciesAllListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPolicyList> {
         const response = await this.policiesAllListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -801,11 +774,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesAllRetrieve without sending the request
      */
-    async policiesAllRetrieveRequestOpts(requestParameters: PoliciesAllRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesAllRetrieveRequestOpts(
+        requestParameters: PoliciesAllRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesAllRetrieve().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesAllRetrieve().',
             );
         }
 
@@ -823,11 +798,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/all/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -836,7 +814,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Policy Viewset
      */
-    async policiesAllRetrieveRaw(requestParameters: PoliciesAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Policy>> {
+    async policiesAllRetrieveRaw(
+        requestParameters: PoliciesAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Policy>> {
         const requestOptions = await this.policiesAllRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -846,7 +827,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Policy Viewset
      */
-    async policiesAllRetrieve(requestParameters: PoliciesAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Policy> {
+    async policiesAllRetrieve(
+        requestParameters: PoliciesAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Policy> {
         const response = await this.policiesAllRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -854,18 +838,20 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesAllTestCreate without sending the request
      */
-    async policiesAllTestCreateRequestOpts(requestParameters: PoliciesAllTestCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesAllTestCreateRequestOpts(
+        requestParameters: PoliciesAllTestCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesAllTestCreate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesAllTestCreate().',
             );
         }
 
-        if (requestParameters['policyTestRequest'] == null) {
+        if (requestParameters["policyTestRequest"] == null) {
             throw new runtime.RequiredError(
-                'policyTestRequest',
-                'Required parameter "policyTestRequest" was null or undefined when calling policiesAllTestCreate().'
+                "policyTestRequest",
+                'Required parameter "policyTestRequest" was null or undefined when calling policiesAllTestCreate().',
             );
         }
 
@@ -873,7 +859,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -885,31 +871,42 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/all/{policy_uuid}/test/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PolicyTestRequestToJSON(requestParameters['policyTestRequest']),
+            body: PolicyTestRequestToJSON(requestParameters["policyTestRequest"]),
         };
     }
 
     /**
      * Test policy
      */
-    async policiesAllTestCreateRaw(requestParameters: PoliciesAllTestCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PolicyTestResult>> {
+    async policiesAllTestCreateRaw(
+        requestParameters: PoliciesAllTestCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PolicyTestResult>> {
         const requestOptions = await this.policiesAllTestCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PolicyTestResultFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PolicyTestResultFromJSON(jsonValue),
+        );
     }
 
     /**
      * Test policy
      */
-    async policiesAllTestCreate(requestParameters: PoliciesAllTestCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PolicyTestResult> {
+    async policiesAllTestCreate(
+        requestParameters: PoliciesAllTestCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PolicyTestResult> {
         const response = await this.policiesAllTestCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -935,7 +932,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -944,17 +941,23 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get all creatable types
      */
-    async policiesAllTypesListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
+    async policiesAllTypesListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
         const requestOptions = await this.policiesAllTypesListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TypeCreateFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(TypeCreateFromJSON),
+        );
     }
 
     /**
      * Get all creatable types
      */
-    async policiesAllTypesList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TypeCreate>> {
+    async policiesAllTypesList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<TypeCreate>> {
         const response = await this.policiesAllTypesListRaw(initOverrides);
         return await response.value();
     }
@@ -962,11 +965,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesAllUsedByList without sending the request
      */
-    async policiesAllUsedByListRequestOpts(requestParameters: PoliciesAllUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesAllUsedByListRequestOpts(
+        requestParameters: PoliciesAllUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesAllUsedByList().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesAllUsedByList().',
             );
         }
 
@@ -984,11 +989,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/all/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -997,7 +1005,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesAllUsedByListRaw(requestParameters: PoliciesAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async policiesAllUsedByListRaw(
+        requestParameters: PoliciesAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.policiesAllUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1007,7 +1018,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesAllUsedByList(requestParameters: PoliciesAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async policiesAllUsedByList(
+        requestParameters: PoliciesAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.policiesAllUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1015,11 +1029,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesBindingsCreate without sending the request
      */
-    async policiesBindingsCreateRequestOpts(requestParameters: PoliciesBindingsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyBindingRequest'] == null) {
+    async policiesBindingsCreateRequestOpts(
+        requestParameters: PoliciesBindingsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyBindingRequest"] == null) {
             throw new runtime.RequiredError(
-                'policyBindingRequest',
-                'Required parameter "policyBindingRequest" was null or undefined when calling policiesBindingsCreate().'
+                "policyBindingRequest",
+                'Required parameter "policyBindingRequest" was null or undefined when calling policiesBindingsCreate().',
             );
         }
 
@@ -1027,7 +1043,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1042,27 +1058,35 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PolicyBindingRequestToJSON(requestParameters['policyBindingRequest']),
+            body: PolicyBindingRequestToJSON(requestParameters["policyBindingRequest"]),
         };
     }
 
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsCreateRaw(requestParameters: PoliciesBindingsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PolicyBinding>> {
+    async policiesBindingsCreateRaw(
+        requestParameters: PoliciesBindingsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PolicyBinding>> {
         const requestOptions = await this.policiesBindingsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PolicyBindingFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PolicyBindingFromJSON(jsonValue),
+        );
     }
 
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsCreate(requestParameters: PoliciesBindingsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PolicyBinding> {
+    async policiesBindingsCreate(
+        requestParameters: PoliciesBindingsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PolicyBinding> {
         const response = await this.policiesBindingsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1070,11 +1094,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesBindingsDestroy without sending the request
      */
-    async policiesBindingsDestroyRequestOpts(requestParameters: PoliciesBindingsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyBindingUuid'] == null) {
+    async policiesBindingsDestroyRequestOpts(
+        requestParameters: PoliciesBindingsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyBindingUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyBindingUuid',
-                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsDestroy().'
+                "policyBindingUuid",
+                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsDestroy().',
             );
         }
 
@@ -1092,11 +1118,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/bindings/{policy_binding_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_binding_uuid"}}`, encodeURIComponent(String(requestParameters['policyBindingUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_binding_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyBindingUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1105,7 +1134,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsDestroyRaw(requestParameters: PoliciesBindingsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async policiesBindingsDestroyRaw(
+        requestParameters: PoliciesBindingsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.policiesBindingsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1115,58 +1147,63 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsDestroy(requestParameters: PoliciesBindingsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesBindingsDestroy(
+        requestParameters: PoliciesBindingsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesBindingsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for policiesBindingsList without sending the request
      */
-    async policiesBindingsListRequestOpts(requestParameters: PoliciesBindingsListRequest): Promise<runtime.RequestOpts> {
+    async policiesBindingsListRequestOpts(
+        requestParameters: PoliciesBindingsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['enabled'] != null) {
-            queryParameters['enabled'] = requestParameters['enabled'];
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
         }
 
-        if (requestParameters['order'] != null) {
-            queryParameters['order'] = requestParameters['order'];
+        if (requestParameters["order"] != null) {
+            queryParameters["order"] = requestParameters["order"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['policy'] != null) {
-            queryParameters['policy'] = requestParameters['policy'];
+        if (requestParameters["policy"] != null) {
+            queryParameters["policy"] = requestParameters["policy"];
         }
 
-        if (requestParameters['policyIsnull'] != null) {
-            queryParameters['policy__isnull'] = requestParameters['policyIsnull'];
+        if (requestParameters["policyIsnull"] != null) {
+            queryParameters["policy__isnull"] = requestParameters["policyIsnull"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['target'] != null) {
-            queryParameters['target'] = requestParameters['target'];
+        if (requestParameters["target"] != null) {
+            queryParameters["target"] = requestParameters["target"];
         }
 
-        if (requestParameters['targetIn'] != null) {
-            queryParameters['target_in'] = requestParameters['targetIn'];
+        if (requestParameters["targetIn"] != null) {
+            queryParameters["target_in"] = requestParameters["targetIn"];
         }
 
-        if (requestParameters['timeout'] != null) {
-            queryParameters['timeout'] = requestParameters['timeout'];
+        if (requestParameters["timeout"] != null) {
+            queryParameters["timeout"] = requestParameters["timeout"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1184,7 +1221,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1193,17 +1230,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsListRaw(requestParameters: PoliciesBindingsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPolicyBindingList>> {
+    async policiesBindingsListRaw(
+        requestParameters: PoliciesBindingsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPolicyBindingList>> {
         const requestOptions = await this.policiesBindingsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPolicyBindingListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPolicyBindingListFromJSON(jsonValue),
+        );
     }
 
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsList(requestParameters: PoliciesBindingsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPolicyBindingList> {
+    async policiesBindingsList(
+        requestParameters: PoliciesBindingsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPolicyBindingList> {
         const response = await this.policiesBindingsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1211,11 +1256,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesBindingsPartialUpdate without sending the request
      */
-    async policiesBindingsPartialUpdateRequestOpts(requestParameters: PoliciesBindingsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyBindingUuid'] == null) {
+    async policiesBindingsPartialUpdateRequestOpts(
+        requestParameters: PoliciesBindingsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyBindingUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyBindingUuid',
-                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsPartialUpdate().'
+                "policyBindingUuid",
+                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsPartialUpdate().',
             );
         }
 
@@ -1223,7 +1270,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1235,43 +1282,62 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/bindings/{policy_binding_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_binding_uuid"}}`, encodeURIComponent(String(requestParameters['policyBindingUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_binding_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyBindingUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedPolicyBindingRequestToJSON(requestParameters['patchedPolicyBindingRequest']),
+            body: PatchedPolicyBindingRequestToJSON(
+                requestParameters["patchedPolicyBindingRequest"],
+            ),
         };
     }
 
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsPartialUpdateRaw(requestParameters: PoliciesBindingsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PolicyBinding>> {
-        const requestOptions = await this.policiesBindingsPartialUpdateRequestOpts(requestParameters);
+    async policiesBindingsPartialUpdateRaw(
+        requestParameters: PoliciesBindingsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PolicyBinding>> {
+        const requestOptions =
+            await this.policiesBindingsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PolicyBindingFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PolicyBindingFromJSON(jsonValue),
+        );
     }
 
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsPartialUpdate(requestParameters: PoliciesBindingsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PolicyBinding> {
-        const response = await this.policiesBindingsPartialUpdateRaw(requestParameters, initOverrides);
+    async policiesBindingsPartialUpdate(
+        requestParameters: PoliciesBindingsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PolicyBinding> {
+        const response = await this.policiesBindingsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesBindingsRetrieve without sending the request
      */
-    async policiesBindingsRetrieveRequestOpts(requestParameters: PoliciesBindingsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyBindingUuid'] == null) {
+    async policiesBindingsRetrieveRequestOpts(
+        requestParameters: PoliciesBindingsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyBindingUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyBindingUuid',
-                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsRetrieve().'
+                "policyBindingUuid",
+                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsRetrieve().',
             );
         }
 
@@ -1289,11 +1355,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/bindings/{policy_binding_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_binding_uuid"}}`, encodeURIComponent(String(requestParameters['policyBindingUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_binding_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyBindingUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1302,17 +1371,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsRetrieveRaw(requestParameters: PoliciesBindingsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PolicyBinding>> {
+    async policiesBindingsRetrieveRaw(
+        requestParameters: PoliciesBindingsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PolicyBinding>> {
         const requestOptions = await this.policiesBindingsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PolicyBindingFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PolicyBindingFromJSON(jsonValue),
+        );
     }
 
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsRetrieve(requestParameters: PoliciesBindingsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PolicyBinding> {
+    async policiesBindingsRetrieve(
+        requestParameters: PoliciesBindingsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PolicyBinding> {
         const response = await this.policiesBindingsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1320,18 +1397,20 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesBindingsUpdate without sending the request
      */
-    async policiesBindingsUpdateRequestOpts(requestParameters: PoliciesBindingsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyBindingUuid'] == null) {
+    async policiesBindingsUpdateRequestOpts(
+        requestParameters: PoliciesBindingsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyBindingUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyBindingUuid',
-                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsUpdate().'
+                "policyBindingUuid",
+                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsUpdate().',
             );
         }
 
-        if (requestParameters['policyBindingRequest'] == null) {
+        if (requestParameters["policyBindingRequest"] == null) {
             throw new runtime.RequiredError(
-                'policyBindingRequest',
-                'Required parameter "policyBindingRequest" was null or undefined when calling policiesBindingsUpdate().'
+                "policyBindingRequest",
+                'Required parameter "policyBindingRequest" was null or undefined when calling policiesBindingsUpdate().',
             );
         }
 
@@ -1339,7 +1418,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1351,31 +1430,42 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/bindings/{policy_binding_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_binding_uuid"}}`, encodeURIComponent(String(requestParameters['policyBindingUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_binding_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyBindingUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: PolicyBindingRequestToJSON(requestParameters['policyBindingRequest']),
+            body: PolicyBindingRequestToJSON(requestParameters["policyBindingRequest"]),
         };
     }
 
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsUpdateRaw(requestParameters: PoliciesBindingsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PolicyBinding>> {
+    async policiesBindingsUpdateRaw(
+        requestParameters: PoliciesBindingsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PolicyBinding>> {
         const requestOptions = await this.policiesBindingsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PolicyBindingFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PolicyBindingFromJSON(jsonValue),
+        );
     }
 
     /**
      * PolicyBinding Viewset
      */
-    async policiesBindingsUpdate(requestParameters: PoliciesBindingsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PolicyBinding> {
+    async policiesBindingsUpdate(
+        requestParameters: PoliciesBindingsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PolicyBinding> {
         const response = await this.policiesBindingsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1383,11 +1473,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesBindingsUsedByList without sending the request
      */
-    async policiesBindingsUsedByListRequestOpts(requestParameters: PoliciesBindingsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyBindingUuid'] == null) {
+    async policiesBindingsUsedByListRequestOpts(
+        requestParameters: PoliciesBindingsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyBindingUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyBindingUuid',
-                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsUsedByList().'
+                "policyBindingUuid",
+                'Required parameter "policyBindingUuid" was null or undefined when calling policiesBindingsUsedByList().',
             );
         }
 
@@ -1405,11 +1497,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/bindings/{policy_binding_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"policy_binding_uuid"}}`, encodeURIComponent(String(requestParameters['policyBindingUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_binding_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyBindingUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1418,7 +1513,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesBindingsUsedByListRaw(requestParameters: PoliciesBindingsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async policiesBindingsUsedByListRaw(
+        requestParameters: PoliciesBindingsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.policiesBindingsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1428,7 +1526,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesBindingsUsedByList(requestParameters: PoliciesBindingsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async policiesBindingsUsedByList(
+        requestParameters: PoliciesBindingsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.policiesBindingsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1436,11 +1537,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesDummyCreate without sending the request
      */
-    async policiesDummyCreateRequestOpts(requestParameters: PoliciesDummyCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['dummyPolicyRequest'] == null) {
+    async policiesDummyCreateRequestOpts(
+        requestParameters: PoliciesDummyCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["dummyPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'dummyPolicyRequest',
-                'Required parameter "dummyPolicyRequest" was null or undefined when calling policiesDummyCreate().'
+                "dummyPolicyRequest",
+                'Required parameter "dummyPolicyRequest" was null or undefined when calling policiesDummyCreate().',
             );
         }
 
@@ -1448,7 +1551,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1463,17 +1566,20 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: DummyPolicyRequestToJSON(requestParameters['dummyPolicyRequest']),
+            body: DummyPolicyRequestToJSON(requestParameters["dummyPolicyRequest"]),
         };
     }
 
     /**
      * Dummy Viewset
      */
-    async policiesDummyCreateRaw(requestParameters: PoliciesDummyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DummyPolicy>> {
+    async policiesDummyCreateRaw(
+        requestParameters: PoliciesDummyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DummyPolicy>> {
         const requestOptions = await this.policiesDummyCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1483,7 +1589,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Dummy Viewset
      */
-    async policiesDummyCreate(requestParameters: PoliciesDummyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DummyPolicy> {
+    async policiesDummyCreate(
+        requestParameters: PoliciesDummyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DummyPolicy> {
         const response = await this.policiesDummyCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1491,11 +1600,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesDummyDestroy without sending the request
      */
-    async policiesDummyDestroyRequestOpts(requestParameters: PoliciesDummyDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesDummyDestroyRequestOpts(
+        requestParameters: PoliciesDummyDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesDummyDestroy().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesDummyDestroy().',
             );
         }
 
@@ -1513,11 +1624,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/dummy/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1526,7 +1640,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Dummy Viewset
      */
-    async policiesDummyDestroyRaw(requestParameters: PoliciesDummyDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async policiesDummyDestroyRaw(
+        requestParameters: PoliciesDummyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.policiesDummyDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1536,62 +1653,69 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Dummy Viewset
      */
-    async policiesDummyDestroy(requestParameters: PoliciesDummyDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesDummyDestroy(
+        requestParameters: PoliciesDummyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesDummyDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for policiesDummyList without sending the request
      */
-    async policiesDummyListRequestOpts(requestParameters: PoliciesDummyListRequest): Promise<runtime.RequestOpts> {
+    async policiesDummyListRequestOpts(
+        requestParameters: PoliciesDummyListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['created'] != null) {
-            queryParameters['created'] = (requestParameters['created'] as any).toISOString();
+        if (requestParameters["created"] != null) {
+            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
         }
 
-        if (requestParameters['executionLogging'] != null) {
-            queryParameters['execution_logging'] = requestParameters['executionLogging'];
+        if (requestParameters["executionLogging"] != null) {
+            queryParameters["execution_logging"] = requestParameters["executionLogging"];
         }
 
-        if (requestParameters['lastUpdated'] != null) {
-            queryParameters['last_updated'] = (requestParameters['lastUpdated'] as any).toISOString();
+        if (requestParameters["lastUpdated"] != null) {
+            queryParameters["last_updated"] = (
+                requestParameters["lastUpdated"] as any
+            ).toISOString();
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['policyUuid'] != null) {
-            queryParameters['policy_uuid'] = requestParameters['policyUuid'];
+        if (requestParameters["policyUuid"] != null) {
+            queryParameters["policy_uuid"] = requestParameters["policyUuid"];
         }
 
-        if (requestParameters['result'] != null) {
-            queryParameters['result'] = requestParameters['result'];
+        if (requestParameters["result"] != null) {
+            queryParameters["result"] = requestParameters["result"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['waitMax'] != null) {
-            queryParameters['wait_max'] = requestParameters['waitMax'];
+        if (requestParameters["waitMax"] != null) {
+            queryParameters["wait_max"] = requestParameters["waitMax"];
         }
 
-        if (requestParameters['waitMin'] != null) {
-            queryParameters['wait_min'] = requestParameters['waitMin'];
+        if (requestParameters["waitMin"] != null) {
+            queryParameters["wait_min"] = requestParameters["waitMin"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1609,7 +1733,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1618,17 +1742,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Dummy Viewset
      */
-    async policiesDummyListRaw(requestParameters: PoliciesDummyListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedDummyPolicyList>> {
+    async policiesDummyListRaw(
+        requestParameters: PoliciesDummyListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedDummyPolicyList>> {
         const requestOptions = await this.policiesDummyListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedDummyPolicyListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedDummyPolicyListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Dummy Viewset
      */
-    async policiesDummyList(requestParameters: PoliciesDummyListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedDummyPolicyList> {
+    async policiesDummyList(
+        requestParameters: PoliciesDummyListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedDummyPolicyList> {
         const response = await this.policiesDummyListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1636,11 +1768,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesDummyPartialUpdate without sending the request
      */
-    async policiesDummyPartialUpdateRequestOpts(requestParameters: PoliciesDummyPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesDummyPartialUpdateRequestOpts(
+        requestParameters: PoliciesDummyPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesDummyPartialUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesDummyPartialUpdate().',
             );
         }
 
@@ -1648,7 +1782,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1660,21 +1794,27 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/dummy/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedDummyPolicyRequestToJSON(requestParameters['patchedDummyPolicyRequest']),
+            body: PatchedDummyPolicyRequestToJSON(requestParameters["patchedDummyPolicyRequest"]),
         };
     }
 
     /**
      * Dummy Viewset
      */
-    async policiesDummyPartialUpdateRaw(requestParameters: PoliciesDummyPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DummyPolicy>> {
+    async policiesDummyPartialUpdateRaw(
+        requestParameters: PoliciesDummyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DummyPolicy>> {
         const requestOptions = await this.policiesDummyPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1684,7 +1824,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Dummy Viewset
      */
-    async policiesDummyPartialUpdate(requestParameters: PoliciesDummyPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DummyPolicy> {
+    async policiesDummyPartialUpdate(
+        requestParameters: PoliciesDummyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DummyPolicy> {
         const response = await this.policiesDummyPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1692,11 +1835,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesDummyRetrieve without sending the request
      */
-    async policiesDummyRetrieveRequestOpts(requestParameters: PoliciesDummyRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesDummyRetrieveRequestOpts(
+        requestParameters: PoliciesDummyRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesDummyRetrieve().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesDummyRetrieve().',
             );
         }
 
@@ -1714,11 +1859,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/dummy/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1727,7 +1875,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Dummy Viewset
      */
-    async policiesDummyRetrieveRaw(requestParameters: PoliciesDummyRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DummyPolicy>> {
+    async policiesDummyRetrieveRaw(
+        requestParameters: PoliciesDummyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DummyPolicy>> {
         const requestOptions = await this.policiesDummyRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1737,7 +1888,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Dummy Viewset
      */
-    async policiesDummyRetrieve(requestParameters: PoliciesDummyRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DummyPolicy> {
+    async policiesDummyRetrieve(
+        requestParameters: PoliciesDummyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DummyPolicy> {
         const response = await this.policiesDummyRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1745,18 +1899,20 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesDummyUpdate without sending the request
      */
-    async policiesDummyUpdateRequestOpts(requestParameters: PoliciesDummyUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesDummyUpdateRequestOpts(
+        requestParameters: PoliciesDummyUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesDummyUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesDummyUpdate().',
             );
         }
 
-        if (requestParameters['dummyPolicyRequest'] == null) {
+        if (requestParameters["dummyPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'dummyPolicyRequest',
-                'Required parameter "dummyPolicyRequest" was null or undefined when calling policiesDummyUpdate().'
+                "dummyPolicyRequest",
+                'Required parameter "dummyPolicyRequest" was null or undefined when calling policiesDummyUpdate().',
             );
         }
 
@@ -1764,7 +1920,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1776,21 +1932,27 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/dummy/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: DummyPolicyRequestToJSON(requestParameters['dummyPolicyRequest']),
+            body: DummyPolicyRequestToJSON(requestParameters["dummyPolicyRequest"]),
         };
     }
 
     /**
      * Dummy Viewset
      */
-    async policiesDummyUpdateRaw(requestParameters: PoliciesDummyUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DummyPolicy>> {
+    async policiesDummyUpdateRaw(
+        requestParameters: PoliciesDummyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DummyPolicy>> {
         const requestOptions = await this.policiesDummyUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1800,7 +1962,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Dummy Viewset
      */
-    async policiesDummyUpdate(requestParameters: PoliciesDummyUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DummyPolicy> {
+    async policiesDummyUpdate(
+        requestParameters: PoliciesDummyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DummyPolicy> {
         const response = await this.policiesDummyUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1808,11 +1973,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesDummyUsedByList without sending the request
      */
-    async policiesDummyUsedByListRequestOpts(requestParameters: PoliciesDummyUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesDummyUsedByListRequestOpts(
+        requestParameters: PoliciesDummyUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesDummyUsedByList().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesDummyUsedByList().',
             );
         }
 
@@ -1830,11 +1997,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/dummy/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1843,7 +2013,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesDummyUsedByListRaw(requestParameters: PoliciesDummyUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async policiesDummyUsedByListRaw(
+        requestParameters: PoliciesDummyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.policiesDummyUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1853,7 +2026,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesDummyUsedByList(requestParameters: PoliciesDummyUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async policiesDummyUsedByList(
+        requestParameters: PoliciesDummyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.policiesDummyUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1861,11 +2037,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesEventMatcherCreate without sending the request
      */
-    async policiesEventMatcherCreateRequestOpts(requestParameters: PoliciesEventMatcherCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['eventMatcherPolicyRequest'] == null) {
+    async policiesEventMatcherCreateRequestOpts(
+        requestParameters: PoliciesEventMatcherCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["eventMatcherPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'eventMatcherPolicyRequest',
-                'Required parameter "eventMatcherPolicyRequest" was null or undefined when calling policiesEventMatcherCreate().'
+                "eventMatcherPolicyRequest",
+                'Required parameter "eventMatcherPolicyRequest" was null or undefined when calling policiesEventMatcherCreate().',
             );
         }
 
@@ -1873,7 +2051,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1888,27 +2066,35 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: EventMatcherPolicyRequestToJSON(requestParameters['eventMatcherPolicyRequest']),
+            body: EventMatcherPolicyRequestToJSON(requestParameters["eventMatcherPolicyRequest"]),
         };
     }
 
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherCreateRaw(requestParameters: PoliciesEventMatcherCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EventMatcherPolicy>> {
+    async policiesEventMatcherCreateRaw(
+        requestParameters: PoliciesEventMatcherCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EventMatcherPolicy>> {
         const requestOptions = await this.policiesEventMatcherCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => EventMatcherPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EventMatcherPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherCreate(requestParameters: PoliciesEventMatcherCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EventMatcherPolicy> {
+    async policiesEventMatcherCreate(
+        requestParameters: PoliciesEventMatcherCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EventMatcherPolicy> {
         const response = await this.policiesEventMatcherCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1916,11 +2102,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesEventMatcherDestroy without sending the request
      */
-    async policiesEventMatcherDestroyRequestOpts(requestParameters: PoliciesEventMatcherDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesEventMatcherDestroyRequestOpts(
+        requestParameters: PoliciesEventMatcherDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherDestroy().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherDestroy().',
             );
         }
 
@@ -1938,11 +2126,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/event_matcher/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1951,7 +2142,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherDestroyRaw(requestParameters: PoliciesEventMatcherDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async policiesEventMatcherDestroyRaw(
+        requestParameters: PoliciesEventMatcherDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.policiesEventMatcherDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1961,66 +2155,73 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherDestroy(requestParameters: PoliciesEventMatcherDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesEventMatcherDestroy(
+        requestParameters: PoliciesEventMatcherDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesEventMatcherDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for policiesEventMatcherList without sending the request
      */
-    async policiesEventMatcherListRequestOpts(requestParameters: PoliciesEventMatcherListRequest): Promise<runtime.RequestOpts> {
+    async policiesEventMatcherListRequestOpts(
+        requestParameters: PoliciesEventMatcherListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['action'] != null) {
-            queryParameters['action'] = requestParameters['action'];
+        if (requestParameters["action"] != null) {
+            queryParameters["action"] = requestParameters["action"];
         }
 
-        if (requestParameters['app'] != null) {
-            queryParameters['app'] = requestParameters['app'];
+        if (requestParameters["app"] != null) {
+            queryParameters["app"] = requestParameters["app"];
         }
 
-        if (requestParameters['clientIp'] != null) {
-            queryParameters['client_ip'] = requestParameters['clientIp'];
+        if (requestParameters["clientIp"] != null) {
+            queryParameters["client_ip"] = requestParameters["clientIp"];
         }
 
-        if (requestParameters['created'] != null) {
-            queryParameters['created'] = (requestParameters['created'] as any).toISOString();
+        if (requestParameters["created"] != null) {
+            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
         }
 
-        if (requestParameters['executionLogging'] != null) {
-            queryParameters['execution_logging'] = requestParameters['executionLogging'];
+        if (requestParameters["executionLogging"] != null) {
+            queryParameters["execution_logging"] = requestParameters["executionLogging"];
         }
 
-        if (requestParameters['lastUpdated'] != null) {
-            queryParameters['last_updated'] = (requestParameters['lastUpdated'] as any).toISOString();
+        if (requestParameters["lastUpdated"] != null) {
+            queryParameters["last_updated"] = (
+                requestParameters["lastUpdated"] as any
+            ).toISOString();
         }
 
-        if (requestParameters['model'] != null) {
-            queryParameters['model'] = requestParameters['model'];
+        if (requestParameters["model"] != null) {
+            queryParameters["model"] = requestParameters["model"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['policyUuid'] != null) {
-            queryParameters['policy_uuid'] = requestParameters['policyUuid'];
+        if (requestParameters["policyUuid"] != null) {
+            queryParameters["policy_uuid"] = requestParameters["policyUuid"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2038,7 +2239,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2047,17 +2248,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherListRaw(requestParameters: PoliciesEventMatcherListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedEventMatcherPolicyList>> {
+    async policiesEventMatcherListRaw(
+        requestParameters: PoliciesEventMatcherListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedEventMatcherPolicyList>> {
         const requestOptions = await this.policiesEventMatcherListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedEventMatcherPolicyListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedEventMatcherPolicyListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherList(requestParameters: PoliciesEventMatcherListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedEventMatcherPolicyList> {
+    async policiesEventMatcherList(
+        requestParameters: PoliciesEventMatcherListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedEventMatcherPolicyList> {
         const response = await this.policiesEventMatcherListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2065,11 +2274,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesEventMatcherPartialUpdate without sending the request
      */
-    async policiesEventMatcherPartialUpdateRequestOpts(requestParameters: PoliciesEventMatcherPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesEventMatcherPartialUpdateRequestOpts(
+        requestParameters: PoliciesEventMatcherPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherPartialUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherPartialUpdate().',
             );
         }
 
@@ -2077,7 +2288,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2089,43 +2300,62 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/event_matcher/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedEventMatcherPolicyRequestToJSON(requestParameters['patchedEventMatcherPolicyRequest']),
+            body: PatchedEventMatcherPolicyRequestToJSON(
+                requestParameters["patchedEventMatcherPolicyRequest"],
+            ),
         };
     }
 
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherPartialUpdateRaw(requestParameters: PoliciesEventMatcherPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EventMatcherPolicy>> {
-        const requestOptions = await this.policiesEventMatcherPartialUpdateRequestOpts(requestParameters);
+    async policiesEventMatcherPartialUpdateRaw(
+        requestParameters: PoliciesEventMatcherPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EventMatcherPolicy>> {
+        const requestOptions =
+            await this.policiesEventMatcherPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => EventMatcherPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EventMatcherPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherPartialUpdate(requestParameters: PoliciesEventMatcherPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EventMatcherPolicy> {
-        const response = await this.policiesEventMatcherPartialUpdateRaw(requestParameters, initOverrides);
+    async policiesEventMatcherPartialUpdate(
+        requestParameters: PoliciesEventMatcherPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EventMatcherPolicy> {
+        const response = await this.policiesEventMatcherPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesEventMatcherRetrieve without sending the request
      */
-    async policiesEventMatcherRetrieveRequestOpts(requestParameters: PoliciesEventMatcherRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesEventMatcherRetrieveRequestOpts(
+        requestParameters: PoliciesEventMatcherRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherRetrieve().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherRetrieve().',
             );
         }
 
@@ -2143,11 +2373,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/event_matcher/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2156,36 +2389,50 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherRetrieveRaw(requestParameters: PoliciesEventMatcherRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EventMatcherPolicy>> {
-        const requestOptions = await this.policiesEventMatcherRetrieveRequestOpts(requestParameters);
+    async policiesEventMatcherRetrieveRaw(
+        requestParameters: PoliciesEventMatcherRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EventMatcherPolicy>> {
+        const requestOptions =
+            await this.policiesEventMatcherRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => EventMatcherPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EventMatcherPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherRetrieve(requestParameters: PoliciesEventMatcherRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EventMatcherPolicy> {
-        const response = await this.policiesEventMatcherRetrieveRaw(requestParameters, initOverrides);
+    async policiesEventMatcherRetrieve(
+        requestParameters: PoliciesEventMatcherRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EventMatcherPolicy> {
+        const response = await this.policiesEventMatcherRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesEventMatcherUpdate without sending the request
      */
-    async policiesEventMatcherUpdateRequestOpts(requestParameters: PoliciesEventMatcherUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesEventMatcherUpdateRequestOpts(
+        requestParameters: PoliciesEventMatcherUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherUpdate().',
             );
         }
 
-        if (requestParameters['eventMatcherPolicyRequest'] == null) {
+        if (requestParameters["eventMatcherPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'eventMatcherPolicyRequest',
-                'Required parameter "eventMatcherPolicyRequest" was null or undefined when calling policiesEventMatcherUpdate().'
+                "eventMatcherPolicyRequest",
+                'Required parameter "eventMatcherPolicyRequest" was null or undefined when calling policiesEventMatcherUpdate().',
             );
         }
 
@@ -2193,7 +2440,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2205,31 +2452,42 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/event_matcher/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: EventMatcherPolicyRequestToJSON(requestParameters['eventMatcherPolicyRequest']),
+            body: EventMatcherPolicyRequestToJSON(requestParameters["eventMatcherPolicyRequest"]),
         };
     }
 
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherUpdateRaw(requestParameters: PoliciesEventMatcherUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EventMatcherPolicy>> {
+    async policiesEventMatcherUpdateRaw(
+        requestParameters: PoliciesEventMatcherUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EventMatcherPolicy>> {
         const requestOptions = await this.policiesEventMatcherUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => EventMatcherPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EventMatcherPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Event Matcher Policy Viewset
      */
-    async policiesEventMatcherUpdate(requestParameters: PoliciesEventMatcherUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EventMatcherPolicy> {
+    async policiesEventMatcherUpdate(
+        requestParameters: PoliciesEventMatcherUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EventMatcherPolicy> {
         const response = await this.policiesEventMatcherUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2237,11 +2495,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesEventMatcherUsedByList without sending the request
      */
-    async policiesEventMatcherUsedByListRequestOpts(requestParameters: PoliciesEventMatcherUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesEventMatcherUsedByListRequestOpts(
+        requestParameters: PoliciesEventMatcherUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherUsedByList().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesEventMatcherUsedByList().',
             );
         }
 
@@ -2259,11 +2519,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/event_matcher/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2272,8 +2535,12 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesEventMatcherUsedByListRaw(requestParameters: PoliciesEventMatcherUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesEventMatcherUsedByListRequestOpts(requestParameters);
+    async policiesEventMatcherUsedByListRaw(
+        requestParameters: PoliciesEventMatcherUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.policiesEventMatcherUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2282,19 +2549,27 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesEventMatcherUsedByList(requestParameters: PoliciesEventMatcherUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.policiesEventMatcherUsedByListRaw(requestParameters, initOverrides);
+    async policiesEventMatcherUsedByList(
+        requestParameters: PoliciesEventMatcherUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.policiesEventMatcherUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesExpressionCreate without sending the request
      */
-    async policiesExpressionCreateRequestOpts(requestParameters: PoliciesExpressionCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['expressionPolicyRequest'] == null) {
+    async policiesExpressionCreateRequestOpts(
+        requestParameters: PoliciesExpressionCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["expressionPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'expressionPolicyRequest',
-                'Required parameter "expressionPolicyRequest" was null or undefined when calling policiesExpressionCreate().'
+                "expressionPolicyRequest",
+                'Required parameter "expressionPolicyRequest" was null or undefined when calling policiesExpressionCreate().',
             );
         }
 
@@ -2302,7 +2577,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2317,27 +2592,35 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: ExpressionPolicyRequestToJSON(requestParameters['expressionPolicyRequest']),
+            body: ExpressionPolicyRequestToJSON(requestParameters["expressionPolicyRequest"]),
         };
     }
 
     /**
      * Source Viewset
      */
-    async policiesExpressionCreateRaw(requestParameters: PoliciesExpressionCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExpressionPolicy>> {
+    async policiesExpressionCreateRaw(
+        requestParameters: PoliciesExpressionCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ExpressionPolicy>> {
         const requestOptions = await this.policiesExpressionCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ExpressionPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ExpressionPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Source Viewset
      */
-    async policiesExpressionCreate(requestParameters: PoliciesExpressionCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExpressionPolicy> {
+    async policiesExpressionCreate(
+        requestParameters: PoliciesExpressionCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ExpressionPolicy> {
         const response = await this.policiesExpressionCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2345,11 +2628,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesExpressionDestroy without sending the request
      */
-    async policiesExpressionDestroyRequestOpts(requestParameters: PoliciesExpressionDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesExpressionDestroyRequestOpts(
+        requestParameters: PoliciesExpressionDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionDestroy().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionDestroy().',
             );
         }
 
@@ -2367,11 +2652,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/expression/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2380,7 +2668,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async policiesExpressionDestroyRaw(requestParameters: PoliciesExpressionDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async policiesExpressionDestroyRaw(
+        requestParameters: PoliciesExpressionDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.policiesExpressionDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2390,54 +2681,61 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async policiesExpressionDestroy(requestParameters: PoliciesExpressionDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesExpressionDestroy(
+        requestParameters: PoliciesExpressionDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesExpressionDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for policiesExpressionList without sending the request
      */
-    async policiesExpressionListRequestOpts(requestParameters: PoliciesExpressionListRequest): Promise<runtime.RequestOpts> {
+    async policiesExpressionListRequestOpts(
+        requestParameters: PoliciesExpressionListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['created'] != null) {
-            queryParameters['created'] = (requestParameters['created'] as any).toISOString();
+        if (requestParameters["created"] != null) {
+            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
         }
 
-        if (requestParameters['executionLogging'] != null) {
-            queryParameters['execution_logging'] = requestParameters['executionLogging'];
+        if (requestParameters["executionLogging"] != null) {
+            queryParameters["execution_logging"] = requestParameters["executionLogging"];
         }
 
-        if (requestParameters['expression'] != null) {
-            queryParameters['expression'] = requestParameters['expression'];
+        if (requestParameters["expression"] != null) {
+            queryParameters["expression"] = requestParameters["expression"];
         }
 
-        if (requestParameters['lastUpdated'] != null) {
-            queryParameters['last_updated'] = (requestParameters['lastUpdated'] as any).toISOString();
+        if (requestParameters["lastUpdated"] != null) {
+            queryParameters["last_updated"] = (
+                requestParameters["lastUpdated"] as any
+            ).toISOString();
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['policyUuid'] != null) {
-            queryParameters['policy_uuid'] = requestParameters['policyUuid'];
+        if (requestParameters["policyUuid"] != null) {
+            queryParameters["policy_uuid"] = requestParameters["policyUuid"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2455,7 +2753,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2464,17 +2762,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async policiesExpressionListRaw(requestParameters: PoliciesExpressionListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedExpressionPolicyList>> {
+    async policiesExpressionListRaw(
+        requestParameters: PoliciesExpressionListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedExpressionPolicyList>> {
         const requestOptions = await this.policiesExpressionListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedExpressionPolicyListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedExpressionPolicyListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Source Viewset
      */
-    async policiesExpressionList(requestParameters: PoliciesExpressionListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedExpressionPolicyList> {
+    async policiesExpressionList(
+        requestParameters: PoliciesExpressionListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedExpressionPolicyList> {
         const response = await this.policiesExpressionListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2482,11 +2788,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesExpressionPartialUpdate without sending the request
      */
-    async policiesExpressionPartialUpdateRequestOpts(requestParameters: PoliciesExpressionPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesExpressionPartialUpdateRequestOpts(
+        requestParameters: PoliciesExpressionPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionPartialUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionPartialUpdate().',
             );
         }
 
@@ -2494,7 +2802,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2506,43 +2814,62 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/expression/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedExpressionPolicyRequestToJSON(requestParameters['patchedExpressionPolicyRequest']),
+            body: PatchedExpressionPolicyRequestToJSON(
+                requestParameters["patchedExpressionPolicyRequest"],
+            ),
         };
     }
 
     /**
      * Source Viewset
      */
-    async policiesExpressionPartialUpdateRaw(requestParameters: PoliciesExpressionPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExpressionPolicy>> {
-        const requestOptions = await this.policiesExpressionPartialUpdateRequestOpts(requestParameters);
+    async policiesExpressionPartialUpdateRaw(
+        requestParameters: PoliciesExpressionPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ExpressionPolicy>> {
+        const requestOptions =
+            await this.policiesExpressionPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ExpressionPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ExpressionPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Source Viewset
      */
-    async policiesExpressionPartialUpdate(requestParameters: PoliciesExpressionPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExpressionPolicy> {
-        const response = await this.policiesExpressionPartialUpdateRaw(requestParameters, initOverrides);
+    async policiesExpressionPartialUpdate(
+        requestParameters: PoliciesExpressionPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ExpressionPolicy> {
+        const response = await this.policiesExpressionPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesExpressionRetrieve without sending the request
      */
-    async policiesExpressionRetrieveRequestOpts(requestParameters: PoliciesExpressionRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesExpressionRetrieveRequestOpts(
+        requestParameters: PoliciesExpressionRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionRetrieve().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionRetrieve().',
             );
         }
 
@@ -2560,11 +2887,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/expression/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2573,17 +2903,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Source Viewset
      */
-    async policiesExpressionRetrieveRaw(requestParameters: PoliciesExpressionRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExpressionPolicy>> {
+    async policiesExpressionRetrieveRaw(
+        requestParameters: PoliciesExpressionRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ExpressionPolicy>> {
         const requestOptions = await this.policiesExpressionRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ExpressionPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ExpressionPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Source Viewset
      */
-    async policiesExpressionRetrieve(requestParameters: PoliciesExpressionRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExpressionPolicy> {
+    async policiesExpressionRetrieve(
+        requestParameters: PoliciesExpressionRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ExpressionPolicy> {
         const response = await this.policiesExpressionRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2591,18 +2929,20 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesExpressionUpdate without sending the request
      */
-    async policiesExpressionUpdateRequestOpts(requestParameters: PoliciesExpressionUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesExpressionUpdateRequestOpts(
+        requestParameters: PoliciesExpressionUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionUpdate().',
             );
         }
 
-        if (requestParameters['expressionPolicyRequest'] == null) {
+        if (requestParameters["expressionPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'expressionPolicyRequest',
-                'Required parameter "expressionPolicyRequest" was null or undefined when calling policiesExpressionUpdate().'
+                "expressionPolicyRequest",
+                'Required parameter "expressionPolicyRequest" was null or undefined when calling policiesExpressionUpdate().',
             );
         }
 
@@ -2610,7 +2950,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2622,31 +2962,42 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/expression/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: ExpressionPolicyRequestToJSON(requestParameters['expressionPolicyRequest']),
+            body: ExpressionPolicyRequestToJSON(requestParameters["expressionPolicyRequest"]),
         };
     }
 
     /**
      * Source Viewset
      */
-    async policiesExpressionUpdateRaw(requestParameters: PoliciesExpressionUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExpressionPolicy>> {
+    async policiesExpressionUpdateRaw(
+        requestParameters: PoliciesExpressionUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ExpressionPolicy>> {
         const requestOptions = await this.policiesExpressionUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ExpressionPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ExpressionPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Source Viewset
      */
-    async policiesExpressionUpdate(requestParameters: PoliciesExpressionUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExpressionPolicy> {
+    async policiesExpressionUpdate(
+        requestParameters: PoliciesExpressionUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ExpressionPolicy> {
         const response = await this.policiesExpressionUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2654,11 +3005,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesExpressionUsedByList without sending the request
      */
-    async policiesExpressionUsedByListRequestOpts(requestParameters: PoliciesExpressionUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesExpressionUsedByListRequestOpts(
+        requestParameters: PoliciesExpressionUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionUsedByList().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesExpressionUsedByList().',
             );
         }
 
@@ -2676,11 +3029,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/expression/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2689,8 +3045,12 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesExpressionUsedByListRaw(requestParameters: PoliciesExpressionUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesExpressionUsedByListRequestOpts(requestParameters);
+    async policiesExpressionUsedByListRaw(
+        requestParameters: PoliciesExpressionUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.policiesExpressionUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2699,19 +3059,27 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesExpressionUsedByList(requestParameters: PoliciesExpressionUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.policiesExpressionUsedByListRaw(requestParameters, initOverrides);
+    async policiesExpressionUsedByList(
+        requestParameters: PoliciesExpressionUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.policiesExpressionUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesGeoipCreate without sending the request
      */
-    async policiesGeoipCreateRequestOpts(requestParameters: PoliciesGeoipCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['geoIPPolicyRequest'] == null) {
+    async policiesGeoipCreateRequestOpts(
+        requestParameters: PoliciesGeoipCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["geoIPPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'geoIPPolicyRequest',
-                'Required parameter "geoIPPolicyRequest" was null or undefined when calling policiesGeoipCreate().'
+                "geoIPPolicyRequest",
+                'Required parameter "geoIPPolicyRequest" was null or undefined when calling policiesGeoipCreate().',
             );
         }
 
@@ -2719,7 +3087,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2734,17 +3102,20 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: GeoIPPolicyRequestToJSON(requestParameters['geoIPPolicyRequest']),
+            body: GeoIPPolicyRequestToJSON(requestParameters["geoIPPolicyRequest"]),
         };
     }
 
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipCreateRaw(requestParameters: PoliciesGeoipCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GeoIPPolicy>> {
+    async policiesGeoipCreateRaw(
+        requestParameters: PoliciesGeoipCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GeoIPPolicy>> {
         const requestOptions = await this.policiesGeoipCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2754,7 +3125,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipCreate(requestParameters: PoliciesGeoipCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GeoIPPolicy> {
+    async policiesGeoipCreate(
+        requestParameters: PoliciesGeoipCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GeoIPPolicy> {
         const response = await this.policiesGeoipCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2762,11 +3136,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesGeoipDestroy without sending the request
      */
-    async policiesGeoipDestroyRequestOpts(requestParameters: PoliciesGeoipDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesGeoipDestroyRequestOpts(
+        requestParameters: PoliciesGeoipDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipDestroy().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipDestroy().',
             );
         }
 
@@ -2784,11 +3160,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/geoip/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2797,7 +3176,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipDestroyRaw(requestParameters: PoliciesGeoipDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async policiesGeoipDestroyRaw(
+        requestParameters: PoliciesGeoipDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.policiesGeoipDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2807,7 +3189,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipDestroy(requestParameters: PoliciesGeoipDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesGeoipDestroy(
+        requestParameters: PoliciesGeoipDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesGeoipDestroyRaw(requestParameters, initOverrides);
     }
 
@@ -2832,7 +3217,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2841,17 +3226,23 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get all countries in ISO-3166-1
      */
-    async policiesGeoipIso3166ListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DetailedCountry>>> {
+    async policiesGeoipIso3166ListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<DetailedCountry>>> {
         const requestOptions = await this.policiesGeoipIso3166ListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DetailedCountryFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(DetailedCountryFromJSON),
+        );
     }
 
     /**
      * Get all countries in ISO-3166-1
      */
-    async policiesGeoipIso3166List(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<DetailedCountry>> {
+    async policiesGeoipIso3166List(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<DetailedCountry>> {
         const response = await this.policiesGeoipIso3166ListRaw(initOverrides);
         return await response.value();
     }
@@ -2859,27 +3250,29 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesGeoipList without sending the request
      */
-    async policiesGeoipListRequestOpts(requestParameters: PoliciesGeoipListRequest): Promise<runtime.RequestOpts> {
+    async policiesGeoipListRequestOpts(
+        requestParameters: PoliciesGeoipListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2897,7 +3290,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2906,17 +3299,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipListRaw(requestParameters: PoliciesGeoipListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedGeoIPPolicyList>> {
+    async policiesGeoipListRaw(
+        requestParameters: PoliciesGeoipListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGeoIPPolicyList>> {
         const requestOptions = await this.policiesGeoipListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedGeoIPPolicyListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGeoIPPolicyListFromJSON(jsonValue),
+        );
     }
 
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipList(requestParameters: PoliciesGeoipListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedGeoIPPolicyList> {
+    async policiesGeoipList(
+        requestParameters: PoliciesGeoipListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGeoIPPolicyList> {
         const response = await this.policiesGeoipListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2924,11 +3325,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesGeoipPartialUpdate without sending the request
      */
-    async policiesGeoipPartialUpdateRequestOpts(requestParameters: PoliciesGeoipPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesGeoipPartialUpdateRequestOpts(
+        requestParameters: PoliciesGeoipPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipPartialUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipPartialUpdate().',
             );
         }
 
@@ -2936,7 +3339,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2948,21 +3351,27 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/geoip/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedGeoIPPolicyRequestToJSON(requestParameters['patchedGeoIPPolicyRequest']),
+            body: PatchedGeoIPPolicyRequestToJSON(requestParameters["patchedGeoIPPolicyRequest"]),
         };
     }
 
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipPartialUpdateRaw(requestParameters: PoliciesGeoipPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GeoIPPolicy>> {
+    async policiesGeoipPartialUpdateRaw(
+        requestParameters: PoliciesGeoipPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GeoIPPolicy>> {
         const requestOptions = await this.policiesGeoipPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -2972,7 +3381,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipPartialUpdate(requestParameters: PoliciesGeoipPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GeoIPPolicy> {
+    async policiesGeoipPartialUpdate(
+        requestParameters: PoliciesGeoipPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GeoIPPolicy> {
         const response = await this.policiesGeoipPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2980,11 +3392,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesGeoipRetrieve without sending the request
      */
-    async policiesGeoipRetrieveRequestOpts(requestParameters: PoliciesGeoipRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesGeoipRetrieveRequestOpts(
+        requestParameters: PoliciesGeoipRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipRetrieve().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipRetrieve().',
             );
         }
 
@@ -3002,11 +3416,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/geoip/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3015,7 +3432,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipRetrieveRaw(requestParameters: PoliciesGeoipRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GeoIPPolicy>> {
+    async policiesGeoipRetrieveRaw(
+        requestParameters: PoliciesGeoipRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GeoIPPolicy>> {
         const requestOptions = await this.policiesGeoipRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -3025,7 +3445,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipRetrieve(requestParameters: PoliciesGeoipRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GeoIPPolicy> {
+    async policiesGeoipRetrieve(
+        requestParameters: PoliciesGeoipRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GeoIPPolicy> {
         const response = await this.policiesGeoipRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3033,18 +3456,20 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesGeoipUpdate without sending the request
      */
-    async policiesGeoipUpdateRequestOpts(requestParameters: PoliciesGeoipUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesGeoipUpdateRequestOpts(
+        requestParameters: PoliciesGeoipUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipUpdate().',
             );
         }
 
-        if (requestParameters['geoIPPolicyRequest'] == null) {
+        if (requestParameters["geoIPPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'geoIPPolicyRequest',
-                'Required parameter "geoIPPolicyRequest" was null or undefined when calling policiesGeoipUpdate().'
+                "geoIPPolicyRequest",
+                'Required parameter "geoIPPolicyRequest" was null or undefined when calling policiesGeoipUpdate().',
             );
         }
 
@@ -3052,7 +3477,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3064,21 +3489,27 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/geoip/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: GeoIPPolicyRequestToJSON(requestParameters['geoIPPolicyRequest']),
+            body: GeoIPPolicyRequestToJSON(requestParameters["geoIPPolicyRequest"]),
         };
     }
 
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipUpdateRaw(requestParameters: PoliciesGeoipUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<GeoIPPolicy>> {
+    async policiesGeoipUpdateRaw(
+        requestParameters: PoliciesGeoipUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GeoIPPolicy>> {
         const requestOptions = await this.policiesGeoipUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -3088,7 +3519,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * GeoIP Viewset
      */
-    async policiesGeoipUpdate(requestParameters: PoliciesGeoipUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<GeoIPPolicy> {
+    async policiesGeoipUpdate(
+        requestParameters: PoliciesGeoipUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GeoIPPolicy> {
         const response = await this.policiesGeoipUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3096,11 +3530,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesGeoipUsedByList without sending the request
      */
-    async policiesGeoipUsedByListRequestOpts(requestParameters: PoliciesGeoipUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesGeoipUsedByListRequestOpts(
+        requestParameters: PoliciesGeoipUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipUsedByList().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesGeoipUsedByList().',
             );
         }
 
@@ -3118,11 +3554,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/geoip/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3131,7 +3570,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesGeoipUsedByListRaw(requestParameters: PoliciesGeoipUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async policiesGeoipUsedByListRaw(
+        requestParameters: PoliciesGeoipUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.policiesGeoipUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -3141,7 +3583,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesGeoipUsedByList(requestParameters: PoliciesGeoipUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async policiesGeoipUsedByList(
+        requestParameters: PoliciesGeoipUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.policiesGeoipUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3149,11 +3594,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesPasswordCreate without sending the request
      */
-    async policiesPasswordCreateRequestOpts(requestParameters: PoliciesPasswordCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['passwordPolicyRequest'] == null) {
+    async policiesPasswordCreateRequestOpts(
+        requestParameters: PoliciesPasswordCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["passwordPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'passwordPolicyRequest',
-                'Required parameter "passwordPolicyRequest" was null or undefined when calling policiesPasswordCreate().'
+                "passwordPolicyRequest",
+                'Required parameter "passwordPolicyRequest" was null or undefined when calling policiesPasswordCreate().',
             );
         }
 
@@ -3161,7 +3608,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3176,27 +3623,35 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PasswordPolicyRequestToJSON(requestParameters['passwordPolicyRequest']),
+            body: PasswordPolicyRequestToJSON(requestParameters["passwordPolicyRequest"]),
         };
     }
 
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordCreateRaw(requestParameters: PoliciesPasswordCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordPolicy>> {
+    async policiesPasswordCreateRaw(
+        requestParameters: PoliciesPasswordCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordPolicy>> {
         const requestOptions = await this.policiesPasswordCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordCreate(requestParameters: PoliciesPasswordCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordPolicy> {
+    async policiesPasswordCreate(
+        requestParameters: PoliciesPasswordCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordPolicy> {
         const response = await this.policiesPasswordCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3204,11 +3659,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesPasswordDestroy without sending the request
      */
-    async policiesPasswordDestroyRequestOpts(requestParameters: PoliciesPasswordDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesPasswordDestroyRequestOpts(
+        requestParameters: PoliciesPasswordDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordDestroy().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordDestroy().',
             );
         }
 
@@ -3226,11 +3683,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/password/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3239,7 +3699,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordDestroyRaw(requestParameters: PoliciesPasswordDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async policiesPasswordDestroyRaw(
+        requestParameters: PoliciesPasswordDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.policiesPasswordDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -3249,18 +3712,23 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordDestroy(requestParameters: PoliciesPasswordDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesPasswordDestroy(
+        requestParameters: PoliciesPasswordDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesPasswordDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for policiesPasswordExpiryCreate without sending the request
      */
-    async policiesPasswordExpiryCreateRequestOpts(requestParameters: PoliciesPasswordExpiryCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['passwordExpiryPolicyRequest'] == null) {
+    async policiesPasswordExpiryCreateRequestOpts(
+        requestParameters: PoliciesPasswordExpiryCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["passwordExpiryPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'passwordExpiryPolicyRequest',
-                'Required parameter "passwordExpiryPolicyRequest" was null or undefined when calling policiesPasswordExpiryCreate().'
+                "passwordExpiryPolicyRequest",
+                'Required parameter "passwordExpiryPolicyRequest" was null or undefined when calling policiesPasswordExpiryCreate().',
             );
         }
 
@@ -3268,7 +3736,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3283,39 +3751,55 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PasswordExpiryPolicyRequestToJSON(requestParameters['passwordExpiryPolicyRequest']),
+            body: PasswordExpiryPolicyRequestToJSON(
+                requestParameters["passwordExpiryPolicyRequest"],
+            ),
         };
     }
 
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryCreateRaw(requestParameters: PoliciesPasswordExpiryCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordExpiryPolicy>> {
-        const requestOptions = await this.policiesPasswordExpiryCreateRequestOpts(requestParameters);
+    async policiesPasswordExpiryCreateRaw(
+        requestParameters: PoliciesPasswordExpiryCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordExpiryPolicy>> {
+        const requestOptions =
+            await this.policiesPasswordExpiryCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordExpiryPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordExpiryPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryCreate(requestParameters: PoliciesPasswordExpiryCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordExpiryPolicy> {
-        const response = await this.policiesPasswordExpiryCreateRaw(requestParameters, initOverrides);
+    async policiesPasswordExpiryCreate(
+        requestParameters: PoliciesPasswordExpiryCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordExpiryPolicy> {
+        const response = await this.policiesPasswordExpiryCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesPasswordExpiryDestroy without sending the request
      */
-    async policiesPasswordExpiryDestroyRequestOpts(requestParameters: PoliciesPasswordExpiryDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesPasswordExpiryDestroyRequestOpts(
+        requestParameters: PoliciesPasswordExpiryDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryDestroy().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryDestroy().',
             );
         }
 
@@ -3333,11 +3817,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/password_expiry/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3346,8 +3833,12 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryDestroyRaw(requestParameters: PoliciesPasswordExpiryDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.policiesPasswordExpiryDestroyRequestOpts(requestParameters);
+    async policiesPasswordExpiryDestroyRaw(
+        requestParameters: PoliciesPasswordExpiryDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.policiesPasswordExpiryDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3356,58 +3847,65 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryDestroy(requestParameters: PoliciesPasswordExpiryDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesPasswordExpiryDestroy(
+        requestParameters: PoliciesPasswordExpiryDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesPasswordExpiryDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for policiesPasswordExpiryList without sending the request
      */
-    async policiesPasswordExpiryListRequestOpts(requestParameters: PoliciesPasswordExpiryListRequest): Promise<runtime.RequestOpts> {
+    async policiesPasswordExpiryListRequestOpts(
+        requestParameters: PoliciesPasswordExpiryListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['created'] != null) {
-            queryParameters['created'] = (requestParameters['created'] as any).toISOString();
+        if (requestParameters["created"] != null) {
+            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
         }
 
-        if (requestParameters['days'] != null) {
-            queryParameters['days'] = requestParameters['days'];
+        if (requestParameters["days"] != null) {
+            queryParameters["days"] = requestParameters["days"];
         }
 
-        if (requestParameters['denyOnly'] != null) {
-            queryParameters['deny_only'] = requestParameters['denyOnly'];
+        if (requestParameters["denyOnly"] != null) {
+            queryParameters["deny_only"] = requestParameters["denyOnly"];
         }
 
-        if (requestParameters['executionLogging'] != null) {
-            queryParameters['execution_logging'] = requestParameters['executionLogging'];
+        if (requestParameters["executionLogging"] != null) {
+            queryParameters["execution_logging"] = requestParameters["executionLogging"];
         }
 
-        if (requestParameters['lastUpdated'] != null) {
-            queryParameters['last_updated'] = (requestParameters['lastUpdated'] as any).toISOString();
+        if (requestParameters["lastUpdated"] != null) {
+            queryParameters["last_updated"] = (
+                requestParameters["lastUpdated"] as any
+            ).toISOString();
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['policyUuid'] != null) {
-            queryParameters['policy_uuid'] = requestParameters['policyUuid'];
+        if (requestParameters["policyUuid"] != null) {
+            queryParameters["policy_uuid"] = requestParameters["policyUuid"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3425,7 +3923,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3434,17 +3932,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryListRaw(requestParameters: PoliciesPasswordExpiryListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPasswordExpiryPolicyList>> {
+    async policiesPasswordExpiryListRaw(
+        requestParameters: PoliciesPasswordExpiryListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPasswordExpiryPolicyList>> {
         const requestOptions = await this.policiesPasswordExpiryListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPasswordExpiryPolicyListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPasswordExpiryPolicyListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryList(requestParameters: PoliciesPasswordExpiryListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPasswordExpiryPolicyList> {
+    async policiesPasswordExpiryList(
+        requestParameters: PoliciesPasswordExpiryListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPasswordExpiryPolicyList> {
         const response = await this.policiesPasswordExpiryListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3452,11 +3958,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesPasswordExpiryPartialUpdate without sending the request
      */
-    async policiesPasswordExpiryPartialUpdateRequestOpts(requestParameters: PoliciesPasswordExpiryPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesPasswordExpiryPartialUpdateRequestOpts(
+        requestParameters: PoliciesPasswordExpiryPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryPartialUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryPartialUpdate().',
             );
         }
 
@@ -3464,7 +3972,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3476,43 +3984,62 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/password_expiry/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedPasswordExpiryPolicyRequestToJSON(requestParameters['patchedPasswordExpiryPolicyRequest']),
+            body: PatchedPasswordExpiryPolicyRequestToJSON(
+                requestParameters["patchedPasswordExpiryPolicyRequest"],
+            ),
         };
     }
 
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryPartialUpdateRaw(requestParameters: PoliciesPasswordExpiryPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordExpiryPolicy>> {
-        const requestOptions = await this.policiesPasswordExpiryPartialUpdateRequestOpts(requestParameters);
+    async policiesPasswordExpiryPartialUpdateRaw(
+        requestParameters: PoliciesPasswordExpiryPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordExpiryPolicy>> {
+        const requestOptions =
+            await this.policiesPasswordExpiryPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordExpiryPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordExpiryPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryPartialUpdate(requestParameters: PoliciesPasswordExpiryPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordExpiryPolicy> {
-        const response = await this.policiesPasswordExpiryPartialUpdateRaw(requestParameters, initOverrides);
+    async policiesPasswordExpiryPartialUpdate(
+        requestParameters: PoliciesPasswordExpiryPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordExpiryPolicy> {
+        const response = await this.policiesPasswordExpiryPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesPasswordExpiryRetrieve without sending the request
      */
-    async policiesPasswordExpiryRetrieveRequestOpts(requestParameters: PoliciesPasswordExpiryRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesPasswordExpiryRetrieveRequestOpts(
+        requestParameters: PoliciesPasswordExpiryRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryRetrieve().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryRetrieve().',
             );
         }
 
@@ -3530,11 +4057,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/password_expiry/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3543,36 +4073,50 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryRetrieveRaw(requestParameters: PoliciesPasswordExpiryRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordExpiryPolicy>> {
-        const requestOptions = await this.policiesPasswordExpiryRetrieveRequestOpts(requestParameters);
+    async policiesPasswordExpiryRetrieveRaw(
+        requestParameters: PoliciesPasswordExpiryRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordExpiryPolicy>> {
+        const requestOptions =
+            await this.policiesPasswordExpiryRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordExpiryPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordExpiryPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryRetrieve(requestParameters: PoliciesPasswordExpiryRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordExpiryPolicy> {
-        const response = await this.policiesPasswordExpiryRetrieveRaw(requestParameters, initOverrides);
+    async policiesPasswordExpiryRetrieve(
+        requestParameters: PoliciesPasswordExpiryRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordExpiryPolicy> {
+        const response = await this.policiesPasswordExpiryRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesPasswordExpiryUpdate without sending the request
      */
-    async policiesPasswordExpiryUpdateRequestOpts(requestParameters: PoliciesPasswordExpiryUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesPasswordExpiryUpdateRequestOpts(
+        requestParameters: PoliciesPasswordExpiryUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryUpdate().',
             );
         }
 
-        if (requestParameters['passwordExpiryPolicyRequest'] == null) {
+        if (requestParameters["passwordExpiryPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'passwordExpiryPolicyRequest',
-                'Required parameter "passwordExpiryPolicyRequest" was null or undefined when calling policiesPasswordExpiryUpdate().'
+                "passwordExpiryPolicyRequest",
+                'Required parameter "passwordExpiryPolicyRequest" was null or undefined when calling policiesPasswordExpiryUpdate().',
             );
         }
 
@@ -3580,7 +4124,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3592,43 +4136,62 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/password_expiry/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: PasswordExpiryPolicyRequestToJSON(requestParameters['passwordExpiryPolicyRequest']),
+            body: PasswordExpiryPolicyRequestToJSON(
+                requestParameters["passwordExpiryPolicyRequest"],
+            ),
         };
     }
 
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryUpdateRaw(requestParameters: PoliciesPasswordExpiryUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordExpiryPolicy>> {
-        const requestOptions = await this.policiesPasswordExpiryUpdateRequestOpts(requestParameters);
+    async policiesPasswordExpiryUpdateRaw(
+        requestParameters: PoliciesPasswordExpiryUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordExpiryPolicy>> {
+        const requestOptions =
+            await this.policiesPasswordExpiryUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordExpiryPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordExpiryPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Expiry Viewset
      */
-    async policiesPasswordExpiryUpdate(requestParameters: PoliciesPasswordExpiryUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordExpiryPolicy> {
-        const response = await this.policiesPasswordExpiryUpdateRaw(requestParameters, initOverrides);
+    async policiesPasswordExpiryUpdate(
+        requestParameters: PoliciesPasswordExpiryUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordExpiryPolicy> {
+        const response = await this.policiesPasswordExpiryUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesPasswordExpiryUsedByList without sending the request
      */
-    async policiesPasswordExpiryUsedByListRequestOpts(requestParameters: PoliciesPasswordExpiryUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesPasswordExpiryUsedByListRequestOpts(
+        requestParameters: PoliciesPasswordExpiryUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryUsedByList().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordExpiryUsedByList().',
             );
         }
 
@@ -3646,11 +4209,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/password_expiry/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3659,8 +4225,12 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesPasswordExpiryUsedByListRaw(requestParameters: PoliciesPasswordExpiryUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesPasswordExpiryUsedByListRequestOpts(requestParameters);
+    async policiesPasswordExpiryUsedByListRaw(
+        requestParameters: PoliciesPasswordExpiryUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.policiesPasswordExpiryUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -3669,103 +4239,113 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesPasswordExpiryUsedByList(requestParameters: PoliciesPasswordExpiryUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.policiesPasswordExpiryUsedByListRaw(requestParameters, initOverrides);
+    async policiesPasswordExpiryUsedByList(
+        requestParameters: PoliciesPasswordExpiryUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.policiesPasswordExpiryUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesPasswordList without sending the request
      */
-    async policiesPasswordListRequestOpts(requestParameters: PoliciesPasswordListRequest): Promise<runtime.RequestOpts> {
+    async policiesPasswordListRequestOpts(
+        requestParameters: PoliciesPasswordListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['amountDigits'] != null) {
-            queryParameters['amount_digits'] = requestParameters['amountDigits'];
+        if (requestParameters["amountDigits"] != null) {
+            queryParameters["amount_digits"] = requestParameters["amountDigits"];
         }
 
-        if (requestParameters['amountLowercase'] != null) {
-            queryParameters['amount_lowercase'] = requestParameters['amountLowercase'];
+        if (requestParameters["amountLowercase"] != null) {
+            queryParameters["amount_lowercase"] = requestParameters["amountLowercase"];
         }
 
-        if (requestParameters['amountSymbols'] != null) {
-            queryParameters['amount_symbols'] = requestParameters['amountSymbols'];
+        if (requestParameters["amountSymbols"] != null) {
+            queryParameters["amount_symbols"] = requestParameters["amountSymbols"];
         }
 
-        if (requestParameters['amountUppercase'] != null) {
-            queryParameters['amount_uppercase'] = requestParameters['amountUppercase'];
+        if (requestParameters["amountUppercase"] != null) {
+            queryParameters["amount_uppercase"] = requestParameters["amountUppercase"];
         }
 
-        if (requestParameters['checkHaveIBeenPwned'] != null) {
-            queryParameters['check_have_i_been_pwned'] = requestParameters['checkHaveIBeenPwned'];
+        if (requestParameters["checkHaveIBeenPwned"] != null) {
+            queryParameters["check_have_i_been_pwned"] = requestParameters["checkHaveIBeenPwned"];
         }
 
-        if (requestParameters['checkStaticRules'] != null) {
-            queryParameters['check_static_rules'] = requestParameters['checkStaticRules'];
+        if (requestParameters["checkStaticRules"] != null) {
+            queryParameters["check_static_rules"] = requestParameters["checkStaticRules"];
         }
 
-        if (requestParameters['checkZxcvbn'] != null) {
-            queryParameters['check_zxcvbn'] = requestParameters['checkZxcvbn'];
+        if (requestParameters["checkZxcvbn"] != null) {
+            queryParameters["check_zxcvbn"] = requestParameters["checkZxcvbn"];
         }
 
-        if (requestParameters['created'] != null) {
-            queryParameters['created'] = (requestParameters['created'] as any).toISOString();
+        if (requestParameters["created"] != null) {
+            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
         }
 
-        if (requestParameters['errorMessage'] != null) {
-            queryParameters['error_message'] = requestParameters['errorMessage'];
+        if (requestParameters["errorMessage"] != null) {
+            queryParameters["error_message"] = requestParameters["errorMessage"];
         }
 
-        if (requestParameters['executionLogging'] != null) {
-            queryParameters['execution_logging'] = requestParameters['executionLogging'];
+        if (requestParameters["executionLogging"] != null) {
+            queryParameters["execution_logging"] = requestParameters["executionLogging"];
         }
 
-        if (requestParameters['hibpAllowedCount'] != null) {
-            queryParameters['hibp_allowed_count'] = requestParameters['hibpAllowedCount'];
+        if (requestParameters["hibpAllowedCount"] != null) {
+            queryParameters["hibp_allowed_count"] = requestParameters["hibpAllowedCount"];
         }
 
-        if (requestParameters['lastUpdated'] != null) {
-            queryParameters['last_updated'] = (requestParameters['lastUpdated'] as any).toISOString();
+        if (requestParameters["lastUpdated"] != null) {
+            queryParameters["last_updated"] = (
+                requestParameters["lastUpdated"] as any
+            ).toISOString();
         }
 
-        if (requestParameters['lengthMin'] != null) {
-            queryParameters['length_min'] = requestParameters['lengthMin'];
+        if (requestParameters["lengthMin"] != null) {
+            queryParameters["length_min"] = requestParameters["lengthMin"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['passwordField'] != null) {
-            queryParameters['password_field'] = requestParameters['passwordField'];
+        if (requestParameters["passwordField"] != null) {
+            queryParameters["password_field"] = requestParameters["passwordField"];
         }
 
-        if (requestParameters['policyUuid'] != null) {
-            queryParameters['policy_uuid'] = requestParameters['policyUuid'];
+        if (requestParameters["policyUuid"] != null) {
+            queryParameters["policy_uuid"] = requestParameters["policyUuid"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['symbolCharset'] != null) {
-            queryParameters['symbol_charset'] = requestParameters['symbolCharset'];
+        if (requestParameters["symbolCharset"] != null) {
+            queryParameters["symbol_charset"] = requestParameters["symbolCharset"];
         }
 
-        if (requestParameters['zxcvbnScoreThreshold'] != null) {
-            queryParameters['zxcvbn_score_threshold'] = requestParameters['zxcvbnScoreThreshold'];
+        if (requestParameters["zxcvbnScoreThreshold"] != null) {
+            queryParameters["zxcvbn_score_threshold"] = requestParameters["zxcvbnScoreThreshold"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3783,7 +4363,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3792,17 +4372,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordListRaw(requestParameters: PoliciesPasswordListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPasswordPolicyList>> {
+    async policiesPasswordListRaw(
+        requestParameters: PoliciesPasswordListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPasswordPolicyList>> {
         const requestOptions = await this.policiesPasswordListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPasswordPolicyListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPasswordPolicyListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordList(requestParameters: PoliciesPasswordListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPasswordPolicyList> {
+    async policiesPasswordList(
+        requestParameters: PoliciesPasswordListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPasswordPolicyList> {
         const response = await this.policiesPasswordListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3810,11 +4398,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesPasswordPartialUpdate without sending the request
      */
-    async policiesPasswordPartialUpdateRequestOpts(requestParameters: PoliciesPasswordPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesPasswordPartialUpdateRequestOpts(
+        requestParameters: PoliciesPasswordPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordPartialUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordPartialUpdate().',
             );
         }
 
@@ -3822,7 +4412,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3834,43 +4424,62 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/password/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedPasswordPolicyRequestToJSON(requestParameters['patchedPasswordPolicyRequest']),
+            body: PatchedPasswordPolicyRequestToJSON(
+                requestParameters["patchedPasswordPolicyRequest"],
+            ),
         };
     }
 
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordPartialUpdateRaw(requestParameters: PoliciesPasswordPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordPolicy>> {
-        const requestOptions = await this.policiesPasswordPartialUpdateRequestOpts(requestParameters);
+    async policiesPasswordPartialUpdateRaw(
+        requestParameters: PoliciesPasswordPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordPolicy>> {
+        const requestOptions =
+            await this.policiesPasswordPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordPartialUpdate(requestParameters: PoliciesPasswordPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordPolicy> {
-        const response = await this.policiesPasswordPartialUpdateRaw(requestParameters, initOverrides);
+    async policiesPasswordPartialUpdate(
+        requestParameters: PoliciesPasswordPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordPolicy> {
+        const response = await this.policiesPasswordPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesPasswordRetrieve without sending the request
      */
-    async policiesPasswordRetrieveRequestOpts(requestParameters: PoliciesPasswordRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesPasswordRetrieveRequestOpts(
+        requestParameters: PoliciesPasswordRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordRetrieve().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordRetrieve().',
             );
         }
 
@@ -3888,11 +4497,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/password/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3901,17 +4513,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordRetrieveRaw(requestParameters: PoliciesPasswordRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordPolicy>> {
+    async policiesPasswordRetrieveRaw(
+        requestParameters: PoliciesPasswordRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordPolicy>> {
         const requestOptions = await this.policiesPasswordRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordRetrieve(requestParameters: PoliciesPasswordRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordPolicy> {
+    async policiesPasswordRetrieve(
+        requestParameters: PoliciesPasswordRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordPolicy> {
         const response = await this.policiesPasswordRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3919,18 +4539,20 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesPasswordUpdate without sending the request
      */
-    async policiesPasswordUpdateRequestOpts(requestParameters: PoliciesPasswordUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesPasswordUpdateRequestOpts(
+        requestParameters: PoliciesPasswordUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordUpdate().',
             );
         }
 
-        if (requestParameters['passwordPolicyRequest'] == null) {
+        if (requestParameters["passwordPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'passwordPolicyRequest',
-                'Required parameter "passwordPolicyRequest" was null or undefined when calling policiesPasswordUpdate().'
+                "passwordPolicyRequest",
+                'Required parameter "passwordPolicyRequest" was null or undefined when calling policiesPasswordUpdate().',
             );
         }
 
@@ -3938,7 +4560,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3950,31 +4572,42 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/password/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: PasswordPolicyRequestToJSON(requestParameters['passwordPolicyRequest']),
+            body: PasswordPolicyRequestToJSON(requestParameters["passwordPolicyRequest"]),
         };
     }
 
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordUpdateRaw(requestParameters: PoliciesPasswordUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordPolicy>> {
+    async policiesPasswordUpdateRaw(
+        requestParameters: PoliciesPasswordUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordPolicy>> {
         const requestOptions = await this.policiesPasswordUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Policy Viewset
      */
-    async policiesPasswordUpdate(requestParameters: PoliciesPasswordUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordPolicy> {
+    async policiesPasswordUpdate(
+        requestParameters: PoliciesPasswordUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordPolicy> {
         const response = await this.policiesPasswordUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3982,11 +4615,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesPasswordUsedByList without sending the request
      */
-    async policiesPasswordUsedByListRequestOpts(requestParameters: PoliciesPasswordUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesPasswordUsedByListRequestOpts(
+        requestParameters: PoliciesPasswordUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordUsedByList().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesPasswordUsedByList().',
             );
         }
 
@@ -4004,11 +4639,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/password/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4017,7 +4655,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesPasswordUsedByListRaw(requestParameters: PoliciesPasswordUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async policiesPasswordUsedByListRaw(
+        requestParameters: PoliciesPasswordUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.policiesPasswordUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4027,7 +4668,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesPasswordUsedByList(requestParameters: PoliciesPasswordUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async policiesPasswordUsedByList(
+        requestParameters: PoliciesPasswordUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.policiesPasswordUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4035,11 +4679,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesReputationCreate without sending the request
      */
-    async policiesReputationCreateRequestOpts(requestParameters: PoliciesReputationCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['reputationPolicyRequest'] == null) {
+    async policiesReputationCreateRequestOpts(
+        requestParameters: PoliciesReputationCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["reputationPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'reputationPolicyRequest',
-                'Required parameter "reputationPolicyRequest" was null or undefined when calling policiesReputationCreate().'
+                "reputationPolicyRequest",
+                'Required parameter "reputationPolicyRequest" was null or undefined when calling policiesReputationCreate().',
             );
         }
 
@@ -4047,7 +4693,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4062,27 +4708,35 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: ReputationPolicyRequestToJSON(requestParameters['reputationPolicyRequest']),
+            body: ReputationPolicyRequestToJSON(requestParameters["reputationPolicyRequest"]),
         };
     }
 
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationCreateRaw(requestParameters: PoliciesReputationCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReputationPolicy>> {
+    async policiesReputationCreateRaw(
+        requestParameters: PoliciesReputationCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ReputationPolicy>> {
         const requestOptions = await this.policiesReputationCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ReputationPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ReputationPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationCreate(requestParameters: PoliciesReputationCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReputationPolicy> {
+    async policiesReputationCreate(
+        requestParameters: PoliciesReputationCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ReputationPolicy> {
         const response = await this.policiesReputationCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4090,11 +4744,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesReputationDestroy without sending the request
      */
-    async policiesReputationDestroyRequestOpts(requestParameters: PoliciesReputationDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesReputationDestroyRequestOpts(
+        requestParameters: PoliciesReputationDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesReputationDestroy().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesReputationDestroy().',
             );
         }
 
@@ -4112,11 +4768,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/reputation/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4125,7 +4784,10 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationDestroyRaw(requestParameters: PoliciesReputationDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async policiesReputationDestroyRaw(
+        requestParameters: PoliciesReputationDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.policiesReputationDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -4135,62 +4797,69 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationDestroy(requestParameters: PoliciesReputationDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesReputationDestroy(
+        requestParameters: PoliciesReputationDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesReputationDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for policiesReputationList without sending the request
      */
-    async policiesReputationListRequestOpts(requestParameters: PoliciesReputationListRequest): Promise<runtime.RequestOpts> {
+    async policiesReputationListRequestOpts(
+        requestParameters: PoliciesReputationListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['checkIp'] != null) {
-            queryParameters['check_ip'] = requestParameters['checkIp'];
+        if (requestParameters["checkIp"] != null) {
+            queryParameters["check_ip"] = requestParameters["checkIp"];
         }
 
-        if (requestParameters['checkUsername'] != null) {
-            queryParameters['check_username'] = requestParameters['checkUsername'];
+        if (requestParameters["checkUsername"] != null) {
+            queryParameters["check_username"] = requestParameters["checkUsername"];
         }
 
-        if (requestParameters['created'] != null) {
-            queryParameters['created'] = (requestParameters['created'] as any).toISOString();
+        if (requestParameters["created"] != null) {
+            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
         }
 
-        if (requestParameters['executionLogging'] != null) {
-            queryParameters['execution_logging'] = requestParameters['executionLogging'];
+        if (requestParameters["executionLogging"] != null) {
+            queryParameters["execution_logging"] = requestParameters["executionLogging"];
         }
 
-        if (requestParameters['lastUpdated'] != null) {
-            queryParameters['last_updated'] = (requestParameters['lastUpdated'] as any).toISOString();
+        if (requestParameters["lastUpdated"] != null) {
+            queryParameters["last_updated"] = (
+                requestParameters["lastUpdated"] as any
+            ).toISOString();
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['policyUuid'] != null) {
-            queryParameters['policy_uuid'] = requestParameters['policyUuid'];
+        if (requestParameters["policyUuid"] != null) {
+            queryParameters["policy_uuid"] = requestParameters["policyUuid"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['threshold'] != null) {
-            queryParameters['threshold'] = requestParameters['threshold'];
+        if (requestParameters["threshold"] != null) {
+            queryParameters["threshold"] = requestParameters["threshold"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4208,7 +4877,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4217,17 +4886,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationListRaw(requestParameters: PoliciesReputationListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedReputationPolicyList>> {
+    async policiesReputationListRaw(
+        requestParameters: PoliciesReputationListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedReputationPolicyList>> {
         const requestOptions = await this.policiesReputationListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedReputationPolicyListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedReputationPolicyListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationList(requestParameters: PoliciesReputationListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedReputationPolicyList> {
+    async policiesReputationList(
+        requestParameters: PoliciesReputationListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedReputationPolicyList> {
         const response = await this.policiesReputationListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4235,11 +4912,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesReputationPartialUpdate without sending the request
      */
-    async policiesReputationPartialUpdateRequestOpts(requestParameters: PoliciesReputationPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesReputationPartialUpdateRequestOpts(
+        requestParameters: PoliciesReputationPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesReputationPartialUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesReputationPartialUpdate().',
             );
         }
 
@@ -4247,7 +4926,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4259,43 +4938,62 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/reputation/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedReputationPolicyRequestToJSON(requestParameters['patchedReputationPolicyRequest']),
+            body: PatchedReputationPolicyRequestToJSON(
+                requestParameters["patchedReputationPolicyRequest"],
+            ),
         };
     }
 
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationPartialUpdateRaw(requestParameters: PoliciesReputationPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReputationPolicy>> {
-        const requestOptions = await this.policiesReputationPartialUpdateRequestOpts(requestParameters);
+    async policiesReputationPartialUpdateRaw(
+        requestParameters: PoliciesReputationPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ReputationPolicy>> {
+        const requestOptions =
+            await this.policiesReputationPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ReputationPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ReputationPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationPartialUpdate(requestParameters: PoliciesReputationPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReputationPolicy> {
-        const response = await this.policiesReputationPartialUpdateRaw(requestParameters, initOverrides);
+    async policiesReputationPartialUpdate(
+        requestParameters: PoliciesReputationPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ReputationPolicy> {
+        const response = await this.policiesReputationPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesReputationRetrieve without sending the request
      */
-    async policiesReputationRetrieveRequestOpts(requestParameters: PoliciesReputationRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesReputationRetrieveRequestOpts(
+        requestParameters: PoliciesReputationRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesReputationRetrieve().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesReputationRetrieve().',
             );
         }
 
@@ -4313,11 +5011,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/reputation/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4326,17 +5027,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationRetrieveRaw(requestParameters: PoliciesReputationRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReputationPolicy>> {
+    async policiesReputationRetrieveRaw(
+        requestParameters: PoliciesReputationRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ReputationPolicy>> {
         const requestOptions = await this.policiesReputationRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ReputationPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ReputationPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationRetrieve(requestParameters: PoliciesReputationRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReputationPolicy> {
+    async policiesReputationRetrieve(
+        requestParameters: PoliciesReputationRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ReputationPolicy> {
         const response = await this.policiesReputationRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4344,11 +5053,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesReputationScoresDestroy without sending the request
      */
-    async policiesReputationScoresDestroyRequestOpts(requestParameters: PoliciesReputationScoresDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['reputationUuid'] == null) {
+    async policiesReputationScoresDestroyRequestOpts(
+        requestParameters: PoliciesReputationScoresDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["reputationUuid"] == null) {
             throw new runtime.RequiredError(
-                'reputationUuid',
-                'Required parameter "reputationUuid" was null or undefined when calling policiesReputationScoresDestroy().'
+                "reputationUuid",
+                'Required parameter "reputationUuid" was null or undefined when calling policiesReputationScoresDestroy().',
             );
         }
 
@@ -4366,11 +5077,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/reputation/scores/{reputation_uuid}/`;
-        urlPath = urlPath.replace(`{${"reputation_uuid"}}`, encodeURIComponent(String(requestParameters['reputationUuid'])));
+        urlPath = urlPath.replace(
+            `{${"reputation_uuid"}}`,
+            encodeURIComponent(String(requestParameters["reputationUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4379,8 +5093,12 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Reputation Viewset
      */
-    async policiesReputationScoresDestroyRaw(requestParameters: PoliciesReputationScoresDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.policiesReputationScoresDestroyRequestOpts(requestParameters);
+    async policiesReputationScoresDestroyRaw(
+        requestParameters: PoliciesReputationScoresDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.policiesReputationScoresDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -4389,46 +5107,53 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Reputation Viewset
      */
-    async policiesReputationScoresDestroy(requestParameters: PoliciesReputationScoresDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesReputationScoresDestroy(
+        requestParameters: PoliciesReputationScoresDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesReputationScoresDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for policiesReputationScoresList without sending the request
      */
-    async policiesReputationScoresListRequestOpts(requestParameters: PoliciesReputationScoresListRequest): Promise<runtime.RequestOpts> {
+    async policiesReputationScoresListRequestOpts(
+        requestParameters: PoliciesReputationScoresListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['identifier'] != null) {
-            queryParameters['identifier'] = requestParameters['identifier'];
+        if (requestParameters["identifier"] != null) {
+            queryParameters["identifier"] = requestParameters["identifier"];
         }
 
-        if (requestParameters['identifierIn'] != null) {
-            queryParameters['identifier_in'] = requestParameters['identifierIn']!.join(runtime.COLLECTION_FORMATS["csv"]);
+        if (requestParameters["identifierIn"] != null) {
+            queryParameters["identifier_in"] = requestParameters["identifierIn"]!.join(
+                runtime.COLLECTION_FORMATS["csv"],
+            );
         }
 
-        if (requestParameters['ip'] != null) {
-            queryParameters['ip'] = requestParameters['ip'];
+        if (requestParameters["ip"] != null) {
+            queryParameters["ip"] = requestParameters["ip"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['score'] != null) {
-            queryParameters['score'] = requestParameters['score'];
+        if (requestParameters["score"] != null) {
+            queryParameters["score"] = requestParameters["score"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4446,7 +5171,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4455,29 +5180,43 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Reputation Viewset
      */
-    async policiesReputationScoresListRaw(requestParameters: PoliciesReputationScoresListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedReputationList>> {
-        const requestOptions = await this.policiesReputationScoresListRequestOpts(requestParameters);
+    async policiesReputationScoresListRaw(
+        requestParameters: PoliciesReputationScoresListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedReputationList>> {
+        const requestOptions =
+            await this.policiesReputationScoresListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedReputationListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedReputationListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Reputation Viewset
      */
-    async policiesReputationScoresList(requestParameters: PoliciesReputationScoresListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedReputationList> {
-        const response = await this.policiesReputationScoresListRaw(requestParameters, initOverrides);
+    async policiesReputationScoresList(
+        requestParameters: PoliciesReputationScoresListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedReputationList> {
+        const response = await this.policiesReputationScoresListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesReputationScoresRetrieve without sending the request
      */
-    async policiesReputationScoresRetrieveRequestOpts(requestParameters: PoliciesReputationScoresRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['reputationUuid'] == null) {
+    async policiesReputationScoresRetrieveRequestOpts(
+        requestParameters: PoliciesReputationScoresRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["reputationUuid"] == null) {
             throw new runtime.RequiredError(
-                'reputationUuid',
-                'Required parameter "reputationUuid" was null or undefined when calling policiesReputationScoresRetrieve().'
+                "reputationUuid",
+                'Required parameter "reputationUuid" was null or undefined when calling policiesReputationScoresRetrieve().',
             );
         }
 
@@ -4495,11 +5234,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/reputation/scores/{reputation_uuid}/`;
-        urlPath = urlPath.replace(`{${"reputation_uuid"}}`, encodeURIComponent(String(requestParameters['reputationUuid'])));
+        urlPath = urlPath.replace(
+            `{${"reputation_uuid"}}`,
+            encodeURIComponent(String(requestParameters["reputationUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4508,8 +5250,12 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Reputation Viewset
      */
-    async policiesReputationScoresRetrieveRaw(requestParameters: PoliciesReputationScoresRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Reputation>> {
-        const requestOptions = await this.policiesReputationScoresRetrieveRequestOpts(requestParameters);
+    async policiesReputationScoresRetrieveRaw(
+        requestParameters: PoliciesReputationScoresRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Reputation>> {
+        const requestOptions =
+            await this.policiesReputationScoresRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ReputationFromJSON(jsonValue));
@@ -4518,19 +5264,27 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Reputation Viewset
      */
-    async policiesReputationScoresRetrieve(requestParameters: PoliciesReputationScoresRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Reputation> {
-        const response = await this.policiesReputationScoresRetrieveRaw(requestParameters, initOverrides);
+    async policiesReputationScoresRetrieve(
+        requestParameters: PoliciesReputationScoresRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Reputation> {
+        const response = await this.policiesReputationScoresRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesReputationScoresUsedByList without sending the request
      */
-    async policiesReputationScoresUsedByListRequestOpts(requestParameters: PoliciesReputationScoresUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['reputationUuid'] == null) {
+    async policiesReputationScoresUsedByListRequestOpts(
+        requestParameters: PoliciesReputationScoresUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["reputationUuid"] == null) {
             throw new runtime.RequiredError(
-                'reputationUuid',
-                'Required parameter "reputationUuid" was null or undefined when calling policiesReputationScoresUsedByList().'
+                "reputationUuid",
+                'Required parameter "reputationUuid" was null or undefined when calling policiesReputationScoresUsedByList().',
             );
         }
 
@@ -4548,11 +5302,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/reputation/scores/{reputation_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"reputation_uuid"}}`, encodeURIComponent(String(requestParameters['reputationUuid'])));
+        urlPath = urlPath.replace(
+            `{${"reputation_uuid"}}`,
+            encodeURIComponent(String(requestParameters["reputationUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4561,8 +5318,12 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesReputationScoresUsedByListRaw(requestParameters: PoliciesReputationScoresUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesReputationScoresUsedByListRequestOpts(requestParameters);
+    async policiesReputationScoresUsedByListRaw(
+        requestParameters: PoliciesReputationScoresUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.policiesReputationScoresUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -4571,26 +5332,34 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesReputationScoresUsedByList(requestParameters: PoliciesReputationScoresUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.policiesReputationScoresUsedByListRaw(requestParameters, initOverrides);
+    async policiesReputationScoresUsedByList(
+        requestParameters: PoliciesReputationScoresUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.policiesReputationScoresUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesReputationUpdate without sending the request
      */
-    async policiesReputationUpdateRequestOpts(requestParameters: PoliciesReputationUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesReputationUpdateRequestOpts(
+        requestParameters: PoliciesReputationUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesReputationUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesReputationUpdate().',
             );
         }
 
-        if (requestParameters['reputationPolicyRequest'] == null) {
+        if (requestParameters["reputationPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'reputationPolicyRequest',
-                'Required parameter "reputationPolicyRequest" was null or undefined when calling policiesReputationUpdate().'
+                "reputationPolicyRequest",
+                'Required parameter "reputationPolicyRequest" was null or undefined when calling policiesReputationUpdate().',
             );
         }
 
@@ -4598,7 +5367,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4610,31 +5379,42 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/reputation/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: ReputationPolicyRequestToJSON(requestParameters['reputationPolicyRequest']),
+            body: ReputationPolicyRequestToJSON(requestParameters["reputationPolicyRequest"]),
         };
     }
 
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationUpdateRaw(requestParameters: PoliciesReputationUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ReputationPolicy>> {
+    async policiesReputationUpdateRaw(
+        requestParameters: PoliciesReputationUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ReputationPolicy>> {
         const requestOptions = await this.policiesReputationUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ReputationPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ReputationPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Reputation Policy Viewset
      */
-    async policiesReputationUpdate(requestParameters: PoliciesReputationUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ReputationPolicy> {
+    async policiesReputationUpdate(
+        requestParameters: PoliciesReputationUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ReputationPolicy> {
         const response = await this.policiesReputationUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4642,11 +5422,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesReputationUsedByList without sending the request
      */
-    async policiesReputationUsedByListRequestOpts(requestParameters: PoliciesReputationUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesReputationUsedByListRequestOpts(
+        requestParameters: PoliciesReputationUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesReputationUsedByList().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesReputationUsedByList().',
             );
         }
 
@@ -4664,11 +5446,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/reputation/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4677,8 +5462,12 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesReputationUsedByListRaw(requestParameters: PoliciesReputationUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesReputationUsedByListRequestOpts(requestParameters);
+    async policiesReputationUsedByListRaw(
+        requestParameters: PoliciesReputationUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.policiesReputationUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -4687,19 +5476,27 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesReputationUsedByList(requestParameters: PoliciesReputationUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.policiesReputationUsedByListRaw(requestParameters, initOverrides);
+    async policiesReputationUsedByList(
+        requestParameters: PoliciesReputationUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.policiesReputationUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesUniquePasswordCreate without sending the request
      */
-    async policiesUniquePasswordCreateRequestOpts(requestParameters: PoliciesUniquePasswordCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['uniquePasswordPolicyRequest'] == null) {
+    async policiesUniquePasswordCreateRequestOpts(
+        requestParameters: PoliciesUniquePasswordCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uniquePasswordPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'uniquePasswordPolicyRequest',
-                'Required parameter "uniquePasswordPolicyRequest" was null or undefined when calling policiesUniquePasswordCreate().'
+                "uniquePasswordPolicyRequest",
+                'Required parameter "uniquePasswordPolicyRequest" was null or undefined when calling policiesUniquePasswordCreate().',
             );
         }
 
@@ -4707,7 +5504,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4722,39 +5519,55 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UniquePasswordPolicyRequestToJSON(requestParameters['uniquePasswordPolicyRequest']),
+            body: UniquePasswordPolicyRequestToJSON(
+                requestParameters["uniquePasswordPolicyRequest"],
+            ),
         };
     }
 
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordCreateRaw(requestParameters: PoliciesUniquePasswordCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UniquePasswordPolicy>> {
-        const requestOptions = await this.policiesUniquePasswordCreateRequestOpts(requestParameters);
+    async policiesUniquePasswordCreateRaw(
+        requestParameters: PoliciesUniquePasswordCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UniquePasswordPolicy>> {
+        const requestOptions =
+            await this.policiesUniquePasswordCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UniquePasswordPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UniquePasswordPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordCreate(requestParameters: PoliciesUniquePasswordCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UniquePasswordPolicy> {
-        const response = await this.policiesUniquePasswordCreateRaw(requestParameters, initOverrides);
+    async policiesUniquePasswordCreate(
+        requestParameters: PoliciesUniquePasswordCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UniquePasswordPolicy> {
+        const response = await this.policiesUniquePasswordCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesUniquePasswordDestroy without sending the request
      */
-    async policiesUniquePasswordDestroyRequestOpts(requestParameters: PoliciesUniquePasswordDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesUniquePasswordDestroyRequestOpts(
+        requestParameters: PoliciesUniquePasswordDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordDestroy().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordDestroy().',
             );
         }
 
@@ -4772,11 +5585,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/unique_password/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4785,8 +5601,12 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordDestroyRaw(requestParameters: PoliciesUniquePasswordDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.policiesUniquePasswordDestroyRequestOpts(requestParameters);
+    async policiesUniquePasswordDestroyRaw(
+        requestParameters: PoliciesUniquePasswordDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.policiesUniquePasswordDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -4795,58 +5615,66 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordDestroy(requestParameters: PoliciesUniquePasswordDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async policiesUniquePasswordDestroy(
+        requestParameters: PoliciesUniquePasswordDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.policiesUniquePasswordDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for policiesUniquePasswordList without sending the request
      */
-    async policiesUniquePasswordListRequestOpts(requestParameters: PoliciesUniquePasswordListRequest): Promise<runtime.RequestOpts> {
+    async policiesUniquePasswordListRequestOpts(
+        requestParameters: PoliciesUniquePasswordListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['created'] != null) {
-            queryParameters['created'] = (requestParameters['created'] as any).toISOString();
+        if (requestParameters["created"] != null) {
+            queryParameters["created"] = (requestParameters["created"] as any).toISOString();
         }
 
-        if (requestParameters['executionLogging'] != null) {
-            queryParameters['execution_logging'] = requestParameters['executionLogging'];
+        if (requestParameters["executionLogging"] != null) {
+            queryParameters["execution_logging"] = requestParameters["executionLogging"];
         }
 
-        if (requestParameters['lastUpdated'] != null) {
-            queryParameters['last_updated'] = (requestParameters['lastUpdated'] as any).toISOString();
+        if (requestParameters["lastUpdated"] != null) {
+            queryParameters["last_updated"] = (
+                requestParameters["lastUpdated"] as any
+            ).toISOString();
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['numHistoricalPasswords'] != null) {
-            queryParameters['num_historical_passwords'] = requestParameters['numHistoricalPasswords'];
+        if (requestParameters["numHistoricalPasswords"] != null) {
+            queryParameters["num_historical_passwords"] =
+                requestParameters["numHistoricalPasswords"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['passwordField'] != null) {
-            queryParameters['password_field'] = requestParameters['passwordField'];
+        if (requestParameters["passwordField"] != null) {
+            queryParameters["password_field"] = requestParameters["passwordField"];
         }
 
-        if (requestParameters['policyUuid'] != null) {
-            queryParameters['policy_uuid'] = requestParameters['policyUuid'];
+        if (requestParameters["policyUuid"] != null) {
+            queryParameters["policy_uuid"] = requestParameters["policyUuid"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4864,7 +5692,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4873,17 +5701,25 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordListRaw(requestParameters: PoliciesUniquePasswordListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUniquePasswordPolicyList>> {
+    async policiesUniquePasswordListRaw(
+        requestParameters: PoliciesUniquePasswordListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUniquePasswordPolicyList>> {
         const requestOptions = await this.policiesUniquePasswordListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUniquePasswordPolicyListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUniquePasswordPolicyListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordList(requestParameters: PoliciesUniquePasswordListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUniquePasswordPolicyList> {
+    async policiesUniquePasswordList(
+        requestParameters: PoliciesUniquePasswordListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUniquePasswordPolicyList> {
         const response = await this.policiesUniquePasswordListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -4891,11 +5727,13 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Creates request options for policiesUniquePasswordPartialUpdate without sending the request
      */
-    async policiesUniquePasswordPartialUpdateRequestOpts(requestParameters: PoliciesUniquePasswordPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesUniquePasswordPartialUpdateRequestOpts(
+        requestParameters: PoliciesUniquePasswordPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordPartialUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordPartialUpdate().',
             );
         }
 
@@ -4903,7 +5741,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4915,43 +5753,62 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/unique_password/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUniquePasswordPolicyRequestToJSON(requestParameters['patchedUniquePasswordPolicyRequest']),
+            body: PatchedUniquePasswordPolicyRequestToJSON(
+                requestParameters["patchedUniquePasswordPolicyRequest"],
+            ),
         };
     }
 
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordPartialUpdateRaw(requestParameters: PoliciesUniquePasswordPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UniquePasswordPolicy>> {
-        const requestOptions = await this.policiesUniquePasswordPartialUpdateRequestOpts(requestParameters);
+    async policiesUniquePasswordPartialUpdateRaw(
+        requestParameters: PoliciesUniquePasswordPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UniquePasswordPolicy>> {
+        const requestOptions =
+            await this.policiesUniquePasswordPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UniquePasswordPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UniquePasswordPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordPartialUpdate(requestParameters: PoliciesUniquePasswordPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UniquePasswordPolicy> {
-        const response = await this.policiesUniquePasswordPartialUpdateRaw(requestParameters, initOverrides);
+    async policiesUniquePasswordPartialUpdate(
+        requestParameters: PoliciesUniquePasswordPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UniquePasswordPolicy> {
+        const response = await this.policiesUniquePasswordPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesUniquePasswordRetrieve without sending the request
      */
-    async policiesUniquePasswordRetrieveRequestOpts(requestParameters: PoliciesUniquePasswordRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesUniquePasswordRetrieveRequestOpts(
+        requestParameters: PoliciesUniquePasswordRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordRetrieve().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordRetrieve().',
             );
         }
 
@@ -4969,11 +5826,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/unique_password/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4982,36 +5842,50 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordRetrieveRaw(requestParameters: PoliciesUniquePasswordRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UniquePasswordPolicy>> {
-        const requestOptions = await this.policiesUniquePasswordRetrieveRequestOpts(requestParameters);
+    async policiesUniquePasswordRetrieveRaw(
+        requestParameters: PoliciesUniquePasswordRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UniquePasswordPolicy>> {
+        const requestOptions =
+            await this.policiesUniquePasswordRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UniquePasswordPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UniquePasswordPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordRetrieve(requestParameters: PoliciesUniquePasswordRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UniquePasswordPolicy> {
-        const response = await this.policiesUniquePasswordRetrieveRaw(requestParameters, initOverrides);
+    async policiesUniquePasswordRetrieve(
+        requestParameters: PoliciesUniquePasswordRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UniquePasswordPolicy> {
+        const response = await this.policiesUniquePasswordRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesUniquePasswordUpdate without sending the request
      */
-    async policiesUniquePasswordUpdateRequestOpts(requestParameters: PoliciesUniquePasswordUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesUniquePasswordUpdateRequestOpts(
+        requestParameters: PoliciesUniquePasswordUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordUpdate().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordUpdate().',
             );
         }
 
-        if (requestParameters['uniquePasswordPolicyRequest'] == null) {
+        if (requestParameters["uniquePasswordPolicyRequest"] == null) {
             throw new runtime.RequiredError(
-                'uniquePasswordPolicyRequest',
-                'Required parameter "uniquePasswordPolicyRequest" was null or undefined when calling policiesUniquePasswordUpdate().'
+                "uniquePasswordPolicyRequest",
+                'Required parameter "uniquePasswordPolicyRequest" was null or undefined when calling policiesUniquePasswordUpdate().',
             );
         }
 
@@ -5019,7 +5893,7 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5031,43 +5905,62 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/unique_password/{policy_uuid}/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UniquePasswordPolicyRequestToJSON(requestParameters['uniquePasswordPolicyRequest']),
+            body: UniquePasswordPolicyRequestToJSON(
+                requestParameters["uniquePasswordPolicyRequest"],
+            ),
         };
     }
 
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordUpdateRaw(requestParameters: PoliciesUniquePasswordUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UniquePasswordPolicy>> {
-        const requestOptions = await this.policiesUniquePasswordUpdateRequestOpts(requestParameters);
+    async policiesUniquePasswordUpdateRaw(
+        requestParameters: PoliciesUniquePasswordUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UniquePasswordPolicy>> {
+        const requestOptions =
+            await this.policiesUniquePasswordUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UniquePasswordPolicyFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UniquePasswordPolicyFromJSON(jsonValue),
+        );
     }
 
     /**
      * Password Uniqueness Policy Viewset
      */
-    async policiesUniquePasswordUpdate(requestParameters: PoliciesUniquePasswordUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UniquePasswordPolicy> {
-        const response = await this.policiesUniquePasswordUpdateRaw(requestParameters, initOverrides);
+    async policiesUniquePasswordUpdate(
+        requestParameters: PoliciesUniquePasswordUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UniquePasswordPolicy> {
+        const response = await this.policiesUniquePasswordUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for policiesUniquePasswordUsedByList without sending the request
      */
-    async policiesUniquePasswordUsedByListRequestOpts(requestParameters: PoliciesUniquePasswordUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['policyUuid'] == null) {
+    async policiesUniquePasswordUsedByListRequestOpts(
+        requestParameters: PoliciesUniquePasswordUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["policyUuid"] == null) {
             throw new runtime.RequiredError(
-                'policyUuid',
-                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordUsedByList().'
+                "policyUuid",
+                'Required parameter "policyUuid" was null or undefined when calling policiesUniquePasswordUsedByList().',
             );
         }
 
@@ -5085,11 +5978,14 @@ export class PoliciesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/policies/unique_password/{policy_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"policy_uuid"}}`, encodeURIComponent(String(requestParameters['policyUuid'])));
+        urlPath = urlPath.replace(
+            `{${"policy_uuid"}}`,
+            encodeURIComponent(String(requestParameters["policyUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5098,8 +5994,12 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesUniquePasswordUsedByListRaw(requestParameters: PoliciesUniquePasswordUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.policiesUniquePasswordUsedByListRequestOpts(requestParameters);
+    async policiesUniquePasswordUsedByListRaw(
+        requestParameters: PoliciesUniquePasswordUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.policiesUniquePasswordUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -5108,9 +6008,14 @@ export class PoliciesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async policiesUniquePasswordUsedByList(requestParameters: PoliciesUniquePasswordUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.policiesUniquePasswordUsedByListRaw(requestParameters, initOverrides);
+    async policiesUniquePasswordUsedByList(
+        requestParameters: PoliciesUniquePasswordUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.policiesUniquePasswordUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
-
 }

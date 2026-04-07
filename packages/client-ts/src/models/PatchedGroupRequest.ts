@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Group Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedGroupRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupRequest
      */
@@ -32,25 +31,25 @@ export interface PatchedGroupRequest {
      */
     isSuperuser?: boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedGroupRequest
      */
     parents?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof PatchedGroupRequest
      */
     users?: Array<number>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PatchedGroupRequest
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedGroupRequest
      */
@@ -68,18 +67,20 @@ export function PatchedGroupRequestFromJSON(json: any): PatchedGroupRequest {
     return PatchedGroupRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGroupRequest {
+export function PatchedGroupRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedGroupRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'isSuperuser': json['is_superuser'] == null ? undefined : json['is_superuser'],
-        'parents': json['parents'] == null ? undefined : json['parents'],
-        'users': json['users'] == null ? undefined : json['users'],
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
-        'roles': json['roles'] == null ? undefined : json['roles'],
+        name: json["name"] == null ? undefined : json["name"],
+        isSuperuser: json["is_superuser"] == null ? undefined : json["is_superuser"],
+        parents: json["parents"] == null ? undefined : json["parents"],
+        users: json["users"] == null ? undefined : json["users"],
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        roles: json["roles"] == null ? undefined : json["roles"],
     };
 }
 
@@ -87,19 +88,20 @@ export function PatchedGroupRequestToJSON(json: any): PatchedGroupRequest {
     return PatchedGroupRequestToJSONTyped(json, false);
 }
 
-export function PatchedGroupRequestToJSONTyped(value?: PatchedGroupRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedGroupRequestToJSONTyped(
+    value?: PatchedGroupRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'is_superuser': value['isSuperuser'],
-        'parents': value['parents'],
-        'users': value['users'],
-        'attributes': value['attributes'],
-        'roles': value['roles'],
+        name: value["name"],
+        is_superuser: value["isSuperuser"],
+        parents: value["parents"],
+        users: value["users"],
+        attributes: value["attributes"],
+        roles: value["roles"],
     };
 }
-

@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { LogEvent } from './LogEvent';
-import {
-    LogEventFromJSON,
-    LogEventFromJSONTyped,
-    LogEventToJSON,
-    LogEventToJSONTyped,
-} from './LogEvent';
+import type { LogEvent } from "./LogEvent";
+import { LogEventFromJSON } from "./LogEvent";
 
 /**
  * result of a policy test
@@ -28,19 +22,19 @@ import {
  */
 export interface PolicyTestResult {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PolicyTestResult
      */
     passing: boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PolicyTestResult
      */
     readonly messages: Array<string>;
     /**
-     * 
+     *
      * @type {Array<LogEvent>}
      * @memberof PolicyTestResult
      */
@@ -51,9 +45,9 @@ export interface PolicyTestResult {
  * Check if a given object implements the PolicyTestResult interface.
  */
 export function instanceOfPolicyTestResult(value: object): value is PolicyTestResult {
-    if (!('passing' in value) || value['passing'] === undefined) return false;
-    if (!('messages' in value) || value['messages'] === undefined) return false;
-    if (!('logMessages' in value) || value['logMessages'] === undefined) return false;
+    if (!("passing" in value) || value["passing"] === undefined) return false;
+    if (!("messages" in value) || value["messages"] === undefined) return false;
+    if (!("logMessages" in value) || value["logMessages"] === undefined) return false;
     return true;
 }
 
@@ -61,15 +55,17 @@ export function PolicyTestResultFromJSON(json: any): PolicyTestResult {
     return PolicyTestResultFromJSONTyped(json, false);
 }
 
-export function PolicyTestResultFromJSONTyped(json: any, ignoreDiscriminator: boolean): PolicyTestResult {
+export function PolicyTestResultFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PolicyTestResult {
     if (json == null) {
         return json;
     }
     return {
-        
-        'passing': json['passing'],
-        'messages': json['messages'],
-        'logMessages': ((json['log_messages'] as Array<any>).map(LogEventFromJSON)),
+        passing: json["passing"],
+        messages: json["messages"],
+        logMessages: (json["log_messages"] as Array<any>).map(LogEventFromJSON),
     };
 }
 
@@ -77,14 +73,15 @@ export function PolicyTestResultToJSON(json: any): PolicyTestResult {
     return PolicyTestResultToJSONTyped(json, false);
 }
 
-export function PolicyTestResultToJSONTyped(value?: Omit<PolicyTestResult, 'messages'|'log_messages'> | null, ignoreDiscriminator: boolean = false): any {
+export function PolicyTestResultToJSONTyped(
+    value?: Omit<PolicyTestResult, "messages" | "log_messages"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'passing': value['passing'],
+        passing: value["passing"],
     };
 }
-

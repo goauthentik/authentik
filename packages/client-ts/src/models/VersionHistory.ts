@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * VersionHistory Serializer
  * @export
@@ -20,25 +19,25 @@ import { mapValues } from '../runtime';
  */
 export interface VersionHistory {
     /**
-     * 
+     *
      * @type {number}
      * @memberof VersionHistory
      */
     readonly id: number;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof VersionHistory
      */
     timestamp: Date;
     /**
-     * 
+     *
      * @type {string}
      * @memberof VersionHistory
      */
     version: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof VersionHistory
      */
@@ -49,10 +48,10 @@ export interface VersionHistory {
  * Check if a given object implements the VersionHistory interface.
  */
 export function instanceOfVersionHistory(value: object): value is VersionHistory {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
-    if (!('version' in value) || value['version'] === undefined) return false;
-    if (!('build' in value) || value['build'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("timestamp" in value) || value["timestamp"] === undefined) return false;
+    if (!("version" in value) || value["version"] === undefined) return false;
+    if (!("build" in value) || value["build"] === undefined) return false;
     return true;
 }
 
@@ -60,16 +59,18 @@ export function VersionHistoryFromJSON(json: any): VersionHistory {
     return VersionHistoryFromJSONTyped(json, false);
 }
 
-export function VersionHistoryFromJSONTyped(json: any, ignoreDiscriminator: boolean): VersionHistory {
+export function VersionHistoryFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): VersionHistory {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'timestamp': (new Date(json['timestamp'])),
-        'version': json['version'],
-        'build': json['build'],
+        id: json["id"],
+        timestamp: new Date(json["timestamp"]),
+        version: json["version"],
+        build: json["build"],
     };
 }
 
@@ -77,16 +78,17 @@ export function VersionHistoryToJSON(json: any): VersionHistory {
     return VersionHistoryToJSONTyped(json, false);
 }
 
-export function VersionHistoryToJSONTyped(value?: Omit<VersionHistory, 'id'> | null, ignoreDiscriminator: boolean = false): any {
+export function VersionHistoryToJSONTyped(
+    value?: Omit<VersionHistory, "id"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'timestamp': value['timestamp'].toISOString(),
-        'version': value['version'],
-        'build': value['build'],
+        timestamp: value["timestamp"].toISOString(),
+        version: value["version"],
+        build: value["build"],
     };
 }
-

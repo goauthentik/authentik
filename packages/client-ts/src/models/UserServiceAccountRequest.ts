@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Payload to create a service account
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface UserServiceAccountRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserServiceAccountRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserServiceAccountRequest
      */
     createGroup?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof UserServiceAccountRequest
      */
@@ -48,8 +47,10 @@ export interface UserServiceAccountRequest {
 /**
  * Check if a given object implements the UserServiceAccountRequest interface.
  */
-export function instanceOfUserServiceAccountRequest(value: object): value is UserServiceAccountRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+export function instanceOfUserServiceAccountRequest(
+    value: object,
+): value is UserServiceAccountRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -57,16 +58,18 @@ export function UserServiceAccountRequestFromJSON(json: any): UserServiceAccount
     return UserServiceAccountRequestFromJSONTyped(json, false);
 }
 
-export function UserServiceAccountRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserServiceAccountRequest {
+export function UserServiceAccountRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserServiceAccountRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'createGroup': json['create_group'] == null ? undefined : json['create_group'],
-        'expiring': json['expiring'] == null ? undefined : json['expiring'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
+        name: json["name"],
+        createGroup: json["create_group"] == null ? undefined : json["create_group"],
+        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
     };
 }
 
@@ -74,17 +77,18 @@ export function UserServiceAccountRequestToJSON(json: any): UserServiceAccountRe
     return UserServiceAccountRequestToJSONTyped(json, false);
 }
 
-export function UserServiceAccountRequestToJSONTyped(value?: UserServiceAccountRequest | null, ignoreDiscriminator: boolean = false): any {
+export function UserServiceAccountRequestToJSONTyped(
+    value?: UserServiceAccountRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'create_group': value['createGroup'],
-        'expiring': value['expiring'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
+        name: value["name"],
+        create_group: value["createGroup"],
+        expiring: value["expiring"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
     };
 }
-

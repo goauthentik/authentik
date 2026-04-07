@@ -18,10 +18,10 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 (.x being the latest patch release for each version)
 
-| Version    | Supported  |
-| ---------- | ---------- |
-| 2025.12.x  | ✅         |
-| 2026.2.x   | ✅         |
+| Version   | Supported |
+| --------- | --------- |
+| 2025.12.x | ✅        |
+| 2026.2.x  | ✅        |
 
 ## Reporting a Vulnerability
 
@@ -89,6 +89,10 @@ Prompts intentionally allow raw HTML, including script tags, so they can be used
 - Open redirects that do not include tokens or other sensitive information are not considered a security vulnerability.
 
 Redirects that only change navigation flow and do not expose session tokens, API keys, or other confidential data are considered acceptable and do not require reporting.
+
+- Outgoing network requests are not filtered.
+
+The destinations of outgoing network requests (HTTP, TCP, etc.) made by authentik to configurable endpoints through objects such as OAuth Sources, SSO Providers, and others are not validated. Depending on your threat model, these requests should be restricted at the network level using appropriate firewall or network policies.
 
 ## Disclosure process
 

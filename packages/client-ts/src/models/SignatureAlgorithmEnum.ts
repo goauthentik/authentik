@@ -12,25 +12,24 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const SignatureAlgorithmEnum = {
-    HttpWwwW3Org200009XmldsigrsaSha1: 'http://www.w3.org/2000/09/xmldsig#rsa-sha1',
-    HttpWwwW3Org200104XmldsigMorersaSha256: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
-    HttpWwwW3Org200104XmldsigMorersaSha384: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384',
-    HttpWwwW3Org200104XmldsigMorersaSha512: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha512',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha1: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha256: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha384: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384',
-    HttpWwwW3Org200104XmldsigMoreecdsaSha512: 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512',
-    HttpWwwW3Org200009XmldsigdsaSha1: 'http://www.w3.org/2000/09/xmldsig#dsa-sha1',
-    UnknownDefaultOpenApi: '11184809'
+    HttpWwwW3Org200009XmldsigrsaSha1: "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+    HttpWwwW3Org200104XmldsigMorersaSha256: "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
+    HttpWwwW3Org200104XmldsigMorersaSha384: "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384",
+    HttpWwwW3Org200104XmldsigMorersaSha512: "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512",
+    HttpWwwW3Org200104XmldsigMoreecdsaSha1: "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1",
+    HttpWwwW3Org200104XmldsigMoreecdsaSha256: "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256",
+    HttpWwwW3Org200104XmldsigMoreecdsaSha384: "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384",
+    HttpWwwW3Org200104XmldsigMoreecdsaSha512: "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
+    HttpWwwW3Org200009XmldsigdsaSha1: "http://www.w3.org/2000/09/xmldsig#dsa-sha1",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type SignatureAlgorithmEnum = typeof SignatureAlgorithmEnum[keyof typeof SignatureAlgorithmEnum];
-
+export type SignatureAlgorithmEnum =
+    (typeof SignatureAlgorithmEnum)[keyof typeof SignatureAlgorithmEnum];
 
 export function instanceOfSignatureAlgorithmEnum(value: any): boolean {
     for (const key in SignatureAlgorithmEnum) {
@@ -47,7 +46,10 @@ export function SignatureAlgorithmEnumFromJSON(json: any): SignatureAlgorithmEnu
     return SignatureAlgorithmEnumFromJSONTyped(json, false);
 }
 
-export function SignatureAlgorithmEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): SignatureAlgorithmEnum {
+export function SignatureAlgorithmEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SignatureAlgorithmEnum {
     return json as SignatureAlgorithmEnum;
 }
 
@@ -55,7 +57,9 @@ export function SignatureAlgorithmEnumToJSON(value?: SignatureAlgorithmEnum | nu
     return value as any;
 }
 
-export function SignatureAlgorithmEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): SignatureAlgorithmEnum {
+export function SignatureAlgorithmEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): SignatureAlgorithmEnum {
     return value as SignatureAlgorithmEnum;
 }
-

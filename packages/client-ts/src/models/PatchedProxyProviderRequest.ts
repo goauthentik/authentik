@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ProxyMode } from './ProxyMode';
-import {
-    ProxyModeFromJSON,
-    ProxyModeFromJSONTyped,
-    ProxyModeToJSON,
-    ProxyModeToJSONTyped,
-} from './ProxyMode';
+import type { ProxyMode } from "./ProxyMode";
+import { ProxyModeFromJSON, ProxyModeToJSON } from "./ProxyMode";
 
 /**
  * ProxyProvider Serializer
@@ -28,7 +22,7 @@ import {
  */
 export interface PatchedProxyProviderRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedProxyProviderRequest
      */
@@ -52,19 +46,19 @@ export interface PatchedProxyProviderRequest {
      */
     invalidationFlow?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedProxyProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedProxyProviderRequest
      */
     internalHost?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedProxyProviderRequest
      */
@@ -76,7 +70,7 @@ export interface PatchedProxyProviderRequest {
      */
     internalHostSslValidation?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedProxyProviderRequest
      */
@@ -118,19 +112,19 @@ export interface PatchedProxyProviderRequest {
      */
     interceptHeaderAuth?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedProxyProviderRequest
      */
     cookieDomain?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedProxyProviderRequest
      */
     jwtFederationSources?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof PatchedProxyProviderRequest
      */
@@ -149,12 +143,12 @@ export interface PatchedProxyProviderRequest {
     refreshTokenValidity?: string;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedProxyProviderRequest interface.
  */
-export function instanceOfPatchedProxyProviderRequest(value: object): value is PatchedProxyProviderRequest {
+export function instanceOfPatchedProxyProviderRequest(
+    value: object,
+): value is PatchedProxyProviderRequest {
     return true;
 }
 
@@ -162,32 +156,51 @@ export function PatchedProxyProviderRequestFromJSON(json: any): PatchedProxyProv
     return PatchedProxyProviderRequestFromJSONTyped(json, false);
 }
 
-export function PatchedProxyProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedProxyProviderRequest {
+export function PatchedProxyProviderRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedProxyProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'authorizationFlow': json['authorization_flow'] == null ? undefined : json['authorization_flow'],
-        'invalidationFlow': json['invalidation_flow'] == null ? undefined : json['invalidation_flow'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'internalHost': json['internal_host'] == null ? undefined : json['internal_host'],
-        'externalHost': json['external_host'] == null ? undefined : json['external_host'],
-        'internalHostSslValidation': json['internal_host_ssl_validation'] == null ? undefined : json['internal_host_ssl_validation'],
-        'certificate': json['certificate'] == null ? undefined : json['certificate'],
-        'skipPathRegex': json['skip_path_regex'] == null ? undefined : json['skip_path_regex'],
-        'basicAuthEnabled': json['basic_auth_enabled'] == null ? undefined : json['basic_auth_enabled'],
-        'basicAuthPasswordAttribute': json['basic_auth_password_attribute'] == null ? undefined : json['basic_auth_password_attribute'],
-        'basicAuthUserAttribute': json['basic_auth_user_attribute'] == null ? undefined : json['basic_auth_user_attribute'],
-        'mode': json['mode'] == null ? undefined : ProxyModeFromJSON(json['mode']),
-        'interceptHeaderAuth': json['intercept_header_auth'] == null ? undefined : json['intercept_header_auth'],
-        'cookieDomain': json['cookie_domain'] == null ? undefined : json['cookie_domain'],
-        'jwtFederationSources': json['jwt_federation_sources'] == null ? undefined : json['jwt_federation_sources'],
-        'jwtFederationProviders': json['jwt_federation_providers'] == null ? undefined : json['jwt_federation_providers'],
-        'accessTokenValidity': json['access_token_validity'] == null ? undefined : json['access_token_validity'],
-        'refreshTokenValidity': json['refresh_token_validity'] == null ? undefined : json['refresh_token_validity'],
+        name: json["name"] == null ? undefined : json["name"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        authorizationFlow:
+            json["authorization_flow"] == null ? undefined : json["authorization_flow"],
+        invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        internalHost: json["internal_host"] == null ? undefined : json["internal_host"],
+        externalHost: json["external_host"] == null ? undefined : json["external_host"],
+        internalHostSslValidation:
+            json["internal_host_ssl_validation"] == null
+                ? undefined
+                : json["internal_host_ssl_validation"],
+        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        skipPathRegex: json["skip_path_regex"] == null ? undefined : json["skip_path_regex"],
+        basicAuthEnabled:
+            json["basic_auth_enabled"] == null ? undefined : json["basic_auth_enabled"],
+        basicAuthPasswordAttribute:
+            json["basic_auth_password_attribute"] == null
+                ? undefined
+                : json["basic_auth_password_attribute"],
+        basicAuthUserAttribute:
+            json["basic_auth_user_attribute"] == null
+                ? undefined
+                : json["basic_auth_user_attribute"],
+        mode: json["mode"] == null ? undefined : ProxyModeFromJSON(json["mode"]),
+        interceptHeaderAuth:
+            json["intercept_header_auth"] == null ? undefined : json["intercept_header_auth"],
+        cookieDomain: json["cookie_domain"] == null ? undefined : json["cookie_domain"],
+        jwtFederationSources:
+            json["jwt_federation_sources"] == null ? undefined : json["jwt_federation_sources"],
+        jwtFederationProviders:
+            json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
+        accessTokenValidity:
+            json["access_token_validity"] == null ? undefined : json["access_token_validity"],
+        refreshTokenValidity:
+            json["refresh_token_validity"] == null ? undefined : json["refresh_token_validity"],
     };
 }
 
@@ -195,33 +208,34 @@ export function PatchedProxyProviderRequestToJSON(json: any): PatchedProxyProvid
     return PatchedProxyProviderRequestToJSONTyped(json, false);
 }
 
-export function PatchedProxyProviderRequestToJSONTyped(value?: PatchedProxyProviderRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedProxyProviderRequestToJSONTyped(
+    value?: PatchedProxyProviderRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'authentication_flow': value['authenticationFlow'],
-        'authorization_flow': value['authorizationFlow'],
-        'invalidation_flow': value['invalidationFlow'],
-        'property_mappings': value['propertyMappings'],
-        'internal_host': value['internalHost'],
-        'external_host': value['externalHost'],
-        'internal_host_ssl_validation': value['internalHostSslValidation'],
-        'certificate': value['certificate'],
-        'skip_path_regex': value['skipPathRegex'],
-        'basic_auth_enabled': value['basicAuthEnabled'],
-        'basic_auth_password_attribute': value['basicAuthPasswordAttribute'],
-        'basic_auth_user_attribute': value['basicAuthUserAttribute'],
-        'mode': ProxyModeToJSON(value['mode']),
-        'intercept_header_auth': value['interceptHeaderAuth'],
-        'cookie_domain': value['cookieDomain'],
-        'jwt_federation_sources': value['jwtFederationSources'],
-        'jwt_federation_providers': value['jwtFederationProviders'],
-        'access_token_validity': value['accessTokenValidity'],
-        'refresh_token_validity': value['refreshTokenValidity'],
+        name: value["name"],
+        authentication_flow: value["authenticationFlow"],
+        authorization_flow: value["authorizationFlow"],
+        invalidation_flow: value["invalidationFlow"],
+        property_mappings: value["propertyMappings"],
+        internal_host: value["internalHost"],
+        external_host: value["externalHost"],
+        internal_host_ssl_validation: value["internalHostSslValidation"],
+        certificate: value["certificate"],
+        skip_path_regex: value["skipPathRegex"],
+        basic_auth_enabled: value["basicAuthEnabled"],
+        basic_auth_password_attribute: value["basicAuthPasswordAttribute"],
+        basic_auth_user_attribute: value["basicAuthUserAttribute"],
+        mode: ProxyModeToJSON(value["mode"]),
+        intercept_header_auth: value["interceptHeaderAuth"],
+        cookie_domain: value["cookieDomain"],
+        jwt_federation_sources: value["jwtFederationSources"],
+        jwt_federation_providers: value["jwtFederationProviders"],
+        access_token_validity: value["accessTokenValidity"],
+        refresh_token_validity: value["refreshTokenValidity"],
     };
 }
-

@@ -12,28 +12,12 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ServiceConnection } from './ServiceConnection';
-import {
-    ServiceConnectionFromJSON,
-    ServiceConnectionFromJSONTyped,
-    ServiceConnectionToJSON,
-    ServiceConnectionToJSONTyped,
-} from './ServiceConnection';
-import type { OutpostTypeEnum } from './OutpostTypeEnum';
-import {
-    OutpostTypeEnumFromJSON,
-    OutpostTypeEnumFromJSONTyped,
-    OutpostTypeEnumToJSON,
-    OutpostTypeEnumToJSONTyped,
-} from './OutpostTypeEnum';
-import type { Provider } from './Provider';
-import {
-    ProviderFromJSON,
-    ProviderFromJSONTyped,
-    ProviderToJSON,
-    ProviderToJSONTyped,
-} from './Provider';
+import type { OutpostTypeEnum } from "./OutpostTypeEnum";
+import { OutpostTypeEnumFromJSON, OutpostTypeEnumToJSON } from "./OutpostTypeEnum";
+import type { Provider } from "./Provider";
+import { ProviderFromJSON } from "./Provider";
+import type { ServiceConnection } from "./ServiceConnection";
+import { ServiceConnectionFromJSON } from "./ServiceConnection";
 
 /**
  * Outpost Serializer
@@ -42,31 +26,31 @@ import {
  */
 export interface Outpost {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Outpost
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Outpost
      */
     name: string;
     /**
-     * 
+     *
      * @type {OutpostTypeEnum}
      * @memberof Outpost
      */
     type: OutpostTypeEnum;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof Outpost
      */
     providers: Array<number>;
     /**
-     * 
+     *
      * @type {Array<Provider>}
      * @memberof Outpost
      */
@@ -78,13 +62,13 @@ export interface Outpost {
      */
     serviceConnection?: string | null;
     /**
-     * 
+     *
      * @type {ServiceConnection}
      * @memberof Outpost
      */
     readonly serviceConnectionObj: ServiceConnection | null;
     /**
-     * 
+     *
      * @type {number}
      * @memberof Outpost
      */
@@ -96,11 +80,11 @@ export interface Outpost {
      */
     readonly tokenIdentifier: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof Outpost
      */
-    config: { [key: string]: any; };
+    config: { [key: string]: any };
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
      * @type {string}
@@ -109,21 +93,20 @@ export interface Outpost {
     managed?: string | null;
 }
 
-
-
 /**
  * Check if a given object implements the Outpost interface.
  */
 export function instanceOfOutpost(value: object): value is Outpost {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('type' in value) || value['type'] === undefined) return false;
-    if (!('providers' in value) || value['providers'] === undefined) return false;
-    if (!('providersObj' in value) || value['providersObj'] === undefined) return false;
-    if (!('serviceConnectionObj' in value) || value['serviceConnectionObj'] === undefined) return false;
-    if (!('refreshIntervalS' in value) || value['refreshIntervalS'] === undefined) return false;
-    if (!('tokenIdentifier' in value) || value['tokenIdentifier'] === undefined) return false;
-    if (!('config' in value) || value['config'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("type" in value) || value["type"] === undefined) return false;
+    if (!("providers" in value) || value["providers"] === undefined) return false;
+    if (!("providersObj" in value) || value["providersObj"] === undefined) return false;
+    if (!("serviceConnectionObj" in value) || value["serviceConnectionObj"] === undefined)
+        return false;
+    if (!("refreshIntervalS" in value) || value["refreshIntervalS"] === undefined) return false;
+    if (!("tokenIdentifier" in value) || value["tokenIdentifier"] === undefined) return false;
+    if (!("config" in value) || value["config"] === undefined) return false;
     return true;
 }
 
@@ -136,18 +119,18 @@ export function OutpostFromJSONTyped(json: any, ignoreDiscriminator: boolean): O
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'type': OutpostTypeEnumFromJSON(json['type']),
-        'providers': json['providers'],
-        'providersObj': ((json['providers_obj'] as Array<any>).map(ProviderFromJSON)),
-        'serviceConnection': json['service_connection'] == null ? undefined : json['service_connection'],
-        'serviceConnectionObj': ServiceConnectionFromJSON(json['service_connection_obj']),
-        'refreshIntervalS': json['refresh_interval_s'],
-        'tokenIdentifier': json['token_identifier'],
-        'config': json['config'],
-        'managed': json['managed'] == null ? undefined : json['managed'],
+        pk: json["pk"],
+        name: json["name"],
+        type: OutpostTypeEnumFromJSON(json["type"]),
+        providers: json["providers"],
+        providersObj: (json["providers_obj"] as Array<any>).map(ProviderFromJSON),
+        serviceConnection:
+            json["service_connection"] == null ? undefined : json["service_connection"],
+        serviceConnectionObj: ServiceConnectionFromJSON(json["service_connection_obj"]),
+        refreshIntervalS: json["refresh_interval_s"],
+        tokenIdentifier: json["token_identifier"],
+        config: json["config"],
+        managed: json["managed"] == null ? undefined : json["managed"],
     };
 }
 
@@ -155,19 +138,27 @@ export function OutpostToJSON(json: any): Outpost {
     return OutpostToJSONTyped(json, false);
 }
 
-export function OutpostToJSONTyped(value?: Omit<Outpost, 'pk'|'providers_obj'|'service_connection_obj'|'refresh_interval_s'|'token_identifier'> | null, ignoreDiscriminator: boolean = false): any {
+export function OutpostToJSONTyped(
+    value?: Omit<
+        Outpost,
+        | "pk"
+        | "providers_obj"
+        | "service_connection_obj"
+        | "refresh_interval_s"
+        | "token_identifier"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'type': OutpostTypeEnumToJSON(value['type']),
-        'providers': value['providers'],
-        'service_connection': value['serviceConnection'],
-        'config': value['config'],
-        'managed': value['managed'],
+        name: value["name"],
+        type: OutpostTypeEnumToJSON(value["type"]),
+        providers: value["providers"],
+        service_connection: value["serviceConnection"],
+        config: value["config"],
+        managed: value["managed"],
     };
 }
-

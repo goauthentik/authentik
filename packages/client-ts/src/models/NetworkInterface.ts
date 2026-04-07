@@ -12,33 +12,32 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface NetworkInterface
  */
 export interface NetworkInterface {
     /**
-     * 
+     *
      * @type {string}
      * @memberof NetworkInterface
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof NetworkInterface
      */
     hardwareAddress: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof NetworkInterface
      */
     ipAddresses?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof NetworkInterface
      */
@@ -49,8 +48,8 @@ export interface NetworkInterface {
  * Check if a given object implements the NetworkInterface interface.
  */
 export function instanceOfNetworkInterface(value: object): value is NetworkInterface {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('hardwareAddress' in value) || value['hardwareAddress'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("hardwareAddress" in value) || value["hardwareAddress"] === undefined) return false;
     return true;
 }
 
@@ -58,16 +57,18 @@ export function NetworkInterfaceFromJSON(json: any): NetworkInterface {
     return NetworkInterfaceFromJSONTyped(json, false);
 }
 
-export function NetworkInterfaceFromJSONTyped(json: any, ignoreDiscriminator: boolean): NetworkInterface {
+export function NetworkInterfaceFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): NetworkInterface {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'hardwareAddress': json['hardware_address'],
-        'ipAddresses': json['ip_addresses'] == null ? undefined : json['ip_addresses'],
-        'dnsServers': json['dns_servers'] == null ? undefined : json['dns_servers'],
+        name: json["name"],
+        hardwareAddress: json["hardware_address"],
+        ipAddresses: json["ip_addresses"] == null ? undefined : json["ip_addresses"],
+        dnsServers: json["dns_servers"] == null ? undefined : json["dns_servers"],
     };
 }
 
@@ -75,17 +76,18 @@ export function NetworkInterfaceToJSON(json: any): NetworkInterface {
     return NetworkInterfaceToJSONTyped(json, false);
 }
 
-export function NetworkInterfaceToJSONTyped(value?: NetworkInterface | null, ignoreDiscriminator: boolean = false): any {
+export function NetworkInterfaceToJSONTyped(
+    value?: NetworkInterface | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'hardware_address': value['hardwareAddress'],
-        'ip_addresses': value['ipAddresses'],
-        'dns_servers': value['dnsServers'],
+        name: value["name"],
+        hardware_address: value["hardwareAddress"],
+        ip_addresses: value["ipAddresses"],
+        dns_servers: value["dnsServers"],
     };
 }
-

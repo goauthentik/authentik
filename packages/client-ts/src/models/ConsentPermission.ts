@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Permission used for consent
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface ConsentPermission {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ConsentPermission
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ConsentPermission
      */
@@ -37,8 +36,8 @@ export interface ConsentPermission {
  * Check if a given object implements the ConsentPermission interface.
  */
 export function instanceOfConsentPermission(value: object): value is ConsentPermission {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
     return true;
 }
 
@@ -46,14 +45,16 @@ export function ConsentPermissionFromJSON(json: any): ConsentPermission {
     return ConsentPermissionFromJSONTyped(json, false);
 }
 
-export function ConsentPermissionFromJSONTyped(json: any, ignoreDiscriminator: boolean): ConsentPermission {
+export function ConsentPermissionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ConsentPermission {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'id': json['id'],
+        name: json["name"],
+        id: json["id"],
     };
 }
 
@@ -61,15 +62,16 @@ export function ConsentPermissionToJSON(json: any): ConsentPermission {
     return ConsentPermissionToJSONTyped(json, false);
 }
 
-export function ConsentPermissionToJSONTyped(value?: ConsentPermission | null, ignoreDiscriminator: boolean = false): any {
+export function ConsentPermissionToJSONTyped(
+    value?: ConsentPermission | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'id': value['id'],
+        name: value["name"],
+        id: value["id"],
     };
 }
-

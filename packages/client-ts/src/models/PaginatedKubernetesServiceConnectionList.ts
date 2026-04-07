@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { KubernetesServiceConnection } from './KubernetesServiceConnection';
+import type { KubernetesServiceConnection } from "./KubernetesServiceConnection";
 import {
     KubernetesServiceConnectionFromJSON,
-    KubernetesServiceConnectionFromJSONTyped,
     KubernetesServiceConnectionToJSON,
-    KubernetesServiceConnectionToJSONTyped,
-} from './KubernetesServiceConnection';
+} from "./KubernetesServiceConnection";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedKubernetesServiceConnectionList
  */
 export interface PaginatedKubernetesServiceConnectionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedKubernetesServiceConnectionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<KubernetesServiceConnection>}
      * @memberof PaginatedKubernetesServiceConnectionList
      */
     results: Array<KubernetesServiceConnection>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedKubernetesServiceConnectionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedKubernetesServiceConnectionList interface.
  */
-export function instanceOfPaginatedKubernetesServiceConnectionList(value: object): value is PaginatedKubernetesServiceConnectionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedKubernetesServiceConnectionList(
+    value: object,
+): value is PaginatedKubernetesServiceConnectionList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedKubernetesServiceConnectionListFromJSON(json: any): PaginatedKubernetesServiceConnectionList {
+export function PaginatedKubernetesServiceConnectionListFromJSON(
+    json: any,
+): PaginatedKubernetesServiceConnectionList {
     return PaginatedKubernetesServiceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedKubernetesServiceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedKubernetesServiceConnectionList {
+export function PaginatedKubernetesServiceConnectionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedKubernetesServiceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(KubernetesServiceConnectionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(KubernetesServiceConnectionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedKubernetesServiceConnectionListToJSON(json: any): PaginatedKubernetesServiceConnectionList {
+export function PaginatedKubernetesServiceConnectionListToJSON(
+    json: any,
+): PaginatedKubernetesServiceConnectionList {
     return PaginatedKubernetesServiceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedKubernetesServiceConnectionListToJSONTyped(value?: PaginatedKubernetesServiceConnectionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedKubernetesServiceConnectionListToJSONTyped(
+    value?: PaginatedKubernetesServiceConnectionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(KubernetesServiceConnectionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(KubernetesServiceConnectionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

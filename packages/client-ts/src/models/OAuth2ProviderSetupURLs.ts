@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * OAuth2 Provider Metadata serializer
  * @export
@@ -20,43 +19,43 @@ import { mapValues } from '../runtime';
  */
 export interface OAuth2ProviderSetupURLs {
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderSetupURLs
      */
     readonly issuer: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderSetupURLs
      */
     readonly authorize: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderSetupURLs
      */
     readonly token: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderSetupURLs
      */
     readonly userInfo: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderSetupURLs
      */
     readonly providerInfo: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderSetupURLs
      */
     readonly logout: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuth2ProviderSetupURLs
      */
@@ -67,13 +66,13 @@ export interface OAuth2ProviderSetupURLs {
  * Check if a given object implements the OAuth2ProviderSetupURLs interface.
  */
 export function instanceOfOAuth2ProviderSetupURLs(value: object): value is OAuth2ProviderSetupURLs {
-    if (!('issuer' in value) || value['issuer'] === undefined) return false;
-    if (!('authorize' in value) || value['authorize'] === undefined) return false;
-    if (!('token' in value) || value['token'] === undefined) return false;
-    if (!('userInfo' in value) || value['userInfo'] === undefined) return false;
-    if (!('providerInfo' in value) || value['providerInfo'] === undefined) return false;
-    if (!('logout' in value) || value['logout'] === undefined) return false;
-    if (!('jwks' in value) || value['jwks'] === undefined) return false;
+    if (!("issuer" in value) || value["issuer"] === undefined) return false;
+    if (!("authorize" in value) || value["authorize"] === undefined) return false;
+    if (!("token" in value) || value["token"] === undefined) return false;
+    if (!("userInfo" in value) || value["userInfo"] === undefined) return false;
+    if (!("providerInfo" in value) || value["providerInfo"] === undefined) return false;
+    if (!("logout" in value) || value["logout"] === undefined) return false;
+    if (!("jwks" in value) || value["jwks"] === undefined) return false;
     return true;
 }
 
@@ -81,19 +80,21 @@ export function OAuth2ProviderSetupURLsFromJSON(json: any): OAuth2ProviderSetupU
     return OAuth2ProviderSetupURLsFromJSONTyped(json, false);
 }
 
-export function OAuth2ProviderSetupURLsFromJSONTyped(json: any, ignoreDiscriminator: boolean): OAuth2ProviderSetupURLs {
+export function OAuth2ProviderSetupURLsFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): OAuth2ProviderSetupURLs {
     if (json == null) {
         return json;
     }
     return {
-        
-        'issuer': json['issuer'],
-        'authorize': json['authorize'],
-        'token': json['token'],
-        'userInfo': json['user_info'],
-        'providerInfo': json['provider_info'],
-        'logout': json['logout'],
-        'jwks': json['jwks'],
+        issuer: json["issuer"],
+        authorize: json["authorize"],
+        token: json["token"],
+        userInfo: json["user_info"],
+        providerInfo: json["provider_info"],
+        logout: json["logout"],
+        jwks: json["jwks"],
     };
 }
 
@@ -101,13 +102,16 @@ export function OAuth2ProviderSetupURLsToJSON(json: any): OAuth2ProviderSetupURL
     return OAuth2ProviderSetupURLsToJSONTyped(json, false);
 }
 
-export function OAuth2ProviderSetupURLsToJSONTyped(value?: Omit<OAuth2ProviderSetupURLs, 'issuer'|'authorize'|'token'|'user_info'|'provider_info'|'logout'|'jwks'> | null, ignoreDiscriminator: boolean = false): any {
+export function OAuth2ProviderSetupURLsToJSONTyped(
+    value?: Omit<
+        OAuth2ProviderSetupURLs,
+        "issuer" | "authorize" | "token" | "user_info" | "provider_info" | "logout" | "jwks"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

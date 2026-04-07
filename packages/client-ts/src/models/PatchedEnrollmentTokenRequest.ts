@@ -12,39 +12,38 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface PatchedEnrollmentTokenRequest
  */
 export interface PatchedEnrollmentTokenRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEnrollmentTokenRequest
      */
     deviceGroup?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEnrollmentTokenRequest
      */
     connector?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEnrollmentTokenRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedEnrollmentTokenRequest
      */
     expiring?: boolean;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof PatchedEnrollmentTokenRequest
      */
@@ -54,7 +53,9 @@ export interface PatchedEnrollmentTokenRequest {
 /**
  * Check if a given object implements the PatchedEnrollmentTokenRequest interface.
  */
-export function instanceOfPatchedEnrollmentTokenRequest(value: object): value is PatchedEnrollmentTokenRequest {
+export function instanceOfPatchedEnrollmentTokenRequest(
+    value: object,
+): value is PatchedEnrollmentTokenRequest {
     return true;
 }
 
@@ -62,17 +63,19 @@ export function PatchedEnrollmentTokenRequestFromJSON(json: any): PatchedEnrollm
     return PatchedEnrollmentTokenRequestFromJSONTyped(json, false);
 }
 
-export function PatchedEnrollmentTokenRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedEnrollmentTokenRequest {
+export function PatchedEnrollmentTokenRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedEnrollmentTokenRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'deviceGroup': json['device_group'] == null ? undefined : json['device_group'],
-        'connector': json['connector'] == null ? undefined : json['connector'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'expiring': json['expiring'] == null ? undefined : json['expiring'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
+        deviceGroup: json["device_group"] == null ? undefined : json["device_group"],
+        connector: json["connector"] == null ? undefined : json["connector"],
+        name: json["name"] == null ? undefined : json["name"],
+        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
     };
 }
 
@@ -80,18 +83,19 @@ export function PatchedEnrollmentTokenRequestToJSON(json: any): PatchedEnrollmen
     return PatchedEnrollmentTokenRequestToJSONTyped(json, false);
 }
 
-export function PatchedEnrollmentTokenRequestToJSONTyped(value?: PatchedEnrollmentTokenRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedEnrollmentTokenRequestToJSONTyped(
+    value?: PatchedEnrollmentTokenRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'device_group': value['deviceGroup'],
-        'connector': value['connector'],
-        'name': value['name'],
-        'expiring': value['expiring'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
+        device_group: value["deviceGroup"],
+        connector: value["connector"],
+        name: value["name"],
+        expiring: value["expiring"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
     };
 }
-

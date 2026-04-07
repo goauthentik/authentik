@@ -33,6 +33,8 @@ class DeliveryMethods(models.TextChoices):
 
     RISC_PUSH = "https://schemas.openid.net/secevent/risc/delivery-method/push"
     RISC_POLL = "https://schemas.openid.net/secevent/risc/delivery-method/poll"
+    RFC_PUSH = "urn:ietf:rfc:8935", _("SSF RFC Push")
+    RFC_PULL = "urn:ietf:rfc:8936", _("SSF RFC Pull")
 
 
 class SSFEventStatus(models.TextChoices):
@@ -41,6 +43,13 @@ class SSFEventStatus(models.TextChoices):
     PENDING_NEW = "pending_new"
     PENDING_FAILED = "pending_failed"
     SENT = "sent"
+
+
+class StreamStatus(models.TextChoices):
+
+    ENABLED = "enabled"
+    PAUSED = "paused"
+    DISABLED = "disabled"
 
 
 class SSFProvider(TasksModel, BackchannelProvider):
@@ -53,6 +62,8 @@ class SSFProvider(TasksModel, BackchannelProvider):
         on_delete=models.CASCADE,
         help_text=_("Key used to sign the SSF Events."),
     )
+
+    push_verify_certificates = models.BooleanField(default=True)
 
     oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
 
@@ -106,10 +117,14 @@ class Stream(models.Model):
     """SSF Stream"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+
+    status = models.TextField(choices=StreamStatus.choices, default=StreamStatus.ENABLED)
+
     provider = models.ForeignKey(SSFProvider, on_delete=models.CASCADE)
 
     delivery_method = models.TextField(choices=DeliveryMethods.choices)
     endpoint_url = models.TextField(null=True)
+    authorization_header = models.TextField(null=True, default=None)
 
     events_requested = ArrayField(models.TextField(choices=EventTypes.choices), default=list)
     format = models.TextField()
@@ -146,7 +161,7 @@ class Stream(models.Model):
         }
 
     def encode(self, data: dict) -> str:
-        headers = {}
+        headers = {"typ": "secevent+jwt"}
         if self.provider.signing_key:
             headers["kid"] = self.provider.signing_key.kid
         key, alg = self.provider.jwt_key
