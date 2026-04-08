@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "2.6.0",
+    "version": "2.7.0",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "repository": {
@@ -30,9 +30,9 @@
         "prism-react-renderer": "^2.4.1"
     },
     "devDependencies": {
-        "@docusaurus/theme-common": "3.9.2",
-        "@docusaurus/theme-search-algolia": "^3.9.2",
-        "@docusaurus/types": "^3.9.2",
+        "@docusaurus/theme-common": "3.10.0",
+        "@docusaurus/theme-search-algolia": "^3.10.0",
+        "@docusaurus/types": "^3.10.0",
         "@eslint/js": "^9.39.3",
         "@goauthentik/eslint-config": "../eslint-config",
         "@goauthentik/prettier-config": "../prettier-config",

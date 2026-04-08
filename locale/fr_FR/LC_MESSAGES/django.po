@@ -4,9 +4,10 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Charles Leclerc, 2025
 # Marc Schmitt, 2025
 # Esteban, 2026
+# nerdinator <florian.dupret@gmail.com>, 2026
+# Charles Leclerc, 2026
 # Sp P, 2026
 # 
 #, fuzzy
@@ -14,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-02 00:18+0000\n"
+"POT-Creation-Date: 2026-04-08 00:28+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Sp P, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/authentik/teams/119923/fr_FR/)\n"
@@ -1247,6 +1248,14 @@ msgid "Enterprise is required to use the OAuth mode."
 msgstr "Enterprise est requis pour utiliser le mode OAuth."
 
 #: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Push"
+msgstr "Push d'après la RFC de SSF"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Pull"
+msgstr "Pull d'après la RFC de SSF"
+
+#: authentik/enterprise/providers/ssf/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Signing Key"
 msgstr "Clé de signature"
@@ -2255,6 +2264,14 @@ msgstr "Comparaison stricte d'URL"
 #: authentik/providers/oauth2/models.py
 msgid "Regular Expression URL matching"
 msgstr "Correspondance d'URL par expression régulière"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization"
+msgstr "Authorisation"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout"
+msgstr "Déconnexion"
 
 #: authentik/providers/oauth2/models.py
 msgid "Back-channel"
@@ -3300,7 +3317,7 @@ msgstr ""
 "                    Veuillez contacter votre administrateur.\n"
 "                "
 
-#: authentik/sources/ldap/api.py
+#: authentik/sources/ldap/api/sources.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr ""
 "Une seule source LDAP avec synchronisation de mot de passe est autorisée"
