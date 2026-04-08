@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { UserTypeEnum } from './UserTypeEnum';
-import {
-    UserTypeEnumFromJSON,
-    UserTypeEnumFromJSONTyped,
-    UserTypeEnumToJSON,
-    UserTypeEnumToJSONTyped,
-} from './UserTypeEnum';
-import type { UserCreationModeEnum } from './UserCreationModeEnum';
-import {
-    UserCreationModeEnumFromJSON,
-    UserCreationModeEnumFromJSONTyped,
-    UserCreationModeEnumToJSON,
-    UserCreationModeEnumToJSONTyped,
-} from './UserCreationModeEnum';
+import type { UserCreationModeEnum } from "./UserCreationModeEnum";
+import { UserCreationModeEnumFromJSON, UserCreationModeEnumToJSON } from "./UserCreationModeEnum";
+import type { UserTypeEnum } from "./UserTypeEnum";
+import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 
 /**
  * UserWriteStage Serializer
@@ -35,13 +24,13 @@ import {
  */
 export interface PatchedUserWriteStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserWriteStageRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {UserCreationModeEnum}
      * @memberof PatchedUserWriteStageRequest
      */
@@ -59,25 +48,25 @@ export interface PatchedUserWriteStageRequest {
      */
     createUsersGroup?: string | null;
     /**
-     * 
+     *
      * @type {UserTypeEnum}
      * @memberof PatchedUserWriteStageRequest
      */
     userType?: UserTypeEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserWriteStageRequest
      */
     userPathTemplate?: string;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedUserWriteStageRequest interface.
  */
-export function instanceOfPatchedUserWriteStageRequest(value: object): value is PatchedUserWriteStageRequest {
+export function instanceOfPatchedUserWriteStageRequest(
+    value: object,
+): value is PatchedUserWriteStageRequest {
     return true;
 }
 
@@ -85,18 +74,26 @@ export function PatchedUserWriteStageRequestFromJSON(json: any): PatchedUserWrit
     return PatchedUserWriteStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserWriteStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserWriteStageRequest {
+export function PatchedUserWriteStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedUserWriteStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'userCreationMode': json['user_creation_mode'] == null ? undefined : UserCreationModeEnumFromJSON(json['user_creation_mode']),
-        'createUsersAsInactive': json['create_users_as_inactive'] == null ? undefined : json['create_users_as_inactive'],
-        'createUsersGroup': json['create_users_group'] == null ? undefined : json['create_users_group'],
-        'userType': json['user_type'] == null ? undefined : UserTypeEnumFromJSON(json['user_type']),
-        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
+        name: json["name"] == null ? undefined : json["name"],
+        userCreationMode:
+            json["user_creation_mode"] == null
+                ? undefined
+                : UserCreationModeEnumFromJSON(json["user_creation_mode"]),
+        createUsersAsInactive:
+            json["create_users_as_inactive"] == null ? undefined : json["create_users_as_inactive"],
+        createUsersGroup:
+            json["create_users_group"] == null ? undefined : json["create_users_group"],
+        userType: json["user_type"] == null ? undefined : UserTypeEnumFromJSON(json["user_type"]),
+        userPathTemplate:
+            json["user_path_template"] == null ? undefined : json["user_path_template"],
     };
 }
 
@@ -104,19 +101,20 @@ export function PatchedUserWriteStageRequestToJSON(json: any): PatchedUserWriteS
     return PatchedUserWriteStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserWriteStageRequestToJSONTyped(value?: PatchedUserWriteStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedUserWriteStageRequestToJSONTyped(
+    value?: PatchedUserWriteStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'user_creation_mode': UserCreationModeEnumToJSON(value['userCreationMode']),
-        'create_users_as_inactive': value['createUsersAsInactive'],
-        'create_users_group': value['createUsersGroup'],
-        'user_type': UserTypeEnumToJSON(value['userType']),
-        'user_path_template': value['userPathTemplate'],
+        name: value["name"],
+        user_creation_mode: UserCreationModeEnumToJSON(value["userCreationMode"]),
+        create_users_as_inactive: value["createUsersAsInactive"],
+        create_users_group: value["createUsersGroup"],
+        user_type: UserTypeEnumToJSON(value["userType"]),
+        user_path_template: value["userPathTemplate"],
     };
 }
-

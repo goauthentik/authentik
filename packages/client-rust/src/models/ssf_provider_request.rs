@@ -25,6 +25,11 @@ pub struct SsfProviderRequest {
     pub oidc_auth_providers: Option<Vec<i32>>,
     #[serde(rename = "event_retention", skip_serializing_if = "Option::is_none")]
     pub event_retention: Option<String>,
+    #[serde(
+        rename = "push_verify_certificates",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub push_verify_certificates: Option<bool>,
 }
 
 impl SsfProviderRequest {
@@ -35,6 +40,7 @@ impl SsfProviderRequest {
             signing_key,
             oidc_auth_providers: None,
             event_retention: None,
+            push_verify_certificates: None,
         }
     }
 }

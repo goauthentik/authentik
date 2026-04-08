@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialUser } from './PartialUser';
-import {
-    PartialUserFromJSON,
-    PartialUserFromJSONTyped,
-    PartialUserToJSON,
-    PartialUserToJSONTyped,
-} from './PartialUser';
-import type { ContentType } from './ContentType';
-import {
-    ContentTypeFromJSON,
-    ContentTypeFromJSONTyped,
-    ContentTypeToJSON,
-    ContentTypeToJSONTyped,
-} from './ContentType';
+import type { ContentType } from "./ContentType";
+import { ContentTypeFromJSON } from "./ContentType";
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -36,43 +25,43 @@ import {
  */
 export interface DataExport {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DataExport
      */
     readonly id: string;
     /**
-     * 
+     *
      * @type {PartialUser}
      * @memberof DataExport
      */
     readonly requestedBy: PartialUser;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof DataExport
      */
     readonly requestedOn: Date;
     /**
-     * 
+     *
      * @type {ContentType}
      * @memberof DataExport
      */
     readonly contentType: ContentType;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof DataExport
      */
-    queryParams: { [key: string]: any; };
+    queryParams: { [key: string]: any };
     /**
-     * 
+     *
      * @type {string}
      * @memberof DataExport
      */
     readonly fileUrl: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof DataExport
      */
@@ -83,13 +72,13 @@ export interface DataExport {
  * Check if a given object implements the DataExport interface.
  */
 export function instanceOfDataExport(value: object): value is DataExport {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('requestedBy' in value) || value['requestedBy'] === undefined) return false;
-    if (!('requestedOn' in value) || value['requestedOn'] === undefined) return false;
-    if (!('contentType' in value) || value['contentType'] === undefined) return false;
-    if (!('queryParams' in value) || value['queryParams'] === undefined) return false;
-    if (!('fileUrl' in value) || value['fileUrl'] === undefined) return false;
-    if (!('completed' in value) || value['completed'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("requestedBy" in value) || value["requestedBy"] === undefined) return false;
+    if (!("requestedOn" in value) || value["requestedOn"] === undefined) return false;
+    if (!("contentType" in value) || value["contentType"] === undefined) return false;
+    if (!("queryParams" in value) || value["queryParams"] === undefined) return false;
+    if (!("fileUrl" in value) || value["fileUrl"] === undefined) return false;
+    if (!("completed" in value) || value["completed"] === undefined) return false;
     return true;
 }
 
@@ -102,14 +91,13 @@ export function DataExportFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'requestedBy': PartialUserFromJSON(json['requested_by']),
-        'requestedOn': (new Date(json['requested_on'])),
-        'contentType': ContentTypeFromJSON(json['content_type']),
-        'queryParams': json['query_params'],
-        'fileUrl': json['file_url'],
-        'completed': json['completed'],
+        id: json["id"],
+        requestedBy: PartialUserFromJSON(json["requested_by"]),
+        requestedOn: new Date(json["requested_on"]),
+        contentType: ContentTypeFromJSON(json["content_type"]),
+        queryParams: json["query_params"],
+        fileUrl: json["file_url"],
+        completed: json["completed"],
     };
 }
 
@@ -117,14 +105,18 @@ export function DataExportToJSON(json: any): DataExport {
     return DataExportToJSONTyped(json, false);
 }
 
-export function DataExportToJSONTyped(value?: Omit<DataExport, 'id'|'requested_by'|'requested_on'|'content_type'|'file_url'|'completed'> | null, ignoreDiscriminator: boolean = false): any {
+export function DataExportToJSONTyped(
+    value?: Omit<
+        DataExport,
+        "id" | "requested_by" | "requested_on" | "content_type" | "file_url" | "completed"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'query_params': value['queryParams'],
+        query_params: value["queryParams"],
     };
 }
-

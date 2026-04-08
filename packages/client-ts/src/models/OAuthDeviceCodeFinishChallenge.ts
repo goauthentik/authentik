@@ -12,21 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Final challenge after user enters their code
@@ -35,29 +23,31 @@ import {
  */
 export interface OAuthDeviceCodeFinishChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof OAuthDeviceCodeFinishChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OAuthDeviceCodeFinishChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof OAuthDeviceCodeFinishChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
 }
 
 /**
  * Check if a given object implements the OAuthDeviceCodeFinishChallenge interface.
  */
-export function instanceOfOAuthDeviceCodeFinishChallenge(value: object): value is OAuthDeviceCodeFinishChallenge {
+export function instanceOfOAuthDeviceCodeFinishChallenge(
+    value: object,
+): value is OAuthDeviceCodeFinishChallenge {
     return true;
 }
 
@@ -65,15 +55,18 @@ export function OAuthDeviceCodeFinishChallengeFromJSON(json: any): OAuthDeviceCo
     return OAuthDeviceCodeFinishChallengeFromJSONTyped(json, false);
 }
 
-export function OAuthDeviceCodeFinishChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): OAuthDeviceCodeFinishChallenge {
+export function OAuthDeviceCodeFinishChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): OAuthDeviceCodeFinishChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
     };
 }
 
@@ -81,16 +74,17 @@ export function OAuthDeviceCodeFinishChallengeToJSON(json: any): OAuthDeviceCode
     return OAuthDeviceCodeFinishChallengeToJSONTyped(json, false);
 }
 
-export function OAuthDeviceCodeFinishChallengeToJSONTyped(value?: OAuthDeviceCodeFinishChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function OAuthDeviceCodeFinishChallengeToJSONTyped(
+    value?: OAuthDeviceCodeFinishChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
     };
 }
-

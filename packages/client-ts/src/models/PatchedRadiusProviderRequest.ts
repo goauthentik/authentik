@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * RadiusProvider Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedRadiusProviderRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedRadiusProviderRequest
      */
@@ -44,7 +43,7 @@ export interface PatchedRadiusProviderRequest {
      */
     invalidationFlow?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedRadiusProviderRequest
      */
@@ -68,7 +67,7 @@ export interface PatchedRadiusProviderRequest {
      */
     mfaSupport?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedRadiusProviderRequest
      */
@@ -78,7 +77,9 @@ export interface PatchedRadiusProviderRequest {
 /**
  * Check if a given object implements the PatchedRadiusProviderRequest interface.
  */
-export function instanceOfPatchedRadiusProviderRequest(value: object): value is PatchedRadiusProviderRequest {
+export function instanceOfPatchedRadiusProviderRequest(
+    value: object,
+): value is PatchedRadiusProviderRequest {
     return true;
 }
 
@@ -86,21 +87,25 @@ export function PatchedRadiusProviderRequestFromJSON(json: any): PatchedRadiusPr
     return PatchedRadiusProviderRequestFromJSONTyped(json, false);
 }
 
-export function PatchedRadiusProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedRadiusProviderRequest {
+export function PatchedRadiusProviderRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedRadiusProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'authorizationFlow': json['authorization_flow'] == null ? undefined : json['authorization_flow'],
-        'invalidationFlow': json['invalidation_flow'] == null ? undefined : json['invalidation_flow'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'clientNetworks': json['client_networks'] == null ? undefined : json['client_networks'],
-        'sharedSecret': json['shared_secret'] == null ? undefined : json['shared_secret'],
-        'mfaSupport': json['mfa_support'] == null ? undefined : json['mfa_support'],
-        'certificate': json['certificate'] == null ? undefined : json['certificate'],
+        name: json["name"] == null ? undefined : json["name"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        authorizationFlow:
+            json["authorization_flow"] == null ? undefined : json["authorization_flow"],
+        invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
+        sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
+        mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
+        certificate: json["certificate"] == null ? undefined : json["certificate"],
     };
 }
 
@@ -108,22 +113,23 @@ export function PatchedRadiusProviderRequestToJSON(json: any): PatchedRadiusProv
     return PatchedRadiusProviderRequestToJSONTyped(json, false);
 }
 
-export function PatchedRadiusProviderRequestToJSONTyped(value?: PatchedRadiusProviderRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedRadiusProviderRequestToJSONTyped(
+    value?: PatchedRadiusProviderRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'authentication_flow': value['authenticationFlow'],
-        'authorization_flow': value['authorizationFlow'],
-        'invalidation_flow': value['invalidationFlow'],
-        'property_mappings': value['propertyMappings'],
-        'client_networks': value['clientNetworks'],
-        'shared_secret': value['sharedSecret'],
-        'mfa_support': value['mfaSupport'],
-        'certificate': value['certificate'],
+        name: value["name"],
+        authentication_flow: value["authenticationFlow"],
+        authorization_flow: value["authorizationFlow"],
+        invalidation_flow: value["invalidationFlow"],
+        property_mappings: value["propertyMappings"],
+        client_networks: value["clientNetworks"],
+        shared_secret: value["sharedSecret"],
+        mfa_support: value["mfaSupport"],
+        certificate: value["certificate"],
     };
 }
-

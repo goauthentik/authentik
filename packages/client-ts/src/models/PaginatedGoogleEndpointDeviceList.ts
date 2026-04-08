@@ -12,88 +12,86 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { GoogleEndpointDevice } from './GoogleEndpointDevice';
-import {
-    GoogleEndpointDeviceFromJSON,
-    GoogleEndpointDeviceFromJSONTyped,
-    GoogleEndpointDeviceToJSON,
-    GoogleEndpointDeviceToJSONTyped,
-} from './GoogleEndpointDevice';
+import type { GoogleEndpointDevice } from "./GoogleEndpointDevice";
+import { GoogleEndpointDeviceFromJSON, GoogleEndpointDeviceToJSON } from "./GoogleEndpointDevice";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedGoogleEndpointDeviceList
  */
 export interface PaginatedGoogleEndpointDeviceList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedGoogleEndpointDeviceList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<GoogleEndpointDevice>}
      * @memberof PaginatedGoogleEndpointDeviceList
      */
     results: Array<GoogleEndpointDevice>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedGoogleEndpointDeviceList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedGoogleEndpointDeviceList interface.
  */
-export function instanceOfPaginatedGoogleEndpointDeviceList(value: object): value is PaginatedGoogleEndpointDeviceList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedGoogleEndpointDeviceList(
+    value: object,
+): value is PaginatedGoogleEndpointDeviceList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedGoogleEndpointDeviceListFromJSON(json: any): PaginatedGoogleEndpointDeviceList {
+export function PaginatedGoogleEndpointDeviceListFromJSON(
+    json: any,
+): PaginatedGoogleEndpointDeviceList {
     return PaginatedGoogleEndpointDeviceListFromJSONTyped(json, false);
 }
 
-export function PaginatedGoogleEndpointDeviceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGoogleEndpointDeviceList {
+export function PaginatedGoogleEndpointDeviceListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedGoogleEndpointDeviceList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(GoogleEndpointDeviceFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(GoogleEndpointDeviceFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedGoogleEndpointDeviceListToJSON(json: any): PaginatedGoogleEndpointDeviceList {
+export function PaginatedGoogleEndpointDeviceListToJSON(
+    json: any,
+): PaginatedGoogleEndpointDeviceList {
     return PaginatedGoogleEndpointDeviceListToJSONTyped(json, false);
 }
 
-export function PaginatedGoogleEndpointDeviceListToJSONTyped(value?: PaginatedGoogleEndpointDeviceList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedGoogleEndpointDeviceListToJSONTyped(
+    value?: PaginatedGoogleEndpointDeviceList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(GoogleEndpointDeviceToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(GoogleEndpointDeviceToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

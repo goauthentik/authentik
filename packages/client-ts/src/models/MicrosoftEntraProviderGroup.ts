@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialGroup } from './PartialGroup';
-import {
-    PartialGroupFromJSON,
-    PartialGroupFromJSONTyped,
-    PartialGroupToJSON,
-    PartialGroupToJSONTyped,
-} from './PartialGroup';
+import type { PartialGroup } from "./PartialGroup";
+import { PartialGroupFromJSON } from "./PartialGroup";
 
 /**
  * MicrosoftEntraProviderGroup Serializer
@@ -28,53 +22,55 @@ import {
  */
 export interface MicrosoftEntraProviderGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderGroup
      */
     readonly id: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderGroup
      */
     microsoftId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderGroup
      */
     group: string;
     /**
-     * 
+     *
      * @type {PartialGroup}
      * @memberof MicrosoftEntraProviderGroup
      */
     readonly groupObj: PartialGroup;
     /**
-     * 
+     *
      * @type {number}
      * @memberof MicrosoftEntraProviderGroup
      */
     provider: number;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof MicrosoftEntraProviderGroup
      */
-    readonly attributes: { [key: string]: any; };
+    readonly attributes: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the MicrosoftEntraProviderGroup interface.
  */
-export function instanceOfMicrosoftEntraProviderGroup(value: object): value is MicrosoftEntraProviderGroup {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('microsoftId' in value) || value['microsoftId'] === undefined) return false;
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('groupObj' in value) || value['groupObj'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('attributes' in value) || value['attributes'] === undefined) return false;
+export function instanceOfMicrosoftEntraProviderGroup(
+    value: object,
+): value is MicrosoftEntraProviderGroup {
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("microsoftId" in value) || value["microsoftId"] === undefined) return false;
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
 }
 
@@ -82,18 +78,20 @@ export function MicrosoftEntraProviderGroupFromJSON(json: any): MicrosoftEntraPr
     return MicrosoftEntraProviderGroupFromJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderGroupFromJSONTyped(json: any, ignoreDiscriminator: boolean): MicrosoftEntraProviderGroup {
+export function MicrosoftEntraProviderGroupFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): MicrosoftEntraProviderGroup {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'microsoftId': json['microsoft_id'],
-        'group': json['group'],
-        'groupObj': PartialGroupFromJSON(json['group_obj']),
-        'provider': json['provider'],
-        'attributes': json['attributes'],
+        id: json["id"],
+        microsoftId: json["microsoft_id"],
+        group: json["group"],
+        groupObj: PartialGroupFromJSON(json["group_obj"]),
+        provider: json["provider"],
+        attributes: json["attributes"],
     };
 }
 
@@ -101,16 +99,17 @@ export function MicrosoftEntraProviderGroupToJSON(json: any): MicrosoftEntraProv
     return MicrosoftEntraProviderGroupToJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderGroupToJSONTyped(value?: Omit<MicrosoftEntraProviderGroup, 'id'|'group_obj'|'attributes'> | null, ignoreDiscriminator: boolean = false): any {
+export function MicrosoftEntraProviderGroupToJSONTyped(
+    value?: Omit<MicrosoftEntraProviderGroup, "id" | "group_obj" | "attributes"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'microsoft_id': value['microsoftId'],
-        'group': value['group'],
-        'provider': value['provider'],
+        microsoft_id: value["microsoftId"],
+        group: value["group"],
+        provider: value["provider"],
     };
 }
-

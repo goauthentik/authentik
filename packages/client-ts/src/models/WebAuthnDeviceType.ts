@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * WebAuthnDeviceType Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface WebAuthnDeviceType {
     /**
-     * 
+     *
      * @type {string}
      * @memberof WebAuthnDeviceType
      */
     aaguid: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof WebAuthnDeviceType
      */
@@ -37,8 +36,8 @@ export interface WebAuthnDeviceType {
  * Check if a given object implements the WebAuthnDeviceType interface.
  */
 export function instanceOfWebAuthnDeviceType(value: object): value is WebAuthnDeviceType {
-    if (!('aaguid' in value) || value['aaguid'] === undefined) return false;
-    if (!('description' in value) || value['description'] === undefined) return false;
+    if (!("aaguid" in value) || value["aaguid"] === undefined) return false;
+    if (!("description" in value) || value["description"] === undefined) return false;
     return true;
 }
 
@@ -46,14 +45,16 @@ export function WebAuthnDeviceTypeFromJSON(json: any): WebAuthnDeviceType {
     return WebAuthnDeviceTypeFromJSONTyped(json, false);
 }
 
-export function WebAuthnDeviceTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): WebAuthnDeviceType {
+export function WebAuthnDeviceTypeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): WebAuthnDeviceType {
     if (json == null) {
         return json;
     }
     return {
-        
-        'aaguid': json['aaguid'],
-        'description': json['description'],
+        aaguid: json["aaguid"],
+        description: json["description"],
     };
 }
 
@@ -61,15 +62,16 @@ export function WebAuthnDeviceTypeToJSON(json: any): WebAuthnDeviceType {
     return WebAuthnDeviceTypeToJSONTyped(json, false);
 }
 
-export function WebAuthnDeviceTypeToJSONTyped(value?: WebAuthnDeviceType | null, ignoreDiscriminator: boolean = false): any {
+export function WebAuthnDeviceTypeToJSONTyped(
+    value?: WebAuthnDeviceType | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'aaguid': value['aaguid'],
-        'description': value['description'],
+        aaguid: value["aaguid"],
+        description: value["description"],
     };
 }
-

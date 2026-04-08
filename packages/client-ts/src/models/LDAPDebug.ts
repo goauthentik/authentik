@@ -12,40 +12,39 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface LDAPDebug
  */
 export interface LDAPDebug {
     /**
-     * 
+     *
      * @type {Array<{ [key: string]: any; }>}
      * @memberof LDAPDebug
      */
-    readonly user: Array<{ [key: string]: any; }>;
+    readonly user: Array<{ [key: string]: any }>;
     /**
-     * 
+     *
      * @type {Array<{ [key: string]: any; }>}
      * @memberof LDAPDebug
      */
-    readonly group: Array<{ [key: string]: any; }>;
+    readonly group: Array<{ [key: string]: any }>;
     /**
-     * 
+     *
      * @type {Array<{ [key: string]: any; }>}
      * @memberof LDAPDebug
      */
-    readonly membership: Array<{ [key: string]: any; }>;
+    readonly membership: Array<{ [key: string]: any }>;
 }
 
 /**
  * Check if a given object implements the LDAPDebug interface.
  */
 export function instanceOfLDAPDebug(value: object): value is LDAPDebug {
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('membership' in value) || value['membership'] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("membership" in value) || value["membership"] === undefined) return false;
     return true;
 }
 
@@ -58,10 +57,9 @@ export function LDAPDebugFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        
-        'user': json['user'],
-        'group': json['group'],
-        'membership': json['membership'],
+        user: json["user"],
+        group: json["group"],
+        membership: json["membership"],
     };
 }
 
@@ -69,13 +67,13 @@ export function LDAPDebugToJSON(json: any): LDAPDebug {
     return LDAPDebugToJSONTyped(json, false);
 }
 
-export function LDAPDebugToJSONTyped(value?: Omit<LDAPDebug, 'user'|'group'|'membership'> | null, ignoreDiscriminator: boolean = false): any {
+export function LDAPDebugToJSONTyped(
+    value?: Omit<LDAPDebug, "user" | "group" | "membership"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

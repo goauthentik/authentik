@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -20,31 +19,31 @@ import { mapValues } from '../runtime';
  */
 export interface UserOAuthSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserOAuthSourceConnectionRequest
      */
     user: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserOAuthSourceConnectionRequest
      */
     source: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserOAuthSourceConnectionRequest
      */
     identifier: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserOAuthSourceConnectionRequest
      */
     accessToken?: string | null;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserOAuthSourceConnectionRequest
      */
@@ -54,47 +53,56 @@ export interface UserOAuthSourceConnectionRequest {
 /**
  * Check if a given object implements the UserOAuthSourceConnectionRequest interface.
  */
-export function instanceOfUserOAuthSourceConnectionRequest(value: object): value is UserOAuthSourceConnectionRequest {
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+export function instanceOfUserOAuthSourceConnectionRequest(
+    value: object,
+): value is UserOAuthSourceConnectionRequest {
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
 }
 
-export function UserOAuthSourceConnectionRequestFromJSON(json: any): UserOAuthSourceConnectionRequest {
+export function UserOAuthSourceConnectionRequestFromJSON(
+    json: any,
+): UserOAuthSourceConnectionRequest {
     return UserOAuthSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function UserOAuthSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserOAuthSourceConnectionRequest {
+export function UserOAuthSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserOAuthSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'user': json['user'],
-        'source': json['source'],
-        'identifier': json['identifier'],
-        'accessToken': json['access_token'] == null ? undefined : json['access_token'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
+        user: json["user"],
+        source: json["source"],
+        identifier: json["identifier"],
+        accessToken: json["access_token"] == null ? undefined : json["access_token"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
     };
 }
 
-export function UserOAuthSourceConnectionRequestToJSON(json: any): UserOAuthSourceConnectionRequest {
+export function UserOAuthSourceConnectionRequestToJSON(
+    json: any,
+): UserOAuthSourceConnectionRequest {
     return UserOAuthSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function UserOAuthSourceConnectionRequestToJSONTyped(value?: UserOAuthSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function UserOAuthSourceConnectionRequestToJSONTyped(
+    value?: UserOAuthSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
-        'access_token': value['accessToken'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
+        access_token: value["accessToken"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
     };
 }
-

@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * DenyStage Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface DenyStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DenyStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DenyStage
      */
@@ -64,13 +58,13 @@ export interface DenyStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof DenyStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DenyStage
      */
@@ -81,13 +75,13 @@ export interface DenyStage {
  * Check if a given object implements the DenyStage interface.
  */
 export function instanceOfDenyStage(value: object): value is DenyStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
     return true;
 }
 
@@ -100,15 +94,14 @@ export function DenyStageFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'denyMessage': json['deny_message'] == null ? undefined : json['deny_message'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        denyMessage: json["deny_message"] == null ? undefined : json["deny_message"],
     };
 }
 
@@ -116,15 +109,19 @@ export function DenyStageToJSON(json: any): DenyStage {
     return DenyStageToJSONTyped(json, false);
 }
 
-export function DenyStageToJSONTyped(value?: Omit<DenyStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function DenyStageToJSONTyped(
+    value?: Omit<
+        DenyStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'deny_message': value['denyMessage'],
+        name: value["name"],
+        deny_message: value["denyMessage"],
     };
 }
-

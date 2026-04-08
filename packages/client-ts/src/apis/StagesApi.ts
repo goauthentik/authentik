@@ -12,423 +12,266 @@
  * Do not edit the class manually.
  */
 
-
-import * as runtime from '../runtime';
 import type {
-  AuthTypeEnum,
-  AuthenticatorAttachmentEnum,
-  AuthenticatorDuoStage,
-  AuthenticatorDuoStageDeviceImportResponse,
-  AuthenticatorDuoStageManualDeviceImportRequest,
-  AuthenticatorDuoStageRequest,
-  AuthenticatorEmailStage,
-  AuthenticatorEmailStageRequest,
-  AuthenticatorEndpointGDTCStage,
-  AuthenticatorEndpointGDTCStageRequest,
-  AuthenticatorSMSStage,
-  AuthenticatorSMSStageRequest,
-  AuthenticatorStaticStage,
-  AuthenticatorStaticStageRequest,
-  AuthenticatorTOTPStage,
-  AuthenticatorTOTPStageRequest,
-  AuthenticatorValidateStage,
-  AuthenticatorValidateStageRequest,
-  AuthenticatorWebAuthnStage,
-  AuthenticatorWebAuthnStageRequest,
-  CaptchaStage,
-  CaptchaStageRequest,
-  CertAttributeEnum,
-  ConsentModeEnum,
-  ConsentStage,
-  ConsentStageRequest,
-  DenyStage,
-  DenyStageRequest,
-  DigitsEnum,
-  DummyStage,
-  DummyStageRequest,
-  DuoDeviceEnrollmentStatus,
-  EmailStage,
-  EmailStageRequest,
-  EndpointStage,
-  EndpointStageRequest,
-  GenericError,
-  GeoipBindingEnum,
-  IdentificationStage,
-  IdentificationStageRequest,
-  Invitation,
-  InvitationRequest,
-  InvitationSendEmailRequest,
-  InvitationStage,
-  InvitationStageRequest,
-  MutualTLSStage,
-  MutualTLSStageRequest,
-  NetworkBindingEnum,
-  NotConfiguredActionEnum,
-  PaginatedAuthenticatorDuoStageList,
-  PaginatedAuthenticatorEmailStageList,
-  PaginatedAuthenticatorEndpointGDTCStageList,
-  PaginatedAuthenticatorSMSStageList,
-  PaginatedAuthenticatorStaticStageList,
-  PaginatedAuthenticatorTOTPStageList,
-  PaginatedAuthenticatorValidateStageList,
-  PaginatedAuthenticatorWebAuthnStageList,
-  PaginatedCaptchaStageList,
-  PaginatedConsentStageList,
-  PaginatedDenyStageList,
-  PaginatedDummyStageList,
-  PaginatedEmailStageList,
-  PaginatedEndpointStageList,
-  PaginatedIdentificationStageList,
-  PaginatedInvitationList,
-  PaginatedInvitationStageList,
-  PaginatedMutualTLSStageList,
-  PaginatedPasswordStageList,
-  PaginatedPromptList,
-  PaginatedPromptStageList,
-  PaginatedRedirectStageList,
-  PaginatedSourceStageList,
-  PaginatedStageList,
-  PaginatedUserDeleteStageList,
-  PaginatedUserLoginStageList,
-  PaginatedUserLogoutStageList,
-  PaginatedUserWriteStageList,
-  PaginatedWebAuthnDeviceTypeList,
-  PasswordStage,
-  PasswordStageRequest,
-  PatchedAuthenticatorDuoStageRequest,
-  PatchedAuthenticatorEmailStageRequest,
-  PatchedAuthenticatorEndpointGDTCStageRequest,
-  PatchedAuthenticatorSMSStageRequest,
-  PatchedAuthenticatorStaticStageRequest,
-  PatchedAuthenticatorTOTPStageRequest,
-  PatchedAuthenticatorValidateStageRequest,
-  PatchedAuthenticatorWebAuthnStageRequest,
-  PatchedCaptchaStageRequest,
-  PatchedConsentStageRequest,
-  PatchedDenyStageRequest,
-  PatchedDummyStageRequest,
-  PatchedEmailStageRequest,
-  PatchedEndpointStageRequest,
-  PatchedIdentificationStageRequest,
-  PatchedInvitationRequest,
-  PatchedInvitationStageRequest,
-  PatchedMutualTLSStageRequest,
-  PatchedPasswordStageRequest,
-  PatchedPromptRequest,
-  PatchedPromptStageRequest,
-  PatchedRedirectStageRequest,
-  PatchedSourceStageRequest,
-  PatchedUserDeleteStageRequest,
-  PatchedUserLoginStageRequest,
-  PatchedUserLogoutStageRequest,
-  PatchedUserWriteStageRequest,
-  Prompt,
-  PromptChallenge,
-  PromptRequest,
-  PromptStage,
-  PromptStageRequest,
-  PromptTypeEnum,
-  ProviderEnum,
-  RedirectStage,
-  RedirectStageRequest,
-  SourceStage,
-  SourceStageRequest,
-  Stage,
-  StageModeEnum,
-  TypeCreate,
-  UsedBy,
-  UserAttributeEnum,
-  UserCreationModeEnum,
-  UserDeleteStage,
-  UserDeleteStageRequest,
-  UserLoginStage,
-  UserLoginStageRequest,
-  UserLogoutStage,
-  UserLogoutStageRequest,
-  UserSetting,
-  UserTypeEnum,
-  UserVerificationEnum,
-  UserWriteStage,
-  UserWriteStageRequest,
-  ValidationError,
-  WebAuthnDeviceType,
-} from '../models/index';
+    AuthenticatorAttachmentEnum,
+    AuthenticatorDuoStage,
+    AuthenticatorDuoStageDeviceImportResponse,
+    AuthenticatorDuoStageManualDeviceImportRequest,
+    AuthenticatorDuoStageRequest,
+    AuthenticatorEmailStage,
+    AuthenticatorEmailStageRequest,
+    AuthenticatorEndpointGDTCStage,
+    AuthenticatorEndpointGDTCStageRequest,
+    AuthenticatorSMSStage,
+    AuthenticatorSMSStageRequest,
+    AuthenticatorStaticStage,
+    AuthenticatorStaticStageRequest,
+    AuthenticatorTOTPStage,
+    AuthenticatorTOTPStageRequest,
+    AuthenticatorValidateStage,
+    AuthenticatorValidateStageRequest,
+    AuthenticatorWebAuthnStage,
+    AuthenticatorWebAuthnStageRequest,
+    AuthTypeEnum,
+    CaptchaStage,
+    CaptchaStageRequest,
+    CertAttributeEnum,
+    ConsentModeEnum,
+    ConsentStage,
+    ConsentStageRequest,
+    DenyStage,
+    DenyStageRequest,
+    DigitsEnum,
+    DummyStage,
+    DummyStageRequest,
+    DuoDeviceEnrollmentStatus,
+    EmailStage,
+    EmailStageRequest,
+    EndpointStage,
+    EndpointStageRequest,
+    GeoipBindingEnum,
+    IdentificationStage,
+    IdentificationStageRequest,
+    Invitation,
+    InvitationRequest,
+    InvitationSendEmailRequest,
+    InvitationStage,
+    InvitationStageRequest,
+    MutualTLSStage,
+    MutualTLSStageRequest,
+    NetworkBindingEnum,
+    NotConfiguredActionEnum,
+    PaginatedAuthenticatorDuoStageList,
+    PaginatedAuthenticatorEmailStageList,
+    PaginatedAuthenticatorEndpointGDTCStageList,
+    PaginatedAuthenticatorSMSStageList,
+    PaginatedAuthenticatorStaticStageList,
+    PaginatedAuthenticatorTOTPStageList,
+    PaginatedAuthenticatorValidateStageList,
+    PaginatedAuthenticatorWebAuthnStageList,
+    PaginatedCaptchaStageList,
+    PaginatedConsentStageList,
+    PaginatedDenyStageList,
+    PaginatedDummyStageList,
+    PaginatedEmailStageList,
+    PaginatedEndpointStageList,
+    PaginatedIdentificationStageList,
+    PaginatedInvitationList,
+    PaginatedInvitationStageList,
+    PaginatedMutualTLSStageList,
+    PaginatedPasswordStageList,
+    PaginatedPromptList,
+    PaginatedPromptStageList,
+    PaginatedRedirectStageList,
+    PaginatedSourceStageList,
+    PaginatedStageList,
+    PaginatedUserDeleteStageList,
+    PaginatedUserLoginStageList,
+    PaginatedUserLogoutStageList,
+    PaginatedUserWriteStageList,
+    PaginatedWebAuthnDeviceTypeList,
+    PasswordStage,
+    PasswordStageRequest,
+    PatchedAuthenticatorDuoStageRequest,
+    PatchedAuthenticatorEmailStageRequest,
+    PatchedAuthenticatorEndpointGDTCStageRequest,
+    PatchedAuthenticatorSMSStageRequest,
+    PatchedAuthenticatorStaticStageRequest,
+    PatchedAuthenticatorTOTPStageRequest,
+    PatchedAuthenticatorValidateStageRequest,
+    PatchedAuthenticatorWebAuthnStageRequest,
+    PatchedCaptchaStageRequest,
+    PatchedConsentStageRequest,
+    PatchedDenyStageRequest,
+    PatchedDummyStageRequest,
+    PatchedEmailStageRequest,
+    PatchedEndpointStageRequest,
+    PatchedIdentificationStageRequest,
+    PatchedInvitationRequest,
+    PatchedInvitationStageRequest,
+    PatchedMutualTLSStageRequest,
+    PatchedPasswordStageRequest,
+    PatchedPromptRequest,
+    PatchedPromptStageRequest,
+    PatchedRedirectStageRequest,
+    PatchedSourceStageRequest,
+    PatchedUserDeleteStageRequest,
+    PatchedUserLoginStageRequest,
+    PatchedUserLogoutStageRequest,
+    PatchedUserWriteStageRequest,
+    Prompt,
+    PromptChallenge,
+    PromptRequest,
+    PromptStage,
+    PromptStageRequest,
+    PromptTypeEnum,
+    ProviderEnum,
+    RedirectStage,
+    RedirectStageRequest,
+    SourceStage,
+    SourceStageRequest,
+    Stage,
+    StageModeEnum,
+    TypeCreate,
+    UsedBy,
+    UserAttributeEnum,
+    UserCreationModeEnum,
+    UserDeleteStage,
+    UserDeleteStageRequest,
+    UserLoginStage,
+    UserLoginStageRequest,
+    UserLogoutStage,
+    UserLogoutStageRequest,
+    UserSetting,
+    UserTypeEnum,
+    UserVerificationEnum,
+    UserWriteStage,
+    UserWriteStageRequest,
+    WebAuthnDeviceType,
+} from "../models/index";
 import {
-    AuthTypeEnumFromJSON,
-    AuthTypeEnumToJSON,
-    AuthenticatorAttachmentEnumFromJSON,
-    AuthenticatorAttachmentEnumToJSON,
-    AuthenticatorDuoStageFromJSON,
-    AuthenticatorDuoStageToJSON,
     AuthenticatorDuoStageDeviceImportResponseFromJSON,
-    AuthenticatorDuoStageDeviceImportResponseToJSON,
-    AuthenticatorDuoStageManualDeviceImportRequestFromJSON,
+    AuthenticatorDuoStageFromJSON,
     AuthenticatorDuoStageManualDeviceImportRequestToJSON,
-    AuthenticatorDuoStageRequestFromJSON,
     AuthenticatorDuoStageRequestToJSON,
     AuthenticatorEmailStageFromJSON,
-    AuthenticatorEmailStageToJSON,
-    AuthenticatorEmailStageRequestFromJSON,
     AuthenticatorEmailStageRequestToJSON,
     AuthenticatorEndpointGDTCStageFromJSON,
-    AuthenticatorEndpointGDTCStageToJSON,
-    AuthenticatorEndpointGDTCStageRequestFromJSON,
     AuthenticatorEndpointGDTCStageRequestToJSON,
     AuthenticatorSMSStageFromJSON,
-    AuthenticatorSMSStageToJSON,
-    AuthenticatorSMSStageRequestFromJSON,
     AuthenticatorSMSStageRequestToJSON,
     AuthenticatorStaticStageFromJSON,
-    AuthenticatorStaticStageToJSON,
-    AuthenticatorStaticStageRequestFromJSON,
     AuthenticatorStaticStageRequestToJSON,
     AuthenticatorTOTPStageFromJSON,
-    AuthenticatorTOTPStageToJSON,
-    AuthenticatorTOTPStageRequestFromJSON,
     AuthenticatorTOTPStageRequestToJSON,
     AuthenticatorValidateStageFromJSON,
-    AuthenticatorValidateStageToJSON,
-    AuthenticatorValidateStageRequestFromJSON,
     AuthenticatorValidateStageRequestToJSON,
     AuthenticatorWebAuthnStageFromJSON,
-    AuthenticatorWebAuthnStageToJSON,
-    AuthenticatorWebAuthnStageRequestFromJSON,
     AuthenticatorWebAuthnStageRequestToJSON,
     CaptchaStageFromJSON,
-    CaptchaStageToJSON,
-    CaptchaStageRequestFromJSON,
     CaptchaStageRequestToJSON,
-    CertAttributeEnumFromJSON,
-    CertAttributeEnumToJSON,
-    ConsentModeEnumFromJSON,
-    ConsentModeEnumToJSON,
     ConsentStageFromJSON,
-    ConsentStageToJSON,
-    ConsentStageRequestFromJSON,
     ConsentStageRequestToJSON,
     DenyStageFromJSON,
-    DenyStageToJSON,
-    DenyStageRequestFromJSON,
     DenyStageRequestToJSON,
-    DigitsEnumFromJSON,
-    DigitsEnumToJSON,
     DummyStageFromJSON,
-    DummyStageToJSON,
-    DummyStageRequestFromJSON,
     DummyStageRequestToJSON,
     DuoDeviceEnrollmentStatusFromJSON,
-    DuoDeviceEnrollmentStatusToJSON,
     EmailStageFromJSON,
-    EmailStageToJSON,
-    EmailStageRequestFromJSON,
     EmailStageRequestToJSON,
     EndpointStageFromJSON,
-    EndpointStageToJSON,
-    EndpointStageRequestFromJSON,
     EndpointStageRequestToJSON,
-    GenericErrorFromJSON,
-    GenericErrorToJSON,
-    GeoipBindingEnumFromJSON,
-    GeoipBindingEnumToJSON,
     IdentificationStageFromJSON,
-    IdentificationStageToJSON,
-    IdentificationStageRequestFromJSON,
     IdentificationStageRequestToJSON,
     InvitationFromJSON,
-    InvitationToJSON,
-    InvitationRequestFromJSON,
     InvitationRequestToJSON,
-    InvitationSendEmailRequestFromJSON,
     InvitationSendEmailRequestToJSON,
     InvitationStageFromJSON,
-    InvitationStageToJSON,
-    InvitationStageRequestFromJSON,
     InvitationStageRequestToJSON,
     MutualTLSStageFromJSON,
-    MutualTLSStageToJSON,
-    MutualTLSStageRequestFromJSON,
     MutualTLSStageRequestToJSON,
-    NetworkBindingEnumFromJSON,
-    NetworkBindingEnumToJSON,
-    NotConfiguredActionEnumFromJSON,
-    NotConfiguredActionEnumToJSON,
     PaginatedAuthenticatorDuoStageListFromJSON,
-    PaginatedAuthenticatorDuoStageListToJSON,
     PaginatedAuthenticatorEmailStageListFromJSON,
-    PaginatedAuthenticatorEmailStageListToJSON,
     PaginatedAuthenticatorEndpointGDTCStageListFromJSON,
-    PaginatedAuthenticatorEndpointGDTCStageListToJSON,
     PaginatedAuthenticatorSMSStageListFromJSON,
-    PaginatedAuthenticatorSMSStageListToJSON,
     PaginatedAuthenticatorStaticStageListFromJSON,
-    PaginatedAuthenticatorStaticStageListToJSON,
     PaginatedAuthenticatorTOTPStageListFromJSON,
-    PaginatedAuthenticatorTOTPStageListToJSON,
     PaginatedAuthenticatorValidateStageListFromJSON,
-    PaginatedAuthenticatorValidateStageListToJSON,
     PaginatedAuthenticatorWebAuthnStageListFromJSON,
-    PaginatedAuthenticatorWebAuthnStageListToJSON,
     PaginatedCaptchaStageListFromJSON,
-    PaginatedCaptchaStageListToJSON,
     PaginatedConsentStageListFromJSON,
-    PaginatedConsentStageListToJSON,
     PaginatedDenyStageListFromJSON,
-    PaginatedDenyStageListToJSON,
     PaginatedDummyStageListFromJSON,
-    PaginatedDummyStageListToJSON,
     PaginatedEmailStageListFromJSON,
-    PaginatedEmailStageListToJSON,
     PaginatedEndpointStageListFromJSON,
-    PaginatedEndpointStageListToJSON,
     PaginatedIdentificationStageListFromJSON,
-    PaginatedIdentificationStageListToJSON,
     PaginatedInvitationListFromJSON,
-    PaginatedInvitationListToJSON,
     PaginatedInvitationStageListFromJSON,
-    PaginatedInvitationStageListToJSON,
     PaginatedMutualTLSStageListFromJSON,
-    PaginatedMutualTLSStageListToJSON,
     PaginatedPasswordStageListFromJSON,
-    PaginatedPasswordStageListToJSON,
     PaginatedPromptListFromJSON,
-    PaginatedPromptListToJSON,
     PaginatedPromptStageListFromJSON,
-    PaginatedPromptStageListToJSON,
     PaginatedRedirectStageListFromJSON,
-    PaginatedRedirectStageListToJSON,
     PaginatedSourceStageListFromJSON,
-    PaginatedSourceStageListToJSON,
     PaginatedStageListFromJSON,
-    PaginatedStageListToJSON,
     PaginatedUserDeleteStageListFromJSON,
-    PaginatedUserDeleteStageListToJSON,
     PaginatedUserLoginStageListFromJSON,
-    PaginatedUserLoginStageListToJSON,
     PaginatedUserLogoutStageListFromJSON,
-    PaginatedUserLogoutStageListToJSON,
     PaginatedUserWriteStageListFromJSON,
-    PaginatedUserWriteStageListToJSON,
     PaginatedWebAuthnDeviceTypeListFromJSON,
-    PaginatedWebAuthnDeviceTypeListToJSON,
     PasswordStageFromJSON,
-    PasswordStageToJSON,
-    PasswordStageRequestFromJSON,
     PasswordStageRequestToJSON,
-    PatchedAuthenticatorDuoStageRequestFromJSON,
     PatchedAuthenticatorDuoStageRequestToJSON,
-    PatchedAuthenticatorEmailStageRequestFromJSON,
     PatchedAuthenticatorEmailStageRequestToJSON,
-    PatchedAuthenticatorEndpointGDTCStageRequestFromJSON,
     PatchedAuthenticatorEndpointGDTCStageRequestToJSON,
-    PatchedAuthenticatorSMSStageRequestFromJSON,
     PatchedAuthenticatorSMSStageRequestToJSON,
-    PatchedAuthenticatorStaticStageRequestFromJSON,
     PatchedAuthenticatorStaticStageRequestToJSON,
-    PatchedAuthenticatorTOTPStageRequestFromJSON,
     PatchedAuthenticatorTOTPStageRequestToJSON,
-    PatchedAuthenticatorValidateStageRequestFromJSON,
     PatchedAuthenticatorValidateStageRequestToJSON,
-    PatchedAuthenticatorWebAuthnStageRequestFromJSON,
     PatchedAuthenticatorWebAuthnStageRequestToJSON,
-    PatchedCaptchaStageRequestFromJSON,
     PatchedCaptchaStageRequestToJSON,
-    PatchedConsentStageRequestFromJSON,
     PatchedConsentStageRequestToJSON,
-    PatchedDenyStageRequestFromJSON,
     PatchedDenyStageRequestToJSON,
-    PatchedDummyStageRequestFromJSON,
     PatchedDummyStageRequestToJSON,
-    PatchedEmailStageRequestFromJSON,
     PatchedEmailStageRequestToJSON,
-    PatchedEndpointStageRequestFromJSON,
     PatchedEndpointStageRequestToJSON,
-    PatchedIdentificationStageRequestFromJSON,
     PatchedIdentificationStageRequestToJSON,
-    PatchedInvitationRequestFromJSON,
     PatchedInvitationRequestToJSON,
-    PatchedInvitationStageRequestFromJSON,
     PatchedInvitationStageRequestToJSON,
-    PatchedMutualTLSStageRequestFromJSON,
     PatchedMutualTLSStageRequestToJSON,
-    PatchedPasswordStageRequestFromJSON,
     PatchedPasswordStageRequestToJSON,
-    PatchedPromptRequestFromJSON,
     PatchedPromptRequestToJSON,
-    PatchedPromptStageRequestFromJSON,
     PatchedPromptStageRequestToJSON,
-    PatchedRedirectStageRequestFromJSON,
     PatchedRedirectStageRequestToJSON,
-    PatchedSourceStageRequestFromJSON,
     PatchedSourceStageRequestToJSON,
-    PatchedUserDeleteStageRequestFromJSON,
     PatchedUserDeleteStageRequestToJSON,
-    PatchedUserLoginStageRequestFromJSON,
     PatchedUserLoginStageRequestToJSON,
-    PatchedUserLogoutStageRequestFromJSON,
     PatchedUserLogoutStageRequestToJSON,
-    PatchedUserWriteStageRequestFromJSON,
     PatchedUserWriteStageRequestToJSON,
-    PromptFromJSON,
-    PromptToJSON,
     PromptChallengeFromJSON,
-    PromptChallengeToJSON,
-    PromptRequestFromJSON,
+    PromptFromJSON,
     PromptRequestToJSON,
     PromptStageFromJSON,
-    PromptStageToJSON,
-    PromptStageRequestFromJSON,
     PromptStageRequestToJSON,
-    PromptTypeEnumFromJSON,
-    PromptTypeEnumToJSON,
-    ProviderEnumFromJSON,
-    ProviderEnumToJSON,
     RedirectStageFromJSON,
-    RedirectStageToJSON,
-    RedirectStageRequestFromJSON,
     RedirectStageRequestToJSON,
     SourceStageFromJSON,
-    SourceStageToJSON,
-    SourceStageRequestFromJSON,
     SourceStageRequestToJSON,
     StageFromJSON,
-    StageToJSON,
-    StageModeEnumFromJSON,
-    StageModeEnumToJSON,
     TypeCreateFromJSON,
-    TypeCreateToJSON,
     UsedByFromJSON,
-    UsedByToJSON,
-    UserAttributeEnumFromJSON,
-    UserAttributeEnumToJSON,
-    UserCreationModeEnumFromJSON,
-    UserCreationModeEnumToJSON,
     UserDeleteStageFromJSON,
-    UserDeleteStageToJSON,
-    UserDeleteStageRequestFromJSON,
     UserDeleteStageRequestToJSON,
     UserLoginStageFromJSON,
-    UserLoginStageToJSON,
-    UserLoginStageRequestFromJSON,
     UserLoginStageRequestToJSON,
     UserLogoutStageFromJSON,
-    UserLogoutStageToJSON,
-    UserLogoutStageRequestFromJSON,
     UserLogoutStageRequestToJSON,
     UserSettingFromJSON,
-    UserSettingToJSON,
-    UserTypeEnumFromJSON,
-    UserTypeEnumToJSON,
-    UserVerificationEnumFromJSON,
-    UserVerificationEnumToJSON,
     UserWriteStageFromJSON,
-    UserWriteStageToJSON,
-    UserWriteStageRequestFromJSON,
     UserWriteStageRequestToJSON,
-    ValidationErrorFromJSON,
-    ValidationErrorToJSON,
     WebAuthnDeviceTypeFromJSON,
-    WebAuthnDeviceTypeToJSON,
-} from '../models/index';
+} from "../models/index";
+import * as runtime from "../runtime";
 
 export interface StagesAllDestroyRequest {
     stageUuid: string;
@@ -1520,18 +1363,19 @@ export interface StagesUserWriteUsedByListRequest {
 }
 
 /**
- * 
+ *
  */
 export class StagesApi extends runtime.BaseAPI {
-
     /**
      * Creates request options for stagesAllDestroy without sending the request
      */
-    async stagesAllDestroyRequestOpts(requestParameters: StagesAllDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAllDestroyRequestOpts(
+        requestParameters: StagesAllDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAllDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAllDestroy().',
             );
         }
 
@@ -1549,11 +1393,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/all/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1562,7 +1409,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Stage Viewset
      */
-    async stagesAllDestroyRaw(requestParameters: StagesAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesAllDestroyRaw(
+        requestParameters: StagesAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesAllDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1572,34 +1422,39 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Stage Viewset
      */
-    async stagesAllDestroy(requestParameters: StagesAllDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesAllDestroy(
+        requestParameters: StagesAllDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesAllDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesAllList without sending the request
      */
-    async stagesAllListRequestOpts(requestParameters: StagesAllListRequest): Promise<runtime.RequestOpts> {
+    async stagesAllListRequestOpts(
+        requestParameters: StagesAllListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1617,7 +1472,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1626,17 +1481,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Stage Viewset
      */
-    async stagesAllListRaw(requestParameters: StagesAllListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedStageList>> {
+    async stagesAllListRaw(
+        requestParameters: StagesAllListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedStageList>> {
         const requestOptions = await this.stagesAllListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Stage Viewset
      */
-    async stagesAllList(requestParameters: StagesAllListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedStageList> {
+    async stagesAllList(
+        requestParameters: StagesAllListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedStageList> {
         const response = await this.stagesAllListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1644,11 +1507,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesAllRetrieve without sending the request
      */
-    async stagesAllRetrieveRequestOpts(requestParameters: StagesAllRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAllRetrieveRequestOpts(
+        requestParameters: StagesAllRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAllRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAllRetrieve().',
             );
         }
 
@@ -1666,11 +1531,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/all/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1679,7 +1547,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Stage Viewset
      */
-    async stagesAllRetrieveRaw(requestParameters: StagesAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Stage>> {
+    async stagesAllRetrieveRaw(
+        requestParameters: StagesAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Stage>> {
         const requestOptions = await this.stagesAllRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1689,7 +1560,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Stage Viewset
      */
-    async stagesAllRetrieve(requestParameters: StagesAllRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Stage> {
+    async stagesAllRetrieve(
+        requestParameters: StagesAllRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Stage> {
         const response = await this.stagesAllRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1715,7 +1589,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1724,17 +1598,23 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get all creatable types
      */
-    async stagesAllTypesListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
+    async stagesAllTypesListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
         const requestOptions = await this.stagesAllTypesListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TypeCreateFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(TypeCreateFromJSON),
+        );
     }
 
     /**
      * Get all creatable types
      */
-    async stagesAllTypesList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TypeCreate>> {
+    async stagesAllTypesList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<TypeCreate>> {
         const response = await this.stagesAllTypesListRaw(initOverrides);
         return await response.value();
     }
@@ -1742,11 +1622,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesAllUsedByList without sending the request
      */
-    async stagesAllUsedByListRequestOpts(requestParameters: StagesAllUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAllUsedByListRequestOpts(
+        requestParameters: StagesAllUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAllUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAllUsedByList().',
             );
         }
 
@@ -1764,11 +1646,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/all/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1777,7 +1662,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAllUsedByListRaw(requestParameters: StagesAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesAllUsedByListRaw(
+        requestParameters: StagesAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesAllUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -1787,7 +1675,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAllUsedByList(requestParameters: StagesAllUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesAllUsedByList(
+        requestParameters: StagesAllUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesAllUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1813,7 +1704,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1822,17 +1713,23 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get all stages the user can configure
      */
-    async stagesAllUserSettingsListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UserSetting>>> {
+    async stagesAllUserSettingsListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UserSetting>>> {
         const requestOptions = await this.stagesAllUserSettingsListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UserSettingFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(UserSettingFromJSON),
+        );
     }
 
     /**
      * Get all stages the user can configure
      */
-    async stagesAllUserSettingsList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UserSetting>> {
+    async stagesAllUserSettingsList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UserSetting>> {
         const response = await this.stagesAllUserSettingsListRaw(initOverrides);
         return await response.value();
     }
@@ -1840,11 +1737,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesAuthenticatorDuoCreate without sending the request
      */
-    async stagesAuthenticatorDuoCreateRequestOpts(requestParameters: StagesAuthenticatorDuoCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['authenticatorDuoStageRequest'] == null) {
+    async stagesAuthenticatorDuoCreateRequestOpts(
+        requestParameters: StagesAuthenticatorDuoCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["authenticatorDuoStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorDuoStageRequest',
-                'Required parameter "authenticatorDuoStageRequest" was null or undefined when calling stagesAuthenticatorDuoCreate().'
+                "authenticatorDuoStageRequest",
+                'Required parameter "authenticatorDuoStageRequest" was null or undefined when calling stagesAuthenticatorDuoCreate().',
             );
         }
 
@@ -1852,7 +1751,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -1867,39 +1766,55 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorDuoStageRequestToJSON(requestParameters['authenticatorDuoStageRequest']),
+            body: AuthenticatorDuoStageRequestToJSON(
+                requestParameters["authenticatorDuoStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoCreateRaw(requestParameters: StagesAuthenticatorDuoCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorDuoStage>> {
-        const requestOptions = await this.stagesAuthenticatorDuoCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorDuoCreateRaw(
+        requestParameters: StagesAuthenticatorDuoCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorDuoStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorDuoCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorDuoStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorDuoStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoCreate(requestParameters: StagesAuthenticatorDuoCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorDuoStage> {
-        const response = await this.stagesAuthenticatorDuoCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorDuoCreate(
+        requestParameters: StagesAuthenticatorDuoCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorDuoStage> {
+        const response = await this.stagesAuthenticatorDuoCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorDuoDestroy without sending the request
      */
-    async stagesAuthenticatorDuoDestroyRequestOpts(requestParameters: StagesAuthenticatorDuoDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorDuoDestroyRequestOpts(
+        requestParameters: StagesAuthenticatorDuoDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoDestroy().',
             );
         }
 
@@ -1917,11 +1832,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1930,8 +1848,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoDestroyRaw(requestParameters: StagesAuthenticatorDuoDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesAuthenticatorDuoDestroyRequestOpts(requestParameters);
+    async stagesAuthenticatorDuoDestroyRaw(
+        requestParameters: StagesAuthenticatorDuoDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAuthenticatorDuoDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -1940,18 +1862,23 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoDestroy(requestParameters: StagesAuthenticatorDuoDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesAuthenticatorDuoDestroy(
+        requestParameters: StagesAuthenticatorDuoDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesAuthenticatorDuoDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesAuthenticatorDuoEnrollmentStatusCreate without sending the request
      */
-    async stagesAuthenticatorDuoEnrollmentStatusCreateRequestOpts(requestParameters: StagesAuthenticatorDuoEnrollmentStatusCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorDuoEnrollmentStatusCreateRequestOpts(
+        requestParameters: StagesAuthenticatorDuoEnrollmentStatusCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoEnrollmentStatusCreate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoEnrollmentStatusCreate().',
             );
         }
 
@@ -1959,13 +1886,15 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/enrollment_status/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -1974,36 +1903,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Check enrollment status of user details in current session
      */
-    async stagesAuthenticatorDuoEnrollmentStatusCreateRaw(requestParameters: StagesAuthenticatorDuoEnrollmentStatusCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DuoDeviceEnrollmentStatus>> {
-        const requestOptions = await this.stagesAuthenticatorDuoEnrollmentStatusCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorDuoEnrollmentStatusCreateRaw(
+        requestParameters: StagesAuthenticatorDuoEnrollmentStatusCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DuoDeviceEnrollmentStatus>> {
+        const requestOptions =
+            await this.stagesAuthenticatorDuoEnrollmentStatusCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => DuoDeviceEnrollmentStatusFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            DuoDeviceEnrollmentStatusFromJSON(jsonValue),
+        );
     }
 
     /**
      * Check enrollment status of user details in current session
      */
-    async stagesAuthenticatorDuoEnrollmentStatusCreate(requestParameters: StagesAuthenticatorDuoEnrollmentStatusCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DuoDeviceEnrollmentStatus> {
-        const response = await this.stagesAuthenticatorDuoEnrollmentStatusCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorDuoEnrollmentStatusCreate(
+        requestParameters: StagesAuthenticatorDuoEnrollmentStatusCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DuoDeviceEnrollmentStatus> {
+        const response = await this.stagesAuthenticatorDuoEnrollmentStatusCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorDuoImportDeviceManualCreate without sending the request
      */
-    async stagesAuthenticatorDuoImportDeviceManualCreateRequestOpts(requestParameters: StagesAuthenticatorDuoImportDeviceManualCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorDuoImportDeviceManualCreateRequestOpts(
+        requestParameters: StagesAuthenticatorDuoImportDeviceManualCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoImportDeviceManualCreate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoImportDeviceManualCreate().',
             );
         }
 
-        if (requestParameters['authenticatorDuoStageManualDeviceImportRequest'] == null) {
+        if (requestParameters["authenticatorDuoStageManualDeviceImportRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorDuoStageManualDeviceImportRequest',
-                'Required parameter "authenticatorDuoStageManualDeviceImportRequest" was null or undefined when calling stagesAuthenticatorDuoImportDeviceManualCreate().'
+                "authenticatorDuoStageManualDeviceImportRequest",
+                'Required parameter "authenticatorDuoStageManualDeviceImportRequest" was null or undefined when calling stagesAuthenticatorDuoImportDeviceManualCreate().',
             );
         }
 
@@ -2011,7 +1954,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2023,22 +1966,31 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/import_device_manual/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorDuoStageManualDeviceImportRequestToJSON(requestParameters['authenticatorDuoStageManualDeviceImportRequest']),
+            body: AuthenticatorDuoStageManualDeviceImportRequestToJSON(
+                requestParameters["authenticatorDuoStageManualDeviceImportRequest"],
+            ),
         };
     }
 
     /**
      * Import duo devices into authentik
      */
-    async stagesAuthenticatorDuoImportDeviceManualCreateRaw(requestParameters: StagesAuthenticatorDuoImportDeviceManualCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesAuthenticatorDuoImportDeviceManualCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorDuoImportDeviceManualCreateRaw(
+        requestParameters: StagesAuthenticatorDuoImportDeviceManualCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAuthenticatorDuoImportDeviceManualCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2047,18 +1999,26 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Import duo devices into authentik
      */
-    async stagesAuthenticatorDuoImportDeviceManualCreate(requestParameters: StagesAuthenticatorDuoImportDeviceManualCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.stagesAuthenticatorDuoImportDeviceManualCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorDuoImportDeviceManualCreate(
+        requestParameters: StagesAuthenticatorDuoImportDeviceManualCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.stagesAuthenticatorDuoImportDeviceManualCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
     }
 
     /**
      * Creates request options for stagesAuthenticatorDuoImportDevicesAutomaticCreate without sending the request
      */
-    async stagesAuthenticatorDuoImportDevicesAutomaticCreateRequestOpts(requestParameters: StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorDuoImportDevicesAutomaticCreateRequestOpts(
+        requestParameters: StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoImportDevicesAutomaticCreate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoImportDevicesAutomaticCreate().',
             );
         }
 
@@ -2076,11 +2036,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/import_devices_automatic/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2089,57 +2052,73 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Import duo devices into authentik
      */
-    async stagesAuthenticatorDuoImportDevicesAutomaticCreateRaw(requestParameters: StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorDuoStageDeviceImportResponse>> {
-        const requestOptions = await this.stagesAuthenticatorDuoImportDevicesAutomaticCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorDuoImportDevicesAutomaticCreateRaw(
+        requestParameters: StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorDuoStageDeviceImportResponse>> {
+        const requestOptions =
+            await this.stagesAuthenticatorDuoImportDevicesAutomaticCreateRequestOpts(
+                requestParameters,
+            );
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorDuoStageDeviceImportResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorDuoStageDeviceImportResponseFromJSON(jsonValue),
+        );
     }
 
     /**
      * Import duo devices into authentik
      */
-    async stagesAuthenticatorDuoImportDevicesAutomaticCreate(requestParameters: StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorDuoStageDeviceImportResponse> {
-        const response = await this.stagesAuthenticatorDuoImportDevicesAutomaticCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorDuoImportDevicesAutomaticCreate(
+        requestParameters: StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorDuoStageDeviceImportResponse> {
+        const response = await this.stagesAuthenticatorDuoImportDevicesAutomaticCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorDuoList without sending the request
      */
-    async stagesAuthenticatorDuoListRequestOpts(requestParameters: StagesAuthenticatorDuoListRequest): Promise<runtime.RequestOpts> {
+    async stagesAuthenticatorDuoListRequestOpts(
+        requestParameters: StagesAuthenticatorDuoListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['apiHostname'] != null) {
-            queryParameters['api_hostname'] = requestParameters['apiHostname'];
+        if (requestParameters["apiHostname"] != null) {
+            queryParameters["api_hostname"] = requestParameters["apiHostname"];
         }
 
-        if (requestParameters['clientId'] != null) {
-            queryParameters['client_id'] = requestParameters['clientId'];
+        if (requestParameters["clientId"] != null) {
+            queryParameters["client_id"] = requestParameters["clientId"];
         }
 
-        if (requestParameters['configureFlow'] != null) {
-            queryParameters['configure_flow'] = requestParameters['configureFlow'];
+        if (requestParameters["configureFlow"] != null) {
+            queryParameters["configure_flow"] = requestParameters["configureFlow"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2157,7 +2136,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2166,17 +2145,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoListRaw(requestParameters: StagesAuthenticatorDuoListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedAuthenticatorDuoStageList>> {
+    async stagesAuthenticatorDuoListRaw(
+        requestParameters: StagesAuthenticatorDuoListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAuthenticatorDuoStageList>> {
         const requestOptions = await this.stagesAuthenticatorDuoListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedAuthenticatorDuoStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAuthenticatorDuoStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoList(requestParameters: StagesAuthenticatorDuoListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedAuthenticatorDuoStageList> {
+    async stagesAuthenticatorDuoList(
+        requestParameters: StagesAuthenticatorDuoListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAuthenticatorDuoStageList> {
         const response = await this.stagesAuthenticatorDuoListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2184,11 +2171,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesAuthenticatorDuoPartialUpdate without sending the request
      */
-    async stagesAuthenticatorDuoPartialUpdateRequestOpts(requestParameters: StagesAuthenticatorDuoPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorDuoPartialUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorDuoPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoPartialUpdate().',
             );
         }
 
@@ -2196,7 +2185,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2208,43 +2197,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedAuthenticatorDuoStageRequestToJSON(requestParameters['patchedAuthenticatorDuoStageRequest']),
+            body: PatchedAuthenticatorDuoStageRequestToJSON(
+                requestParameters["patchedAuthenticatorDuoStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoPartialUpdateRaw(requestParameters: StagesAuthenticatorDuoPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorDuoStage>> {
-        const requestOptions = await this.stagesAuthenticatorDuoPartialUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorDuoPartialUpdateRaw(
+        requestParameters: StagesAuthenticatorDuoPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorDuoStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorDuoPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorDuoStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorDuoStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoPartialUpdate(requestParameters: StagesAuthenticatorDuoPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorDuoStage> {
-        const response = await this.stagesAuthenticatorDuoPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorDuoPartialUpdate(
+        requestParameters: StagesAuthenticatorDuoPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorDuoStage> {
+        const response = await this.stagesAuthenticatorDuoPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorDuoRetrieve without sending the request
      */
-    async stagesAuthenticatorDuoRetrieveRequestOpts(requestParameters: StagesAuthenticatorDuoRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorDuoRetrieveRequestOpts(
+        requestParameters: StagesAuthenticatorDuoRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoRetrieve().',
             );
         }
 
@@ -2262,11 +2270,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2275,36 +2286,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoRetrieveRaw(requestParameters: StagesAuthenticatorDuoRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorDuoStage>> {
-        const requestOptions = await this.stagesAuthenticatorDuoRetrieveRequestOpts(requestParameters);
+    async stagesAuthenticatorDuoRetrieveRaw(
+        requestParameters: StagesAuthenticatorDuoRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorDuoStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorDuoRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorDuoStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorDuoStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoRetrieve(requestParameters: StagesAuthenticatorDuoRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorDuoStage> {
-        const response = await this.stagesAuthenticatorDuoRetrieveRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorDuoRetrieve(
+        requestParameters: StagesAuthenticatorDuoRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorDuoStage> {
+        const response = await this.stagesAuthenticatorDuoRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorDuoUpdate without sending the request
      */
-    async stagesAuthenticatorDuoUpdateRequestOpts(requestParameters: StagesAuthenticatorDuoUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorDuoUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorDuoUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoUpdate().',
             );
         }
 
-        if (requestParameters['authenticatorDuoStageRequest'] == null) {
+        if (requestParameters["authenticatorDuoStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorDuoStageRequest',
-                'Required parameter "authenticatorDuoStageRequest" was null or undefined when calling stagesAuthenticatorDuoUpdate().'
+                "authenticatorDuoStageRequest",
+                'Required parameter "authenticatorDuoStageRequest" was null or undefined when calling stagesAuthenticatorDuoUpdate().',
             );
         }
 
@@ -2312,7 +2337,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2324,43 +2349,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorDuoStageRequestToJSON(requestParameters['authenticatorDuoStageRequest']),
+            body: AuthenticatorDuoStageRequestToJSON(
+                requestParameters["authenticatorDuoStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoUpdateRaw(requestParameters: StagesAuthenticatorDuoUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorDuoStage>> {
-        const requestOptions = await this.stagesAuthenticatorDuoUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorDuoUpdateRaw(
+        requestParameters: StagesAuthenticatorDuoUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorDuoStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorDuoUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorDuoStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorDuoStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorDuoStage Viewset
      */
-    async stagesAuthenticatorDuoUpdate(requestParameters: StagesAuthenticatorDuoUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorDuoStage> {
-        const response = await this.stagesAuthenticatorDuoUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorDuoUpdate(
+        requestParameters: StagesAuthenticatorDuoUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorDuoStage> {
+        const response = await this.stagesAuthenticatorDuoUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorDuoUsedByList without sending the request
      */
-    async stagesAuthenticatorDuoUsedByListRequestOpts(requestParameters: StagesAuthenticatorDuoUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorDuoUsedByListRequestOpts(
+        requestParameters: StagesAuthenticatorDuoUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorDuoUsedByList().',
             );
         }
 
@@ -2378,11 +2422,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2391,8 +2438,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorDuoUsedByListRaw(requestParameters: StagesAuthenticatorDuoUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesAuthenticatorDuoUsedByListRequestOpts(requestParameters);
+    async stagesAuthenticatorDuoUsedByListRaw(
+        requestParameters: StagesAuthenticatorDuoUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAuthenticatorDuoUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2401,19 +2452,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorDuoUsedByList(requestParameters: StagesAuthenticatorDuoUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorDuoUsedByListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorDuoUsedByList(
+        requestParameters: StagesAuthenticatorDuoUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAuthenticatorDuoUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEmailCreate without sending the request
      */
-    async stagesAuthenticatorEmailCreateRequestOpts(requestParameters: StagesAuthenticatorEmailCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['authenticatorEmailStageRequest'] == null) {
+    async stagesAuthenticatorEmailCreateRequestOpts(
+        requestParameters: StagesAuthenticatorEmailCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["authenticatorEmailStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorEmailStageRequest',
-                'Required parameter "authenticatorEmailStageRequest" was null or undefined when calling stagesAuthenticatorEmailCreate().'
+                "authenticatorEmailStageRequest",
+                'Required parameter "authenticatorEmailStageRequest" was null or undefined when calling stagesAuthenticatorEmailCreate().',
             );
         }
 
@@ -2421,7 +2480,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2436,39 +2495,55 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorEmailStageRequestToJSON(requestParameters['authenticatorEmailStageRequest']),
+            body: AuthenticatorEmailStageRequestToJSON(
+                requestParameters["authenticatorEmailStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailCreateRaw(requestParameters: StagesAuthenticatorEmailCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorEmailStage>> {
-        const requestOptions = await this.stagesAuthenticatorEmailCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorEmailCreateRaw(
+        requestParameters: StagesAuthenticatorEmailCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorEmailStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEmailCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorEmailStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorEmailStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailCreate(requestParameters: StagesAuthenticatorEmailCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorEmailStage> {
-        const response = await this.stagesAuthenticatorEmailCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEmailCreate(
+        requestParameters: StagesAuthenticatorEmailCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorEmailStage> {
+        const response = await this.stagesAuthenticatorEmailCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEmailDestroy without sending the request
      */
-    async stagesAuthenticatorEmailDestroyRequestOpts(requestParameters: StagesAuthenticatorEmailDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorEmailDestroyRequestOpts(
+        requestParameters: StagesAuthenticatorEmailDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailDestroy().',
             );
         }
 
@@ -2486,11 +2561,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/email/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2499,8 +2577,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailDestroyRaw(requestParameters: StagesAuthenticatorEmailDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesAuthenticatorEmailDestroyRequestOpts(requestParameters);
+    async stagesAuthenticatorEmailDestroyRaw(
+        requestParameters: StagesAuthenticatorEmailDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEmailDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2509,94 +2591,99 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailDestroy(requestParameters: StagesAuthenticatorEmailDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesAuthenticatorEmailDestroy(
+        requestParameters: StagesAuthenticatorEmailDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesAuthenticatorEmailDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesAuthenticatorEmailList without sending the request
      */
-    async stagesAuthenticatorEmailListRequestOpts(requestParameters: StagesAuthenticatorEmailListRequest): Promise<runtime.RequestOpts> {
+    async stagesAuthenticatorEmailListRequestOpts(
+        requestParameters: StagesAuthenticatorEmailListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['configureFlow'] != null) {
-            queryParameters['configure_flow'] = requestParameters['configureFlow'];
+        if (requestParameters["configureFlow"] != null) {
+            queryParameters["configure_flow"] = requestParameters["configureFlow"];
         }
 
-        if (requestParameters['friendlyName'] != null) {
-            queryParameters['friendly_name'] = requestParameters['friendlyName'];
+        if (requestParameters["friendlyName"] != null) {
+            queryParameters["friendly_name"] = requestParameters["friendlyName"];
         }
 
-        if (requestParameters['fromAddress'] != null) {
-            queryParameters['from_address'] = requestParameters['fromAddress'];
+        if (requestParameters["fromAddress"] != null) {
+            queryParameters["from_address"] = requestParameters["fromAddress"];
         }
 
-        if (requestParameters['host'] != null) {
-            queryParameters['host'] = requestParameters['host'];
+        if (requestParameters["host"] != null) {
+            queryParameters["host"] = requestParameters["host"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['password'] != null) {
-            queryParameters['password'] = requestParameters['password'];
+        if (requestParameters["password"] != null) {
+            queryParameters["password"] = requestParameters["password"];
         }
 
-        if (requestParameters['port'] != null) {
-            queryParameters['port'] = requestParameters['port'];
+        if (requestParameters["port"] != null) {
+            queryParameters["port"] = requestParameters["port"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
-        if (requestParameters['subject'] != null) {
-            queryParameters['subject'] = requestParameters['subject'];
+        if (requestParameters["subject"] != null) {
+            queryParameters["subject"] = requestParameters["subject"];
         }
 
-        if (requestParameters['template'] != null) {
-            queryParameters['template'] = requestParameters['template'];
+        if (requestParameters["template"] != null) {
+            queryParameters["template"] = requestParameters["template"];
         }
 
-        if (requestParameters['timeout'] != null) {
-            queryParameters['timeout'] = requestParameters['timeout'];
+        if (requestParameters["timeout"] != null) {
+            queryParameters["timeout"] = requestParameters["timeout"];
         }
 
-        if (requestParameters['tokenExpiry'] != null) {
-            queryParameters['token_expiry'] = requestParameters['tokenExpiry'];
+        if (requestParameters["tokenExpiry"] != null) {
+            queryParameters["token_expiry"] = requestParameters["tokenExpiry"];
         }
 
-        if (requestParameters['useGlobalSettings'] != null) {
-            queryParameters['use_global_settings'] = requestParameters['useGlobalSettings'];
+        if (requestParameters["useGlobalSettings"] != null) {
+            queryParameters["use_global_settings"] = requestParameters["useGlobalSettings"];
         }
 
-        if (requestParameters['useSsl'] != null) {
-            queryParameters['use_ssl'] = requestParameters['useSsl'];
+        if (requestParameters["useSsl"] != null) {
+            queryParameters["use_ssl"] = requestParameters["useSsl"];
         }
 
-        if (requestParameters['useTls'] != null) {
-            queryParameters['use_tls'] = requestParameters['useTls'];
+        if (requestParameters["useTls"] != null) {
+            queryParameters["use_tls"] = requestParameters["useTls"];
         }
 
-        if (requestParameters['username'] != null) {
-            queryParameters['username'] = requestParameters['username'];
+        if (requestParameters["username"] != null) {
+            queryParameters["username"] = requestParameters["username"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -2614,7 +2701,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2623,29 +2710,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailListRaw(requestParameters: StagesAuthenticatorEmailListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedAuthenticatorEmailStageList>> {
-        const requestOptions = await this.stagesAuthenticatorEmailListRequestOpts(requestParameters);
+    async stagesAuthenticatorEmailListRaw(
+        requestParameters: StagesAuthenticatorEmailListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAuthenticatorEmailStageList>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEmailListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedAuthenticatorEmailStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAuthenticatorEmailStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailList(requestParameters: StagesAuthenticatorEmailListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedAuthenticatorEmailStageList> {
-        const response = await this.stagesAuthenticatorEmailListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEmailList(
+        requestParameters: StagesAuthenticatorEmailListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAuthenticatorEmailStageList> {
+        const response = await this.stagesAuthenticatorEmailListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEmailPartialUpdate without sending the request
      */
-    async stagesAuthenticatorEmailPartialUpdateRequestOpts(requestParameters: StagesAuthenticatorEmailPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorEmailPartialUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorEmailPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailPartialUpdate().',
             );
         }
 
@@ -2653,7 +2754,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2665,43 +2766,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/email/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedAuthenticatorEmailStageRequestToJSON(requestParameters['patchedAuthenticatorEmailStageRequest']),
+            body: PatchedAuthenticatorEmailStageRequestToJSON(
+                requestParameters["patchedAuthenticatorEmailStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailPartialUpdateRaw(requestParameters: StagesAuthenticatorEmailPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorEmailStage>> {
-        const requestOptions = await this.stagesAuthenticatorEmailPartialUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorEmailPartialUpdateRaw(
+        requestParameters: StagesAuthenticatorEmailPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorEmailStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEmailPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorEmailStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorEmailStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailPartialUpdate(requestParameters: StagesAuthenticatorEmailPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorEmailStage> {
-        const response = await this.stagesAuthenticatorEmailPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEmailPartialUpdate(
+        requestParameters: StagesAuthenticatorEmailPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorEmailStage> {
+        const response = await this.stagesAuthenticatorEmailPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEmailRetrieve without sending the request
      */
-    async stagesAuthenticatorEmailRetrieveRequestOpts(requestParameters: StagesAuthenticatorEmailRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorEmailRetrieveRequestOpts(
+        requestParameters: StagesAuthenticatorEmailRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailRetrieve().',
             );
         }
 
@@ -2719,11 +2839,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/email/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2732,36 +2855,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailRetrieveRaw(requestParameters: StagesAuthenticatorEmailRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorEmailStage>> {
-        const requestOptions = await this.stagesAuthenticatorEmailRetrieveRequestOpts(requestParameters);
+    async stagesAuthenticatorEmailRetrieveRaw(
+        requestParameters: StagesAuthenticatorEmailRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorEmailStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEmailRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorEmailStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorEmailStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailRetrieve(requestParameters: StagesAuthenticatorEmailRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorEmailStage> {
-        const response = await this.stagesAuthenticatorEmailRetrieveRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEmailRetrieve(
+        requestParameters: StagesAuthenticatorEmailRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorEmailStage> {
+        const response = await this.stagesAuthenticatorEmailRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEmailUpdate without sending the request
      */
-    async stagesAuthenticatorEmailUpdateRequestOpts(requestParameters: StagesAuthenticatorEmailUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorEmailUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorEmailUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailUpdate().',
             );
         }
 
-        if (requestParameters['authenticatorEmailStageRequest'] == null) {
+        if (requestParameters["authenticatorEmailStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorEmailStageRequest',
-                'Required parameter "authenticatorEmailStageRequest" was null or undefined when calling stagesAuthenticatorEmailUpdate().'
+                "authenticatorEmailStageRequest",
+                'Required parameter "authenticatorEmailStageRequest" was null or undefined when calling stagesAuthenticatorEmailUpdate().',
             );
         }
 
@@ -2769,7 +2906,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2781,43 +2918,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/email/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorEmailStageRequestToJSON(requestParameters['authenticatorEmailStageRequest']),
+            body: AuthenticatorEmailStageRequestToJSON(
+                requestParameters["authenticatorEmailStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailUpdateRaw(requestParameters: StagesAuthenticatorEmailUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorEmailStage>> {
-        const requestOptions = await this.stagesAuthenticatorEmailUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorEmailUpdateRaw(
+        requestParameters: StagesAuthenticatorEmailUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorEmailStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEmailUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorEmailStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorEmailStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorEmailStage Viewset
      */
-    async stagesAuthenticatorEmailUpdate(requestParameters: StagesAuthenticatorEmailUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorEmailStage> {
-        const response = await this.stagesAuthenticatorEmailUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEmailUpdate(
+        requestParameters: StagesAuthenticatorEmailUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorEmailStage> {
+        const response = await this.stagesAuthenticatorEmailUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEmailUsedByList without sending the request
      */
-    async stagesAuthenticatorEmailUsedByListRequestOpts(requestParameters: StagesAuthenticatorEmailUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorEmailUsedByListRequestOpts(
+        requestParameters: StagesAuthenticatorEmailUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEmailUsedByList().',
             );
         }
 
@@ -2835,11 +2991,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/email/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2848,8 +3007,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorEmailUsedByListRaw(requestParameters: StagesAuthenticatorEmailUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesAuthenticatorEmailUsedByListRequestOpts(requestParameters);
+    async stagesAuthenticatorEmailUsedByListRaw(
+        requestParameters: StagesAuthenticatorEmailUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEmailUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -2858,19 +3021,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorEmailUsedByList(requestParameters: StagesAuthenticatorEmailUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorEmailUsedByListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEmailUsedByList(
+        requestParameters: StagesAuthenticatorEmailUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAuthenticatorEmailUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEndpointGdtcCreate without sending the request
      */
-    async stagesAuthenticatorEndpointGdtcCreateRequestOpts(requestParameters: StagesAuthenticatorEndpointGdtcCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['authenticatorEndpointGDTCStageRequest'] == null) {
+    async stagesAuthenticatorEndpointGdtcCreateRequestOpts(
+        requestParameters: StagesAuthenticatorEndpointGdtcCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["authenticatorEndpointGDTCStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorEndpointGDTCStageRequest',
-                'Required parameter "authenticatorEndpointGDTCStageRequest" was null or undefined when calling stagesAuthenticatorEndpointGdtcCreate().'
+                "authenticatorEndpointGDTCStageRequest",
+                'Required parameter "authenticatorEndpointGDTCStageRequest" was null or undefined when calling stagesAuthenticatorEndpointGdtcCreate().',
             );
         }
 
@@ -2878,7 +3049,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -2893,39 +3064,55 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorEndpointGDTCStageRequestToJSON(requestParameters['authenticatorEndpointGDTCStageRequest']),
+            body: AuthenticatorEndpointGDTCStageRequestToJSON(
+                requestParameters["authenticatorEndpointGDTCStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcCreateRaw(requestParameters: StagesAuthenticatorEndpointGdtcCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorEndpointGDTCStage>> {
-        const requestOptions = await this.stagesAuthenticatorEndpointGdtcCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorEndpointGdtcCreateRaw(
+        requestParameters: StagesAuthenticatorEndpointGdtcCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorEndpointGDTCStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEndpointGdtcCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorEndpointGDTCStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorEndpointGDTCStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcCreate(requestParameters: StagesAuthenticatorEndpointGdtcCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorEndpointGDTCStage> {
-        const response = await this.stagesAuthenticatorEndpointGdtcCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEndpointGdtcCreate(
+        requestParameters: StagesAuthenticatorEndpointGdtcCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorEndpointGDTCStage> {
+        const response = await this.stagesAuthenticatorEndpointGdtcCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEndpointGdtcDestroy without sending the request
      */
-    async stagesAuthenticatorEndpointGdtcDestroyRequestOpts(requestParameters: StagesAuthenticatorEndpointGdtcDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorEndpointGdtcDestroyRequestOpts(
+        requestParameters: StagesAuthenticatorEndpointGdtcDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcDestroy().',
             );
         }
 
@@ -2943,11 +3130,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -2956,8 +3146,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcDestroyRaw(requestParameters: StagesAuthenticatorEndpointGdtcDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesAuthenticatorEndpointGdtcDestroyRequestOpts(requestParameters);
+    async stagesAuthenticatorEndpointGdtcDestroyRaw(
+        requestParameters: StagesAuthenticatorEndpointGdtcDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEndpointGdtcDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -2966,38 +3160,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcDestroy(requestParameters: StagesAuthenticatorEndpointGdtcDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesAuthenticatorEndpointGdtcDestroy(
+        requestParameters: StagesAuthenticatorEndpointGdtcDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesAuthenticatorEndpointGdtcDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesAuthenticatorEndpointGdtcList without sending the request
      */
-    async stagesAuthenticatorEndpointGdtcListRequestOpts(requestParameters: StagesAuthenticatorEndpointGdtcListRequest): Promise<runtime.RequestOpts> {
+    async stagesAuthenticatorEndpointGdtcListRequestOpts(
+        requestParameters: StagesAuthenticatorEndpointGdtcListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['configureFlow'] != null) {
-            queryParameters['configure_flow'] = requestParameters['configureFlow'];
+        if (requestParameters["configureFlow"] != null) {
+            queryParameters["configure_flow"] = requestParameters["configureFlow"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3015,7 +3214,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3024,29 +3223,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcListRaw(requestParameters: StagesAuthenticatorEndpointGdtcListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedAuthenticatorEndpointGDTCStageList>> {
-        const requestOptions = await this.stagesAuthenticatorEndpointGdtcListRequestOpts(requestParameters);
+    async stagesAuthenticatorEndpointGdtcListRaw(
+        requestParameters: StagesAuthenticatorEndpointGdtcListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAuthenticatorEndpointGDTCStageList>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEndpointGdtcListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedAuthenticatorEndpointGDTCStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAuthenticatorEndpointGDTCStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcList(requestParameters: StagesAuthenticatorEndpointGdtcListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedAuthenticatorEndpointGDTCStageList> {
-        const response = await this.stagesAuthenticatorEndpointGdtcListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEndpointGdtcList(
+        requestParameters: StagesAuthenticatorEndpointGdtcListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAuthenticatorEndpointGDTCStageList> {
+        const response = await this.stagesAuthenticatorEndpointGdtcListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEndpointGdtcPartialUpdate without sending the request
      */
-    async stagesAuthenticatorEndpointGdtcPartialUpdateRequestOpts(requestParameters: StagesAuthenticatorEndpointGdtcPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorEndpointGdtcPartialUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorEndpointGdtcPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcPartialUpdate().',
             );
         }
 
@@ -3054,7 +3267,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3066,43 +3279,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedAuthenticatorEndpointGDTCStageRequestToJSON(requestParameters['patchedAuthenticatorEndpointGDTCStageRequest']),
+            body: PatchedAuthenticatorEndpointGDTCStageRequestToJSON(
+                requestParameters["patchedAuthenticatorEndpointGDTCStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcPartialUpdateRaw(requestParameters: StagesAuthenticatorEndpointGdtcPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorEndpointGDTCStage>> {
-        const requestOptions = await this.stagesAuthenticatorEndpointGdtcPartialUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorEndpointGdtcPartialUpdateRaw(
+        requestParameters: StagesAuthenticatorEndpointGdtcPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorEndpointGDTCStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEndpointGdtcPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorEndpointGDTCStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorEndpointGDTCStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcPartialUpdate(requestParameters: StagesAuthenticatorEndpointGdtcPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorEndpointGDTCStage> {
-        const response = await this.stagesAuthenticatorEndpointGdtcPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEndpointGdtcPartialUpdate(
+        requestParameters: StagesAuthenticatorEndpointGdtcPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorEndpointGDTCStage> {
+        const response = await this.stagesAuthenticatorEndpointGdtcPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEndpointGdtcRetrieve without sending the request
      */
-    async stagesAuthenticatorEndpointGdtcRetrieveRequestOpts(requestParameters: StagesAuthenticatorEndpointGdtcRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorEndpointGdtcRetrieveRequestOpts(
+        requestParameters: StagesAuthenticatorEndpointGdtcRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcRetrieve().',
             );
         }
 
@@ -3120,11 +3352,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3133,36 +3368,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcRetrieveRaw(requestParameters: StagesAuthenticatorEndpointGdtcRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorEndpointGDTCStage>> {
-        const requestOptions = await this.stagesAuthenticatorEndpointGdtcRetrieveRequestOpts(requestParameters);
+    async stagesAuthenticatorEndpointGdtcRetrieveRaw(
+        requestParameters: StagesAuthenticatorEndpointGdtcRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorEndpointGDTCStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEndpointGdtcRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorEndpointGDTCStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorEndpointGDTCStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcRetrieve(requestParameters: StagesAuthenticatorEndpointGdtcRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorEndpointGDTCStage> {
-        const response = await this.stagesAuthenticatorEndpointGdtcRetrieveRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEndpointGdtcRetrieve(
+        requestParameters: StagesAuthenticatorEndpointGdtcRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorEndpointGDTCStage> {
+        const response = await this.stagesAuthenticatorEndpointGdtcRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEndpointGdtcUpdate without sending the request
      */
-    async stagesAuthenticatorEndpointGdtcUpdateRequestOpts(requestParameters: StagesAuthenticatorEndpointGdtcUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorEndpointGdtcUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorEndpointGdtcUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcUpdate().',
             );
         }
 
-        if (requestParameters['authenticatorEndpointGDTCStageRequest'] == null) {
+        if (requestParameters["authenticatorEndpointGDTCStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorEndpointGDTCStageRequest',
-                'Required parameter "authenticatorEndpointGDTCStageRequest" was null or undefined when calling stagesAuthenticatorEndpointGdtcUpdate().'
+                "authenticatorEndpointGDTCStageRequest",
+                'Required parameter "authenticatorEndpointGDTCStageRequest" was null or undefined when calling stagesAuthenticatorEndpointGdtcUpdate().',
             );
         }
 
@@ -3170,7 +3419,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3182,43 +3431,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorEndpointGDTCStageRequestToJSON(requestParameters['authenticatorEndpointGDTCStageRequest']),
+            body: AuthenticatorEndpointGDTCStageRequestToJSON(
+                requestParameters["authenticatorEndpointGDTCStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcUpdateRaw(requestParameters: StagesAuthenticatorEndpointGdtcUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorEndpointGDTCStage>> {
-        const requestOptions = await this.stagesAuthenticatorEndpointGdtcUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorEndpointGdtcUpdateRaw(
+        requestParameters: StagesAuthenticatorEndpointGdtcUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorEndpointGDTCStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEndpointGdtcUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorEndpointGDTCStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorEndpointGDTCStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorEndpointGDTCStage Viewset
      */
-    async stagesAuthenticatorEndpointGdtcUpdate(requestParameters: StagesAuthenticatorEndpointGdtcUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorEndpointGDTCStage> {
-        const response = await this.stagesAuthenticatorEndpointGdtcUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEndpointGdtcUpdate(
+        requestParameters: StagesAuthenticatorEndpointGdtcUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorEndpointGDTCStage> {
+        const response = await this.stagesAuthenticatorEndpointGdtcUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorEndpointGdtcUsedByList without sending the request
      */
-    async stagesAuthenticatorEndpointGdtcUsedByListRequestOpts(requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorEndpointGdtcUsedByListRequestOpts(
+        requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorEndpointGdtcUsedByList().',
             );
         }
 
@@ -3236,11 +3504,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3249,8 +3520,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorEndpointGdtcUsedByListRaw(requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesAuthenticatorEndpointGdtcUsedByListRequestOpts(requestParameters);
+    async stagesAuthenticatorEndpointGdtcUsedByListRaw(
+        requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAuthenticatorEndpointGdtcUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -3259,19 +3534,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorEndpointGdtcUsedByList(requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorEndpointGdtcUsedByListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorEndpointGdtcUsedByList(
+        requestParameters: StagesAuthenticatorEndpointGdtcUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAuthenticatorEndpointGdtcUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorSmsCreate without sending the request
      */
-    async stagesAuthenticatorSmsCreateRequestOpts(requestParameters: StagesAuthenticatorSmsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['authenticatorSMSStageRequest'] == null) {
+    async stagesAuthenticatorSmsCreateRequestOpts(
+        requestParameters: StagesAuthenticatorSmsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["authenticatorSMSStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorSMSStageRequest',
-                'Required parameter "authenticatorSMSStageRequest" was null or undefined when calling stagesAuthenticatorSmsCreate().'
+                "authenticatorSMSStageRequest",
+                'Required parameter "authenticatorSMSStageRequest" was null or undefined when calling stagesAuthenticatorSmsCreate().',
             );
         }
 
@@ -3279,7 +3562,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3294,39 +3577,55 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorSMSStageRequestToJSON(requestParameters['authenticatorSMSStageRequest']),
+            body: AuthenticatorSMSStageRequestToJSON(
+                requestParameters["authenticatorSMSStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsCreateRaw(requestParameters: StagesAuthenticatorSmsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorSMSStage>> {
-        const requestOptions = await this.stagesAuthenticatorSmsCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorSmsCreateRaw(
+        requestParameters: StagesAuthenticatorSmsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorSMSStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorSmsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorSMSStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorSMSStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsCreate(requestParameters: StagesAuthenticatorSmsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorSMSStage> {
-        const response = await this.stagesAuthenticatorSmsCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorSmsCreate(
+        requestParameters: StagesAuthenticatorSmsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorSMSStage> {
+        const response = await this.stagesAuthenticatorSmsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorSmsDestroy without sending the request
      */
-    async stagesAuthenticatorSmsDestroyRequestOpts(requestParameters: StagesAuthenticatorSmsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorSmsDestroyRequestOpts(
+        requestParameters: StagesAuthenticatorSmsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsDestroy().',
             );
         }
 
@@ -3344,11 +3643,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/sms/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3357,8 +3659,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsDestroyRaw(requestParameters: StagesAuthenticatorSmsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesAuthenticatorSmsDestroyRequestOpts(requestParameters);
+    async stagesAuthenticatorSmsDestroyRaw(
+        requestParameters: StagesAuthenticatorSmsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAuthenticatorSmsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3367,78 +3673,83 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsDestroy(requestParameters: StagesAuthenticatorSmsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesAuthenticatorSmsDestroy(
+        requestParameters: StagesAuthenticatorSmsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesAuthenticatorSmsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesAuthenticatorSmsList without sending the request
      */
-    async stagesAuthenticatorSmsListRequestOpts(requestParameters: StagesAuthenticatorSmsListRequest): Promise<runtime.RequestOpts> {
+    async stagesAuthenticatorSmsListRequestOpts(
+        requestParameters: StagesAuthenticatorSmsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['accountSid'] != null) {
-            queryParameters['account_sid'] = requestParameters['accountSid'];
+        if (requestParameters["accountSid"] != null) {
+            queryParameters["account_sid"] = requestParameters["accountSid"];
         }
 
-        if (requestParameters['auth'] != null) {
-            queryParameters['auth'] = requestParameters['auth'];
+        if (requestParameters["auth"] != null) {
+            queryParameters["auth"] = requestParameters["auth"];
         }
 
-        if (requestParameters['authPassword'] != null) {
-            queryParameters['auth_password'] = requestParameters['authPassword'];
+        if (requestParameters["authPassword"] != null) {
+            queryParameters["auth_password"] = requestParameters["authPassword"];
         }
 
-        if (requestParameters['authType'] != null) {
-            queryParameters['auth_type'] = requestParameters['authType'];
+        if (requestParameters["authType"] != null) {
+            queryParameters["auth_type"] = requestParameters["authType"];
         }
 
-        if (requestParameters['configureFlow'] != null) {
-            queryParameters['configure_flow'] = requestParameters['configureFlow'];
+        if (requestParameters["configureFlow"] != null) {
+            queryParameters["configure_flow"] = requestParameters["configureFlow"];
         }
 
-        if (requestParameters['friendlyName'] != null) {
-            queryParameters['friendly_name'] = requestParameters['friendlyName'];
+        if (requestParameters["friendlyName"] != null) {
+            queryParameters["friendly_name"] = requestParameters["friendlyName"];
         }
 
-        if (requestParameters['fromNumber'] != null) {
-            queryParameters['from_number'] = requestParameters['fromNumber'];
+        if (requestParameters["fromNumber"] != null) {
+            queryParameters["from_number"] = requestParameters["fromNumber"];
         }
 
-        if (requestParameters['mapping'] != null) {
-            queryParameters['mapping'] = requestParameters['mapping'];
+        if (requestParameters["mapping"] != null) {
+            queryParameters["mapping"] = requestParameters["mapping"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['provider'] != null) {
-            queryParameters['provider'] = requestParameters['provider'];
+        if (requestParameters["provider"] != null) {
+            queryParameters["provider"] = requestParameters["provider"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
-        if (requestParameters['verifyOnly'] != null) {
-            queryParameters['verify_only'] = requestParameters['verifyOnly'];
+        if (requestParameters["verifyOnly"] != null) {
+            queryParameters["verify_only"] = requestParameters["verifyOnly"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3456,7 +3767,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3465,17 +3776,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsListRaw(requestParameters: StagesAuthenticatorSmsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedAuthenticatorSMSStageList>> {
+    async stagesAuthenticatorSmsListRaw(
+        requestParameters: StagesAuthenticatorSmsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAuthenticatorSMSStageList>> {
         const requestOptions = await this.stagesAuthenticatorSmsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedAuthenticatorSMSStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAuthenticatorSMSStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsList(requestParameters: StagesAuthenticatorSmsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedAuthenticatorSMSStageList> {
+    async stagesAuthenticatorSmsList(
+        requestParameters: StagesAuthenticatorSmsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAuthenticatorSMSStageList> {
         const response = await this.stagesAuthenticatorSmsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -3483,11 +3802,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesAuthenticatorSmsPartialUpdate without sending the request
      */
-    async stagesAuthenticatorSmsPartialUpdateRequestOpts(requestParameters: StagesAuthenticatorSmsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorSmsPartialUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorSmsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsPartialUpdate().',
             );
         }
 
@@ -3495,7 +3816,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3507,43 +3828,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/sms/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedAuthenticatorSMSStageRequestToJSON(requestParameters['patchedAuthenticatorSMSStageRequest']),
+            body: PatchedAuthenticatorSMSStageRequestToJSON(
+                requestParameters["patchedAuthenticatorSMSStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsPartialUpdateRaw(requestParameters: StagesAuthenticatorSmsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorSMSStage>> {
-        const requestOptions = await this.stagesAuthenticatorSmsPartialUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorSmsPartialUpdateRaw(
+        requestParameters: StagesAuthenticatorSmsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorSMSStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorSmsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorSMSStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorSMSStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsPartialUpdate(requestParameters: StagesAuthenticatorSmsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorSMSStage> {
-        const response = await this.stagesAuthenticatorSmsPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorSmsPartialUpdate(
+        requestParameters: StagesAuthenticatorSmsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorSMSStage> {
+        const response = await this.stagesAuthenticatorSmsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorSmsRetrieve without sending the request
      */
-    async stagesAuthenticatorSmsRetrieveRequestOpts(requestParameters: StagesAuthenticatorSmsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorSmsRetrieveRequestOpts(
+        requestParameters: StagesAuthenticatorSmsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsRetrieve().',
             );
         }
 
@@ -3561,11 +3901,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/sms/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3574,36 +3917,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsRetrieveRaw(requestParameters: StagesAuthenticatorSmsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorSMSStage>> {
-        const requestOptions = await this.stagesAuthenticatorSmsRetrieveRequestOpts(requestParameters);
+    async stagesAuthenticatorSmsRetrieveRaw(
+        requestParameters: StagesAuthenticatorSmsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorSMSStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorSmsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorSMSStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorSMSStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsRetrieve(requestParameters: StagesAuthenticatorSmsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorSMSStage> {
-        const response = await this.stagesAuthenticatorSmsRetrieveRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorSmsRetrieve(
+        requestParameters: StagesAuthenticatorSmsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorSMSStage> {
+        const response = await this.stagesAuthenticatorSmsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorSmsUpdate without sending the request
      */
-    async stagesAuthenticatorSmsUpdateRequestOpts(requestParameters: StagesAuthenticatorSmsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorSmsUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorSmsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsUpdate().',
             );
         }
 
-        if (requestParameters['authenticatorSMSStageRequest'] == null) {
+        if (requestParameters["authenticatorSMSStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorSMSStageRequest',
-                'Required parameter "authenticatorSMSStageRequest" was null or undefined when calling stagesAuthenticatorSmsUpdate().'
+                "authenticatorSMSStageRequest",
+                'Required parameter "authenticatorSMSStageRequest" was null or undefined when calling stagesAuthenticatorSmsUpdate().',
             );
         }
 
@@ -3611,7 +3968,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3623,43 +3980,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/sms/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorSMSStageRequestToJSON(requestParameters['authenticatorSMSStageRequest']),
+            body: AuthenticatorSMSStageRequestToJSON(
+                requestParameters["authenticatorSMSStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsUpdateRaw(requestParameters: StagesAuthenticatorSmsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorSMSStage>> {
-        const requestOptions = await this.stagesAuthenticatorSmsUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorSmsUpdateRaw(
+        requestParameters: StagesAuthenticatorSmsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorSMSStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorSmsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorSMSStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorSMSStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorSMSStage Viewset
      */
-    async stagesAuthenticatorSmsUpdate(requestParameters: StagesAuthenticatorSmsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorSMSStage> {
-        const response = await this.stagesAuthenticatorSmsUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorSmsUpdate(
+        requestParameters: StagesAuthenticatorSmsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorSMSStage> {
+        const response = await this.stagesAuthenticatorSmsUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorSmsUsedByList without sending the request
      */
-    async stagesAuthenticatorSmsUsedByListRequestOpts(requestParameters: StagesAuthenticatorSmsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorSmsUsedByListRequestOpts(
+        requestParameters: StagesAuthenticatorSmsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorSmsUsedByList().',
             );
         }
 
@@ -3677,11 +4053,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/sms/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3690,8 +4069,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorSmsUsedByListRaw(requestParameters: StagesAuthenticatorSmsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesAuthenticatorSmsUsedByListRequestOpts(requestParameters);
+    async stagesAuthenticatorSmsUsedByListRaw(
+        requestParameters: StagesAuthenticatorSmsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAuthenticatorSmsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -3700,19 +4083,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorSmsUsedByList(requestParameters: StagesAuthenticatorSmsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorSmsUsedByListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorSmsUsedByList(
+        requestParameters: StagesAuthenticatorSmsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAuthenticatorSmsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorStaticCreate without sending the request
      */
-    async stagesAuthenticatorStaticCreateRequestOpts(requestParameters: StagesAuthenticatorStaticCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['authenticatorStaticStageRequest'] == null) {
+    async stagesAuthenticatorStaticCreateRequestOpts(
+        requestParameters: StagesAuthenticatorStaticCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["authenticatorStaticStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorStaticStageRequest',
-                'Required parameter "authenticatorStaticStageRequest" was null or undefined when calling stagesAuthenticatorStaticCreate().'
+                "authenticatorStaticStageRequest",
+                'Required parameter "authenticatorStaticStageRequest" was null or undefined when calling stagesAuthenticatorStaticCreate().',
             );
         }
 
@@ -3720,7 +4111,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3735,39 +4126,55 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorStaticStageRequestToJSON(requestParameters['authenticatorStaticStageRequest']),
+            body: AuthenticatorStaticStageRequestToJSON(
+                requestParameters["authenticatorStaticStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticCreateRaw(requestParameters: StagesAuthenticatorStaticCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorStaticStage>> {
-        const requestOptions = await this.stagesAuthenticatorStaticCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorStaticCreateRaw(
+        requestParameters: StagesAuthenticatorStaticCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorStaticStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorStaticCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorStaticStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorStaticStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticCreate(requestParameters: StagesAuthenticatorStaticCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorStaticStage> {
-        const response = await this.stagesAuthenticatorStaticCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorStaticCreate(
+        requestParameters: StagesAuthenticatorStaticCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorStaticStage> {
+        const response = await this.stagesAuthenticatorStaticCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorStaticDestroy without sending the request
      */
-    async stagesAuthenticatorStaticDestroyRequestOpts(requestParameters: StagesAuthenticatorStaticDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorStaticDestroyRequestOpts(
+        requestParameters: StagesAuthenticatorStaticDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticDestroy().',
             );
         }
 
@@ -3785,11 +4192,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/static/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3798,8 +4208,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticDestroyRaw(requestParameters: StagesAuthenticatorStaticDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesAuthenticatorStaticDestroyRequestOpts(requestParameters);
+    async stagesAuthenticatorStaticDestroyRaw(
+        requestParameters: StagesAuthenticatorStaticDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAuthenticatorStaticDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -3808,54 +4222,59 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticDestroy(requestParameters: StagesAuthenticatorStaticDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesAuthenticatorStaticDestroy(
+        requestParameters: StagesAuthenticatorStaticDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesAuthenticatorStaticDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesAuthenticatorStaticList without sending the request
      */
-    async stagesAuthenticatorStaticListRequestOpts(requestParameters: StagesAuthenticatorStaticListRequest): Promise<runtime.RequestOpts> {
+    async stagesAuthenticatorStaticListRequestOpts(
+        requestParameters: StagesAuthenticatorStaticListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['configureFlow'] != null) {
-            queryParameters['configure_flow'] = requestParameters['configureFlow'];
+        if (requestParameters["configureFlow"] != null) {
+            queryParameters["configure_flow"] = requestParameters["configureFlow"];
         }
 
-        if (requestParameters['friendlyName'] != null) {
-            queryParameters['friendly_name'] = requestParameters['friendlyName'];
+        if (requestParameters["friendlyName"] != null) {
+            queryParameters["friendly_name"] = requestParameters["friendlyName"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
-        if (requestParameters['tokenCount'] != null) {
-            queryParameters['token_count'] = requestParameters['tokenCount'];
+        if (requestParameters["tokenCount"] != null) {
+            queryParameters["token_count"] = requestParameters["tokenCount"];
         }
 
-        if (requestParameters['tokenLength'] != null) {
-            queryParameters['token_length'] = requestParameters['tokenLength'];
+        if (requestParameters["tokenLength"] != null) {
+            queryParameters["token_length"] = requestParameters["tokenLength"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -3873,7 +4292,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3882,29 +4301,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticListRaw(requestParameters: StagesAuthenticatorStaticListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedAuthenticatorStaticStageList>> {
-        const requestOptions = await this.stagesAuthenticatorStaticListRequestOpts(requestParameters);
+    async stagesAuthenticatorStaticListRaw(
+        requestParameters: StagesAuthenticatorStaticListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAuthenticatorStaticStageList>> {
+        const requestOptions =
+            await this.stagesAuthenticatorStaticListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedAuthenticatorStaticStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAuthenticatorStaticStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticList(requestParameters: StagesAuthenticatorStaticListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedAuthenticatorStaticStageList> {
-        const response = await this.stagesAuthenticatorStaticListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorStaticList(
+        requestParameters: StagesAuthenticatorStaticListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAuthenticatorStaticStageList> {
+        const response = await this.stagesAuthenticatorStaticListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorStaticPartialUpdate without sending the request
      */
-    async stagesAuthenticatorStaticPartialUpdateRequestOpts(requestParameters: StagesAuthenticatorStaticPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorStaticPartialUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorStaticPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticPartialUpdate().',
             );
         }
 
@@ -3912,7 +4345,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -3924,43 +4357,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/static/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedAuthenticatorStaticStageRequestToJSON(requestParameters['patchedAuthenticatorStaticStageRequest']),
+            body: PatchedAuthenticatorStaticStageRequestToJSON(
+                requestParameters["patchedAuthenticatorStaticStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticPartialUpdateRaw(requestParameters: StagesAuthenticatorStaticPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorStaticStage>> {
-        const requestOptions = await this.stagesAuthenticatorStaticPartialUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorStaticPartialUpdateRaw(
+        requestParameters: StagesAuthenticatorStaticPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorStaticStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorStaticPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorStaticStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorStaticStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticPartialUpdate(requestParameters: StagesAuthenticatorStaticPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorStaticStage> {
-        const response = await this.stagesAuthenticatorStaticPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorStaticPartialUpdate(
+        requestParameters: StagesAuthenticatorStaticPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorStaticStage> {
+        const response = await this.stagesAuthenticatorStaticPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorStaticRetrieve without sending the request
      */
-    async stagesAuthenticatorStaticRetrieveRequestOpts(requestParameters: StagesAuthenticatorStaticRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorStaticRetrieveRequestOpts(
+        requestParameters: StagesAuthenticatorStaticRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticRetrieve().',
             );
         }
 
@@ -3978,11 +4430,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/static/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -3991,36 +4446,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticRetrieveRaw(requestParameters: StagesAuthenticatorStaticRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorStaticStage>> {
-        const requestOptions = await this.stagesAuthenticatorStaticRetrieveRequestOpts(requestParameters);
+    async stagesAuthenticatorStaticRetrieveRaw(
+        requestParameters: StagesAuthenticatorStaticRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorStaticStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorStaticRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorStaticStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorStaticStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticRetrieve(requestParameters: StagesAuthenticatorStaticRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorStaticStage> {
-        const response = await this.stagesAuthenticatorStaticRetrieveRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorStaticRetrieve(
+        requestParameters: StagesAuthenticatorStaticRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorStaticStage> {
+        const response = await this.stagesAuthenticatorStaticRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorStaticUpdate without sending the request
      */
-    async stagesAuthenticatorStaticUpdateRequestOpts(requestParameters: StagesAuthenticatorStaticUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorStaticUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorStaticUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticUpdate().',
             );
         }
 
-        if (requestParameters['authenticatorStaticStageRequest'] == null) {
+        if (requestParameters["authenticatorStaticStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorStaticStageRequest',
-                'Required parameter "authenticatorStaticStageRequest" was null or undefined when calling stagesAuthenticatorStaticUpdate().'
+                "authenticatorStaticStageRequest",
+                'Required parameter "authenticatorStaticStageRequest" was null or undefined when calling stagesAuthenticatorStaticUpdate().',
             );
         }
 
@@ -4028,7 +4497,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4040,43 +4509,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/static/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorStaticStageRequestToJSON(requestParameters['authenticatorStaticStageRequest']),
+            body: AuthenticatorStaticStageRequestToJSON(
+                requestParameters["authenticatorStaticStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticUpdateRaw(requestParameters: StagesAuthenticatorStaticUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorStaticStage>> {
-        const requestOptions = await this.stagesAuthenticatorStaticUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorStaticUpdateRaw(
+        requestParameters: StagesAuthenticatorStaticUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorStaticStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorStaticUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorStaticStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorStaticStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorStaticStage Viewset
      */
-    async stagesAuthenticatorStaticUpdate(requestParameters: StagesAuthenticatorStaticUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorStaticStage> {
-        const response = await this.stagesAuthenticatorStaticUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorStaticUpdate(
+        requestParameters: StagesAuthenticatorStaticUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorStaticStage> {
+        const response = await this.stagesAuthenticatorStaticUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorStaticUsedByList without sending the request
      */
-    async stagesAuthenticatorStaticUsedByListRequestOpts(requestParameters: StagesAuthenticatorStaticUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorStaticUsedByListRequestOpts(
+        requestParameters: StagesAuthenticatorStaticUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorStaticUsedByList().',
             );
         }
 
@@ -4094,11 +4582,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/static/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4107,8 +4598,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorStaticUsedByListRaw(requestParameters: StagesAuthenticatorStaticUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesAuthenticatorStaticUsedByListRequestOpts(requestParameters);
+    async stagesAuthenticatorStaticUsedByListRaw(
+        requestParameters: StagesAuthenticatorStaticUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAuthenticatorStaticUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -4117,19 +4612,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorStaticUsedByList(requestParameters: StagesAuthenticatorStaticUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorStaticUsedByListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorStaticUsedByList(
+        requestParameters: StagesAuthenticatorStaticUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAuthenticatorStaticUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorTotpCreate without sending the request
      */
-    async stagesAuthenticatorTotpCreateRequestOpts(requestParameters: StagesAuthenticatorTotpCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['authenticatorTOTPStageRequest'] == null) {
+    async stagesAuthenticatorTotpCreateRequestOpts(
+        requestParameters: StagesAuthenticatorTotpCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["authenticatorTOTPStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorTOTPStageRequest',
-                'Required parameter "authenticatorTOTPStageRequest" was null or undefined when calling stagesAuthenticatorTotpCreate().'
+                "authenticatorTOTPStageRequest",
+                'Required parameter "authenticatorTOTPStageRequest" was null or undefined when calling stagesAuthenticatorTotpCreate().',
             );
         }
 
@@ -4137,7 +4640,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4152,39 +4655,55 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorTOTPStageRequestToJSON(requestParameters['authenticatorTOTPStageRequest']),
+            body: AuthenticatorTOTPStageRequestToJSON(
+                requestParameters["authenticatorTOTPStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpCreateRaw(requestParameters: StagesAuthenticatorTotpCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorTOTPStage>> {
-        const requestOptions = await this.stagesAuthenticatorTotpCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorTotpCreateRaw(
+        requestParameters: StagesAuthenticatorTotpCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorTOTPStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorTotpCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorTOTPStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorTOTPStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpCreate(requestParameters: StagesAuthenticatorTotpCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorTOTPStage> {
-        const response = await this.stagesAuthenticatorTotpCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorTotpCreate(
+        requestParameters: StagesAuthenticatorTotpCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorTOTPStage> {
+        const response = await this.stagesAuthenticatorTotpCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorTotpDestroy without sending the request
      */
-    async stagesAuthenticatorTotpDestroyRequestOpts(requestParameters: StagesAuthenticatorTotpDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorTotpDestroyRequestOpts(
+        requestParameters: StagesAuthenticatorTotpDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpDestroy().',
             );
         }
 
@@ -4202,11 +4721,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/totp/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4215,8 +4737,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpDestroyRaw(requestParameters: StagesAuthenticatorTotpDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesAuthenticatorTotpDestroyRequestOpts(requestParameters);
+    async stagesAuthenticatorTotpDestroyRaw(
+        requestParameters: StagesAuthenticatorTotpDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAuthenticatorTotpDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -4225,50 +4751,55 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpDestroy(requestParameters: StagesAuthenticatorTotpDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesAuthenticatorTotpDestroy(
+        requestParameters: StagesAuthenticatorTotpDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesAuthenticatorTotpDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesAuthenticatorTotpList without sending the request
      */
-    async stagesAuthenticatorTotpListRequestOpts(requestParameters: StagesAuthenticatorTotpListRequest): Promise<runtime.RequestOpts> {
+    async stagesAuthenticatorTotpListRequestOpts(
+        requestParameters: StagesAuthenticatorTotpListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['configureFlow'] != null) {
-            queryParameters['configure_flow'] = requestParameters['configureFlow'];
+        if (requestParameters["configureFlow"] != null) {
+            queryParameters["configure_flow"] = requestParameters["configureFlow"];
         }
 
-        if (requestParameters['digits'] != null) {
-            queryParameters['digits'] = requestParameters['digits'];
+        if (requestParameters["digits"] != null) {
+            queryParameters["digits"] = requestParameters["digits"];
         }
 
-        if (requestParameters['friendlyName'] != null) {
-            queryParameters['friendly_name'] = requestParameters['friendlyName'];
+        if (requestParameters["friendlyName"] != null) {
+            queryParameters["friendly_name"] = requestParameters["friendlyName"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4286,7 +4817,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4295,29 +4826,42 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpListRaw(requestParameters: StagesAuthenticatorTotpListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedAuthenticatorTOTPStageList>> {
+    async stagesAuthenticatorTotpListRaw(
+        requestParameters: StagesAuthenticatorTotpListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAuthenticatorTOTPStageList>> {
         const requestOptions = await this.stagesAuthenticatorTotpListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedAuthenticatorTOTPStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAuthenticatorTOTPStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpList(requestParameters: StagesAuthenticatorTotpListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedAuthenticatorTOTPStageList> {
-        const response = await this.stagesAuthenticatorTotpListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorTotpList(
+        requestParameters: StagesAuthenticatorTotpListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAuthenticatorTOTPStageList> {
+        const response = await this.stagesAuthenticatorTotpListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorTotpPartialUpdate without sending the request
      */
-    async stagesAuthenticatorTotpPartialUpdateRequestOpts(requestParameters: StagesAuthenticatorTotpPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorTotpPartialUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorTotpPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpPartialUpdate().',
             );
         }
 
@@ -4325,7 +4869,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4337,43 +4881,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/totp/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedAuthenticatorTOTPStageRequestToJSON(requestParameters['patchedAuthenticatorTOTPStageRequest']),
+            body: PatchedAuthenticatorTOTPStageRequestToJSON(
+                requestParameters["patchedAuthenticatorTOTPStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpPartialUpdateRaw(requestParameters: StagesAuthenticatorTotpPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorTOTPStage>> {
-        const requestOptions = await this.stagesAuthenticatorTotpPartialUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorTotpPartialUpdateRaw(
+        requestParameters: StagesAuthenticatorTotpPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorTOTPStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorTotpPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorTOTPStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorTOTPStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpPartialUpdate(requestParameters: StagesAuthenticatorTotpPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorTOTPStage> {
-        const response = await this.stagesAuthenticatorTotpPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorTotpPartialUpdate(
+        requestParameters: StagesAuthenticatorTotpPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorTOTPStage> {
+        const response = await this.stagesAuthenticatorTotpPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorTotpRetrieve without sending the request
      */
-    async stagesAuthenticatorTotpRetrieveRequestOpts(requestParameters: StagesAuthenticatorTotpRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorTotpRetrieveRequestOpts(
+        requestParameters: StagesAuthenticatorTotpRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpRetrieve().',
             );
         }
 
@@ -4391,11 +4954,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/totp/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4404,36 +4970,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpRetrieveRaw(requestParameters: StagesAuthenticatorTotpRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorTOTPStage>> {
-        const requestOptions = await this.stagesAuthenticatorTotpRetrieveRequestOpts(requestParameters);
+    async stagesAuthenticatorTotpRetrieveRaw(
+        requestParameters: StagesAuthenticatorTotpRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorTOTPStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorTotpRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorTOTPStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorTOTPStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpRetrieve(requestParameters: StagesAuthenticatorTotpRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorTOTPStage> {
-        const response = await this.stagesAuthenticatorTotpRetrieveRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorTotpRetrieve(
+        requestParameters: StagesAuthenticatorTotpRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorTOTPStage> {
+        const response = await this.stagesAuthenticatorTotpRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorTotpUpdate without sending the request
      */
-    async stagesAuthenticatorTotpUpdateRequestOpts(requestParameters: StagesAuthenticatorTotpUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorTotpUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorTotpUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpUpdate().',
             );
         }
 
-        if (requestParameters['authenticatorTOTPStageRequest'] == null) {
+        if (requestParameters["authenticatorTOTPStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorTOTPStageRequest',
-                'Required parameter "authenticatorTOTPStageRequest" was null or undefined when calling stagesAuthenticatorTotpUpdate().'
+                "authenticatorTOTPStageRequest",
+                'Required parameter "authenticatorTOTPStageRequest" was null or undefined when calling stagesAuthenticatorTotpUpdate().',
             );
         }
 
@@ -4441,7 +5021,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4453,43 +5033,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/totp/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorTOTPStageRequestToJSON(requestParameters['authenticatorTOTPStageRequest']),
+            body: AuthenticatorTOTPStageRequestToJSON(
+                requestParameters["authenticatorTOTPStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpUpdateRaw(requestParameters: StagesAuthenticatorTotpUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorTOTPStage>> {
-        const requestOptions = await this.stagesAuthenticatorTotpUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorTotpUpdateRaw(
+        requestParameters: StagesAuthenticatorTotpUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorTOTPStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorTotpUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorTOTPStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorTOTPStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorTOTPStage Viewset
      */
-    async stagesAuthenticatorTotpUpdate(requestParameters: StagesAuthenticatorTotpUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorTOTPStage> {
-        const response = await this.stagesAuthenticatorTotpUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorTotpUpdate(
+        requestParameters: StagesAuthenticatorTotpUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorTOTPStage> {
+        const response = await this.stagesAuthenticatorTotpUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorTotpUsedByList without sending the request
      */
-    async stagesAuthenticatorTotpUsedByListRequestOpts(requestParameters: StagesAuthenticatorTotpUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorTotpUsedByListRequestOpts(
+        requestParameters: StagesAuthenticatorTotpUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorTotpUsedByList().',
             );
         }
 
@@ -4507,11 +5106,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/totp/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4520,8 +5122,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorTotpUsedByListRaw(requestParameters: StagesAuthenticatorTotpUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesAuthenticatorTotpUsedByListRequestOpts(requestParameters);
+    async stagesAuthenticatorTotpUsedByListRaw(
+        requestParameters: StagesAuthenticatorTotpUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAuthenticatorTotpUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -4530,19 +5136,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorTotpUsedByList(requestParameters: StagesAuthenticatorTotpUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorTotpUsedByListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorTotpUsedByList(
+        requestParameters: StagesAuthenticatorTotpUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAuthenticatorTotpUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorValidateCreate without sending the request
      */
-    async stagesAuthenticatorValidateCreateRequestOpts(requestParameters: StagesAuthenticatorValidateCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['authenticatorValidateStageRequest'] == null) {
+    async stagesAuthenticatorValidateCreateRequestOpts(
+        requestParameters: StagesAuthenticatorValidateCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["authenticatorValidateStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorValidateStageRequest',
-                'Required parameter "authenticatorValidateStageRequest" was null or undefined when calling stagesAuthenticatorValidateCreate().'
+                "authenticatorValidateStageRequest",
+                'Required parameter "authenticatorValidateStageRequest" was null or undefined when calling stagesAuthenticatorValidateCreate().',
             );
         }
 
@@ -4550,7 +5164,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4565,39 +5179,55 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorValidateStageRequestToJSON(requestParameters['authenticatorValidateStageRequest']),
+            body: AuthenticatorValidateStageRequestToJSON(
+                requestParameters["authenticatorValidateStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidateCreateRaw(requestParameters: StagesAuthenticatorValidateCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorValidateStage>> {
-        const requestOptions = await this.stagesAuthenticatorValidateCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorValidateCreateRaw(
+        requestParameters: StagesAuthenticatorValidateCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorValidateStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorValidateCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorValidateStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorValidateStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidateCreate(requestParameters: StagesAuthenticatorValidateCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorValidateStage> {
-        const response = await this.stagesAuthenticatorValidateCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorValidateCreate(
+        requestParameters: StagesAuthenticatorValidateCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorValidateStage> {
+        const response = await this.stagesAuthenticatorValidateCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorValidateDestroy without sending the request
      */
-    async stagesAuthenticatorValidateDestroyRequestOpts(requestParameters: StagesAuthenticatorValidateDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorValidateDestroyRequestOpts(
+        requestParameters: StagesAuthenticatorValidateDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidateDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidateDestroy().',
             );
         }
 
@@ -4615,11 +5245,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/validate/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4628,8 +5261,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidateDestroyRaw(requestParameters: StagesAuthenticatorValidateDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesAuthenticatorValidateDestroyRequestOpts(requestParameters);
+    async stagesAuthenticatorValidateDestroyRaw(
+        requestParameters: StagesAuthenticatorValidateDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAuthenticatorValidateDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -4638,42 +5275,47 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidateDestroy(requestParameters: StagesAuthenticatorValidateDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesAuthenticatorValidateDestroy(
+        requestParameters: StagesAuthenticatorValidateDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesAuthenticatorValidateDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesAuthenticatorValidateList without sending the request
      */
-    async stagesAuthenticatorValidateListRequestOpts(requestParameters: StagesAuthenticatorValidateListRequest): Promise<runtime.RequestOpts> {
+    async stagesAuthenticatorValidateListRequestOpts(
+        requestParameters: StagesAuthenticatorValidateListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['configurationStages'] != null) {
-            queryParameters['configuration_stages'] = requestParameters['configurationStages'];
+        if (requestParameters["configurationStages"] != null) {
+            queryParameters["configuration_stages"] = requestParameters["configurationStages"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['notConfiguredAction'] != null) {
-            queryParameters['not_configured_action'] = requestParameters['notConfiguredAction'];
+        if (requestParameters["notConfiguredAction"] != null) {
+            queryParameters["not_configured_action"] = requestParameters["notConfiguredAction"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -4691,7 +5333,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4700,29 +5342,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidateListRaw(requestParameters: StagesAuthenticatorValidateListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedAuthenticatorValidateStageList>> {
-        const requestOptions = await this.stagesAuthenticatorValidateListRequestOpts(requestParameters);
+    async stagesAuthenticatorValidateListRaw(
+        requestParameters: StagesAuthenticatorValidateListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAuthenticatorValidateStageList>> {
+        const requestOptions =
+            await this.stagesAuthenticatorValidateListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedAuthenticatorValidateStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAuthenticatorValidateStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidateList(requestParameters: StagesAuthenticatorValidateListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedAuthenticatorValidateStageList> {
-        const response = await this.stagesAuthenticatorValidateListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorValidateList(
+        requestParameters: StagesAuthenticatorValidateListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAuthenticatorValidateStageList> {
+        const response = await this.stagesAuthenticatorValidateListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorValidatePartialUpdate without sending the request
      */
-    async stagesAuthenticatorValidatePartialUpdateRequestOpts(requestParameters: StagesAuthenticatorValidatePartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorValidatePartialUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorValidatePartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidatePartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidatePartialUpdate().',
             );
         }
 
@@ -4730,7 +5386,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4742,43 +5398,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/validate/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedAuthenticatorValidateStageRequestToJSON(requestParameters['patchedAuthenticatorValidateStageRequest']),
+            body: PatchedAuthenticatorValidateStageRequestToJSON(
+                requestParameters["patchedAuthenticatorValidateStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidatePartialUpdateRaw(requestParameters: StagesAuthenticatorValidatePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorValidateStage>> {
-        const requestOptions = await this.stagesAuthenticatorValidatePartialUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorValidatePartialUpdateRaw(
+        requestParameters: StagesAuthenticatorValidatePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorValidateStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorValidatePartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorValidateStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorValidateStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidatePartialUpdate(requestParameters: StagesAuthenticatorValidatePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorValidateStage> {
-        const response = await this.stagesAuthenticatorValidatePartialUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorValidatePartialUpdate(
+        requestParameters: StagesAuthenticatorValidatePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorValidateStage> {
+        const response = await this.stagesAuthenticatorValidatePartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorValidateRetrieve without sending the request
      */
-    async stagesAuthenticatorValidateRetrieveRequestOpts(requestParameters: StagesAuthenticatorValidateRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorValidateRetrieveRequestOpts(
+        requestParameters: StagesAuthenticatorValidateRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidateRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidateRetrieve().',
             );
         }
 
@@ -4796,11 +5471,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/validate/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4809,36 +5487,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidateRetrieveRaw(requestParameters: StagesAuthenticatorValidateRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorValidateStage>> {
-        const requestOptions = await this.stagesAuthenticatorValidateRetrieveRequestOpts(requestParameters);
+    async stagesAuthenticatorValidateRetrieveRaw(
+        requestParameters: StagesAuthenticatorValidateRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorValidateStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorValidateRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorValidateStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorValidateStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidateRetrieve(requestParameters: StagesAuthenticatorValidateRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorValidateStage> {
-        const response = await this.stagesAuthenticatorValidateRetrieveRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorValidateRetrieve(
+        requestParameters: StagesAuthenticatorValidateRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorValidateStage> {
+        const response = await this.stagesAuthenticatorValidateRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorValidateUpdate without sending the request
      */
-    async stagesAuthenticatorValidateUpdateRequestOpts(requestParameters: StagesAuthenticatorValidateUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorValidateUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorValidateUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidateUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidateUpdate().',
             );
         }
 
-        if (requestParameters['authenticatorValidateStageRequest'] == null) {
+        if (requestParameters["authenticatorValidateStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorValidateStageRequest',
-                'Required parameter "authenticatorValidateStageRequest" was null or undefined when calling stagesAuthenticatorValidateUpdate().'
+                "authenticatorValidateStageRequest",
+                'Required parameter "authenticatorValidateStageRequest" was null or undefined when calling stagesAuthenticatorValidateUpdate().',
             );
         }
 
@@ -4846,7 +5538,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4858,43 +5550,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/validate/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorValidateStageRequestToJSON(requestParameters['authenticatorValidateStageRequest']),
+            body: AuthenticatorValidateStageRequestToJSON(
+                requestParameters["authenticatorValidateStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidateUpdateRaw(requestParameters: StagesAuthenticatorValidateUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorValidateStage>> {
-        const requestOptions = await this.stagesAuthenticatorValidateUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorValidateUpdateRaw(
+        requestParameters: StagesAuthenticatorValidateUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorValidateStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorValidateUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorValidateStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorValidateStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorValidateStage Viewset
      */
-    async stagesAuthenticatorValidateUpdate(requestParameters: StagesAuthenticatorValidateUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorValidateStage> {
-        const response = await this.stagesAuthenticatorValidateUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorValidateUpdate(
+        requestParameters: StagesAuthenticatorValidateUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorValidateStage> {
+        const response = await this.stagesAuthenticatorValidateUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorValidateUsedByList without sending the request
      */
-    async stagesAuthenticatorValidateUsedByListRequestOpts(requestParameters: StagesAuthenticatorValidateUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorValidateUsedByListRequestOpts(
+        requestParameters: StagesAuthenticatorValidateUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidateUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorValidateUsedByList().',
             );
         }
 
@@ -4912,11 +5623,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/validate/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -4925,8 +5639,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorValidateUsedByListRaw(requestParameters: StagesAuthenticatorValidateUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesAuthenticatorValidateUsedByListRequestOpts(requestParameters);
+    async stagesAuthenticatorValidateUsedByListRaw(
+        requestParameters: StagesAuthenticatorValidateUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAuthenticatorValidateUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -4935,19 +5653,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorValidateUsedByList(requestParameters: StagesAuthenticatorValidateUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorValidateUsedByListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorValidateUsedByList(
+        requestParameters: StagesAuthenticatorValidateUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAuthenticatorValidateUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorWebauthnCreate without sending the request
      */
-    async stagesAuthenticatorWebauthnCreateRequestOpts(requestParameters: StagesAuthenticatorWebauthnCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['authenticatorWebAuthnStageRequest'] == null) {
+    async stagesAuthenticatorWebauthnCreateRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["authenticatorWebAuthnStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorWebAuthnStageRequest',
-                'Required parameter "authenticatorWebAuthnStageRequest" was null or undefined when calling stagesAuthenticatorWebauthnCreate().'
+                "authenticatorWebAuthnStageRequest",
+                'Required parameter "authenticatorWebAuthnStageRequest" was null or undefined when calling stagesAuthenticatorWebauthnCreate().',
             );
         }
 
@@ -4955,7 +5681,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -4970,39 +5696,55 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorWebAuthnStageRequestToJSON(requestParameters['authenticatorWebAuthnStageRequest']),
+            body: AuthenticatorWebAuthnStageRequestToJSON(
+                requestParameters["authenticatorWebAuthnStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnCreateRaw(requestParameters: StagesAuthenticatorWebauthnCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorWebAuthnStage>> {
-        const requestOptions = await this.stagesAuthenticatorWebauthnCreateRequestOpts(requestParameters);
+    async stagesAuthenticatorWebauthnCreateRaw(
+        requestParameters: StagesAuthenticatorWebauthnCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorWebAuthnStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorWebAuthnStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorWebAuthnStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnCreate(requestParameters: StagesAuthenticatorWebauthnCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorWebAuthnStage> {
-        const response = await this.stagesAuthenticatorWebauthnCreateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorWebauthnCreate(
+        requestParameters: StagesAuthenticatorWebauthnCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorWebAuthnStage> {
+        const response = await this.stagesAuthenticatorWebauthnCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorWebauthnDestroy without sending the request
      */
-    async stagesAuthenticatorWebauthnDestroyRequestOpts(requestParameters: StagesAuthenticatorWebauthnDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorWebauthnDestroyRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnDestroy().',
             );
         }
 
@@ -5020,11 +5762,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5033,8 +5778,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnDestroyRaw(requestParameters: StagesAuthenticatorWebauthnDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesAuthenticatorWebauthnDestroyRequestOpts(requestParameters);
+    async stagesAuthenticatorWebauthnDestroyRaw(
+        requestParameters: StagesAuthenticatorWebauthnDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -5043,42 +5792,47 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnDestroy(requestParameters: StagesAuthenticatorWebauthnDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesAuthenticatorWebauthnDestroy(
+        requestParameters: StagesAuthenticatorWebauthnDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesAuthenticatorWebauthnDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesAuthenticatorWebauthnDeviceTypesList without sending the request
      */
-    async stagesAuthenticatorWebauthnDeviceTypesListRequestOpts(requestParameters: StagesAuthenticatorWebauthnDeviceTypesListRequest): Promise<runtime.RequestOpts> {
+    async stagesAuthenticatorWebauthnDeviceTypesListRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnDeviceTypesListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['aaguid'] != null) {
-            queryParameters['aaguid'] = requestParameters['aaguid'];
+        if (requestParameters["aaguid"] != null) {
+            queryParameters["aaguid"] = requestParameters["aaguid"];
         }
 
-        if (requestParameters['description'] != null) {
-            queryParameters['description'] = requestParameters['description'];
+        if (requestParameters["description"] != null) {
+            queryParameters["description"] = requestParameters["description"];
         }
 
-        if (requestParameters['icon'] != null) {
-            queryParameters['icon'] = requestParameters['icon'];
+        if (requestParameters["icon"] != null) {
+            queryParameters["icon"] = requestParameters["icon"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5096,7 +5850,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5105,29 +5859,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * WebAuthnDeviceType Viewset
      */
-    async stagesAuthenticatorWebauthnDeviceTypesListRaw(requestParameters: StagesAuthenticatorWebauthnDeviceTypesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedWebAuthnDeviceTypeList>> {
-        const requestOptions = await this.stagesAuthenticatorWebauthnDeviceTypesListRequestOpts(requestParameters);
+    async stagesAuthenticatorWebauthnDeviceTypesListRaw(
+        requestParameters: StagesAuthenticatorWebauthnDeviceTypesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedWebAuthnDeviceTypeList>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnDeviceTypesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedWebAuthnDeviceTypeListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedWebAuthnDeviceTypeListFromJSON(jsonValue),
+        );
     }
 
     /**
      * WebAuthnDeviceType Viewset
      */
-    async stagesAuthenticatorWebauthnDeviceTypesList(requestParameters: StagesAuthenticatorWebauthnDeviceTypesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedWebAuthnDeviceTypeList> {
-        const response = await this.stagesAuthenticatorWebauthnDeviceTypesListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorWebauthnDeviceTypesList(
+        requestParameters: StagesAuthenticatorWebauthnDeviceTypesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedWebAuthnDeviceTypeList> {
+        const response = await this.stagesAuthenticatorWebauthnDeviceTypesListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorWebauthnDeviceTypesRetrieve without sending the request
      */
-    async stagesAuthenticatorWebauthnDeviceTypesRetrieveRequestOpts(requestParameters: StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['aaguid'] == null) {
+    async stagesAuthenticatorWebauthnDeviceTypesRetrieveRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["aaguid"] == null) {
             throw new runtime.RequiredError(
-                'aaguid',
-                'Required parameter "aaguid" was null or undefined when calling stagesAuthenticatorWebauthnDeviceTypesRetrieve().'
+                "aaguid",
+                'Required parameter "aaguid" was null or undefined when calling stagesAuthenticatorWebauthnDeviceTypesRetrieve().',
             );
         }
 
@@ -5145,11 +5913,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/webauthn_device_types/{aaguid}/`;
-        urlPath = urlPath.replace(`{${"aaguid"}}`, encodeURIComponent(String(requestParameters['aaguid'])));
+        urlPath = urlPath.replace(
+            `{${"aaguid"}}`,
+            encodeURIComponent(String(requestParameters["aaguid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5158,69 +5929,86 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * WebAuthnDeviceType Viewset
      */
-    async stagesAuthenticatorWebauthnDeviceTypesRetrieveRaw(requestParameters: StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WebAuthnDeviceType>> {
-        const requestOptions = await this.stagesAuthenticatorWebauthnDeviceTypesRetrieveRequestOpts(requestParameters);
+    async stagesAuthenticatorWebauthnDeviceTypesRetrieveRaw(
+        requestParameters: StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<WebAuthnDeviceType>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnDeviceTypesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => WebAuthnDeviceTypeFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            WebAuthnDeviceTypeFromJSON(jsonValue),
+        );
     }
 
     /**
      * WebAuthnDeviceType Viewset
      */
-    async stagesAuthenticatorWebauthnDeviceTypesRetrieve(requestParameters: StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WebAuthnDeviceType> {
-        const response = await this.stagesAuthenticatorWebauthnDeviceTypesRetrieveRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorWebauthnDeviceTypesRetrieve(
+        requestParameters: StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<WebAuthnDeviceType> {
+        const response = await this.stagesAuthenticatorWebauthnDeviceTypesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorWebauthnList without sending the request
      */
-    async stagesAuthenticatorWebauthnListRequestOpts(requestParameters: StagesAuthenticatorWebauthnListRequest): Promise<runtime.RequestOpts> {
+    async stagesAuthenticatorWebauthnListRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['authenticatorAttachment'] != null) {
-            queryParameters['authenticator_attachment'] = requestParameters['authenticatorAttachment'];
+        if (requestParameters["authenticatorAttachment"] != null) {
+            queryParameters["authenticator_attachment"] =
+                requestParameters["authenticatorAttachment"];
         }
 
-        if (requestParameters['configureFlow'] != null) {
-            queryParameters['configure_flow'] = requestParameters['configureFlow'];
+        if (requestParameters["configureFlow"] != null) {
+            queryParameters["configure_flow"] = requestParameters["configureFlow"];
         }
 
-        if (requestParameters['deviceTypeRestrictions'] != null) {
-            queryParameters['device_type_restrictions'] = requestParameters['deviceTypeRestrictions'];
+        if (requestParameters["deviceTypeRestrictions"] != null) {
+            queryParameters["device_type_restrictions"] =
+                requestParameters["deviceTypeRestrictions"];
         }
 
-        if (requestParameters['maxAttempts'] != null) {
-            queryParameters['max_attempts'] = requestParameters['maxAttempts'];
+        if (requestParameters["maxAttempts"] != null) {
+            queryParameters["max_attempts"] = requestParameters["maxAttempts"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['residentKeyRequirement'] != null) {
-            queryParameters['resident_key_requirement'] = requestParameters['residentKeyRequirement'];
+        if (requestParameters["residentKeyRequirement"] != null) {
+            queryParameters["resident_key_requirement"] =
+                requestParameters["residentKeyRequirement"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['userVerification'] != null) {
-            queryParameters['user_verification'] = requestParameters['userVerification'];
+        if (requestParameters["userVerification"] != null) {
+            queryParameters["user_verification"] = requestParameters["userVerification"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5238,7 +6026,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5247,29 +6035,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnListRaw(requestParameters: StagesAuthenticatorWebauthnListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedAuthenticatorWebAuthnStageList>> {
-        const requestOptions = await this.stagesAuthenticatorWebauthnListRequestOpts(requestParameters);
+    async stagesAuthenticatorWebauthnListRaw(
+        requestParameters: StagesAuthenticatorWebauthnListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAuthenticatorWebAuthnStageList>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedAuthenticatorWebAuthnStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAuthenticatorWebAuthnStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnList(requestParameters: StagesAuthenticatorWebauthnListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedAuthenticatorWebAuthnStageList> {
-        const response = await this.stagesAuthenticatorWebauthnListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorWebauthnList(
+        requestParameters: StagesAuthenticatorWebauthnListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAuthenticatorWebAuthnStageList> {
+        const response = await this.stagesAuthenticatorWebauthnListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorWebauthnPartialUpdate without sending the request
      */
-    async stagesAuthenticatorWebauthnPartialUpdateRequestOpts(requestParameters: StagesAuthenticatorWebauthnPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorWebauthnPartialUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnPartialUpdate().',
             );
         }
 
@@ -5277,7 +6079,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5289,43 +6091,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedAuthenticatorWebAuthnStageRequestToJSON(requestParameters['patchedAuthenticatorWebAuthnStageRequest']),
+            body: PatchedAuthenticatorWebAuthnStageRequestToJSON(
+                requestParameters["patchedAuthenticatorWebAuthnStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnPartialUpdateRaw(requestParameters: StagesAuthenticatorWebauthnPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorWebAuthnStage>> {
-        const requestOptions = await this.stagesAuthenticatorWebauthnPartialUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorWebauthnPartialUpdateRaw(
+        requestParameters: StagesAuthenticatorWebauthnPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorWebAuthnStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorWebAuthnStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorWebAuthnStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnPartialUpdate(requestParameters: StagesAuthenticatorWebauthnPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorWebAuthnStage> {
-        const response = await this.stagesAuthenticatorWebauthnPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorWebauthnPartialUpdate(
+        requestParameters: StagesAuthenticatorWebauthnPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorWebAuthnStage> {
+        const response = await this.stagesAuthenticatorWebauthnPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorWebauthnRetrieve without sending the request
      */
-    async stagesAuthenticatorWebauthnRetrieveRequestOpts(requestParameters: StagesAuthenticatorWebauthnRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorWebauthnRetrieveRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnRetrieve().',
             );
         }
 
@@ -5343,11 +6164,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5356,36 +6180,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnRetrieveRaw(requestParameters: StagesAuthenticatorWebauthnRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorWebAuthnStage>> {
-        const requestOptions = await this.stagesAuthenticatorWebauthnRetrieveRequestOpts(requestParameters);
+    async stagesAuthenticatorWebauthnRetrieveRaw(
+        requestParameters: StagesAuthenticatorWebauthnRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorWebAuthnStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorWebAuthnStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorWebAuthnStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnRetrieve(requestParameters: StagesAuthenticatorWebauthnRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorWebAuthnStage> {
-        const response = await this.stagesAuthenticatorWebauthnRetrieveRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorWebauthnRetrieve(
+        requestParameters: StagesAuthenticatorWebauthnRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorWebAuthnStage> {
+        const response = await this.stagesAuthenticatorWebauthnRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorWebauthnUpdate without sending the request
      */
-    async stagesAuthenticatorWebauthnUpdateRequestOpts(requestParameters: StagesAuthenticatorWebauthnUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorWebauthnUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnUpdate().',
             );
         }
 
-        if (requestParameters['authenticatorWebAuthnStageRequest'] == null) {
+        if (requestParameters["authenticatorWebAuthnStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'authenticatorWebAuthnStageRequest',
-                'Required parameter "authenticatorWebAuthnStageRequest" was null or undefined when calling stagesAuthenticatorWebauthnUpdate().'
+                "authenticatorWebAuthnStageRequest",
+                'Required parameter "authenticatorWebAuthnStageRequest" was null or undefined when calling stagesAuthenticatorWebauthnUpdate().',
             );
         }
 
@@ -5393,7 +6231,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5405,43 +6243,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: AuthenticatorWebAuthnStageRequestToJSON(requestParameters['authenticatorWebAuthnStageRequest']),
+            body: AuthenticatorWebAuthnStageRequestToJSON(
+                requestParameters["authenticatorWebAuthnStageRequest"],
+            ),
         };
     }
 
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnUpdateRaw(requestParameters: StagesAuthenticatorWebauthnUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthenticatorWebAuthnStage>> {
-        const requestOptions = await this.stagesAuthenticatorWebauthnUpdateRequestOpts(requestParameters);
+    async stagesAuthenticatorWebauthnUpdateRaw(
+        requestParameters: StagesAuthenticatorWebauthnUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AuthenticatorWebAuthnStage>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AuthenticatorWebAuthnStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AuthenticatorWebAuthnStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthenticatorWebAuthnStage Viewset
      */
-    async stagesAuthenticatorWebauthnUpdate(requestParameters: StagesAuthenticatorWebauthnUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthenticatorWebAuthnStage> {
-        const response = await this.stagesAuthenticatorWebauthnUpdateRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorWebauthnUpdate(
+        requestParameters: StagesAuthenticatorWebauthnUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AuthenticatorWebAuthnStage> {
+        const response = await this.stagesAuthenticatorWebauthnUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesAuthenticatorWebauthnUsedByList without sending the request
      */
-    async stagesAuthenticatorWebauthnUsedByListRequestOpts(requestParameters: StagesAuthenticatorWebauthnUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesAuthenticatorWebauthnUsedByListRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAuthenticatorWebauthnUsedByList().',
             );
         }
 
@@ -5459,11 +6316,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5472,8 +6332,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorWebauthnUsedByListRaw(requestParameters: StagesAuthenticatorWebauthnUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesAuthenticatorWebauthnUsedByListRequestOpts(requestParameters);
+    async stagesAuthenticatorWebauthnUsedByListRaw(
+        requestParameters: StagesAuthenticatorWebauthnUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -5482,19 +6346,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesAuthenticatorWebauthnUsedByList(requestParameters: StagesAuthenticatorWebauthnUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesAuthenticatorWebauthnUsedByListRaw(requestParameters, initOverrides);
+    async stagesAuthenticatorWebauthnUsedByList(
+        requestParameters: StagesAuthenticatorWebauthnUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAuthenticatorWebauthnUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesCaptchaCreate without sending the request
      */
-    async stagesCaptchaCreateRequestOpts(requestParameters: StagesCaptchaCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['captchaStageRequest'] == null) {
+    async stagesCaptchaCreateRequestOpts(
+        requestParameters: StagesCaptchaCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["captchaStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'captchaStageRequest',
-                'Required parameter "captchaStageRequest" was null or undefined when calling stagesCaptchaCreate().'
+                "captchaStageRequest",
+                'Required parameter "captchaStageRequest" was null or undefined when calling stagesCaptchaCreate().',
             );
         }
 
@@ -5502,7 +6374,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5517,27 +6389,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: CaptchaStageRequestToJSON(requestParameters['captchaStageRequest']),
+            body: CaptchaStageRequestToJSON(requestParameters["captchaStageRequest"]),
         };
     }
 
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaCreateRaw(requestParameters: StagesCaptchaCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CaptchaStage>> {
+    async stagesCaptchaCreateRaw(
+        requestParameters: StagesCaptchaCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CaptchaStage>> {
         const requestOptions = await this.stagesCaptchaCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => CaptchaStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CaptchaStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaCreate(requestParameters: StagesCaptchaCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CaptchaStage> {
+    async stagesCaptchaCreate(
+        requestParameters: StagesCaptchaCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CaptchaStage> {
         const response = await this.stagesCaptchaCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5545,11 +6425,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesCaptchaDestroy without sending the request
      */
-    async stagesCaptchaDestroyRequestOpts(requestParameters: StagesCaptchaDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesCaptchaDestroyRequestOpts(
+        requestParameters: StagesCaptchaDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaDestroy().',
             );
         }
 
@@ -5567,11 +6449,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/captcha/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5580,7 +6465,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaDestroyRaw(requestParameters: StagesCaptchaDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesCaptchaDestroyRaw(
+        requestParameters: StagesCaptchaDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesCaptchaDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5590,38 +6478,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaDestroy(requestParameters: StagesCaptchaDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesCaptchaDestroy(
+        requestParameters: StagesCaptchaDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesCaptchaDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesCaptchaList without sending the request
      */
-    async stagesCaptchaListRequestOpts(requestParameters: StagesCaptchaListRequest): Promise<runtime.RequestOpts> {
+    async stagesCaptchaListRequestOpts(
+        requestParameters: StagesCaptchaListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['publicKey'] != null) {
-            queryParameters['public_key'] = requestParameters['publicKey'];
+        if (requestParameters["publicKey"] != null) {
+            queryParameters["public_key"] = requestParameters["publicKey"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -5639,7 +6532,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5648,17 +6541,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaListRaw(requestParameters: StagesCaptchaListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedCaptchaStageList>> {
+    async stagesCaptchaListRaw(
+        requestParameters: StagesCaptchaListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedCaptchaStageList>> {
         const requestOptions = await this.stagesCaptchaListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedCaptchaStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedCaptchaStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaList(requestParameters: StagesCaptchaListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedCaptchaStageList> {
+    async stagesCaptchaList(
+        requestParameters: StagesCaptchaListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedCaptchaStageList> {
         const response = await this.stagesCaptchaListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5666,11 +6567,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesCaptchaPartialUpdate without sending the request
      */
-    async stagesCaptchaPartialUpdateRequestOpts(requestParameters: StagesCaptchaPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesCaptchaPartialUpdateRequestOpts(
+        requestParameters: StagesCaptchaPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaPartialUpdate().',
             );
         }
 
@@ -5678,7 +6581,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5690,31 +6593,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/captcha/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedCaptchaStageRequestToJSON(requestParameters['patchedCaptchaStageRequest']),
+            body: PatchedCaptchaStageRequestToJSON(requestParameters["patchedCaptchaStageRequest"]),
         };
     }
 
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaPartialUpdateRaw(requestParameters: StagesCaptchaPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CaptchaStage>> {
+    async stagesCaptchaPartialUpdateRaw(
+        requestParameters: StagesCaptchaPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CaptchaStage>> {
         const requestOptions = await this.stagesCaptchaPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => CaptchaStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CaptchaStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaPartialUpdate(requestParameters: StagesCaptchaPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CaptchaStage> {
+    async stagesCaptchaPartialUpdate(
+        requestParameters: StagesCaptchaPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CaptchaStage> {
         const response = await this.stagesCaptchaPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5722,11 +6636,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesCaptchaRetrieve without sending the request
      */
-    async stagesCaptchaRetrieveRequestOpts(requestParameters: StagesCaptchaRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesCaptchaRetrieveRequestOpts(
+        requestParameters: StagesCaptchaRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaRetrieve().',
             );
         }
 
@@ -5744,11 +6660,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/captcha/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5757,17 +6676,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaRetrieveRaw(requestParameters: StagesCaptchaRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CaptchaStage>> {
+    async stagesCaptchaRetrieveRaw(
+        requestParameters: StagesCaptchaRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CaptchaStage>> {
         const requestOptions = await this.stagesCaptchaRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => CaptchaStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CaptchaStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaRetrieve(requestParameters: StagesCaptchaRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CaptchaStage> {
+    async stagesCaptchaRetrieve(
+        requestParameters: StagesCaptchaRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CaptchaStage> {
         const response = await this.stagesCaptchaRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5775,18 +6702,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesCaptchaUpdate without sending the request
      */
-    async stagesCaptchaUpdateRequestOpts(requestParameters: StagesCaptchaUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesCaptchaUpdateRequestOpts(
+        requestParameters: StagesCaptchaUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaUpdate().',
             );
         }
 
-        if (requestParameters['captchaStageRequest'] == null) {
+        if (requestParameters["captchaStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'captchaStageRequest',
-                'Required parameter "captchaStageRequest" was null or undefined when calling stagesCaptchaUpdate().'
+                "captchaStageRequest",
+                'Required parameter "captchaStageRequest" was null or undefined when calling stagesCaptchaUpdate().',
             );
         }
 
@@ -5794,7 +6723,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5806,31 +6735,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/captcha/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: CaptchaStageRequestToJSON(requestParameters['captchaStageRequest']),
+            body: CaptchaStageRequestToJSON(requestParameters["captchaStageRequest"]),
         };
     }
 
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaUpdateRaw(requestParameters: StagesCaptchaUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CaptchaStage>> {
+    async stagesCaptchaUpdateRaw(
+        requestParameters: StagesCaptchaUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<CaptchaStage>> {
         const requestOptions = await this.stagesCaptchaUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => CaptchaStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            CaptchaStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * CaptchaStage Viewset
      */
-    async stagesCaptchaUpdate(requestParameters: StagesCaptchaUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CaptchaStage> {
+    async stagesCaptchaUpdate(
+        requestParameters: StagesCaptchaUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<CaptchaStage> {
         const response = await this.stagesCaptchaUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5838,11 +6778,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesCaptchaUsedByList without sending the request
      */
-    async stagesCaptchaUsedByListRequestOpts(requestParameters: StagesCaptchaUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesCaptchaUsedByListRequestOpts(
+        requestParameters: StagesCaptchaUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesCaptchaUsedByList().',
             );
         }
 
@@ -5860,11 +6802,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/captcha/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5873,7 +6818,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesCaptchaUsedByListRaw(requestParameters: StagesCaptchaUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesCaptchaUsedByListRaw(
+        requestParameters: StagesCaptchaUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesCaptchaUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5883,7 +6831,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesCaptchaUsedByList(requestParameters: StagesCaptchaUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesCaptchaUsedByList(
+        requestParameters: StagesCaptchaUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesCaptchaUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5891,11 +6842,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesConsentCreate without sending the request
      */
-    async stagesConsentCreateRequestOpts(requestParameters: StagesConsentCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['consentStageRequest'] == null) {
+    async stagesConsentCreateRequestOpts(
+        requestParameters: StagesConsentCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["consentStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'consentStageRequest',
-                'Required parameter "consentStageRequest" was null or undefined when calling stagesConsentCreate().'
+                "consentStageRequest",
+                'Required parameter "consentStageRequest" was null or undefined when calling stagesConsentCreate().',
             );
         }
 
@@ -5903,7 +6856,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -5918,27 +6871,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: ConsentStageRequestToJSON(requestParameters['consentStageRequest']),
+            body: ConsentStageRequestToJSON(requestParameters["consentStageRequest"]),
         };
     }
 
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentCreateRaw(requestParameters: StagesConsentCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConsentStage>> {
+    async stagesConsentCreateRaw(
+        requestParameters: StagesConsentCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConsentStage>> {
         const requestOptions = await this.stagesConsentCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ConsentStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConsentStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentCreate(requestParameters: StagesConsentCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConsentStage> {
+    async stagesConsentCreate(
+        requestParameters: StagesConsentCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConsentStage> {
         const response = await this.stagesConsentCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -5946,11 +6907,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesConsentDestroy without sending the request
      */
-    async stagesConsentDestroyRequestOpts(requestParameters: StagesConsentDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesConsentDestroyRequestOpts(
+        requestParameters: StagesConsentDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesConsentDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesConsentDestroy().',
             );
         }
 
@@ -5968,11 +6931,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/consent/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -5981,7 +6947,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentDestroyRaw(requestParameters: StagesConsentDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesConsentDestroyRaw(
+        requestParameters: StagesConsentDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesConsentDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -5991,46 +6960,51 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentDestroy(requestParameters: StagesConsentDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesConsentDestroy(
+        requestParameters: StagesConsentDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesConsentDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesConsentList without sending the request
      */
-    async stagesConsentListRequestOpts(requestParameters: StagesConsentListRequest): Promise<runtime.RequestOpts> {
+    async stagesConsentListRequestOpts(
+        requestParameters: StagesConsentListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['consentExpireIn'] != null) {
-            queryParameters['consent_expire_in'] = requestParameters['consentExpireIn'];
+        if (requestParameters["consentExpireIn"] != null) {
+            queryParameters["consent_expire_in"] = requestParameters["consentExpireIn"];
         }
 
-        if (requestParameters['mode'] != null) {
-            queryParameters['mode'] = requestParameters['mode'];
+        if (requestParameters["mode"] != null) {
+            queryParameters["mode"] = requestParameters["mode"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6048,7 +7022,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6057,17 +7031,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentListRaw(requestParameters: StagesConsentListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedConsentStageList>> {
+    async stagesConsentListRaw(
+        requestParameters: StagesConsentListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedConsentStageList>> {
         const requestOptions = await this.stagesConsentListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedConsentStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedConsentStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentList(requestParameters: StagesConsentListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedConsentStageList> {
+    async stagesConsentList(
+        requestParameters: StagesConsentListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedConsentStageList> {
         const response = await this.stagesConsentListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6075,11 +7057,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesConsentPartialUpdate without sending the request
      */
-    async stagesConsentPartialUpdateRequestOpts(requestParameters: StagesConsentPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesConsentPartialUpdateRequestOpts(
+        requestParameters: StagesConsentPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesConsentPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesConsentPartialUpdate().',
             );
         }
 
@@ -6087,7 +7071,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6099,31 +7083,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/consent/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedConsentStageRequestToJSON(requestParameters['patchedConsentStageRequest']),
+            body: PatchedConsentStageRequestToJSON(requestParameters["patchedConsentStageRequest"]),
         };
     }
 
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentPartialUpdateRaw(requestParameters: StagesConsentPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConsentStage>> {
+    async stagesConsentPartialUpdateRaw(
+        requestParameters: StagesConsentPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConsentStage>> {
         const requestOptions = await this.stagesConsentPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ConsentStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConsentStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentPartialUpdate(requestParameters: StagesConsentPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConsentStage> {
+    async stagesConsentPartialUpdate(
+        requestParameters: StagesConsentPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConsentStage> {
         const response = await this.stagesConsentPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6131,11 +7126,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesConsentRetrieve without sending the request
      */
-    async stagesConsentRetrieveRequestOpts(requestParameters: StagesConsentRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesConsentRetrieveRequestOpts(
+        requestParameters: StagesConsentRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesConsentRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesConsentRetrieve().',
             );
         }
 
@@ -6153,11 +7150,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/consent/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6166,17 +7166,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentRetrieveRaw(requestParameters: StagesConsentRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConsentStage>> {
+    async stagesConsentRetrieveRaw(
+        requestParameters: StagesConsentRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConsentStage>> {
         const requestOptions = await this.stagesConsentRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ConsentStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConsentStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentRetrieve(requestParameters: StagesConsentRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConsentStage> {
+    async stagesConsentRetrieve(
+        requestParameters: StagesConsentRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConsentStage> {
         const response = await this.stagesConsentRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6184,18 +7192,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesConsentUpdate without sending the request
      */
-    async stagesConsentUpdateRequestOpts(requestParameters: StagesConsentUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesConsentUpdateRequestOpts(
+        requestParameters: StagesConsentUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesConsentUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesConsentUpdate().',
             );
         }
 
-        if (requestParameters['consentStageRequest'] == null) {
+        if (requestParameters["consentStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'consentStageRequest',
-                'Required parameter "consentStageRequest" was null or undefined when calling stagesConsentUpdate().'
+                "consentStageRequest",
+                'Required parameter "consentStageRequest" was null or undefined when calling stagesConsentUpdate().',
             );
         }
 
@@ -6203,7 +7213,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6215,31 +7225,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/consent/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: ConsentStageRequestToJSON(requestParameters['consentStageRequest']),
+            body: ConsentStageRequestToJSON(requestParameters["consentStageRequest"]),
         };
     }
 
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentUpdateRaw(requestParameters: StagesConsentUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConsentStage>> {
+    async stagesConsentUpdateRaw(
+        requestParameters: StagesConsentUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConsentStage>> {
         const requestOptions = await this.stagesConsentUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ConsentStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConsentStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * ConsentStage Viewset
      */
-    async stagesConsentUpdate(requestParameters: StagesConsentUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConsentStage> {
+    async stagesConsentUpdate(
+        requestParameters: StagesConsentUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConsentStage> {
         const response = await this.stagesConsentUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6247,11 +7268,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesConsentUsedByList without sending the request
      */
-    async stagesConsentUsedByListRequestOpts(requestParameters: StagesConsentUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesConsentUsedByListRequestOpts(
+        requestParameters: StagesConsentUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesConsentUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesConsentUsedByList().',
             );
         }
 
@@ -6269,11 +7292,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/consent/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6282,7 +7308,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesConsentUsedByListRaw(requestParameters: StagesConsentUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesConsentUsedByListRaw(
+        requestParameters: StagesConsentUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesConsentUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6292,7 +7321,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesConsentUsedByList(requestParameters: StagesConsentUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesConsentUsedByList(
+        requestParameters: StagesConsentUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesConsentUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6300,11 +7332,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDenyCreate without sending the request
      */
-    async stagesDenyCreateRequestOpts(requestParameters: StagesDenyCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['denyStageRequest'] == null) {
+    async stagesDenyCreateRequestOpts(
+        requestParameters: StagesDenyCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["denyStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'denyStageRequest',
-                'Required parameter "denyStageRequest" was null or undefined when calling stagesDenyCreate().'
+                "denyStageRequest",
+                'Required parameter "denyStageRequest" was null or undefined when calling stagesDenyCreate().',
             );
         }
 
@@ -6312,7 +7346,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6327,17 +7361,20 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: DenyStageRequestToJSON(requestParameters['denyStageRequest']),
+            body: DenyStageRequestToJSON(requestParameters["denyStageRequest"]),
         };
     }
 
     /**
      * DenyStage Viewset
      */
-    async stagesDenyCreateRaw(requestParameters: StagesDenyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DenyStage>> {
+    async stagesDenyCreateRaw(
+        requestParameters: StagesDenyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DenyStage>> {
         const requestOptions = await this.stagesDenyCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6347,7 +7384,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DenyStage Viewset
      */
-    async stagesDenyCreate(requestParameters: StagesDenyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DenyStage> {
+    async stagesDenyCreate(
+        requestParameters: StagesDenyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DenyStage> {
         const response = await this.stagesDenyCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6355,11 +7395,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDenyDestroy without sending the request
      */
-    async stagesDenyDestroyRequestOpts(requestParameters: StagesDenyDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesDenyDestroyRequestOpts(
+        requestParameters: StagesDenyDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesDenyDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesDenyDestroy().',
             );
         }
 
@@ -6377,11 +7419,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/deny/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6390,7 +7435,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DenyStage Viewset
      */
-    async stagesDenyDestroyRaw(requestParameters: StagesDenyDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesDenyDestroyRaw(
+        requestParameters: StagesDenyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesDenyDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6400,42 +7448,47 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DenyStage Viewset
      */
-    async stagesDenyDestroy(requestParameters: StagesDenyDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesDenyDestroy(
+        requestParameters: StagesDenyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesDenyDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesDenyList without sending the request
      */
-    async stagesDenyListRequestOpts(requestParameters: StagesDenyListRequest): Promise<runtime.RequestOpts> {
+    async stagesDenyListRequestOpts(
+        requestParameters: StagesDenyListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['denyMessage'] != null) {
-            queryParameters['deny_message'] = requestParameters['denyMessage'];
+        if (requestParameters["denyMessage"] != null) {
+            queryParameters["deny_message"] = requestParameters["denyMessage"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6453,7 +7506,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6462,17 +7515,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DenyStage Viewset
      */
-    async stagesDenyListRaw(requestParameters: StagesDenyListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedDenyStageList>> {
+    async stagesDenyListRaw(
+        requestParameters: StagesDenyListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedDenyStageList>> {
         const requestOptions = await this.stagesDenyListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedDenyStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedDenyStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * DenyStage Viewset
      */
-    async stagesDenyList(requestParameters: StagesDenyListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedDenyStageList> {
+    async stagesDenyList(
+        requestParameters: StagesDenyListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedDenyStageList> {
         const response = await this.stagesDenyListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6480,11 +7541,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDenyPartialUpdate without sending the request
      */
-    async stagesDenyPartialUpdateRequestOpts(requestParameters: StagesDenyPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesDenyPartialUpdateRequestOpts(
+        requestParameters: StagesDenyPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesDenyPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesDenyPartialUpdate().',
             );
         }
 
@@ -6492,7 +7555,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6504,21 +7567,27 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/deny/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedDenyStageRequestToJSON(requestParameters['patchedDenyStageRequest']),
+            body: PatchedDenyStageRequestToJSON(requestParameters["patchedDenyStageRequest"]),
         };
     }
 
     /**
      * DenyStage Viewset
      */
-    async stagesDenyPartialUpdateRaw(requestParameters: StagesDenyPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DenyStage>> {
+    async stagesDenyPartialUpdateRaw(
+        requestParameters: StagesDenyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DenyStage>> {
         const requestOptions = await this.stagesDenyPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6528,7 +7597,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DenyStage Viewset
      */
-    async stagesDenyPartialUpdate(requestParameters: StagesDenyPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DenyStage> {
+    async stagesDenyPartialUpdate(
+        requestParameters: StagesDenyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DenyStage> {
         const response = await this.stagesDenyPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6536,11 +7608,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDenyRetrieve without sending the request
      */
-    async stagesDenyRetrieveRequestOpts(requestParameters: StagesDenyRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesDenyRetrieveRequestOpts(
+        requestParameters: StagesDenyRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesDenyRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesDenyRetrieve().',
             );
         }
 
@@ -6558,11 +7632,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/deny/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6571,7 +7648,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DenyStage Viewset
      */
-    async stagesDenyRetrieveRaw(requestParameters: StagesDenyRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DenyStage>> {
+    async stagesDenyRetrieveRaw(
+        requestParameters: StagesDenyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DenyStage>> {
         const requestOptions = await this.stagesDenyRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6581,7 +7661,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DenyStage Viewset
      */
-    async stagesDenyRetrieve(requestParameters: StagesDenyRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DenyStage> {
+    async stagesDenyRetrieve(
+        requestParameters: StagesDenyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DenyStage> {
         const response = await this.stagesDenyRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6589,18 +7672,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDenyUpdate without sending the request
      */
-    async stagesDenyUpdateRequestOpts(requestParameters: StagesDenyUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesDenyUpdateRequestOpts(
+        requestParameters: StagesDenyUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesDenyUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesDenyUpdate().',
             );
         }
 
-        if (requestParameters['denyStageRequest'] == null) {
+        if (requestParameters["denyStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'denyStageRequest',
-                'Required parameter "denyStageRequest" was null or undefined when calling stagesDenyUpdate().'
+                "denyStageRequest",
+                'Required parameter "denyStageRequest" was null or undefined when calling stagesDenyUpdate().',
             );
         }
 
@@ -6608,7 +7693,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6620,21 +7705,27 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/deny/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: DenyStageRequestToJSON(requestParameters['denyStageRequest']),
+            body: DenyStageRequestToJSON(requestParameters["denyStageRequest"]),
         };
     }
 
     /**
      * DenyStage Viewset
      */
-    async stagesDenyUpdateRaw(requestParameters: StagesDenyUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DenyStage>> {
+    async stagesDenyUpdateRaw(
+        requestParameters: StagesDenyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DenyStage>> {
         const requestOptions = await this.stagesDenyUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6644,7 +7735,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DenyStage Viewset
      */
-    async stagesDenyUpdate(requestParameters: StagesDenyUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DenyStage> {
+    async stagesDenyUpdate(
+        requestParameters: StagesDenyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DenyStage> {
         const response = await this.stagesDenyUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6652,11 +7746,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDenyUsedByList without sending the request
      */
-    async stagesDenyUsedByListRequestOpts(requestParameters: StagesDenyUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesDenyUsedByListRequestOpts(
+        requestParameters: StagesDenyUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesDenyUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesDenyUsedByList().',
             );
         }
 
@@ -6674,11 +7770,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/deny/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6687,7 +7786,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesDenyUsedByListRaw(requestParameters: StagesDenyUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesDenyUsedByListRaw(
+        requestParameters: StagesDenyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesDenyUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6697,7 +7799,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesDenyUsedByList(requestParameters: StagesDenyUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesDenyUsedByList(
+        requestParameters: StagesDenyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesDenyUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6705,11 +7810,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDummyCreate without sending the request
      */
-    async stagesDummyCreateRequestOpts(requestParameters: StagesDummyCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['dummyStageRequest'] == null) {
+    async stagesDummyCreateRequestOpts(
+        requestParameters: StagesDummyCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["dummyStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'dummyStageRequest',
-                'Required parameter "dummyStageRequest" was null or undefined when calling stagesDummyCreate().'
+                "dummyStageRequest",
+                'Required parameter "dummyStageRequest" was null or undefined when calling stagesDummyCreate().',
             );
         }
 
@@ -6717,7 +7824,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6732,17 +7839,20 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: DummyStageRequestToJSON(requestParameters['dummyStageRequest']),
+            body: DummyStageRequestToJSON(requestParameters["dummyStageRequest"]),
         };
     }
 
     /**
      * DummyStage Viewset
      */
-    async stagesDummyCreateRaw(requestParameters: StagesDummyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DummyStage>> {
+    async stagesDummyCreateRaw(
+        requestParameters: StagesDummyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DummyStage>> {
         const requestOptions = await this.stagesDummyCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6752,7 +7862,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DummyStage Viewset
      */
-    async stagesDummyCreate(requestParameters: StagesDummyCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DummyStage> {
+    async stagesDummyCreate(
+        requestParameters: StagesDummyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DummyStage> {
         const response = await this.stagesDummyCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6760,11 +7873,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDummyDestroy without sending the request
      */
-    async stagesDummyDestroyRequestOpts(requestParameters: StagesDummyDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesDummyDestroyRequestOpts(
+        requestParameters: StagesDummyDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesDummyDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesDummyDestroy().',
             );
         }
 
@@ -6782,11 +7897,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/dummy/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6795,7 +7913,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DummyStage Viewset
      */
-    async stagesDummyDestroyRaw(requestParameters: StagesDummyDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesDummyDestroyRaw(
+        requestParameters: StagesDummyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesDummyDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6805,42 +7926,47 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DummyStage Viewset
      */
-    async stagesDummyDestroy(requestParameters: StagesDummyDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesDummyDestroy(
+        requestParameters: StagesDummyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesDummyDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesDummyList without sending the request
      */
-    async stagesDummyListRequestOpts(requestParameters: StagesDummyListRequest): Promise<runtime.RequestOpts> {
+    async stagesDummyListRequestOpts(
+        requestParameters: StagesDummyListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
-        if (requestParameters['throwError'] != null) {
-            queryParameters['throw_error'] = requestParameters['throwError'];
+        if (requestParameters["throwError"] != null) {
+            queryParameters["throw_error"] = requestParameters["throwError"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -6858,7 +7984,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6867,17 +7993,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DummyStage Viewset
      */
-    async stagesDummyListRaw(requestParameters: StagesDummyListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedDummyStageList>> {
+    async stagesDummyListRaw(
+        requestParameters: StagesDummyListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedDummyStageList>> {
         const requestOptions = await this.stagesDummyListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedDummyStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedDummyStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * DummyStage Viewset
      */
-    async stagesDummyList(requestParameters: StagesDummyListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedDummyStageList> {
+    async stagesDummyList(
+        requestParameters: StagesDummyListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedDummyStageList> {
         const response = await this.stagesDummyListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6885,11 +8019,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDummyPartialUpdate without sending the request
      */
-    async stagesDummyPartialUpdateRequestOpts(requestParameters: StagesDummyPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesDummyPartialUpdateRequestOpts(
+        requestParameters: StagesDummyPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesDummyPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesDummyPartialUpdate().',
             );
         }
 
@@ -6897,7 +8033,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -6909,21 +8045,27 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/dummy/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedDummyStageRequestToJSON(requestParameters['patchedDummyStageRequest']),
+            body: PatchedDummyStageRequestToJSON(requestParameters["patchedDummyStageRequest"]),
         };
     }
 
     /**
      * DummyStage Viewset
      */
-    async stagesDummyPartialUpdateRaw(requestParameters: StagesDummyPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DummyStage>> {
+    async stagesDummyPartialUpdateRaw(
+        requestParameters: StagesDummyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DummyStage>> {
         const requestOptions = await this.stagesDummyPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6933,7 +8075,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DummyStage Viewset
      */
-    async stagesDummyPartialUpdate(requestParameters: StagesDummyPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DummyStage> {
+    async stagesDummyPartialUpdate(
+        requestParameters: StagesDummyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DummyStage> {
         const response = await this.stagesDummyPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6941,11 +8086,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDummyRetrieve without sending the request
      */
-    async stagesDummyRetrieveRequestOpts(requestParameters: StagesDummyRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesDummyRetrieveRequestOpts(
+        requestParameters: StagesDummyRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesDummyRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesDummyRetrieve().',
             );
         }
 
@@ -6963,11 +8110,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/dummy/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -6976,7 +8126,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DummyStage Viewset
      */
-    async stagesDummyRetrieveRaw(requestParameters: StagesDummyRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DummyStage>> {
+    async stagesDummyRetrieveRaw(
+        requestParameters: StagesDummyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DummyStage>> {
         const requestOptions = await this.stagesDummyRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -6986,7 +8139,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DummyStage Viewset
      */
-    async stagesDummyRetrieve(requestParameters: StagesDummyRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DummyStage> {
+    async stagesDummyRetrieve(
+        requestParameters: StagesDummyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DummyStage> {
         const response = await this.stagesDummyRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -6994,18 +8150,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDummyUpdate without sending the request
      */
-    async stagesDummyUpdateRequestOpts(requestParameters: StagesDummyUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesDummyUpdateRequestOpts(
+        requestParameters: StagesDummyUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesDummyUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesDummyUpdate().',
             );
         }
 
-        if (requestParameters['dummyStageRequest'] == null) {
+        if (requestParameters["dummyStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'dummyStageRequest',
-                'Required parameter "dummyStageRequest" was null or undefined when calling stagesDummyUpdate().'
+                "dummyStageRequest",
+                'Required parameter "dummyStageRequest" was null or undefined when calling stagesDummyUpdate().',
             );
         }
 
@@ -7013,7 +8171,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7025,21 +8183,27 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/dummy/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: DummyStageRequestToJSON(requestParameters['dummyStageRequest']),
+            body: DummyStageRequestToJSON(requestParameters["dummyStageRequest"]),
         };
     }
 
     /**
      * DummyStage Viewset
      */
-    async stagesDummyUpdateRaw(requestParameters: StagesDummyUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DummyStage>> {
+    async stagesDummyUpdateRaw(
+        requestParameters: StagesDummyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<DummyStage>> {
         const requestOptions = await this.stagesDummyUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7049,7 +8213,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * DummyStage Viewset
      */
-    async stagesDummyUpdate(requestParameters: StagesDummyUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DummyStage> {
+    async stagesDummyUpdate(
+        requestParameters: StagesDummyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<DummyStage> {
         const response = await this.stagesDummyUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7057,11 +8224,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesDummyUsedByList without sending the request
      */
-    async stagesDummyUsedByListRequestOpts(requestParameters: StagesDummyUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesDummyUsedByListRequestOpts(
+        requestParameters: StagesDummyUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesDummyUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesDummyUsedByList().',
             );
         }
 
@@ -7079,11 +8248,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/dummy/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7092,7 +8264,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesDummyUsedByListRaw(requestParameters: StagesDummyUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesDummyUsedByListRaw(
+        requestParameters: StagesDummyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesDummyUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7102,7 +8277,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesDummyUsedByList(requestParameters: StagesDummyUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesDummyUsedByList(
+        requestParameters: StagesDummyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesDummyUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7110,11 +8288,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEmailCreate without sending the request
      */
-    async stagesEmailCreateRequestOpts(requestParameters: StagesEmailCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['emailStageRequest'] == null) {
+    async stagesEmailCreateRequestOpts(
+        requestParameters: StagesEmailCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["emailStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'emailStageRequest',
-                'Required parameter "emailStageRequest" was null or undefined when calling stagesEmailCreate().'
+                "emailStageRequest",
+                'Required parameter "emailStageRequest" was null or undefined when calling stagesEmailCreate().',
             );
         }
 
@@ -7122,7 +8302,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7137,17 +8317,20 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: EmailStageRequestToJSON(requestParameters['emailStageRequest']),
+            body: EmailStageRequestToJSON(requestParameters["emailStageRequest"]),
         };
     }
 
     /**
      * EmailStage Viewset
      */
-    async stagesEmailCreateRaw(requestParameters: StagesEmailCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailStage>> {
+    async stagesEmailCreateRaw(
+        requestParameters: StagesEmailCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EmailStage>> {
         const requestOptions = await this.stagesEmailCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7157,7 +8340,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EmailStage Viewset
      */
-    async stagesEmailCreate(requestParameters: StagesEmailCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailStage> {
+    async stagesEmailCreate(
+        requestParameters: StagesEmailCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EmailStage> {
         const response = await this.stagesEmailCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7165,11 +8351,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEmailDestroy without sending the request
      */
-    async stagesEmailDestroyRequestOpts(requestParameters: StagesEmailDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesEmailDestroyRequestOpts(
+        requestParameters: StagesEmailDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesEmailDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesEmailDestroy().',
             );
         }
 
@@ -7187,11 +8375,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/email/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7200,7 +8391,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EmailStage Viewset
      */
-    async stagesEmailDestroyRaw(requestParameters: StagesEmailDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesEmailDestroyRaw(
+        requestParameters: StagesEmailDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesEmailDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7210,82 +8404,88 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EmailStage Viewset
      */
-    async stagesEmailDestroy(requestParameters: StagesEmailDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesEmailDestroy(
+        requestParameters: StagesEmailDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesEmailDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesEmailList without sending the request
      */
-    async stagesEmailListRequestOpts(requestParameters: StagesEmailListRequest): Promise<runtime.RequestOpts> {
+    async stagesEmailListRequestOpts(
+        requestParameters: StagesEmailListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['activateUserOnSuccess'] != null) {
-            queryParameters['activate_user_on_success'] = requestParameters['activateUserOnSuccess'];
+        if (requestParameters["activateUserOnSuccess"] != null) {
+            queryParameters["activate_user_on_success"] =
+                requestParameters["activateUserOnSuccess"];
         }
 
-        if (requestParameters['fromAddress'] != null) {
-            queryParameters['from_address'] = requestParameters['fromAddress'];
+        if (requestParameters["fromAddress"] != null) {
+            queryParameters["from_address"] = requestParameters["fromAddress"];
         }
 
-        if (requestParameters['host'] != null) {
-            queryParameters['host'] = requestParameters['host'];
+        if (requestParameters["host"] != null) {
+            queryParameters["host"] = requestParameters["host"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['port'] != null) {
-            queryParameters['port'] = requestParameters['port'];
+        if (requestParameters["port"] != null) {
+            queryParameters["port"] = requestParameters["port"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['subject'] != null) {
-            queryParameters['subject'] = requestParameters['subject'];
+        if (requestParameters["subject"] != null) {
+            queryParameters["subject"] = requestParameters["subject"];
         }
 
-        if (requestParameters['template'] != null) {
-            queryParameters['template'] = requestParameters['template'];
+        if (requestParameters["template"] != null) {
+            queryParameters["template"] = requestParameters["template"];
         }
 
-        if (requestParameters['timeout'] != null) {
-            queryParameters['timeout'] = requestParameters['timeout'];
+        if (requestParameters["timeout"] != null) {
+            queryParameters["timeout"] = requestParameters["timeout"];
         }
 
-        if (requestParameters['tokenExpiry'] != null) {
-            queryParameters['token_expiry'] = requestParameters['tokenExpiry'];
+        if (requestParameters["tokenExpiry"] != null) {
+            queryParameters["token_expiry"] = requestParameters["tokenExpiry"];
         }
 
-        if (requestParameters['useGlobalSettings'] != null) {
-            queryParameters['use_global_settings'] = requestParameters['useGlobalSettings'];
+        if (requestParameters["useGlobalSettings"] != null) {
+            queryParameters["use_global_settings"] = requestParameters["useGlobalSettings"];
         }
 
-        if (requestParameters['useSsl'] != null) {
-            queryParameters['use_ssl'] = requestParameters['useSsl'];
+        if (requestParameters["useSsl"] != null) {
+            queryParameters["use_ssl"] = requestParameters["useSsl"];
         }
 
-        if (requestParameters['useTls'] != null) {
-            queryParameters['use_tls'] = requestParameters['useTls'];
+        if (requestParameters["useTls"] != null) {
+            queryParameters["use_tls"] = requestParameters["useTls"];
         }
 
-        if (requestParameters['username'] != null) {
-            queryParameters['username'] = requestParameters['username'];
+        if (requestParameters["username"] != null) {
+            queryParameters["username"] = requestParameters["username"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -7303,7 +8503,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7312,17 +8512,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EmailStage Viewset
      */
-    async stagesEmailListRaw(requestParameters: StagesEmailListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedEmailStageList>> {
+    async stagesEmailListRaw(
+        requestParameters: StagesEmailListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedEmailStageList>> {
         const requestOptions = await this.stagesEmailListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedEmailStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedEmailStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * EmailStage Viewset
      */
-    async stagesEmailList(requestParameters: StagesEmailListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedEmailStageList> {
+    async stagesEmailList(
+        requestParameters: StagesEmailListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedEmailStageList> {
         const response = await this.stagesEmailListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7330,11 +8538,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEmailPartialUpdate without sending the request
      */
-    async stagesEmailPartialUpdateRequestOpts(requestParameters: StagesEmailPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesEmailPartialUpdateRequestOpts(
+        requestParameters: StagesEmailPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesEmailPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesEmailPartialUpdate().',
             );
         }
 
@@ -7342,7 +8552,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7354,21 +8564,27 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/email/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedEmailStageRequestToJSON(requestParameters['patchedEmailStageRequest']),
+            body: PatchedEmailStageRequestToJSON(requestParameters["patchedEmailStageRequest"]),
         };
     }
 
     /**
      * EmailStage Viewset
      */
-    async stagesEmailPartialUpdateRaw(requestParameters: StagesEmailPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailStage>> {
+    async stagesEmailPartialUpdateRaw(
+        requestParameters: StagesEmailPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EmailStage>> {
         const requestOptions = await this.stagesEmailPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7378,7 +8594,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EmailStage Viewset
      */
-    async stagesEmailPartialUpdate(requestParameters: StagesEmailPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailStage> {
+    async stagesEmailPartialUpdate(
+        requestParameters: StagesEmailPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EmailStage> {
         const response = await this.stagesEmailPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7386,11 +8605,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEmailRetrieve without sending the request
      */
-    async stagesEmailRetrieveRequestOpts(requestParameters: StagesEmailRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesEmailRetrieveRequestOpts(
+        requestParameters: StagesEmailRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesEmailRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesEmailRetrieve().',
             );
         }
 
@@ -7408,11 +8629,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/email/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7421,7 +8645,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EmailStage Viewset
      */
-    async stagesEmailRetrieveRaw(requestParameters: StagesEmailRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailStage>> {
+    async stagesEmailRetrieveRaw(
+        requestParameters: StagesEmailRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EmailStage>> {
         const requestOptions = await this.stagesEmailRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7431,7 +8658,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EmailStage Viewset
      */
-    async stagesEmailRetrieve(requestParameters: StagesEmailRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailStage> {
+    async stagesEmailRetrieve(
+        requestParameters: StagesEmailRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EmailStage> {
         const response = await this.stagesEmailRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7457,7 +8687,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7466,17 +8696,23 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get all available templates, including custom templates
      */
-    async stagesEmailTemplatesListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
+    async stagesEmailTemplatesListRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<TypeCreate>>> {
         const requestOptions = await this.stagesEmailTemplatesListRequestOpts();
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(TypeCreateFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(TypeCreateFromJSON),
+        );
     }
 
     /**
      * Get all available templates, including custom templates
      */
-    async stagesEmailTemplatesList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TypeCreate>> {
+    async stagesEmailTemplatesList(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<TypeCreate>> {
         const response = await this.stagesEmailTemplatesListRaw(initOverrides);
         return await response.value();
     }
@@ -7484,18 +8720,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEmailUpdate without sending the request
      */
-    async stagesEmailUpdateRequestOpts(requestParameters: StagesEmailUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesEmailUpdateRequestOpts(
+        requestParameters: StagesEmailUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesEmailUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesEmailUpdate().',
             );
         }
 
-        if (requestParameters['emailStageRequest'] == null) {
+        if (requestParameters["emailStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'emailStageRequest',
-                'Required parameter "emailStageRequest" was null or undefined when calling stagesEmailUpdate().'
+                "emailStageRequest",
+                'Required parameter "emailStageRequest" was null or undefined when calling stagesEmailUpdate().',
             );
         }
 
@@ -7503,7 +8741,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7515,21 +8753,27 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/email/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: EmailStageRequestToJSON(requestParameters['emailStageRequest']),
+            body: EmailStageRequestToJSON(requestParameters["emailStageRequest"]),
         };
     }
 
     /**
      * EmailStage Viewset
      */
-    async stagesEmailUpdateRaw(requestParameters: StagesEmailUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailStage>> {
+    async stagesEmailUpdateRaw(
+        requestParameters: StagesEmailUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EmailStage>> {
         const requestOptions = await this.stagesEmailUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7539,7 +8783,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EmailStage Viewset
      */
-    async stagesEmailUpdate(requestParameters: StagesEmailUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailStage> {
+    async stagesEmailUpdate(
+        requestParameters: StagesEmailUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EmailStage> {
         const response = await this.stagesEmailUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7547,11 +8794,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEmailUsedByList without sending the request
      */
-    async stagesEmailUsedByListRequestOpts(requestParameters: StagesEmailUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesEmailUsedByListRequestOpts(
+        requestParameters: StagesEmailUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesEmailUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesEmailUsedByList().',
             );
         }
 
@@ -7569,11 +8818,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/email/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7582,7 +8834,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesEmailUsedByListRaw(requestParameters: StagesEmailUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesEmailUsedByListRaw(
+        requestParameters: StagesEmailUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesEmailUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7592,7 +8847,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesEmailUsedByList(requestParameters: StagesEmailUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesEmailUsedByList(
+        requestParameters: StagesEmailUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesEmailUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7600,11 +8858,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEndpointsCreate without sending the request
      */
-    async stagesEndpointsCreateRequestOpts(requestParameters: StagesEndpointsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['endpointStageRequest'] == null) {
+    async stagesEndpointsCreateRequestOpts(
+        requestParameters: StagesEndpointsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["endpointStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'endpointStageRequest',
-                'Required parameter "endpointStageRequest" was null or undefined when calling stagesEndpointsCreate().'
+                "endpointStageRequest",
+                'Required parameter "endpointStageRequest" was null or undefined when calling stagesEndpointsCreate().',
             );
         }
 
@@ -7612,7 +8872,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7627,27 +8887,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: EndpointStageRequestToJSON(requestParameters['endpointStageRequest']),
+            body: EndpointStageRequestToJSON(requestParameters["endpointStageRequest"]),
         };
     }
 
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsCreateRaw(requestParameters: StagesEndpointsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EndpointStage>> {
+    async stagesEndpointsCreateRaw(
+        requestParameters: StagesEndpointsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EndpointStage>> {
         const requestOptions = await this.stagesEndpointsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => EndpointStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EndpointStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsCreate(requestParameters: StagesEndpointsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EndpointStage> {
+    async stagesEndpointsCreate(
+        requestParameters: StagesEndpointsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EndpointStage> {
         const response = await this.stagesEndpointsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7655,11 +8923,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEndpointsDestroy without sending the request
      */
-    async stagesEndpointsDestroyRequestOpts(requestParameters: StagesEndpointsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesEndpointsDestroyRequestOpts(
+        requestParameters: StagesEndpointsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsDestroy().',
             );
         }
 
@@ -7677,11 +8947,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/endpoints/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7690,7 +8963,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsDestroyRaw(requestParameters: StagesEndpointsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesEndpointsDestroyRaw(
+        requestParameters: StagesEndpointsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesEndpointsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7700,34 +8976,39 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsDestroy(requestParameters: StagesEndpointsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesEndpointsDestroy(
+        requestParameters: StagesEndpointsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesEndpointsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesEndpointsList without sending the request
      */
-    async stagesEndpointsListRequestOpts(requestParameters: StagesEndpointsListRequest): Promise<runtime.RequestOpts> {
+    async stagesEndpointsListRequestOpts(
+        requestParameters: StagesEndpointsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -7745,7 +9026,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7754,17 +9035,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsListRaw(requestParameters: StagesEndpointsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedEndpointStageList>> {
+    async stagesEndpointsListRaw(
+        requestParameters: StagesEndpointsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedEndpointStageList>> {
         const requestOptions = await this.stagesEndpointsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedEndpointStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedEndpointStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsList(requestParameters: StagesEndpointsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedEndpointStageList> {
+    async stagesEndpointsList(
+        requestParameters: StagesEndpointsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedEndpointStageList> {
         const response = await this.stagesEndpointsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7772,11 +9061,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEndpointsPartialUpdate without sending the request
      */
-    async stagesEndpointsPartialUpdateRequestOpts(requestParameters: StagesEndpointsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesEndpointsPartialUpdateRequestOpts(
+        requestParameters: StagesEndpointsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsPartialUpdate().',
             );
         }
 
@@ -7784,7 +9075,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7796,43 +9087,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/endpoints/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedEndpointStageRequestToJSON(requestParameters['patchedEndpointStageRequest']),
+            body: PatchedEndpointStageRequestToJSON(
+                requestParameters["patchedEndpointStageRequest"],
+            ),
         };
     }
 
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsPartialUpdateRaw(requestParameters: StagesEndpointsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EndpointStage>> {
-        const requestOptions = await this.stagesEndpointsPartialUpdateRequestOpts(requestParameters);
+    async stagesEndpointsPartialUpdateRaw(
+        requestParameters: StagesEndpointsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EndpointStage>> {
+        const requestOptions =
+            await this.stagesEndpointsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => EndpointStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EndpointStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsPartialUpdate(requestParameters: StagesEndpointsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EndpointStage> {
-        const response = await this.stagesEndpointsPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesEndpointsPartialUpdate(
+        requestParameters: StagesEndpointsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EndpointStage> {
+        const response = await this.stagesEndpointsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesEndpointsRetrieve without sending the request
      */
-    async stagesEndpointsRetrieveRequestOpts(requestParameters: StagesEndpointsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesEndpointsRetrieveRequestOpts(
+        requestParameters: StagesEndpointsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsRetrieve().',
             );
         }
 
@@ -7850,11 +9160,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/endpoints/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7863,17 +9176,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsRetrieveRaw(requestParameters: StagesEndpointsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EndpointStage>> {
+    async stagesEndpointsRetrieveRaw(
+        requestParameters: StagesEndpointsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EndpointStage>> {
         const requestOptions = await this.stagesEndpointsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => EndpointStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EndpointStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsRetrieve(requestParameters: StagesEndpointsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EndpointStage> {
+    async stagesEndpointsRetrieve(
+        requestParameters: StagesEndpointsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EndpointStage> {
         const response = await this.stagesEndpointsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7881,18 +9202,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEndpointsUpdate without sending the request
      */
-    async stagesEndpointsUpdateRequestOpts(requestParameters: StagesEndpointsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesEndpointsUpdateRequestOpts(
+        requestParameters: StagesEndpointsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsUpdate().',
             );
         }
 
-        if (requestParameters['endpointStageRequest'] == null) {
+        if (requestParameters["endpointStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'endpointStageRequest',
-                'Required parameter "endpointStageRequest" was null or undefined when calling stagesEndpointsUpdate().'
+                "endpointStageRequest",
+                'Required parameter "endpointStageRequest" was null or undefined when calling stagesEndpointsUpdate().',
             );
         }
 
@@ -7900,7 +9223,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -7912,31 +9235,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/endpoints/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: EndpointStageRequestToJSON(requestParameters['endpointStageRequest']),
+            body: EndpointStageRequestToJSON(requestParameters["endpointStageRequest"]),
         };
     }
 
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsUpdateRaw(requestParameters: StagesEndpointsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EndpointStage>> {
+    async stagesEndpointsUpdateRaw(
+        requestParameters: StagesEndpointsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<EndpointStage>> {
         const requestOptions = await this.stagesEndpointsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => EndpointStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            EndpointStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * EndpointStage Viewset
      */
-    async stagesEndpointsUpdate(requestParameters: StagesEndpointsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EndpointStage> {
+    async stagesEndpointsUpdate(
+        requestParameters: StagesEndpointsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<EndpointStage> {
         const response = await this.stagesEndpointsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7944,11 +9278,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesEndpointsUsedByList without sending the request
      */
-    async stagesEndpointsUsedByListRequestOpts(requestParameters: StagesEndpointsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesEndpointsUsedByListRequestOpts(
+        requestParameters: StagesEndpointsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesEndpointsUsedByList().',
             );
         }
 
@@ -7966,11 +9302,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/endpoints/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -7979,7 +9318,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesEndpointsUsedByListRaw(requestParameters: StagesEndpointsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesEndpointsUsedByListRaw(
+        requestParameters: StagesEndpointsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesEndpointsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -7989,7 +9331,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesEndpointsUsedByList(requestParameters: StagesEndpointsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesEndpointsUsedByList(
+        requestParameters: StagesEndpointsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesEndpointsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -7997,11 +9342,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesIdentificationCreate without sending the request
      */
-    async stagesIdentificationCreateRequestOpts(requestParameters: StagesIdentificationCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['identificationStageRequest'] == null) {
+    async stagesIdentificationCreateRequestOpts(
+        requestParameters: StagesIdentificationCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["identificationStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'identificationStageRequest',
-                'Required parameter "identificationStageRequest" was null or undefined when calling stagesIdentificationCreate().'
+                "identificationStageRequest",
+                'Required parameter "identificationStageRequest" was null or undefined when calling stagesIdentificationCreate().',
             );
         }
 
@@ -8009,7 +9356,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8024,27 +9371,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: IdentificationStageRequestToJSON(requestParameters['identificationStageRequest']),
+            body: IdentificationStageRequestToJSON(requestParameters["identificationStageRequest"]),
         };
     }
 
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationCreateRaw(requestParameters: StagesIdentificationCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IdentificationStage>> {
+    async stagesIdentificationCreateRaw(
+        requestParameters: StagesIdentificationCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<IdentificationStage>> {
         const requestOptions = await this.stagesIdentificationCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => IdentificationStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            IdentificationStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationCreate(requestParameters: StagesIdentificationCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IdentificationStage> {
+    async stagesIdentificationCreate(
+        requestParameters: StagesIdentificationCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<IdentificationStage> {
         const response = await this.stagesIdentificationCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8052,11 +9407,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesIdentificationDestroy without sending the request
      */
-    async stagesIdentificationDestroyRequestOpts(requestParameters: StagesIdentificationDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesIdentificationDestroyRequestOpts(
+        requestParameters: StagesIdentificationDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationDestroy().',
             );
         }
 
@@ -8074,11 +9431,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/identification/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8087,7 +9447,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationDestroyRaw(requestParameters: StagesIdentificationDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesIdentificationDestroyRaw(
+        requestParameters: StagesIdentificationDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesIdentificationDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -8097,70 +9460,76 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationDestroy(requestParameters: StagesIdentificationDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesIdentificationDestroy(
+        requestParameters: StagesIdentificationDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesIdentificationDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesIdentificationList without sending the request
      */
-    async stagesIdentificationListRequestOpts(requestParameters: StagesIdentificationListRequest): Promise<runtime.RequestOpts> {
+    async stagesIdentificationListRequestOpts(
+        requestParameters: StagesIdentificationListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['captchaStage'] != null) {
-            queryParameters['captcha_stage'] = requestParameters['captchaStage'];
+        if (requestParameters["captchaStage"] != null) {
+            queryParameters["captcha_stage"] = requestParameters["captchaStage"];
         }
 
-        if (requestParameters['caseInsensitiveMatching'] != null) {
-            queryParameters['case_insensitive_matching'] = requestParameters['caseInsensitiveMatching'];
+        if (requestParameters["caseInsensitiveMatching"] != null) {
+            queryParameters["case_insensitive_matching"] =
+                requestParameters["caseInsensitiveMatching"];
         }
 
-        if (requestParameters['enrollmentFlow'] != null) {
-            queryParameters['enrollment_flow'] = requestParameters['enrollmentFlow'];
+        if (requestParameters["enrollmentFlow"] != null) {
+            queryParameters["enrollment_flow"] = requestParameters["enrollmentFlow"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['passwordStage'] != null) {
-            queryParameters['password_stage'] = requestParameters['passwordStage'];
+        if (requestParameters["passwordStage"] != null) {
+            queryParameters["password_stage"] = requestParameters["passwordStage"];
         }
 
-        if (requestParameters['passwordlessFlow'] != null) {
-            queryParameters['passwordless_flow'] = requestParameters['passwordlessFlow'];
+        if (requestParameters["passwordlessFlow"] != null) {
+            queryParameters["passwordless_flow"] = requestParameters["passwordlessFlow"];
         }
 
-        if (requestParameters['recoveryFlow'] != null) {
-            queryParameters['recovery_flow'] = requestParameters['recoveryFlow'];
+        if (requestParameters["recoveryFlow"] != null) {
+            queryParameters["recovery_flow"] = requestParameters["recoveryFlow"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['showMatchedUser'] != null) {
-            queryParameters['show_matched_user'] = requestParameters['showMatchedUser'];
+        if (requestParameters["showMatchedUser"] != null) {
+            queryParameters["show_matched_user"] = requestParameters["showMatchedUser"];
         }
 
-        if (requestParameters['showSourceLabels'] != null) {
-            queryParameters['show_source_labels'] = requestParameters['showSourceLabels'];
+        if (requestParameters["showSourceLabels"] != null) {
+            queryParameters["show_source_labels"] = requestParameters["showSourceLabels"];
         }
 
-        if (requestParameters['webauthnStage'] != null) {
-            queryParameters['webauthn_stage'] = requestParameters['webauthnStage'];
+        if (requestParameters["webauthnStage"] != null) {
+            queryParameters["webauthn_stage"] = requestParameters["webauthnStage"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -8178,7 +9547,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8187,17 +9556,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationListRaw(requestParameters: StagesIdentificationListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedIdentificationStageList>> {
+    async stagesIdentificationListRaw(
+        requestParameters: StagesIdentificationListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedIdentificationStageList>> {
         const requestOptions = await this.stagesIdentificationListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedIdentificationStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedIdentificationStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationList(requestParameters: StagesIdentificationListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedIdentificationStageList> {
+    async stagesIdentificationList(
+        requestParameters: StagesIdentificationListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedIdentificationStageList> {
         const response = await this.stagesIdentificationListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8205,11 +9582,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesIdentificationPartialUpdate without sending the request
      */
-    async stagesIdentificationPartialUpdateRequestOpts(requestParameters: StagesIdentificationPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesIdentificationPartialUpdateRequestOpts(
+        requestParameters: StagesIdentificationPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationPartialUpdate().',
             );
         }
 
@@ -8217,7 +9596,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8229,43 +9608,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/identification/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedIdentificationStageRequestToJSON(requestParameters['patchedIdentificationStageRequest']),
+            body: PatchedIdentificationStageRequestToJSON(
+                requestParameters["patchedIdentificationStageRequest"],
+            ),
         };
     }
 
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationPartialUpdateRaw(requestParameters: StagesIdentificationPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IdentificationStage>> {
-        const requestOptions = await this.stagesIdentificationPartialUpdateRequestOpts(requestParameters);
+    async stagesIdentificationPartialUpdateRaw(
+        requestParameters: StagesIdentificationPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<IdentificationStage>> {
+        const requestOptions =
+            await this.stagesIdentificationPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => IdentificationStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            IdentificationStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationPartialUpdate(requestParameters: StagesIdentificationPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IdentificationStage> {
-        const response = await this.stagesIdentificationPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesIdentificationPartialUpdate(
+        requestParameters: StagesIdentificationPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<IdentificationStage> {
+        const response = await this.stagesIdentificationPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesIdentificationRetrieve without sending the request
      */
-    async stagesIdentificationRetrieveRequestOpts(requestParameters: StagesIdentificationRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesIdentificationRetrieveRequestOpts(
+        requestParameters: StagesIdentificationRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationRetrieve().',
             );
         }
 
@@ -8283,11 +9681,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/identification/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8296,36 +9697,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationRetrieveRaw(requestParameters: StagesIdentificationRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IdentificationStage>> {
-        const requestOptions = await this.stagesIdentificationRetrieveRequestOpts(requestParameters);
+    async stagesIdentificationRetrieveRaw(
+        requestParameters: StagesIdentificationRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<IdentificationStage>> {
+        const requestOptions =
+            await this.stagesIdentificationRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => IdentificationStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            IdentificationStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationRetrieve(requestParameters: StagesIdentificationRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IdentificationStage> {
-        const response = await this.stagesIdentificationRetrieveRaw(requestParameters, initOverrides);
+    async stagesIdentificationRetrieve(
+        requestParameters: StagesIdentificationRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<IdentificationStage> {
+        const response = await this.stagesIdentificationRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesIdentificationUpdate without sending the request
      */
-    async stagesIdentificationUpdateRequestOpts(requestParameters: StagesIdentificationUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesIdentificationUpdateRequestOpts(
+        requestParameters: StagesIdentificationUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationUpdate().',
             );
         }
 
-        if (requestParameters['identificationStageRequest'] == null) {
+        if (requestParameters["identificationStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'identificationStageRequest',
-                'Required parameter "identificationStageRequest" was null or undefined when calling stagesIdentificationUpdate().'
+                "identificationStageRequest",
+                'Required parameter "identificationStageRequest" was null or undefined when calling stagesIdentificationUpdate().',
             );
         }
 
@@ -8333,7 +9748,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8345,31 +9760,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/identification/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: IdentificationStageRequestToJSON(requestParameters['identificationStageRequest']),
+            body: IdentificationStageRequestToJSON(requestParameters["identificationStageRequest"]),
         };
     }
 
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationUpdateRaw(requestParameters: StagesIdentificationUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<IdentificationStage>> {
+    async stagesIdentificationUpdateRaw(
+        requestParameters: StagesIdentificationUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<IdentificationStage>> {
         const requestOptions = await this.stagesIdentificationUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => IdentificationStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            IdentificationStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * IdentificationStage Viewset
      */
-    async stagesIdentificationUpdate(requestParameters: StagesIdentificationUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<IdentificationStage> {
+    async stagesIdentificationUpdate(
+        requestParameters: StagesIdentificationUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<IdentificationStage> {
         const response = await this.stagesIdentificationUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -8377,11 +9803,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesIdentificationUsedByList without sending the request
      */
-    async stagesIdentificationUsedByListRequestOpts(requestParameters: StagesIdentificationUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesIdentificationUsedByListRequestOpts(
+        requestParameters: StagesIdentificationUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesIdentificationUsedByList().',
             );
         }
 
@@ -8399,11 +9827,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/identification/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8412,8 +9843,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesIdentificationUsedByListRaw(requestParameters: StagesIdentificationUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesIdentificationUsedByListRequestOpts(requestParameters);
+    async stagesIdentificationUsedByListRaw(
+        requestParameters: StagesIdentificationUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesIdentificationUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -8422,19 +9857,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesIdentificationUsedByList(requestParameters: StagesIdentificationUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesIdentificationUsedByListRaw(requestParameters, initOverrides);
+    async stagesIdentificationUsedByList(
+        requestParameters: StagesIdentificationUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesIdentificationUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationInvitationsCreate without sending the request
      */
-    async stagesInvitationInvitationsCreateRequestOpts(requestParameters: StagesInvitationInvitationsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['invitationRequest'] == null) {
+    async stagesInvitationInvitationsCreateRequestOpts(
+        requestParameters: StagesInvitationInvitationsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["invitationRequest"] == null) {
             throw new runtime.RequiredError(
-                'invitationRequest',
-                'Required parameter "invitationRequest" was null or undefined when calling stagesInvitationInvitationsCreate().'
+                "invitationRequest",
+                'Required parameter "invitationRequest" was null or undefined when calling stagesInvitationInvitationsCreate().',
             );
         }
 
@@ -8442,7 +9885,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8457,18 +9900,22 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: InvitationRequestToJSON(requestParameters['invitationRequest']),
+            body: InvitationRequestToJSON(requestParameters["invitationRequest"]),
         };
     }
 
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsCreateRaw(requestParameters: StagesInvitationInvitationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Invitation>> {
-        const requestOptions = await this.stagesInvitationInvitationsCreateRequestOpts(requestParameters);
+    async stagesInvitationInvitationsCreateRaw(
+        requestParameters: StagesInvitationInvitationsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Invitation>> {
+        const requestOptions =
+            await this.stagesInvitationInvitationsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InvitationFromJSON(jsonValue));
@@ -8477,19 +9924,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsCreate(requestParameters: StagesInvitationInvitationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Invitation> {
-        const response = await this.stagesInvitationInvitationsCreateRaw(requestParameters, initOverrides);
+    async stagesInvitationInvitationsCreate(
+        requestParameters: StagesInvitationInvitationsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Invitation> {
+        const response = await this.stagesInvitationInvitationsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationInvitationsDestroy without sending the request
      */
-    async stagesInvitationInvitationsDestroyRequestOpts(requestParameters: StagesInvitationInvitationsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['inviteUuid'] == null) {
+    async stagesInvitationInvitationsDestroyRequestOpts(
+        requestParameters: StagesInvitationInvitationsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["inviteUuid"] == null) {
             throw new runtime.RequiredError(
-                'inviteUuid',
-                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsDestroy().'
+                "inviteUuid",
+                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsDestroy().',
             );
         }
 
@@ -8507,11 +9962,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/`;
-        urlPath = urlPath.replace(`{${"invite_uuid"}}`, encodeURIComponent(String(requestParameters['inviteUuid'])));
+        urlPath = urlPath.replace(
+            `{${"invite_uuid"}}`,
+            encodeURIComponent(String(requestParameters["inviteUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8520,8 +9978,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsDestroyRaw(requestParameters: StagesInvitationInvitationsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesInvitationInvitationsDestroyRequestOpts(requestParameters);
+    async stagesInvitationInvitationsDestroyRaw(
+        requestParameters: StagesInvitationInvitationsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesInvitationInvitationsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -8530,46 +9992,51 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsDestroy(requestParameters: StagesInvitationInvitationsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesInvitationInvitationsDestroy(
+        requestParameters: StagesInvitationInvitationsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesInvitationInvitationsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesInvitationInvitationsList without sending the request
      */
-    async stagesInvitationInvitationsListRequestOpts(requestParameters: StagesInvitationInvitationsListRequest): Promise<runtime.RequestOpts> {
+    async stagesInvitationInvitationsListRequestOpts(
+        requestParameters: StagesInvitationInvitationsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['createdByUsername'] != null) {
-            queryParameters['created_by__username'] = requestParameters['createdByUsername'];
+        if (requestParameters["createdByUsername"] != null) {
+            queryParameters["created_by__username"] = requestParameters["createdByUsername"];
         }
 
-        if (requestParameters['expires'] != null) {
-            queryParameters['expires'] = (requestParameters['expires'] as any).toISOString();
+        if (requestParameters["expires"] != null) {
+            queryParameters["expires"] = (requestParameters["expires"] as any).toISOString();
         }
 
-        if (requestParameters['flowSlug'] != null) {
-            queryParameters['flow__slug'] = requestParameters['flowSlug'];
+        if (requestParameters["flowSlug"] != null) {
+            queryParameters["flow__slug"] = requestParameters["flowSlug"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -8587,7 +10054,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8596,29 +10063,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsListRaw(requestParameters: StagesInvitationInvitationsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedInvitationList>> {
-        const requestOptions = await this.stagesInvitationInvitationsListRequestOpts(requestParameters);
+    async stagesInvitationInvitationsListRaw(
+        requestParameters: StagesInvitationInvitationsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedInvitationList>> {
+        const requestOptions =
+            await this.stagesInvitationInvitationsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedInvitationListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedInvitationListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsList(requestParameters: StagesInvitationInvitationsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedInvitationList> {
-        const response = await this.stagesInvitationInvitationsListRaw(requestParameters, initOverrides);
+    async stagesInvitationInvitationsList(
+        requestParameters: StagesInvitationInvitationsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedInvitationList> {
+        const response = await this.stagesInvitationInvitationsListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationInvitationsPartialUpdate without sending the request
      */
-    async stagesInvitationInvitationsPartialUpdateRequestOpts(requestParameters: StagesInvitationInvitationsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['inviteUuid'] == null) {
+    async stagesInvitationInvitationsPartialUpdateRequestOpts(
+        requestParameters: StagesInvitationInvitationsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["inviteUuid"] == null) {
             throw new runtime.RequiredError(
-                'inviteUuid',
-                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsPartialUpdate().'
+                "inviteUuid",
+                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsPartialUpdate().',
             );
         }
 
@@ -8626,7 +10107,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8638,22 +10119,29 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/`;
-        urlPath = urlPath.replace(`{${"invite_uuid"}}`, encodeURIComponent(String(requestParameters['inviteUuid'])));
+        urlPath = urlPath.replace(
+            `{${"invite_uuid"}}`,
+            encodeURIComponent(String(requestParameters["inviteUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedInvitationRequestToJSON(requestParameters['patchedInvitationRequest']),
+            body: PatchedInvitationRequestToJSON(requestParameters["patchedInvitationRequest"]),
         };
     }
 
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsPartialUpdateRaw(requestParameters: StagesInvitationInvitationsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Invitation>> {
-        const requestOptions = await this.stagesInvitationInvitationsPartialUpdateRequestOpts(requestParameters);
+    async stagesInvitationInvitationsPartialUpdateRaw(
+        requestParameters: StagesInvitationInvitationsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Invitation>> {
+        const requestOptions =
+            await this.stagesInvitationInvitationsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InvitationFromJSON(jsonValue));
@@ -8662,19 +10150,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsPartialUpdate(requestParameters: StagesInvitationInvitationsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Invitation> {
-        const response = await this.stagesInvitationInvitationsPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesInvitationInvitationsPartialUpdate(
+        requestParameters: StagesInvitationInvitationsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Invitation> {
+        const response = await this.stagesInvitationInvitationsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationInvitationsRetrieve without sending the request
      */
-    async stagesInvitationInvitationsRetrieveRequestOpts(requestParameters: StagesInvitationInvitationsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['inviteUuid'] == null) {
+    async stagesInvitationInvitationsRetrieveRequestOpts(
+        requestParameters: StagesInvitationInvitationsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["inviteUuid"] == null) {
             throw new runtime.RequiredError(
-                'inviteUuid',
-                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsRetrieve().'
+                "inviteUuid",
+                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsRetrieve().',
             );
         }
 
@@ -8692,11 +10188,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/`;
-        urlPath = urlPath.replace(`{${"invite_uuid"}}`, encodeURIComponent(String(requestParameters['inviteUuid'])));
+        urlPath = urlPath.replace(
+            `{${"invite_uuid"}}`,
+            encodeURIComponent(String(requestParameters["inviteUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8705,8 +10204,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsRetrieveRaw(requestParameters: StagesInvitationInvitationsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Invitation>> {
-        const requestOptions = await this.stagesInvitationInvitationsRetrieveRequestOpts(requestParameters);
+    async stagesInvitationInvitationsRetrieveRaw(
+        requestParameters: StagesInvitationInvitationsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Invitation>> {
+        const requestOptions =
+            await this.stagesInvitationInvitationsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InvitationFromJSON(jsonValue));
@@ -8715,26 +10218,34 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsRetrieve(requestParameters: StagesInvitationInvitationsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Invitation> {
-        const response = await this.stagesInvitationInvitationsRetrieveRaw(requestParameters, initOverrides);
+    async stagesInvitationInvitationsRetrieve(
+        requestParameters: StagesInvitationInvitationsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Invitation> {
+        const response = await this.stagesInvitationInvitationsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationInvitationsSendEmailCreate without sending the request
      */
-    async stagesInvitationInvitationsSendEmailCreateRequestOpts(requestParameters: StagesInvitationInvitationsSendEmailCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['inviteUuid'] == null) {
+    async stagesInvitationInvitationsSendEmailCreateRequestOpts(
+        requestParameters: StagesInvitationInvitationsSendEmailCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["inviteUuid"] == null) {
             throw new runtime.RequiredError(
-                'inviteUuid',
-                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsSendEmailCreate().'
+                "inviteUuid",
+                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsSendEmailCreate().',
             );
         }
 
-        if (requestParameters['invitationSendEmailRequest'] == null) {
+        if (requestParameters["invitationSendEmailRequest"] == null) {
             throw new runtime.RequiredError(
-                'invitationSendEmailRequest',
-                'Required parameter "invitationSendEmailRequest" was null or undefined when calling stagesInvitationInvitationsSendEmailCreate().'
+                "invitationSendEmailRequest",
+                'Required parameter "invitationSendEmailRequest" was null or undefined when calling stagesInvitationInvitationsSendEmailCreate().',
             );
         }
 
@@ -8742,7 +10253,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8754,22 +10265,29 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/send_email/`;
-        urlPath = urlPath.replace(`{${"invite_uuid"}}`, encodeURIComponent(String(requestParameters['inviteUuid'])));
+        urlPath = urlPath.replace(
+            `{${"invite_uuid"}}`,
+            encodeURIComponent(String(requestParameters["inviteUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: InvitationSendEmailRequestToJSON(requestParameters['invitationSendEmailRequest']),
+            body: InvitationSendEmailRequestToJSON(requestParameters["invitationSendEmailRequest"]),
         };
     }
 
     /**
      * Send invitation link via email to one or more addresses
      */
-    async stagesInvitationInvitationsSendEmailCreateRaw(requestParameters: StagesInvitationInvitationsSendEmailCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesInvitationInvitationsSendEmailCreateRequestOpts(requestParameters);
+    async stagesInvitationInvitationsSendEmailCreateRaw(
+        requestParameters: StagesInvitationInvitationsSendEmailCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesInvitationInvitationsSendEmailCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -8778,25 +10296,30 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Send invitation link via email to one or more addresses
      */
-    async stagesInvitationInvitationsSendEmailCreate(requestParameters: StagesInvitationInvitationsSendEmailCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesInvitationInvitationsSendEmailCreate(
+        requestParameters: StagesInvitationInvitationsSendEmailCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesInvitationInvitationsSendEmailCreateRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesInvitationInvitationsUpdate without sending the request
      */
-    async stagesInvitationInvitationsUpdateRequestOpts(requestParameters: StagesInvitationInvitationsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['inviteUuid'] == null) {
+    async stagesInvitationInvitationsUpdateRequestOpts(
+        requestParameters: StagesInvitationInvitationsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["inviteUuid"] == null) {
             throw new runtime.RequiredError(
-                'inviteUuid',
-                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsUpdate().'
+                "inviteUuid",
+                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsUpdate().',
             );
         }
 
-        if (requestParameters['invitationRequest'] == null) {
+        if (requestParameters["invitationRequest"] == null) {
             throw new runtime.RequiredError(
-                'invitationRequest',
-                'Required parameter "invitationRequest" was null or undefined when calling stagesInvitationInvitationsUpdate().'
+                "invitationRequest",
+                'Required parameter "invitationRequest" was null or undefined when calling stagesInvitationInvitationsUpdate().',
             );
         }
 
@@ -8804,7 +10327,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8816,22 +10339,29 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/`;
-        urlPath = urlPath.replace(`{${"invite_uuid"}}`, encodeURIComponent(String(requestParameters['inviteUuid'])));
+        urlPath = urlPath.replace(
+            `{${"invite_uuid"}}`,
+            encodeURIComponent(String(requestParameters["inviteUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: InvitationRequestToJSON(requestParameters['invitationRequest']),
+            body: InvitationRequestToJSON(requestParameters["invitationRequest"]),
         };
     }
 
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsUpdateRaw(requestParameters: StagesInvitationInvitationsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Invitation>> {
-        const requestOptions = await this.stagesInvitationInvitationsUpdateRequestOpts(requestParameters);
+    async stagesInvitationInvitationsUpdateRaw(
+        requestParameters: StagesInvitationInvitationsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Invitation>> {
+        const requestOptions =
+            await this.stagesInvitationInvitationsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InvitationFromJSON(jsonValue));
@@ -8840,19 +10370,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Invitation Viewset
      */
-    async stagesInvitationInvitationsUpdate(requestParameters: StagesInvitationInvitationsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Invitation> {
-        const response = await this.stagesInvitationInvitationsUpdateRaw(requestParameters, initOverrides);
+    async stagesInvitationInvitationsUpdate(
+        requestParameters: StagesInvitationInvitationsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Invitation> {
+        const response = await this.stagesInvitationInvitationsUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationInvitationsUsedByList without sending the request
      */
-    async stagesInvitationInvitationsUsedByListRequestOpts(requestParameters: StagesInvitationInvitationsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['inviteUuid'] == null) {
+    async stagesInvitationInvitationsUsedByListRequestOpts(
+        requestParameters: StagesInvitationInvitationsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["inviteUuid"] == null) {
             throw new runtime.RequiredError(
-                'inviteUuid',
-                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsUsedByList().'
+                "inviteUuid",
+                'Required parameter "inviteUuid" was null or undefined when calling stagesInvitationInvitationsUsedByList().',
             );
         }
 
@@ -8870,11 +10408,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"invite_uuid"}}`, encodeURIComponent(String(requestParameters['inviteUuid'])));
+        urlPath = urlPath.replace(
+            `{${"invite_uuid"}}`,
+            encodeURIComponent(String(requestParameters["inviteUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8883,8 +10424,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesInvitationInvitationsUsedByListRaw(requestParameters: StagesInvitationInvitationsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesInvitationInvitationsUsedByListRequestOpts(requestParameters);
+    async stagesInvitationInvitationsUsedByListRaw(
+        requestParameters: StagesInvitationInvitationsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesInvitationInvitationsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -8893,19 +10438,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesInvitationInvitationsUsedByList(requestParameters: StagesInvitationInvitationsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesInvitationInvitationsUsedByListRaw(requestParameters, initOverrides);
+    async stagesInvitationInvitationsUsedByList(
+        requestParameters: StagesInvitationInvitationsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesInvitationInvitationsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationStagesCreate without sending the request
      */
-    async stagesInvitationStagesCreateRequestOpts(requestParameters: StagesInvitationStagesCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['invitationStageRequest'] == null) {
+    async stagesInvitationStagesCreateRequestOpts(
+        requestParameters: StagesInvitationStagesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["invitationStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'invitationStageRequest',
-                'Required parameter "invitationStageRequest" was null or undefined when calling stagesInvitationStagesCreate().'
+                "invitationStageRequest",
+                'Required parameter "invitationStageRequest" was null or undefined when calling stagesInvitationStagesCreate().',
             );
         }
 
@@ -8913,7 +10466,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -8928,39 +10481,53 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: InvitationStageRequestToJSON(requestParameters['invitationStageRequest']),
+            body: InvitationStageRequestToJSON(requestParameters["invitationStageRequest"]),
         };
     }
 
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesCreateRaw(requestParameters: StagesInvitationStagesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InvitationStage>> {
-        const requestOptions = await this.stagesInvitationStagesCreateRequestOpts(requestParameters);
+    async stagesInvitationStagesCreateRaw(
+        requestParameters: StagesInvitationStagesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<InvitationStage>> {
+        const requestOptions =
+            await this.stagesInvitationStagesCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InvitationStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            InvitationStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesCreate(requestParameters: StagesInvitationStagesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InvitationStage> {
-        const response = await this.stagesInvitationStagesCreateRaw(requestParameters, initOverrides);
+    async stagesInvitationStagesCreate(
+        requestParameters: StagesInvitationStagesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<InvitationStage> {
+        const response = await this.stagesInvitationStagesCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationStagesDestroy without sending the request
      */
-    async stagesInvitationStagesDestroyRequestOpts(requestParameters: StagesInvitationStagesDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesInvitationStagesDestroyRequestOpts(
+        requestParameters: StagesInvitationStagesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesDestroy().',
             );
         }
 
@@ -8978,11 +10545,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/stages/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -8991,8 +10561,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesDestroyRaw(requestParameters: StagesInvitationStagesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.stagesInvitationStagesDestroyRequestOpts(requestParameters);
+    async stagesInvitationStagesDestroyRaw(
+        requestParameters: StagesInvitationStagesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesInvitationStagesDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -9001,46 +10575,52 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesDestroy(requestParameters: StagesInvitationStagesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesInvitationStagesDestroy(
+        requestParameters: StagesInvitationStagesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesInvitationStagesDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesInvitationStagesList without sending the request
      */
-    async stagesInvitationStagesListRequestOpts(requestParameters: StagesInvitationStagesListRequest): Promise<runtime.RequestOpts> {
+    async stagesInvitationStagesListRequestOpts(
+        requestParameters: StagesInvitationStagesListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['continueFlowWithoutInvitation'] != null) {
-            queryParameters['continue_flow_without_invitation'] = requestParameters['continueFlowWithoutInvitation'];
+        if (requestParameters["continueFlowWithoutInvitation"] != null) {
+            queryParameters["continue_flow_without_invitation"] =
+                requestParameters["continueFlowWithoutInvitation"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['noFlows'] != null) {
-            queryParameters['no_flows'] = requestParameters['noFlows'];
+        if (requestParameters["noFlows"] != null) {
+            queryParameters["no_flows"] = requestParameters["noFlows"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -9058,7 +10638,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9067,17 +10647,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesListRaw(requestParameters: StagesInvitationStagesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedInvitationStageList>> {
+    async stagesInvitationStagesListRaw(
+        requestParameters: StagesInvitationStagesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedInvitationStageList>> {
         const requestOptions = await this.stagesInvitationStagesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedInvitationStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedInvitationStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesList(requestParameters: StagesInvitationStagesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedInvitationStageList> {
+    async stagesInvitationStagesList(
+        requestParameters: StagesInvitationStagesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedInvitationStageList> {
         const response = await this.stagesInvitationStagesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -9085,11 +10673,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesInvitationStagesPartialUpdate without sending the request
      */
-    async stagesInvitationStagesPartialUpdateRequestOpts(requestParameters: StagesInvitationStagesPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesInvitationStagesPartialUpdateRequestOpts(
+        requestParameters: StagesInvitationStagesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesPartialUpdate().',
             );
         }
 
@@ -9097,7 +10687,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9109,43 +10699,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/stages/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedInvitationStageRequestToJSON(requestParameters['patchedInvitationStageRequest']),
+            body: PatchedInvitationStageRequestToJSON(
+                requestParameters["patchedInvitationStageRequest"],
+            ),
         };
     }
 
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesPartialUpdateRaw(requestParameters: StagesInvitationStagesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InvitationStage>> {
-        const requestOptions = await this.stagesInvitationStagesPartialUpdateRequestOpts(requestParameters);
+    async stagesInvitationStagesPartialUpdateRaw(
+        requestParameters: StagesInvitationStagesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<InvitationStage>> {
+        const requestOptions =
+            await this.stagesInvitationStagesPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InvitationStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            InvitationStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesPartialUpdate(requestParameters: StagesInvitationStagesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InvitationStage> {
-        const response = await this.stagesInvitationStagesPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesInvitationStagesPartialUpdate(
+        requestParameters: StagesInvitationStagesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<InvitationStage> {
+        const response = await this.stagesInvitationStagesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationStagesRetrieve without sending the request
      */
-    async stagesInvitationStagesRetrieveRequestOpts(requestParameters: StagesInvitationStagesRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesInvitationStagesRetrieveRequestOpts(
+        requestParameters: StagesInvitationStagesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesRetrieve().',
             );
         }
 
@@ -9163,11 +10772,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/stages/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9176,36 +10788,50 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesRetrieveRaw(requestParameters: StagesInvitationStagesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InvitationStage>> {
-        const requestOptions = await this.stagesInvitationStagesRetrieveRequestOpts(requestParameters);
+    async stagesInvitationStagesRetrieveRaw(
+        requestParameters: StagesInvitationStagesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<InvitationStage>> {
+        const requestOptions =
+            await this.stagesInvitationStagesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InvitationStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            InvitationStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesRetrieve(requestParameters: StagesInvitationStagesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InvitationStage> {
-        const response = await this.stagesInvitationStagesRetrieveRaw(requestParameters, initOverrides);
+    async stagesInvitationStagesRetrieve(
+        requestParameters: StagesInvitationStagesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<InvitationStage> {
+        const response = await this.stagesInvitationStagesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationStagesUpdate without sending the request
      */
-    async stagesInvitationStagesUpdateRequestOpts(requestParameters: StagesInvitationStagesUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesInvitationStagesUpdateRequestOpts(
+        requestParameters: StagesInvitationStagesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesUpdate().',
             );
         }
 
-        if (requestParameters['invitationStageRequest'] == null) {
+        if (requestParameters["invitationStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'invitationStageRequest',
-                'Required parameter "invitationStageRequest" was null or undefined when calling stagesInvitationStagesUpdate().'
+                "invitationStageRequest",
+                'Required parameter "invitationStageRequest" was null or undefined when calling stagesInvitationStagesUpdate().',
             );
         }
 
@@ -9213,7 +10839,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9225,43 +10851,60 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/stages/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: InvitationStageRequestToJSON(requestParameters['invitationStageRequest']),
+            body: InvitationStageRequestToJSON(requestParameters["invitationStageRequest"]),
         };
     }
 
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesUpdateRaw(requestParameters: StagesInvitationStagesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<InvitationStage>> {
-        const requestOptions = await this.stagesInvitationStagesUpdateRequestOpts(requestParameters);
+    async stagesInvitationStagesUpdateRaw(
+        requestParameters: StagesInvitationStagesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<InvitationStage>> {
+        const requestOptions =
+            await this.stagesInvitationStagesUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => InvitationStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            InvitationStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * InvitationStage Viewset
      */
-    async stagesInvitationStagesUpdate(requestParameters: StagesInvitationStagesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<InvitationStage> {
-        const response = await this.stagesInvitationStagesUpdateRaw(requestParameters, initOverrides);
+    async stagesInvitationStagesUpdate(
+        requestParameters: StagesInvitationStagesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<InvitationStage> {
+        const response = await this.stagesInvitationStagesUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesInvitationStagesUsedByList without sending the request
      */
-    async stagesInvitationStagesUsedByListRequestOpts(requestParameters: StagesInvitationStagesUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesInvitationStagesUsedByListRequestOpts(
+        requestParameters: StagesInvitationStagesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesInvitationStagesUsedByList().',
             );
         }
 
@@ -9279,11 +10922,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/invitation/stages/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9292,8 +10938,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesInvitationStagesUsedByListRaw(requestParameters: StagesInvitationStagesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesInvitationStagesUsedByListRequestOpts(requestParameters);
+    async stagesInvitationStagesUsedByListRaw(
+        requestParameters: StagesInvitationStagesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesInvitationStagesUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -9302,19 +10952,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesInvitationStagesUsedByList(requestParameters: StagesInvitationStagesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesInvitationStagesUsedByListRaw(requestParameters, initOverrides);
+    async stagesInvitationStagesUsedByList(
+        requestParameters: StagesInvitationStagesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesInvitationStagesUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesMtlsCreate without sending the request
      */
-    async stagesMtlsCreateRequestOpts(requestParameters: StagesMtlsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['mutualTLSStageRequest'] == null) {
+    async stagesMtlsCreateRequestOpts(
+        requestParameters: StagesMtlsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["mutualTLSStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'mutualTLSStageRequest',
-                'Required parameter "mutualTLSStageRequest" was null or undefined when calling stagesMtlsCreate().'
+                "mutualTLSStageRequest",
+                'Required parameter "mutualTLSStageRequest" was null or undefined when calling stagesMtlsCreate().',
             );
         }
 
@@ -9322,7 +10980,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9337,27 +10995,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: MutualTLSStageRequestToJSON(requestParameters['mutualTLSStageRequest']),
+            body: MutualTLSStageRequestToJSON(requestParameters["mutualTLSStageRequest"]),
         };
     }
 
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsCreateRaw(requestParameters: StagesMtlsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MutualTLSStage>> {
+    async stagesMtlsCreateRaw(
+        requestParameters: StagesMtlsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MutualTLSStage>> {
         const requestOptions = await this.stagesMtlsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MutualTLSStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MutualTLSStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsCreate(requestParameters: StagesMtlsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MutualTLSStage> {
+    async stagesMtlsCreate(
+        requestParameters: StagesMtlsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MutualTLSStage> {
         const response = await this.stagesMtlsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -9365,11 +11031,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesMtlsDestroy without sending the request
      */
-    async stagesMtlsDestroyRequestOpts(requestParameters: StagesMtlsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesMtlsDestroyRequestOpts(
+        requestParameters: StagesMtlsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsDestroy().',
             );
         }
 
@@ -9387,11 +11055,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/mtls/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9400,7 +11071,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsDestroyRaw(requestParameters: StagesMtlsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesMtlsDestroyRaw(
+        requestParameters: StagesMtlsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesMtlsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -9410,54 +11084,60 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsDestroy(requestParameters: StagesMtlsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesMtlsDestroy(
+        requestParameters: StagesMtlsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesMtlsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesMtlsList without sending the request
      */
-    async stagesMtlsListRequestOpts(requestParameters: StagesMtlsListRequest): Promise<runtime.RequestOpts> {
+    async stagesMtlsListRequestOpts(
+        requestParameters: StagesMtlsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['certAttribute'] != null) {
-            queryParameters['cert_attribute'] = requestParameters['certAttribute'];
+        if (requestParameters["certAttribute"] != null) {
+            queryParameters["cert_attribute"] = requestParameters["certAttribute"];
         }
 
-        if (requestParameters['certificateAuthorities'] != null) {
-            queryParameters['certificate_authorities'] = requestParameters['certificateAuthorities'];
+        if (requestParameters["certificateAuthorities"] != null) {
+            queryParameters["certificate_authorities"] =
+                requestParameters["certificateAuthorities"];
         }
 
-        if (requestParameters['mode'] != null) {
-            queryParameters['mode'] = requestParameters['mode'];
+        if (requestParameters["mode"] != null) {
+            queryParameters["mode"] = requestParameters["mode"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
-        if (requestParameters['userAttribute'] != null) {
-            queryParameters['user_attribute'] = requestParameters['userAttribute'];
+        if (requestParameters["userAttribute"] != null) {
+            queryParameters["user_attribute"] = requestParameters["userAttribute"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -9475,7 +11155,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9484,17 +11164,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsListRaw(requestParameters: StagesMtlsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedMutualTLSStageList>> {
+    async stagesMtlsListRaw(
+        requestParameters: StagesMtlsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedMutualTLSStageList>> {
         const requestOptions = await this.stagesMtlsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedMutualTLSStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedMutualTLSStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsList(requestParameters: StagesMtlsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedMutualTLSStageList> {
+    async stagesMtlsList(
+        requestParameters: StagesMtlsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedMutualTLSStageList> {
         const response = await this.stagesMtlsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -9502,11 +11190,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesMtlsPartialUpdate without sending the request
      */
-    async stagesMtlsPartialUpdateRequestOpts(requestParameters: StagesMtlsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesMtlsPartialUpdateRequestOpts(
+        requestParameters: StagesMtlsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsPartialUpdate().',
             );
         }
 
@@ -9514,7 +11204,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9526,31 +11216,44 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/mtls/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedMutualTLSStageRequestToJSON(requestParameters['patchedMutualTLSStageRequest']),
+            body: PatchedMutualTLSStageRequestToJSON(
+                requestParameters["patchedMutualTLSStageRequest"],
+            ),
         };
     }
 
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsPartialUpdateRaw(requestParameters: StagesMtlsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MutualTLSStage>> {
+    async stagesMtlsPartialUpdateRaw(
+        requestParameters: StagesMtlsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MutualTLSStage>> {
         const requestOptions = await this.stagesMtlsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MutualTLSStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MutualTLSStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsPartialUpdate(requestParameters: StagesMtlsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MutualTLSStage> {
+    async stagesMtlsPartialUpdate(
+        requestParameters: StagesMtlsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MutualTLSStage> {
         const response = await this.stagesMtlsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -9558,11 +11261,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesMtlsRetrieve without sending the request
      */
-    async stagesMtlsRetrieveRequestOpts(requestParameters: StagesMtlsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesMtlsRetrieveRequestOpts(
+        requestParameters: StagesMtlsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsRetrieve().',
             );
         }
 
@@ -9580,11 +11285,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/mtls/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9593,17 +11301,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsRetrieveRaw(requestParameters: StagesMtlsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MutualTLSStage>> {
+    async stagesMtlsRetrieveRaw(
+        requestParameters: StagesMtlsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MutualTLSStage>> {
         const requestOptions = await this.stagesMtlsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MutualTLSStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MutualTLSStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsRetrieve(requestParameters: StagesMtlsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MutualTLSStage> {
+    async stagesMtlsRetrieve(
+        requestParameters: StagesMtlsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MutualTLSStage> {
         const response = await this.stagesMtlsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -9611,18 +11327,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesMtlsUpdate without sending the request
      */
-    async stagesMtlsUpdateRequestOpts(requestParameters: StagesMtlsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesMtlsUpdateRequestOpts(
+        requestParameters: StagesMtlsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsUpdate().',
             );
         }
 
-        if (requestParameters['mutualTLSStageRequest'] == null) {
+        if (requestParameters["mutualTLSStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'mutualTLSStageRequest',
-                'Required parameter "mutualTLSStageRequest" was null or undefined when calling stagesMtlsUpdate().'
+                "mutualTLSStageRequest",
+                'Required parameter "mutualTLSStageRequest" was null or undefined when calling stagesMtlsUpdate().',
             );
         }
 
@@ -9630,7 +11348,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9642,31 +11360,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/mtls/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: MutualTLSStageRequestToJSON(requestParameters['mutualTLSStageRequest']),
+            body: MutualTLSStageRequestToJSON(requestParameters["mutualTLSStageRequest"]),
         };
     }
 
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsUpdateRaw(requestParameters: StagesMtlsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MutualTLSStage>> {
+    async stagesMtlsUpdateRaw(
+        requestParameters: StagesMtlsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MutualTLSStage>> {
         const requestOptions = await this.stagesMtlsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MutualTLSStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MutualTLSStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * MutualTLSStage Viewset
      */
-    async stagesMtlsUpdate(requestParameters: StagesMtlsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MutualTLSStage> {
+    async stagesMtlsUpdate(
+        requestParameters: StagesMtlsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MutualTLSStage> {
         const response = await this.stagesMtlsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -9674,11 +11403,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesMtlsUsedByList without sending the request
      */
-    async stagesMtlsUsedByListRequestOpts(requestParameters: StagesMtlsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesMtlsUsedByListRequestOpts(
+        requestParameters: StagesMtlsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesMtlsUsedByList().',
             );
         }
 
@@ -9696,11 +11427,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/mtls/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9709,7 +11443,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesMtlsUsedByListRaw(requestParameters: StagesMtlsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesMtlsUsedByListRaw(
+        requestParameters: StagesMtlsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesMtlsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -9719,7 +11456,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesMtlsUsedByList(requestParameters: StagesMtlsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesMtlsUsedByList(
+        requestParameters: StagesMtlsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesMtlsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -9727,11 +11467,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPasswordCreate without sending the request
      */
-    async stagesPasswordCreateRequestOpts(requestParameters: StagesPasswordCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['passwordStageRequest'] == null) {
+    async stagesPasswordCreateRequestOpts(
+        requestParameters: StagesPasswordCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["passwordStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'passwordStageRequest',
-                'Required parameter "passwordStageRequest" was null or undefined when calling stagesPasswordCreate().'
+                "passwordStageRequest",
+                'Required parameter "passwordStageRequest" was null or undefined when calling stagesPasswordCreate().',
             );
         }
 
@@ -9739,7 +11481,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9754,27 +11496,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PasswordStageRequestToJSON(requestParameters['passwordStageRequest']),
+            body: PasswordStageRequestToJSON(requestParameters["passwordStageRequest"]),
         };
     }
 
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordCreateRaw(requestParameters: StagesPasswordCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordStage>> {
+    async stagesPasswordCreateRaw(
+        requestParameters: StagesPasswordCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordStage>> {
         const requestOptions = await this.stagesPasswordCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordCreate(requestParameters: StagesPasswordCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordStage> {
+    async stagesPasswordCreate(
+        requestParameters: StagesPasswordCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordStage> {
         const response = await this.stagesPasswordCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -9782,11 +11532,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPasswordDestroy without sending the request
      */
-    async stagesPasswordDestroyRequestOpts(requestParameters: StagesPasswordDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesPasswordDestroyRequestOpts(
+        requestParameters: StagesPasswordDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordDestroy().',
             );
         }
 
@@ -9804,11 +11556,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/password/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9817,7 +11572,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordDestroyRaw(requestParameters: StagesPasswordDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesPasswordDestroyRaw(
+        requestParameters: StagesPasswordDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesPasswordDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -9827,46 +11585,52 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordDestroy(requestParameters: StagesPasswordDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesPasswordDestroy(
+        requestParameters: StagesPasswordDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesPasswordDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesPasswordList without sending the request
      */
-    async stagesPasswordListRequestOpts(requestParameters: StagesPasswordListRequest): Promise<runtime.RequestOpts> {
+    async stagesPasswordListRequestOpts(
+        requestParameters: StagesPasswordListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['allowShowPassword'] != null) {
-            queryParameters['allow_show_password'] = requestParameters['allowShowPassword'];
+        if (requestParameters["allowShowPassword"] != null) {
+            queryParameters["allow_show_password"] = requestParameters["allowShowPassword"];
         }
 
-        if (requestParameters['configureFlow'] != null) {
-            queryParameters['configure_flow'] = requestParameters['configureFlow'];
+        if (requestParameters["configureFlow"] != null) {
+            queryParameters["configure_flow"] = requestParameters["configureFlow"];
         }
 
-        if (requestParameters['failedAttemptsBeforeCancel'] != null) {
-            queryParameters['failed_attempts_before_cancel'] = requestParameters['failedAttemptsBeforeCancel'];
+        if (requestParameters["failedAttemptsBeforeCancel"] != null) {
+            queryParameters["failed_attempts_before_cancel"] =
+                requestParameters["failedAttemptsBeforeCancel"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -9884,7 +11648,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -9893,17 +11657,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordListRaw(requestParameters: StagesPasswordListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPasswordStageList>> {
+    async stagesPasswordListRaw(
+        requestParameters: StagesPasswordListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPasswordStageList>> {
         const requestOptions = await this.stagesPasswordListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPasswordStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPasswordStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordList(requestParameters: StagesPasswordListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPasswordStageList> {
+    async stagesPasswordList(
+        requestParameters: StagesPasswordListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPasswordStageList> {
         const response = await this.stagesPasswordListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -9911,11 +11683,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPasswordPartialUpdate without sending the request
      */
-    async stagesPasswordPartialUpdateRequestOpts(requestParameters: StagesPasswordPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesPasswordPartialUpdateRequestOpts(
+        requestParameters: StagesPasswordPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordPartialUpdate().',
             );
         }
 
@@ -9923,7 +11697,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -9935,43 +11709,61 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/password/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedPasswordStageRequestToJSON(requestParameters['patchedPasswordStageRequest']),
+            body: PatchedPasswordStageRequestToJSON(
+                requestParameters["patchedPasswordStageRequest"],
+            ),
         };
     }
 
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordPartialUpdateRaw(requestParameters: StagesPasswordPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordStage>> {
+    async stagesPasswordPartialUpdateRaw(
+        requestParameters: StagesPasswordPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordStage>> {
         const requestOptions = await this.stagesPasswordPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordPartialUpdate(requestParameters: StagesPasswordPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordStage> {
-        const response = await this.stagesPasswordPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesPasswordPartialUpdate(
+        requestParameters: StagesPasswordPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordStage> {
+        const response = await this.stagesPasswordPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesPasswordRetrieve without sending the request
      */
-    async stagesPasswordRetrieveRequestOpts(requestParameters: StagesPasswordRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesPasswordRetrieveRequestOpts(
+        requestParameters: StagesPasswordRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordRetrieve().',
             );
         }
 
@@ -9989,11 +11781,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/password/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10002,17 +11797,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordRetrieveRaw(requestParameters: StagesPasswordRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordStage>> {
+    async stagesPasswordRetrieveRaw(
+        requestParameters: StagesPasswordRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordStage>> {
         const requestOptions = await this.stagesPasswordRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordRetrieve(requestParameters: StagesPasswordRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordStage> {
+    async stagesPasswordRetrieve(
+        requestParameters: StagesPasswordRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordStage> {
         const response = await this.stagesPasswordRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -10020,18 +11823,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPasswordUpdate without sending the request
      */
-    async stagesPasswordUpdateRequestOpts(requestParameters: StagesPasswordUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesPasswordUpdateRequestOpts(
+        requestParameters: StagesPasswordUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordUpdate().',
             );
         }
 
-        if (requestParameters['passwordStageRequest'] == null) {
+        if (requestParameters["passwordStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'passwordStageRequest',
-                'Required parameter "passwordStageRequest" was null or undefined when calling stagesPasswordUpdate().'
+                "passwordStageRequest",
+                'Required parameter "passwordStageRequest" was null or undefined when calling stagesPasswordUpdate().',
             );
         }
 
@@ -10039,7 +11844,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10051,31 +11856,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/password/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: PasswordStageRequestToJSON(requestParameters['passwordStageRequest']),
+            body: PasswordStageRequestToJSON(requestParameters["passwordStageRequest"]),
         };
     }
 
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordUpdateRaw(requestParameters: StagesPasswordUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PasswordStage>> {
+    async stagesPasswordUpdateRaw(
+        requestParameters: StagesPasswordUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PasswordStage>> {
         const requestOptions = await this.stagesPasswordUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PasswordStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PasswordStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * PasswordStage Viewset
      */
-    async stagesPasswordUpdate(requestParameters: StagesPasswordUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PasswordStage> {
+    async stagesPasswordUpdate(
+        requestParameters: StagesPasswordUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PasswordStage> {
         const response = await this.stagesPasswordUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -10083,11 +11899,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPasswordUsedByList without sending the request
      */
-    async stagesPasswordUsedByListRequestOpts(requestParameters: StagesPasswordUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesPasswordUsedByListRequestOpts(
+        requestParameters: StagesPasswordUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesPasswordUsedByList().',
             );
         }
 
@@ -10105,11 +11923,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/password/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10118,7 +11939,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesPasswordUsedByListRaw(requestParameters: StagesPasswordUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesPasswordUsedByListRaw(
+        requestParameters: StagesPasswordUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesPasswordUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -10128,7 +11952,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesPasswordUsedByList(requestParameters: StagesPasswordUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesPasswordUsedByList(
+        requestParameters: StagesPasswordUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesPasswordUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -10136,11 +11963,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPromptPromptsCreate without sending the request
      */
-    async stagesPromptPromptsCreateRequestOpts(requestParameters: StagesPromptPromptsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['promptRequest'] == null) {
+    async stagesPromptPromptsCreateRequestOpts(
+        requestParameters: StagesPromptPromptsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["promptRequest"] == null) {
             throw new runtime.RequiredError(
-                'promptRequest',
-                'Required parameter "promptRequest" was null or undefined when calling stagesPromptPromptsCreate().'
+                "promptRequest",
+                'Required parameter "promptRequest" was null or undefined when calling stagesPromptPromptsCreate().',
             );
         }
 
@@ -10148,7 +11977,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10163,17 +11992,20 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PromptRequestToJSON(requestParameters['promptRequest']),
+            body: PromptRequestToJSON(requestParameters["promptRequest"]),
         };
     }
 
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsCreateRaw(requestParameters: StagesPromptPromptsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Prompt>> {
+    async stagesPromptPromptsCreateRaw(
+        requestParameters: StagesPromptPromptsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Prompt>> {
         const requestOptions = await this.stagesPromptPromptsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -10183,7 +12015,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsCreate(requestParameters: StagesPromptPromptsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Prompt> {
+    async stagesPromptPromptsCreate(
+        requestParameters: StagesPromptPromptsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Prompt> {
         const response = await this.stagesPromptPromptsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -10191,11 +12026,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPromptPromptsDestroy without sending the request
      */
-    async stagesPromptPromptsDestroyRequestOpts(requestParameters: StagesPromptPromptsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['promptUuid'] == null) {
+    async stagesPromptPromptsDestroyRequestOpts(
+        requestParameters: StagesPromptPromptsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["promptUuid"] == null) {
             throw new runtime.RequiredError(
-                'promptUuid',
-                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsDestroy().'
+                "promptUuid",
+                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsDestroy().',
             );
         }
 
@@ -10213,11 +12050,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/prompt/prompts/{prompt_uuid}/`;
-        urlPath = urlPath.replace(`{${"prompt_uuid"}}`, encodeURIComponent(String(requestParameters['promptUuid'])));
+        urlPath = urlPath.replace(
+            `{${"prompt_uuid"}}`,
+            encodeURIComponent(String(requestParameters["promptUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10226,7 +12066,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsDestroyRaw(requestParameters: StagesPromptPromptsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesPromptPromptsDestroyRaw(
+        requestParameters: StagesPromptPromptsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesPromptPromptsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -10236,50 +12079,55 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsDestroy(requestParameters: StagesPromptPromptsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesPromptPromptsDestroy(
+        requestParameters: StagesPromptPromptsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesPromptPromptsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesPromptPromptsList without sending the request
      */
-    async stagesPromptPromptsListRequestOpts(requestParameters: StagesPromptPromptsListRequest): Promise<runtime.RequestOpts> {
+    async stagesPromptPromptsListRequestOpts(
+        requestParameters: StagesPromptPromptsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['fieldKey'] != null) {
-            queryParameters['field_key'] = requestParameters['fieldKey'];
+        if (requestParameters["fieldKey"] != null) {
+            queryParameters["field_key"] = requestParameters["fieldKey"];
         }
 
-        if (requestParameters['label'] != null) {
-            queryParameters['label'] = requestParameters['label'];
+        if (requestParameters["label"] != null) {
+            queryParameters["label"] = requestParameters["label"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['placeholder'] != null) {
-            queryParameters['placeholder'] = requestParameters['placeholder'];
+        if (requestParameters["placeholder"] != null) {
+            queryParameters["placeholder"] = requestParameters["placeholder"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['type'] != null) {
-            queryParameters['type'] = requestParameters['type'];
+        if (requestParameters["type"] != null) {
+            queryParameters["type"] = requestParameters["type"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -10297,7 +12145,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10306,17 +12154,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsListRaw(requestParameters: StagesPromptPromptsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPromptList>> {
+    async stagesPromptPromptsListRaw(
+        requestParameters: StagesPromptPromptsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPromptList>> {
         const requestOptions = await this.stagesPromptPromptsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPromptListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPromptListFromJSON(jsonValue),
+        );
     }
 
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsList(requestParameters: StagesPromptPromptsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPromptList> {
+    async stagesPromptPromptsList(
+        requestParameters: StagesPromptPromptsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPromptList> {
         const response = await this.stagesPromptPromptsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -10324,11 +12180,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPromptPromptsPartialUpdate without sending the request
      */
-    async stagesPromptPromptsPartialUpdateRequestOpts(requestParameters: StagesPromptPromptsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['promptUuid'] == null) {
+    async stagesPromptPromptsPartialUpdateRequestOpts(
+        requestParameters: StagesPromptPromptsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["promptUuid"] == null) {
             throw new runtime.RequiredError(
-                'promptUuid',
-                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsPartialUpdate().'
+                "promptUuid",
+                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsPartialUpdate().',
             );
         }
 
@@ -10336,7 +12194,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10348,22 +12206,29 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/prompt/prompts/{prompt_uuid}/`;
-        urlPath = urlPath.replace(`{${"prompt_uuid"}}`, encodeURIComponent(String(requestParameters['promptUuid'])));
+        urlPath = urlPath.replace(
+            `{${"prompt_uuid"}}`,
+            encodeURIComponent(String(requestParameters["promptUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedPromptRequestToJSON(requestParameters['patchedPromptRequest']),
+            body: PatchedPromptRequestToJSON(requestParameters["patchedPromptRequest"]),
         };
     }
 
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsPartialUpdateRaw(requestParameters: StagesPromptPromptsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Prompt>> {
-        const requestOptions = await this.stagesPromptPromptsPartialUpdateRequestOpts(requestParameters);
+    async stagesPromptPromptsPartialUpdateRaw(
+        requestParameters: StagesPromptPromptsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Prompt>> {
+        const requestOptions =
+            await this.stagesPromptPromptsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PromptFromJSON(jsonValue));
@@ -10372,19 +12237,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsPartialUpdate(requestParameters: StagesPromptPromptsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Prompt> {
-        const response = await this.stagesPromptPromptsPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesPromptPromptsPartialUpdate(
+        requestParameters: StagesPromptPromptsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Prompt> {
+        const response = await this.stagesPromptPromptsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesPromptPromptsPreviewCreate without sending the request
      */
-    async stagesPromptPromptsPreviewCreateRequestOpts(requestParameters: StagesPromptPromptsPreviewCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['promptRequest'] == null) {
+    async stagesPromptPromptsPreviewCreateRequestOpts(
+        requestParameters: StagesPromptPromptsPreviewCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["promptRequest"] == null) {
             throw new runtime.RequiredError(
-                'promptRequest',
-                'Required parameter "promptRequest" was null or undefined when calling stagesPromptPromptsPreviewCreate().'
+                "promptRequest",
+                'Required parameter "promptRequest" was null or undefined when calling stagesPromptPromptsPreviewCreate().',
             );
         }
 
@@ -10392,7 +12265,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10407,39 +12280,53 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PromptRequestToJSON(requestParameters['promptRequest']),
+            body: PromptRequestToJSON(requestParameters["promptRequest"]),
         };
     }
 
     /**
      * Preview a prompt as a challenge, just like a flow would receive
      */
-    async stagesPromptPromptsPreviewCreateRaw(requestParameters: StagesPromptPromptsPreviewCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptChallenge>> {
-        const requestOptions = await this.stagesPromptPromptsPreviewCreateRequestOpts(requestParameters);
+    async stagesPromptPromptsPreviewCreateRaw(
+        requestParameters: StagesPromptPromptsPreviewCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PromptChallenge>> {
+        const requestOptions =
+            await this.stagesPromptPromptsPreviewCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PromptChallengeFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PromptChallengeFromJSON(jsonValue),
+        );
     }
 
     /**
      * Preview a prompt as a challenge, just like a flow would receive
      */
-    async stagesPromptPromptsPreviewCreate(requestParameters: StagesPromptPromptsPreviewCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PromptChallenge> {
-        const response = await this.stagesPromptPromptsPreviewCreateRaw(requestParameters, initOverrides);
+    async stagesPromptPromptsPreviewCreate(
+        requestParameters: StagesPromptPromptsPreviewCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PromptChallenge> {
+        const response = await this.stagesPromptPromptsPreviewCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesPromptPromptsRetrieve without sending the request
      */
-    async stagesPromptPromptsRetrieveRequestOpts(requestParameters: StagesPromptPromptsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['promptUuid'] == null) {
+    async stagesPromptPromptsRetrieveRequestOpts(
+        requestParameters: StagesPromptPromptsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["promptUuid"] == null) {
             throw new runtime.RequiredError(
-                'promptUuid',
-                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsRetrieve().'
+                "promptUuid",
+                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsRetrieve().',
             );
         }
 
@@ -10457,11 +12344,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/prompt/prompts/{prompt_uuid}/`;
-        urlPath = urlPath.replace(`{${"prompt_uuid"}}`, encodeURIComponent(String(requestParameters['promptUuid'])));
+        urlPath = urlPath.replace(
+            `{${"prompt_uuid"}}`,
+            encodeURIComponent(String(requestParameters["promptUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10470,7 +12360,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsRetrieveRaw(requestParameters: StagesPromptPromptsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Prompt>> {
+    async stagesPromptPromptsRetrieveRaw(
+        requestParameters: StagesPromptPromptsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Prompt>> {
         const requestOptions = await this.stagesPromptPromptsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -10480,26 +12373,34 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsRetrieve(requestParameters: StagesPromptPromptsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Prompt> {
-        const response = await this.stagesPromptPromptsRetrieveRaw(requestParameters, initOverrides);
+    async stagesPromptPromptsRetrieve(
+        requestParameters: StagesPromptPromptsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Prompt> {
+        const response = await this.stagesPromptPromptsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesPromptPromptsUpdate without sending the request
      */
-    async stagesPromptPromptsUpdateRequestOpts(requestParameters: StagesPromptPromptsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['promptUuid'] == null) {
+    async stagesPromptPromptsUpdateRequestOpts(
+        requestParameters: StagesPromptPromptsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["promptUuid"] == null) {
             throw new runtime.RequiredError(
-                'promptUuid',
-                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsUpdate().'
+                "promptUuid",
+                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsUpdate().',
             );
         }
 
-        if (requestParameters['promptRequest'] == null) {
+        if (requestParameters["promptRequest"] == null) {
             throw new runtime.RequiredError(
-                'promptRequest',
-                'Required parameter "promptRequest" was null or undefined when calling stagesPromptPromptsUpdate().'
+                "promptRequest",
+                'Required parameter "promptRequest" was null or undefined when calling stagesPromptPromptsUpdate().',
             );
         }
 
@@ -10507,7 +12408,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10519,21 +12420,27 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/prompt/prompts/{prompt_uuid}/`;
-        urlPath = urlPath.replace(`{${"prompt_uuid"}}`, encodeURIComponent(String(requestParameters['promptUuid'])));
+        urlPath = urlPath.replace(
+            `{${"prompt_uuid"}}`,
+            encodeURIComponent(String(requestParameters["promptUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: PromptRequestToJSON(requestParameters['promptRequest']),
+            body: PromptRequestToJSON(requestParameters["promptRequest"]),
         };
     }
 
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsUpdateRaw(requestParameters: StagesPromptPromptsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Prompt>> {
+    async stagesPromptPromptsUpdateRaw(
+        requestParameters: StagesPromptPromptsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Prompt>> {
         const requestOptions = await this.stagesPromptPromptsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -10543,7 +12450,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Prompt Viewset
      */
-    async stagesPromptPromptsUpdate(requestParameters: StagesPromptPromptsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Prompt> {
+    async stagesPromptPromptsUpdate(
+        requestParameters: StagesPromptPromptsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Prompt> {
         const response = await this.stagesPromptPromptsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -10551,11 +12461,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPromptPromptsUsedByList without sending the request
      */
-    async stagesPromptPromptsUsedByListRequestOpts(requestParameters: StagesPromptPromptsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['promptUuid'] == null) {
+    async stagesPromptPromptsUsedByListRequestOpts(
+        requestParameters: StagesPromptPromptsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["promptUuid"] == null) {
             throw new runtime.RequiredError(
-                'promptUuid',
-                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsUsedByList().'
+                "promptUuid",
+                'Required parameter "promptUuid" was null or undefined when calling stagesPromptPromptsUsedByList().',
             );
         }
 
@@ -10573,11 +12485,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/prompt/prompts/{prompt_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"prompt_uuid"}}`, encodeURIComponent(String(requestParameters['promptUuid'])));
+        urlPath = urlPath.replace(
+            `{${"prompt_uuid"}}`,
+            encodeURIComponent(String(requestParameters["promptUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10586,8 +12501,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesPromptPromptsUsedByListRaw(requestParameters: StagesPromptPromptsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesPromptPromptsUsedByListRequestOpts(requestParameters);
+    async stagesPromptPromptsUsedByListRaw(
+        requestParameters: StagesPromptPromptsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesPromptPromptsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -10596,19 +12515,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesPromptPromptsUsedByList(requestParameters: StagesPromptPromptsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesPromptPromptsUsedByListRaw(requestParameters, initOverrides);
+    async stagesPromptPromptsUsedByList(
+        requestParameters: StagesPromptPromptsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesPromptPromptsUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesPromptStagesCreate without sending the request
      */
-    async stagesPromptStagesCreateRequestOpts(requestParameters: StagesPromptStagesCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['promptStageRequest'] == null) {
+    async stagesPromptStagesCreateRequestOpts(
+        requestParameters: StagesPromptStagesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["promptStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'promptStageRequest',
-                'Required parameter "promptStageRequest" was null or undefined when calling stagesPromptStagesCreate().'
+                "promptStageRequest",
+                'Required parameter "promptStageRequest" was null or undefined when calling stagesPromptStagesCreate().',
             );
         }
 
@@ -10616,7 +12543,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10631,17 +12558,20 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: PromptStageRequestToJSON(requestParameters['promptStageRequest']),
+            body: PromptStageRequestToJSON(requestParameters["promptStageRequest"]),
         };
     }
 
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesCreateRaw(requestParameters: StagesPromptStagesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptStage>> {
+    async stagesPromptStagesCreateRaw(
+        requestParameters: StagesPromptStagesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PromptStage>> {
         const requestOptions = await this.stagesPromptStagesCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -10651,7 +12581,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesCreate(requestParameters: StagesPromptStagesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PromptStage> {
+    async stagesPromptStagesCreate(
+        requestParameters: StagesPromptStagesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PromptStage> {
         const response = await this.stagesPromptStagesCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -10659,11 +12592,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPromptStagesDestroy without sending the request
      */
-    async stagesPromptStagesDestroyRequestOpts(requestParameters: StagesPromptStagesDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesPromptStagesDestroyRequestOpts(
+        requestParameters: StagesPromptStagesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesDestroy().',
             );
         }
 
@@ -10681,11 +12616,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/prompt/stages/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10694,7 +12632,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesDestroyRaw(requestParameters: StagesPromptStagesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesPromptStagesDestroyRaw(
+        requestParameters: StagesPromptStagesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesPromptStagesDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -10704,46 +12645,51 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesDestroy(requestParameters: StagesPromptStagesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesPromptStagesDestroy(
+        requestParameters: StagesPromptStagesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesPromptStagesDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesPromptStagesList without sending the request
      */
-    async stagesPromptStagesListRequestOpts(requestParameters: StagesPromptStagesListRequest): Promise<runtime.RequestOpts> {
+    async stagesPromptStagesListRequestOpts(
+        requestParameters: StagesPromptStagesListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['fields'] != null) {
-            queryParameters['fields'] = requestParameters['fields'];
+        if (requestParameters["fields"] != null) {
+            queryParameters["fields"] = requestParameters["fields"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
-        if (requestParameters['validationPolicies'] != null) {
-            queryParameters['validation_policies'] = requestParameters['validationPolicies'];
+        if (requestParameters["validationPolicies"] != null) {
+            queryParameters["validation_policies"] = requestParameters["validationPolicies"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -10761,7 +12707,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10770,17 +12716,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesListRaw(requestParameters: StagesPromptStagesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedPromptStageList>> {
+    async stagesPromptStagesListRaw(
+        requestParameters: StagesPromptStagesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPromptStageList>> {
         const requestOptions = await this.stagesPromptStagesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedPromptStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPromptStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesList(requestParameters: StagesPromptStagesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedPromptStageList> {
+    async stagesPromptStagesList(
+        requestParameters: StagesPromptStagesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPromptStageList> {
         const response = await this.stagesPromptStagesListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -10788,11 +12742,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPromptStagesPartialUpdate without sending the request
      */
-    async stagesPromptStagesPartialUpdateRequestOpts(requestParameters: StagesPromptStagesPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesPromptStagesPartialUpdateRequestOpts(
+        requestParameters: StagesPromptStagesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesPartialUpdate().',
             );
         }
 
@@ -10800,7 +12756,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10812,22 +12768,29 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/prompt/stages/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedPromptStageRequestToJSON(requestParameters['patchedPromptStageRequest']),
+            body: PatchedPromptStageRequestToJSON(requestParameters["patchedPromptStageRequest"]),
         };
     }
 
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesPartialUpdateRaw(requestParameters: StagesPromptStagesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptStage>> {
-        const requestOptions = await this.stagesPromptStagesPartialUpdateRequestOpts(requestParameters);
+    async stagesPromptStagesPartialUpdateRaw(
+        requestParameters: StagesPromptStagesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PromptStage>> {
+        const requestOptions =
+            await this.stagesPromptStagesPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PromptStageFromJSON(jsonValue));
@@ -10836,19 +12799,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesPartialUpdate(requestParameters: StagesPromptStagesPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PromptStage> {
-        const response = await this.stagesPromptStagesPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesPromptStagesPartialUpdate(
+        requestParameters: StagesPromptStagesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PromptStage> {
+        const response = await this.stagesPromptStagesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesPromptStagesRetrieve without sending the request
      */
-    async stagesPromptStagesRetrieveRequestOpts(requestParameters: StagesPromptStagesRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesPromptStagesRetrieveRequestOpts(
+        requestParameters: StagesPromptStagesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesRetrieve().',
             );
         }
 
@@ -10866,11 +12837,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/prompt/stages/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10879,7 +12853,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesRetrieveRaw(requestParameters: StagesPromptStagesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptStage>> {
+    async stagesPromptStagesRetrieveRaw(
+        requestParameters: StagesPromptStagesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PromptStage>> {
         const requestOptions = await this.stagesPromptStagesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -10889,7 +12866,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesRetrieve(requestParameters: StagesPromptStagesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PromptStage> {
+    async stagesPromptStagesRetrieve(
+        requestParameters: StagesPromptStagesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PromptStage> {
         const response = await this.stagesPromptStagesRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -10897,18 +12877,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPromptStagesUpdate without sending the request
      */
-    async stagesPromptStagesUpdateRequestOpts(requestParameters: StagesPromptStagesUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesPromptStagesUpdateRequestOpts(
+        requestParameters: StagesPromptStagesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesUpdate().',
             );
         }
 
-        if (requestParameters['promptStageRequest'] == null) {
+        if (requestParameters["promptStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'promptStageRequest',
-                'Required parameter "promptStageRequest" was null or undefined when calling stagesPromptStagesUpdate().'
+                "promptStageRequest",
+                'Required parameter "promptStageRequest" was null or undefined when calling stagesPromptStagesUpdate().',
             );
         }
 
@@ -10916,7 +12898,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -10928,21 +12910,27 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/prompt/stages/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: PromptStageRequestToJSON(requestParameters['promptStageRequest']),
+            body: PromptStageRequestToJSON(requestParameters["promptStageRequest"]),
         };
     }
 
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesUpdateRaw(requestParameters: StagesPromptStagesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptStage>> {
+    async stagesPromptStagesUpdateRaw(
+        requestParameters: StagesPromptStagesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PromptStage>> {
         const requestOptions = await this.stagesPromptStagesUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -10952,7 +12940,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * PromptStage Viewset
      */
-    async stagesPromptStagesUpdate(requestParameters: StagesPromptStagesUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PromptStage> {
+    async stagesPromptStagesUpdate(
+        requestParameters: StagesPromptStagesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PromptStage> {
         const response = await this.stagesPromptStagesUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -10960,11 +12951,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesPromptStagesUsedByList without sending the request
      */
-    async stagesPromptStagesUsedByListRequestOpts(requestParameters: StagesPromptStagesUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesPromptStagesUsedByListRequestOpts(
+        requestParameters: StagesPromptStagesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesPromptStagesUsedByList().',
             );
         }
 
@@ -10982,11 +12975,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/prompt/stages/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -10995,8 +12991,12 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesPromptStagesUsedByListRaw(requestParameters: StagesPromptStagesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.stagesPromptStagesUsedByListRequestOpts(requestParameters);
+    async stagesPromptStagesUsedByListRaw(
+        requestParameters: StagesPromptStagesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesPromptStagesUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -11005,19 +13005,27 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesPromptStagesUsedByList(requestParameters: StagesPromptStagesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.stagesPromptStagesUsedByListRaw(requestParameters, initOverrides);
+    async stagesPromptStagesUsedByList(
+        requestParameters: StagesPromptStagesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesPromptStagesUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesRedirectCreate without sending the request
      */
-    async stagesRedirectCreateRequestOpts(requestParameters: StagesRedirectCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['redirectStageRequest'] == null) {
+    async stagesRedirectCreateRequestOpts(
+        requestParameters: StagesRedirectCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["redirectStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'redirectStageRequest',
-                'Required parameter "redirectStageRequest" was null or undefined when calling stagesRedirectCreate().'
+                "redirectStageRequest",
+                'Required parameter "redirectStageRequest" was null or undefined when calling stagesRedirectCreate().',
             );
         }
 
@@ -11025,7 +13033,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11040,27 +13048,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: RedirectStageRequestToJSON(requestParameters['redirectStageRequest']),
+            body: RedirectStageRequestToJSON(requestParameters["redirectStageRequest"]),
         };
     }
 
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectCreateRaw(requestParameters: StagesRedirectCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RedirectStage>> {
+    async stagesRedirectCreateRaw(
+        requestParameters: StagesRedirectCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RedirectStage>> {
         const requestOptions = await this.stagesRedirectCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RedirectStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RedirectStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectCreate(requestParameters: StagesRedirectCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RedirectStage> {
+    async stagesRedirectCreate(
+        requestParameters: StagesRedirectCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RedirectStage> {
         const response = await this.stagesRedirectCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11068,11 +13084,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesRedirectDestroy without sending the request
      */
-    async stagesRedirectDestroyRequestOpts(requestParameters: StagesRedirectDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesRedirectDestroyRequestOpts(
+        requestParameters: StagesRedirectDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectDestroy().',
             );
         }
 
@@ -11090,11 +13108,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/redirect/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11103,7 +13124,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectDestroyRaw(requestParameters: StagesRedirectDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesRedirectDestroyRaw(
+        requestParameters: StagesRedirectDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesRedirectDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -11113,34 +13137,39 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectDestroy(requestParameters: StagesRedirectDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesRedirectDestroy(
+        requestParameters: StagesRedirectDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesRedirectDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesRedirectList without sending the request
      */
-    async stagesRedirectListRequestOpts(requestParameters: StagesRedirectListRequest): Promise<runtime.RequestOpts> {
+    async stagesRedirectListRequestOpts(
+        requestParameters: StagesRedirectListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -11158,7 +13187,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11167,17 +13196,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectListRaw(requestParameters: StagesRedirectListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedRedirectStageList>> {
+    async stagesRedirectListRaw(
+        requestParameters: StagesRedirectListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedRedirectStageList>> {
         const requestOptions = await this.stagesRedirectListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedRedirectStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedRedirectStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectList(requestParameters: StagesRedirectListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedRedirectStageList> {
+    async stagesRedirectList(
+        requestParameters: StagesRedirectListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedRedirectStageList> {
         const response = await this.stagesRedirectListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11185,11 +13222,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesRedirectPartialUpdate without sending the request
      */
-    async stagesRedirectPartialUpdateRequestOpts(requestParameters: StagesRedirectPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesRedirectPartialUpdateRequestOpts(
+        requestParameters: StagesRedirectPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectPartialUpdate().',
             );
         }
 
@@ -11197,7 +13236,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11209,43 +13248,61 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/redirect/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedRedirectStageRequestToJSON(requestParameters['patchedRedirectStageRequest']),
+            body: PatchedRedirectStageRequestToJSON(
+                requestParameters["patchedRedirectStageRequest"],
+            ),
         };
     }
 
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectPartialUpdateRaw(requestParameters: StagesRedirectPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RedirectStage>> {
+    async stagesRedirectPartialUpdateRaw(
+        requestParameters: StagesRedirectPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RedirectStage>> {
         const requestOptions = await this.stagesRedirectPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RedirectStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RedirectStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectPartialUpdate(requestParameters: StagesRedirectPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RedirectStage> {
-        const response = await this.stagesRedirectPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesRedirectPartialUpdate(
+        requestParameters: StagesRedirectPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RedirectStage> {
+        const response = await this.stagesRedirectPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesRedirectRetrieve without sending the request
      */
-    async stagesRedirectRetrieveRequestOpts(requestParameters: StagesRedirectRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesRedirectRetrieveRequestOpts(
+        requestParameters: StagesRedirectRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectRetrieve().',
             );
         }
 
@@ -11263,11 +13320,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/redirect/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11276,17 +13336,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectRetrieveRaw(requestParameters: StagesRedirectRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RedirectStage>> {
+    async stagesRedirectRetrieveRaw(
+        requestParameters: StagesRedirectRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RedirectStage>> {
         const requestOptions = await this.stagesRedirectRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RedirectStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RedirectStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectRetrieve(requestParameters: StagesRedirectRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RedirectStage> {
+    async stagesRedirectRetrieve(
+        requestParameters: StagesRedirectRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RedirectStage> {
         const response = await this.stagesRedirectRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11294,18 +13362,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesRedirectUpdate without sending the request
      */
-    async stagesRedirectUpdateRequestOpts(requestParameters: StagesRedirectUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesRedirectUpdateRequestOpts(
+        requestParameters: StagesRedirectUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectUpdate().',
             );
         }
 
-        if (requestParameters['redirectStageRequest'] == null) {
+        if (requestParameters["redirectStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'redirectStageRequest',
-                'Required parameter "redirectStageRequest" was null or undefined when calling stagesRedirectUpdate().'
+                "redirectStageRequest",
+                'Required parameter "redirectStageRequest" was null or undefined when calling stagesRedirectUpdate().',
             );
         }
 
@@ -11313,7 +13383,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11325,31 +13395,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/redirect/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: RedirectStageRequestToJSON(requestParameters['redirectStageRequest']),
+            body: RedirectStageRequestToJSON(requestParameters["redirectStageRequest"]),
         };
     }
 
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectUpdateRaw(requestParameters: StagesRedirectUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RedirectStage>> {
+    async stagesRedirectUpdateRaw(
+        requestParameters: StagesRedirectUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<RedirectStage>> {
         const requestOptions = await this.stagesRedirectUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RedirectStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            RedirectStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * RedirectStage Viewset
      */
-    async stagesRedirectUpdate(requestParameters: StagesRedirectUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RedirectStage> {
+    async stagesRedirectUpdate(
+        requestParameters: StagesRedirectUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<RedirectStage> {
         const response = await this.stagesRedirectUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11357,11 +13438,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesRedirectUsedByList without sending the request
      */
-    async stagesRedirectUsedByListRequestOpts(requestParameters: StagesRedirectUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesRedirectUsedByListRequestOpts(
+        requestParameters: StagesRedirectUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesRedirectUsedByList().',
             );
         }
 
@@ -11379,11 +13462,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/redirect/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11392,7 +13478,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesRedirectUsedByListRaw(requestParameters: StagesRedirectUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesRedirectUsedByListRaw(
+        requestParameters: StagesRedirectUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesRedirectUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -11402,7 +13491,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesRedirectUsedByList(requestParameters: StagesRedirectUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesRedirectUsedByList(
+        requestParameters: StagesRedirectUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesRedirectUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11410,11 +13502,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesSourceCreate without sending the request
      */
-    async stagesSourceCreateRequestOpts(requestParameters: StagesSourceCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['sourceStageRequest'] == null) {
+    async stagesSourceCreateRequestOpts(
+        requestParameters: StagesSourceCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["sourceStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'sourceStageRequest',
-                'Required parameter "sourceStageRequest" was null or undefined when calling stagesSourceCreate().'
+                "sourceStageRequest",
+                'Required parameter "sourceStageRequest" was null or undefined when calling stagesSourceCreate().',
             );
         }
 
@@ -11422,7 +13516,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11437,17 +13531,20 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: SourceStageRequestToJSON(requestParameters['sourceStageRequest']),
+            body: SourceStageRequestToJSON(requestParameters["sourceStageRequest"]),
         };
     }
 
     /**
      * SourceStage Viewset
      */
-    async stagesSourceCreateRaw(requestParameters: StagesSourceCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SourceStage>> {
+    async stagesSourceCreateRaw(
+        requestParameters: StagesSourceCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SourceStage>> {
         const requestOptions = await this.stagesSourceCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -11457,7 +13554,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * SourceStage Viewset
      */
-    async stagesSourceCreate(requestParameters: StagesSourceCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SourceStage> {
+    async stagesSourceCreate(
+        requestParameters: StagesSourceCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SourceStage> {
         const response = await this.stagesSourceCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11465,11 +13565,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesSourceDestroy without sending the request
      */
-    async stagesSourceDestroyRequestOpts(requestParameters: StagesSourceDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesSourceDestroyRequestOpts(
+        requestParameters: StagesSourceDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesSourceDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesSourceDestroy().',
             );
         }
 
@@ -11487,11 +13589,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/source/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11500,7 +13605,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * SourceStage Viewset
      */
-    async stagesSourceDestroyRaw(requestParameters: StagesSourceDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesSourceDestroyRaw(
+        requestParameters: StagesSourceDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesSourceDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -11510,46 +13618,51 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * SourceStage Viewset
      */
-    async stagesSourceDestroy(requestParameters: StagesSourceDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesSourceDestroy(
+        requestParameters: StagesSourceDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesSourceDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesSourceList without sending the request
      */
-    async stagesSourceListRequestOpts(requestParameters: StagesSourceListRequest): Promise<runtime.RequestOpts> {
+    async stagesSourceListRequestOpts(
+        requestParameters: StagesSourceListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['resumeTimeout'] != null) {
-            queryParameters['resume_timeout'] = requestParameters['resumeTimeout'];
+        if (requestParameters["resumeTimeout"] != null) {
+            queryParameters["resume_timeout"] = requestParameters["resumeTimeout"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['source'] != null) {
-            queryParameters['source'] = requestParameters['source'];
+        if (requestParameters["source"] != null) {
+            queryParameters["source"] = requestParameters["source"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -11567,7 +13680,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11576,17 +13689,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * SourceStage Viewset
      */
-    async stagesSourceListRaw(requestParameters: StagesSourceListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedSourceStageList>> {
+    async stagesSourceListRaw(
+        requestParameters: StagesSourceListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedSourceStageList>> {
         const requestOptions = await this.stagesSourceListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedSourceStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSourceStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * SourceStage Viewset
      */
-    async stagesSourceList(requestParameters: StagesSourceListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedSourceStageList> {
+    async stagesSourceList(
+        requestParameters: StagesSourceListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedSourceStageList> {
         const response = await this.stagesSourceListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11594,11 +13715,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesSourcePartialUpdate without sending the request
      */
-    async stagesSourcePartialUpdateRequestOpts(requestParameters: StagesSourcePartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesSourcePartialUpdateRequestOpts(
+        requestParameters: StagesSourcePartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesSourcePartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesSourcePartialUpdate().',
             );
         }
 
@@ -11606,7 +13729,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11618,21 +13741,27 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/source/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedSourceStageRequestToJSON(requestParameters['patchedSourceStageRequest']),
+            body: PatchedSourceStageRequestToJSON(requestParameters["patchedSourceStageRequest"]),
         };
     }
 
     /**
      * SourceStage Viewset
      */
-    async stagesSourcePartialUpdateRaw(requestParameters: StagesSourcePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SourceStage>> {
+    async stagesSourcePartialUpdateRaw(
+        requestParameters: StagesSourcePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SourceStage>> {
         const requestOptions = await this.stagesSourcePartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -11642,7 +13771,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * SourceStage Viewset
      */
-    async stagesSourcePartialUpdate(requestParameters: StagesSourcePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SourceStage> {
+    async stagesSourcePartialUpdate(
+        requestParameters: StagesSourcePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SourceStage> {
         const response = await this.stagesSourcePartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11650,11 +13782,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesSourceRetrieve without sending the request
      */
-    async stagesSourceRetrieveRequestOpts(requestParameters: StagesSourceRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesSourceRetrieveRequestOpts(
+        requestParameters: StagesSourceRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesSourceRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesSourceRetrieve().',
             );
         }
 
@@ -11672,11 +13806,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/source/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11685,7 +13822,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * SourceStage Viewset
      */
-    async stagesSourceRetrieveRaw(requestParameters: StagesSourceRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SourceStage>> {
+    async stagesSourceRetrieveRaw(
+        requestParameters: StagesSourceRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SourceStage>> {
         const requestOptions = await this.stagesSourceRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -11695,7 +13835,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * SourceStage Viewset
      */
-    async stagesSourceRetrieve(requestParameters: StagesSourceRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SourceStage> {
+    async stagesSourceRetrieve(
+        requestParameters: StagesSourceRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SourceStage> {
         const response = await this.stagesSourceRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11703,18 +13846,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesSourceUpdate without sending the request
      */
-    async stagesSourceUpdateRequestOpts(requestParameters: StagesSourceUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesSourceUpdateRequestOpts(
+        requestParameters: StagesSourceUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesSourceUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesSourceUpdate().',
             );
         }
 
-        if (requestParameters['sourceStageRequest'] == null) {
+        if (requestParameters["sourceStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'sourceStageRequest',
-                'Required parameter "sourceStageRequest" was null or undefined when calling stagesSourceUpdate().'
+                "sourceStageRequest",
+                'Required parameter "sourceStageRequest" was null or undefined when calling stagesSourceUpdate().',
             );
         }
 
@@ -11722,7 +13867,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11734,21 +13879,27 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/source/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: SourceStageRequestToJSON(requestParameters['sourceStageRequest']),
+            body: SourceStageRequestToJSON(requestParameters["sourceStageRequest"]),
         };
     }
 
     /**
      * SourceStage Viewset
      */
-    async stagesSourceUpdateRaw(requestParameters: StagesSourceUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SourceStage>> {
+    async stagesSourceUpdateRaw(
+        requestParameters: StagesSourceUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<SourceStage>> {
         const requestOptions = await this.stagesSourceUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -11758,7 +13909,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * SourceStage Viewset
      */
-    async stagesSourceUpdate(requestParameters: StagesSourceUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SourceStage> {
+    async stagesSourceUpdate(
+        requestParameters: StagesSourceUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<SourceStage> {
         const response = await this.stagesSourceUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11766,11 +13920,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesSourceUsedByList without sending the request
      */
-    async stagesSourceUsedByListRequestOpts(requestParameters: StagesSourceUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesSourceUsedByListRequestOpts(
+        requestParameters: StagesSourceUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesSourceUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesSourceUsedByList().',
             );
         }
 
@@ -11788,11 +13944,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/source/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11801,7 +13960,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesSourceUsedByListRaw(requestParameters: StagesSourceUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesSourceUsedByListRaw(
+        requestParameters: StagesSourceUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesSourceUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -11811,7 +13973,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesSourceUsedByList(requestParameters: StagesSourceUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesSourceUsedByList(
+        requestParameters: StagesSourceUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesSourceUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11819,11 +13984,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserDeleteCreate without sending the request
      */
-    async stagesUserDeleteCreateRequestOpts(requestParameters: StagesUserDeleteCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['userDeleteStageRequest'] == null) {
+    async stagesUserDeleteCreateRequestOpts(
+        requestParameters: StagesUserDeleteCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userDeleteStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'userDeleteStageRequest',
-                'Required parameter "userDeleteStageRequest" was null or undefined when calling stagesUserDeleteCreate().'
+                "userDeleteStageRequest",
+                'Required parameter "userDeleteStageRequest" was null or undefined when calling stagesUserDeleteCreate().',
             );
         }
 
@@ -11831,7 +13998,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -11846,27 +14013,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserDeleteStageRequestToJSON(requestParameters['userDeleteStageRequest']),
+            body: UserDeleteStageRequestToJSON(requestParameters["userDeleteStageRequest"]),
         };
     }
 
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeleteCreateRaw(requestParameters: StagesUserDeleteCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserDeleteStage>> {
+    async stagesUserDeleteCreateRaw(
+        requestParameters: StagesUserDeleteCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserDeleteStage>> {
         const requestOptions = await this.stagesUserDeleteCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserDeleteStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserDeleteStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeleteCreate(requestParameters: StagesUserDeleteCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserDeleteStage> {
+    async stagesUserDeleteCreate(
+        requestParameters: StagesUserDeleteCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserDeleteStage> {
         const response = await this.stagesUserDeleteCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11874,11 +14049,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserDeleteDestroy without sending the request
      */
-    async stagesUserDeleteDestroyRequestOpts(requestParameters: StagesUserDeleteDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserDeleteDestroyRequestOpts(
+        requestParameters: StagesUserDeleteDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeleteDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeleteDestroy().',
             );
         }
 
@@ -11896,11 +14073,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_delete/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11909,7 +14089,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeleteDestroyRaw(requestParameters: StagesUserDeleteDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesUserDeleteDestroyRaw(
+        requestParameters: StagesUserDeleteDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesUserDeleteDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -11919,38 +14102,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeleteDestroy(requestParameters: StagesUserDeleteDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesUserDeleteDestroy(
+        requestParameters: StagesUserDeleteDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesUserDeleteDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesUserDeleteList without sending the request
      */
-    async stagesUserDeleteListRequestOpts(requestParameters: StagesUserDeleteListRequest): Promise<runtime.RequestOpts> {
+    async stagesUserDeleteListRequestOpts(
+        requestParameters: StagesUserDeleteListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -11968,7 +14156,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -11977,17 +14165,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeleteListRaw(requestParameters: StagesUserDeleteListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserDeleteStageList>> {
+    async stagesUserDeleteListRaw(
+        requestParameters: StagesUserDeleteListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserDeleteStageList>> {
         const requestOptions = await this.stagesUserDeleteListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserDeleteStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserDeleteStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeleteList(requestParameters: StagesUserDeleteListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserDeleteStageList> {
+    async stagesUserDeleteList(
+        requestParameters: StagesUserDeleteListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserDeleteStageList> {
         const response = await this.stagesUserDeleteListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -11995,11 +14191,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserDeletePartialUpdate without sending the request
      */
-    async stagesUserDeletePartialUpdateRequestOpts(requestParameters: StagesUserDeletePartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserDeletePartialUpdateRequestOpts(
+        requestParameters: StagesUserDeletePartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeletePartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeletePartialUpdate().',
             );
         }
 
@@ -12007,7 +14205,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -12019,43 +14217,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_delete/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserDeleteStageRequestToJSON(requestParameters['patchedUserDeleteStageRequest']),
+            body: PatchedUserDeleteStageRequestToJSON(
+                requestParameters["patchedUserDeleteStageRequest"],
+            ),
         };
     }
 
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeletePartialUpdateRaw(requestParameters: StagesUserDeletePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserDeleteStage>> {
-        const requestOptions = await this.stagesUserDeletePartialUpdateRequestOpts(requestParameters);
+    async stagesUserDeletePartialUpdateRaw(
+        requestParameters: StagesUserDeletePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserDeleteStage>> {
+        const requestOptions =
+            await this.stagesUserDeletePartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserDeleteStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserDeleteStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeletePartialUpdate(requestParameters: StagesUserDeletePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserDeleteStage> {
-        const response = await this.stagesUserDeletePartialUpdateRaw(requestParameters, initOverrides);
+    async stagesUserDeletePartialUpdate(
+        requestParameters: StagesUserDeletePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserDeleteStage> {
+        const response = await this.stagesUserDeletePartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesUserDeleteRetrieve without sending the request
      */
-    async stagesUserDeleteRetrieveRequestOpts(requestParameters: StagesUserDeleteRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserDeleteRetrieveRequestOpts(
+        requestParameters: StagesUserDeleteRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeleteRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeleteRetrieve().',
             );
         }
 
@@ -12073,11 +14290,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_delete/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -12086,17 +14306,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeleteRetrieveRaw(requestParameters: StagesUserDeleteRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserDeleteStage>> {
+    async stagesUserDeleteRetrieveRaw(
+        requestParameters: StagesUserDeleteRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserDeleteStage>> {
         const requestOptions = await this.stagesUserDeleteRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserDeleteStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserDeleteStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeleteRetrieve(requestParameters: StagesUserDeleteRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserDeleteStage> {
+    async stagesUserDeleteRetrieve(
+        requestParameters: StagesUserDeleteRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserDeleteStage> {
         const response = await this.stagesUserDeleteRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12104,18 +14332,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserDeleteUpdate without sending the request
      */
-    async stagesUserDeleteUpdateRequestOpts(requestParameters: StagesUserDeleteUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserDeleteUpdateRequestOpts(
+        requestParameters: StagesUserDeleteUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeleteUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeleteUpdate().',
             );
         }
 
-        if (requestParameters['userDeleteStageRequest'] == null) {
+        if (requestParameters["userDeleteStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'userDeleteStageRequest',
-                'Required parameter "userDeleteStageRequest" was null or undefined when calling stagesUserDeleteUpdate().'
+                "userDeleteStageRequest",
+                'Required parameter "userDeleteStageRequest" was null or undefined when calling stagesUserDeleteUpdate().',
             );
         }
 
@@ -12123,7 +14353,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -12135,31 +14365,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_delete/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserDeleteStageRequestToJSON(requestParameters['userDeleteStageRequest']),
+            body: UserDeleteStageRequestToJSON(requestParameters["userDeleteStageRequest"]),
         };
     }
 
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeleteUpdateRaw(requestParameters: StagesUserDeleteUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserDeleteStage>> {
+    async stagesUserDeleteUpdateRaw(
+        requestParameters: StagesUserDeleteUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserDeleteStage>> {
         const requestOptions = await this.stagesUserDeleteUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserDeleteStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserDeleteStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserDeleteStage Viewset
      */
-    async stagesUserDeleteUpdate(requestParameters: StagesUserDeleteUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserDeleteStage> {
+    async stagesUserDeleteUpdate(
+        requestParameters: StagesUserDeleteUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserDeleteStage> {
         const response = await this.stagesUserDeleteUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12167,11 +14408,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserDeleteUsedByList without sending the request
      */
-    async stagesUserDeleteUsedByListRequestOpts(requestParameters: StagesUserDeleteUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserDeleteUsedByListRequestOpts(
+        requestParameters: StagesUserDeleteUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeleteUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserDeleteUsedByList().',
             );
         }
 
@@ -12189,11 +14432,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_delete/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -12202,7 +14448,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesUserDeleteUsedByListRaw(requestParameters: StagesUserDeleteUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesUserDeleteUsedByListRaw(
+        requestParameters: StagesUserDeleteUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesUserDeleteUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -12212,7 +14461,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesUserDeleteUsedByList(requestParameters: StagesUserDeleteUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesUserDeleteUsedByList(
+        requestParameters: StagesUserDeleteUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesUserDeleteUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12220,11 +14472,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserLoginCreate without sending the request
      */
-    async stagesUserLoginCreateRequestOpts(requestParameters: StagesUserLoginCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['userLoginStageRequest'] == null) {
+    async stagesUserLoginCreateRequestOpts(
+        requestParameters: StagesUserLoginCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userLoginStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'userLoginStageRequest',
-                'Required parameter "userLoginStageRequest" was null or undefined when calling stagesUserLoginCreate().'
+                "userLoginStageRequest",
+                'Required parameter "userLoginStageRequest" was null or undefined when calling stagesUserLoginCreate().',
             );
         }
 
@@ -12232,7 +14486,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -12247,27 +14501,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserLoginStageRequestToJSON(requestParameters['userLoginStageRequest']),
+            body: UserLoginStageRequestToJSON(requestParameters["userLoginStageRequest"]),
         };
     }
 
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginCreateRaw(requestParameters: StagesUserLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLoginStage>> {
+    async stagesUserLoginCreateRaw(
+        requestParameters: StagesUserLoginCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLoginStage>> {
         const requestOptions = await this.stagesUserLoginCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLoginStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLoginStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginCreate(requestParameters: StagesUserLoginCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLoginStage> {
+    async stagesUserLoginCreate(
+        requestParameters: StagesUserLoginCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLoginStage> {
         const response = await this.stagesUserLoginCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12275,11 +14537,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserLoginDestroy without sending the request
      */
-    async stagesUserLoginDestroyRequestOpts(requestParameters: StagesUserLoginDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserLoginDestroyRequestOpts(
+        requestParameters: StagesUserLoginDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginDestroy().',
             );
         }
 
@@ -12297,11 +14561,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_login/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -12310,7 +14577,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginDestroyRaw(requestParameters: StagesUserLoginDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesUserLoginDestroyRaw(
+        requestParameters: StagesUserLoginDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesUserLoginDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -12320,62 +14590,68 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginDestroy(requestParameters: StagesUserLoginDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesUserLoginDestroy(
+        requestParameters: StagesUserLoginDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesUserLoginDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesUserLoginList without sending the request
      */
-    async stagesUserLoginListRequestOpts(requestParameters: StagesUserLoginListRequest): Promise<runtime.RequestOpts> {
+    async stagesUserLoginListRequestOpts(
+        requestParameters: StagesUserLoginListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['geoipBinding'] != null) {
-            queryParameters['geoip_binding'] = requestParameters['geoipBinding'];
+        if (requestParameters["geoipBinding"] != null) {
+            queryParameters["geoip_binding"] = requestParameters["geoipBinding"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['networkBinding'] != null) {
-            queryParameters['network_binding'] = requestParameters['networkBinding'];
+        if (requestParameters["networkBinding"] != null) {
+            queryParameters["network_binding"] = requestParameters["networkBinding"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['rememberDevice'] != null) {
-            queryParameters['remember_device'] = requestParameters['rememberDevice'];
+        if (requestParameters["rememberDevice"] != null) {
+            queryParameters["remember_device"] = requestParameters["rememberDevice"];
         }
 
-        if (requestParameters['rememberMeOffset'] != null) {
-            queryParameters['remember_me_offset'] = requestParameters['rememberMeOffset'];
+        if (requestParameters["rememberMeOffset"] != null) {
+            queryParameters["remember_me_offset"] = requestParameters["rememberMeOffset"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sessionDuration'] != null) {
-            queryParameters['session_duration'] = requestParameters['sessionDuration'];
+        if (requestParameters["sessionDuration"] != null) {
+            queryParameters["session_duration"] = requestParameters["sessionDuration"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
-        if (requestParameters['terminateOtherSessions'] != null) {
-            queryParameters['terminate_other_sessions'] = requestParameters['terminateOtherSessions'];
+        if (requestParameters["terminateOtherSessions"] != null) {
+            queryParameters["terminate_other_sessions"] =
+                requestParameters["terminateOtherSessions"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -12393,7 +14669,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -12402,17 +14678,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginListRaw(requestParameters: StagesUserLoginListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserLoginStageList>> {
+    async stagesUserLoginListRaw(
+        requestParameters: StagesUserLoginListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserLoginStageList>> {
         const requestOptions = await this.stagesUserLoginListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserLoginStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserLoginStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginList(requestParameters: StagesUserLoginListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserLoginStageList> {
+    async stagesUserLoginList(
+        requestParameters: StagesUserLoginListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserLoginStageList> {
         const response = await this.stagesUserLoginListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12420,11 +14704,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserLoginPartialUpdate without sending the request
      */
-    async stagesUserLoginPartialUpdateRequestOpts(requestParameters: StagesUserLoginPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserLoginPartialUpdateRequestOpts(
+        requestParameters: StagesUserLoginPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginPartialUpdate().',
             );
         }
 
@@ -12432,7 +14718,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -12444,43 +14730,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_login/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserLoginStageRequestToJSON(requestParameters['patchedUserLoginStageRequest']),
+            body: PatchedUserLoginStageRequestToJSON(
+                requestParameters["patchedUserLoginStageRequest"],
+            ),
         };
     }
 
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginPartialUpdateRaw(requestParameters: StagesUserLoginPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLoginStage>> {
-        const requestOptions = await this.stagesUserLoginPartialUpdateRequestOpts(requestParameters);
+    async stagesUserLoginPartialUpdateRaw(
+        requestParameters: StagesUserLoginPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLoginStage>> {
+        const requestOptions =
+            await this.stagesUserLoginPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLoginStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLoginStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginPartialUpdate(requestParameters: StagesUserLoginPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLoginStage> {
-        const response = await this.stagesUserLoginPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesUserLoginPartialUpdate(
+        requestParameters: StagesUserLoginPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLoginStage> {
+        const response = await this.stagesUserLoginPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesUserLoginRetrieve without sending the request
      */
-    async stagesUserLoginRetrieveRequestOpts(requestParameters: StagesUserLoginRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserLoginRetrieveRequestOpts(
+        requestParameters: StagesUserLoginRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginRetrieve().',
             );
         }
 
@@ -12498,11 +14803,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_login/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -12511,17 +14819,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginRetrieveRaw(requestParameters: StagesUserLoginRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLoginStage>> {
+    async stagesUserLoginRetrieveRaw(
+        requestParameters: StagesUserLoginRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLoginStage>> {
         const requestOptions = await this.stagesUserLoginRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLoginStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLoginStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginRetrieve(requestParameters: StagesUserLoginRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLoginStage> {
+    async stagesUserLoginRetrieve(
+        requestParameters: StagesUserLoginRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLoginStage> {
         const response = await this.stagesUserLoginRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12529,18 +14845,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserLoginUpdate without sending the request
      */
-    async stagesUserLoginUpdateRequestOpts(requestParameters: StagesUserLoginUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserLoginUpdateRequestOpts(
+        requestParameters: StagesUserLoginUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginUpdate().',
             );
         }
 
-        if (requestParameters['userLoginStageRequest'] == null) {
+        if (requestParameters["userLoginStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'userLoginStageRequest',
-                'Required parameter "userLoginStageRequest" was null or undefined when calling stagesUserLoginUpdate().'
+                "userLoginStageRequest",
+                'Required parameter "userLoginStageRequest" was null or undefined when calling stagesUserLoginUpdate().',
             );
         }
 
@@ -12548,7 +14866,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -12560,31 +14878,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_login/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserLoginStageRequestToJSON(requestParameters['userLoginStageRequest']),
+            body: UserLoginStageRequestToJSON(requestParameters["userLoginStageRequest"]),
         };
     }
 
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginUpdateRaw(requestParameters: StagesUserLoginUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLoginStage>> {
+    async stagesUserLoginUpdateRaw(
+        requestParameters: StagesUserLoginUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLoginStage>> {
         const requestOptions = await this.stagesUserLoginUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLoginStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLoginStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserLoginStage Viewset
      */
-    async stagesUserLoginUpdate(requestParameters: StagesUserLoginUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLoginStage> {
+    async stagesUserLoginUpdate(
+        requestParameters: StagesUserLoginUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLoginStage> {
         const response = await this.stagesUserLoginUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12592,11 +14921,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserLoginUsedByList without sending the request
      */
-    async stagesUserLoginUsedByListRequestOpts(requestParameters: StagesUserLoginUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserLoginUsedByListRequestOpts(
+        requestParameters: StagesUserLoginUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserLoginUsedByList().',
             );
         }
 
@@ -12614,11 +14945,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_login/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -12627,7 +14961,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesUserLoginUsedByListRaw(requestParameters: StagesUserLoginUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesUserLoginUsedByListRaw(
+        requestParameters: StagesUserLoginUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesUserLoginUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -12637,7 +14974,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesUserLoginUsedByList(requestParameters: StagesUserLoginUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesUserLoginUsedByList(
+        requestParameters: StagesUserLoginUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesUserLoginUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12645,11 +14985,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserLogoutCreate without sending the request
      */
-    async stagesUserLogoutCreateRequestOpts(requestParameters: StagesUserLogoutCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['userLogoutStageRequest'] == null) {
+    async stagesUserLogoutCreateRequestOpts(
+        requestParameters: StagesUserLogoutCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userLogoutStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'userLogoutStageRequest',
-                'Required parameter "userLogoutStageRequest" was null or undefined when calling stagesUserLogoutCreate().'
+                "userLogoutStageRequest",
+                'Required parameter "userLogoutStageRequest" was null or undefined when calling stagesUserLogoutCreate().',
             );
         }
 
@@ -12657,7 +14999,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -12672,27 +15014,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserLogoutStageRequestToJSON(requestParameters['userLogoutStageRequest']),
+            body: UserLogoutStageRequestToJSON(requestParameters["userLogoutStageRequest"]),
         };
     }
 
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutCreateRaw(requestParameters: StagesUserLogoutCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLogoutStage>> {
+    async stagesUserLogoutCreateRaw(
+        requestParameters: StagesUserLogoutCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLogoutStage>> {
         const requestOptions = await this.stagesUserLogoutCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLogoutStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLogoutStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutCreate(requestParameters: StagesUserLogoutCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLogoutStage> {
+    async stagesUserLogoutCreate(
+        requestParameters: StagesUserLogoutCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLogoutStage> {
         const response = await this.stagesUserLogoutCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12700,11 +15050,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserLogoutDestroy without sending the request
      */
-    async stagesUserLogoutDestroyRequestOpts(requestParameters: StagesUserLogoutDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserLogoutDestroyRequestOpts(
+        requestParameters: StagesUserLogoutDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutDestroy().',
             );
         }
 
@@ -12722,11 +15074,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_logout/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -12735,7 +15090,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutDestroyRaw(requestParameters: StagesUserLogoutDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesUserLogoutDestroyRaw(
+        requestParameters: StagesUserLogoutDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesUserLogoutDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -12745,38 +15103,43 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutDestroy(requestParameters: StagesUserLogoutDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesUserLogoutDestroy(
+        requestParameters: StagesUserLogoutDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesUserLogoutDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesUserLogoutList without sending the request
      */
-    async stagesUserLogoutListRequestOpts(requestParameters: StagesUserLogoutListRequest): Promise<runtime.RequestOpts> {
+    async stagesUserLogoutListRequestOpts(
+        requestParameters: StagesUserLogoutListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -12794,7 +15157,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -12803,17 +15166,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutListRaw(requestParameters: StagesUserLogoutListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserLogoutStageList>> {
+    async stagesUserLogoutListRaw(
+        requestParameters: StagesUserLogoutListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserLogoutStageList>> {
         const requestOptions = await this.stagesUserLogoutListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserLogoutStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserLogoutStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutList(requestParameters: StagesUserLogoutListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserLogoutStageList> {
+    async stagesUserLogoutList(
+        requestParameters: StagesUserLogoutListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserLogoutStageList> {
         const response = await this.stagesUserLogoutListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12821,11 +15192,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserLogoutPartialUpdate without sending the request
      */
-    async stagesUserLogoutPartialUpdateRequestOpts(requestParameters: StagesUserLogoutPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserLogoutPartialUpdateRequestOpts(
+        requestParameters: StagesUserLogoutPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutPartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutPartialUpdate().',
             );
         }
 
@@ -12833,7 +15206,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -12845,43 +15218,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_logout/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserLogoutStageRequestToJSON(requestParameters['patchedUserLogoutStageRequest']),
+            body: PatchedUserLogoutStageRequestToJSON(
+                requestParameters["patchedUserLogoutStageRequest"],
+            ),
         };
     }
 
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutPartialUpdateRaw(requestParameters: StagesUserLogoutPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLogoutStage>> {
-        const requestOptions = await this.stagesUserLogoutPartialUpdateRequestOpts(requestParameters);
+    async stagesUserLogoutPartialUpdateRaw(
+        requestParameters: StagesUserLogoutPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLogoutStage>> {
+        const requestOptions =
+            await this.stagesUserLogoutPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLogoutStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLogoutStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutPartialUpdate(requestParameters: StagesUserLogoutPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLogoutStage> {
-        const response = await this.stagesUserLogoutPartialUpdateRaw(requestParameters, initOverrides);
+    async stagesUserLogoutPartialUpdate(
+        requestParameters: StagesUserLogoutPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLogoutStage> {
+        const response = await this.stagesUserLogoutPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesUserLogoutRetrieve without sending the request
      */
-    async stagesUserLogoutRetrieveRequestOpts(requestParameters: StagesUserLogoutRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserLogoutRetrieveRequestOpts(
+        requestParameters: StagesUserLogoutRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutRetrieve().',
             );
         }
 
@@ -12899,11 +15291,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_logout/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -12912,17 +15307,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutRetrieveRaw(requestParameters: StagesUserLogoutRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLogoutStage>> {
+    async stagesUserLogoutRetrieveRaw(
+        requestParameters: StagesUserLogoutRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLogoutStage>> {
         const requestOptions = await this.stagesUserLogoutRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLogoutStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLogoutStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutRetrieve(requestParameters: StagesUserLogoutRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLogoutStage> {
+    async stagesUserLogoutRetrieve(
+        requestParameters: StagesUserLogoutRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLogoutStage> {
         const response = await this.stagesUserLogoutRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12930,18 +15333,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserLogoutUpdate without sending the request
      */
-    async stagesUserLogoutUpdateRequestOpts(requestParameters: StagesUserLogoutUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserLogoutUpdateRequestOpts(
+        requestParameters: StagesUserLogoutUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutUpdate().',
             );
         }
 
-        if (requestParameters['userLogoutStageRequest'] == null) {
+        if (requestParameters["userLogoutStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'userLogoutStageRequest',
-                'Required parameter "userLogoutStageRequest" was null or undefined when calling stagesUserLogoutUpdate().'
+                "userLogoutStageRequest",
+                'Required parameter "userLogoutStageRequest" was null or undefined when calling stagesUserLogoutUpdate().',
             );
         }
 
@@ -12949,7 +15354,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -12961,31 +15366,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_logout/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserLogoutStageRequestToJSON(requestParameters['userLogoutStageRequest']),
+            body: UserLogoutStageRequestToJSON(requestParameters["userLogoutStageRequest"]),
         };
     }
 
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutUpdateRaw(requestParameters: StagesUserLogoutUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserLogoutStage>> {
+    async stagesUserLogoutUpdateRaw(
+        requestParameters: StagesUserLogoutUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserLogoutStage>> {
         const requestOptions = await this.stagesUserLogoutUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserLogoutStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserLogoutStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserLogoutStage Viewset
      */
-    async stagesUserLogoutUpdate(requestParameters: StagesUserLogoutUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserLogoutStage> {
+    async stagesUserLogoutUpdate(
+        requestParameters: StagesUserLogoutUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserLogoutStage> {
         const response = await this.stagesUserLogoutUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -12993,11 +15409,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserLogoutUsedByList without sending the request
      */
-    async stagesUserLogoutUsedByListRequestOpts(requestParameters: StagesUserLogoutUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserLogoutUsedByListRequestOpts(
+        requestParameters: StagesUserLogoutUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserLogoutUsedByList().',
             );
         }
 
@@ -13015,11 +15433,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_logout/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -13028,7 +15449,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesUserLogoutUsedByListRaw(requestParameters: StagesUserLogoutUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesUserLogoutUsedByListRaw(
+        requestParameters: StagesUserLogoutUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesUserLogoutUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -13038,7 +15462,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesUserLogoutUsedByList(requestParameters: StagesUserLogoutUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesUserLogoutUsedByList(
+        requestParameters: StagesUserLogoutUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesUserLogoutUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -13046,11 +15473,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserWriteCreate without sending the request
      */
-    async stagesUserWriteCreateRequestOpts(requestParameters: StagesUserWriteCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['userWriteStageRequest'] == null) {
+    async stagesUserWriteCreateRequestOpts(
+        requestParameters: StagesUserWriteCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userWriteStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'userWriteStageRequest',
-                'Required parameter "userWriteStageRequest" was null or undefined when calling stagesUserWriteCreate().'
+                "userWriteStageRequest",
+                'Required parameter "userWriteStageRequest" was null or undefined when calling stagesUserWriteCreate().',
             );
         }
 
@@ -13058,7 +15487,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -13073,27 +15502,35 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserWriteStageRequestToJSON(requestParameters['userWriteStageRequest']),
+            body: UserWriteStageRequestToJSON(requestParameters["userWriteStageRequest"]),
         };
     }
 
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWriteCreateRaw(requestParameters: StagesUserWriteCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserWriteStage>> {
+    async stagesUserWriteCreateRaw(
+        requestParameters: StagesUserWriteCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserWriteStage>> {
         const requestOptions = await this.stagesUserWriteCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserWriteStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserWriteStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWriteCreate(requestParameters: StagesUserWriteCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserWriteStage> {
+    async stagesUserWriteCreate(
+        requestParameters: StagesUserWriteCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserWriteStage> {
         const response = await this.stagesUserWriteCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -13101,11 +15538,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserWriteDestroy without sending the request
      */
-    async stagesUserWriteDestroyRequestOpts(requestParameters: StagesUserWriteDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserWriteDestroyRequestOpts(
+        requestParameters: StagesUserWriteDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserWriteDestroy().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserWriteDestroy().',
             );
         }
 
@@ -13123,11 +15562,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_write/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -13136,7 +15578,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWriteDestroyRaw(requestParameters: StagesUserWriteDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async stagesUserWriteDestroyRaw(
+        requestParameters: StagesUserWriteDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.stagesUserWriteDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -13146,58 +15591,64 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWriteDestroy(requestParameters: StagesUserWriteDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async stagesUserWriteDestroy(
+        requestParameters: StagesUserWriteDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.stagesUserWriteDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for stagesUserWriteList without sending the request
      */
-    async stagesUserWriteListRequestOpts(requestParameters: StagesUserWriteListRequest): Promise<runtime.RequestOpts> {
+    async stagesUserWriteListRequestOpts(
+        requestParameters: StagesUserWriteListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['createUsersAsInactive'] != null) {
-            queryParameters['create_users_as_inactive'] = requestParameters['createUsersAsInactive'];
+        if (requestParameters["createUsersAsInactive"] != null) {
+            queryParameters["create_users_as_inactive"] =
+                requestParameters["createUsersAsInactive"];
         }
 
-        if (requestParameters['createUsersGroup'] != null) {
-            queryParameters['create_users_group'] = requestParameters['createUsersGroup'];
+        if (requestParameters["createUsersGroup"] != null) {
+            queryParameters["create_users_group"] = requestParameters["createUsersGroup"];
         }
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['stageUuid'] != null) {
-            queryParameters['stage_uuid'] = requestParameters['stageUuid'];
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
         }
 
-        if (requestParameters['userCreationMode'] != null) {
-            queryParameters['user_creation_mode'] = requestParameters['userCreationMode'];
+        if (requestParameters["userCreationMode"] != null) {
+            queryParameters["user_creation_mode"] = requestParameters["userCreationMode"];
         }
 
-        if (requestParameters['userPathTemplate'] != null) {
-            queryParameters['user_path_template'] = requestParameters['userPathTemplate'];
+        if (requestParameters["userPathTemplate"] != null) {
+            queryParameters["user_path_template"] = requestParameters["userPathTemplate"];
         }
 
-        if (requestParameters['userType'] != null) {
-            queryParameters['user_type'] = requestParameters['userType'];
+        if (requestParameters["userType"] != null) {
+            queryParameters["user_type"] = requestParameters["userType"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -13215,7 +15666,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -13224,17 +15675,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWriteListRaw(requestParameters: StagesUserWriteListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedUserWriteStageList>> {
+    async stagesUserWriteListRaw(
+        requestParameters: StagesUserWriteListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserWriteStageList>> {
         const requestOptions = await this.stagesUserWriteListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedUserWriteStageListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserWriteStageListFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWriteList(requestParameters: StagesUserWriteListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedUserWriteStageList> {
+    async stagesUserWriteList(
+        requestParameters: StagesUserWriteListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserWriteStageList> {
         const response = await this.stagesUserWriteListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -13242,11 +15701,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserWritePartialUpdate without sending the request
      */
-    async stagesUserWritePartialUpdateRequestOpts(requestParameters: StagesUserWritePartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserWritePartialUpdateRequestOpts(
+        requestParameters: StagesUserWritePartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserWritePartialUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserWritePartialUpdate().',
             );
         }
 
@@ -13254,7 +15715,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -13266,43 +15727,62 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_write/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedUserWriteStageRequestToJSON(requestParameters['patchedUserWriteStageRequest']),
+            body: PatchedUserWriteStageRequestToJSON(
+                requestParameters["patchedUserWriteStageRequest"],
+            ),
         };
     }
 
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWritePartialUpdateRaw(requestParameters: StagesUserWritePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserWriteStage>> {
-        const requestOptions = await this.stagesUserWritePartialUpdateRequestOpts(requestParameters);
+    async stagesUserWritePartialUpdateRaw(
+        requestParameters: StagesUserWritePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserWriteStage>> {
+        const requestOptions =
+            await this.stagesUserWritePartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserWriteStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserWriteStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWritePartialUpdate(requestParameters: StagesUserWritePartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserWriteStage> {
-        const response = await this.stagesUserWritePartialUpdateRaw(requestParameters, initOverrides);
+    async stagesUserWritePartialUpdate(
+        requestParameters: StagesUserWritePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserWriteStage> {
+        const response = await this.stagesUserWritePartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for stagesUserWriteRetrieve without sending the request
      */
-    async stagesUserWriteRetrieveRequestOpts(requestParameters: StagesUserWriteRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserWriteRetrieveRequestOpts(
+        requestParameters: StagesUserWriteRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserWriteRetrieve().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserWriteRetrieve().',
             );
         }
 
@@ -13320,11 +15800,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_write/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -13333,17 +15816,25 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWriteRetrieveRaw(requestParameters: StagesUserWriteRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserWriteStage>> {
+    async stagesUserWriteRetrieveRaw(
+        requestParameters: StagesUserWriteRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserWriteStage>> {
         const requestOptions = await this.stagesUserWriteRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserWriteStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserWriteStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWriteRetrieve(requestParameters: StagesUserWriteRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserWriteStage> {
+    async stagesUserWriteRetrieve(
+        requestParameters: StagesUserWriteRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserWriteStage> {
         const response = await this.stagesUserWriteRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -13351,18 +15842,20 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserWriteUpdate without sending the request
      */
-    async stagesUserWriteUpdateRequestOpts(requestParameters: StagesUserWriteUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserWriteUpdateRequestOpts(
+        requestParameters: StagesUserWriteUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserWriteUpdate().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserWriteUpdate().',
             );
         }
 
-        if (requestParameters['userWriteStageRequest'] == null) {
+        if (requestParameters["userWriteStageRequest"] == null) {
             throw new runtime.RequiredError(
-                'userWriteStageRequest',
-                'Required parameter "userWriteStageRequest" was null or undefined when calling stagesUserWriteUpdate().'
+                "userWriteStageRequest",
+                'Required parameter "userWriteStageRequest" was null or undefined when calling stagesUserWriteUpdate().',
             );
         }
 
@@ -13370,7 +15863,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -13382,31 +15875,42 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_write/{stage_uuid}/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: UserWriteStageRequestToJSON(requestParameters['userWriteStageRequest']),
+            body: UserWriteStageRequestToJSON(requestParameters["userWriteStageRequest"]),
         };
     }
 
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWriteUpdateRaw(requestParameters: StagesUserWriteUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserWriteStage>> {
+    async stagesUserWriteUpdateRaw(
+        requestParameters: StagesUserWriteUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserWriteStage>> {
         const requestOptions = await this.stagesUserWriteUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserWriteStageFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserWriteStageFromJSON(jsonValue),
+        );
     }
 
     /**
      * UserWriteStage Viewset
      */
-    async stagesUserWriteUpdate(requestParameters: StagesUserWriteUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserWriteStage> {
+    async stagesUserWriteUpdate(
+        requestParameters: StagesUserWriteUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserWriteStage> {
         const response = await this.stagesUserWriteUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -13414,11 +15918,13 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Creates request options for stagesUserWriteUsedByList without sending the request
      */
-    async stagesUserWriteUsedByListRequestOpts(requestParameters: StagesUserWriteUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['stageUuid'] == null) {
+    async stagesUserWriteUsedByListRequestOpts(
+        requestParameters: StagesUserWriteUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
             throw new runtime.RequiredError(
-                'stageUuid',
-                'Required parameter "stageUuid" was null or undefined when calling stagesUserWriteUsedByList().'
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesUserWriteUsedByList().',
             );
         }
 
@@ -13436,11 +15942,14 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/stages/user_write/{stage_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"stage_uuid"}}`, encodeURIComponent(String(requestParameters['stageUuid'])));
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -13449,7 +15958,10 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesUserWriteUsedByListRaw(requestParameters: StagesUserWriteUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async stagesUserWriteUsedByListRaw(
+        requestParameters: StagesUserWriteUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.stagesUserWriteUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -13459,9 +15971,11 @@ export class StagesApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async stagesUserWriteUsedByList(requestParameters: StagesUserWriteUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async stagesUserWriteUsedByList(
+        requestParameters: StagesUserWriteUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.stagesUserWriteUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
-
 }

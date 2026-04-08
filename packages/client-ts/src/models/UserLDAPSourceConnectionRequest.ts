@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface UserLDAPSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserLDAPSourceConnectionRequest
      */
     user: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserLDAPSourceConnectionRequest
      */
     source: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserLDAPSourceConnectionRequest
      */
@@ -42,26 +41,32 @@ export interface UserLDAPSourceConnectionRequest {
 /**
  * Check if a given object implements the UserLDAPSourceConnectionRequest interface.
  */
-export function instanceOfUserLDAPSourceConnectionRequest(value: object): value is UserLDAPSourceConnectionRequest {
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+export function instanceOfUserLDAPSourceConnectionRequest(
+    value: object,
+): value is UserLDAPSourceConnectionRequest {
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
 }
 
-export function UserLDAPSourceConnectionRequestFromJSON(json: any): UserLDAPSourceConnectionRequest {
+export function UserLDAPSourceConnectionRequestFromJSON(
+    json: any,
+): UserLDAPSourceConnectionRequest {
     return UserLDAPSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function UserLDAPSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserLDAPSourceConnectionRequest {
+export function UserLDAPSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserLDAPSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'user': json['user'],
-        'source': json['source'],
-        'identifier': json['identifier'],
+        user: json["user"],
+        source: json["source"],
+        identifier: json["identifier"],
     };
 }
 
@@ -69,16 +74,17 @@ export function UserLDAPSourceConnectionRequestToJSON(json: any): UserLDAPSource
     return UserLDAPSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function UserLDAPSourceConnectionRequestToJSONTyped(value?: UserLDAPSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function UserLDAPSourceConnectionRequestToJSONTyped(
+    value?: UserLDAPSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

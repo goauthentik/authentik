@@ -12,88 +12,86 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { SAMLPropertyMapping } from './SAMLPropertyMapping';
-import {
-    SAMLPropertyMappingFromJSON,
-    SAMLPropertyMappingFromJSONTyped,
-    SAMLPropertyMappingToJSON,
-    SAMLPropertyMappingToJSONTyped,
-} from './SAMLPropertyMapping';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { SAMLPropertyMapping } from "./SAMLPropertyMapping";
+import { SAMLPropertyMappingFromJSON, SAMLPropertyMappingToJSON } from "./SAMLPropertyMapping";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedSAMLPropertyMappingList
  */
 export interface PaginatedSAMLPropertyMappingList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedSAMLPropertyMappingList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<SAMLPropertyMapping>}
      * @memberof PaginatedSAMLPropertyMappingList
      */
     results: Array<SAMLPropertyMapping>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedSAMLPropertyMappingList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedSAMLPropertyMappingList interface.
  */
-export function instanceOfPaginatedSAMLPropertyMappingList(value: object): value is PaginatedSAMLPropertyMappingList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedSAMLPropertyMappingList(
+    value: object,
+): value is PaginatedSAMLPropertyMappingList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedSAMLPropertyMappingListFromJSON(json: any): PaginatedSAMLPropertyMappingList {
+export function PaginatedSAMLPropertyMappingListFromJSON(
+    json: any,
+): PaginatedSAMLPropertyMappingList {
     return PaginatedSAMLPropertyMappingListFromJSONTyped(json, false);
 }
 
-export function PaginatedSAMLPropertyMappingListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSAMLPropertyMappingList {
+export function PaginatedSAMLPropertyMappingListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedSAMLPropertyMappingList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(SAMLPropertyMappingFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(SAMLPropertyMappingFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedSAMLPropertyMappingListToJSON(json: any): PaginatedSAMLPropertyMappingList {
+export function PaginatedSAMLPropertyMappingListToJSON(
+    json: any,
+): PaginatedSAMLPropertyMappingList {
     return PaginatedSAMLPropertyMappingListToJSONTyped(json, false);
 }
 
-export function PaginatedSAMLPropertyMappingListToJSONTyped(value?: PaginatedSAMLPropertyMappingList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedSAMLPropertyMappingListToJSONTyped(
+    value?: PaginatedSAMLPropertyMappingList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(SAMLPropertyMappingToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(SAMLPropertyMappingToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

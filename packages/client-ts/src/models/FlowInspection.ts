@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowInspectorPlan } from './FlowInspectorPlan';
-import {
-    FlowInspectorPlanFromJSON,
-    FlowInspectorPlanFromJSONTyped,
-    FlowInspectorPlanToJSON,
-    FlowInspectorPlanToJSONTyped,
-} from './FlowInspectorPlan';
+import type { FlowInspectorPlan } from "./FlowInspectorPlan";
+import { FlowInspectorPlanFromJSON, FlowInspectorPlanToJSON } from "./FlowInspectorPlan";
 
 /**
  * Serializer for inspect endpoint
@@ -28,19 +22,19 @@ import {
  */
 export interface FlowInspection {
     /**
-     * 
+     *
      * @type {Array<FlowInspectorPlan>}
      * @memberof FlowInspection
      */
     plans: Array<FlowInspectorPlan>;
     /**
-     * 
+     *
      * @type {FlowInspectorPlan}
      * @memberof FlowInspection
      */
     currentPlan?: FlowInspectorPlan;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof FlowInspection
      */
@@ -51,8 +45,8 @@ export interface FlowInspection {
  * Check if a given object implements the FlowInspection interface.
  */
 export function instanceOfFlowInspection(value: object): value is FlowInspection {
-    if (!('plans' in value) || value['plans'] === undefined) return false;
-    if (!('isCompleted' in value) || value['isCompleted'] === undefined) return false;
+    if (!("plans" in value) || value["plans"] === undefined) return false;
+    if (!("isCompleted" in value) || value["isCompleted"] === undefined) return false;
     return true;
 }
 
@@ -60,15 +54,20 @@ export function FlowInspectionFromJSON(json: any): FlowInspection {
     return FlowInspectionFromJSONTyped(json, false);
 }
 
-export function FlowInspectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): FlowInspection {
+export function FlowInspectionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): FlowInspection {
     if (json == null) {
         return json;
     }
     return {
-        
-        'plans': ((json['plans'] as Array<any>).map(FlowInspectorPlanFromJSON)),
-        'currentPlan': json['current_plan'] == null ? undefined : FlowInspectorPlanFromJSON(json['current_plan']),
-        'isCompleted': json['is_completed'],
+        plans: (json["plans"] as Array<any>).map(FlowInspectorPlanFromJSON),
+        currentPlan:
+            json["current_plan"] == null
+                ? undefined
+                : FlowInspectorPlanFromJSON(json["current_plan"]),
+        isCompleted: json["is_completed"],
     };
 }
 
@@ -76,16 +75,17 @@ export function FlowInspectionToJSON(json: any): FlowInspection {
     return FlowInspectionToJSONTyped(json, false);
 }
 
-export function FlowInspectionToJSONTyped(value?: FlowInspection | null, ignoreDiscriminator: boolean = false): any {
+export function FlowInspectionToJSONTyped(
+    value?: FlowInspection | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'plans': ((value['plans'] as Array<any>).map(FlowInspectorPlanToJSON)),
-        'current_plan': FlowInspectorPlanToJSON(value['currentPlan']),
-        'is_completed': value['isCompleted'],
+        plans: (value["plans"] as Array<any>).map(FlowInspectorPlanToJSON),
+        current_plan: FlowInspectorPlanToJSON(value["currentPlan"]),
+        is_completed: value["isCompleted"],
     };
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * DummyStage Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedDummyStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedDummyStageRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedDummyStageRequest
      */
@@ -36,7 +35,9 @@ export interface PatchedDummyStageRequest {
 /**
  * Check if a given object implements the PatchedDummyStageRequest interface.
  */
-export function instanceOfPatchedDummyStageRequest(value: object): value is PatchedDummyStageRequest {
+export function instanceOfPatchedDummyStageRequest(
+    value: object,
+): value is PatchedDummyStageRequest {
     return true;
 }
 
@@ -44,14 +45,16 @@ export function PatchedDummyStageRequestFromJSON(json: any): PatchedDummyStageRe
     return PatchedDummyStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedDummyStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedDummyStageRequest {
+export function PatchedDummyStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedDummyStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'throwError': json['throw_error'] == null ? undefined : json['throw_error'],
+        name: json["name"] == null ? undefined : json["name"],
+        throwError: json["throw_error"] == null ? undefined : json["throw_error"],
     };
 }
 
@@ -59,15 +62,16 @@ export function PatchedDummyStageRequestToJSON(json: any): PatchedDummyStageRequ
     return PatchedDummyStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedDummyStageRequestToJSONTyped(value?: PatchedDummyStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedDummyStageRequestToJSONTyped(
+    value?: PatchedDummyStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'throw_error': value['throwError'],
+        name: value["name"],
+        throw_error: value["throwError"],
     };
 }
-

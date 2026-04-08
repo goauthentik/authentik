@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Response for iframe logout
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface IframeLogoutChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof IframeLogoutChallengeResponseRequest
      */
@@ -30,36 +29,45 @@ export interface IframeLogoutChallengeResponseRequest {
 /**
  * Check if a given object implements the IframeLogoutChallengeResponseRequest interface.
  */
-export function instanceOfIframeLogoutChallengeResponseRequest(value: object): value is IframeLogoutChallengeResponseRequest {
+export function instanceOfIframeLogoutChallengeResponseRequest(
+    value: object,
+): value is IframeLogoutChallengeResponseRequest {
     return true;
 }
 
-export function IframeLogoutChallengeResponseRequestFromJSON(json: any): IframeLogoutChallengeResponseRequest {
+export function IframeLogoutChallengeResponseRequestFromJSON(
+    json: any,
+): IframeLogoutChallengeResponseRequest {
     return IframeLogoutChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function IframeLogoutChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): IframeLogoutChallengeResponseRequest {
+export function IframeLogoutChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): IframeLogoutChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'component': json['component'] == null ? undefined : json['component'],
+        component: json["component"] == null ? undefined : json["component"],
     };
 }
 
-export function IframeLogoutChallengeResponseRequestToJSON(json: any): IframeLogoutChallengeResponseRequest {
+export function IframeLogoutChallengeResponseRequestToJSON(
+    json: any,
+): IframeLogoutChallengeResponseRequest {
     return IframeLogoutChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function IframeLogoutChallengeResponseRequestToJSONTyped(value?: IframeLogoutChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function IframeLogoutChallengeResponseRequestToJSONTyped(
+    value?: IframeLogoutChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'component': value['component'],
+        component: value["component"],
     };
 }
-

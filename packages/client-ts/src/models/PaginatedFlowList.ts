@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { Flow } from './Flow';
-import {
-    FlowFromJSON,
-    FlowFromJSONTyped,
-    FlowToJSON,
-    FlowToJSONTyped,
-} from './Flow';
+import type { Flow } from "./Flow";
+import { FlowFromJSON, FlowToJSON } from "./Flow";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedFlowList
  */
 export interface PaginatedFlowList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedFlowList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<Flow>}
      * @memberof PaginatedFlowList
      */
     results: Array<Flow>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedFlowList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedFlowList interface.
  */
 export function instanceOfPaginatedFlowList(value: object): value is PaginatedFlowList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedFlowListFromJSON(json: any): PaginatedFlowList {
     return PaginatedFlowListFromJSONTyped(json, false);
 }
 
-export function PaginatedFlowListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedFlowList {
+export function PaginatedFlowListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedFlowList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(FlowFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(FlowFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedFlowListToJSON(json: any): PaginatedFlowList {
     return PaginatedFlowListToJSONTyped(json, false);
 }
 
-export function PaginatedFlowListToJSONTyped(value?: PaginatedFlowList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedFlowListToJSONTyped(
+    value?: PaginatedFlowList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(FlowToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(FlowToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

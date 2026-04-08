@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { Reputation } from './Reputation';
-import {
-    ReputationFromJSON,
-    ReputationFromJSONTyped,
-    ReputationToJSON,
-    ReputationToJSONTyped,
-} from './Reputation';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Reputation } from "./Reputation";
+import { ReputationFromJSON, ReputationToJSON } from "./Reputation";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedReputationList
  */
 export interface PaginatedReputationList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedReputationList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<Reputation>}
      * @memberof PaginatedReputationList
      */
     results: Array<Reputation>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedReputationList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedReputationList interface.
  */
 export function instanceOfPaginatedReputationList(value: object): value is PaginatedReputationList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedReputationListFromJSON(json: any): PaginatedReputationL
     return PaginatedReputationListFromJSONTyped(json, false);
 }
 
-export function PaginatedReputationListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedReputationList {
+export function PaginatedReputationListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedReputationList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(ReputationFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(ReputationFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedReputationListToJSON(json: any): PaginatedReputationLis
     return PaginatedReputationListToJSONTyped(json, false);
 }
 
-export function PaginatedReputationListToJSONTyped(value?: PaginatedReputationList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedReputationListToJSONTyped(
+    value?: PaginatedReputationList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(ReputationToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(ReputationToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

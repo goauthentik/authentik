@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Password challenge response
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface PasswordChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PasswordChallengeResponseRequest
      */
     component?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PasswordChallengeResponseRequest
      */
@@ -36,39 +35,48 @@ export interface PasswordChallengeResponseRequest {
 /**
  * Check if a given object implements the PasswordChallengeResponseRequest interface.
  */
-export function instanceOfPasswordChallengeResponseRequest(value: object): value is PasswordChallengeResponseRequest {
-    if (!('password' in value) || value['password'] === undefined) return false;
+export function instanceOfPasswordChallengeResponseRequest(
+    value: object,
+): value is PasswordChallengeResponseRequest {
+    if (!("password" in value) || value["password"] === undefined) return false;
     return true;
 }
 
-export function PasswordChallengeResponseRequestFromJSON(json: any): PasswordChallengeResponseRequest {
+export function PasswordChallengeResponseRequestFromJSON(
+    json: any,
+): PasswordChallengeResponseRequest {
     return PasswordChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function PasswordChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PasswordChallengeResponseRequest {
+export function PasswordChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PasswordChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'component': json['component'] == null ? undefined : json['component'],
-        'password': json['password'],
+        component: json["component"] == null ? undefined : json["component"],
+        password: json["password"],
     };
 }
 
-export function PasswordChallengeResponseRequestToJSON(json: any): PasswordChallengeResponseRequest {
+export function PasswordChallengeResponseRequestToJSON(
+    json: any,
+): PasswordChallengeResponseRequest {
     return PasswordChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function PasswordChallengeResponseRequestToJSONTyped(value?: PasswordChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PasswordChallengeResponseRequestToJSONTyped(
+    value?: PasswordChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'component': value['component'],
-        'password': value['password'],
+        component: value["component"],
+        password: value["password"],
     };
 }
-
