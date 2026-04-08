@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 
 from authentik.api.pagination import Pagination
-from authentik.enterprise.search.ql import AUTOCOMPLETE_SCHEMA, QLSearch
+from authentik.search.ql import AUTOCOMPLETE_SCHEMA, QLSearch
 
 
 class AutocompletePagination(Pagination):
@@ -14,7 +14,7 @@ class AutocompletePagination(Pagination):
         schema = QLSearch().get_schema(self.request, self.view)
         introspections = {}
         if hasattr(self.view, "get_ql_fields"):
-            from authentik.enterprise.search.schema import AKQLSchemaSerializer
+            from authentik.search.schema import AKQLSchemaSerializer
 
             introspections = AKQLSchemaSerializer().serialize(
                 schema(self.page.paginator.object_list.model)

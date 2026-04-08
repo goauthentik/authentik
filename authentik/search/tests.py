@@ -1,5 +1,4 @@
 from json import loads
-from unittest.mock import PropertyMock, patch
 from urllib.parse import urlencode
 
 from django.urls import reverse
@@ -8,10 +7,6 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user
 
 
-@patch(
-    "authentik.enterprise.audit.middleware.EnterpriseAuditMiddleware.enabled",
-    PropertyMock(return_value=True),
-)
 class QLTest(APITestCase):
 
     def setUp(self):

@@ -526,7 +526,7 @@ class UserViewSet(
     def get_ql_fields(self):
         from djangoql.schema import BoolField, StrField
 
-        from authentik.enterprise.search.fields import (
+        from authentik.search.fields import (
             ChoiceSearchField,
             JSONSearchField,
         )

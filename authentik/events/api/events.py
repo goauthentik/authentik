@@ -173,7 +173,7 @@ class EventViewSet(
     def get_ql_fields(self):
         from djangoql.schema import DateTimeField, IntField, StrField
 
-        from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
+        from authentik.search.fields import ChoiceSearchField, JSONSearchField
 
         return [
             ChoiceSearchField(Event, "action"),

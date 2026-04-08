@@ -94,7 +94,7 @@ export const AppEnum = {
     AuthentikEnterpriseProvidersSsf: "authentik.enterprise.providers.ssf",
     AuthentikEnterpriseProvidersWsFederation: "authentik.enterprise.providers.ws_federation",
     AuthentikEnterpriseReports: "authentik.enterprise.reports",
-    AuthentikEnterpriseSearch: "authentik.enterprise.search",
+    AuthentikSearch: "authentik.search",
     AuthentikEnterpriseStagesAuthenticatorEndpointGdtc:
         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
     AuthentikEnterpriseStagesMtls: "authentik.enterprise.stages.mtls",

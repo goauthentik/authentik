@@ -1,6 +1,5 @@
 """DjangoQL search"""
 
-from django.apps import apps
 from django.db.models import QuerySet
 from djangoql.ast import Name
 from djangoql.exceptions import DjangoQLError
@@ -11,7 +10,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
-from authentik.enterprise.search.fields import JSONSearchField
+from authentik.search.fields import JSONSearchField
 
 LOGGER = get_logger()
 AUTOCOMPLETE_SCHEMA = ResolvedComponent(
@@ -48,10 +47,6 @@ class QLSearch(SearchFilter):
         super().__init__()
         self._fallback = SearchFilter()
 
-    @property
-    def enabled(self):
-        return apps.get_app_config("authentik_enterprise").enabled()
-
     def get_search_terms(self, request: Request) -> str:
         """Search terms are set by a ?search=... query parameter,
         and may be comma and/or whitespace delimited."""
@@ -73,7 +68,7 @@ class QLSearch(SearchFilter):
     def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
         search_query = self.get_search_terms(request)
         schema = self.get_schema(request, view)
-        if len(search_query) == 0 or not self.enabled:
+        if len(search_query) == 0:
             return self._fallback.filter_queryset(request, queryset, view)
         try:
             return apply_search(queryset, search_query, schema=schema)

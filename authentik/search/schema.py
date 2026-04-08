@@ -1,8 +1,8 @@
 from djangoql.serializers import DjangoQLSchemaSerializer
 from drf_spectacular.generators import SchemaGenerator
 
-from authentik.enterprise.search.fields import JSONSearchField
-from authentik.enterprise.search.ql import AUTOCOMPLETE_SCHEMA
+from authentik.search.fields import JSONSearchField
+from authentik.search.ql import AUTOCOMPLETE_SCHEMA
 
 
 class AKQLSchemaSerializer(DjangoQLSchemaSerializer):
