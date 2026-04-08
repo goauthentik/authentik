@@ -12,9 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface CurrentBrandFlags
  */
@@ -49,10 +48,16 @@ export interface CurrentBrandFlags {
  * Check if a given object implements the CurrentBrandFlags interface.
  */
 export function instanceOfCurrentBrandFlags(value: object): value is CurrentBrandFlags {
-    if (!('coreDefaultAppAccess' in value) || value['coreDefaultAppAccess'] === undefined) return false;
-    if (!('enterpriseAuditIncludeExpandedDiff' in value) || value['enterpriseAuditIncludeExpandedDiff'] === undefined) return false;
-    if (!('flowsContinuousLogin' in value) || value['flowsContinuousLogin'] === undefined) return false;
-    if (!('flowsRefreshOthers' in value) || value['flowsRefreshOthers'] === undefined) return false;
+    if (!("coreDefaultAppAccess" in value) || value["coreDefaultAppAccess"] === undefined)
+        return false;
+    if (
+        !("enterpriseAuditIncludeExpandedDiff" in value) ||
+        value["enterpriseAuditIncludeExpandedDiff"] === undefined
+    )
+        return false;
+    if (!("flowsContinuousLogin" in value) || value["flowsContinuousLogin"] === undefined)
+        return false;
+    if (!("flowsRefreshOthers" in value) || value["flowsRefreshOthers"] === undefined) return false;
     return true;
 }
 
@@ -60,16 +65,18 @@ export function CurrentBrandFlagsFromJSON(json: any): CurrentBrandFlags {
     return CurrentBrandFlagsFromJSONTyped(json, false);
 }
 
-export function CurrentBrandFlagsFromJSONTyped(json: any, ignoreDiscriminator: boolean): CurrentBrandFlags {
+export function CurrentBrandFlagsFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): CurrentBrandFlags {
     if (json == null) {
         return json;
     }
     return {
-        
-        'coreDefaultAppAccess': json['core_default_app_access'],
-        'enterpriseAuditIncludeExpandedDiff': json['enterprise_audit_include_expanded_diff'],
-        'flowsContinuousLogin': json['flows_continuous_login'],
-        'flowsRefreshOthers': json['flows_refresh_others'],
+        coreDefaultAppAccess: json["core_default_app_access"],
+        enterpriseAuditIncludeExpandedDiff: json["enterprise_audit_include_expanded_diff"],
+        flowsContinuousLogin: json["flows_continuous_login"],
+        flowsRefreshOthers: json["flows_refresh_others"],
     };
 }
 
@@ -77,17 +84,18 @@ export function CurrentBrandFlagsToJSON(json: any): CurrentBrandFlags {
     return CurrentBrandFlagsToJSONTyped(json, false);
 }
 
-export function CurrentBrandFlagsToJSONTyped(value?: CurrentBrandFlags | null, ignoreDiscriminator: boolean = false): any {
+export function CurrentBrandFlagsToJSONTyped(
+    value?: CurrentBrandFlags | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'core_default_app_access': value['coreDefaultAppAccess'],
-        'enterprise_audit_include_expanded_diff': value['enterpriseAuditIncludeExpandedDiff'],
-        'flows_continuous_login': value['flowsContinuousLogin'],
-        'flows_refresh_others': value['flowsRefreshOthers'],
+        core_default_app_access: value["coreDefaultAppAccess"],
+        enterprise_audit_include_expanded_diff: value["enterpriseAuditIncludeExpandedDiff"],
+        flows_continuous_login: value["flowsContinuousLogin"],
+        flows_refresh_others: value["flowsRefreshOthers"],
     };
 }
-

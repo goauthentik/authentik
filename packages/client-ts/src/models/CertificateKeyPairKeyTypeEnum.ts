@@ -12,26 +12,28 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const CertificateKeyPairKeyTypeEnum = {
-    Rsa: 'rsa',
-    Ec: 'ec',
-    Dsa: 'dsa',
-    Ed25519: 'ed25519',
-    Ed448: 'ed448',
-    UnknownDefaultOpenApi: '11184809'
+    Rsa: "rsa",
+    Ec: "ec",
+    Dsa: "dsa",
+    Ed25519: "ed25519",
+    Ed448: "ed448",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type CertificateKeyPairKeyTypeEnum = typeof CertificateKeyPairKeyTypeEnum[keyof typeof CertificateKeyPairKeyTypeEnum];
-
+export type CertificateKeyPairKeyTypeEnum =
+    (typeof CertificateKeyPairKeyTypeEnum)[keyof typeof CertificateKeyPairKeyTypeEnum];
 
 export function instanceOfCertificateKeyPairKeyTypeEnum(value: any): boolean {
     for (const key in CertificateKeyPairKeyTypeEnum) {
         if (Object.prototype.hasOwnProperty.call(CertificateKeyPairKeyTypeEnum, key)) {
-            if (CertificateKeyPairKeyTypeEnum[key as keyof typeof CertificateKeyPairKeyTypeEnum] === value) {
+            if (
+                CertificateKeyPairKeyTypeEnum[key as keyof typeof CertificateKeyPairKeyTypeEnum] ===
+                value
+            ) {
                 return true;
             }
         }
@@ -43,15 +45,22 @@ export function CertificateKeyPairKeyTypeEnumFromJSON(json: any): CertificateKey
     return CertificateKeyPairKeyTypeEnumFromJSONTyped(json, false);
 }
 
-export function CertificateKeyPairKeyTypeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): CertificateKeyPairKeyTypeEnum {
+export function CertificateKeyPairKeyTypeEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): CertificateKeyPairKeyTypeEnum {
     return json as CertificateKeyPairKeyTypeEnum;
 }
 
-export function CertificateKeyPairKeyTypeEnumToJSON(value?: CertificateKeyPairKeyTypeEnum | null): any {
+export function CertificateKeyPairKeyTypeEnumToJSON(
+    value?: CertificateKeyPairKeyTypeEnum | null,
+): any {
     return value as any;
 }
 
-export function CertificateKeyPairKeyTypeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): CertificateKeyPairKeyTypeEnum {
+export function CertificateKeyPairKeyTypeEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): CertificateKeyPairKeyTypeEnum {
     return value as CertificateKeyPairKeyTypeEnum;
 }
-

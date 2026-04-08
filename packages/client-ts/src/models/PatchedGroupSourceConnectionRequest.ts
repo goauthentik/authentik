@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedGroupSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupSourceConnectionRequest
      */
     group?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupSourceConnectionRequest
      */
     source?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupSourceConnectionRequest
      */
@@ -42,40 +41,49 @@ export interface PatchedGroupSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedGroupSourceConnectionRequest interface.
  */
-export function instanceOfPatchedGroupSourceConnectionRequest(value: object): value is PatchedGroupSourceConnectionRequest {
+export function instanceOfPatchedGroupSourceConnectionRequest(
+    value: object,
+): value is PatchedGroupSourceConnectionRequest {
     return true;
 }
 
-export function PatchedGroupSourceConnectionRequestFromJSON(json: any): PatchedGroupSourceConnectionRequest {
+export function PatchedGroupSourceConnectionRequestFromJSON(
+    json: any,
+): PatchedGroupSourceConnectionRequest {
     return PatchedGroupSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGroupSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGroupSourceConnectionRequest {
+export function PatchedGroupSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedGroupSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'group': json['group'] == null ? undefined : json['group'],
-        'source': json['source'] == null ? undefined : json['source'],
-        'identifier': json['identifier'] == null ? undefined : json['identifier'],
+        group: json["group"] == null ? undefined : json["group"],
+        source: json["source"] == null ? undefined : json["source"],
+        identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
 }
 
-export function PatchedGroupSourceConnectionRequestToJSON(json: any): PatchedGroupSourceConnectionRequest {
+export function PatchedGroupSourceConnectionRequestToJSON(
+    json: any,
+): PatchedGroupSourceConnectionRequest {
     return PatchedGroupSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedGroupSourceConnectionRequestToJSONTyped(value?: PatchedGroupSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedGroupSourceConnectionRequestToJSONTyped(
+    value?: PatchedGroupSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

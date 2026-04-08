@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { PasswordPolicy } from './PasswordPolicy';
-import {
-    PasswordPolicyFromJSON,
-    PasswordPolicyFromJSONTyped,
-    PasswordPolicyToJSON,
-    PasswordPolicyToJSONTyped,
-} from './PasswordPolicy';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { PasswordPolicy } from "./PasswordPolicy";
+import { PasswordPolicyFromJSON, PasswordPolicyToJSON } from "./PasswordPolicy";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedPasswordPolicyList
  */
 export interface PaginatedPasswordPolicyList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedPasswordPolicyList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<PasswordPolicy>}
      * @memberof PaginatedPasswordPolicyList
      */
     results: Array<PasswordPolicy>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedPasswordPolicyList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedPasswordPolicyList interface.
  */
-export function instanceOfPaginatedPasswordPolicyList(value: object): value is PaginatedPasswordPolicyList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedPasswordPolicyList(
+    value: object,
+): value is PaginatedPasswordPolicyList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedPasswordPolicyListFromJSON(json: any): PaginatedPasswor
     return PaginatedPasswordPolicyListFromJSONTyped(json, false);
 }
 
-export function PaginatedPasswordPolicyListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedPasswordPolicyList {
+export function PaginatedPasswordPolicyListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedPasswordPolicyList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(PasswordPolicyFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(PasswordPolicyFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedPasswordPolicyListToJSON(json: any): PaginatedPasswordP
     return PaginatedPasswordPolicyListToJSONTyped(json, false);
 }
 
-export function PaginatedPasswordPolicyListToJSONTyped(value?: PaginatedPasswordPolicyList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedPasswordPolicyListToJSONTyped(
+    value?: PaginatedPasswordPolicyList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(PasswordPolicyToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(PasswordPolicyToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

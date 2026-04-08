@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { Source } from './Source';
-import {
-    SourceFromJSON,
-    SourceFromJSONTyped,
-    SourceToJSON,
-    SourceToJSONTyped,
-} from './Source';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Source } from "./Source";
+import { SourceFromJSON, SourceToJSON } from "./Source";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedSourceList
  */
 export interface PaginatedSourceList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedSourceList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<Source>}
      * @memberof PaginatedSourceList
      */
     results: Array<Source>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedSourceList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedSourceList interface.
  */
 export function instanceOfPaginatedSourceList(value: object): value is PaginatedSourceList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedSourceListFromJSON(json: any): PaginatedSourceList {
     return PaginatedSourceListFromJSONTyped(json, false);
 }
 
-export function PaginatedSourceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSourceList {
+export function PaginatedSourceListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedSourceList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(SourceFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(SourceFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedSourceListToJSON(json: any): PaginatedSourceList {
     return PaginatedSourceListToJSONTyped(json, false);
 }
 
-export function PaginatedSourceListToJSONTyped(value?: PaginatedSourceList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedSourceListToJSONTyped(
+    value?: PaginatedSourceList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(SourceToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(SourceToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

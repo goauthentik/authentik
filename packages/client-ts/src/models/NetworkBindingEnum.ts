@@ -12,20 +12,18 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const NetworkBindingEnum = {
-    NoBinding: 'no_binding',
-    BindAsn: 'bind_asn',
-    BindAsnNetwork: 'bind_asn_network',
-    BindAsnNetworkIp: 'bind_asn_network_ip',
-    UnknownDefaultOpenApi: '11184809'
+    NoBinding: "no_binding",
+    BindAsn: "bind_asn",
+    BindAsnNetwork: "bind_asn_network",
+    BindAsnNetworkIp: "bind_asn_network_ip",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type NetworkBindingEnum = typeof NetworkBindingEnum[keyof typeof NetworkBindingEnum];
-
+export type NetworkBindingEnum = (typeof NetworkBindingEnum)[keyof typeof NetworkBindingEnum];
 
 export function instanceOfNetworkBindingEnum(value: any): boolean {
     for (const key in NetworkBindingEnum) {
@@ -42,7 +40,10 @@ export function NetworkBindingEnumFromJSON(json: any): NetworkBindingEnum {
     return NetworkBindingEnumFromJSONTyped(json, false);
 }
 
-export function NetworkBindingEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): NetworkBindingEnum {
+export function NetworkBindingEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): NetworkBindingEnum {
     return json as NetworkBindingEnum;
 }
 
@@ -50,7 +51,9 @@ export function NetworkBindingEnumToJSON(value?: NetworkBindingEnum | null): any
     return value as any;
 }
 
-export function NetworkBindingEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): NetworkBindingEnum {
+export function NetworkBindingEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): NetworkBindingEnum {
     return value as NetworkBindingEnum;
 }
-

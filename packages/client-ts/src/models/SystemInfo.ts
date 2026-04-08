@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { SystemInfoRuntime } from './SystemInfoRuntime';
-import {
-    SystemInfoRuntimeFromJSON,
-    SystemInfoRuntimeFromJSONTyped,
-    SystemInfoRuntimeToJSON,
-    SystemInfoRuntimeToJSONTyped,
-} from './SystemInfoRuntime';
+import type { SystemInfoRuntime } from "./SystemInfoRuntime";
+import { SystemInfoRuntimeFromJSON, SystemInfoRuntimeToJSON } from "./SystemInfoRuntime";
 
 /**
  * Get system information.
@@ -32,7 +26,7 @@ export interface SystemInfo {
      * @type {{ [key: string]: string; }}
      * @memberof SystemInfo
      */
-    readonly httpHeaders: { [key: string]: string; };
+    readonly httpHeaders: { [key: string]: string };
     /**
      * Get HTTP host
      * @type {string}
@@ -46,7 +40,7 @@ export interface SystemInfo {
      */
     readonly httpIsSecure: boolean;
     /**
-     * 
+     *
      * @type {SystemInfoRuntime}
      * @memberof SystemInfo
      */
@@ -81,14 +75,16 @@ export interface SystemInfo {
  * Check if a given object implements the SystemInfo interface.
  */
 export function instanceOfSystemInfo(value: object): value is SystemInfo {
-    if (!('httpHeaders' in value) || value['httpHeaders'] === undefined) return false;
-    if (!('httpHost' in value) || value['httpHost'] === undefined) return false;
-    if (!('httpIsSecure' in value) || value['httpIsSecure'] === undefined) return false;
-    if (!('runtime' in value) || value['runtime'] === undefined) return false;
-    if (!('brand' in value) || value['brand'] === undefined) return false;
-    if (!('serverTime' in value) || value['serverTime'] === undefined) return false;
-    if (!('embeddedOutpostDisabled' in value) || value['embeddedOutpostDisabled'] === undefined) return false;
-    if (!('embeddedOutpostHost' in value) || value['embeddedOutpostHost'] === undefined) return false;
+    if (!("httpHeaders" in value) || value["httpHeaders"] === undefined) return false;
+    if (!("httpHost" in value) || value["httpHost"] === undefined) return false;
+    if (!("httpIsSecure" in value) || value["httpIsSecure"] === undefined) return false;
+    if (!("runtime" in value) || value["runtime"] === undefined) return false;
+    if (!("brand" in value) || value["brand"] === undefined) return false;
+    if (!("serverTime" in value) || value["serverTime"] === undefined) return false;
+    if (!("embeddedOutpostDisabled" in value) || value["embeddedOutpostDisabled"] === undefined)
+        return false;
+    if (!("embeddedOutpostHost" in value) || value["embeddedOutpostHost"] === undefined)
+        return false;
     return true;
 }
 
@@ -101,15 +97,14 @@ export function SystemInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'httpHeaders': json['http_headers'],
-        'httpHost': json['http_host'],
-        'httpIsSecure': json['http_is_secure'],
-        'runtime': SystemInfoRuntimeFromJSON(json['runtime']),
-        'brand': json['brand'],
-        'serverTime': (new Date(json['server_time'])),
-        'embeddedOutpostDisabled': json['embedded_outpost_disabled'],
-        'embeddedOutpostHost': json['embedded_outpost_host'],
+        httpHeaders: json["http_headers"],
+        httpHost: json["http_host"],
+        httpIsSecure: json["http_is_secure"],
+        runtime: SystemInfoRuntimeFromJSON(json["runtime"]),
+        brand: json["brand"],
+        serverTime: new Date(json["server_time"]),
+        embeddedOutpostDisabled: json["embedded_outpost_disabled"],
+        embeddedOutpostHost: json["embedded_outpost_host"],
     };
 }
 
@@ -117,14 +112,24 @@ export function SystemInfoToJSON(json: any): SystemInfo {
     return SystemInfoToJSONTyped(json, false);
 }
 
-export function SystemInfoToJSONTyped(value?: Omit<SystemInfo, 'http_headers'|'http_host'|'http_is_secure'|'brand'|'server_time'|'embedded_outpost_disabled'|'embedded_outpost_host'> | null, ignoreDiscriminator: boolean = false): any {
+export function SystemInfoToJSONTyped(
+    value?: Omit<
+        SystemInfo,
+        | "http_headers"
+        | "http_host"
+        | "http_is_secure"
+        | "brand"
+        | "server_time"
+        | "embedded_outpost_disabled"
+        | "embedded_outpost_host"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'runtime': SystemInfoRuntimeToJSON(value['runtime']),
+        runtime: SystemInfoRuntimeToJSON(value["runtime"]),
     };
 }
-

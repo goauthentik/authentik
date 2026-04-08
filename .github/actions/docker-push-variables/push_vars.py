@@ -2,10 +2,19 @@
 
 import os
 from json import dumps
+from pathlib import Path
 from sys import exit as sysexit
 from time import time
+from typing import Any
 
-from authentik import authentik_version
+
+def authentik_version() -> str:
+    init = Path(__file__).parent.parent.parent.parent / "authentik" / "__init__.py"
+    with open(init) as f:
+        content = f.read()
+    locals: dict[str, Any] = {}
+    exec(content, None, locals)  # nosec
+    return str(locals["VERSION"])
 
 
 def must_or_fail(input: str | None, error: str) -> str:
@@ -97,6 +106,7 @@ if os.getenv("RELEASE", "false").lower() == "true":
     image_build_args = [f"VERSION={os.getenv('REF')}"]
 else:
     image_build_args = [f"GIT_BUILD_HASH={sha}"]
+image_build_args_str = "\n".join(image_build_args)
 
 with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"shouldPush={str(should_push).lower()}", file=_output)
@@ -109,4 +119,4 @@ with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"imageMainTag={image_main_tag}", file=_output)
     print(f"imageMainName={image_tags[0]}", file=_output)
     print(f"cacheTo={cache_to}", file=_output)
-    print(f"imageBuildArgs={"\n".join(image_build_args)}", file=_output)
+    print(f"imageBuildArgs={image_build_args_str}", file=_output)

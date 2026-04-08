@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * KubernetesServiceConnection Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface KubernetesServiceConnection {
     /**
-     * 
+     *
      * @type {string}
      * @memberof KubernetesServiceConnection
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof KubernetesServiceConnection
      */
@@ -38,7 +37,7 @@ export interface KubernetesServiceConnection {
      */
     local?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof KubernetesServiceConnection
      */
@@ -66,7 +65,7 @@ export interface KubernetesServiceConnection {
      * @type {{ [key: string]: any; }}
      * @memberof KubernetesServiceConnection
      */
-    kubeconfig?: { [key: string]: any; };
+    kubeconfig?: { [key: string]: any };
     /**
      * Verify SSL Certificates of the Kubernetes API endpoint
      * @type {boolean}
@@ -78,13 +77,15 @@ export interface KubernetesServiceConnection {
 /**
  * Check if a given object implements the KubernetesServiceConnection interface.
  */
-export function instanceOfKubernetesServiceConnection(value: object): value is KubernetesServiceConnection {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
+export function instanceOfKubernetesServiceConnection(
+    value: object,
+): value is KubernetesServiceConnection {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
     return true;
 }
 
@@ -92,21 +93,23 @@ export function KubernetesServiceConnectionFromJSON(json: any): KubernetesServic
     return KubernetesServiceConnectionFromJSONTyped(json, false);
 }
 
-export function KubernetesServiceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): KubernetesServiceConnection {
+export function KubernetesServiceConnectionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): KubernetesServiceConnection {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'local': json['local'] == null ? undefined : json['local'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'kubeconfig': json['kubeconfig'] == null ? undefined : json['kubeconfig'],
-        'verifySsl': json['verify_ssl'] == null ? undefined : json['verify_ssl'],
+        pk: json["pk"],
+        name: json["name"],
+        local: json["local"] == null ? undefined : json["local"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        kubeconfig: json["kubeconfig"] == null ? undefined : json["kubeconfig"],
+        verifySsl: json["verify_ssl"] == null ? undefined : json["verify_ssl"],
     };
 }
 
@@ -114,17 +117,21 @@ export function KubernetesServiceConnectionToJSON(json: any): KubernetesServiceC
     return KubernetesServiceConnectionToJSONTyped(json, false);
 }
 
-export function KubernetesServiceConnectionToJSONTyped(value?: Omit<KubernetesServiceConnection, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'> | null, ignoreDiscriminator: boolean = false): any {
+export function KubernetesServiceConnectionToJSONTyped(
+    value?: Omit<
+        KubernetesServiceConnection,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'local': value['local'],
-        'kubeconfig': value['kubeconfig'],
-        'verify_ssl': value['verifySsl'],
+        name: value["name"],
+        local: value["local"],
+        kubeconfig: value["kubeconfig"],
+        verify_ssl: value["verifySsl"],
     };
 }
-

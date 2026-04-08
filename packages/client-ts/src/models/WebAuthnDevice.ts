@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PartialUser } from './PartialUser';
-import {
-    PartialUserFromJSON,
-    PartialUserFromJSONTyped,
-    PartialUserToJSON,
-    PartialUserToJSONTyped,
-} from './PartialUser';
-import type { WebAuthnDeviceType } from './WebAuthnDeviceType';
-import {
-    WebAuthnDeviceTypeFromJSON,
-    WebAuthnDeviceTypeFromJSONTyped,
-    WebAuthnDeviceTypeToJSON,
-    WebAuthnDeviceTypeToJSONTyped,
-} from './WebAuthnDeviceType';
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
+import type { WebAuthnDeviceType } from "./WebAuthnDeviceType";
+import { WebAuthnDeviceTypeFromJSON } from "./WebAuthnDeviceType";
 
 /**
  * Serializer for WebAuthn authenticator devices
@@ -35,37 +24,37 @@ import {
  */
 export interface WebAuthnDevice {
     /**
-     * 
+     *
      * @type {number}
      * @memberof WebAuthnDevice
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof WebAuthnDevice
      */
     name: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof WebAuthnDevice
      */
     readonly createdOn: Date;
     /**
-     * 
+     *
      * @type {WebAuthnDeviceType}
      * @memberof WebAuthnDevice
      */
     readonly deviceType: WebAuthnDeviceType | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof WebAuthnDevice
      */
     readonly aaguid: string;
     /**
-     * 
+     *
      * @type {PartialUser}
      * @memberof WebAuthnDevice
      */
@@ -76,12 +65,12 @@ export interface WebAuthnDevice {
  * Check if a given object implements the WebAuthnDevice interface.
  */
 export function instanceOfWebAuthnDevice(value: object): value is WebAuthnDevice {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('createdOn' in value) || value['createdOn'] === undefined) return false;
-    if (!('deviceType' in value) || value['deviceType'] === undefined) return false;
-    if (!('aaguid' in value) || value['aaguid'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("createdOn" in value) || value["createdOn"] === undefined) return false;
+    if (!("deviceType" in value) || value["deviceType"] === undefined) return false;
+    if (!("aaguid" in value) || value["aaguid"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
     return true;
 }
 
@@ -89,18 +78,20 @@ export function WebAuthnDeviceFromJSON(json: any): WebAuthnDevice {
     return WebAuthnDeviceFromJSONTyped(json, false);
 }
 
-export function WebAuthnDeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean): WebAuthnDevice {
+export function WebAuthnDeviceFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): WebAuthnDevice {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'createdOn': (new Date(json['created_on'])),
-        'deviceType': WebAuthnDeviceTypeFromJSON(json['device_type']),
-        'aaguid': json['aaguid'],
-        'user': PartialUserFromJSON(json['user']),
+        pk: json["pk"],
+        name: json["name"],
+        createdOn: new Date(json["created_on"]),
+        deviceType: WebAuthnDeviceTypeFromJSON(json["device_type"]),
+        aaguid: json["aaguid"],
+        user: PartialUserFromJSON(json["user"]),
     };
 }
 
@@ -108,14 +99,15 @@ export function WebAuthnDeviceToJSON(json: any): WebAuthnDevice {
     return WebAuthnDeviceToJSONTyped(json, false);
 }
 
-export function WebAuthnDeviceToJSONTyped(value?: Omit<WebAuthnDevice, 'pk'|'created_on'|'device_type'|'aaguid'|'user'> | null, ignoreDiscriminator: boolean = false): any {
+export function WebAuthnDeviceToJSONTyped(
+    value?: Omit<WebAuthnDevice, "pk" | "created_on" | "device_type" | "aaguid" | "user"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

@@ -12,28 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
-import type { ConsentPermission } from './ConsentPermission';
-import {
-    ConsentPermissionFromJSON,
-    ConsentPermissionFromJSONTyped,
-    ConsentPermissionToJSON,
-    ConsentPermissionToJSONTyped,
-} from './ConsentPermission';
+import type { ConsentPermission } from "./ConsentPermission";
+import { ConsentPermissionFromJSON, ConsentPermissionToJSON } from "./ConsentPermission";
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Challenge info for consent screens
@@ -42,55 +25,55 @@ import {
  */
 export interface ConsentChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof ConsentChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ConsentChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof ConsentChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {string}
      * @memberof ConsentChallenge
      */
     pendingUser: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ConsentChallenge
      */
     pendingUserAvatar: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ConsentChallenge
      */
     headerText?: string;
     /**
-     * 
+     *
      * @type {Array<ConsentPermission>}
      * @memberof ConsentChallenge
      */
     permissions: Array<ConsentPermission>;
     /**
-     * 
+     *
      * @type {Array<ConsentPermission>}
      * @memberof ConsentChallenge
      */
     additionalPermissions: Array<ConsentPermission>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ConsentChallenge
      */
@@ -101,11 +84,12 @@ export interface ConsentChallenge {
  * Check if a given object implements the ConsentChallenge interface.
  */
 export function instanceOfConsentChallenge(value: object): value is ConsentChallenge {
-    if (!('pendingUser' in value) || value['pendingUser'] === undefined) return false;
-    if (!('pendingUserAvatar' in value) || value['pendingUserAvatar'] === undefined) return false;
-    if (!('permissions' in value) || value['permissions'] === undefined) return false;
-    if (!('additionalPermissions' in value) || value['additionalPermissions'] === undefined) return false;
-    if (!('token' in value) || value['token'] === undefined) return false;
+    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
+    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
+    if (!("permissions" in value) || value["permissions"] === undefined) return false;
+    if (!("additionalPermissions" in value) || value["additionalPermissions"] === undefined)
+        return false;
+    if (!("token" in value) || value["token"] === undefined) return false;
     return true;
 }
 
@@ -113,21 +97,26 @@ export function ConsentChallengeFromJSON(json: any): ConsentChallenge {
     return ConsentChallengeFromJSONTyped(json, false);
 }
 
-export function ConsentChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): ConsentChallenge {
+export function ConsentChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ConsentChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'pendingUser': json['pending_user'],
-        'pendingUserAvatar': json['pending_user_avatar'],
-        'headerText': json['header_text'] == null ? undefined : json['header_text'],
-        'permissions': ((json['permissions'] as Array<any>).map(ConsentPermissionFromJSON)),
-        'additionalPermissions': ((json['additional_permissions'] as Array<any>).map(ConsentPermissionFromJSON)),
-        'token': json['token'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        pendingUser: json["pending_user"],
+        pendingUserAvatar: json["pending_user_avatar"],
+        headerText: json["header_text"] == null ? undefined : json["header_text"],
+        permissions: (json["permissions"] as Array<any>).map(ConsentPermissionFromJSON),
+        additionalPermissions: (json["additional_permissions"] as Array<any>).map(
+            ConsentPermissionFromJSON,
+        ),
+        token: json["token"],
     };
 }
 
@@ -135,22 +124,25 @@ export function ConsentChallengeToJSON(json: any): ConsentChallenge {
     return ConsentChallengeToJSONTyped(json, false);
 }
 
-export function ConsentChallengeToJSONTyped(value?: ConsentChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function ConsentChallengeToJSONTyped(
+    value?: ConsentChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'pending_user': value['pendingUser'],
-        'pending_user_avatar': value['pendingUserAvatar'],
-        'header_text': value['headerText'],
-        'permissions': ((value['permissions'] as Array<any>).map(ConsentPermissionToJSON)),
-        'additional_permissions': ((value['additionalPermissions'] as Array<any>).map(ConsentPermissionToJSON)),
-        'token': value['token'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        pending_user: value["pendingUser"],
+        pending_user_avatar: value["pendingUserAvatar"],
+        header_text: value["headerText"],
+        permissions: (value["permissions"] as Array<any>).map(ConsentPermissionToJSON),
+        additional_permissions: (value["additionalPermissions"] as Array<any>).map(
+            ConsentPermissionToJSON,
+        ),
+        token: value["token"],
     };
 }
-

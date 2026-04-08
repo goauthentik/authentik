@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Password Expiry Policy Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PasswordExpiryPolicyRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PasswordExpiryPolicyRequest
      */
@@ -32,13 +31,13 @@ export interface PasswordExpiryPolicyRequest {
      */
     executionLogging?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PasswordExpiryPolicyRequest
      */
     days: number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PasswordExpiryPolicyRequest
      */
@@ -48,9 +47,11 @@ export interface PasswordExpiryPolicyRequest {
 /**
  * Check if a given object implements the PasswordExpiryPolicyRequest interface.
  */
-export function instanceOfPasswordExpiryPolicyRequest(value: object): value is PasswordExpiryPolicyRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('days' in value) || value['days'] === undefined) return false;
+export function instanceOfPasswordExpiryPolicyRequest(
+    value: object,
+): value is PasswordExpiryPolicyRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("days" in value) || value["days"] === undefined) return false;
     return true;
 }
 
@@ -58,16 +59,18 @@ export function PasswordExpiryPolicyRequestFromJSON(json: any): PasswordExpiryPo
     return PasswordExpiryPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PasswordExpiryPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PasswordExpiryPolicyRequest {
+export function PasswordExpiryPolicyRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PasswordExpiryPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'days': json['days'],
-        'denyOnly': json['deny_only'] == null ? undefined : json['deny_only'],
+        name: json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        days: json["days"],
+        denyOnly: json["deny_only"] == null ? undefined : json["deny_only"],
     };
 }
 
@@ -75,17 +78,18 @@ export function PasswordExpiryPolicyRequestToJSON(json: any): PasswordExpiryPoli
     return PasswordExpiryPolicyRequestToJSONTyped(json, false);
 }
 
-export function PasswordExpiryPolicyRequestToJSONTyped(value?: PasswordExpiryPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PasswordExpiryPolicyRequestToJSONTyped(
+    value?: PasswordExpiryPolicyRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'days': value['days'],
-        'deny_only': value['denyOnly'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        days: value["days"],
+        deny_only: value["denyOnly"],
     };
 }
-

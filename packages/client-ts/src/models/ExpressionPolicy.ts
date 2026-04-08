@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Group Membership Policy Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface ExpressionPolicy {
     /**
-     * 
+     *
      * @type {string}
      * @memberof ExpressionPolicy
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ExpressionPolicy
      */
@@ -68,7 +67,7 @@ export interface ExpressionPolicy {
      */
     readonly boundTo: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ExpressionPolicy
      */
@@ -79,14 +78,14 @@ export interface ExpressionPolicy {
  * Check if a given object implements the ExpressionPolicy interface.
  */
 export function instanceOfExpressionPolicy(value: object): value is ExpressionPolicy {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('boundTo' in value) || value['boundTo'] === undefined) return false;
-    if (!('expression' in value) || value['expression'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("boundTo" in value) || value["boundTo"] === undefined) return false;
+    if (!("expression" in value) || value["expression"] === undefined) return false;
     return true;
 }
 
@@ -94,21 +93,23 @@ export function ExpressionPolicyFromJSON(json: any): ExpressionPolicy {
     return ExpressionPolicyFromJSONTyped(json, false);
 }
 
-export function ExpressionPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): ExpressionPolicy {
+export function ExpressionPolicyFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ExpressionPolicy {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'boundTo': json['bound_to'],
-        'expression': json['expression'],
+        pk: json["pk"],
+        name: json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        boundTo: json["bound_to"],
+        expression: json["expression"],
     };
 }
 
@@ -116,16 +117,20 @@ export function ExpressionPolicyToJSON(json: any): ExpressionPolicy {
     return ExpressionPolicyToJSONTyped(json, false);
 }
 
-export function ExpressionPolicyToJSONTyped(value?: Omit<ExpressionPolicy, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'bound_to'> | null, ignoreDiscriminator: boolean = false): any {
+export function ExpressionPolicyToJSONTyped(
+    value?: Omit<
+        ExpressionPolicy,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "bound_to"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'expression': value['expression'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        expression: value["expression"],
     };
 }
-

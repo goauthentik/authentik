@@ -12,88 +12,89 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { GroupTelegramSourceConnection } from './GroupTelegramSourceConnection';
+import type { GroupTelegramSourceConnection } from "./GroupTelegramSourceConnection";
 import {
     GroupTelegramSourceConnectionFromJSON,
-    GroupTelegramSourceConnectionFromJSONTyped,
     GroupTelegramSourceConnectionToJSON,
-    GroupTelegramSourceConnectionToJSONTyped,
-} from './GroupTelegramSourceConnection';
+} from "./GroupTelegramSourceConnection";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedGroupTelegramSourceConnectionList
  */
 export interface PaginatedGroupTelegramSourceConnectionList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedGroupTelegramSourceConnectionList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<GroupTelegramSourceConnection>}
      * @memberof PaginatedGroupTelegramSourceConnectionList
      */
     results: Array<GroupTelegramSourceConnection>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedGroupTelegramSourceConnectionList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedGroupTelegramSourceConnectionList interface.
  */
-export function instanceOfPaginatedGroupTelegramSourceConnectionList(value: object): value is PaginatedGroupTelegramSourceConnectionList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedGroupTelegramSourceConnectionList(
+    value: object,
+): value is PaginatedGroupTelegramSourceConnectionList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedGroupTelegramSourceConnectionListFromJSON(json: any): PaginatedGroupTelegramSourceConnectionList {
+export function PaginatedGroupTelegramSourceConnectionListFromJSON(
+    json: any,
+): PaginatedGroupTelegramSourceConnectionList {
     return PaginatedGroupTelegramSourceConnectionListFromJSONTyped(json, false);
 }
 
-export function PaginatedGroupTelegramSourceConnectionListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedGroupTelegramSourceConnectionList {
+export function PaginatedGroupTelegramSourceConnectionListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedGroupTelegramSourceConnectionList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(GroupTelegramSourceConnectionFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(GroupTelegramSourceConnectionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedGroupTelegramSourceConnectionListToJSON(json: any): PaginatedGroupTelegramSourceConnectionList {
+export function PaginatedGroupTelegramSourceConnectionListToJSON(
+    json: any,
+): PaginatedGroupTelegramSourceConnectionList {
     return PaginatedGroupTelegramSourceConnectionListToJSONTyped(json, false);
 }
 
-export function PaginatedGroupTelegramSourceConnectionListToJSONTyped(value?: PaginatedGroupTelegramSourceConnectionList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedGroupTelegramSourceConnectionListToJSONTyped(
+    value?: PaginatedGroupTelegramSourceConnectionList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(GroupTelegramSourceConnectionToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(GroupTelegramSourceConnectionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

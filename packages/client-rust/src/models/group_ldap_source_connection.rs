@@ -27,6 +27,8 @@ pub struct GroupLdapSourceConnection {
     pub created: String,
     #[serde(rename = "last_updated")]
     pub last_updated: String,
+    #[serde(rename = "group_obj")]
+    pub group_obj: models::PartialGroup,
 }
 
 impl GroupLdapSourceConnection {
@@ -39,6 +41,7 @@ impl GroupLdapSourceConnection {
         identifier: String,
         created: String,
         last_updated: String,
+        group_obj: models::PartialGroup,
     ) -> GroupLdapSourceConnection {
         GroupLdapSourceConnection {
             pk,
@@ -48,6 +51,7 @@ impl GroupLdapSourceConnection {
             identifier,
             created,
             last_updated,
+            group_obj,
         }
     }
 }

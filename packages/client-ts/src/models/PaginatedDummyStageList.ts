@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { DummyStage } from './DummyStage';
-import {
-    DummyStageFromJSON,
-    DummyStageFromJSONTyped,
-    DummyStageToJSON,
-    DummyStageToJSONTyped,
-} from './DummyStage';
+import type { DummyStage } from "./DummyStage";
+import { DummyStageFromJSON, DummyStageToJSON } from "./DummyStage";
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedDummyStageList
  */
 export interface PaginatedDummyStageList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedDummyStageList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<DummyStage>}
      * @memberof PaginatedDummyStageList
      */
     results: Array<DummyStage>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedDummyStageList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedDummyStageList interface.
  */
 export function instanceOfPaginatedDummyStageList(value: object): value is PaginatedDummyStageList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedDummyStageListFromJSON(json: any): PaginatedDummyStageL
     return PaginatedDummyStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedDummyStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedDummyStageList {
+export function PaginatedDummyStageListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedDummyStageList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(DummyStageFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(DummyStageFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedDummyStageListToJSON(json: any): PaginatedDummyStageLis
     return PaginatedDummyStageListToJSONTyped(json, false);
 }
 
-export function PaginatedDummyStageListToJSONTyped(value?: PaginatedDummyStageList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedDummyStageListToJSONTyped(
+    value?: PaginatedDummyStageList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(DummyStageToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(DummyStageToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

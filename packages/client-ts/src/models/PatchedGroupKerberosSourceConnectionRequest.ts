@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedGroupKerberosSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupKerberosSourceConnectionRequest
      */
     group?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupKerberosSourceConnectionRequest
      */
     source?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedGroupKerberosSourceConnectionRequest
      */
@@ -42,40 +41,49 @@ export interface PatchedGroupKerberosSourceConnectionRequest {
 /**
  * Check if a given object implements the PatchedGroupKerberosSourceConnectionRequest interface.
  */
-export function instanceOfPatchedGroupKerberosSourceConnectionRequest(value: object): value is PatchedGroupKerberosSourceConnectionRequest {
+export function instanceOfPatchedGroupKerberosSourceConnectionRequest(
+    value: object,
+): value is PatchedGroupKerberosSourceConnectionRequest {
     return true;
 }
 
-export function PatchedGroupKerberosSourceConnectionRequestFromJSON(json: any): PatchedGroupKerberosSourceConnectionRequest {
+export function PatchedGroupKerberosSourceConnectionRequestFromJSON(
+    json: any,
+): PatchedGroupKerberosSourceConnectionRequest {
     return PatchedGroupKerberosSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function PatchedGroupKerberosSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedGroupKerberosSourceConnectionRequest {
+export function PatchedGroupKerberosSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedGroupKerberosSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'group': json['group'] == null ? undefined : json['group'],
-        'source': json['source'] == null ? undefined : json['source'],
-        'identifier': json['identifier'] == null ? undefined : json['identifier'],
+        group: json["group"] == null ? undefined : json["group"],
+        source: json["source"] == null ? undefined : json["source"],
+        identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
 }
 
-export function PatchedGroupKerberosSourceConnectionRequestToJSON(json: any): PatchedGroupKerberosSourceConnectionRequest {
+export function PatchedGroupKerberosSourceConnectionRequestToJSON(
+    json: any,
+): PatchedGroupKerberosSourceConnectionRequest {
     return PatchedGroupKerberosSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function PatchedGroupKerberosSourceConnectionRequestToJSONTyped(value?: PatchedGroupKerberosSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedGroupKerberosSourceConnectionRequestToJSONTyped(
+    value?: PatchedGroupKerberosSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

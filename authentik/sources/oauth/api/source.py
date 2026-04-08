@@ -73,7 +73,7 @@ class OAuthSourceSerializer(SourceSerializer):
                 well_known_config = session.get(well_known)
                 well_known_config.raise_for_status()
             except RequestException as exc:
-                text = exc.response.text if exc.response else str(exc)
+                text = exc.response.text if exc.response is not None else str(exc)
                 raise ValidationError({"oidc_well_known_url": text}) from None
             config = well_known_config.json()
             if "issuer" not in config:
@@ -100,7 +100,7 @@ class OAuthSourceSerializer(SourceSerializer):
                 jwks_config = session.get(jwks_url)
                 jwks_config.raise_for_status()
             except RequestException as exc:
-                text = exc.response.text if exc.response else str(exc)
+                text = exc.response.text if exc.response is not None else str(exc)
                 raise ValidationError({"oidc_jwks_url": text}) from None
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
