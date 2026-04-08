@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { UserWriteStage } from './UserWriteStage';
-import {
-    UserWriteStageFromJSON,
-    UserWriteStageFromJSONTyped,
-    UserWriteStageToJSON,
-    UserWriteStageToJSONTyped,
-} from './UserWriteStage';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { UserWriteStage } from "./UserWriteStage";
+import { UserWriteStageFromJSON, UserWriteStageToJSON } from "./UserWriteStage";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedUserWriteStageList
  */
 export interface PaginatedUserWriteStageList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedUserWriteStageList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<UserWriteStage>}
      * @memberof PaginatedUserWriteStageList
      */
     results: Array<UserWriteStage>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedUserWriteStageList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedUserWriteStageList interface.
  */
-export function instanceOfPaginatedUserWriteStageList(value: object): value is PaginatedUserWriteStageList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedUserWriteStageList(
+    value: object,
+): value is PaginatedUserWriteStageList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedUserWriteStageListFromJSON(json: any): PaginatedUserWri
     return PaginatedUserWriteStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedUserWriteStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedUserWriteStageList {
+export function PaginatedUserWriteStageListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedUserWriteStageList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(UserWriteStageFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(UserWriteStageFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedUserWriteStageListToJSON(json: any): PaginatedUserWrite
     return PaginatedUserWriteStageListToJSONTyped(json, false);
 }
 
-export function PaginatedUserWriteStageListToJSONTyped(value?: PaginatedUserWriteStageList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedUserWriteStageListToJSONTyped(
+    value?: PaginatedUserWriteStageList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(UserWriteStageToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(UserWriteStageToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

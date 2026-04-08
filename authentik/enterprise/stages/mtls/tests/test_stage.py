@@ -53,7 +53,7 @@ class MTLSStageTests(FlowTestCase):
 
     def _format_traefik(self, cert: str | None = None):
         cert = cert if cert else self.client_cert
-        return quote_plus(cert.replace(PEM_HEADER, "").replace(PEM_FOOTER, "").replace("\n", ""))
+        return cert.replace(PEM_HEADER, "").replace(PEM_FOOTER, "").replace("\n", "")
 
     def test_parse_xfcc(self):
         """Test authentik Proxy/Envoy's XFCC format"""

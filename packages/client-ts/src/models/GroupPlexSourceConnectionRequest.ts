@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface GroupPlexSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPlexSourceConnectionRequest
      */
     group: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPlexSourceConnectionRequest
      */
     source: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupPlexSourceConnectionRequest
      */
@@ -42,43 +41,52 @@ export interface GroupPlexSourceConnectionRequest {
 /**
  * Check if a given object implements the GroupPlexSourceConnectionRequest interface.
  */
-export function instanceOfGroupPlexSourceConnectionRequest(value: object): value is GroupPlexSourceConnectionRequest {
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+export function instanceOfGroupPlexSourceConnectionRequest(
+    value: object,
+): value is GroupPlexSourceConnectionRequest {
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
 }
 
-export function GroupPlexSourceConnectionRequestFromJSON(json: any): GroupPlexSourceConnectionRequest {
+export function GroupPlexSourceConnectionRequestFromJSON(
+    json: any,
+): GroupPlexSourceConnectionRequest {
     return GroupPlexSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function GroupPlexSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupPlexSourceConnectionRequest {
+export function GroupPlexSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GroupPlexSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'group': json['group'],
-        'source': json['source'],
-        'identifier': json['identifier'],
+        group: json["group"],
+        source: json["source"],
+        identifier: json["identifier"],
     };
 }
 
-export function GroupPlexSourceConnectionRequestToJSON(json: any): GroupPlexSourceConnectionRequest {
+export function GroupPlexSourceConnectionRequestToJSON(
+    json: any,
+): GroupPlexSourceConnectionRequest {
     return GroupPlexSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function GroupPlexSourceConnectionRequestToJSONTyped(value?: GroupPlexSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function GroupPlexSourceConnectionRequestToJSONTyped(
+    value?: GroupPlexSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

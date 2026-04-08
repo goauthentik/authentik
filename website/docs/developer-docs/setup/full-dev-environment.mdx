@@ -152,14 +152,9 @@ The very first time a worker runs, it might need some time to clear the initial 
 
 Both processes need to run to get a fully functioning authentik development environment.
 
-### Initial setup
+### Hot-reloading
 
-To set a password for the default admin user (**akadmin**):
-
-1. Navigate to http://localhost:9000/if/flow/initial-setup/ in your browser.
-2. Follow the prompts to set up your admin account.
-
-From now on, you can access authentik at http://localhost:9000 using the credentials you defined in Step 2.
+When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environment), the authentik server automatically reloads whenever changes are made to the code. However, due to instabilities in the reloading process of the worker, that behavior is turned off for the worker. You can enable code reloading in the worker by manually running `uv run ak worker --watch`.
 
 ## 6. Build the frontend
 
@@ -175,9 +170,14 @@ For real-time feedback you can view the UI as you make changes. Run this command
 make web-watch
 ```
 
-### Hot-reloading
+## 7. Initial setup
 
-When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environment), the authentik server automatically reloads whenever changes are made to the code. However, due to instabilities in the reloading process of the worker, that behavior is turned off for the worker. You can enable code reloading in the worker by manually running `uv run ak worker --watch`.
+After the frontend build completes, set a password for the default admin user (**akadmin**):
+
+1. Navigate to http://localhost:9000/if/flow/initial-setup/ in your browser.
+2. Follow the prompts to set up your admin account.
+
+From now on, you can access authentik at http://localhost:9000 using the credentials you defined in Step 2.
 
 ## Troubleshooting
 

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SCIMSourcePropertyMapping Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface SCIMSourcePropertyMapping {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSourcePropertyMapping
      */
@@ -32,13 +31,13 @@ export interface SCIMSourcePropertyMapping {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSourcePropertyMapping
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSourcePropertyMapping
      */
@@ -72,14 +71,16 @@ export interface SCIMSourcePropertyMapping {
 /**
  * Check if a given object implements the SCIMSourcePropertyMapping interface.
  */
-export function instanceOfSCIMSourcePropertyMapping(value: object): value is SCIMSourcePropertyMapping {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('expression' in value) || value['expression'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
+export function instanceOfSCIMSourcePropertyMapping(
+    value: object,
+): value is SCIMSourcePropertyMapping {
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("expression" in value) || value["expression"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
     return true;
 }
 
@@ -87,20 +88,22 @@ export function SCIMSourcePropertyMappingFromJSON(json: any): SCIMSourceProperty
     return SCIMSourcePropertyMappingFromJSONTyped(json, false);
 }
 
-export function SCIMSourcePropertyMappingFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMSourcePropertyMapping {
+export function SCIMSourcePropertyMappingFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SCIMSourcePropertyMapping {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'],
-        'expression': json['expression'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
+        pk: json["pk"],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"],
+        expression: json["expression"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
     };
 }
 
@@ -108,16 +111,20 @@ export function SCIMSourcePropertyMappingToJSON(json: any): SCIMSourcePropertyMa
     return SCIMSourcePropertyMappingToJSONTyped(json, false);
 }
 
-export function SCIMSourcePropertyMappingToJSONTyped(value?: Omit<SCIMSourcePropertyMapping, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'> | null, ignoreDiscriminator: boolean = false): any {
+export function SCIMSourcePropertyMappingToJSONTyped(
+    value?: Omit<
+        SCIMSourcePropertyMapping,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
     };
 }
-

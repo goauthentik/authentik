@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -20,25 +19,25 @@ import { mapValues } from '../runtime';
  */
 export interface UserPlexSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserPlexSourceConnectionRequest
      */
     user: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserPlexSourceConnectionRequest
      */
     source: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserPlexSourceConnectionRequest
      */
     identifier: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserPlexSourceConnectionRequest
      */
@@ -48,28 +47,34 @@ export interface UserPlexSourceConnectionRequest {
 /**
  * Check if a given object implements the UserPlexSourceConnectionRequest interface.
  */
-export function instanceOfUserPlexSourceConnectionRequest(value: object): value is UserPlexSourceConnectionRequest {
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
-    if (!('plexToken' in value) || value['plexToken'] === undefined) return false;
+export function instanceOfUserPlexSourceConnectionRequest(
+    value: object,
+): value is UserPlexSourceConnectionRequest {
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!("plexToken" in value) || value["plexToken"] === undefined) return false;
     return true;
 }
 
-export function UserPlexSourceConnectionRequestFromJSON(json: any): UserPlexSourceConnectionRequest {
+export function UserPlexSourceConnectionRequestFromJSON(
+    json: any,
+): UserPlexSourceConnectionRequest {
     return UserPlexSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function UserPlexSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserPlexSourceConnectionRequest {
+export function UserPlexSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserPlexSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'user': json['user'],
-        'source': json['source'],
-        'identifier': json['identifier'],
-        'plexToken': json['plex_token'],
+        user: json["user"],
+        source: json["source"],
+        identifier: json["identifier"],
+        plexToken: json["plex_token"],
     };
 }
 
@@ -77,17 +82,18 @@ export function UserPlexSourceConnectionRequestToJSON(json: any): UserPlexSource
     return UserPlexSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function UserPlexSourceConnectionRequestToJSONTyped(value?: UserPlexSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function UserPlexSourceConnectionRequestToJSONTyped(
+    value?: UserPlexSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
-        'plex_token': value['plexToken'],
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
+        plex_token: value["plexToken"],
     };
 }
-

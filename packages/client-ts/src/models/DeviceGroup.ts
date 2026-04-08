@@ -12,21 +12,20 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface DeviceGroup
  */
 export interface DeviceGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceGroup
      */
     id: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof DeviceGroup
      */
@@ -37,7 +36,7 @@ export interface DeviceGroup {
  * Check if a given object implements the DeviceGroup interface.
  */
 export function instanceOfDeviceGroup(value: object): value is DeviceGroup {
-    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
     return true;
 }
 
@@ -50,9 +49,8 @@ export function DeviceGroupFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
+        id: json["id"],
+        name: json["name"] == null ? undefined : json["name"],
     };
 }
 
@@ -60,15 +58,16 @@ export function DeviceGroupToJSON(json: any): DeviceGroup {
     return DeviceGroupToJSONTyped(json, false);
 }
 
-export function DeviceGroupToJSONTyped(value?: DeviceGroup | null, ignoreDiscriminator: boolean = false): any {
+export function DeviceGroupToJSONTyped(
+    value?: DeviceGroup | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'id': value['id'],
-        'name': value['name'],
+        id: value["id"],
+        name: value["name"],
     };
 }
-

@@ -12,59 +12,60 @@
  * Do not edit the class manually.
  */
 
-import type { AppleLoginChallenge } from './AppleLoginChallenge';
+import type { AppleLoginChallenge } from "./AppleLoginChallenge";
+import { AppleLoginChallengeFromJSONTyped, AppleLoginChallengeToJSON } from "./AppleLoginChallenge";
+import type { PlexAuthenticationChallenge } from "./PlexAuthenticationChallenge";
 import {
-    instanceOfAppleLoginChallenge,
-    AppleLoginChallengeFromJSON,
-    AppleLoginChallengeFromJSONTyped,
-    AppleLoginChallengeToJSON,
-} from './AppleLoginChallenge';
-import type { PlexAuthenticationChallenge } from './PlexAuthenticationChallenge';
-import {
-    instanceOfPlexAuthenticationChallenge,
-    PlexAuthenticationChallengeFromJSON,
     PlexAuthenticationChallengeFromJSONTyped,
     PlexAuthenticationChallengeToJSON,
-} from './PlexAuthenticationChallenge';
-import type { RedirectChallenge } from './RedirectChallenge';
+} from "./PlexAuthenticationChallenge";
+import type { RedirectChallenge } from "./RedirectChallenge";
+import { RedirectChallengeFromJSONTyped, RedirectChallengeToJSON } from "./RedirectChallenge";
+import type { TelegramLoginChallenge } from "./TelegramLoginChallenge";
 import {
-    instanceOfRedirectChallenge,
-    RedirectChallengeFromJSON,
-    RedirectChallengeFromJSONTyped,
-    RedirectChallengeToJSON,
-} from './RedirectChallenge';
-import type { TelegramLoginChallenge } from './TelegramLoginChallenge';
-import {
-    instanceOfTelegramLoginChallenge,
-    TelegramLoginChallengeFromJSON,
     TelegramLoginChallengeFromJSONTyped,
     TelegramLoginChallengeToJSON,
-} from './TelegramLoginChallenge';
+} from "./TelegramLoginChallenge";
 
 /**
  * @type LoginChallengeTypes
- * 
+ *
  * @export
  */
-export type LoginChallengeTypes = { component: 'ak-source-oauth-apple' } & AppleLoginChallenge | { component: 'ak-source-plex' } & PlexAuthenticationChallenge | { component: 'ak-source-telegram' } & TelegramLoginChallenge | { component: 'xak-flow-redirect' } & RedirectChallenge;
+export type LoginChallengeTypes =
+    | ({ component: "ak-source-oauth-apple" } & AppleLoginChallenge)
+    | ({ component: "ak-source-plex" } & PlexAuthenticationChallenge)
+    | ({ component: "ak-source-telegram" } & TelegramLoginChallenge)
+    | ({ component: "xak-flow-redirect" } & RedirectChallenge);
 
 export function LoginChallengeTypesFromJSON(json: any): LoginChallengeTypes {
     return LoginChallengeTypesFromJSONTyped(json, false);
 }
 
-export function LoginChallengeTypesFromJSONTyped(json: any, ignoreDiscriminator: boolean): LoginChallengeTypes {
+export function LoginChallengeTypesFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): LoginChallengeTypes {
     if (json == null) {
         return json;
     }
-    switch (json['component']) {
-        case 'ak-source-oauth-apple':
-            return Object.assign({}, AppleLoginChallengeFromJSONTyped(json, true), { component: 'ak-source-oauth-apple' } as const);
-        case 'ak-source-plex':
-            return Object.assign({}, PlexAuthenticationChallengeFromJSONTyped(json, true), { component: 'ak-source-plex' } as const);
-        case 'ak-source-telegram':
-            return Object.assign({}, TelegramLoginChallengeFromJSONTyped(json, true), { component: 'ak-source-telegram' } as const);
-        case 'xak-flow-redirect':
-            return Object.assign({}, RedirectChallengeFromJSONTyped(json, true), { component: 'xak-flow-redirect' } as const);
+    switch (json["component"]) {
+        case "ak-source-oauth-apple":
+            return Object.assign({}, AppleLoginChallengeFromJSONTyped(json, true), {
+                component: "ak-source-oauth-apple",
+            } as const);
+        case "ak-source-plex":
+            return Object.assign({}, PlexAuthenticationChallengeFromJSONTyped(json, true), {
+                component: "ak-source-plex",
+            } as const);
+        case "ak-source-telegram":
+            return Object.assign({}, TelegramLoginChallengeFromJSONTyped(json, true), {
+                component: "ak-source-telegram",
+            } as const);
+        case "xak-flow-redirect":
+            return Object.assign({}, RedirectChallengeFromJSONTyped(json, true), {
+                component: "xak-flow-redirect",
+            } as const);
         default:
             return json;
     }
@@ -74,21 +75,31 @@ export function LoginChallengeTypesToJSON(json: any): any {
     return LoginChallengeTypesToJSONTyped(json, false);
 }
 
-export function LoginChallengeTypesToJSONTyped(value?: LoginChallengeTypes | null, ignoreDiscriminator: boolean = false): any {
+export function LoginChallengeTypesToJSONTyped(
+    value?: LoginChallengeTypes | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
-    switch (value['component']) {
-        case 'ak-source-oauth-apple':
-            return Object.assign({}, AppleLoginChallengeToJSON(value), { component: 'ak-source-oauth-apple' } as const);
-        case 'ak-source-plex':
-            return Object.assign({}, PlexAuthenticationChallengeToJSON(value), { component: 'ak-source-plex' } as const);
-        case 'ak-source-telegram':
-            return Object.assign({}, TelegramLoginChallengeToJSON(value), { component: 'ak-source-telegram' } as const);
-        case 'xak-flow-redirect':
-            return Object.assign({}, RedirectChallengeToJSON(value), { component: 'xak-flow-redirect' } as const);
+    switch (value["component"]) {
+        case "ak-source-oauth-apple":
+            return Object.assign({}, AppleLoginChallengeToJSON(value), {
+                component: "ak-source-oauth-apple",
+            } as const);
+        case "ak-source-plex":
+            return Object.assign({}, PlexAuthenticationChallengeToJSON(value), {
+                component: "ak-source-plex",
+            } as const);
+        case "ak-source-telegram":
+            return Object.assign({}, TelegramLoginChallengeToJSON(value), {
+                component: "ak-source-telegram",
+            } as const);
+        case "xak-flow-redirect":
+            return Object.assign({}, RedirectChallengeToJSON(value), {
+                component: "xak-flow-redirect",
+            } as const);
         default:
             return value;
     }
 }
-

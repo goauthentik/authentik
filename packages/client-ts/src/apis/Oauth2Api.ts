@@ -12,33 +12,21 @@
  * Do not edit the class manually.
  */
 
-
-import * as runtime from '../runtime';
 import type {
-  ExpiringBaseGrantModel,
-  GenericError,
-  PaginatedExpiringBaseGrantModelList,
-  PaginatedTokenModelList,
-  TokenModel,
-  UsedBy,
-  ValidationError,
-} from '../models/index';
+    ExpiringBaseGrantModel,
+    PaginatedExpiringBaseGrantModelList,
+    PaginatedTokenModelList,
+    TokenModel,
+    UsedBy,
+} from "../models/index";
 import {
     ExpiringBaseGrantModelFromJSON,
-    ExpiringBaseGrantModelToJSON,
-    GenericErrorFromJSON,
-    GenericErrorToJSON,
     PaginatedExpiringBaseGrantModelListFromJSON,
-    PaginatedExpiringBaseGrantModelListToJSON,
     PaginatedTokenModelListFromJSON,
-    PaginatedTokenModelListToJSON,
     TokenModelFromJSON,
-    TokenModelToJSON,
     UsedByFromJSON,
-    UsedByToJSON,
-    ValidationErrorFromJSON,
-    ValidationErrorToJSON,
-} from '../models/index';
+} from "../models/index";
+import * as runtime from "../runtime";
 
 export interface Oauth2AccessTokensDestroyRequest {
     id: number;
@@ -104,18 +92,19 @@ export interface Oauth2RefreshTokensUsedByListRequest {
 }
 
 /**
- * 
+ *
  */
 export class Oauth2Api extends runtime.BaseAPI {
-
     /**
      * Creates request options for oauth2AccessTokensDestroy without sending the request
      */
-    async oauth2AccessTokensDestroyRequestOpts(requestParameters: Oauth2AccessTokensDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async oauth2AccessTokensDestroyRequestOpts(
+        requestParameters: Oauth2AccessTokensDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling oauth2AccessTokensDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling oauth2AccessTokensDestroy().',
             );
         }
 
@@ -133,11 +122,11 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/access_tokens/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -146,7 +135,10 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * AccessToken Viewset
      */
-    async oauth2AccessTokensDestroyRaw(requestParameters: Oauth2AccessTokensDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async oauth2AccessTokensDestroyRaw(
+        requestParameters: Oauth2AccessTokensDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.oauth2AccessTokensDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -156,38 +148,43 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * AccessToken Viewset
      */
-    async oauth2AccessTokensDestroy(requestParameters: Oauth2AccessTokensDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async oauth2AccessTokensDestroy(
+        requestParameters: Oauth2AccessTokensDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.oauth2AccessTokensDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for oauth2AccessTokensList without sending the request
      */
-    async oauth2AccessTokensListRequestOpts(requestParameters: Oauth2AccessTokensListRequest): Promise<runtime.RequestOpts> {
+    async oauth2AccessTokensListRequestOpts(
+        requestParameters: Oauth2AccessTokensListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['provider'] != null) {
-            queryParameters['provider'] = requestParameters['provider'];
+        if (requestParameters["provider"] != null) {
+            queryParameters["provider"] = requestParameters["provider"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -205,7 +202,7 @@ export class Oauth2Api extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -214,17 +211,25 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * AccessToken Viewset
      */
-    async oauth2AccessTokensListRaw(requestParameters: Oauth2AccessTokensListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedTokenModelList>> {
+    async oauth2AccessTokensListRaw(
+        requestParameters: Oauth2AccessTokensListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedTokenModelList>> {
         const requestOptions = await this.oauth2AccessTokensListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedTokenModelListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedTokenModelListFromJSON(jsonValue),
+        );
     }
 
     /**
      * AccessToken Viewset
      */
-    async oauth2AccessTokensList(requestParameters: Oauth2AccessTokensListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedTokenModelList> {
+    async oauth2AccessTokensList(
+        requestParameters: Oauth2AccessTokensListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedTokenModelList> {
         const response = await this.oauth2AccessTokensListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -232,11 +237,13 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * Creates request options for oauth2AccessTokensRetrieve without sending the request
      */
-    async oauth2AccessTokensRetrieveRequestOpts(requestParameters: Oauth2AccessTokensRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async oauth2AccessTokensRetrieveRequestOpts(
+        requestParameters: Oauth2AccessTokensRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling oauth2AccessTokensRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling oauth2AccessTokensRetrieve().',
             );
         }
 
@@ -254,11 +261,11 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/access_tokens/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -267,7 +274,10 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * AccessToken Viewset
      */
-    async oauth2AccessTokensRetrieveRaw(requestParameters: Oauth2AccessTokensRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TokenModel>> {
+    async oauth2AccessTokensRetrieveRaw(
+        requestParameters: Oauth2AccessTokensRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<TokenModel>> {
         const requestOptions = await this.oauth2AccessTokensRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -277,7 +287,10 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * AccessToken Viewset
      */
-    async oauth2AccessTokensRetrieve(requestParameters: Oauth2AccessTokensRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TokenModel> {
+    async oauth2AccessTokensRetrieve(
+        requestParameters: Oauth2AccessTokensRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<TokenModel> {
         const response = await this.oauth2AccessTokensRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -285,11 +298,13 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * Creates request options for oauth2AccessTokensUsedByList without sending the request
      */
-    async oauth2AccessTokensUsedByListRequestOpts(requestParameters: Oauth2AccessTokensUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async oauth2AccessTokensUsedByListRequestOpts(
+        requestParameters: Oauth2AccessTokensUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling oauth2AccessTokensUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling oauth2AccessTokensUsedByList().',
             );
         }
 
@@ -307,11 +322,11 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/access_tokens/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -320,8 +335,12 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async oauth2AccessTokensUsedByListRaw(requestParameters: Oauth2AccessTokensUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.oauth2AccessTokensUsedByListRequestOpts(requestParameters);
+    async oauth2AccessTokensUsedByListRaw(
+        requestParameters: Oauth2AccessTokensUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.oauth2AccessTokensUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -330,19 +349,27 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async oauth2AccessTokensUsedByList(requestParameters: Oauth2AccessTokensUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.oauth2AccessTokensUsedByListRaw(requestParameters, initOverrides);
+    async oauth2AccessTokensUsedByList(
+        requestParameters: Oauth2AccessTokensUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.oauth2AccessTokensUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for oauth2AuthorizationCodesDestroy without sending the request
      */
-    async oauth2AuthorizationCodesDestroyRequestOpts(requestParameters: Oauth2AuthorizationCodesDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async oauth2AuthorizationCodesDestroyRequestOpts(
+        requestParameters: Oauth2AuthorizationCodesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling oauth2AuthorizationCodesDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling oauth2AuthorizationCodesDestroy().',
             );
         }
 
@@ -360,11 +387,11 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/authorization_codes/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -373,8 +400,12 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * AuthorizationCode Viewset
      */
-    async oauth2AuthorizationCodesDestroyRaw(requestParameters: Oauth2AuthorizationCodesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.oauth2AuthorizationCodesDestroyRequestOpts(requestParameters);
+    async oauth2AuthorizationCodesDestroyRaw(
+        requestParameters: Oauth2AuthorizationCodesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.oauth2AuthorizationCodesDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.VoidApiResponse(response);
@@ -383,38 +414,43 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * AuthorizationCode Viewset
      */
-    async oauth2AuthorizationCodesDestroy(requestParameters: Oauth2AuthorizationCodesDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async oauth2AuthorizationCodesDestroy(
+        requestParameters: Oauth2AuthorizationCodesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.oauth2AuthorizationCodesDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for oauth2AuthorizationCodesList without sending the request
      */
-    async oauth2AuthorizationCodesListRequestOpts(requestParameters: Oauth2AuthorizationCodesListRequest): Promise<runtime.RequestOpts> {
+    async oauth2AuthorizationCodesListRequestOpts(
+        requestParameters: Oauth2AuthorizationCodesListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['provider'] != null) {
-            queryParameters['provider'] = requestParameters['provider'];
+        if (requestParameters["provider"] != null) {
+            queryParameters["provider"] = requestParameters["provider"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -432,7 +468,7 @@ export class Oauth2Api extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -441,29 +477,43 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * AuthorizationCode Viewset
      */
-    async oauth2AuthorizationCodesListRaw(requestParameters: Oauth2AuthorizationCodesListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedExpiringBaseGrantModelList>> {
-        const requestOptions = await this.oauth2AuthorizationCodesListRequestOpts(requestParameters);
+    async oauth2AuthorizationCodesListRaw(
+        requestParameters: Oauth2AuthorizationCodesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedExpiringBaseGrantModelList>> {
+        const requestOptions =
+            await this.oauth2AuthorizationCodesListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedExpiringBaseGrantModelListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedExpiringBaseGrantModelListFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthorizationCode Viewset
      */
-    async oauth2AuthorizationCodesList(requestParameters: Oauth2AuthorizationCodesListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedExpiringBaseGrantModelList> {
-        const response = await this.oauth2AuthorizationCodesListRaw(requestParameters, initOverrides);
+    async oauth2AuthorizationCodesList(
+        requestParameters: Oauth2AuthorizationCodesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedExpiringBaseGrantModelList> {
+        const response = await this.oauth2AuthorizationCodesListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for oauth2AuthorizationCodesRetrieve without sending the request
      */
-    async oauth2AuthorizationCodesRetrieveRequestOpts(requestParameters: Oauth2AuthorizationCodesRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async oauth2AuthorizationCodesRetrieveRequestOpts(
+        requestParameters: Oauth2AuthorizationCodesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling oauth2AuthorizationCodesRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling oauth2AuthorizationCodesRetrieve().',
             );
         }
 
@@ -481,11 +531,11 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/authorization_codes/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -494,29 +544,43 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * AuthorizationCode Viewset
      */
-    async oauth2AuthorizationCodesRetrieveRaw(requestParameters: Oauth2AuthorizationCodesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExpiringBaseGrantModel>> {
-        const requestOptions = await this.oauth2AuthorizationCodesRetrieveRequestOpts(requestParameters);
+    async oauth2AuthorizationCodesRetrieveRaw(
+        requestParameters: Oauth2AuthorizationCodesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ExpiringBaseGrantModel>> {
+        const requestOptions =
+            await this.oauth2AuthorizationCodesRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ExpiringBaseGrantModelFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ExpiringBaseGrantModelFromJSON(jsonValue),
+        );
     }
 
     /**
      * AuthorizationCode Viewset
      */
-    async oauth2AuthorizationCodesRetrieve(requestParameters: Oauth2AuthorizationCodesRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExpiringBaseGrantModel> {
-        const response = await this.oauth2AuthorizationCodesRetrieveRaw(requestParameters, initOverrides);
+    async oauth2AuthorizationCodesRetrieve(
+        requestParameters: Oauth2AuthorizationCodesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ExpiringBaseGrantModel> {
+        const response = await this.oauth2AuthorizationCodesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for oauth2AuthorizationCodesUsedByList without sending the request
      */
-    async oauth2AuthorizationCodesUsedByListRequestOpts(requestParameters: Oauth2AuthorizationCodesUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async oauth2AuthorizationCodesUsedByListRequestOpts(
+        requestParameters: Oauth2AuthorizationCodesUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling oauth2AuthorizationCodesUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling oauth2AuthorizationCodesUsedByList().',
             );
         }
 
@@ -534,11 +598,11 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/authorization_codes/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -547,8 +611,12 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async oauth2AuthorizationCodesUsedByListRaw(requestParameters: Oauth2AuthorizationCodesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.oauth2AuthorizationCodesUsedByListRequestOpts(requestParameters);
+    async oauth2AuthorizationCodesUsedByListRaw(
+        requestParameters: Oauth2AuthorizationCodesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.oauth2AuthorizationCodesUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -557,19 +625,27 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async oauth2AuthorizationCodesUsedByList(requestParameters: Oauth2AuthorizationCodesUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.oauth2AuthorizationCodesUsedByListRaw(requestParameters, initOverrides);
+    async oauth2AuthorizationCodesUsedByList(
+        requestParameters: Oauth2AuthorizationCodesUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.oauth2AuthorizationCodesUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for oauth2RefreshTokensDestroy without sending the request
      */
-    async oauth2RefreshTokensDestroyRequestOpts(requestParameters: Oauth2RefreshTokensDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async oauth2RefreshTokensDestroyRequestOpts(
+        requestParameters: Oauth2RefreshTokensDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling oauth2RefreshTokensDestroy().'
+                "id",
+                'Required parameter "id" was null or undefined when calling oauth2RefreshTokensDestroy().',
             );
         }
 
@@ -587,11 +663,11 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/refresh_tokens/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -600,7 +676,10 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * RefreshToken Viewset
      */
-    async oauth2RefreshTokensDestroyRaw(requestParameters: Oauth2RefreshTokensDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async oauth2RefreshTokensDestroyRaw(
+        requestParameters: Oauth2RefreshTokensDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.oauth2RefreshTokensDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -610,38 +689,43 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * RefreshToken Viewset
      */
-    async oauth2RefreshTokensDestroy(requestParameters: Oauth2RefreshTokensDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async oauth2RefreshTokensDestroy(
+        requestParameters: Oauth2RefreshTokensDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.oauth2RefreshTokensDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for oauth2RefreshTokensList without sending the request
      */
-    async oauth2RefreshTokensListRequestOpts(requestParameters: Oauth2RefreshTokensListRequest): Promise<runtime.RequestOpts> {
+    async oauth2RefreshTokensListRequestOpts(
+        requestParameters: Oauth2RefreshTokensListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['provider'] != null) {
-            queryParameters['provider'] = requestParameters['provider'];
+        if (requestParameters["provider"] != null) {
+            queryParameters["provider"] = requestParameters["provider"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['user'] != null) {
-            queryParameters['user'] = requestParameters['user'];
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -659,7 +743,7 @@ export class Oauth2Api extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -668,17 +752,25 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * RefreshToken Viewset
      */
-    async oauth2RefreshTokensListRaw(requestParameters: Oauth2RefreshTokensListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedTokenModelList>> {
+    async oauth2RefreshTokensListRaw(
+        requestParameters: Oauth2RefreshTokensListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedTokenModelList>> {
         const requestOptions = await this.oauth2RefreshTokensListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedTokenModelListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedTokenModelListFromJSON(jsonValue),
+        );
     }
 
     /**
      * RefreshToken Viewset
      */
-    async oauth2RefreshTokensList(requestParameters: Oauth2RefreshTokensListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedTokenModelList> {
+    async oauth2RefreshTokensList(
+        requestParameters: Oauth2RefreshTokensListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedTokenModelList> {
         const response = await this.oauth2RefreshTokensListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -686,11 +778,13 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * Creates request options for oauth2RefreshTokensRetrieve without sending the request
      */
-    async oauth2RefreshTokensRetrieveRequestOpts(requestParameters: Oauth2RefreshTokensRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async oauth2RefreshTokensRetrieveRequestOpts(
+        requestParameters: Oauth2RefreshTokensRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling oauth2RefreshTokensRetrieve().'
+                "id",
+                'Required parameter "id" was null or undefined when calling oauth2RefreshTokensRetrieve().',
             );
         }
 
@@ -708,11 +802,11 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/refresh_tokens/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -721,7 +815,10 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * RefreshToken Viewset
      */
-    async oauth2RefreshTokensRetrieveRaw(requestParameters: Oauth2RefreshTokensRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TokenModel>> {
+    async oauth2RefreshTokensRetrieveRaw(
+        requestParameters: Oauth2RefreshTokensRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<TokenModel>> {
         const requestOptions = await this.oauth2RefreshTokensRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -731,19 +828,27 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * RefreshToken Viewset
      */
-    async oauth2RefreshTokensRetrieve(requestParameters: Oauth2RefreshTokensRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TokenModel> {
-        const response = await this.oauth2RefreshTokensRetrieveRaw(requestParameters, initOverrides);
+    async oauth2RefreshTokensRetrieve(
+        requestParameters: Oauth2RefreshTokensRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<TokenModel> {
+        const response = await this.oauth2RefreshTokensRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for oauth2RefreshTokensUsedByList without sending the request
      */
-    async oauth2RefreshTokensUsedByListRequestOpts(requestParameters: Oauth2RefreshTokensUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['id'] == null) {
+    async oauth2RefreshTokensUsedByListRequestOpts(
+        requestParameters: Oauth2RefreshTokensUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling oauth2RefreshTokensUsedByList().'
+                "id",
+                'Required parameter "id" was null or undefined when calling oauth2RefreshTokensUsedByList().',
             );
         }
 
@@ -761,11 +866,11 @@ export class Oauth2Api extends runtime.BaseAPI {
         }
 
         let urlPath = `/oauth2/refresh_tokens/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -774,8 +879,12 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async oauth2RefreshTokensUsedByListRaw(requestParameters: Oauth2RefreshTokensUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.oauth2RefreshTokensUsedByListRequestOpts(requestParameters);
+    async oauth2RefreshTokensUsedByListRaw(
+        requestParameters: Oauth2RefreshTokensUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.oauth2RefreshTokensUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -784,9 +893,14 @@ export class Oauth2Api extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async oauth2RefreshTokensUsedByList(requestParameters: Oauth2RefreshTokensUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.oauth2RefreshTokensUsedByListRaw(requestParameters, initOverrides);
+    async oauth2RefreshTokensUsedByList(
+        requestParameters: Oauth2RefreshTokensUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.oauth2RefreshTokensUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
-
 }

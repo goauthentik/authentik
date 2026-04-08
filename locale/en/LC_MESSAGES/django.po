@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-31 00:19+0000\n"
+"POT-Creation-Date: 2026-04-08 00:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,6 +107,11 @@ msgstr ""
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
+msgstr ""
+
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
 msgstr ""
 
 #: authentik/blueprints/models.py
@@ -217,11 +222,6 @@ msgstr ""
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
 "providers are returned. When set to false, backchannel providers are excluded"
-msgstr ""
-
-#: authentik/core/api/transactional_applications.py
-#, python-brace-format
-msgid "User lacks permission to create {model}"
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -1118,6 +1118,14 @@ msgstr ""
 
 #: authentik/enterprise/providers/scim/api.py
 msgid "Enterprise is required to use the OAuth mode."
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Push"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Pull"
 msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
@@ -2022,6 +2030,14 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Regular Expression URL matching"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -2947,7 +2963,7 @@ msgid ""
 "                "
 msgstr ""
 
-#: authentik/sources/ldap/api.py
+#: authentik/sources/ldap/api/sources.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr ""
 
@@ -3451,6 +3467,11 @@ msgstr ""
 msgid ""
 "Allows authentication flows initiated by the IdP. This can be a security "
 "risk, as no validation of the request ID is done."
+msgstr ""
+
+#: authentik/sources/saml/models.py
+msgid ""
+"When enabled, the IdP will re-authenticate the user even if a session exists."
 msgstr ""
 
 #: authentik/sources/saml/models.py

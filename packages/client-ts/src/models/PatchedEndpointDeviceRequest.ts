@@ -12,69 +12,68 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DeviceAccessGroupRequest } from './DeviceAccessGroupRequest';
+import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest";
 import {
     DeviceAccessGroupRequestFromJSON,
-    DeviceAccessGroupRequestFromJSONTyped,
     DeviceAccessGroupRequestToJSON,
-    DeviceAccessGroupRequestToJSONTyped,
-} from './DeviceAccessGroupRequest';
+} from "./DeviceAccessGroupRequest";
 
 /**
- * 
+ *
  * @export
  * @interface PatchedEndpointDeviceRequest
  */
 export interface PatchedEndpointDeviceRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEndpointDeviceRequest
      */
     deviceUuid?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEndpointDeviceRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEndpointDeviceRequest
      */
     accessGroup?: string | null;
     /**
-     * 
+     *
      * @type {DeviceAccessGroupRequest}
      * @memberof PatchedEndpointDeviceRequest
      */
     accessGroupObj?: DeviceAccessGroupRequest;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedEndpointDeviceRequest
      */
     expiring?: boolean;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof PatchedEndpointDeviceRequest
      */
     expires?: Date | null;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PatchedEndpointDeviceRequest
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PatchedEndpointDeviceRequest interface.
  */
-export function instanceOfPatchedEndpointDeviceRequest(value: object): value is PatchedEndpointDeviceRequest {
+export function instanceOfPatchedEndpointDeviceRequest(
+    value: object,
+): value is PatchedEndpointDeviceRequest {
     return true;
 }
 
@@ -82,19 +81,24 @@ export function PatchedEndpointDeviceRequestFromJSON(json: any): PatchedEndpoint
     return PatchedEndpointDeviceRequestFromJSONTyped(json, false);
 }
 
-export function PatchedEndpointDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedEndpointDeviceRequest {
+export function PatchedEndpointDeviceRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedEndpointDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'deviceUuid': json['device_uuid'] == null ? undefined : json['device_uuid'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'accessGroup': json['access_group'] == null ? undefined : json['access_group'],
-        'accessGroupObj': json['access_group_obj'] == null ? undefined : DeviceAccessGroupRequestFromJSON(json['access_group_obj']),
-        'expiring': json['expiring'] == null ? undefined : json['expiring'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        deviceUuid: json["device_uuid"] == null ? undefined : json["device_uuid"],
+        name: json["name"] == null ? undefined : json["name"],
+        accessGroup: json["access_group"] == null ? undefined : json["access_group"],
+        accessGroupObj:
+            json["access_group_obj"] == null
+                ? undefined
+                : DeviceAccessGroupRequestFromJSON(json["access_group_obj"]),
+        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
 
@@ -102,20 +106,21 @@ export function PatchedEndpointDeviceRequestToJSON(json: any): PatchedEndpointDe
     return PatchedEndpointDeviceRequestToJSONTyped(json, false);
 }
 
-export function PatchedEndpointDeviceRequestToJSONTyped(value?: PatchedEndpointDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedEndpointDeviceRequestToJSONTyped(
+    value?: PatchedEndpointDeviceRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'device_uuid': value['deviceUuid'],
-        'name': value['name'],
-        'access_group': value['accessGroup'],
-        'access_group_obj': DeviceAccessGroupRequestToJSON(value['accessGroupObj']),
-        'expiring': value['expiring'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
-        'attributes': value['attributes'],
+        device_uuid: value["deviceUuid"],
+        name: value["name"],
+        access_group: value["accessGroup"],
+        access_group_obj: DeviceAccessGroupRequestToJSON(value["accessGroupObj"]),
+        expiring: value["expiring"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        attributes: value["attributes"],
     };
 }
-

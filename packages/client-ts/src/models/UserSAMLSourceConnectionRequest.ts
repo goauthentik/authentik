@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * User source connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface UserSAMLSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserSAMLSourceConnectionRequest
      */
     user: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSAMLSourceConnectionRequest
      */
     source: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSAMLSourceConnectionRequest
      */
@@ -42,26 +41,32 @@ export interface UserSAMLSourceConnectionRequest {
 /**
  * Check if a given object implements the UserSAMLSourceConnectionRequest interface.
  */
-export function instanceOfUserSAMLSourceConnectionRequest(value: object): value is UserSAMLSourceConnectionRequest {
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+export function instanceOfUserSAMLSourceConnectionRequest(
+    value: object,
+): value is UserSAMLSourceConnectionRequest {
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
 }
 
-export function UserSAMLSourceConnectionRequestFromJSON(json: any): UserSAMLSourceConnectionRequest {
+export function UserSAMLSourceConnectionRequestFromJSON(
+    json: any,
+): UserSAMLSourceConnectionRequest {
     return UserSAMLSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function UserSAMLSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSAMLSourceConnectionRequest {
+export function UserSAMLSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserSAMLSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'user': json['user'],
-        'source': json['source'],
-        'identifier': json['identifier'],
+        user: json["user"],
+        source: json["source"],
+        identifier: json["identifier"],
     };
 }
 
@@ -69,16 +74,17 @@ export function UserSAMLSourceConnectionRequestToJSON(json: any): UserSAMLSource
     return UserSAMLSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function UserSAMLSourceConnectionRequestToJSONTyped(value?: UserSAMLSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function UserSAMLSourceConnectionRequestToJSONTyped(
+    value?: UserSAMLSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

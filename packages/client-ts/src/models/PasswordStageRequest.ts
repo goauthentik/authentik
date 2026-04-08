@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { BackendsEnum } from './BackendsEnum';
-import {
-    BackendsEnumFromJSON,
-    BackendsEnumFromJSONTyped,
-    BackendsEnumToJSON,
-    BackendsEnumToJSONTyped,
-} from './BackendsEnum';
+import type { BackendsEnum } from "./BackendsEnum";
+import { BackendsEnumFromJSON, BackendsEnumToJSON } from "./BackendsEnum";
 
 /**
  * PasswordStage Serializer
@@ -28,7 +22,7 @@ import {
  */
 export interface PasswordStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PasswordStageRequest
      */
@@ -63,8 +57,8 @@ export interface PasswordStageRequest {
  * Check if a given object implements the PasswordStageRequest interface.
  */
 export function instanceOfPasswordStageRequest(value: object): value is PasswordStageRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('backends' in value) || value['backends'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("backends" in value) || value["backends"] === undefined) return false;
     return true;
 }
 
@@ -72,17 +66,23 @@ export function PasswordStageRequestFromJSON(json: any): PasswordStageRequest {
     return PasswordStageRequestFromJSONTyped(json, false);
 }
 
-export function PasswordStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PasswordStageRequest {
+export function PasswordStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PasswordStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'backends': ((json['backends'] as Array<any>).map(BackendsEnumFromJSON)),
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'failedAttemptsBeforeCancel': json['failed_attempts_before_cancel'] == null ? undefined : json['failed_attempts_before_cancel'],
-        'allowShowPassword': json['allow_show_password'] == null ? undefined : json['allow_show_password'],
+        name: json["name"],
+        backends: (json["backends"] as Array<any>).map(BackendsEnumFromJSON),
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        failedAttemptsBeforeCancel:
+            json["failed_attempts_before_cancel"] == null
+                ? undefined
+                : json["failed_attempts_before_cancel"],
+        allowShowPassword:
+            json["allow_show_password"] == null ? undefined : json["allow_show_password"],
     };
 }
 
@@ -90,18 +90,19 @@ export function PasswordStageRequestToJSON(json: any): PasswordStageRequest {
     return PasswordStageRequestToJSONTyped(json, false);
 }
 
-export function PasswordStageRequestToJSONTyped(value?: PasswordStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PasswordStageRequestToJSONTyped(
+    value?: PasswordStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'backends': ((value['backends'] as Array<any>).map(BackendsEnumToJSON)),
-        'configure_flow': value['configureFlow'],
-        'failed_attempts_before_cancel': value['failedAttemptsBeforeCancel'],
-        'allow_show_password': value['allowShowPassword'],
+        name: value["name"],
+        backends: (value["backends"] as Array<any>).map(BackendsEnumToJSON),
+        configure_flow: value["configureFlow"],
+        failed_attempts_before_cancel: value["failedAttemptsBeforeCancel"],
+        allow_show_password: value["allowShowPassword"],
     };
 }
-

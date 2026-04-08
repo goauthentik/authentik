@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SourceStage Serializer
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedSourceStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSourceStageRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedSourceStageRequest
      */
@@ -42,7 +41,9 @@ export interface PatchedSourceStageRequest {
 /**
  * Check if a given object implements the PatchedSourceStageRequest interface.
  */
-export function instanceOfPatchedSourceStageRequest(value: object): value is PatchedSourceStageRequest {
+export function instanceOfPatchedSourceStageRequest(
+    value: object,
+): value is PatchedSourceStageRequest {
     return true;
 }
 
@@ -50,15 +51,17 @@ export function PatchedSourceStageRequestFromJSON(json: any): PatchedSourceStage
     return PatchedSourceStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedSourceStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedSourceStageRequest {
+export function PatchedSourceStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedSourceStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'source': json['source'] == null ? undefined : json['source'],
-        'resumeTimeout': json['resume_timeout'] == null ? undefined : json['resume_timeout'],
+        name: json["name"] == null ? undefined : json["name"],
+        source: json["source"] == null ? undefined : json["source"],
+        resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
     };
 }
 
@@ -66,16 +69,17 @@ export function PatchedSourceStageRequestToJSON(json: any): PatchedSourceStageRe
     return PatchedSourceStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedSourceStageRequestToJSONTyped(value?: PatchedSourceStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedSourceStageRequestToJSONTyped(
+    value?: PatchedSourceStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'source': value['source'],
-        'resume_timeout': value['resumeTimeout'],
+        name: value["name"],
+        source: value["source"],
+        resume_timeout: value["resumeTimeout"],
     };
 }
-

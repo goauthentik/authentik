@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Password Policy Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedPasswordPolicyRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedPasswordPolicyRequest
      */
@@ -38,61 +37,61 @@ export interface PatchedPasswordPolicyRequest {
      */
     passwordField?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedPasswordPolicyRequest
      */
     amountDigits?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedPasswordPolicyRequest
      */
     amountUppercase?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedPasswordPolicyRequest
      */
     amountLowercase?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedPasswordPolicyRequest
      */
     amountSymbols?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedPasswordPolicyRequest
      */
     lengthMin?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedPasswordPolicyRequest
      */
     symbolCharset?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedPasswordPolicyRequest
      */
     errorMessage?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedPasswordPolicyRequest
      */
     checkStaticRules?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedPasswordPolicyRequest
      */
     checkHaveIBeenPwned?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedPasswordPolicyRequest
      */
@@ -114,7 +113,9 @@ export interface PatchedPasswordPolicyRequest {
 /**
  * Check if a given object implements the PatchedPasswordPolicyRequest interface.
  */
-export function instanceOfPatchedPasswordPolicyRequest(value: object): value is PatchedPasswordPolicyRequest {
+export function instanceOfPatchedPasswordPolicyRequest(
+    value: object,
+): value is PatchedPasswordPolicyRequest {
     return true;
 }
 
@@ -122,27 +123,33 @@ export function PatchedPasswordPolicyRequestFromJSON(json: any): PatchedPassword
     return PatchedPasswordPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PatchedPasswordPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedPasswordPolicyRequest {
+export function PatchedPasswordPolicyRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedPasswordPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'passwordField': json['password_field'] == null ? undefined : json['password_field'],
-        'amountDigits': json['amount_digits'] == null ? undefined : json['amount_digits'],
-        'amountUppercase': json['amount_uppercase'] == null ? undefined : json['amount_uppercase'],
-        'amountLowercase': json['amount_lowercase'] == null ? undefined : json['amount_lowercase'],
-        'amountSymbols': json['amount_symbols'] == null ? undefined : json['amount_symbols'],
-        'lengthMin': json['length_min'] == null ? undefined : json['length_min'],
-        'symbolCharset': json['symbol_charset'] == null ? undefined : json['symbol_charset'],
-        'errorMessage': json['error_message'] == null ? undefined : json['error_message'],
-        'checkStaticRules': json['check_static_rules'] == null ? undefined : json['check_static_rules'],
-        'checkHaveIBeenPwned': json['check_have_i_been_pwned'] == null ? undefined : json['check_have_i_been_pwned'],
-        'checkZxcvbn': json['check_zxcvbn'] == null ? undefined : json['check_zxcvbn'],
-        'hibpAllowedCount': json['hibp_allowed_count'] == null ? undefined : json['hibp_allowed_count'],
-        'zxcvbnScoreThreshold': json['zxcvbn_score_threshold'] == null ? undefined : json['zxcvbn_score_threshold'],
+        name: json["name"] == null ? undefined : json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        passwordField: json["password_field"] == null ? undefined : json["password_field"],
+        amountDigits: json["amount_digits"] == null ? undefined : json["amount_digits"],
+        amountUppercase: json["amount_uppercase"] == null ? undefined : json["amount_uppercase"],
+        amountLowercase: json["amount_lowercase"] == null ? undefined : json["amount_lowercase"],
+        amountSymbols: json["amount_symbols"] == null ? undefined : json["amount_symbols"],
+        lengthMin: json["length_min"] == null ? undefined : json["length_min"],
+        symbolCharset: json["symbol_charset"] == null ? undefined : json["symbol_charset"],
+        errorMessage: json["error_message"] == null ? undefined : json["error_message"],
+        checkStaticRules:
+            json["check_static_rules"] == null ? undefined : json["check_static_rules"],
+        checkHaveIBeenPwned:
+            json["check_have_i_been_pwned"] == null ? undefined : json["check_have_i_been_pwned"],
+        checkZxcvbn: json["check_zxcvbn"] == null ? undefined : json["check_zxcvbn"],
+        hibpAllowedCount:
+            json["hibp_allowed_count"] == null ? undefined : json["hibp_allowed_count"],
+        zxcvbnScoreThreshold:
+            json["zxcvbn_score_threshold"] == null ? undefined : json["zxcvbn_score_threshold"],
     };
 }
 
@@ -150,28 +157,29 @@ export function PatchedPasswordPolicyRequestToJSON(json: any): PatchedPasswordPo
     return PatchedPasswordPolicyRequestToJSONTyped(json, false);
 }
 
-export function PatchedPasswordPolicyRequestToJSONTyped(value?: PatchedPasswordPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedPasswordPolicyRequestToJSONTyped(
+    value?: PatchedPasswordPolicyRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'password_field': value['passwordField'],
-        'amount_digits': value['amountDigits'],
-        'amount_uppercase': value['amountUppercase'],
-        'amount_lowercase': value['amountLowercase'],
-        'amount_symbols': value['amountSymbols'],
-        'length_min': value['lengthMin'],
-        'symbol_charset': value['symbolCharset'],
-        'error_message': value['errorMessage'],
-        'check_static_rules': value['checkStaticRules'],
-        'check_have_i_been_pwned': value['checkHaveIBeenPwned'],
-        'check_zxcvbn': value['checkZxcvbn'],
-        'hibp_allowed_count': value['hibpAllowedCount'],
-        'zxcvbn_score_threshold': value['zxcvbnScoreThreshold'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        password_field: value["passwordField"],
+        amount_digits: value["amountDigits"],
+        amount_uppercase: value["amountUppercase"],
+        amount_lowercase: value["amountLowercase"],
+        amount_symbols: value["amountSymbols"],
+        length_min: value["lengthMin"],
+        symbol_charset: value["symbolCharset"],
+        error_message: value["errorMessage"],
+        check_static_rules: value["checkStaticRules"],
+        check_have_i_been_pwned: value["checkHaveIBeenPwned"],
+        check_zxcvbn: value["checkZxcvbn"],
+        hibp_allowed_count: value["hibpAllowedCount"],
+        zxcvbn_score_threshold: value["zxcvbnScoreThreshold"],
     };
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * SCIMMapping Serializer
  * @export
@@ -26,13 +25,13 @@ export interface SCIMMappingRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMMappingRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMMappingRequest
      */
@@ -43,8 +42,8 @@ export interface SCIMMappingRequest {
  * Check if a given object implements the SCIMMappingRequest interface.
  */
 export function instanceOfSCIMMappingRequest(value: object): value is SCIMMappingRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('expression' in value) || value['expression'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("expression" in value) || value["expression"] === undefined) return false;
     return true;
 }
 
@@ -52,15 +51,17 @@ export function SCIMMappingRequestFromJSON(json: any): SCIMMappingRequest {
     return SCIMMappingRequestFromJSONTyped(json, false);
 }
 
-export function SCIMMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SCIMMappingRequest {
+export function SCIMMappingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SCIMMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'],
-        'expression': json['expression'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"],
+        expression: json["expression"],
     };
 }
 
@@ -68,16 +69,17 @@ export function SCIMMappingRequestToJSON(json: any): SCIMMappingRequest {
     return SCIMMappingRequestToJSONTyped(json, false);
 }
 
-export function SCIMMappingRequestToJSONTyped(value?: SCIMMappingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function SCIMMappingRequestToJSONTyped(
+    value?: SCIMMappingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
     };
 }
-

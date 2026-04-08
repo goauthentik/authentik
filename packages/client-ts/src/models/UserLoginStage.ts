@@ -12,28 +12,12 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GeoipBindingEnum } from './GeoipBindingEnum';
-import {
-    GeoipBindingEnumFromJSON,
-    GeoipBindingEnumFromJSONTyped,
-    GeoipBindingEnumToJSON,
-    GeoipBindingEnumToJSONTyped,
-} from './GeoipBindingEnum';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
-import type { NetworkBindingEnum } from './NetworkBindingEnum';
-import {
-    NetworkBindingEnumFromJSON,
-    NetworkBindingEnumFromJSONTyped,
-    NetworkBindingEnumToJSON,
-    NetworkBindingEnumToJSONTyped,
-} from './NetworkBindingEnum';
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
+import type { GeoipBindingEnum } from "./GeoipBindingEnum";
+import { GeoipBindingEnumFromJSON, GeoipBindingEnumToJSON } from "./GeoipBindingEnum";
+import type { NetworkBindingEnum } from "./NetworkBindingEnum";
+import { NetworkBindingEnumFromJSON, NetworkBindingEnumToJSON } from "./NetworkBindingEnum";
 
 /**
  * UserLoginStage Serializer
@@ -42,13 +26,13 @@ import {
  */
 export interface UserLoginStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserLoginStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserLoginStage
      */
@@ -78,7 +62,7 @@ export interface UserLoginStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof UserLoginStage
      */
@@ -121,19 +105,17 @@ export interface UserLoginStage {
     rememberDevice?: string;
 }
 
-
-
 /**
  * Check if a given object implements the UserLoginStage interface.
  */
 export function instanceOfUserLoginStage(value: object): value is UserLoginStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
     return true;
 }
 
@@ -141,25 +123,35 @@ export function UserLoginStageFromJSON(json: any): UserLoginStage {
     return UserLoginStageFromJSONTyped(json, false);
 }
 
-export function UserLoginStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserLoginStage {
+export function UserLoginStageFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserLoginStage {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'sessionDuration': json['session_duration'] == null ? undefined : json['session_duration'],
-        'terminateOtherSessions': json['terminate_other_sessions'] == null ? undefined : json['terminate_other_sessions'],
-        'rememberMeOffset': json['remember_me_offset'] == null ? undefined : json['remember_me_offset'],
-        'networkBinding': json['network_binding'] == null ? undefined : NetworkBindingEnumFromJSON(json['network_binding']),
-        'geoipBinding': json['geoip_binding'] == null ? undefined : GeoipBindingEnumFromJSON(json['geoip_binding']),
-        'rememberDevice': json['remember_device'] == null ? undefined : json['remember_device'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        sessionDuration: json["session_duration"] == null ? undefined : json["session_duration"],
+        terminateOtherSessions:
+            json["terminate_other_sessions"] == null ? undefined : json["terminate_other_sessions"],
+        rememberMeOffset:
+            json["remember_me_offset"] == null ? undefined : json["remember_me_offset"],
+        networkBinding:
+            json["network_binding"] == null
+                ? undefined
+                : NetworkBindingEnumFromJSON(json["network_binding"]),
+        geoipBinding:
+            json["geoip_binding"] == null
+                ? undefined
+                : GeoipBindingEnumFromJSON(json["geoip_binding"]),
+        rememberDevice: json["remember_device"] == null ? undefined : json["remember_device"],
     };
 }
 
@@ -167,20 +159,24 @@ export function UserLoginStageToJSON(json: any): UserLoginStage {
     return UserLoginStageToJSONTyped(json, false);
 }
 
-export function UserLoginStageToJSONTyped(value?: Omit<UserLoginStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function UserLoginStageToJSONTyped(
+    value?: Omit<
+        UserLoginStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'session_duration': value['sessionDuration'],
-        'terminate_other_sessions': value['terminateOtherSessions'],
-        'remember_me_offset': value['rememberMeOffset'],
-        'network_binding': NetworkBindingEnumToJSON(value['networkBinding']),
-        'geoip_binding': GeoipBindingEnumToJSON(value['geoipBinding']),
-        'remember_device': value['rememberDevice'],
+        name: value["name"],
+        session_duration: value["sessionDuration"],
+        terminate_other_sessions: value["terminateOtherSessions"],
+        remember_me_offset: value["rememberMeOffset"],
+        network_binding: NetworkBindingEnumToJSON(value["networkBinding"]),
+        geoip_binding: GeoipBindingEnumToJSON(value["geoipBinding"]),
+        remember_device: value["rememberDevice"],
     };
 }
-

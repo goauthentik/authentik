@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * CaptchaStage Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface CaptchaStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof CaptchaStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CaptchaStage
      */
@@ -64,7 +58,7 @@ export interface CaptchaStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof CaptchaStage
      */
@@ -76,31 +70,31 @@ export interface CaptchaStage {
      */
     publicKey: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CaptchaStage
      */
     jsUrl?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof CaptchaStage
      */
     apiUrl?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof CaptchaStage
      */
     interactive?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CaptchaStage
      */
     scoreMinThreshold?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof CaptchaStage
      */
@@ -117,14 +111,14 @@ export interface CaptchaStage {
  * Check if a given object implements the CaptchaStage interface.
  */
 export function instanceOfCaptchaStage(value: object): value is CaptchaStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
-    if (!('publicKey' in value) || value['publicKey'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (!("publicKey" in value) || value["publicKey"] === undefined) return false;
     return true;
 }
 
@@ -137,21 +131,23 @@ export function CaptchaStageFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'publicKey': json['public_key'],
-        'jsUrl': json['js_url'] == null ? undefined : json['js_url'],
-        'apiUrl': json['api_url'] == null ? undefined : json['api_url'],
-        'interactive': json['interactive'] == null ? undefined : json['interactive'],
-        'scoreMinThreshold': json['score_min_threshold'] == null ? undefined : json['score_min_threshold'],
-        'scoreMaxThreshold': json['score_max_threshold'] == null ? undefined : json['score_max_threshold'],
-        'errorOnInvalidScore': json['error_on_invalid_score'] == null ? undefined : json['error_on_invalid_score'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        publicKey: json["public_key"],
+        jsUrl: json["js_url"] == null ? undefined : json["js_url"],
+        apiUrl: json["api_url"] == null ? undefined : json["api_url"],
+        interactive: json["interactive"] == null ? undefined : json["interactive"],
+        scoreMinThreshold:
+            json["score_min_threshold"] == null ? undefined : json["score_min_threshold"],
+        scoreMaxThreshold:
+            json["score_max_threshold"] == null ? undefined : json["score_max_threshold"],
+        errorOnInvalidScore:
+            json["error_on_invalid_score"] == null ? undefined : json["error_on_invalid_score"],
     };
 }
 
@@ -159,21 +155,25 @@ export function CaptchaStageToJSON(json: any): CaptchaStage {
     return CaptchaStageToJSONTyped(json, false);
 }
 
-export function CaptchaStageToJSONTyped(value?: Omit<CaptchaStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function CaptchaStageToJSONTyped(
+    value?: Omit<
+        CaptchaStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'public_key': value['publicKey'],
-        'js_url': value['jsUrl'],
-        'api_url': value['apiUrl'],
-        'interactive': value['interactive'],
-        'score_min_threshold': value['scoreMinThreshold'],
-        'score_max_threshold': value['scoreMaxThreshold'],
-        'error_on_invalid_score': value['errorOnInvalidScore'],
+        name: value["name"],
+        public_key: value["publicKey"],
+        js_url: value["jsUrl"],
+        api_url: value["apiUrl"],
+        interactive: value["interactive"],
+        score_min_threshold: value["scoreMinThreshold"],
+        score_max_threshold: value["scoreMaxThreshold"],
+        error_on_invalid_score: value["errorOnInvalidScore"],
     };
 }
-

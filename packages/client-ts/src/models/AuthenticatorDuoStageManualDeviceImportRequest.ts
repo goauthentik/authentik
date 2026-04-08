@@ -12,21 +12,20 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface AuthenticatorDuoStageManualDeviceImportRequest
  */
 export interface AuthenticatorDuoStageManualDeviceImportRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorDuoStageManualDeviceImportRequest
      */
     duoUserId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorDuoStageManualDeviceImportRequest
      */
@@ -36,40 +35,49 @@ export interface AuthenticatorDuoStageManualDeviceImportRequest {
 /**
  * Check if a given object implements the AuthenticatorDuoStageManualDeviceImportRequest interface.
  */
-export function instanceOfAuthenticatorDuoStageManualDeviceImportRequest(value: object): value is AuthenticatorDuoStageManualDeviceImportRequest {
-    if (!('duoUserId' in value) || value['duoUserId'] === undefined) return false;
-    if (!('username' in value) || value['username'] === undefined) return false;
+export function instanceOfAuthenticatorDuoStageManualDeviceImportRequest(
+    value: object,
+): value is AuthenticatorDuoStageManualDeviceImportRequest {
+    if (!("duoUserId" in value) || value["duoUserId"] === undefined) return false;
+    if (!("username" in value) || value["username"] === undefined) return false;
     return true;
 }
 
-export function AuthenticatorDuoStageManualDeviceImportRequestFromJSON(json: any): AuthenticatorDuoStageManualDeviceImportRequest {
+export function AuthenticatorDuoStageManualDeviceImportRequestFromJSON(
+    json: any,
+): AuthenticatorDuoStageManualDeviceImportRequest {
     return AuthenticatorDuoStageManualDeviceImportRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoStageManualDeviceImportRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorDuoStageManualDeviceImportRequest {
+export function AuthenticatorDuoStageManualDeviceImportRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorDuoStageManualDeviceImportRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'duoUserId': json['duo_user_id'],
-        'username': json['username'],
+        duoUserId: json["duo_user_id"],
+        username: json["username"],
     };
 }
 
-export function AuthenticatorDuoStageManualDeviceImportRequestToJSON(json: any): AuthenticatorDuoStageManualDeviceImportRequest {
+export function AuthenticatorDuoStageManualDeviceImportRequestToJSON(
+    json: any,
+): AuthenticatorDuoStageManualDeviceImportRequest {
     return AuthenticatorDuoStageManualDeviceImportRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorDuoStageManualDeviceImportRequestToJSONTyped(value?: AuthenticatorDuoStageManualDeviceImportRequest | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorDuoStageManualDeviceImportRequestToJSONTyped(
+    value?: AuthenticatorDuoStageManualDeviceImportRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'duo_user_id': value['duoUserId'],
-        'username': value['username'],
+        duo_user_id: value["duoUserId"],
+        username: value["username"],
     };
 }
-

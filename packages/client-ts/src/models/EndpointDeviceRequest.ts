@@ -12,70 +12,67 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DeviceAccessGroupRequest } from './DeviceAccessGroupRequest';
+import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest";
 import {
     DeviceAccessGroupRequestFromJSON,
-    DeviceAccessGroupRequestFromJSONTyped,
     DeviceAccessGroupRequestToJSON,
-    DeviceAccessGroupRequestToJSONTyped,
-} from './DeviceAccessGroupRequest';
+} from "./DeviceAccessGroupRequest";
 
 /**
- * 
+ *
  * @export
  * @interface EndpointDeviceRequest
  */
 export interface EndpointDeviceRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointDeviceRequest
      */
     deviceUuid?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointDeviceRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof EndpointDeviceRequest
      */
     accessGroup?: string | null;
     /**
-     * 
+     *
      * @type {DeviceAccessGroupRequest}
      * @memberof EndpointDeviceRequest
      */
     accessGroupObj?: DeviceAccessGroupRequest;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof EndpointDeviceRequest
      */
     expiring?: boolean;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof EndpointDeviceRequest
      */
     expires?: Date | null;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof EndpointDeviceRequest
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the EndpointDeviceRequest interface.
  */
 export function instanceOfEndpointDeviceRequest(value: object): value is EndpointDeviceRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -83,19 +80,24 @@ export function EndpointDeviceRequestFromJSON(json: any): EndpointDeviceRequest 
     return EndpointDeviceRequestFromJSONTyped(json, false);
 }
 
-export function EndpointDeviceRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): EndpointDeviceRequest {
+export function EndpointDeviceRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): EndpointDeviceRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'deviceUuid': json['device_uuid'] == null ? undefined : json['device_uuid'],
-        'name': json['name'],
-        'accessGroup': json['access_group'] == null ? undefined : json['access_group'],
-        'accessGroupObj': json['access_group_obj'] == null ? undefined : DeviceAccessGroupRequestFromJSON(json['access_group_obj']),
-        'expiring': json['expiring'] == null ? undefined : json['expiring'],
-        'expires': json['expires'] == null ? undefined : (new Date(json['expires'])),
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
+        deviceUuid: json["device_uuid"] == null ? undefined : json["device_uuid"],
+        name: json["name"],
+        accessGroup: json["access_group"] == null ? undefined : json["access_group"],
+        accessGroupObj:
+            json["access_group_obj"] == null
+                ? undefined
+                : DeviceAccessGroupRequestFromJSON(json["access_group_obj"]),
+        expiring: json["expiring"] == null ? undefined : json["expiring"],
+        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
 
@@ -103,20 +105,21 @@ export function EndpointDeviceRequestToJSON(json: any): EndpointDeviceRequest {
     return EndpointDeviceRequestToJSONTyped(json, false);
 }
 
-export function EndpointDeviceRequestToJSONTyped(value?: EndpointDeviceRequest | null, ignoreDiscriminator: boolean = false): any {
+export function EndpointDeviceRequestToJSONTyped(
+    value?: EndpointDeviceRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'device_uuid': value['deviceUuid'],
-        'name': value['name'],
-        'access_group': value['accessGroup'],
-        'access_group_obj': DeviceAccessGroupRequestToJSON(value['accessGroupObj']),
-        'expiring': value['expiring'],
-        'expires': value['expires'] == null ? value['expires'] : value['expires'].toISOString(),
-        'attributes': value['attributes'],
+        device_uuid: value["deviceUuid"],
+        name: value["name"],
+        access_group: value["accessGroup"],
+        access_group_obj: DeviceAccessGroupRequestToJSON(value["accessGroupObj"]),
+        expiring: value["expiring"],
+        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        attributes: value["attributes"],
     };
 }
-

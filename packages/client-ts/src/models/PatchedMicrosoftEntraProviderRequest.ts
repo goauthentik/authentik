@@ -12,14 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { OutgoingSyncDeleteAction } from './OutgoingSyncDeleteAction';
+import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction";
 import {
     OutgoingSyncDeleteActionFromJSON,
-    OutgoingSyncDeleteActionFromJSONTyped,
     OutgoingSyncDeleteActionToJSON,
-    OutgoingSyncDeleteActionToJSONTyped,
-} from './OutgoingSyncDeleteAction';
+} from "./OutgoingSyncDeleteAction";
 
 /**
  * MicrosoftEntraProvider Serializer
@@ -28,13 +25,13 @@ import {
  */
 export interface PatchedMicrosoftEntraProviderRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedMicrosoftEntraProviderRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof PatchedMicrosoftEntraProviderRequest
      */
@@ -46,43 +43,43 @@ export interface PatchedMicrosoftEntraProviderRequest {
      */
     propertyMappingsGroup?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedMicrosoftEntraProviderRequest
      */
     clientId?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedMicrosoftEntraProviderRequest
      */
     clientSecret?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedMicrosoftEntraProviderRequest
      */
     tenantId?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedMicrosoftEntraProviderRequest
      */
     excludeUsersServiceAccount?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedMicrosoftEntraProviderRequest
      */
     filterGroup?: string | null;
     /**
-     * 
+     *
      * @type {OutgoingSyncDeleteAction}
      * @memberof PatchedMicrosoftEntraProviderRequest
      */
     userDeleteAction?: OutgoingSyncDeleteAction;
     /**
-     * 
+     *
      * @type {OutgoingSyncDeleteAction}
      * @memberof PatchedMicrosoftEntraProviderRequest
      */
@@ -107,65 +104,82 @@ export interface PatchedMicrosoftEntraProviderRequest {
     dryRun?: boolean;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedMicrosoftEntraProviderRequest interface.
  */
-export function instanceOfPatchedMicrosoftEntraProviderRequest(value: object): value is PatchedMicrosoftEntraProviderRequest {
+export function instanceOfPatchedMicrosoftEntraProviderRequest(
+    value: object,
+): value is PatchedMicrosoftEntraProviderRequest {
     return true;
 }
 
-export function PatchedMicrosoftEntraProviderRequestFromJSON(json: any): PatchedMicrosoftEntraProviderRequest {
+export function PatchedMicrosoftEntraProviderRequestFromJSON(
+    json: any,
+): PatchedMicrosoftEntraProviderRequest {
     return PatchedMicrosoftEntraProviderRequestFromJSONTyped(json, false);
 }
 
-export function PatchedMicrosoftEntraProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedMicrosoftEntraProviderRequest {
+export function PatchedMicrosoftEntraProviderRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedMicrosoftEntraProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'propertyMappingsGroup': json['property_mappings_group'] == null ? undefined : json['property_mappings_group'],
-        'clientId': json['client_id'] == null ? undefined : json['client_id'],
-        'clientSecret': json['client_secret'] == null ? undefined : json['client_secret'],
-        'tenantId': json['tenant_id'] == null ? undefined : json['tenant_id'],
-        'excludeUsersServiceAccount': json['exclude_users_service_account'] == null ? undefined : json['exclude_users_service_account'],
-        'filterGroup': json['filter_group'] == null ? undefined : json['filter_group'],
-        'userDeleteAction': json['user_delete_action'] == null ? undefined : OutgoingSyncDeleteActionFromJSON(json['user_delete_action']),
-        'groupDeleteAction': json['group_delete_action'] == null ? undefined : OutgoingSyncDeleteActionFromJSON(json['group_delete_action']),
-        'syncPageSize': json['sync_page_size'] == null ? undefined : json['sync_page_size'],
-        'syncPageTimeout': json['sync_page_timeout'] == null ? undefined : json['sync_page_timeout'],
-        'dryRun': json['dry_run'] == null ? undefined : json['dry_run'],
+        name: json["name"] == null ? undefined : json["name"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        propertyMappingsGroup:
+            json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
+        clientId: json["client_id"] == null ? undefined : json["client_id"],
+        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
+        tenantId: json["tenant_id"] == null ? undefined : json["tenant_id"],
+        excludeUsersServiceAccount:
+            json["exclude_users_service_account"] == null
+                ? undefined
+                : json["exclude_users_service_account"],
+        filterGroup: json["filter_group"] == null ? undefined : json["filter_group"],
+        userDeleteAction:
+            json["user_delete_action"] == null
+                ? undefined
+                : OutgoingSyncDeleteActionFromJSON(json["user_delete_action"]),
+        groupDeleteAction:
+            json["group_delete_action"] == null
+                ? undefined
+                : OutgoingSyncDeleteActionFromJSON(json["group_delete_action"]),
+        syncPageSize: json["sync_page_size"] == null ? undefined : json["sync_page_size"],
+        syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
     };
 }
 
-export function PatchedMicrosoftEntraProviderRequestToJSON(json: any): PatchedMicrosoftEntraProviderRequest {
+export function PatchedMicrosoftEntraProviderRequestToJSON(
+    json: any,
+): PatchedMicrosoftEntraProviderRequest {
     return PatchedMicrosoftEntraProviderRequestToJSONTyped(json, false);
 }
 
-export function PatchedMicrosoftEntraProviderRequestToJSONTyped(value?: PatchedMicrosoftEntraProviderRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedMicrosoftEntraProviderRequestToJSONTyped(
+    value?: PatchedMicrosoftEntraProviderRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'property_mappings': value['propertyMappings'],
-        'property_mappings_group': value['propertyMappingsGroup'],
-        'client_id': value['clientId'],
-        'client_secret': value['clientSecret'],
-        'tenant_id': value['tenantId'],
-        'exclude_users_service_account': value['excludeUsersServiceAccount'],
-        'filter_group': value['filterGroup'],
-        'user_delete_action': OutgoingSyncDeleteActionToJSON(value['userDeleteAction']),
-        'group_delete_action': OutgoingSyncDeleteActionToJSON(value['groupDeleteAction']),
-        'sync_page_size': value['syncPageSize'],
-        'sync_page_timeout': value['syncPageTimeout'],
-        'dry_run': value['dryRun'],
+        name: value["name"],
+        property_mappings: value["propertyMappings"],
+        property_mappings_group: value["propertyMappingsGroup"],
+        client_id: value["clientId"],
+        client_secret: value["clientSecret"],
+        tenant_id: value["tenantId"],
+        exclude_users_service_account: value["excludeUsersServiceAccount"],
+        filter_group: value["filterGroup"],
+        user_delete_action: OutgoingSyncDeleteActionToJSON(value["userDeleteAction"]),
+        group_delete_action: OutgoingSyncDeleteActionToJSON(value["groupDeleteAction"]),
+        sync_page_size: value["syncPageSize"],
+        sync_page_timeout: value["syncPageTimeout"],
+        dry_run: value["dryRun"],
     };
 }
-

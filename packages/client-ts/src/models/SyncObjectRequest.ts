@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { SyncObjectModelEnum } from './SyncObjectModelEnum';
-import {
-    SyncObjectModelEnumFromJSON,
-    SyncObjectModelEnumFromJSONTyped,
-    SyncObjectModelEnumToJSON,
-    SyncObjectModelEnumToJSONTyped,
-} from './SyncObjectModelEnum';
+import type { SyncObjectModelEnum } from "./SyncObjectModelEnum";
+import { SyncObjectModelEnumFromJSON, SyncObjectModelEnumToJSON } from "./SyncObjectModelEnum";
 
 /**
  * Sync object serializer
@@ -28,33 +22,31 @@ import {
  */
 export interface SyncObjectRequest {
     /**
-     * 
+     *
      * @type {SyncObjectModelEnum}
      * @memberof SyncObjectRequest
      */
     syncObjectModel: SyncObjectModelEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SyncObjectRequest
      */
     syncObjectId: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SyncObjectRequest
      */
     overrideDryRun?: boolean;
 }
 
-
-
 /**
  * Check if a given object implements the SyncObjectRequest interface.
  */
 export function instanceOfSyncObjectRequest(value: object): value is SyncObjectRequest {
-    if (!('syncObjectModel' in value) || value['syncObjectModel'] === undefined) return false;
-    if (!('syncObjectId' in value) || value['syncObjectId'] === undefined) return false;
+    if (!("syncObjectModel" in value) || value["syncObjectModel"] === undefined) return false;
+    if (!("syncObjectId" in value) || value["syncObjectId"] === undefined) return false;
     return true;
 }
 
@@ -62,15 +54,17 @@ export function SyncObjectRequestFromJSON(json: any): SyncObjectRequest {
     return SyncObjectRequestFromJSONTyped(json, false);
 }
 
-export function SyncObjectRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SyncObjectRequest {
+export function SyncObjectRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SyncObjectRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'syncObjectModel': SyncObjectModelEnumFromJSON(json['sync_object_model']),
-        'syncObjectId': json['sync_object_id'],
-        'overrideDryRun': json['override_dry_run'] == null ? undefined : json['override_dry_run'],
+        syncObjectModel: SyncObjectModelEnumFromJSON(json["sync_object_model"]),
+        syncObjectId: json["sync_object_id"],
+        overrideDryRun: json["override_dry_run"] == null ? undefined : json["override_dry_run"],
     };
 }
 
@@ -78,16 +72,17 @@ export function SyncObjectRequestToJSON(json: any): SyncObjectRequest {
     return SyncObjectRequestToJSONTyped(json, false);
 }
 
-export function SyncObjectRequestToJSONTyped(value?: SyncObjectRequest | null, ignoreDiscriminator: boolean = false): any {
+export function SyncObjectRequestToJSONTyped(
+    value?: SyncObjectRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'sync_object_model': SyncObjectModelEnumToJSON(value['syncObjectModel']),
-        'sync_object_id': value['syncObjectId'],
-        'override_dry_run': value['overrideDryRun'],
+        sync_object_model: SyncObjectModelEnumToJSON(value["syncObjectModel"]),
+        sync_object_id: value["syncObjectId"],
+        override_dry_run: value["overrideDryRun"],
     };
 }
-

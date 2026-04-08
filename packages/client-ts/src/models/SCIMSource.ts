@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Token } from './Token';
-import {
-    TokenFromJSON,
-    TokenFromJSONTyped,
-    TokenToJSON,
-    TokenToJSONTyped,
-} from './Token';
+import type { Token } from "./Token";
+import { TokenFromJSON } from "./Token";
 
 /**
  * SCIMSource Serializer
@@ -28,7 +22,7 @@ import {
  */
 export interface SCIMSource {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSource
      */
@@ -46,19 +40,19 @@ export interface SCIMSource {
      */
     slug: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SCIMSource
      */
     enabled?: boolean;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof SCIMSource
      */
     userPropertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof SCIMSource
      */
@@ -94,7 +88,7 @@ export interface SCIMSource {
      */
     readonly managed: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SCIMSource
      */
@@ -106,7 +100,7 @@ export interface SCIMSource {
      */
     readonly rootUrl: string;
     /**
-     * 
+     *
      * @type {Token}
      * @memberof SCIMSource
      */
@@ -117,16 +111,16 @@ export interface SCIMSource {
  * Check if a given object implements the SCIMSource interface.
  */
 export function instanceOfSCIMSource(value: object): value is SCIMSource {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('slug' in value) || value['slug'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('managed' in value) || value['managed'] === undefined) return false;
-    if (!('rootUrl' in value) || value['rootUrl'] === undefined) return false;
-    if (!('tokenObj' in value) || value['tokenObj'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("slug" in value) || value["slug"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("managed" in value) || value["managed"] === undefined) return false;
+    if (!("rootUrl" in value) || value["rootUrl"] === undefined) return false;
+    if (!("tokenObj" in value) || value["tokenObj"] === undefined) return false;
     return true;
 }
 
@@ -139,21 +133,23 @@ export function SCIMSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'slug': json['slug'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'userPropertyMappings': json['user_property_mappings'] == null ? undefined : json['user_property_mappings'],
-        'groupPropertyMappings': json['group_property_mappings'] == null ? undefined : json['group_property_mappings'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'managed': json['managed'],
-        'userPathTemplate': json['user_path_template'] == null ? undefined : json['user_path_template'],
-        'rootUrl': json['root_url'],
-        'tokenObj': TokenFromJSON(json['token_obj']),
+        pk: json["pk"],
+        name: json["name"],
+        slug: json["slug"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        userPropertyMappings:
+            json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
+        groupPropertyMappings:
+            json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        managed: json["managed"],
+        userPathTemplate:
+            json["user_path_template"] == null ? undefined : json["user_path_template"],
+        rootUrl: json["root_url"],
+        tokenObj: TokenFromJSON(json["token_obj"]),
     };
 }
 
@@ -161,19 +157,30 @@ export function SCIMSourceToJSON(json: any): SCIMSource {
     return SCIMSourceToJSONTyped(json, false);
 }
 
-export function SCIMSourceToJSONTyped(value?: Omit<SCIMSource, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'managed'|'root_url'|'token_obj'> | null, ignoreDiscriminator: boolean = false): any {
+export function SCIMSourceToJSONTyped(
+    value?: Omit<
+        SCIMSource,
+        | "pk"
+        | "component"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+        | "managed"
+        | "root_url"
+        | "token_obj"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'slug': value['slug'],
-        'enabled': value['enabled'],
-        'user_property_mappings': value['userPropertyMappings'],
-        'group_property_mappings': value['groupPropertyMappings'],
-        'user_path_template': value['userPathTemplate'],
+        name: value["name"],
+        slug: value["slug"],
+        enabled: value["enabled"],
+        user_property_mappings: value["userPropertyMappings"],
+        group_property_mappings: value["groupPropertyMappings"],
+        user_path_template: value["userPathTemplate"],
     };
 }
-

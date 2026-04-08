@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { GeoIPPolicyCountriesObjInner } from './GeoIPPolicyCountriesObjInner';
-import {
-    GeoIPPolicyCountriesObjInnerFromJSON,
-    GeoIPPolicyCountriesObjInnerFromJSONTyped,
-    GeoIPPolicyCountriesObjInnerToJSON,
-    GeoIPPolicyCountriesObjInnerToJSONTyped,
-} from './GeoIPPolicyCountriesObjInner';
-import type { CountryCodeEnum } from './CountryCodeEnum';
-import {
-    CountryCodeEnumFromJSON,
-    CountryCodeEnumFromJSONTyped,
-    CountryCodeEnumToJSON,
-    CountryCodeEnumToJSONTyped,
-} from './CountryCodeEnum';
+import type { CountryCodeEnum } from "./CountryCodeEnum";
+import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnum";
+import type { GeoIPPolicyCountriesObjInner } from "./GeoIPPolicyCountriesObjInner";
+import { GeoIPPolicyCountriesObjInnerFromJSON } from "./GeoIPPolicyCountriesObjInner";
 
 /**
  * GeoIP Policy Serializer
@@ -35,13 +24,13 @@ import {
  */
 export interface GeoIPPolicy {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GeoIPPolicy
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GeoIPPolicy
      */
@@ -83,55 +72,55 @@ export interface GeoIPPolicy {
      */
     readonly boundTo: number;
     /**
-     * 
+     *
      * @type {Array<number>}
      * @memberof GeoIPPolicy
      */
     asns?: Array<number>;
     /**
-     * 
+     *
      * @type {Array<CountryCodeEnum>}
      * @memberof GeoIPPolicy
      */
     countries: Array<CountryCodeEnum>;
     /**
-     * 
+     *
      * @type {Array<GeoIPPolicyCountriesObjInner>}
      * @memberof GeoIPPolicy
      */
     readonly countriesObj: Array<GeoIPPolicyCountriesObjInner>;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GeoIPPolicy
      */
     checkHistoryDistance?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof GeoIPPolicy
      */
     historyMaxDistanceKm?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof GeoIPPolicy
      */
     distanceToleranceKm?: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof GeoIPPolicy
      */
     historyLoginCount?: number;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GeoIPPolicy
      */
     checkImpossibleTravel?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof GeoIPPolicy
      */
@@ -142,15 +131,15 @@ export interface GeoIPPolicy {
  * Check if a given object implements the GeoIPPolicy interface.
  */
 export function instanceOfGeoIPPolicy(value: object): value is GeoIPPolicy {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('boundTo' in value) || value['boundTo'] === undefined) return false;
-    if (!('countries' in value) || value['countries'] === undefined) return false;
-    if (!('countriesObj' in value) || value['countriesObj'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("boundTo" in value) || value["boundTo"] === undefined) return false;
+    if (!("countries" in value) || value["countries"] === undefined) return false;
+    if (!("countriesObj" in value) || value["countriesObj"] === undefined) return false;
     return true;
 }
 
@@ -163,24 +152,31 @@ export function GeoIPPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'boundTo': json['bound_to'],
-        'asns': json['asns'] == null ? undefined : json['asns'],
-        'countries': ((json['countries'] as Array<any>).map(CountryCodeEnumFromJSON)),
-        'countriesObj': ((json['countries_obj'] as Array<any>).map(GeoIPPolicyCountriesObjInnerFromJSON)),
-        'checkHistoryDistance': json['check_history_distance'] == null ? undefined : json['check_history_distance'],
-        'historyMaxDistanceKm': json['history_max_distance_km'] == null ? undefined : json['history_max_distance_km'],
-        'distanceToleranceKm': json['distance_tolerance_km'] == null ? undefined : json['distance_tolerance_km'],
-        'historyLoginCount': json['history_login_count'] == null ? undefined : json['history_login_count'],
-        'checkImpossibleTravel': json['check_impossible_travel'] == null ? undefined : json['check_impossible_travel'],
-        'impossibleToleranceKm': json['impossible_tolerance_km'] == null ? undefined : json['impossible_tolerance_km'],
+        pk: json["pk"],
+        name: json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        boundTo: json["bound_to"],
+        asns: json["asns"] == null ? undefined : json["asns"],
+        countries: (json["countries"] as Array<any>).map(CountryCodeEnumFromJSON),
+        countriesObj: (json["countries_obj"] as Array<any>).map(
+            GeoIPPolicyCountriesObjInnerFromJSON,
+        ),
+        checkHistoryDistance:
+            json["check_history_distance"] == null ? undefined : json["check_history_distance"],
+        historyMaxDistanceKm:
+            json["history_max_distance_km"] == null ? undefined : json["history_max_distance_km"],
+        distanceToleranceKm:
+            json["distance_tolerance_km"] == null ? undefined : json["distance_tolerance_km"],
+        historyLoginCount:
+            json["history_login_count"] == null ? undefined : json["history_login_count"],
+        checkImpossibleTravel:
+            json["check_impossible_travel"] == null ? undefined : json["check_impossible_travel"],
+        impossibleToleranceKm:
+            json["impossible_tolerance_km"] == null ? undefined : json["impossible_tolerance_km"],
     };
 }
 
@@ -188,23 +184,33 @@ export function GeoIPPolicyToJSON(json: any): GeoIPPolicy {
     return GeoIPPolicyToJSONTyped(json, false);
 }
 
-export function GeoIPPolicyToJSONTyped(value?: Omit<GeoIPPolicy, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'bound_to'|'countries_obj'> | null, ignoreDiscriminator: boolean = false): any {
+export function GeoIPPolicyToJSONTyped(
+    value?: Omit<
+        GeoIPPolicy,
+        | "pk"
+        | "component"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+        | "bound_to"
+        | "countries_obj"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'asns': value['asns'],
-        'countries': ((value['countries'] as Array<any>).map(CountryCodeEnumToJSON)),
-        'check_history_distance': value['checkHistoryDistance'],
-        'history_max_distance_km': value['historyMaxDistanceKm'],
-        'distance_tolerance_km': value['distanceToleranceKm'],
-        'history_login_count': value['historyLoginCount'],
-        'check_impossible_travel': value['checkImpossibleTravel'],
-        'impossible_tolerance_km': value['impossibleToleranceKm'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        asns: value["asns"],
+        countries: (value["countries"] as Array<any>).map(CountryCodeEnumToJSON),
+        check_history_distance: value["checkHistoryDistance"],
+        history_max_distance_km: value["historyMaxDistanceKm"],
+        distance_tolerance_km: value["distanceToleranceKm"],
+        history_login_count: value["historyLoginCount"],
+        check_impossible_travel: value["checkImpossibleTravel"],
+        impossible_tolerance_km: value["impossibleToleranceKm"],
     };
 }
-

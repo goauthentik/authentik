@@ -12,21 +12,10 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { PromptTypeEnum } from './PromptTypeEnum';
-import {
-    PromptTypeEnumFromJSON,
-    PromptTypeEnumFromJSONTyped,
-    PromptTypeEnumToJSON,
-    PromptTypeEnumToJSONTyped,
-} from './PromptTypeEnum';
-import type { PromptChoice } from './PromptChoice';
-import {
-    PromptChoiceFromJSON,
-    PromptChoiceFromJSONTyped,
-    PromptChoiceToJSON,
-    PromptChoiceToJSONTyped,
-} from './PromptChoice';
+import type { PromptChoice } from "./PromptChoice";
+import { PromptChoiceFromJSON, PromptChoiceToJSON } from "./PromptChoice";
+import type { PromptTypeEnum } from "./PromptTypeEnum";
+import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
 
 /**
  * Serializer for a single Prompt field
@@ -35,76 +24,74 @@ import {
  */
 export interface StagePrompt {
     /**
-     * 
+     *
      * @type {string}
      * @memberof StagePrompt
      */
     fieldKey: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof StagePrompt
      */
     label: string;
     /**
-     * 
+     *
      * @type {PromptTypeEnum}
      * @memberof StagePrompt
      */
     type: PromptTypeEnum;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof StagePrompt
      */
     required: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof StagePrompt
      */
     placeholder: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof StagePrompt
      */
     initialValue: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof StagePrompt
      */
     order: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof StagePrompt
      */
     subText: string;
     /**
-     * 
+     *
      * @type {Array<PromptChoice>}
      * @memberof StagePrompt
      */
     choices: Array<PromptChoice> | null;
 }
 
-
-
 /**
  * Check if a given object implements the StagePrompt interface.
  */
 export function instanceOfStagePrompt(value: object): value is StagePrompt {
-    if (!('fieldKey' in value) || value['fieldKey'] === undefined) return false;
-    if (!('label' in value) || value['label'] === undefined) return false;
-    if (!('type' in value) || value['type'] === undefined) return false;
-    if (!('required' in value) || value['required'] === undefined) return false;
-    if (!('placeholder' in value) || value['placeholder'] === undefined) return false;
-    if (!('initialValue' in value) || value['initialValue'] === undefined) return false;
-    if (!('order' in value) || value['order'] === undefined) return false;
-    if (!('subText' in value) || value['subText'] === undefined) return false;
-    if (!('choices' in value) || value['choices'] === undefined) return false;
+    if (!("fieldKey" in value) || value["fieldKey"] === undefined) return false;
+    if (!("label" in value) || value["label"] === undefined) return false;
+    if (!("type" in value) || value["type"] === undefined) return false;
+    if (!("required" in value) || value["required"] === undefined) return false;
+    if (!("placeholder" in value) || value["placeholder"] === undefined) return false;
+    if (!("initialValue" in value) || value["initialValue"] === undefined) return false;
+    if (!("order" in value) || value["order"] === undefined) return false;
+    if (!("subText" in value) || value["subText"] === undefined) return false;
+    if (!("choices" in value) || value["choices"] === undefined) return false;
     return true;
 }
 
@@ -117,16 +104,18 @@ export function StagePromptFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'fieldKey': json['field_key'],
-        'label': json['label'],
-        'type': PromptTypeEnumFromJSON(json['type']),
-        'required': json['required'],
-        'placeholder': json['placeholder'],
-        'initialValue': json['initial_value'],
-        'order': json['order'],
-        'subText': json['sub_text'],
-        'choices': (json['choices'] == null ? null : (json['choices'] as Array<any>).map(PromptChoiceFromJSON)),
+        fieldKey: json["field_key"],
+        label: json["label"],
+        type: PromptTypeEnumFromJSON(json["type"]),
+        required: json["required"],
+        placeholder: json["placeholder"],
+        initialValue: json["initial_value"],
+        order: json["order"],
+        subText: json["sub_text"],
+        choices:
+            json["choices"] == null
+                ? null
+                : (json["choices"] as Array<any>).map(PromptChoiceFromJSON),
     };
 }
 
@@ -134,22 +123,26 @@ export function StagePromptToJSON(json: any): StagePrompt {
     return StagePromptToJSONTyped(json, false);
 }
 
-export function StagePromptToJSONTyped(value?: StagePrompt | null, ignoreDiscriminator: boolean = false): any {
+export function StagePromptToJSONTyped(
+    value?: StagePrompt | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'field_key': value['fieldKey'],
-        'label': value['label'],
-        'type': PromptTypeEnumToJSON(value['type']),
-        'required': value['required'],
-        'placeholder': value['placeholder'],
-        'initial_value': value['initialValue'],
-        'order': value['order'],
-        'sub_text': value['subText'],
-        'choices': (value['choices'] == null ? null : (value['choices'] as Array<any>).map(PromptChoiceToJSON)),
+        field_key: value["fieldKey"],
+        label: value["label"],
+        type: PromptTypeEnumToJSON(value["type"]),
+        required: value["required"],
+        placeholder: value["placeholder"],
+        initial_value: value["initialValue"],
+        order: value["order"],
+        sub_text: value["subText"],
+        choices:
+            value["choices"] == null
+                ? null
+                : (value["choices"] as Array<any>).map(PromptChoiceToJSON),
     };
 }
-
