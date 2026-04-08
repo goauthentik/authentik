@@ -307,12 +307,13 @@ impl From<SignalKind> for Event {
 mod tests {
     mod events {
         use nix::sys::signal::{Signal, raise};
+        use tokio::time::sleep;
 
         use super::super::*;
 
         async fn signal_self(signal: Signal) {
             raise(signal).expect("failed to send signal");
-            tokio::time::sleep(Duration::from_millis(50)).await;
+            sleep(Duration::from_millis(50)).await;
         }
 
         #[tokio::test]

@@ -9,7 +9,7 @@ use arc_swap::ArcSwap;
 use eyre::Result;
 use notify::{RecommendedWatcher, Watcher as _};
 use serde_json::{Map, Value};
-use tokio::sync::mpsc;
+use tokio::{sync::mpsc, task::spawn_blocking};
 use tracing::{error, info, warn};
 use url::Url;
 
@@ -234,7 +234,7 @@ async fn watch_config(arbiter: Arbiter) -> Result<()> {
                     break;
                 }
                 let manager = CONFIG_MANAGER.get().expect("failed to get config, has it been initialized?");
-                match tokio::task::spawn_blocking(|| Config::load(&manager.config_paths, None)).await? {
+                match spawn_blocking(|| Config::load(&manager.config_paths, None)).await? {
                     Ok((new_config, _)) => {
                         info!("configuration reloaded");
                         manager.config.store(Arc::new(new_config));
