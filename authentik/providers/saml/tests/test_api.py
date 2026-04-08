@@ -157,7 +157,7 @@ class TestSAMLProviderAPI(APITestCase):
         response = self.client.get(
             reverse("authentik_api:samlprovider-metadata", kwargs={"pk": provider.pk}),
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(404, response.status_code)
         response = self.client.get(
             reverse("authentik_api:samlprovider-metadata", kwargs={"pk": "abc"}),
         )
