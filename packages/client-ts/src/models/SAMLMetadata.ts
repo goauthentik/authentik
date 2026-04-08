@@ -23,13 +23,13 @@ export interface SAMLMetadata {
      * @type {string}
      * @memberof SAMLMetadata
      */
-    readonly metadata: string;
+    metadata: string;
     /**
      *
      * @type {string}
      * @memberof SAMLMetadata
      */
-    readonly downloadUrl: string | null;
+    downloadUrl?: string | null;
 }
 
 /**
@@ -37,7 +37,6 @@ export interface SAMLMetadata {
  */
 export function instanceOfSAMLMetadata(value: object): value is SAMLMetadata {
     if (!("metadata" in value) || value["metadata"] === undefined) return false;
-    if (!("downloadUrl" in value) || value["downloadUrl"] === undefined) return false;
     return true;
 }
 
@@ -51,7 +50,7 @@ export function SAMLMetadataFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         metadata: json["metadata"],
-        downloadUrl: json["download_url"],
+        downloadUrl: json["download_url"] == null ? undefined : json["download_url"],
     };
 }
 
@@ -60,12 +59,15 @@ export function SAMLMetadataToJSON(json: any): SAMLMetadata {
 }
 
 export function SAMLMetadataToJSONTyped(
-    value?: Omit<SAMLMetadata, "metadata" | "download_url"> | null,
+    value?: SAMLMetadata | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
         return value;
     }
 
-    return {};
+    return {
+        metadata: value["metadata"],
+        download_url: value["downloadUrl"],
+    };
 }

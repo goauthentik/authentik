@@ -36,12 +36,12 @@ pub struct PolicyBinding {
         skip_serializing_if = "Option::is_none"
     )]
     pub user: Option<Option<i32>>,
-    #[serde(rename = "policy_obj")]
-    pub policy_obj: models::Policy,
-    #[serde(rename = "group_obj")]
-    pub group_obj: models::PartialGroup,
-    #[serde(rename = "user_obj")]
-    pub user_obj: models::PartialUser,
+    #[serde(rename = "policy_obj", deserialize_with = "Option::deserialize")]
+    pub policy_obj: Option<models::Policy>,
+    #[serde(rename = "group_obj", deserialize_with = "Option::deserialize")]
+    pub group_obj: Option<models::PartialGroup>,
+    #[serde(rename = "user_obj", deserialize_with = "Option::deserialize")]
+    pub user_obj: Option<models::PartialUser>,
     #[serde(rename = "target")]
     pub target: uuid::Uuid,
     /// Negates the outcome of the policy. Messages are unaffected.
@@ -63,9 +63,9 @@ impl PolicyBinding {
     /// PolicyBinding Serializer
     pub fn new(
         pk: uuid::Uuid,
-        policy_obj: models::Policy,
-        group_obj: models::PartialGroup,
-        user_obj: models::PartialUser,
+        policy_obj: Option<models::Policy>,
+        group_obj: Option<models::PartialGroup>,
+        user_obj: Option<models::PartialUser>,
         target: uuid::Uuid,
         order: i32,
     ) -> PolicyBinding {
