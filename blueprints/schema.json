@@ -8889,6 +8889,7 @@
                         "authentik.providers.scim",
                         "authentik.rbac",
                         "authentik.recovery",
+                        "authentik.search",
                         "authentik.sources.kerberos",
                         "authentik.sources.ldap",
                         "authentik.sources.oauth",
@@ -8934,7 +8935,6 @@
                         "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.providers.ws_federation",
                         "authentik.enterprise.reports",
-                        "authentik.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
                         "authentik.enterprise.stages.source"

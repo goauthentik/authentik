@@ -52,6 +52,7 @@ const (
 	APPENUM_AUTHENTIK_PROVIDERS_SCIM                                AppEnum = "authentik.providers.scim"
 	APPENUM_AUTHENTIK_RBAC                                          AppEnum = "authentik.rbac"
 	APPENUM_AUTHENTIK_RECOVERY                                      AppEnum = "authentik.recovery"
+	APPENUM_AUTHENTIK_SEARCH                                        AppEnum = "authentik.search"
 	APPENUM_AUTHENTIK_SOURCES_KERBEROS                              AppEnum = "authentik.sources.kerberos"
 	APPENUM_AUTHENTIK_SOURCES_LDAP                                  AppEnum = "authentik.sources.ldap"
 	APPENUM_AUTHENTIK_SOURCES_OAUTH                                 AppEnum = "authentik.sources.oauth"
@@ -97,7 +98,6 @@ const (
 	APPENUM_AUTHENTIK_ENTERPRISE_PROVIDERS_SSF                      AppEnum = "authentik.enterprise.providers.ssf"
 	APPENUM_AUTHENTIK_ENTERPRISE_PROVIDERS_WS_FEDERATION            AppEnum = "authentik.enterprise.providers.ws_federation"
 	APPENUM_AUTHENTIK_ENTERPRISE_REPORTS                            AppEnum = "authentik.enterprise.reports"
-	APPENUM_AUTHENTIK_SEARCH                                        AppEnum = "authentik.search"
 	APPENUM_AUTHENTIK_ENTERPRISE_STAGES_AUTHENTICATOR_ENDPOINT_GDTC AppEnum = "authentik.enterprise.stages.authenticator_endpoint_gdtc"
 	APPENUM_AUTHENTIK_ENTERPRISE_STAGES_MTLS                        AppEnum = "authentik.enterprise.stages.mtls"
 	APPENUM_AUTHENTIK_ENTERPRISE_STAGES_SOURCE                      AppEnum = "authentik.enterprise.stages.source"
@@ -136,6 +136,7 @@ var AllowedAppEnumEnumValues = []AppEnum{
 	"authentik.providers.scim",
 	"authentik.rbac",
 	"authentik.recovery",
+	"authentik.search",
 	"authentik.sources.kerberos",
 	"authentik.sources.ldap",
 	"authentik.sources.oauth",
@@ -181,7 +182,6 @@ var AllowedAppEnumEnumValues = []AppEnum{
 	"authentik.enterprise.providers.ssf",
 	"authentik.enterprise.providers.ws_federation",
 	"authentik.enterprise.reports",
-	"authentik.search",
 	"authentik.enterprise.stages.authenticator_endpoint_gdtc",
 	"authentik.enterprise.stages.mtls",
 	"authentik.enterprise.stages.source",

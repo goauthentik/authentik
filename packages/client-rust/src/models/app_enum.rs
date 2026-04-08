@@ -75,6 +75,8 @@ pub enum AppEnum {
     AuthentikRbac,
     #[serde(rename = "authentik.recovery")]
     AuthentikRecovery,
+    #[serde(rename = "authentik.search")]
+    AuthentikSearch,
     #[serde(rename = "authentik.sources.kerberos")]
     AuthentikSourcesKerberos,
     #[serde(rename = "authentik.sources.ldap")]
@@ -165,8 +167,6 @@ pub enum AppEnum {
     AuthentikEnterpriseProvidersWsFederation,
     #[serde(rename = "authentik.enterprise.reports")]
     AuthentikEnterpriseReports,
-    #[serde(rename = "authentik.search")]
-    AuthentikSearch,
     #[serde(rename = "authentik.enterprise.stages.authenticator_endpoint_gdtc")]
     AuthentikEnterpriseStagesAuthenticatorEndpointGdtc,
     #[serde(rename = "authentik.enterprise.stages.mtls")]
@@ -211,6 +211,7 @@ impl std::fmt::Display for AppEnum {
             Self::AuthentikProvidersScim => write!(f, "authentik.providers.scim"),
             Self::AuthentikRbac => write!(f, "authentik.rbac"),
             Self::AuthentikRecovery => write!(f, "authentik.recovery"),
+            Self::AuthentikSearch => write!(f, "authentik.search"),
             Self::AuthentikSourcesKerberos => write!(f, "authentik.sources.kerberos"),
             Self::AuthentikSourcesLdap => write!(f, "authentik.sources.ldap"),
             Self::AuthentikSourcesOauth => write!(f, "authentik.sources.oauth"),
@@ -290,7 +291,6 @@ impl std::fmt::Display for AppEnum {
                 write!(f, "authentik.enterprise.providers.ws_federation")
             }
             Self::AuthentikEnterpriseReports => write!(f, "authentik.enterprise.reports"),
-            Self::AuthentikSearch => write!(f, "authentik.search"),
             Self::AuthentikEnterpriseStagesAuthenticatorEndpointGdtc => {
                 write!(f, "authentik.enterprise.stages.authenticator_endpoint_gdtc")
             }

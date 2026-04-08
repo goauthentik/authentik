@@ -48,6 +48,7 @@ export const AppEnum = {
     AuthentikProvidersScim: "authentik.providers.scim",
     AuthentikRbac: "authentik.rbac",
     AuthentikRecovery: "authentik.recovery",
+    AuthentikSearch: "authentik.search",
     AuthentikSourcesKerberos: "authentik.sources.kerberos",
     AuthentikSourcesLdap: "authentik.sources.ldap",
     AuthentikSourcesOauth: "authentik.sources.oauth",
@@ -94,7 +95,6 @@ export const AppEnum = {
     AuthentikEnterpriseProvidersSsf: "authentik.enterprise.providers.ssf",
     AuthentikEnterpriseProvidersWsFederation: "authentik.enterprise.providers.ws_federation",
     AuthentikEnterpriseReports: "authentik.enterprise.reports",
-    AuthentikSearch: "authentik.search",
     AuthentikEnterpriseStagesAuthenticatorEndpointGdtc:
         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
     AuthentikEnterpriseStagesMtls: "authentik.enterprise.stages.mtls",
