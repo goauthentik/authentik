@@ -17,14 +17,24 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install apt deps & cleanup
+    - name: Cleanup apt
+      if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
+      shell: bash
+      run: sudo apt-get remove --purge man-db
+    - name: Install apt deps
+      if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
+      uses: gerlero/apt-install@f4fa5265092af9e750549565d28c99aec7189639
+      with:
+        packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext krb5-multidev libkrb5-dev heimdal-multidev libclang-dev krb5-kdc krb5-user krb5-admin-server
+        update: false
+        upgrade: false
+        install-recommends: false
+    - name: Make space on disk
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       shell: bash
       run: |
-        sudo apt-get remove --purge man-db
-        sudo apt-get update
-        sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext krb5-multidev libkrb5-dev heimdal-multidev libclang-dev krb5-kdc krb5-user krb5-admin-server
-        sudo rm -rf /usr/local/lib/android
+        sudo mkdir -p /tmp/empty/
+        sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
       uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v5
