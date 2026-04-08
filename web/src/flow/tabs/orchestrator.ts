@@ -35,15 +35,11 @@ export async function multiTabOrchestrateResume() {
         logger.debug("Telling tab to continue", tab);
         Broadcast.shared.akResumeTab(tab);
         const done = Promise.withResolvers<void>();
-        const timeout = setTimeout(() => {
-            logger.warn("Timed out waiting for tab to exit, moving on", tab);
-            clearInterval(checker);
-            done.resolve();
-        }, TAB_EXIT_TIMEOUT_MS);
+        const timers: { timeout?: ReturnType<typeof setTimeout> } = {};
         const checker = setInterval(() => {
             if (Broadcast.shared.exitedTabIds.includes(tab)) {
                 logger.debug("tab exited", tab);
-                clearTimeout(timeout);
+                clearTimeout(timers.timeout);
                 setTimeout(() => {
                     logger.debug("continue exited", tab);
                     done.resolve();
@@ -51,6 +47,11 @@ export async function multiTabOrchestrateResume() {
                 clearInterval(checker);
             }
         }, 1);
+        timers.timeout = setTimeout(() => {
+            logger.warn("Timed out waiting for tab to exit, moving on", tab);
+            clearInterval(checker);
+            done.resolve();
+        }, TAB_EXIT_TIMEOUT_MS);
         await done.promise;
         logger.debug("Tab done, continuing", tab);
     }
