@@ -52,9 +52,14 @@ export class Broadcast extends BroadcastChannel {
         }
     };
 
+    #onPageHide = () => {
+        this.akExitTab();
+    };
+
     constructor() {
         super(BROADCAST_CHANNEL_NAME);
         this.addEventListener("message", this.#onMessage);
+        window.addEventListener("pagehide", this.#onPageHide);
         this.#logger = ConsoleLogger.prefix("mtab/broadcast");
     }
 
