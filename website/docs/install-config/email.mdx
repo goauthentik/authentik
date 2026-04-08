@@ -9,7 +9,7 @@ This page covers both configuring authentik to send email and testing that email
 
 Global email settings are used for administrator notifications, release and configuration alerts, [notification rules](../sys-mgmt/events/notifications.md), and any [Email stage](../../add-secure-apps/flows-stages/stages/email/) configured to use global settings.
 
-Email stages can also use stage-specific SMTP settings when a flow must send through a different mail server than the server used by other functions in authentik.
+Email stages can be configured to use their own stage-specific SMTP settings if you need them to send mail through a different server than the one used by the rest of authentik.
 
 :::warning
 Some hosting providers block outgoing SMTP ports, in which case you will need to host an SMTP relay on a different port with a different provider.
