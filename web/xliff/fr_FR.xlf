@@ -1858,14 +1858,6 @@
   <source>Same identifier is used for all providers</source>
   <target>Le même identifiant est utilisé pour tous les fournisseurs</target>
 </trans-unit>
-<trans-unit id="seb411b22a8f262d6">
-  <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
-  <target>URLs de redirection autorisées après un flux d&apos;autorisation réussi. Indiquez également toute origine ici pour les flux implicites.</target>
-</trans-unit>
-<trans-unit id="s2a369bc2febb5d55">
-  <source>If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.</source>
-  <target>Si aucune URI de redirection explicite n&apos;est spécifiée, la première URI de redirection utilisée avec succès sera enregistrée.</target>
-</trans-unit>
 <trans-unit id="s4c49d27de60a532b">
   <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
   <target>Pour permettre n&apos;importe quelle URI de redirection, définissez cette valeur sur &quot;.*&quot;. Soyez conscient des possibles implications de sécurité que cela peut avoir.</target>
@@ -2065,10 +2057,6 @@
 <trans-unit id="s22e566052f7bec81">
   <source>JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.</source>
   <target>Les JWT signés par des certificats configurés par les sources sélectionnées peuvent être utilisés pour s&apos;authentifier auprès de ce fournisseur.</target>
-</trans-unit>
-<trans-unit id="s555465bf6577505e">
-  <source>Federated OIDC Providers</source>
-  <target>Fournisseurs OIDC fédérés</target>
 </trans-unit>
 <trans-unit id="s066bfb12c9032dc2">
   <source>Available Providers</source>
@@ -2939,10 +2927,6 @@
   <source>Determines how long events are stored for. If an event could not be sent correctly, its expiration is also increased by this duration.</source>
   <target>Détermine pendant combien de temps les évènements sont stockés. Si un évènement n&apos;a pas pu être correctement envoyé, son expiration est également augmentée de cette valeur.</target>
 </trans-unit>
-<trans-unit id="s1aa62e1bf258e88a">
-  <source>OIDC Providers</source>
-  <target>Fournisseurs OIDC</target>
-</trans-unit>
 <trans-unit id="sb0b86b8ca6ab13bd">
   <source>Providers</source>
   <target>Fournisseurs</target>
@@ -3190,9 +3174,6 @@
 <trans-unit id="s17f3eaf3b07ece26">
   <source>Warning: Provider is not used by an Application.</source>
   <target>Avertissement : Le fournisseur n&apos;est pas utilisé par une application.</target>
-</trans-unit>
-<trans-unit id="scbf29ce484222325">
-  <source/>
 </trans-unit>
 <trans-unit id="sdbc08adee233f180">
   <source>Update OAuth2 Provider</source>
@@ -3979,10 +3960,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
 <trans-unit id="sc6c575c5ff64cdb1">
   <source>Update SCIM Provider</source>
   <target>Mettre à jour le fournisseur SCIM</target>
-</trans-unit>
-<trans-unit id="sb9d947872397ca07">
-  <source>SSF Provider is in preview.</source>
-  <target>Le fournisseur SSF est en aperçu.</target>
 </trans-unit>
 <trans-unit id="sa1db89262360550b">
   <source>Send us feedback!</source>
@@ -7629,10 +7606,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
 <trans-unit id="s374abf1a54d87b67">
   <source>Background shown during execution.</source>
   <target>Arrière-plan utilisé durant l&apos;exécution.</target>
-</trans-unit>
-<trans-unit id="sb904f23f17b60c3a">
-  <source>Successfully imported flow.</source>
-  <target>Flux importé avec succès</target>
 </trans-unit>
 <trans-unit id="s8b0e21adf383c8ba">
   <source>.yaml files, which can be found in the Example Flows documentation</source>
@@ -11453,6 +11426,126 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 <trans-unit id="s477c7aa824db217c">
   <source>When enabled, any unique authenticator can only be registered once.</source>
   <target>Quand activé, chaque authentificateur unique ne peut être enregistré qu&apos;une seule fois.</target>
+</trans-unit>
+<trans-unit id="sce00b83d404f4037">
+  <source>Successfully imported blueprint.</source>
+  <target>Plan importé avec succès</target>
+</trans-unit>
+<trans-unit id="s8e2a8ba956a87d80">
+  <source>File upload</source>
+  <target>Chargement de fichier</target>
+</trans-unit>
+<trans-unit id="s39920e4c648f42d7">
+  <source>Import Blueprint</source>
+  <target>Importer un plan</target>
+</trans-unit>
+<trans-unit id="s82ad1b952d1637ec">
+  <source>Warning: Blueprint files may contain objects such as users, policies and expression.</source>
+  <target>Attention : les fichiers de plan peuvent contenirdes objets comme des utilisateurs, des politiques et des expressions.</target>
+</trans-unit>
+<trans-unit id="sabe892a3d6cb0df0">
+  <source>Force authentication</source>
+  <target>Obliger à s&apos;authentifier</target>
+</trans-unit>
+<trans-unit id="sa79a733d1d6ea7ca">
+  <source>When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.</source>
+  <target>Quand activé, le fournisseur d&apos;identités doit obliget les utilisateurs à se ré-authentifier, même s&apos;ils disposent d&apos;une session existante.</target>
+</trans-unit>
+<trans-unit id="sd70c33ce20f4221f">
+  <source><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${totalCount}"/> instances are healthy.</source>
+  <target><x id="0" equiv-text="${healthyCount}"/>/<x id="1" equiv-text="${totalCount}"/> instances sont saines.</target>
+</trans-unit>
+<trans-unit id="sc1006ec5976bf600">
+  <source>Federated OAuth2/OpenID Providers</source>
+  <target>Fournisseurs de fédération OAuth2/OpenID</target>
+</trans-unit>
+<trans-unit id="s2063a9d17c280fe5">
+  <source>Info</source>
+  <target>Infos</target>
+</trans-unit>
+<trans-unit id="s83cb0a6bd0b57d0c">
+  <source>Verify Push stream endpoints&apos; certificate</source>
+  <target>Vérifier le certificat des points de terminaison des flux Push</target>
+</trans-unit>
+<trans-unit id="s2044fd89e1e779ff">
+  <source>Stream(s)</source>
+  <target>Flux</target>
+</trans-unit>
+<trans-unit id="sdbfc37eb5da37686">
+  <source>Delivery method</source>
+  <target>Méthode de diffusion</target>
+</trans-unit>
+<trans-unit id="sf39364d7836810a6">
+  <source>Delivery Method</source>
+  <target>Méthode de Diffusion</target>
+</trans-unit>
+<trans-unit id="s96b1fe1a2884509e">
+  <source>Pull</source>
+  <target>Récupération Pull</target>
+</trans-unit>
+<trans-unit id="s970d041a28d1067d">
+  <source>Push</source>
+  <target>Envoi Push</target>
+</trans-unit>
+<trans-unit id="s0eaba83c8b21236b">
+  <source>post logout</source>
+  <target>après déconnexio</target>
+</trans-unit>
+<trans-unit id="sff974ce1fd18159e">
+  <source>authorization</source>
+  <target>autorisation</target>
+</trans-unit>
+<trans-unit id="s399592d27c549c96">
+  <source>Valid redirect URIs after a successful authorization or invalidation flow. Also specify any origins here for Implicit flows. Use the type dropdown to designate URIs for authorization or post-logout redirection.</source>
+  <target>URI de redirections valides après une autorisation réussie ou un flux invalide. Définissez aussi ici les origines pour les Flux implicites. Utilisez le type liste déroulante pour désigner les URI pour l&apos;autorisation ou pour les redirections après déconnexion.</target>
+</trans-unit>
+<trans-unit id="s272aa39ee16e3fe7">
+  <source>If no explicit authorization redirect URIs are specified, the first successfully used authorization redirect URI will be saved.</source>
+  <target>Si aucune URI de redirection d&apos;autorisation explicite n&apos;est spécifiée, la première URI de redirection d&apos;autorisation utilisée avec succès sera enregistrée.</target>
+</trans-unit>
+<trans-unit id="s49cafb32ed1d0d2b">
+  <source>Post Logout</source>
+  <target>Après déconnexion</target>
+</trans-unit>
+<trans-unit id="s0e1a87cb82be68ac">
+  <source>No connectivity status available.</source>
+  <target>Aucun état de connectivité disponible</target>
+</trans-unit>
+<trans-unit id="sf053496846861a89">
+  <source>LDAP Group(s)</source>
+  <target>Groupe(s) LDAP</target>
+</trans-unit>
+<trans-unit id="s08d22cb65d51ec12">
+  <source>Connect Group</source>
+  <target>Connecter le Group</target>
+</trans-unit>
+<trans-unit id="s0e54649b37607548">
+  <source>Successfully connected user.</source>
+  <target>Utilisateur connecté avec succès.</target>
+</trans-unit>
+<trans-unit id="sf5c3def20e22e0ac">
+  <source>The unique identifier of this object in LDAP, the value of the &apos;<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>&apos; attribute.</source>
+  <target>L&apos;identificateur unique de cet objet dans le LDAP, la valeur de l&apos;attribut &apos;<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>&apos;.</target>
+</trans-unit>
+<trans-unit id="s6e982a7b2b65c859">
+  <source>LDAP User(s)</source>
+  <target>Utilisateur(s) LDAP</target>
+</trans-unit>
+<trans-unit id="s37d7a0b00f4f6378">
+  <source>Connect User</source>
+  <target>Connecter l&apos;Utilisateur</target>
+</trans-unit>
+<trans-unit id="s21c15246d76b2910">
+  <source>Object Identifier (<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>)</source>
+  <target>Identificateur d&apos;objet (<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>)</target>
+</trans-unit>
+<trans-unit id="sa0e1c48bdd7086f7">
+  <source>Synced Users</source>
+  <target>Utilisateurs synchronisés</target>
+</trans-unit>
+<trans-unit id="s444676dba7492f41">
+  <source>Synced Groups</source>
+  <target>Groupes synchronisés</target>
 </trans-unit>
 </body>
 </file>
