@@ -112,15 +112,9 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             return html`<ak-forms-modal>
                 ${StrictUnsafe<CustomFormElementTagName>(item.policyObj.component, {
                     slot: "form",
-<<<<<<< HEAD
-                    instancePk: item.policyObj?.pk,
+                    instancePk: item.policyObj.pk,
                     actionLabel: msg("Update"),
                     headline: msg(str`Update ${item.policyObj?.name}`, {
-=======
-                    instancePk: item.policyObj.pk,
-                    submitLabel: msg("Save Changes"),
-                    headline: msg(str`Update ${item.policyObj.name}`, {
->>>>>>> 2b8313ee9 (core: fix policy binding objects not being nullable (#21421))
                         id: "form.headline.update",
                     }),
                 })}
@@ -138,25 +132,15 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     ${msg("Edit Group")}
                 </button>
             </ak-forms-modal>`;
-<<<<<<< HEAD
-        } else if (item.user) {
+        } else if (item.userObj) {
             return html`<ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update User")}</span>
-                <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
+                <ak-user-form slot="form" .instancePk=${item.userObj.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Edit User")}
                 </button>
             </ak-forms-modal>`;
-=======
-        } else if (item.userObj) {
-            return html`<button
-                class="pf-c-button pf-m-secondary"
-                ${UserForm.asEditModalInvoker(item.userObj.pk)}
-            >
-                ${msg("Edit User")}
-            </button>`;
->>>>>>> 2b8313ee9 (core: fix policy binding objects not being nullable (#21421))
         }
         return nothing;
     }
