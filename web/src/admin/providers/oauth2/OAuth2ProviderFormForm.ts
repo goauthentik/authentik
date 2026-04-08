@@ -34,6 +34,7 @@ import {
     OAuth2Provider,
     OAuth2ProviderLogoutMethodEnum,
     RedirectURI,
+    RedirectUriTypeEnum,
     SubModeEnum,
     ValidationError,
 } from "@goauthentik/api";
@@ -120,10 +121,10 @@ export const issuerModeOptions: RadioOption<IssuerModeEnum>[] = [
 
 const redirectUriHelpMessages: string[] = [
     msg(
-        "Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.",
+        "Valid redirect URIs after a successful authorization or invalidation flow. Also specify any origins here for Implicit flows. Use the type dropdown to designate URIs for authorization or post-logout redirection.",
     ),
     msg(
-        "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.",
+        "If no explicit authorization redirect URIs are specified, the first successfully used authorization redirect URI will be saved.",
     ),
     msg(
         'To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.',
@@ -221,7 +222,11 @@ export function renderForm({
                 >
                     <ak-array-input
                         .items=${provider.redirectUris ?? []}
-                        .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
+                        .newItem=${() => ({
+                            matchingMode: MatchingModeEnum.Strict,
+                            url: "",
+                            redirectUriType: RedirectUriTypeEnum.Authorization,
+                        })}
                         .row=${(redirectURI: RedirectURI, idx: number) => {
                             return html`<ak-provider-oauth2-redirect-uri
                                 .redirectURI=${redirectURI}

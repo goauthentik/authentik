@@ -17,11 +17,17 @@ pub struct RedirectUriRequest {
     pub matching_mode: models::MatchingModeEnum,
     #[serde(rename = "url")]
     pub url: String,
+    #[serde(rename = "redirect_uri_type", skip_serializing_if = "Option::is_none")]
+    pub redirect_uri_type: Option<models::RedirectUriTypeEnum>,
 }
 
 impl RedirectUriRequest {
     /// A single allowed redirect URI entry
     pub fn new(matching_mode: models::MatchingModeEnum, url: String) -> RedirectUriRequest {
-        RedirectUriRequest { matching_mode, url }
+        RedirectUriRequest {
+            matching_mode,
+            url,
+            redirect_uri_type: None,
+        }
     }
 }
