@@ -29,7 +29,7 @@ runs:
         update: false
         upgrade: false
         install-recommends: false
-    - name: Cleanup apt
+    - name: Make space on disk
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       shell: bash
       run: sudo rm -rf /usr/local/lib/androind
