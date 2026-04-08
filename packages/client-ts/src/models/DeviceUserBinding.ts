@@ -56,19 +56,19 @@ export interface DeviceUserBinding {
      * @type {Policy}
      * @memberof DeviceUserBinding
      */
-    readonly policyObj: Policy;
+    readonly policyObj: Policy | null;
     /**
      *
      * @type {PartialGroup}
      * @memberof DeviceUserBinding
      */
-    readonly groupObj: PartialGroup;
+    readonly groupObj: PartialGroup | null;
     /**
      *
      * @type {PartialUser}
      * @memberof DeviceUserBinding
      */
-    readonly userObj: PartialUser;
+    readonly userObj: PartialUser | null;
     /**
      *
      * @type {string}

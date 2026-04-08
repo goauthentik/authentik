@@ -37024,14 +37024,17 @@ components:
           allOf:
           - $ref: '#/components/schemas/Policy'
           readOnly: true
+          nullable: true
         group_obj:
           allOf:
           - $ref: '#/components/schemas/PartialGroup'
           readOnly: true
+          nullable: true
         user_obj:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         target:
           type: string
           format: uuid
@@ -51351,14 +51354,17 @@ components:
           allOf:
           - $ref: '#/components/schemas/Policy'
           readOnly: true
+          nullable: true
         group_obj:
           allOf:
           - $ref: '#/components/schemas/PartialGroup'
           readOnly: true
+          nullable: true
         user_obj:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         target:
           type: string
           format: uuid
@@ -53218,13 +53224,10 @@ components:
       properties:
         metadata:
           type: string
-          readOnly: true
         download_url:
           type: string
-          readOnly: true
           nullable: true
       required:
-      - download_url
       - metadata
     SAMLNameIDPolicyEnum:
       enum:

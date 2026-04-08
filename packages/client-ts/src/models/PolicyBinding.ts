@@ -54,19 +54,19 @@ export interface PolicyBinding {
      * @type {Policy}
      * @memberof PolicyBinding
      */
-    readonly policyObj: Policy;
+    readonly policyObj: Policy | null;
     /**
      *
      * @type {PartialGroup}
      * @memberof PolicyBinding
      */
-    readonly groupObj: PartialGroup;
+    readonly groupObj: PartialGroup | null;
     /**
      *
      * @type {PartialUser}
      * @memberof PolicyBinding
      */
-    readonly userObj: PartialUser;
+    readonly userObj: PartialUser | null;
     /**
      *
      * @type {string}

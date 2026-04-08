@@ -9,7 +9,7 @@ use arc_swap::ArcSwap;
 use eyre::Result;
 use notify::{RecommendedWatcher, Watcher as _};
 use serde_json::{Map, Value};
-use tokio::sync::mpsc;
+use tokio::{sync::mpsc, task::spawn_blocking};
 use tracing::{error, info, warn};
 use url::Url;
 
@@ -104,7 +104,10 @@ impl Config {
                     match read_to_string(path).map(|s| s.trim().to_owned()) {
                         Ok(value) => return (value, Some(PathBuf::from(path))),
                         Err(err) => {
-                            error!("failed to read config value from {path}: {err}");
+                            error!(
+                                ?err,
+                                "failed to read config value from '{path}', using fallback"
+                            );
                             return (fallback, Some(PathBuf::from(path)));
                         }
                     }
@@ -224,7 +227,7 @@ async fn watch_config(arbiter: Arbiter) -> Result<()> {
     }
 
     let _ = arbiter.send_event(Event::ConfigChanged);
-    info!("config file watcher started on paths: {:?}", watch_paths);
+    info!(paths = ?watch_paths, "config file watcher started");
 
     loop {
         tokio::select! {
@@ -234,17 +237,17 @@ async fn watch_config(arbiter: Arbiter) -> Result<()> {
                     break;
                 }
                 let manager = CONFIG_MANAGER.get().expect("failed to get config, has it been initialized?");
-                match tokio::task::spawn_blocking(|| Config::load(&manager.config_paths, None)).await? {
+                match spawn_blocking(|| Config::load(&manager.config_paths, None)).await? {
                     Ok((new_config, _)) => {
                         info!("configuration reloaded");
                         manager.config.store(Arc::new(new_config));
                         if let Err(err) = arbiter.send_event(Event::ConfigChanged) {
-                            warn!("failed to notify of config change, aborting: {err:?}");
+                            warn!(?err, "failed to notify of config change, aborting");
                             break;
                         }
                     }
                     Err(err) => {
-                        warn!("failed to reload config, continuing with previous config: {err:?}");
+                        warn!(?err, "failed to reload config, continuing with previous config");
                     }
                 }
             },

@@ -21,14 +21,14 @@ var _ MappedNullable = &PolicyBinding{}
 
 // PolicyBinding PolicyBinding Serializer
 type PolicyBinding struct {
-	Pk        string         `json:"pk"`
-	Policy    NullableString `json:"policy,omitempty"`
-	Group     NullableString `json:"group,omitempty"`
-	User      NullableInt32  `json:"user,omitempty"`
-	PolicyObj Policy         `json:"policy_obj"`
-	GroupObj  PartialGroup   `json:"group_obj"`
-	UserObj   PartialUser    `json:"user_obj"`
-	Target    string         `json:"target"`
+	Pk        string               `json:"pk"`
+	Policy    NullableString       `json:"policy,omitempty"`
+	Group     NullableString       `json:"group,omitempty"`
+	User      NullableInt32        `json:"user,omitempty"`
+	PolicyObj NullablePolicy       `json:"policy_obj"`
+	GroupObj  NullablePartialGroup `json:"group_obj"`
+	UserObj   NullablePartialUser  `json:"user_obj"`
+	Target    string               `json:"target"`
 	// Negates the outcome of the policy. Messages are unaffected.
 	Negate  *bool `json:"negate,omitempty"`
 	Enabled *bool `json:"enabled,omitempty"`
@@ -46,7 +46,7 @@ type _PolicyBinding PolicyBinding
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPolicyBinding(pk string, policyObj Policy, groupObj PartialGroup, userObj PartialUser, target string, order int32) *PolicyBinding {
+func NewPolicyBinding(pk string, policyObj NullablePolicy, groupObj NullablePartialGroup, userObj NullablePartialUser, target string, order int32) *PolicyBinding {
 	this := PolicyBinding{}
 	this.Pk = pk
 	this.PolicyObj = policyObj
@@ -219,75 +219,81 @@ func (o *PolicyBinding) UnsetUser() {
 }
 
 // GetPolicyObj returns the PolicyObj field value
+// If the value is explicit nil, the zero value for Policy will be returned
 func (o *PolicyBinding) GetPolicyObj() Policy {
-	if o == nil {
+	if o == nil || o.PolicyObj.Get() == nil {
 		var ret Policy
 		return ret
 	}
 
-	return o.PolicyObj
+	return *o.PolicyObj.Get()
 }
 
 // GetPolicyObjOk returns a tuple with the PolicyObj field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PolicyBinding) GetPolicyObjOk() (*Policy, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.PolicyObj, true
+	return o.PolicyObj.Get(), o.PolicyObj.IsSet()
 }
 
 // SetPolicyObj sets field value
 func (o *PolicyBinding) SetPolicyObj(v Policy) {
-	o.PolicyObj = v
+	o.PolicyObj.Set(&v)
 }
 
 // GetGroupObj returns the GroupObj field value
+// If the value is explicit nil, the zero value for PartialGroup will be returned
 func (o *PolicyBinding) GetGroupObj() PartialGroup {
-	if o == nil {
+	if o == nil || o.GroupObj.Get() == nil {
 		var ret PartialGroup
 		return ret
 	}
 
-	return o.GroupObj
+	return *o.GroupObj.Get()
 }
 
 // GetGroupObjOk returns a tuple with the GroupObj field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PolicyBinding) GetGroupObjOk() (*PartialGroup, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.GroupObj, true
+	return o.GroupObj.Get(), o.GroupObj.IsSet()
 }
 
 // SetGroupObj sets field value
 func (o *PolicyBinding) SetGroupObj(v PartialGroup) {
-	o.GroupObj = v
+	o.GroupObj.Set(&v)
 }
 
 // GetUserObj returns the UserObj field value
+// If the value is explicit nil, the zero value for PartialUser will be returned
 func (o *PolicyBinding) GetUserObj() PartialUser {
-	if o == nil {
+	if o == nil || o.UserObj.Get() == nil {
 		var ret PartialUser
 		return ret
 	}
 
-	return o.UserObj
+	return *o.UserObj.Get()
 }
 
 // GetUserObjOk returns a tuple with the UserObj field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PolicyBinding) GetUserObjOk() (*PartialUser, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.UserObj, true
+	return o.UserObj.Get(), o.UserObj.IsSet()
 }
 
 // SetUserObj sets field value
 func (o *PolicyBinding) SetUserObj(v PartialUser) {
-	o.UserObj = v
+	o.UserObj.Set(&v)
 }
 
 // GetTarget returns the Target field value
@@ -486,9 +492,9 @@ func (o PolicyBinding) ToMap() (map[string]interface{}, error) {
 	if o.User.IsSet() {
 		toSerialize["user"] = o.User.Get()
 	}
-	toSerialize["policy_obj"] = o.PolicyObj
-	toSerialize["group_obj"] = o.GroupObj
-	toSerialize["user_obj"] = o.UserObj
+	toSerialize["policy_obj"] = o.PolicyObj.Get()
+	toSerialize["group_obj"] = o.GroupObj.Get()
+	toSerialize["user_obj"] = o.UserObj.Get()
 	toSerialize["target"] = o.Target
 	if !IsNil(o.Negate) {
 		toSerialize["negate"] = o.Negate

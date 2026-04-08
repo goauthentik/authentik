@@ -1849,14 +1849,6 @@
   <source>Same identifier is used for all providers</source>
   <target>O mesmo identificador é utilizado para todos os provedores</target>
 </trans-unit>
-<trans-unit id="seb411b22a8f262d6">
-  <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
-  <target>URIs de redirecionamento válidos após um fluxo de autorização bem-sucedido. Também especifique quaisquer origens aqui para fluxos implícitos.</target>
-</trans-unit>
-<trans-unit id="s2a369bc2febb5d55">
-  <source>If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.</source>
-  <target>Se nenhum URI de redirecionamento explícito for especificado, o primeiro URI utilizado com sucesso será salvo.</target>
-</trans-unit>
 <trans-unit id="s4c49d27de60a532b">
   <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
   <target>Para permitir qualquer URI de redirecionamento, defina o modo como Regex e o valor como ".*". Esteja ciente das possíveis implicações de segurança que isso pode ter.</target>
@@ -10870,6 +10862,51 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s970d041a28d1067d">
   <source>Push</source>
+</trans-unit>
+<trans-unit id="s0eaba83c8b21236b">
+  <source>post logout</source>
+</trans-unit>
+<trans-unit id="sff974ce1fd18159e">
+  <source>authorization</source>
+</trans-unit>
+<trans-unit id="s399592d27c549c96">
+  <source>Valid redirect URIs after a successful authorization or invalidation flow. Also specify any origins here for Implicit flows. Use the type dropdown to designate URIs for authorization or post-logout redirection.</source>
+</trans-unit>
+<trans-unit id="s272aa39ee16e3fe7">
+  <source>If no explicit authorization redirect URIs are specified, the first successfully used authorization redirect URI will be saved.</source>
+</trans-unit>
+<trans-unit id="s49cafb32ed1d0d2b">
+  <source>Post Logout</source>
+</trans-unit>
+<trans-unit id="s0e1a87cb82be68ac">
+  <source>No connectivity status available.</source>
+</trans-unit>
+<trans-unit id="sf053496846861a89">
+  <source>LDAP Group(s)</source>
+</trans-unit>
+<trans-unit id="s08d22cb65d51ec12">
+  <source>Connect Group</source>
+</trans-unit>
+<trans-unit id="s0e54649b37607548">
+  <source>Successfully connected user.</source>
+</trans-unit>
+<trans-unit id="sf5c3def20e22e0ac">
+  <source>The unique identifier of this object in LDAP, the value of the '<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>' attribute.</source>
+</trans-unit>
+<trans-unit id="s6e982a7b2b65c859">
+  <source>LDAP User(s)</source>
+</trans-unit>
+<trans-unit id="s37d7a0b00f4f6378">
+  <source>Connect User</source>
+</trans-unit>
+<trans-unit id="s21c15246d76b2910">
+  <source>Object Identifier (<x id="0" equiv-text="${this.source?.objectUniquenessField}"/>)</source>
+</trans-unit>
+<trans-unit id="sa0e1c48bdd7086f7">
+  <source>Synced Users</source>
+</trans-unit>
+<trans-unit id="s444676dba7492f41">
+  <source>Synced Groups</source>
 </trans-unit>
 </body>
 </file>

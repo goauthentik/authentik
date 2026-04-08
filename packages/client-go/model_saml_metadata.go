@@ -22,7 +22,7 @@ var _ MappedNullable = &SAMLMetadata{}
 // SAMLMetadata SAML Provider Metadata serializer
 type SAMLMetadata struct {
 	Metadata             string         `json:"metadata"`
-	DownloadUrl          NullableString `json:"download_url"`
+	DownloadUrl          NullableString `json:"download_url,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -32,10 +32,9 @@ type _SAMLMetadata SAMLMetadata
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSAMLMetadata(metadata string, downloadUrl NullableString) *SAMLMetadata {
+func NewSAMLMetadata(metadata string) *SAMLMetadata {
 	this := SAMLMetadata{}
 	this.Metadata = metadata
-	this.DownloadUrl = downloadUrl
 	return &this
 }
 
@@ -71,18 +70,16 @@ func (o *SAMLMetadata) SetMetadata(v string) {
 	o.Metadata = v
 }
 
-// GetDownloadUrl returns the DownloadUrl field value
-// If the value is explicit nil, the zero value for string will be returned
+// GetDownloadUrl returns the DownloadUrl field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *SAMLMetadata) GetDownloadUrl() string {
-	if o == nil || o.DownloadUrl.Get() == nil {
+	if o == nil || IsNil(o.DownloadUrl.Get()) {
 		var ret string
 		return ret
 	}
-
 	return *o.DownloadUrl.Get()
 }
 
-// GetDownloadUrlOk returns a tuple with the DownloadUrl field value
+// GetDownloadUrlOk returns a tuple with the DownloadUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SAMLMetadata) GetDownloadUrlOk() (*string, bool) {
@@ -92,9 +89,28 @@ func (o *SAMLMetadata) GetDownloadUrlOk() (*string, bool) {
 	return o.DownloadUrl.Get(), o.DownloadUrl.IsSet()
 }
 
-// SetDownloadUrl sets field value
+// HasDownloadUrl returns a boolean if a field has been set.
+func (o *SAMLMetadata) HasDownloadUrl() bool {
+	if o != nil && o.DownloadUrl.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetDownloadUrl gets a reference to the given NullableString and assigns it to the DownloadUrl field.
 func (o *SAMLMetadata) SetDownloadUrl(v string) {
 	o.DownloadUrl.Set(&v)
+}
+
+// SetDownloadUrlNil sets the value for DownloadUrl to be an explicit nil
+func (o *SAMLMetadata) SetDownloadUrlNil() {
+	o.DownloadUrl.Set(nil)
+}
+
+// UnsetDownloadUrl ensures that no value is present for DownloadUrl, not even an explicit nil
+func (o *SAMLMetadata) UnsetDownloadUrl() {
+	o.DownloadUrl.Unset()
 }
 
 func (o SAMLMetadata) MarshalJSON() ([]byte, error) {
@@ -108,7 +124,9 @@ func (o SAMLMetadata) MarshalJSON() ([]byte, error) {
 func (o SAMLMetadata) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["metadata"] = o.Metadata
-	toSerialize["download_url"] = o.DownloadUrl.Get()
+	if o.DownloadUrl.IsSet() {
+		toSerialize["download_url"] = o.DownloadUrl.Get()
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -123,7 +141,6 @@ func (o *SAMLMetadata) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"metadata",
-		"download_url",
 	}
 
 	allProperties := make(map[string]interface{})

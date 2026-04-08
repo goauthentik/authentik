@@ -69,11 +69,11 @@ async fn watch_signals(streams: SignalStreams, arbiter: Arbiter) -> Result<()> {
                 arbiter.do_graceful_shutdown().await;
             },
             _ = usr1.recv() => {
-                info!("signal URS1 received");
+                info!("signal USR1 received");
                 let _ = arbiter.send_event(SignalKind::user_defined1().into());
             },
             _ = usr2.recv() => {
-                info!("USR2 received.");
+                info!("signal USR2 received");
                 let _ = arbiter.send_event(SignalKind::user_defined2().into());
             },
             () = arbiter.shutdown() => {
@@ -307,12 +307,13 @@ impl From<SignalKind> for Event {
 mod tests {
     mod events {
         use nix::sys::signal::{Signal, raise};
+        use tokio::time::sleep;
 
         use super::super::*;
 
         async fn signal_self(signal: Signal) {
             raise(signal).expect("failed to send signal");
-            tokio::time::sleep(Duration::from_millis(50)).await;
+            sleep(Duration::from_millis(50)).await;
         }
 
         #[tokio::test]

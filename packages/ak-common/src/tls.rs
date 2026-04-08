@@ -3,6 +3,7 @@ use std::sync::Arc;
 
 use eyre::{Result, eyre};
 use rustls::server::ResolvesServerCert;
+use tracing::trace;
 
 use crate::config;
 
@@ -37,6 +38,7 @@ fn is_fips_enabled() -> bool {
 
 /// Initialize default [`rustls`] crypto provider, and check that FIPS is working correctly.
 pub fn init() -> Result<()> {
+    trace!("installing rustls crypto provider");
     #[expect(
         clippy::unwrap_in_result,
         reason = "result type does not implement Error"
