@@ -12,28 +12,12 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
-import type { ProviderEnum } from './ProviderEnum';
-import {
-    ProviderEnumFromJSON,
-    ProviderEnumFromJSONTyped,
-    ProviderEnumToJSON,
-    ProviderEnumToJSONTyped,
-} from './ProviderEnum';
-import type { AuthTypeEnum } from './AuthTypeEnum';
-import {
-    AuthTypeEnumFromJSON,
-    AuthTypeEnumFromJSONTyped,
-    AuthTypeEnumToJSON,
-    AuthTypeEnumToJSONTyped,
-} from './AuthTypeEnum';
+import type { AuthTypeEnum } from "./AuthTypeEnum";
+import { AuthTypeEnumFromJSON, AuthTypeEnumToJSON } from "./AuthTypeEnum";
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
+import type { ProviderEnum } from "./ProviderEnum";
+import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
 
 /**
  * AuthenticatorSMSStage Serializer
@@ -42,13 +26,13 @@ import {
  */
 export interface AuthenticatorSMSStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorSMSStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorSMSStage
      */
@@ -78,7 +62,7 @@ export interface AuthenticatorSMSStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof AuthenticatorSMSStage
      */
@@ -90,43 +74,43 @@ export interface AuthenticatorSMSStage {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorSMSStage
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {ProviderEnum}
      * @memberof AuthenticatorSMSStage
      */
     provider: ProviderEnum;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorSMSStage
      */
     fromNumber: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorSMSStage
      */
     accountSid: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorSMSStage
      */
     auth: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorSMSStage
      */
     authPassword?: string;
     /**
-     * 
+     *
      * @type {AuthTypeEnum}
      * @memberof AuthenticatorSMSStage
      */
@@ -145,23 +129,21 @@ export interface AuthenticatorSMSStage {
     mapping?: string | null;
 }
 
-
-
 /**
  * Check if a given object implements the AuthenticatorSMSStage interface.
  */
 export function instanceOfAuthenticatorSMSStage(value: object): value is AuthenticatorSMSStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
-    if (!('fromNumber' in value) || value['fromNumber'] === undefined) return false;
-    if (!('accountSid' in value) || value['accountSid'] === undefined) return false;
-    if (!('auth' in value) || value['auth'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
+    if (!("fromNumber" in value) || value["fromNumber"] === undefined) return false;
+    if (!("accountSid" in value) || value["accountSid"] === undefined) return false;
+    if (!("auth" in value) || value["auth"] === undefined) return false;
     return true;
 }
 
@@ -169,29 +151,31 @@ export function AuthenticatorSMSStageFromJSON(json: any): AuthenticatorSMSStage 
     return AuthenticatorSMSStageFromJSONTyped(json, false);
 }
 
-export function AuthenticatorSMSStageFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorSMSStage {
+export function AuthenticatorSMSStageFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorSMSStage {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'provider': ProviderEnumFromJSON(json['provider']),
-        'fromNumber': json['from_number'],
-        'accountSid': json['account_sid'],
-        'auth': json['auth'],
-        'authPassword': json['auth_password'] == null ? undefined : json['auth_password'],
-        'authType': json['auth_type'] == null ? undefined : AuthTypeEnumFromJSON(json['auth_type']),
-        'verifyOnly': json['verify_only'] == null ? undefined : json['verify_only'],
-        'mapping': json['mapping'] == null ? undefined : json['mapping'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        provider: ProviderEnumFromJSON(json["provider"]),
+        fromNumber: json["from_number"],
+        accountSid: json["account_sid"],
+        auth: json["auth"],
+        authPassword: json["auth_password"] == null ? undefined : json["auth_password"],
+        authType: json["auth_type"] == null ? undefined : AuthTypeEnumFromJSON(json["auth_type"]),
+        verifyOnly: json["verify_only"] == null ? undefined : json["verify_only"],
+        mapping: json["mapping"] == null ? undefined : json["mapping"],
     };
 }
 
@@ -199,24 +183,28 @@ export function AuthenticatorSMSStageToJSON(json: any): AuthenticatorSMSStage {
     return AuthenticatorSMSStageToJSONTyped(json, false);
 }
 
-export function AuthenticatorSMSStageToJSONTyped(value?: Omit<AuthenticatorSMSStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorSMSStageToJSONTyped(
+    value?: Omit<
+        AuthenticatorSMSStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'provider': ProviderEnumToJSON(value['provider']),
-        'from_number': value['fromNumber'],
-        'account_sid': value['accountSid'],
-        'auth': value['auth'],
-        'auth_password': value['authPassword'],
-        'auth_type': AuthTypeEnumToJSON(value['authType']),
-        'verify_only': value['verifyOnly'],
-        'mapping': value['mapping'],
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        provider: ProviderEnumToJSON(value["provider"]),
+        from_number: value["fromNumber"],
+        account_sid: value["accountSid"],
+        auth: value["auth"],
+        auth_password: value["authPassword"],
+        auth_type: AuthTypeEnumToJSON(value["authType"]),
+        verify_only: value["verifyOnly"],
+        mapping: value["mapping"],
     };
 }
-

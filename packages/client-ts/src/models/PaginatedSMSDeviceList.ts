@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { SMSDevice } from './SMSDevice';
-import {
-    SMSDeviceFromJSON,
-    SMSDeviceFromJSONTyped,
-    SMSDeviceToJSON,
-    SMSDeviceToJSONTyped,
-} from './SMSDevice';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { SMSDevice } from "./SMSDevice";
+import { SMSDeviceFromJSON, SMSDeviceToJSON } from "./SMSDevice";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedSMSDeviceList
  */
 export interface PaginatedSMSDeviceList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedSMSDeviceList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<SMSDevice>}
      * @memberof PaginatedSMSDeviceList
      */
     results: Array<SMSDevice>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedSMSDeviceList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedSMSDeviceList interface.
  */
 export function instanceOfPaginatedSMSDeviceList(value: object): value is PaginatedSMSDeviceList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedSMSDeviceListFromJSON(json: any): PaginatedSMSDeviceLis
     return PaginatedSMSDeviceListFromJSONTyped(json, false);
 }
 
-export function PaginatedSMSDeviceListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedSMSDeviceList {
+export function PaginatedSMSDeviceListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedSMSDeviceList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(SMSDeviceFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(SMSDeviceFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedSMSDeviceListToJSON(json: any): PaginatedSMSDeviceList 
     return PaginatedSMSDeviceListToJSONTyped(json, false);
 }
 
-export function PaginatedSMSDeviceListToJSONTyped(value?: PaginatedSMSDeviceList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedSMSDeviceListToJSONTyped(
+    value?: PaginatedSMSDeviceList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(SMSDeviceToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(SMSDeviceToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

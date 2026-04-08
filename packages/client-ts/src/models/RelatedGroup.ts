@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Stripped down group serializer to show relevant children/parents for groups
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface RelatedGroup {
     /**
-     * 
+     *
      * @type {string}
      * @memberof RelatedGroup
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RelatedGroup
      */
@@ -38,13 +37,13 @@ export interface RelatedGroup {
      */
     isSuperuser?: boolean;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof RelatedGroup
      */
-    attributes?: { [key: string]: any; };
+    attributes?: { [key: string]: any };
     /**
-     * 
+     *
      * @type {string}
      * @memberof RelatedGroup
      */
@@ -55,9 +54,9 @@ export interface RelatedGroup {
  * Check if a given object implements the RelatedGroup interface.
  */
 export function instanceOfRelatedGroup(value: object): value is RelatedGroup {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('groupUuid' in value) || value['groupUuid'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("groupUuid" in value) || value["groupUuid"] === undefined) return false;
     return true;
 }
 
@@ -70,12 +69,11 @@ export function RelatedGroupFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'isSuperuser': json['is_superuser'] == null ? undefined : json['is_superuser'],
-        'attributes': json['attributes'] == null ? undefined : json['attributes'],
-        'groupUuid': json['group_uuid'],
+        pk: json["pk"],
+        name: json["name"],
+        isSuperuser: json["is_superuser"] == null ? undefined : json["is_superuser"],
+        attributes: json["attributes"] == null ? undefined : json["attributes"],
+        groupUuid: json["group_uuid"],
     };
 }
 
@@ -83,16 +81,17 @@ export function RelatedGroupToJSON(json: any): RelatedGroup {
     return RelatedGroupToJSONTyped(json, false);
 }
 
-export function RelatedGroupToJSONTyped(value?: Omit<RelatedGroup, 'pk'|'group_uuid'> | null, ignoreDiscriminator: boolean = false): any {
+export function RelatedGroupToJSONTyped(
+    value?: Omit<RelatedGroup, "pk" | "group_uuid"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'is_superuser': value['isSuperuser'],
-        'attributes': value['attributes'],
+        name: value["name"],
+        is_superuser: value["isSuperuser"],
+        attributes: value["attributes"],
     };
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * FleetConnector Serializer
  * @export
@@ -20,31 +19,31 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedFleetConnectorRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedFleetConnectorRequest
      */
     connectorUuid?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedFleetConnectorRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedFleetConnectorRequest
      */
     enabled?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedFleetConnectorRequest
      */
     url?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedFleetConnectorRequest
      */
@@ -56,13 +55,13 @@ export interface PatchedFleetConnectorRequest {
      */
     headersMapping?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedFleetConnectorRequest
      */
     mapUsers?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedFleetConnectorRequest
      */
@@ -72,7 +71,9 @@ export interface PatchedFleetConnectorRequest {
 /**
  * Check if a given object implements the PatchedFleetConnectorRequest interface.
  */
-export function instanceOfPatchedFleetConnectorRequest(value: object): value is PatchedFleetConnectorRequest {
+export function instanceOfPatchedFleetConnectorRequest(
+    value: object,
+): value is PatchedFleetConnectorRequest {
     return true;
 }
 
@@ -80,20 +81,23 @@ export function PatchedFleetConnectorRequestFromJSON(json: any): PatchedFleetCon
     return PatchedFleetConnectorRequestFromJSONTyped(json, false);
 }
 
-export function PatchedFleetConnectorRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedFleetConnectorRequest {
+export function PatchedFleetConnectorRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedFleetConnectorRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'connectorUuid': json['connector_uuid'] == null ? undefined : json['connector_uuid'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'url': json['url'] == null ? undefined : json['url'],
-        'token': json['token'] == null ? undefined : json['token'],
-        'headersMapping': json['headers_mapping'] == null ? undefined : json['headers_mapping'],
-        'mapUsers': json['map_users'] == null ? undefined : json['map_users'],
-        'mapTeamsAccessGroup': json['map_teams_access_group'] == null ? undefined : json['map_teams_access_group'],
+        connectorUuid: json["connector_uuid"] == null ? undefined : json["connector_uuid"],
+        name: json["name"] == null ? undefined : json["name"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        url: json["url"] == null ? undefined : json["url"],
+        token: json["token"] == null ? undefined : json["token"],
+        headersMapping: json["headers_mapping"] == null ? undefined : json["headers_mapping"],
+        mapUsers: json["map_users"] == null ? undefined : json["map_users"],
+        mapTeamsAccessGroup:
+            json["map_teams_access_group"] == null ? undefined : json["map_teams_access_group"],
     };
 }
 
@@ -101,21 +105,22 @@ export function PatchedFleetConnectorRequestToJSON(json: any): PatchedFleetConne
     return PatchedFleetConnectorRequestToJSONTyped(json, false);
 }
 
-export function PatchedFleetConnectorRequestToJSONTyped(value?: PatchedFleetConnectorRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedFleetConnectorRequestToJSONTyped(
+    value?: PatchedFleetConnectorRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'connector_uuid': value['connectorUuid'],
-        'name': value['name'],
-        'enabled': value['enabled'],
-        'url': value['url'],
-        'token': value['token'],
-        'headers_mapping': value['headersMapping'],
-        'map_users': value['mapUsers'],
-        'map_teams_access_group': value['mapTeamsAccessGroup'],
+        connector_uuid: value["connectorUuid"],
+        name: value["name"],
+        enabled: value["enabled"],
+        url: value["url"],
+        token: value["token"],
+        headers_mapping: value["headersMapping"],
+        map_users: value["mapUsers"],
+        map_teams_access_group: value["mapTeamsAccessGroup"],
     };
 }
-

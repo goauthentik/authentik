@@ -12,14 +12,11 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { OutgoingSyncDeleteAction } from './OutgoingSyncDeleteAction';
+import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction";
 import {
     OutgoingSyncDeleteActionFromJSON,
-    OutgoingSyncDeleteActionFromJSONTyped,
     OutgoingSyncDeleteActionToJSON,
-    OutgoingSyncDeleteActionToJSONTyped,
-} from './OutgoingSyncDeleteAction';
+} from "./OutgoingSyncDeleteAction";
 
 /**
  * GoogleWorkspaceProvider Serializer
@@ -28,19 +25,19 @@ import {
  */
 export interface GoogleWorkspaceProvider {
     /**
-     * 
+     *
      * @type {number}
      * @memberof GoogleWorkspaceProvider
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProvider
      */
     name: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof GoogleWorkspaceProvider
      */
@@ -88,49 +85,49 @@ export interface GoogleWorkspaceProvider {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProvider
      */
     delegatedSubject: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof GoogleWorkspaceProvider
      */
-    credentials: { [key: string]: any; };
+    credentials: { [key: string]: any };
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProvider
      */
     scopes?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof GoogleWorkspaceProvider
      */
     excludeUsersServiceAccount?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProvider
      */
     filterGroup?: string | null;
     /**
-     * 
+     *
      * @type {OutgoingSyncDeleteAction}
      * @memberof GoogleWorkspaceProvider
      */
     userDeleteAction?: OutgoingSyncDeleteAction;
     /**
-     * 
+     *
      * @type {OutgoingSyncDeleteAction}
      * @memberof GoogleWorkspaceProvider
      */
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProvider
      */
@@ -155,23 +152,30 @@ export interface GoogleWorkspaceProvider {
     dryRun?: boolean;
 }
 
-
-
 /**
  * Check if a given object implements the GoogleWorkspaceProvider interface.
  */
 export function instanceOfGoogleWorkspaceProvider(value: object): value is GoogleWorkspaceProvider {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('assignedBackchannelApplicationSlug' in value) || value['assignedBackchannelApplicationSlug'] === undefined) return false;
-    if (!('assignedBackchannelApplicationName' in value) || value['assignedBackchannelApplicationName'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('delegatedSubject' in value) || value['delegatedSubject'] === undefined) return false;
-    if (!('credentials' in value) || value['credentials'] === undefined) return false;
-    if (!('defaultGroupEmailDomain' in value) || value['defaultGroupEmailDomain'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (
+        !("assignedBackchannelApplicationSlug" in value) ||
+        value["assignedBackchannelApplicationSlug"] === undefined
+    )
+        return false;
+    if (
+        !("assignedBackchannelApplicationName" in value) ||
+        value["assignedBackchannelApplicationName"] === undefined
+    )
+        return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("delegatedSubject" in value) || value["delegatedSubject"] === undefined) return false;
+    if (!("credentials" in value) || value["credentials"] === undefined) return false;
+    if (!("defaultGroupEmailDomain" in value) || value["defaultGroupEmailDomain"] === undefined)
+        return false;
     return true;
 }
 
@@ -179,33 +183,45 @@ export function GoogleWorkspaceProviderFromJSON(json: any): GoogleWorkspaceProvi
     return GoogleWorkspaceProviderFromJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleWorkspaceProvider {
+export function GoogleWorkspaceProviderFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GoogleWorkspaceProvider {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'propertyMappingsGroup': json['property_mappings_group'] == null ? undefined : json['property_mappings_group'],
-        'component': json['component'],
-        'assignedBackchannelApplicationSlug': json['assigned_backchannel_application_slug'],
-        'assignedBackchannelApplicationName': json['assigned_backchannel_application_name'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'delegatedSubject': json['delegated_subject'],
-        'credentials': json['credentials'],
-        'scopes': json['scopes'] == null ? undefined : json['scopes'],
-        'excludeUsersServiceAccount': json['exclude_users_service_account'] == null ? undefined : json['exclude_users_service_account'],
-        'filterGroup': json['filter_group'] == null ? undefined : json['filter_group'],
-        'userDeleteAction': json['user_delete_action'] == null ? undefined : OutgoingSyncDeleteActionFromJSON(json['user_delete_action']),
-        'groupDeleteAction': json['group_delete_action'] == null ? undefined : OutgoingSyncDeleteActionFromJSON(json['group_delete_action']),
-        'defaultGroupEmailDomain': json['default_group_email_domain'],
-        'syncPageSize': json['sync_page_size'] == null ? undefined : json['sync_page_size'],
-        'syncPageTimeout': json['sync_page_timeout'] == null ? undefined : json['sync_page_timeout'],
-        'dryRun': json['dry_run'] == null ? undefined : json['dry_run'],
+        pk: json["pk"],
+        name: json["name"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        propertyMappingsGroup:
+            json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
+        component: json["component"],
+        assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
+        assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        delegatedSubject: json["delegated_subject"],
+        credentials: json["credentials"],
+        scopes: json["scopes"] == null ? undefined : json["scopes"],
+        excludeUsersServiceAccount:
+            json["exclude_users_service_account"] == null
+                ? undefined
+                : json["exclude_users_service_account"],
+        filterGroup: json["filter_group"] == null ? undefined : json["filter_group"],
+        userDeleteAction:
+            json["user_delete_action"] == null
+                ? undefined
+                : OutgoingSyncDeleteActionFromJSON(json["user_delete_action"]),
+        groupDeleteAction:
+            json["group_delete_action"] == null
+                ? undefined
+                : OutgoingSyncDeleteActionFromJSON(json["group_delete_action"]),
+        defaultGroupEmailDomain: json["default_group_email_domain"],
+        syncPageSize: json["sync_page_size"] == null ? undefined : json["sync_page_size"],
+        syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
+        dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
     };
 }
 
@@ -213,27 +229,37 @@ export function GoogleWorkspaceProviderToJSON(json: any): GoogleWorkspaceProvide
     return GoogleWorkspaceProviderToJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderToJSONTyped(value?: Omit<GoogleWorkspaceProvider, 'pk'|'component'|'assigned_backchannel_application_slug'|'assigned_backchannel_application_name'|'verbose_name'|'verbose_name_plural'|'meta_model_name'> | null, ignoreDiscriminator: boolean = false): any {
+export function GoogleWorkspaceProviderToJSONTyped(
+    value?: Omit<
+        GoogleWorkspaceProvider,
+        | "pk"
+        | "component"
+        | "assigned_backchannel_application_slug"
+        | "assigned_backchannel_application_name"
+        | "verbose_name"
+        | "verbose_name_plural"
+        | "meta_model_name"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'property_mappings': value['propertyMappings'],
-        'property_mappings_group': value['propertyMappingsGroup'],
-        'delegated_subject': value['delegatedSubject'],
-        'credentials': value['credentials'],
-        'scopes': value['scopes'],
-        'exclude_users_service_account': value['excludeUsersServiceAccount'],
-        'filter_group': value['filterGroup'],
-        'user_delete_action': OutgoingSyncDeleteActionToJSON(value['userDeleteAction']),
-        'group_delete_action': OutgoingSyncDeleteActionToJSON(value['groupDeleteAction']),
-        'default_group_email_domain': value['defaultGroupEmailDomain'],
-        'sync_page_size': value['syncPageSize'],
-        'sync_page_timeout': value['syncPageTimeout'],
-        'dry_run': value['dryRun'],
+        name: value["name"],
+        property_mappings: value["propertyMappings"],
+        property_mappings_group: value["propertyMappingsGroup"],
+        delegated_subject: value["delegatedSubject"],
+        credentials: value["credentials"],
+        scopes: value["scopes"],
+        exclude_users_service_account: value["excludeUsersServiceAccount"],
+        filter_group: value["filterGroup"],
+        user_delete_action: OutgoingSyncDeleteActionToJSON(value["userDeleteAction"]),
+        group_delete_action: OutgoingSyncDeleteActionToJSON(value["groupDeleteAction"]),
+        default_group_email_domain: value["defaultGroupEmailDomain"],
+        sync_page_size: value["syncPageSize"],
+        sync_page_timeout: value["syncPageTimeout"],
+        dry_run: value["dryRun"],
     };
 }
-

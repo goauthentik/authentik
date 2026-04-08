@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ConsentModeEnum } from './ConsentModeEnum';
-import {
-    ConsentModeEnumFromJSON,
-    ConsentModeEnumFromJSONTyped,
-    ConsentModeEnumToJSON,
-    ConsentModeEnumToJSONTyped,
-} from './ConsentModeEnum';
+import type { ConsentModeEnum } from "./ConsentModeEnum";
+import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnum";
 
 /**
  * ConsentStage Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface PatchedConsentStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedConsentStageRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {ConsentModeEnum}
      * @memberof PatchedConsentStageRequest
      */
@@ -47,12 +41,12 @@ export interface PatchedConsentStageRequest {
     consentExpireIn?: string;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedConsentStageRequest interface.
  */
-export function instanceOfPatchedConsentStageRequest(value: object): value is PatchedConsentStageRequest {
+export function instanceOfPatchedConsentStageRequest(
+    value: object,
+): value is PatchedConsentStageRequest {
     return true;
 }
 
@@ -60,15 +54,17 @@ export function PatchedConsentStageRequestFromJSON(json: any): PatchedConsentSta
     return PatchedConsentStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedConsentStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedConsentStageRequest {
+export function PatchedConsentStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedConsentStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'mode': json['mode'] == null ? undefined : ConsentModeEnumFromJSON(json['mode']),
-        'consentExpireIn': json['consent_expire_in'] == null ? undefined : json['consent_expire_in'],
+        name: json["name"] == null ? undefined : json["name"],
+        mode: json["mode"] == null ? undefined : ConsentModeEnumFromJSON(json["mode"]),
+        consentExpireIn: json["consent_expire_in"] == null ? undefined : json["consent_expire_in"],
     };
 }
 
@@ -76,16 +72,17 @@ export function PatchedConsentStageRequestToJSON(json: any): PatchedConsentStage
     return PatchedConsentStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedConsentStageRequestToJSONTyped(value?: PatchedConsentStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedConsentStageRequestToJSONTyped(
+    value?: PatchedConsentStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'mode': ConsentModeEnumToJSON(value['mode']),
-        'consent_expire_in': value['consentExpireIn'],
+        name: value["name"],
+        mode: ConsentModeEnumToJSON(value["mode"]),
+        consent_expire_in: value["consentExpireIn"],
     };
 }
-

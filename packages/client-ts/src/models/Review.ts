@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ReviewerUser } from './ReviewerUser';
-import {
-    ReviewerUserFromJSON,
-    ReviewerUserFromJSONTyped,
-    ReviewerUserToJSON,
-    ReviewerUserToJSONTyped,
-} from './ReviewerUser';
+import type { ReviewerUser } from "./ReviewerUser";
+import { ReviewerUserFromJSON } from "./ReviewerUser";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -29,31 +23,31 @@ import {
  */
 export interface Review {
     /**
-     * 
+     *
      * @type {string}
      * @memberof Review
      */
     readonly id: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Review
      */
     iteration: string;
     /**
-     * 
+     *
      * @type {ReviewerUser}
      * @memberof Review
      */
     readonly reviewer: ReviewerUser;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof Review
      */
     readonly timestamp: Date;
     /**
-     * 
+     *
      * @type {string}
      * @memberof Review
      */
@@ -64,10 +58,10 @@ export interface Review {
  * Check if a given object implements the Review interface.
  */
 export function instanceOfReview(value: object): value is Review {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('iteration' in value) || value['iteration'] === undefined) return false;
-    if (!('reviewer' in value) || value['reviewer'] === undefined) return false;
-    if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("iteration" in value) || value["iteration"] === undefined) return false;
+    if (!("reviewer" in value) || value["reviewer"] === undefined) return false;
+    if (!("timestamp" in value) || value["timestamp"] === undefined) return false;
     return true;
 }
 
@@ -80,12 +74,11 @@ export function ReviewFromJSONTyped(json: any, ignoreDiscriminator: boolean): Re
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'iteration': json['iteration'],
-        'reviewer': ReviewerUserFromJSON(json['reviewer']),
-        'timestamp': (new Date(json['timestamp'])),
-        'note': json['note'] == null ? undefined : json['note'],
+        id: json["id"],
+        iteration: json["iteration"],
+        reviewer: ReviewerUserFromJSON(json["reviewer"]),
+        timestamp: new Date(json["timestamp"]),
+        note: json["note"] == null ? undefined : json["note"],
     };
 }
 
@@ -93,15 +86,16 @@ export function ReviewToJSON(json: any): Review {
     return ReviewToJSONTyped(json, false);
 }
 
-export function ReviewToJSONTyped(value?: Omit<Review, 'id'|'reviewer'|'timestamp'> | null, ignoreDiscriminator: boolean = false): any {
+export function ReviewToJSONTyped(
+    value?: Omit<Review, "id" | "reviewer" | "timestamp"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'iteration': value['iteration'],
-        'note': value['note'],
+        iteration: value["iteration"],
+        note: value["note"],
     };
 }
-

@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const UserAttributeEnum = {
-    Username: 'username',
-    Email: 'email',
-    UnknownDefaultOpenApi: '11184809'
+    Username: "username",
+    Email: "email",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type UserAttributeEnum = typeof UserAttributeEnum[keyof typeof UserAttributeEnum];
-
+export type UserAttributeEnum = (typeof UserAttributeEnum)[keyof typeof UserAttributeEnum];
 
 export function instanceOfUserAttributeEnum(value: any): boolean {
     for (const key in UserAttributeEnum) {
@@ -40,7 +38,10 @@ export function UserAttributeEnumFromJSON(json: any): UserAttributeEnum {
     return UserAttributeEnumFromJSONTyped(json, false);
 }
 
-export function UserAttributeEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserAttributeEnum {
+export function UserAttributeEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserAttributeEnum {
     return json as UserAttributeEnum;
 }
 
@@ -48,7 +49,9 @@ export function UserAttributeEnumToJSON(value?: UserAttributeEnum | null): any {
     return value as any;
 }
 
-export function UserAttributeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): UserAttributeEnum {
+export function UserAttributeEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): UserAttributeEnum {
     return value as UserAttributeEnum;
 }
-

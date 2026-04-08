@@ -1,21 +1,18 @@
-import json
-from dataclasses import asdict
+from uuid import uuid4
 
 from django.urls import reverse
-from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.core.tests.utils import create_test_cert
 from authentik.enterprise.providers.ssf.models import (
     SSFEventStatus,
     SSFProvider,
     Stream,
     StreamEvent,
+    StreamStatus,
 )
 from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.id_token import IDToken
-from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
 
 class TestStream(APITestCase):
@@ -87,29 +84,71 @@ class TestStream(APITestCase):
             {"delivery": {"method": ["Polling for SSF events is not currently supported."]}},
         )
 
-    def test_stream_add_oidc(self):
-        """test stream add (oidc auth)"""
-        provider = OAuth2Provider.objects.create(
-            name=generate_id(),
-            authorization_flow=create_test_flow(),
-        )
-        self.application.provider = provider
-        self.application.save()
-        user = create_test_admin_user()
-        token = AccessToken.objects.create(
-            provider=provider,
-            user=user,
-            token=generate_id(),
-            auth_time=timezone.now(),
-            _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
+    def test_stream_delete(self):
+        """delete stream"""
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.delete(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug},
             ),
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
         )
+        self.assertEqual(res.status_code, 204)
+        stream.refresh_from_db()
+        self.assertEqual(stream.status, StreamStatus.DISABLED)
 
-        res = self.client.post(
+    def test_stream_get(self):
+        """get stream"""
+        Stream.objects.create(provider=self.provider)
+        res = self.client.get(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_stream_get_filter_query(self):
+        """get stream"""
+        other_stream = Stream.objects.create(provider=self.provider)
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.get(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug},
+            )
+            + f"?stream_id={stream.pk}",
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(str(stream.pk), res.content.decode())
+        self.assertNotIn(str(other_stream.pk), res.content.decode())
+
+    def test_stream_patch(self):
+        """patch stream"""
+        other_stream = Stream.objects.create(provider=self.provider)
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.patch(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            data={
+                "delivery": {"endpoint_url": "https://localhost"},
+                "stream_id": str(stream.pk),
+            },
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(str(stream.pk), res.content.decode())
+        self.assertNotIn(str(other_stream.pk), res.content.decode())
+
+    def test_stream_put(self):
+        """put stream"""
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.put(
             reverse(
                 "authentik_providers_ssf:stream",
                 kwargs={"application_slug": self.application.slug},
@@ -126,29 +165,63 @@ class TestStream(APITestCase):
                     "https://schemas.openid.net/secevent/caep/event-type/session-revoked",
                 ],
                 "format": "iss_sub",
+                "stream_id": str(stream.pk),
             },
-            HTTP_AUTHORIZATION=f"Bearer {token.token}",
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
         )
-        self.assertEqual(res.status_code, 201)
-        stream = Stream.objects.filter(provider=self.provider).first()
-        self.assertIsNotNone(stream)
-        event = StreamEvent.objects.filter(stream=stream).first()
-        self.assertIsNotNone(event)
-        self.assertEqual(event.status, SSFEventStatus.PENDING_FAILED)
-        self.assertEqual(
-            event.payload["events"],
-            {"https://schemas.openid.net/secevent/ssf/event-type/verification": {"state": None}},
-        )
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(str(stream.pk), res.content.decode())
+        stream.refresh_from_db()
+        self.assertEqual(stream.aud, ["https://app.authentik.company"])
 
-    def test_stream_delete(self):
-        """delete stream"""
+    def test_stream_verify(self):
+        """Test stream verify"""
         stream = Stream.objects.create(provider=self.provider)
-        res = self.client.delete(
+        res = self.client.post(
             reverse(
-                "authentik_providers_ssf:stream",
+                "authentik_providers_ssf:stream-verify",
                 kwargs={"application_slug": self.application.slug},
             ),
+            data={
+                "stream_id": str(stream.pk),
+            },
             HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
         )
         self.assertEqual(res.status_code, 204)
-        self.assertFalse(Stream.objects.filter(pk=stream.pk).exists())
+
+    def test_stream_status(self):
+        """Test stream status"""
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.get(
+            reverse(
+                "authentik_providers_ssf:stream-status",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            data={
+                "stream_id": str(stream.pk),
+            },
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertJSONEqual(
+            res.content,
+            {
+                "stream_id": str(stream.pk),
+                "status": str(stream.status),
+            },
+        )
+
+    def test_stream_status_not_found(self):
+        """Test stream status"""
+        Stream.objects.create(provider=self.provider)
+        res = self.client.get(
+            reverse(
+                "authentik_providers_ssf:stream-status",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            data={
+                "stream_id": str(uuid4()),
+            },
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
+        )
+        self.assertEqual(res.status_code, 404)

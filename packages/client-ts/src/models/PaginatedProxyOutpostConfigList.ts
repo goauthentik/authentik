@@ -12,71 +12,66 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { ProxyOutpostConfig } from './ProxyOutpostConfig';
-import {
-    ProxyOutpostConfigFromJSON,
-    ProxyOutpostConfigFromJSONTyped,
-    ProxyOutpostConfigToJSON,
-    ProxyOutpostConfigToJSONTyped,
-} from './ProxyOutpostConfig';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { ProxyOutpostConfig } from "./ProxyOutpostConfig";
+import { ProxyOutpostConfigFromJSON, ProxyOutpostConfigToJSON } from "./ProxyOutpostConfig";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedProxyOutpostConfigList
  */
 export interface PaginatedProxyOutpostConfigList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedProxyOutpostConfigList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<ProxyOutpostConfig>}
      * @memberof PaginatedProxyOutpostConfigList
      */
     results: Array<ProxyOutpostConfig>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedProxyOutpostConfigList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedProxyOutpostConfigList interface.
  */
-export function instanceOfPaginatedProxyOutpostConfigList(value: object): value is PaginatedProxyOutpostConfigList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedProxyOutpostConfigList(
+    value: object,
+): value is PaginatedProxyOutpostConfigList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedProxyOutpostConfigListFromJSON(json: any): PaginatedProxyOutpostConfigList {
+export function PaginatedProxyOutpostConfigListFromJSON(
+    json: any,
+): PaginatedProxyOutpostConfigList {
     return PaginatedProxyOutpostConfigListFromJSONTyped(json, false);
 }
 
-export function PaginatedProxyOutpostConfigListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedProxyOutpostConfigList {
+export function PaginatedProxyOutpostConfigListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedProxyOutpostConfigList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(ProxyOutpostConfigFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(ProxyOutpostConfigFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +79,17 @@ export function PaginatedProxyOutpostConfigListToJSON(json: any): PaginatedProxy
     return PaginatedProxyOutpostConfigListToJSONTyped(json, false);
 }
 
-export function PaginatedProxyOutpostConfigListToJSONTyped(value?: PaginatedProxyOutpostConfigList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedProxyOutpostConfigListToJSONTyped(
+    value?: PaginatedProxyOutpostConfigList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(ProxyOutpostConfigToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(ProxyOutpostConfigToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

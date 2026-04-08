@@ -12,20 +12,18 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const BackendsEnum = {
-    AuthentikCoreAuthInbuiltBackend: 'authentik.core.auth.InbuiltBackend',
-    AuthentikCoreAuthTokenBackend: 'authentik.core.auth.TokenBackend',
-    AuthentikSourcesLdapAuthLdapBackend: 'authentik.sources.ldap.auth.LDAPBackend',
-    AuthentikSourcesKerberosAuthKerberosBackend: 'authentik.sources.kerberos.auth.KerberosBackend',
-    UnknownDefaultOpenApi: '11184809'
+    AuthentikCoreAuthInbuiltBackend: "authentik.core.auth.InbuiltBackend",
+    AuthentikCoreAuthTokenBackend: "authentik.core.auth.TokenBackend",
+    AuthentikSourcesLdapAuthLdapBackend: "authentik.sources.ldap.auth.LDAPBackend",
+    AuthentikSourcesKerberosAuthKerberosBackend: "authentik.sources.kerberos.auth.KerberosBackend",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type BackendsEnum = typeof BackendsEnum[keyof typeof BackendsEnum];
-
+export type BackendsEnum = (typeof BackendsEnum)[keyof typeof BackendsEnum];
 
 export function instanceOfBackendsEnum(value: any): boolean {
     for (const key in BackendsEnum) {
@@ -53,4 +51,3 @@ export function BackendsEnumToJSON(value?: BackendsEnum | null): any {
 export function BackendsEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): BackendsEnum {
     return value as BackendsEnum;
 }
-

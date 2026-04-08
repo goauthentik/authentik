@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * PlexSourcePropertyMapping Serializer
  * @export
@@ -26,13 +25,13 @@ export interface PatchedPlexSourcePropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedPlexSourcePropertyMappingRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedPlexSourcePropertyMappingRequest
      */
@@ -42,40 +41,49 @@ export interface PatchedPlexSourcePropertyMappingRequest {
 /**
  * Check if a given object implements the PatchedPlexSourcePropertyMappingRequest interface.
  */
-export function instanceOfPatchedPlexSourcePropertyMappingRequest(value: object): value is PatchedPlexSourcePropertyMappingRequest {
+export function instanceOfPatchedPlexSourcePropertyMappingRequest(
+    value: object,
+): value is PatchedPlexSourcePropertyMappingRequest {
     return true;
 }
 
-export function PatchedPlexSourcePropertyMappingRequestFromJSON(json: any): PatchedPlexSourcePropertyMappingRequest {
+export function PatchedPlexSourcePropertyMappingRequestFromJSON(
+    json: any,
+): PatchedPlexSourcePropertyMappingRequest {
     return PatchedPlexSourcePropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedPlexSourcePropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedPlexSourcePropertyMappingRequest {
+export function PatchedPlexSourcePropertyMappingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedPlexSourcePropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'expression': json['expression'] == null ? undefined : json['expression'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"] == null ? undefined : json["name"],
+        expression: json["expression"] == null ? undefined : json["expression"],
     };
 }
 
-export function PatchedPlexSourcePropertyMappingRequestToJSON(json: any): PatchedPlexSourcePropertyMappingRequest {
+export function PatchedPlexSourcePropertyMappingRequestToJSON(
+    json: any,
+): PatchedPlexSourcePropertyMappingRequest {
     return PatchedPlexSourcePropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function PatchedPlexSourcePropertyMappingRequestToJSONTyped(value?: PatchedPlexSourcePropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedPlexSourcePropertyMappingRequestToJSONTyped(
+    value?: PatchedPlexSourcePropertyMappingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
     };
 }
-

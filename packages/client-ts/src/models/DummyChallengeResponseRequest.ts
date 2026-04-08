@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Dummy challenge response
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface DummyChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof DummyChallengeResponseRequest
      */
@@ -30,7 +29,9 @@ export interface DummyChallengeResponseRequest {
 /**
  * Check if a given object implements the DummyChallengeResponseRequest interface.
  */
-export function instanceOfDummyChallengeResponseRequest(value: object): value is DummyChallengeResponseRequest {
+export function instanceOfDummyChallengeResponseRequest(
+    value: object,
+): value is DummyChallengeResponseRequest {
     return true;
 }
 
@@ -38,13 +39,15 @@ export function DummyChallengeResponseRequestFromJSON(json: any): DummyChallenge
     return DummyChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function DummyChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): DummyChallengeResponseRequest {
+export function DummyChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): DummyChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'component': json['component'] == null ? undefined : json['component'],
+        component: json["component"] == null ? undefined : json["component"],
     };
 }
 
@@ -52,14 +55,15 @@ export function DummyChallengeResponseRequestToJSON(json: any): DummyChallengeRe
     return DummyChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function DummyChallengeResponseRequestToJSONTyped(value?: DummyChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function DummyChallengeResponseRequestToJSONTyped(
+    value?: DummyChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'component': value['component'],
+        component: value["component"],
     };
 }
-

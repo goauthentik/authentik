@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Serializer for Service connection state
  * @export
@@ -20,13 +19,13 @@ import { mapValues } from '../runtime';
  */
 export interface ServiceConnectionState {
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof ServiceConnectionState
      */
     readonly healthy: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ServiceConnectionState
      */
@@ -37,8 +36,8 @@ export interface ServiceConnectionState {
  * Check if a given object implements the ServiceConnectionState interface.
  */
 export function instanceOfServiceConnectionState(value: object): value is ServiceConnectionState {
-    if (!('healthy' in value) || value['healthy'] === undefined) return false;
-    if (!('version' in value) || value['version'] === undefined) return false;
+    if (!("healthy" in value) || value["healthy"] === undefined) return false;
+    if (!("version" in value) || value["version"] === undefined) return false;
     return true;
 }
 
@@ -46,14 +45,16 @@ export function ServiceConnectionStateFromJSON(json: any): ServiceConnectionStat
     return ServiceConnectionStateFromJSONTyped(json, false);
 }
 
-export function ServiceConnectionStateFromJSONTyped(json: any, ignoreDiscriminator: boolean): ServiceConnectionState {
+export function ServiceConnectionStateFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ServiceConnectionState {
     if (json == null) {
         return json;
     }
     return {
-        
-        'healthy': json['healthy'],
-        'version': json['version'],
+        healthy: json["healthy"],
+        version: json["version"],
     };
 }
 
@@ -61,13 +62,13 @@ export function ServiceConnectionStateToJSON(json: any): ServiceConnectionState 
     return ServiceConnectionStateToJSONTyped(json, false);
 }
 
-export function ServiceConnectionStateToJSONTyped(value?: Omit<ServiceConnectionState, 'healthy'|'version'> | null, ignoreDiscriminator: boolean = false): any {
+export function ServiceConnectionStateToJSONTyped(
+    value?: Omit<ServiceConnectionState, "healthy" | "version"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

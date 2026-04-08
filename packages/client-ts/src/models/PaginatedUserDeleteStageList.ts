@@ -12,55 +12,46 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
-import type { UserDeleteStage } from './UserDeleteStage';
-import {
-    UserDeleteStageFromJSON,
-    UserDeleteStageFromJSONTyped,
-    UserDeleteStageToJSON,
-    UserDeleteStageToJSONTyped,
-} from './UserDeleteStage';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { UserDeleteStage } from "./UserDeleteStage";
+import { UserDeleteStageFromJSON, UserDeleteStageToJSON } from "./UserDeleteStage";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedUserDeleteStageList
  */
 export interface PaginatedUserDeleteStageList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedUserDeleteStageList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<UserDeleteStage>}
      * @memberof PaginatedUserDeleteStageList
      */
     results: Array<UserDeleteStage>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedUserDeleteStageList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedUserDeleteStageList interface.
  */
-export function instanceOfPaginatedUserDeleteStageList(value: object): value is PaginatedUserDeleteStageList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+export function instanceOfPaginatedUserDeleteStageList(
+    value: object,
+): value is PaginatedUserDeleteStageList {
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +59,17 @@ export function PaginatedUserDeleteStageListFromJSON(json: any): PaginatedUserDe
     return PaginatedUserDeleteStageListFromJSONTyped(json, false);
 }
 
-export function PaginatedUserDeleteStageListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedUserDeleteStageList {
+export function PaginatedUserDeleteStageListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedUserDeleteStageList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(UserDeleteStageFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(UserDeleteStageFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +77,17 @@ export function PaginatedUserDeleteStageListToJSON(json: any): PaginatedUserDele
     return PaginatedUserDeleteStageListToJSONTyped(json, false);
 }
 
-export function PaginatedUserDeleteStageListToJSONTyped(value?: PaginatedUserDeleteStageList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedUserDeleteStageListToJSONTyped(
+    value?: PaginatedUserDeleteStageList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(UserDeleteStageToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(UserDeleteStageToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

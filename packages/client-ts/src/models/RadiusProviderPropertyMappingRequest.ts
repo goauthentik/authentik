@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * RadiusProviderPropertyMapping Serializer
  * @export
@@ -26,13 +25,13 @@ export interface RadiusProviderPropertyMappingRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RadiusProviderPropertyMappingRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof RadiusProviderPropertyMappingRequest
      */
@@ -42,42 +41,51 @@ export interface RadiusProviderPropertyMappingRequest {
 /**
  * Check if a given object implements the RadiusProviderPropertyMappingRequest interface.
  */
-export function instanceOfRadiusProviderPropertyMappingRequest(value: object): value is RadiusProviderPropertyMappingRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('expression' in value) || value['expression'] === undefined) return false;
+export function instanceOfRadiusProviderPropertyMappingRequest(
+    value: object,
+): value is RadiusProviderPropertyMappingRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("expression" in value) || value["expression"] === undefined) return false;
     return true;
 }
 
-export function RadiusProviderPropertyMappingRequestFromJSON(json: any): RadiusProviderPropertyMappingRequest {
+export function RadiusProviderPropertyMappingRequestFromJSON(
+    json: any,
+): RadiusProviderPropertyMappingRequest {
     return RadiusProviderPropertyMappingRequestFromJSONTyped(json, false);
 }
 
-export function RadiusProviderPropertyMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): RadiusProviderPropertyMappingRequest {
+export function RadiusProviderPropertyMappingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): RadiusProviderPropertyMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'],
-        'expression': json['expression'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"],
+        expression: json["expression"],
     };
 }
 
-export function RadiusProviderPropertyMappingRequestToJSON(json: any): RadiusProviderPropertyMappingRequest {
+export function RadiusProviderPropertyMappingRequestToJSON(
+    json: any,
+): RadiusProviderPropertyMappingRequest {
     return RadiusProviderPropertyMappingRequestToJSONTyped(json, false);
 }
 
-export function RadiusProviderPropertyMappingRequestToJSONTyped(value?: RadiusProviderPropertyMappingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function RadiusProviderPropertyMappingRequestToJSONTyped(
+    value?: RadiusProviderPropertyMappingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
     };
 }
-

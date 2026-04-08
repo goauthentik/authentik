@@ -7507,6 +7507,10 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Event retention"
+                },
+                "push_verify_certificates": {
+                    "type": "boolean",
+                    "title": "Push verify certificates"
                 }
             },
             "required": []
@@ -10015,6 +10019,14 @@
                                 "type": "string",
                                 "minLength": 1,
                                 "title": "Url"
+                            },
+                            "redirect_uri_type": {
+                                "type": "string",
+                                "enum": [
+                                    "authorization",
+                                    "logout"
+                                ],
+                                "title": "Redirect uri type"
                             }
                         },
                         "required": [

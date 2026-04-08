@@ -23,10 +23,11 @@ var _ MappedNullable = &SSFProviderRequest{}
 type SSFProviderRequest struct {
 	Name string `json:"name"`
 	// Key used to sign the SSF Events.
-	SigningKey           string  `json:"signing_key"`
-	OidcAuthProviders    []int32 `json:"oidc_auth_providers,omitempty"`
-	EventRetention       *string `json:"event_retention,omitempty"`
-	AdditionalProperties map[string]interface{}
+	SigningKey             string  `json:"signing_key"`
+	OidcAuthProviders      []int32 `json:"oidc_auth_providers,omitempty"`
+	EventRetention         *string `json:"event_retention,omitempty"`
+	PushVerifyCertificates *bool   `json:"push_verify_certificates,omitempty"`
+	AdditionalProperties   map[string]interface{}
 }
 
 type _SSFProviderRequest SSFProviderRequest
@@ -162,6 +163,38 @@ func (o *SSFProviderRequest) SetEventRetention(v string) {
 	o.EventRetention = &v
 }
 
+// GetPushVerifyCertificates returns the PushVerifyCertificates field value if set, zero value otherwise.
+func (o *SSFProviderRequest) GetPushVerifyCertificates() bool {
+	if o == nil || IsNil(o.PushVerifyCertificates) {
+		var ret bool
+		return ret
+	}
+	return *o.PushVerifyCertificates
+}
+
+// GetPushVerifyCertificatesOk returns a tuple with the PushVerifyCertificates field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SSFProviderRequest) GetPushVerifyCertificatesOk() (*bool, bool) {
+	if o == nil || IsNil(o.PushVerifyCertificates) {
+		return nil, false
+	}
+	return o.PushVerifyCertificates, true
+}
+
+// HasPushVerifyCertificates returns a boolean if a field has been set.
+func (o *SSFProviderRequest) HasPushVerifyCertificates() bool {
+	if o != nil && !IsNil(o.PushVerifyCertificates) {
+		return true
+	}
+
+	return false
+}
+
+// SetPushVerifyCertificates gets a reference to the given bool and assigns it to the PushVerifyCertificates field.
+func (o *SSFProviderRequest) SetPushVerifyCertificates(v bool) {
+	o.PushVerifyCertificates = &v
+}
+
 func (o SSFProviderRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -179,6 +212,9 @@ func (o SSFProviderRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.EventRetention) {
 		toSerialize["event_retention"] = o.EventRetention
+	}
+	if !IsNil(o.PushVerifyCertificates) {
+		toSerialize["push_verify_certificates"] = o.PushVerifyCertificates
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -228,6 +264,7 @@ func (o *SSFProviderRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "signing_key")
 		delete(additionalProperties, "oidc_auth_providers")
 		delete(additionalProperties, "event_retention")
+		delete(additionalProperties, "push_verify_certificates")
 		o.AdditionalProperties = additionalProperties
 	}
 

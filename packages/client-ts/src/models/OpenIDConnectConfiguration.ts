@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * rest_framework Serializer for OIDC Configuration
  * @export
@@ -20,67 +19,67 @@ import { mapValues } from '../runtime';
  */
 export interface OpenIDConnectConfiguration {
     /**
-     * 
+     *
      * @type {string}
      * @memberof OpenIDConnectConfiguration
      */
     issuer: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OpenIDConnectConfiguration
      */
     authorizationEndpoint: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OpenIDConnectConfiguration
      */
     tokenEndpoint: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OpenIDConnectConfiguration
      */
     userinfoEndpoint: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OpenIDConnectConfiguration
      */
     endSessionEndpoint: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OpenIDConnectConfiguration
      */
     introspectionEndpoint: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof OpenIDConnectConfiguration
      */
     jwksUri: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof OpenIDConnectConfiguration
      */
     responseTypesSupported: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof OpenIDConnectConfiguration
      */
     idTokenSigningAlgValuesSupported: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof OpenIDConnectConfiguration
      */
     subjectTypesSupported: Array<string>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof OpenIDConnectConfiguration
      */
@@ -90,18 +89,32 @@ export interface OpenIDConnectConfiguration {
 /**
  * Check if a given object implements the OpenIDConnectConfiguration interface.
  */
-export function instanceOfOpenIDConnectConfiguration(value: object): value is OpenIDConnectConfiguration {
-    if (!('issuer' in value) || value['issuer'] === undefined) return false;
-    if (!('authorizationEndpoint' in value) || value['authorizationEndpoint'] === undefined) return false;
-    if (!('tokenEndpoint' in value) || value['tokenEndpoint'] === undefined) return false;
-    if (!('userinfoEndpoint' in value) || value['userinfoEndpoint'] === undefined) return false;
-    if (!('endSessionEndpoint' in value) || value['endSessionEndpoint'] === undefined) return false;
-    if (!('introspectionEndpoint' in value) || value['introspectionEndpoint'] === undefined) return false;
-    if (!('jwksUri' in value) || value['jwksUri'] === undefined) return false;
-    if (!('responseTypesSupported' in value) || value['responseTypesSupported'] === undefined) return false;
-    if (!('idTokenSigningAlgValuesSupported' in value) || value['idTokenSigningAlgValuesSupported'] === undefined) return false;
-    if (!('subjectTypesSupported' in value) || value['subjectTypesSupported'] === undefined) return false;
-    if (!('tokenEndpointAuthMethodsSupported' in value) || value['tokenEndpointAuthMethodsSupported'] === undefined) return false;
+export function instanceOfOpenIDConnectConfiguration(
+    value: object,
+): value is OpenIDConnectConfiguration {
+    if (!("issuer" in value) || value["issuer"] === undefined) return false;
+    if (!("authorizationEndpoint" in value) || value["authorizationEndpoint"] === undefined)
+        return false;
+    if (!("tokenEndpoint" in value) || value["tokenEndpoint"] === undefined) return false;
+    if (!("userinfoEndpoint" in value) || value["userinfoEndpoint"] === undefined) return false;
+    if (!("endSessionEndpoint" in value) || value["endSessionEndpoint"] === undefined) return false;
+    if (!("introspectionEndpoint" in value) || value["introspectionEndpoint"] === undefined)
+        return false;
+    if (!("jwksUri" in value) || value["jwksUri"] === undefined) return false;
+    if (!("responseTypesSupported" in value) || value["responseTypesSupported"] === undefined)
+        return false;
+    if (
+        !("idTokenSigningAlgValuesSupported" in value) ||
+        value["idTokenSigningAlgValuesSupported"] === undefined
+    )
+        return false;
+    if (!("subjectTypesSupported" in value) || value["subjectTypesSupported"] === undefined)
+        return false;
+    if (
+        !("tokenEndpointAuthMethodsSupported" in value) ||
+        value["tokenEndpointAuthMethodsSupported"] === undefined
+    )
+        return false;
     return true;
 }
 
@@ -109,23 +122,25 @@ export function OpenIDConnectConfigurationFromJSON(json: any): OpenIDConnectConf
     return OpenIDConnectConfigurationFromJSONTyped(json, false);
 }
 
-export function OpenIDConnectConfigurationFromJSONTyped(json: any, ignoreDiscriminator: boolean): OpenIDConnectConfiguration {
+export function OpenIDConnectConfigurationFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): OpenIDConnectConfiguration {
     if (json == null) {
         return json;
     }
     return {
-        
-        'issuer': json['issuer'],
-        'authorizationEndpoint': json['authorization_endpoint'],
-        'tokenEndpoint': json['token_endpoint'],
-        'userinfoEndpoint': json['userinfo_endpoint'],
-        'endSessionEndpoint': json['end_session_endpoint'],
-        'introspectionEndpoint': json['introspection_endpoint'],
-        'jwksUri': json['jwks_uri'],
-        'responseTypesSupported': json['response_types_supported'],
-        'idTokenSigningAlgValuesSupported': json['id_token_signing_alg_values_supported'],
-        'subjectTypesSupported': json['subject_types_supported'],
-        'tokenEndpointAuthMethodsSupported': json['token_endpoint_auth_methods_supported'],
+        issuer: json["issuer"],
+        authorizationEndpoint: json["authorization_endpoint"],
+        tokenEndpoint: json["token_endpoint"],
+        userinfoEndpoint: json["userinfo_endpoint"],
+        endSessionEndpoint: json["end_session_endpoint"],
+        introspectionEndpoint: json["introspection_endpoint"],
+        jwksUri: json["jwks_uri"],
+        responseTypesSupported: json["response_types_supported"],
+        idTokenSigningAlgValuesSupported: json["id_token_signing_alg_values_supported"],
+        subjectTypesSupported: json["subject_types_supported"],
+        tokenEndpointAuthMethodsSupported: json["token_endpoint_auth_methods_supported"],
     };
 }
 
@@ -133,24 +148,25 @@ export function OpenIDConnectConfigurationToJSON(json: any): OpenIDConnectConfig
     return OpenIDConnectConfigurationToJSONTyped(json, false);
 }
 
-export function OpenIDConnectConfigurationToJSONTyped(value?: OpenIDConnectConfiguration | null, ignoreDiscriminator: boolean = false): any {
+export function OpenIDConnectConfigurationToJSONTyped(
+    value?: OpenIDConnectConfiguration | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'issuer': value['issuer'],
-        'authorization_endpoint': value['authorizationEndpoint'],
-        'token_endpoint': value['tokenEndpoint'],
-        'userinfo_endpoint': value['userinfoEndpoint'],
-        'end_session_endpoint': value['endSessionEndpoint'],
-        'introspection_endpoint': value['introspectionEndpoint'],
-        'jwks_uri': value['jwksUri'],
-        'response_types_supported': value['responseTypesSupported'],
-        'id_token_signing_alg_values_supported': value['idTokenSigningAlgValuesSupported'],
-        'subject_types_supported': value['subjectTypesSupported'],
-        'token_endpoint_auth_methods_supported': value['tokenEndpointAuthMethodsSupported'],
+        issuer: value["issuer"],
+        authorization_endpoint: value["authorizationEndpoint"],
+        token_endpoint: value["tokenEndpoint"],
+        userinfo_endpoint: value["userinfoEndpoint"],
+        end_session_endpoint: value["endSessionEndpoint"],
+        introspection_endpoint: value["introspectionEndpoint"],
+        jwks_uri: value["jwksUri"],
+        response_types_supported: value["responseTypesSupported"],
+        id_token_signing_alg_values_supported: value["idTokenSigningAlgValuesSupported"],
+        subject_types_supported: value["subjectTypesSupported"],
+        token_endpoint_auth_methods_supported: value["tokenEndpointAuthMethodsSupported"],
     };
 }
-

@@ -27,6 +27,8 @@ pub struct UserLdapSourceConnection {
     pub created: String,
     #[serde(rename = "last_updated")]
     pub last_updated: String,
+    #[serde(rename = "user_obj")]
+    pub user_obj: models::PartialUser,
 }
 
 impl UserLdapSourceConnection {
@@ -39,6 +41,7 @@ impl UserLdapSourceConnection {
         identifier: String,
         created: String,
         last_updated: String,
+        user_obj: models::PartialUser,
     ) -> UserLdapSourceConnection {
         UserLdapSourceConnection {
             pk,
@@ -48,6 +51,7 @@ impl UserLdapSourceConnection {
             identifier,
             created,
             last_updated,
+            user_obj,
         }
     }
 }

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Reputation Policy Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedReputationPolicyRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedReputationPolicyRequest
      */
@@ -32,19 +31,19 @@ export interface PatchedReputationPolicyRequest {
      */
     executionLogging?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedReputationPolicyRequest
      */
     checkIp?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedReputationPolicyRequest
      */
     checkUsername?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedReputationPolicyRequest
      */
@@ -54,7 +53,9 @@ export interface PatchedReputationPolicyRequest {
 /**
  * Check if a given object implements the PatchedReputationPolicyRequest interface.
  */
-export function instanceOfPatchedReputationPolicyRequest(value: object): value is PatchedReputationPolicyRequest {
+export function instanceOfPatchedReputationPolicyRequest(
+    value: object,
+): value is PatchedReputationPolicyRequest {
     return true;
 }
 
@@ -62,17 +63,19 @@ export function PatchedReputationPolicyRequestFromJSON(json: any): PatchedReputa
     return PatchedReputationPolicyRequestFromJSONTyped(json, false);
 }
 
-export function PatchedReputationPolicyRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedReputationPolicyRequest {
+export function PatchedReputationPolicyRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedReputationPolicyRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'executionLogging': json['execution_logging'] == null ? undefined : json['execution_logging'],
-        'checkIp': json['check_ip'] == null ? undefined : json['check_ip'],
-        'checkUsername': json['check_username'] == null ? undefined : json['check_username'],
-        'threshold': json['threshold'] == null ? undefined : json['threshold'],
+        name: json["name"] == null ? undefined : json["name"],
+        executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
+        checkIp: json["check_ip"] == null ? undefined : json["check_ip"],
+        checkUsername: json["check_username"] == null ? undefined : json["check_username"],
+        threshold: json["threshold"] == null ? undefined : json["threshold"],
     };
 }
 
@@ -80,18 +83,19 @@ export function PatchedReputationPolicyRequestToJSON(json: any): PatchedReputati
     return PatchedReputationPolicyRequestToJSONTyped(json, false);
 }
 
-export function PatchedReputationPolicyRequestToJSONTyped(value?: PatchedReputationPolicyRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedReputationPolicyRequestToJSONTyped(
+    value?: PatchedReputationPolicyRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'execution_logging': value['executionLogging'],
-        'check_ip': value['checkIp'],
-        'check_username': value['checkUsername'],
-        'threshold': value['threshold'],
+        name: value["name"],
+        execution_logging: value["executionLogging"],
+        check_ip: value["checkIp"],
+        check_username: value["checkUsername"],
+        threshold: value["threshold"],
     };
 }
-

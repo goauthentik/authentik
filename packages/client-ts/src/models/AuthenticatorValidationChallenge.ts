@@ -12,35 +12,13 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
-import type { SelectableStage } from './SelectableStage';
-import {
-    SelectableStageFromJSON,
-    SelectableStageFromJSONTyped,
-    SelectableStageToJSON,
-    SelectableStageToJSONTyped,
-} from './SelectableStage';
-import type { DeviceChallenge } from './DeviceChallenge';
-import {
-    DeviceChallengeFromJSON,
-    DeviceChallengeFromJSONTyped,
-    DeviceChallengeToJSON,
-    DeviceChallengeToJSONTyped,
-} from './DeviceChallenge';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { DeviceChallenge } from "./DeviceChallenge";
+import { DeviceChallengeFromJSON, DeviceChallengeToJSON } from "./DeviceChallenge";
+import type { ErrorDetail } from "./ErrorDetail";
+import type { SelectableStage } from "./SelectableStage";
+import { SelectableStageFromJSON, SelectableStageToJSON } from "./SelectableStage";
 
 /**
  * Authenticator challenge
@@ -49,43 +27,43 @@ import {
  */
 export interface AuthenticatorValidationChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof AuthenticatorValidationChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorValidationChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof AuthenticatorValidationChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorValidationChallenge
      */
     pendingUser: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorValidationChallenge
      */
     pendingUserAvatar: string;
     /**
-     * 
+     *
      * @type {Array<DeviceChallenge>}
      * @memberof AuthenticatorValidationChallenge
      */
     deviceChallenges: Array<DeviceChallenge>;
     /**
-     * 
+     *
      * @type {Array<SelectableStage>}
      * @memberof AuthenticatorValidationChallenge
      */
@@ -95,52 +73,67 @@ export interface AuthenticatorValidationChallenge {
 /**
  * Check if a given object implements the AuthenticatorValidationChallenge interface.
  */
-export function instanceOfAuthenticatorValidationChallenge(value: object): value is AuthenticatorValidationChallenge {
-    if (!('pendingUser' in value) || value['pendingUser'] === undefined) return false;
-    if (!('pendingUserAvatar' in value) || value['pendingUserAvatar'] === undefined) return false;
-    if (!('deviceChallenges' in value) || value['deviceChallenges'] === undefined) return false;
-    if (!('configurationStages' in value) || value['configurationStages'] === undefined) return false;
+export function instanceOfAuthenticatorValidationChallenge(
+    value: object,
+): value is AuthenticatorValidationChallenge {
+    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
+    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
+    if (!("deviceChallenges" in value) || value["deviceChallenges"] === undefined) return false;
+    if (!("configurationStages" in value) || value["configurationStages"] === undefined)
+        return false;
     return true;
 }
 
-export function AuthenticatorValidationChallengeFromJSON(json: any): AuthenticatorValidationChallenge {
+export function AuthenticatorValidationChallengeFromJSON(
+    json: any,
+): AuthenticatorValidationChallenge {
     return AuthenticatorValidationChallengeFromJSONTyped(json, false);
 }
 
-export function AuthenticatorValidationChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorValidationChallenge {
+export function AuthenticatorValidationChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorValidationChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'pendingUser': json['pending_user'],
-        'pendingUserAvatar': json['pending_user_avatar'],
-        'deviceChallenges': ((json['device_challenges'] as Array<any>).map(DeviceChallengeFromJSON)),
-        'configurationStages': ((json['configuration_stages'] as Array<any>).map(SelectableStageFromJSON)),
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        pendingUser: json["pending_user"],
+        pendingUserAvatar: json["pending_user_avatar"],
+        deviceChallenges: (json["device_challenges"] as Array<any>).map(DeviceChallengeFromJSON),
+        configurationStages: (json["configuration_stages"] as Array<any>).map(
+            SelectableStageFromJSON,
+        ),
     };
 }
 
-export function AuthenticatorValidationChallengeToJSON(json: any): AuthenticatorValidationChallenge {
+export function AuthenticatorValidationChallengeToJSON(
+    json: any,
+): AuthenticatorValidationChallenge {
     return AuthenticatorValidationChallengeToJSONTyped(json, false);
 }
 
-export function AuthenticatorValidationChallengeToJSONTyped(value?: AuthenticatorValidationChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorValidationChallengeToJSONTyped(
+    value?: AuthenticatorValidationChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'pending_user': value['pendingUser'],
-        'pending_user_avatar': value['pendingUserAvatar'],
-        'device_challenges': ((value['deviceChallenges'] as Array<any>).map(DeviceChallengeToJSON)),
-        'configuration_stages': ((value['configurationStages'] as Array<any>).map(SelectableStageToJSON)),
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        pending_user: value["pendingUser"],
+        pending_user_avatar: value["pendingUserAvatar"],
+        device_challenges: (value["deviceChallenges"] as Array<any>).map(DeviceChallengeToJSON),
+        configuration_stages: (value["configurationStages"] as Array<any>).map(
+            SelectableStageToJSON,
+        ),
     };
 }
-
