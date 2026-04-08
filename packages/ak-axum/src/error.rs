@@ -24,7 +24,7 @@ where
 
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
-        warn!(error = ?self.0, "error occurred");
+        warn!(err = ?self.0, "error occurred");
         (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong").into_response()
     }
 }

@@ -68,7 +68,7 @@ pub(crate) async fn run_unix(
     addr: unix::net::SocketAddr,
     allow_failure: bool,
 ) -> Result<()> {
-    info!(addr = ?addr, "starting {name} server");
+    info!(?addr, "starting {name} server");
 
     let handle = Handle::new();
     arbiter.add_unix_handle(handle.clone()).await;
