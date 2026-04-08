@@ -529,6 +529,7 @@ export class CaptchaStage
         const template = iframeTemplate(captchaElement, {
             challengeURL: challengeURL.toString(),
             theme: this.activeTheme,
+            scriptOnLoad: !(controller instanceof TurnstileController),
         });
 
         if (
