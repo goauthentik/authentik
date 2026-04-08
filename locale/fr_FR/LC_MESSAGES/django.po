@@ -1249,11 +1249,11 @@ msgstr "Enterprise est requis pour utiliser le mode OAuth."
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF RFC Push"
-msgstr "Push de la RFC de SSF"
+msgstr "Push d'après la RFC de SSF"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF RFC Pull"
-msgstr "Pull de la RFC de SSF"
+msgstr "Pull d'après la RFC de SSF"
 
 #: authentik/enterprise/providers/ssf/models.py
 #: authentik/providers/oauth2/models.py
