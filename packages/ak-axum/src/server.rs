@@ -10,7 +10,7 @@ use axum_server::{
     tls_rustls::{RustlsAcceptor, RustlsConfig},
 };
 use eyre::Result;
-use tracing::info;
+use tracing::{info, trace};
 
 use crate::accept::{proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor};
 
@@ -73,11 +73,23 @@ pub(crate) async fn run_unix(
     let handle = Handle::new();
     arbiter.add_unix_handle(handle.clone()).await;
 
-    let res = axum_server::Server::bind(addr)
+    if !allow_failure && let Some(path) = addr.as_pathname() {
+        trace!(?addr, "removing socket");
+        if let Err(err) = std::fs::remove_file(path) {
+            trace!(?err, "failed to remove socket, ignoring");
+        }
+    }
+    let res = axum_server::Server::bind(addr.clone())
         .acceptor(DefaultAcceptor::new())
         .handle(handle)
         .serve(router.into_make_service())
         .await;
+    if let Some(path) = addr.as_pathname() {
+        trace!(?addr, "removing socket");
+        if let Err(err) = std::fs::remove_file(path) {
+            trace!(?err, "failed to remove socket, ignoring");
+        }
+    }
     if res.is_err() && allow_failure {
         arbiter.shutdown().await;
         return Ok(());
