@@ -12,18 +12,16 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const FormatEnum = {
-    Json: 'json',
-    Yaml: 'yaml',
-    UnknownDefaultOpenApi: '11184809'
+    Json: "json",
+    Yaml: "yaml",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type FormatEnum = typeof FormatEnum[keyof typeof FormatEnum];
-
+export type FormatEnum = (typeof FormatEnum)[keyof typeof FormatEnum];
 
 export function instanceOfFormatEnum(value: any): boolean {
     for (const key in FormatEnum) {
@@ -51,4 +49,3 @@ export function FormatEnumToJSON(value?: FormatEnum | null): any {
 export function FormatEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): FormatEnum {
     return value as FormatEnum;
 }
-

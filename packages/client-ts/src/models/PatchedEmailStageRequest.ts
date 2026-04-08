@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * EmailStage Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedEmailStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEmailStageRequest
      */
@@ -32,49 +31,49 @@ export interface PatchedEmailStageRequest {
      */
     useGlobalSettings?: boolean;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEmailStageRequest
      */
     host?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedEmailStageRequest
      */
     port?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEmailStageRequest
      */
     username?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEmailStageRequest
      */
     password?: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedEmailStageRequest
      */
     useTls?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedEmailStageRequest
      */
     useSsl?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedEmailStageRequest
      */
     timeout?: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEmailStageRequest
      */
@@ -86,13 +85,13 @@ export interface PatchedEmailStageRequest {
      */
     tokenExpiry?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEmailStageRequest
      */
     subject?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEmailStageRequest
      */
@@ -104,7 +103,7 @@ export interface PatchedEmailStageRequest {
      */
     activateUserOnSuccess?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedEmailStageRequest
      */
@@ -120,7 +119,9 @@ export interface PatchedEmailStageRequest {
 /**
  * Check if a given object implements the PatchedEmailStageRequest interface.
  */
-export function instanceOfPatchedEmailStageRequest(value: object): value is PatchedEmailStageRequest {
+export function instanceOfPatchedEmailStageRequest(
+    value: object,
+): value is PatchedEmailStageRequest {
     return true;
 }
 
@@ -128,28 +129,34 @@ export function PatchedEmailStageRequestFromJSON(json: any): PatchedEmailStageRe
     return PatchedEmailStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedEmailStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedEmailStageRequest {
+export function PatchedEmailStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedEmailStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'useGlobalSettings': json['use_global_settings'] == null ? undefined : json['use_global_settings'],
-        'host': json['host'] == null ? undefined : json['host'],
-        'port': json['port'] == null ? undefined : json['port'],
-        'username': json['username'] == null ? undefined : json['username'],
-        'password': json['password'] == null ? undefined : json['password'],
-        'useTls': json['use_tls'] == null ? undefined : json['use_tls'],
-        'useSsl': json['use_ssl'] == null ? undefined : json['use_ssl'],
-        'timeout': json['timeout'] == null ? undefined : json['timeout'],
-        'fromAddress': json['from_address'] == null ? undefined : json['from_address'],
-        'tokenExpiry': json['token_expiry'] == null ? undefined : json['token_expiry'],
-        'subject': json['subject'] == null ? undefined : json['subject'],
-        'template': json['template'] == null ? undefined : json['template'],
-        'activateUserOnSuccess': json['activate_user_on_success'] == null ? undefined : json['activate_user_on_success'],
-        'recoveryMaxAttempts': json['recovery_max_attempts'] == null ? undefined : json['recovery_max_attempts'],
-        'recoveryCacheTimeout': json['recovery_cache_timeout'] == null ? undefined : json['recovery_cache_timeout'],
+        name: json["name"] == null ? undefined : json["name"],
+        useGlobalSettings:
+            json["use_global_settings"] == null ? undefined : json["use_global_settings"],
+        host: json["host"] == null ? undefined : json["host"],
+        port: json["port"] == null ? undefined : json["port"],
+        username: json["username"] == null ? undefined : json["username"],
+        password: json["password"] == null ? undefined : json["password"],
+        useTls: json["use_tls"] == null ? undefined : json["use_tls"],
+        useSsl: json["use_ssl"] == null ? undefined : json["use_ssl"],
+        timeout: json["timeout"] == null ? undefined : json["timeout"],
+        fromAddress: json["from_address"] == null ? undefined : json["from_address"],
+        tokenExpiry: json["token_expiry"] == null ? undefined : json["token_expiry"],
+        subject: json["subject"] == null ? undefined : json["subject"],
+        template: json["template"] == null ? undefined : json["template"],
+        activateUserOnSuccess:
+            json["activate_user_on_success"] == null ? undefined : json["activate_user_on_success"],
+        recoveryMaxAttempts:
+            json["recovery_max_attempts"] == null ? undefined : json["recovery_max_attempts"],
+        recoveryCacheTimeout:
+            json["recovery_cache_timeout"] == null ? undefined : json["recovery_cache_timeout"],
     };
 }
 
@@ -157,29 +164,30 @@ export function PatchedEmailStageRequestToJSON(json: any): PatchedEmailStageRequ
     return PatchedEmailStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedEmailStageRequestToJSONTyped(value?: PatchedEmailStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedEmailStageRequestToJSONTyped(
+    value?: PatchedEmailStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'use_global_settings': value['useGlobalSettings'],
-        'host': value['host'],
-        'port': value['port'],
-        'username': value['username'],
-        'password': value['password'],
-        'use_tls': value['useTls'],
-        'use_ssl': value['useSsl'],
-        'timeout': value['timeout'],
-        'from_address': value['fromAddress'],
-        'token_expiry': value['tokenExpiry'],
-        'subject': value['subject'],
-        'template': value['template'],
-        'activate_user_on_success': value['activateUserOnSuccess'],
-        'recovery_max_attempts': value['recoveryMaxAttempts'],
-        'recovery_cache_timeout': value['recoveryCacheTimeout'],
+        name: value["name"],
+        use_global_settings: value["useGlobalSettings"],
+        host: value["host"],
+        port: value["port"],
+        username: value["username"],
+        password: value["password"],
+        use_tls: value["useTls"],
+        use_ssl: value["useSsl"],
+        timeout: value["timeout"],
+        from_address: value["fromAddress"],
+        token_expiry: value["tokenExpiry"],
+        subject: value["subject"],
+        template: value["template"],
+        activate_user_on_success: value["activateUserOnSuccess"],
+        recovery_max_attempts: value["recoveryMaxAttempts"],
+        recovery_cache_timeout: value["recoveryCacheTimeout"],
     };
 }
-

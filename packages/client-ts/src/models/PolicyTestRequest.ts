@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Test policy execution for a user with context
  * @export
@@ -20,24 +19,24 @@ import { mapValues } from '../runtime';
  */
 export interface PolicyTestRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof PolicyTestRequest
      */
     user: number;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PolicyTestRequest
      */
-    context?: { [key: string]: any; };
+    context?: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PolicyTestRequest interface.
  */
 export function instanceOfPolicyTestRequest(value: object): value is PolicyTestRequest {
-    if (!('user' in value) || value['user'] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
     return true;
 }
 
@@ -45,14 +44,16 @@ export function PolicyTestRequestFromJSON(json: any): PolicyTestRequest {
     return PolicyTestRequestFromJSONTyped(json, false);
 }
 
-export function PolicyTestRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PolicyTestRequest {
+export function PolicyTestRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PolicyTestRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'user': json['user'],
-        'context': json['context'] == null ? undefined : json['context'],
+        user: json["user"],
+        context: json["context"] == null ? undefined : json["context"],
     };
 }
 
@@ -60,15 +61,16 @@ export function PolicyTestRequestToJSON(json: any): PolicyTestRequest {
     return PolicyTestRequestToJSONTyped(json, false);
 }
 
-export function PolicyTestRequestToJSONTyped(value?: PolicyTestRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PolicyTestRequestToJSONTyped(
+    value?: PolicyTestRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'context': value['context'],
+        user: value["user"],
+        context: value["context"],
     };
 }
-

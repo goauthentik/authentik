@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Get running and latest version.
  * @export
@@ -61,12 +60,12 @@ export interface Version {
  * Check if a given object implements the Version interface.
  */
 export function instanceOfVersion(value: object): value is Version {
-    if (!('versionCurrent' in value) || value['versionCurrent'] === undefined) return false;
-    if (!('versionLatest' in value) || value['versionLatest'] === undefined) return false;
-    if (!('versionLatestValid' in value) || value['versionLatestValid'] === undefined) return false;
-    if (!('buildHash' in value) || value['buildHash'] === undefined) return false;
-    if (!('outdated' in value) || value['outdated'] === undefined) return false;
-    if (!('outpostOutdated' in value) || value['outpostOutdated'] === undefined) return false;
+    if (!("versionCurrent" in value) || value["versionCurrent"] === undefined) return false;
+    if (!("versionLatest" in value) || value["versionLatest"] === undefined) return false;
+    if (!("versionLatestValid" in value) || value["versionLatestValid"] === undefined) return false;
+    if (!("buildHash" in value) || value["buildHash"] === undefined) return false;
+    if (!("outdated" in value) || value["outdated"] === undefined) return false;
+    if (!("outpostOutdated" in value) || value["outpostOutdated"] === undefined) return false;
     return true;
 }
 
@@ -79,13 +78,12 @@ export function VersionFromJSONTyped(json: any, ignoreDiscriminator: boolean): V
         return json;
     }
     return {
-        
-        'versionCurrent': json['version_current'],
-        'versionLatest': json['version_latest'],
-        'versionLatestValid': json['version_latest_valid'],
-        'buildHash': json['build_hash'],
-        'outdated': json['outdated'],
-        'outpostOutdated': json['outpost_outdated'],
+        versionCurrent: json["version_current"],
+        versionLatest: json["version_latest"],
+        versionLatestValid: json["version_latest_valid"],
+        buildHash: json["build_hash"],
+        outdated: json["outdated"],
+        outpostOutdated: json["outpost_outdated"],
     };
 }
 
@@ -93,13 +91,21 @@ export function VersionToJSON(json: any): Version {
     return VersionToJSONTyped(json, false);
 }
 
-export function VersionToJSONTyped(value?: Omit<Version, 'version_current'|'version_latest'|'version_latest_valid'|'build_hash'|'outdated'|'outpost_outdated'> | null, ignoreDiscriminator: boolean = false): any {
+export function VersionToJSONTyped(
+    value?: Omit<
+        Version,
+        | "version_current"
+        | "version_latest"
+        | "version_latest_valid"
+        | "build_hash"
+        | "outdated"
+        | "outpost_outdated"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
-    return {
-        
-    };
+    return {};
 }
-

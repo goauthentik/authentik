@@ -120,7 +120,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     >
                     </ak-switch-input>
                     <ak-form-element-horizontal
-                        label=${msg("Federated OIDC Providers")}
+                        label=${msg("Federated OAuth2/OpenID Providers")}
                         name="jwtFederationProviders"
                     >
                         <ak-dual-select-dynamic-selected

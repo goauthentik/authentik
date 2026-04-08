@@ -12,22 +12,20 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const SubModeEnum = {
-    HashedUserId: 'hashed_user_id',
-    UserId: 'user_id',
-    UserUuid: 'user_uuid',
-    UserUsername: 'user_username',
-    UserEmail: 'user_email',
-    UserUpn: 'user_upn',
-    UnknownDefaultOpenApi: '11184809'
+    HashedUserId: "hashed_user_id",
+    UserId: "user_id",
+    UserUuid: "user_uuid",
+    UserUsername: "user_username",
+    UserEmail: "user_email",
+    UserUpn: "user_upn",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type SubModeEnum = typeof SubModeEnum[keyof typeof SubModeEnum];
-
+export type SubModeEnum = (typeof SubModeEnum)[keyof typeof SubModeEnum];
 
 export function instanceOfSubModeEnum(value: any): boolean {
     for (const key in SubModeEnum) {
@@ -55,4 +53,3 @@ export function SubModeEnumToJSON(value?: SubModeEnum | null): any {
 export function SubModeEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): SubModeEnum {
     return value as SubModeEnum;
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * License Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface LicenseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof LicenseRequest
      */
@@ -31,7 +30,7 @@ export interface LicenseRequest {
  * Check if a given object implements the LicenseRequest interface.
  */
 export function instanceOfLicenseRequest(value: object): value is LicenseRequest {
-    if (!('key' in value) || value['key'] === undefined) return false;
+    if (!("key" in value) || value["key"] === undefined) return false;
     return true;
 }
 
@@ -39,13 +38,15 @@ export function LicenseRequestFromJSON(json: any): LicenseRequest {
     return LicenseRequestFromJSONTyped(json, false);
 }
 
-export function LicenseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): LicenseRequest {
+export function LicenseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): LicenseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'key': json['key'],
+        key: json["key"],
     };
 }
 
@@ -53,14 +54,15 @@ export function LicenseRequestToJSON(json: any): LicenseRequest {
     return LicenseRequestToJSONTyped(json, false);
 }
 
-export function LicenseRequestToJSONTyped(value?: LicenseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function LicenseRequestToJSONTyped(
+    value?: LicenseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'key': value['key'],
+        key: value["key"],
     };
 }
-

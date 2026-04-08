@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * PolicyBinding Serializer
  * @export
@@ -20,25 +19,25 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedPolicyBindingRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedPolicyBindingRequest
      */
     policy?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedPolicyBindingRequest
      */
     group?: string | null;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedPolicyBindingRequest
      */
     user?: number | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedPolicyBindingRequest
      */
@@ -50,13 +49,13 @@ export interface PatchedPolicyBindingRequest {
      */
     negate?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof PatchedPolicyBindingRequest
      */
     enabled?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof PatchedPolicyBindingRequest
      */
@@ -78,7 +77,9 @@ export interface PatchedPolicyBindingRequest {
 /**
  * Check if a given object implements the PatchedPolicyBindingRequest interface.
  */
-export function instanceOfPatchedPolicyBindingRequest(value: object): value is PatchedPolicyBindingRequest {
+export function instanceOfPatchedPolicyBindingRequest(
+    value: object,
+): value is PatchedPolicyBindingRequest {
     return true;
 }
 
@@ -86,21 +87,23 @@ export function PatchedPolicyBindingRequestFromJSON(json: any): PatchedPolicyBin
     return PatchedPolicyBindingRequestFromJSONTyped(json, false);
 }
 
-export function PatchedPolicyBindingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedPolicyBindingRequest {
+export function PatchedPolicyBindingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedPolicyBindingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'policy': json['policy'] == null ? undefined : json['policy'],
-        'group': json['group'] == null ? undefined : json['group'],
-        'user': json['user'] == null ? undefined : json['user'],
-        'target': json['target'] == null ? undefined : json['target'],
-        'negate': json['negate'] == null ? undefined : json['negate'],
-        'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'order': json['order'] == null ? undefined : json['order'],
-        'timeout': json['timeout'] == null ? undefined : json['timeout'],
-        'failureResult': json['failure_result'] == null ? undefined : json['failure_result'],
+        policy: json["policy"] == null ? undefined : json["policy"],
+        group: json["group"] == null ? undefined : json["group"],
+        user: json["user"] == null ? undefined : json["user"],
+        target: json["target"] == null ? undefined : json["target"],
+        negate: json["negate"] == null ? undefined : json["negate"],
+        enabled: json["enabled"] == null ? undefined : json["enabled"],
+        order: json["order"] == null ? undefined : json["order"],
+        timeout: json["timeout"] == null ? undefined : json["timeout"],
+        failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
     };
 }
 
@@ -108,22 +111,23 @@ export function PatchedPolicyBindingRequestToJSON(json: any): PatchedPolicyBindi
     return PatchedPolicyBindingRequestToJSONTyped(json, false);
 }
 
-export function PatchedPolicyBindingRequestToJSONTyped(value?: PatchedPolicyBindingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedPolicyBindingRequestToJSONTyped(
+    value?: PatchedPolicyBindingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'policy': value['policy'],
-        'group': value['group'],
-        'user': value['user'],
-        'target': value['target'],
-        'negate': value['negate'],
-        'enabled': value['enabled'],
-        'order': value['order'],
-        'timeout': value['timeout'],
-        'failure_result': value['failureResult'],
+        policy: value["policy"],
+        group: value["group"],
+        user: value["user"],
+        target: value["target"],
+        negate: value["negate"],
+        enabled: value["enabled"],
+        order: value["order"],
+        timeout: value["timeout"],
+        failure_result: value["failureResult"],
     };
 }
-

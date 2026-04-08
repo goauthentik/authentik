@@ -4,8 +4,7 @@ sidebar_label: SSF Provider
 description: "Overview of SSF and the authentik SSF provider"
 authentik_version: "2025.2.0"
 authentik_enterprise: true
-authentik_preview: true
-tags: [Shared Signals Framework, SSF, Apple Business Manager]
+tags: [Shared Signals Framework, SSF, Apple Business Manager, Apple School Manager]
 ---
 
 The Shared Signals Framework (SSF) provider allows you to integrate applications with the Shared Signals Framework protocol.

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * MicrosoftEntraProviderGroup Serializer
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface MicrosoftEntraProviderGroupRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderGroupRequest
      */
     microsoftId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof MicrosoftEntraProviderGroupRequest
      */
     group: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof MicrosoftEntraProviderGroupRequest
      */
@@ -42,43 +41,52 @@ export interface MicrosoftEntraProviderGroupRequest {
 /**
  * Check if a given object implements the MicrosoftEntraProviderGroupRequest interface.
  */
-export function instanceOfMicrosoftEntraProviderGroupRequest(value: object): value is MicrosoftEntraProviderGroupRequest {
-    if (!('microsoftId' in value) || value['microsoftId'] === undefined) return false;
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('provider' in value) || value['provider'] === undefined) return false;
+export function instanceOfMicrosoftEntraProviderGroupRequest(
+    value: object,
+): value is MicrosoftEntraProviderGroupRequest {
+    if (!("microsoftId" in value) || value["microsoftId"] === undefined) return false;
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("provider" in value) || value["provider"] === undefined) return false;
     return true;
 }
 
-export function MicrosoftEntraProviderGroupRequestFromJSON(json: any): MicrosoftEntraProviderGroupRequest {
+export function MicrosoftEntraProviderGroupRequestFromJSON(
+    json: any,
+): MicrosoftEntraProviderGroupRequest {
     return MicrosoftEntraProviderGroupRequestFromJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderGroupRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): MicrosoftEntraProviderGroupRequest {
+export function MicrosoftEntraProviderGroupRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): MicrosoftEntraProviderGroupRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'microsoftId': json['microsoft_id'],
-        'group': json['group'],
-        'provider': json['provider'],
+        microsoftId: json["microsoft_id"],
+        group: json["group"],
+        provider: json["provider"],
     };
 }
 
-export function MicrosoftEntraProviderGroupRequestToJSON(json: any): MicrosoftEntraProviderGroupRequest {
+export function MicrosoftEntraProviderGroupRequestToJSON(
+    json: any,
+): MicrosoftEntraProviderGroupRequest {
     return MicrosoftEntraProviderGroupRequestToJSONTyped(json, false);
 }
 
-export function MicrosoftEntraProviderGroupRequestToJSONTyped(value?: MicrosoftEntraProviderGroupRequest | null, ignoreDiscriminator: boolean = false): any {
+export function MicrosoftEntraProviderGroupRequestToJSONTyped(
+    value?: MicrosoftEntraProviderGroupRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'microsoft_id': value['microsoftId'],
-        'group': value['group'],
-        'provider': value['provider'],
+        microsoft_id: value["microsoftId"],
+        group: value["group"],
+        provider: value["provider"],
     };
 }
-

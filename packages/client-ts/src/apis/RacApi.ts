@@ -12,45 +12,29 @@
  * Do not edit the class manually.
  */
 
-
-import * as runtime from '../runtime';
 import type {
-  ConnectionToken,
-  ConnectionTokenRequest,
-  Endpoint,
-  EndpointRequest,
-  GenericError,
-  PaginatedConnectionTokenList,
-  PaginatedEndpointList,
-  PatchedConnectionTokenRequest,
-  PatchedEndpointRequest,
-  UsedBy,
-  ValidationError,
-} from '../models/index';
+    ConnectionToken,
+    ConnectionTokenRequest,
+    Endpoint,
+    EndpointRequest,
+    PaginatedConnectionTokenList,
+    PaginatedEndpointList,
+    PatchedConnectionTokenRequest,
+    PatchedEndpointRequest,
+    UsedBy,
+} from "../models/index";
 import {
     ConnectionTokenFromJSON,
-    ConnectionTokenToJSON,
-    ConnectionTokenRequestFromJSON,
     ConnectionTokenRequestToJSON,
     EndpointFromJSON,
-    EndpointToJSON,
-    EndpointRequestFromJSON,
     EndpointRequestToJSON,
-    GenericErrorFromJSON,
-    GenericErrorToJSON,
     PaginatedConnectionTokenListFromJSON,
-    PaginatedConnectionTokenListToJSON,
     PaginatedEndpointListFromJSON,
-    PaginatedEndpointListToJSON,
-    PatchedConnectionTokenRequestFromJSON,
     PatchedConnectionTokenRequestToJSON,
-    PatchedEndpointRequestFromJSON,
     PatchedEndpointRequestToJSON,
     UsedByFromJSON,
-    UsedByToJSON,
-    ValidationErrorFromJSON,
-    ValidationErrorToJSON,
-} from '../models/index';
+} from "../models/index";
+import * as runtime from "../runtime";
 
 export interface RacConnectionTokensDestroyRequest {
     connectionTokenUuid: string;
@@ -121,18 +105,19 @@ export interface RacEndpointsUsedByListRequest {
 }
 
 /**
- * 
+ *
  */
 export class RacApi extends runtime.BaseAPI {
-
     /**
      * Creates request options for racConnectionTokensDestroy without sending the request
      */
-    async racConnectionTokensDestroyRequestOpts(requestParameters: RacConnectionTokensDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['connectionTokenUuid'] == null) {
+    async racConnectionTokensDestroyRequestOpts(
+        requestParameters: RacConnectionTokensDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectionTokenUuid"] == null) {
             throw new runtime.RequiredError(
-                'connectionTokenUuid',
-                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensDestroy().'
+                "connectionTokenUuid",
+                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensDestroy().',
             );
         }
 
@@ -150,11 +135,14 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rac/connection_tokens/{connection_token_uuid}/`;
-        urlPath = urlPath.replace(`{${"connection_token_uuid"}}`, encodeURIComponent(String(requestParameters['connectionTokenUuid'])));
+        urlPath = urlPath.replace(
+            `{${"connection_token_uuid"}}`,
+            encodeURIComponent(String(requestParameters["connectionTokenUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -163,7 +151,10 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * ConnectionToken Viewset
      */
-    async racConnectionTokensDestroyRaw(requestParameters: RacConnectionTokensDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async racConnectionTokensDestroyRaw(
+        requestParameters: RacConnectionTokensDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.racConnectionTokensDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -173,42 +164,47 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * ConnectionToken Viewset
      */
-    async racConnectionTokensDestroy(requestParameters: RacConnectionTokensDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async racConnectionTokensDestroy(
+        requestParameters: RacConnectionTokensDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.racConnectionTokensDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for racConnectionTokensList without sending the request
      */
-    async racConnectionTokensListRequestOpts(requestParameters: RacConnectionTokensListRequest): Promise<runtime.RequestOpts> {
+    async racConnectionTokensListRequestOpts(
+        requestParameters: RacConnectionTokensListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['endpoint'] != null) {
-            queryParameters['endpoint'] = requestParameters['endpoint'];
+        if (requestParameters["endpoint"] != null) {
+            queryParameters["endpoint"] = requestParameters["endpoint"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['provider'] != null) {
-            queryParameters['provider'] = requestParameters['provider'];
+        if (requestParameters["provider"] != null) {
+            queryParameters["provider"] = requestParameters["provider"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['sessionUser'] != null) {
-            queryParameters['session__user'] = requestParameters['sessionUser'];
+        if (requestParameters["sessionUser"] != null) {
+            queryParameters["session__user"] = requestParameters["sessionUser"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -226,7 +222,7 @@ export class RacApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -235,17 +231,25 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * ConnectionToken Viewset
      */
-    async racConnectionTokensListRaw(requestParameters: RacConnectionTokensListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedConnectionTokenList>> {
+    async racConnectionTokensListRaw(
+        requestParameters: RacConnectionTokensListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedConnectionTokenList>> {
         const requestOptions = await this.racConnectionTokensListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedConnectionTokenListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedConnectionTokenListFromJSON(jsonValue),
+        );
     }
 
     /**
      * ConnectionToken Viewset
      */
-    async racConnectionTokensList(requestParameters: RacConnectionTokensListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedConnectionTokenList> {
+    async racConnectionTokensList(
+        requestParameters: RacConnectionTokensListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedConnectionTokenList> {
         const response = await this.racConnectionTokensListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -253,11 +257,13 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Creates request options for racConnectionTokensPartialUpdate without sending the request
      */
-    async racConnectionTokensPartialUpdateRequestOpts(requestParameters: RacConnectionTokensPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['connectionTokenUuid'] == null) {
+    async racConnectionTokensPartialUpdateRequestOpts(
+        requestParameters: RacConnectionTokensPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectionTokenUuid"] == null) {
             throw new runtime.RequiredError(
-                'connectionTokenUuid',
-                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensPartialUpdate().'
+                "connectionTokenUuid",
+                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensPartialUpdate().',
             );
         }
 
@@ -265,7 +271,7 @@ export class RacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -277,43 +283,62 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rac/connection_tokens/{connection_token_uuid}/`;
-        urlPath = urlPath.replace(`{${"connection_token_uuid"}}`, encodeURIComponent(String(requestParameters['connectionTokenUuid'])));
+        urlPath = urlPath.replace(
+            `{${"connection_token_uuid"}}`,
+            encodeURIComponent(String(requestParameters["connectionTokenUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedConnectionTokenRequestToJSON(requestParameters['patchedConnectionTokenRequest']),
+            body: PatchedConnectionTokenRequestToJSON(
+                requestParameters["patchedConnectionTokenRequest"],
+            ),
         };
     }
 
     /**
      * ConnectionToken Viewset
      */
-    async racConnectionTokensPartialUpdateRaw(requestParameters: RacConnectionTokensPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConnectionToken>> {
-        const requestOptions = await this.racConnectionTokensPartialUpdateRequestOpts(requestParameters);
+    async racConnectionTokensPartialUpdateRaw(
+        requestParameters: RacConnectionTokensPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConnectionToken>> {
+        const requestOptions =
+            await this.racConnectionTokensPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ConnectionTokenFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConnectionTokenFromJSON(jsonValue),
+        );
     }
 
     /**
      * ConnectionToken Viewset
      */
-    async racConnectionTokensPartialUpdate(requestParameters: RacConnectionTokensPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConnectionToken> {
-        const response = await this.racConnectionTokensPartialUpdateRaw(requestParameters, initOverrides);
+    async racConnectionTokensPartialUpdate(
+        requestParameters: RacConnectionTokensPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConnectionToken> {
+        const response = await this.racConnectionTokensPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for racConnectionTokensRetrieve without sending the request
      */
-    async racConnectionTokensRetrieveRequestOpts(requestParameters: RacConnectionTokensRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['connectionTokenUuid'] == null) {
+    async racConnectionTokensRetrieveRequestOpts(
+        requestParameters: RacConnectionTokensRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectionTokenUuid"] == null) {
             throw new runtime.RequiredError(
-                'connectionTokenUuid',
-                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensRetrieve().'
+                "connectionTokenUuid",
+                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensRetrieve().',
             );
         }
 
@@ -331,11 +356,14 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rac/connection_tokens/{connection_token_uuid}/`;
-        urlPath = urlPath.replace(`{${"connection_token_uuid"}}`, encodeURIComponent(String(requestParameters['connectionTokenUuid'])));
+        urlPath = urlPath.replace(
+            `{${"connection_token_uuid"}}`,
+            encodeURIComponent(String(requestParameters["connectionTokenUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -344,36 +372,49 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * ConnectionToken Viewset
      */
-    async racConnectionTokensRetrieveRaw(requestParameters: RacConnectionTokensRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConnectionToken>> {
+    async racConnectionTokensRetrieveRaw(
+        requestParameters: RacConnectionTokensRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConnectionToken>> {
         const requestOptions = await this.racConnectionTokensRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ConnectionTokenFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConnectionTokenFromJSON(jsonValue),
+        );
     }
 
     /**
      * ConnectionToken Viewset
      */
-    async racConnectionTokensRetrieve(requestParameters: RacConnectionTokensRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConnectionToken> {
-        const response = await this.racConnectionTokensRetrieveRaw(requestParameters, initOverrides);
+    async racConnectionTokensRetrieve(
+        requestParameters: RacConnectionTokensRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConnectionToken> {
+        const response = await this.racConnectionTokensRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for racConnectionTokensUpdate without sending the request
      */
-    async racConnectionTokensUpdateRequestOpts(requestParameters: RacConnectionTokensUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['connectionTokenUuid'] == null) {
+    async racConnectionTokensUpdateRequestOpts(
+        requestParameters: RacConnectionTokensUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectionTokenUuid"] == null) {
             throw new runtime.RequiredError(
-                'connectionTokenUuid',
-                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensUpdate().'
+                "connectionTokenUuid",
+                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensUpdate().',
             );
         }
 
-        if (requestParameters['connectionTokenRequest'] == null) {
+        if (requestParameters["connectionTokenRequest"] == null) {
             throw new runtime.RequiredError(
-                'connectionTokenRequest',
-                'Required parameter "connectionTokenRequest" was null or undefined when calling racConnectionTokensUpdate().'
+                "connectionTokenRequest",
+                'Required parameter "connectionTokenRequest" was null or undefined when calling racConnectionTokensUpdate().',
             );
         }
 
@@ -381,7 +422,7 @@ export class RacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -393,31 +434,42 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rac/connection_tokens/{connection_token_uuid}/`;
-        urlPath = urlPath.replace(`{${"connection_token_uuid"}}`, encodeURIComponent(String(requestParameters['connectionTokenUuid'])));
+        urlPath = urlPath.replace(
+            `{${"connection_token_uuid"}}`,
+            encodeURIComponent(String(requestParameters["connectionTokenUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: ConnectionTokenRequestToJSON(requestParameters['connectionTokenRequest']),
+            body: ConnectionTokenRequestToJSON(requestParameters["connectionTokenRequest"]),
         };
     }
 
     /**
      * ConnectionToken Viewset
      */
-    async racConnectionTokensUpdateRaw(requestParameters: RacConnectionTokensUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConnectionToken>> {
+    async racConnectionTokensUpdateRaw(
+        requestParameters: RacConnectionTokensUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ConnectionToken>> {
         const requestOptions = await this.racConnectionTokensUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ConnectionTokenFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ConnectionTokenFromJSON(jsonValue),
+        );
     }
 
     /**
      * ConnectionToken Viewset
      */
-    async racConnectionTokensUpdate(requestParameters: RacConnectionTokensUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConnectionToken> {
+    async racConnectionTokensUpdate(
+        requestParameters: RacConnectionTokensUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ConnectionToken> {
         const response = await this.racConnectionTokensUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -425,11 +477,13 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Creates request options for racConnectionTokensUsedByList without sending the request
      */
-    async racConnectionTokensUsedByListRequestOpts(requestParameters: RacConnectionTokensUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['connectionTokenUuid'] == null) {
+    async racConnectionTokensUsedByListRequestOpts(
+        requestParameters: RacConnectionTokensUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["connectionTokenUuid"] == null) {
             throw new runtime.RequiredError(
-                'connectionTokenUuid',
-                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensUsedByList().'
+                "connectionTokenUuid",
+                'Required parameter "connectionTokenUuid" was null or undefined when calling racConnectionTokensUsedByList().',
             );
         }
 
@@ -447,11 +501,14 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rac/connection_tokens/{connection_token_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"connection_token_uuid"}}`, encodeURIComponent(String(requestParameters['connectionTokenUuid'])));
+        urlPath = urlPath.replace(
+            `{${"connection_token_uuid"}}`,
+            encodeURIComponent(String(requestParameters["connectionTokenUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -460,8 +517,12 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async racConnectionTokensUsedByListRaw(requestParameters: RacConnectionTokensUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
-        const requestOptions = await this.racConnectionTokensUsedByListRequestOpts(requestParameters);
+    async racConnectionTokensUsedByListRaw(
+        requestParameters: RacConnectionTokensUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.racConnectionTokensUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
@@ -470,19 +531,27 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async racConnectionTokensUsedByList(requestParameters: RacConnectionTokensUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
-        const response = await this.racConnectionTokensUsedByListRaw(requestParameters, initOverrides);
+    async racConnectionTokensUsedByList(
+        requestParameters: RacConnectionTokensUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.racConnectionTokensUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 
     /**
      * Creates request options for racEndpointsCreate without sending the request
      */
-    async racEndpointsCreateRequestOpts(requestParameters: RacEndpointsCreateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['endpointRequest'] == null) {
+    async racEndpointsCreateRequestOpts(
+        requestParameters: RacEndpointsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["endpointRequest"] == null) {
             throw new runtime.RequiredError(
-                'endpointRequest',
-                'Required parameter "endpointRequest" was null or undefined when calling racEndpointsCreate().'
+                "endpointRequest",
+                'Required parameter "endpointRequest" was null or undefined when calling racEndpointsCreate().',
             );
         }
 
@@ -490,7 +559,7 @@ export class RacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -505,17 +574,20 @@ export class RacApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'POST',
+            method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: EndpointRequestToJSON(requestParameters['endpointRequest']),
+            body: EndpointRequestToJSON(requestParameters["endpointRequest"]),
         };
     }
 
     /**
      * Endpoint Viewset
      */
-    async racEndpointsCreateRaw(requestParameters: RacEndpointsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Endpoint>> {
+    async racEndpointsCreateRaw(
+        requestParameters: RacEndpointsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Endpoint>> {
         const requestOptions = await this.racEndpointsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -525,7 +597,10 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Endpoint Viewset
      */
-    async racEndpointsCreate(requestParameters: RacEndpointsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Endpoint> {
+    async racEndpointsCreate(
+        requestParameters: RacEndpointsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Endpoint> {
         const response = await this.racEndpointsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -533,11 +608,13 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Creates request options for racEndpointsDestroy without sending the request
      */
-    async racEndpointsDestroyRequestOpts(requestParameters: RacEndpointsDestroyRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['pbmUuid'] == null) {
+    async racEndpointsDestroyRequestOpts(
+        requestParameters: RacEndpointsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
             throw new runtime.RequiredError(
-                'pbmUuid',
-                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsDestroy().'
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsDestroy().',
             );
         }
 
@@ -555,11 +632,14 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rac/endpoints/{pbm_uuid}/`;
-        urlPath = urlPath.replace(`{${"pbm_uuid"}}`, encodeURIComponent(String(requestParameters['pbmUuid'])));
+        urlPath = urlPath.replace(
+            `{${"pbm_uuid"}}`,
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'DELETE',
+            method: "DELETE",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -568,7 +648,10 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Endpoint Viewset
      */
-    async racEndpointsDestroyRaw(requestParameters: RacEndpointsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async racEndpointsDestroyRaw(
+        requestParameters: RacEndpointsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
         const requestOptions = await this.racEndpointsDestroyRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -578,42 +661,47 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Endpoint Viewset
      */
-    async racEndpointsDestroy(requestParameters: RacEndpointsDestroyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async racEndpointsDestroy(
+        requestParameters: RacEndpointsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
         await this.racEndpointsDestroyRaw(requestParameters, initOverrides);
     }
 
     /**
      * Creates request options for racEndpointsList without sending the request
      */
-    async racEndpointsListRequestOpts(requestParameters: RacEndpointsListRequest): Promise<runtime.RequestOpts> {
+    async racEndpointsListRequestOpts(
+        requestParameters: RacEndpointsListRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
-        if (requestParameters['name'] != null) {
-            queryParameters['name'] = requestParameters['name'];
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
         }
 
-        if (requestParameters['ordering'] != null) {
-            queryParameters['ordering'] = requestParameters['ordering'];
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
         }
 
-        if (requestParameters['page'] != null) {
-            queryParameters['page'] = requestParameters['page'];
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
         }
 
-        if (requestParameters['pageSize'] != null) {
-            queryParameters['page_size'] = requestParameters['pageSize'];
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
-        if (requestParameters['provider'] != null) {
-            queryParameters['provider'] = requestParameters['provider'];
+        if (requestParameters["provider"] != null) {
+            queryParameters["provider"] = requestParameters["provider"];
         }
 
-        if (requestParameters['search'] != null) {
-            queryParameters['search'] = requestParameters['search'];
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
         }
 
-        if (requestParameters['superuserFullList'] != null) {
-            queryParameters['superuser_full_list'] = requestParameters['superuserFullList'];
+        if (requestParameters["superuserFullList"] != null) {
+            queryParameters["superuser_full_list"] = requestParameters["superuserFullList"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -631,7 +719,7 @@ export class RacApi extends runtime.BaseAPI {
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -640,17 +728,25 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * List accessible endpoints
      */
-    async racEndpointsListRaw(requestParameters: RacEndpointsListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PaginatedEndpointList>> {
+    async racEndpointsListRaw(
+        requestParameters: RacEndpointsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedEndpointList>> {
         const requestOptions = await this.racEndpointsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => PaginatedEndpointListFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedEndpointListFromJSON(jsonValue),
+        );
     }
 
     /**
      * List accessible endpoints
      */
-    async racEndpointsList(requestParameters: RacEndpointsListRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PaginatedEndpointList> {
+    async racEndpointsList(
+        requestParameters: RacEndpointsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedEndpointList> {
         const response = await this.racEndpointsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -658,11 +754,13 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Creates request options for racEndpointsPartialUpdate without sending the request
      */
-    async racEndpointsPartialUpdateRequestOpts(requestParameters: RacEndpointsPartialUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['pbmUuid'] == null) {
+    async racEndpointsPartialUpdateRequestOpts(
+        requestParameters: RacEndpointsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
             throw new runtime.RequiredError(
-                'pbmUuid',
-                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsPartialUpdate().'
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsPartialUpdate().',
             );
         }
 
@@ -670,7 +768,7 @@ export class RacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -682,21 +780,27 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rac/endpoints/{pbm_uuid}/`;
-        urlPath = urlPath.replace(`{${"pbm_uuid"}}`, encodeURIComponent(String(requestParameters['pbmUuid'])));
+        urlPath = urlPath.replace(
+            `{${"pbm_uuid"}}`,
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PATCH',
+            method: "PATCH",
             headers: headerParameters,
             query: queryParameters,
-            body: PatchedEndpointRequestToJSON(requestParameters['patchedEndpointRequest']),
+            body: PatchedEndpointRequestToJSON(requestParameters["patchedEndpointRequest"]),
         };
     }
 
     /**
      * Endpoint Viewset
      */
-    async racEndpointsPartialUpdateRaw(requestParameters: RacEndpointsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Endpoint>> {
+    async racEndpointsPartialUpdateRaw(
+        requestParameters: RacEndpointsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Endpoint>> {
         const requestOptions = await this.racEndpointsPartialUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -706,7 +810,10 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Endpoint Viewset
      */
-    async racEndpointsPartialUpdate(requestParameters: RacEndpointsPartialUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Endpoint> {
+    async racEndpointsPartialUpdate(
+        requestParameters: RacEndpointsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Endpoint> {
         const response = await this.racEndpointsPartialUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -714,11 +821,13 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Creates request options for racEndpointsRetrieve without sending the request
      */
-    async racEndpointsRetrieveRequestOpts(requestParameters: RacEndpointsRetrieveRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['pbmUuid'] == null) {
+    async racEndpointsRetrieveRequestOpts(
+        requestParameters: RacEndpointsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
             throw new runtime.RequiredError(
-                'pbmUuid',
-                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsRetrieve().'
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsRetrieve().',
             );
         }
 
@@ -736,11 +845,14 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rac/endpoints/{pbm_uuid}/`;
-        urlPath = urlPath.replace(`{${"pbm_uuid"}}`, encodeURIComponent(String(requestParameters['pbmUuid'])));
+        urlPath = urlPath.replace(
+            `{${"pbm_uuid"}}`,
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -749,7 +861,10 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Endpoint Viewset
      */
-    async racEndpointsRetrieveRaw(requestParameters: RacEndpointsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Endpoint>> {
+    async racEndpointsRetrieveRaw(
+        requestParameters: RacEndpointsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Endpoint>> {
         const requestOptions = await this.racEndpointsRetrieveRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -759,7 +874,10 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Endpoint Viewset
      */
-    async racEndpointsRetrieve(requestParameters: RacEndpointsRetrieveRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Endpoint> {
+    async racEndpointsRetrieve(
+        requestParameters: RacEndpointsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Endpoint> {
         const response = await this.racEndpointsRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -767,18 +885,20 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Creates request options for racEndpointsUpdate without sending the request
      */
-    async racEndpointsUpdateRequestOpts(requestParameters: RacEndpointsUpdateRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['pbmUuid'] == null) {
+    async racEndpointsUpdateRequestOpts(
+        requestParameters: RacEndpointsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
             throw new runtime.RequiredError(
-                'pbmUuid',
-                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsUpdate().'
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsUpdate().',
             );
         }
 
-        if (requestParameters['endpointRequest'] == null) {
+        if (requestParameters["endpointRequest"] == null) {
             throw new runtime.RequiredError(
-                'endpointRequest',
-                'Required parameter "endpointRequest" was null or undefined when calling racEndpointsUpdate().'
+                "endpointRequest",
+                'Required parameter "endpointRequest" was null or undefined when calling racEndpointsUpdate().',
             );
         }
 
@@ -786,7 +906,7 @@ export class RacApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters["Content-Type"] = "application/json";
 
         if (this.configuration && this.configuration.accessToken) {
             const token = this.configuration.accessToken;
@@ -798,21 +918,27 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rac/endpoints/{pbm_uuid}/`;
-        urlPath = urlPath.replace(`{${"pbm_uuid"}}`, encodeURIComponent(String(requestParameters['pbmUuid'])));
+        urlPath = urlPath.replace(
+            `{${"pbm_uuid"}}`,
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'PUT',
+            method: "PUT",
             headers: headerParameters,
             query: queryParameters,
-            body: EndpointRequestToJSON(requestParameters['endpointRequest']),
+            body: EndpointRequestToJSON(requestParameters["endpointRequest"]),
         };
     }
 
     /**
      * Endpoint Viewset
      */
-    async racEndpointsUpdateRaw(requestParameters: RacEndpointsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Endpoint>> {
+    async racEndpointsUpdateRaw(
+        requestParameters: RacEndpointsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Endpoint>> {
         const requestOptions = await this.racEndpointsUpdateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -822,7 +948,10 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Endpoint Viewset
      */
-    async racEndpointsUpdate(requestParameters: RacEndpointsUpdateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Endpoint> {
+    async racEndpointsUpdate(
+        requestParameters: RacEndpointsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Endpoint> {
         const response = await this.racEndpointsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -830,11 +959,13 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Creates request options for racEndpointsUsedByList without sending the request
      */
-    async racEndpointsUsedByListRequestOpts(requestParameters: RacEndpointsUsedByListRequest): Promise<runtime.RequestOpts> {
-        if (requestParameters['pbmUuid'] == null) {
+    async racEndpointsUsedByListRequestOpts(
+        requestParameters: RacEndpointsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pbmUuid"] == null) {
             throw new runtime.RequiredError(
-                'pbmUuid',
-                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsUsedByList().'
+                "pbmUuid",
+                'Required parameter "pbmUuid" was null or undefined when calling racEndpointsUsedByList().',
             );
         }
 
@@ -852,11 +983,14 @@ export class RacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rac/endpoints/{pbm_uuid}/used_by/`;
-        urlPath = urlPath.replace(`{${"pbm_uuid"}}`, encodeURIComponent(String(requestParameters['pbmUuid'])));
+        urlPath = urlPath.replace(
+            `{${"pbm_uuid"}}`,
+            encodeURIComponent(String(requestParameters["pbmUuid"])),
+        );
 
         return {
             path: urlPath,
-            method: 'GET',
+            method: "GET",
             headers: headerParameters,
             query: queryParameters,
         };
@@ -865,7 +999,10 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async racEndpointsUsedByListRaw(requestParameters: RacEndpointsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+    async racEndpointsUsedByListRaw(
+        requestParameters: RacEndpointsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
         const requestOptions = await this.racEndpointsUsedByListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
@@ -875,9 +1012,11 @@ export class RacApi extends runtime.BaseAPI {
     /**
      * Get a list of all objects that use this object
      */
-    async racEndpointsUsedByList(requestParameters: RacEndpointsUsedByListRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UsedBy>> {
+    async racEndpointsUsedByList(
+        requestParameters: RacEndpointsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
         const response = await this.racEndpointsUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
-
 }

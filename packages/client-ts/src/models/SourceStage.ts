@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { FlowSet } from './FlowSet';
-import {
-    FlowSetFromJSON,
-    FlowSetFromJSONTyped,
-    FlowSetToJSON,
-    FlowSetToJSONTyped,
-} from './FlowSet';
+import type { FlowSet } from "./FlowSet";
+import { FlowSetFromJSON } from "./FlowSet";
 
 /**
  * SourceStage Serializer
@@ -28,13 +22,13 @@ import {
  */
 export interface SourceStage {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceStage
      */
     readonly pk: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceStage
      */
@@ -64,13 +58,13 @@ export interface SourceStage {
      */
     readonly metaModelName: string;
     /**
-     * 
+     *
      * @type {Array<FlowSet>}
      * @memberof SourceStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SourceStage
      */
@@ -87,14 +81,14 @@ export interface SourceStage {
  * Check if a given object implements the SourceStage interface.
  */
 export function instanceOfSourceStage(value: object): value is SourceStage {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('component' in value) || value['component'] === undefined) return false;
-    if (!('verboseName' in value) || value['verboseName'] === undefined) return false;
-    if (!('verboseNamePlural' in value) || value['verboseNamePlural'] === undefined) return false;
-    if (!('metaModelName' in value) || value['metaModelName'] === undefined) return false;
-    if (!('flowSet' in value) || value['flowSet'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("component" in value) || value["component"] === undefined) return false;
+    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
+    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
     return true;
 }
 
@@ -107,16 +101,15 @@ export function SourceStageFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'name': json['name'],
-        'component': json['component'],
-        'verboseName': json['verbose_name'],
-        'verboseNamePlural': json['verbose_name_plural'],
-        'metaModelName': json['meta_model_name'],
-        'flowSet': ((json['flow_set'] as Array<any>).map(FlowSetFromJSON)),
-        'source': json['source'],
-        'resumeTimeout': json['resume_timeout'] == null ? undefined : json['resume_timeout'],
+        pk: json["pk"],
+        name: json["name"],
+        component: json["component"],
+        verboseName: json["verbose_name"],
+        verboseNamePlural: json["verbose_name_plural"],
+        metaModelName: json["meta_model_name"],
+        flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
+        source: json["source"],
+        resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
     };
 }
 
@@ -124,16 +117,20 @@ export function SourceStageToJSON(json: any): SourceStage {
     return SourceStageToJSONTyped(json, false);
 }
 
-export function SourceStageToJSONTyped(value?: Omit<SourceStage, 'pk'|'component'|'verbose_name'|'verbose_name_plural'|'meta_model_name'|'flow_set'> | null, ignoreDiscriminator: boolean = false): any {
+export function SourceStageToJSONTyped(
+    value?: Omit<
+        SourceStage,
+        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+    > | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'source': value['source'],
-        'resume_timeout': value['resumeTimeout'],
+        name: value["name"],
+        source: value["source"],
+        resume_timeout: value["resumeTimeout"],
     };
 }
-

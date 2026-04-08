@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Source } from './Source';
-import {
-    SourceFromJSON,
-    SourceFromJSONTyped,
-    SourceToJSON,
-    SourceToJSONTyped,
-} from './Source';
+import type { Source } from "./Source";
+import { SourceFromJSON } from "./Source";
 
 /**
  * User source connection
@@ -28,43 +22,43 @@ import {
  */
 export interface UserSourceConnection {
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserSourceConnection
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof UserSourceConnection
      */
     user: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSourceConnection
      */
     source: string;
     /**
-     * 
+     *
      * @type {Source}
      * @memberof UserSourceConnection
      */
     readonly sourceObj: Source;
     /**
-     * 
+     *
      * @type {string}
      * @memberof UserSourceConnection
      */
     identifier: string;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserSourceConnection
      */
     readonly created: Date;
     /**
-     * 
+     *
      * @type {Date}
      * @memberof UserSourceConnection
      */
@@ -75,13 +69,13 @@ export interface UserSourceConnection {
  * Check if a given object implements the UserSourceConnection interface.
  */
 export function instanceOfUserSourceConnection(value: object): value is UserSourceConnection {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('user' in value) || value['user'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('sourceObj' in value) || value['sourceObj'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
-    if (!('created' in value) || value['created'] === undefined) return false;
-    if (!('lastUpdated' in value) || value['lastUpdated'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("sourceObj" in value) || value["sourceObj"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
+    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
     return true;
 }
 
@@ -89,19 +83,21 @@ export function UserSourceConnectionFromJSON(json: any): UserSourceConnection {
     return UserSourceConnectionFromJSONTyped(json, false);
 }
 
-export function UserSourceConnectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSourceConnection {
+export function UserSourceConnectionFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): UserSourceConnection {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'user': json['user'],
-        'source': json['source'],
-        'sourceObj': SourceFromJSON(json['source_obj']),
-        'identifier': json['identifier'],
-        'created': (new Date(json['created'])),
-        'lastUpdated': (new Date(json['last_updated'])),
+        pk: json["pk"],
+        user: json["user"],
+        source: json["source"],
+        sourceObj: SourceFromJSON(json["source_obj"]),
+        identifier: json["identifier"],
+        created: new Date(json["created"]),
+        lastUpdated: new Date(json["last_updated"]),
     };
 }
 
@@ -109,16 +105,17 @@ export function UserSourceConnectionToJSON(json: any): UserSourceConnection {
     return UserSourceConnectionToJSONTyped(json, false);
 }
 
-export function UserSourceConnectionToJSONTyped(value?: Omit<UserSourceConnection, 'pk'|'source_obj'|'created'|'last_updated'> | null, ignoreDiscriminator: boolean = false): any {
+export function UserSourceConnectionToJSONTyped(
+    value?: Omit<UserSourceConnection, "pk" | "source_obj" | "created" | "last_updated"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user': value['user'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        user: value["user"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

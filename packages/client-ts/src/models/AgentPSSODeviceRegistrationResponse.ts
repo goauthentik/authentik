@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * authentik settings for Platform SSO tokens
  * @export
@@ -20,37 +19,37 @@ import { mapValues } from '../runtime';
  */
 export interface AgentPSSODeviceRegistrationResponse {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentPSSODeviceRegistrationResponse
      */
     clientId: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentPSSODeviceRegistrationResponse
      */
     issuer: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentPSSODeviceRegistrationResponse
      */
     tokenEndpoint: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentPSSODeviceRegistrationResponse
      */
     jwksEndpoint: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentPSSODeviceRegistrationResponse
      */
     audience: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentPSSODeviceRegistrationResponse
      */
@@ -60,52 +59,61 @@ export interface AgentPSSODeviceRegistrationResponse {
 /**
  * Check if a given object implements the AgentPSSODeviceRegistrationResponse interface.
  */
-export function instanceOfAgentPSSODeviceRegistrationResponse(value: object): value is AgentPSSODeviceRegistrationResponse {
-    if (!('clientId' in value) || value['clientId'] === undefined) return false;
-    if (!('issuer' in value) || value['issuer'] === undefined) return false;
-    if (!('tokenEndpoint' in value) || value['tokenEndpoint'] === undefined) return false;
-    if (!('jwksEndpoint' in value) || value['jwksEndpoint'] === undefined) return false;
-    if (!('audience' in value) || value['audience'] === undefined) return false;
-    if (!('nonceEndpoint' in value) || value['nonceEndpoint'] === undefined) return false;
+export function instanceOfAgentPSSODeviceRegistrationResponse(
+    value: object,
+): value is AgentPSSODeviceRegistrationResponse {
+    if (!("clientId" in value) || value["clientId"] === undefined) return false;
+    if (!("issuer" in value) || value["issuer"] === undefined) return false;
+    if (!("tokenEndpoint" in value) || value["tokenEndpoint"] === undefined) return false;
+    if (!("jwksEndpoint" in value) || value["jwksEndpoint"] === undefined) return false;
+    if (!("audience" in value) || value["audience"] === undefined) return false;
+    if (!("nonceEndpoint" in value) || value["nonceEndpoint"] === undefined) return false;
     return true;
 }
 
-export function AgentPSSODeviceRegistrationResponseFromJSON(json: any): AgentPSSODeviceRegistrationResponse {
+export function AgentPSSODeviceRegistrationResponseFromJSON(
+    json: any,
+): AgentPSSODeviceRegistrationResponse {
     return AgentPSSODeviceRegistrationResponseFromJSONTyped(json, false);
 }
 
-export function AgentPSSODeviceRegistrationResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentPSSODeviceRegistrationResponse {
+export function AgentPSSODeviceRegistrationResponseFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AgentPSSODeviceRegistrationResponse {
     if (json == null) {
         return json;
     }
     return {
-        
-        'clientId': json['client_id'],
-        'issuer': json['issuer'],
-        'tokenEndpoint': json['token_endpoint'],
-        'jwksEndpoint': json['jwks_endpoint'],
-        'audience': json['audience'],
-        'nonceEndpoint': json['nonce_endpoint'],
+        clientId: json["client_id"],
+        issuer: json["issuer"],
+        tokenEndpoint: json["token_endpoint"],
+        jwksEndpoint: json["jwks_endpoint"],
+        audience: json["audience"],
+        nonceEndpoint: json["nonce_endpoint"],
     };
 }
 
-export function AgentPSSODeviceRegistrationResponseToJSON(json: any): AgentPSSODeviceRegistrationResponse {
+export function AgentPSSODeviceRegistrationResponseToJSON(
+    json: any,
+): AgentPSSODeviceRegistrationResponse {
     return AgentPSSODeviceRegistrationResponseToJSONTyped(json, false);
 }
 
-export function AgentPSSODeviceRegistrationResponseToJSONTyped(value?: AgentPSSODeviceRegistrationResponse | null, ignoreDiscriminator: boolean = false): any {
+export function AgentPSSODeviceRegistrationResponseToJSONTyped(
+    value?: AgentPSSODeviceRegistrationResponse | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'client_id': value['clientId'],
-        'issuer': value['issuer'],
-        'token_endpoint': value['tokenEndpoint'],
-        'jwks_endpoint': value['jwksEndpoint'],
-        'audience': value['audience'],
-        'nonce_endpoint': value['nonceEndpoint'],
+        client_id: value["clientId"],
+        issuer: value["issuer"],
+        token_endpoint: value["tokenEndpoint"],
+        jwks_endpoint: value["jwksEndpoint"],
+        audience: value["audience"],
+        nonce_endpoint: value["nonceEndpoint"],
     };
 }
-

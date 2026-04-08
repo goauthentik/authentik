@@ -12,21 +12,9 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { ErrorDetail } from './ErrorDetail';
-import {
-    ErrorDetailFromJSON,
-    ErrorDetailFromJSONTyped,
-    ErrorDetailToJSON,
-    ErrorDetailToJSONTyped,
-} from './ErrorDetail';
-import type { ContextualFlowInfo } from './ContextualFlowInfo';
-import {
-    ContextualFlowInfoFromJSON,
-    ContextualFlowInfoFromJSONTyped,
-    ContextualFlowInfoToJSON,
-    ContextualFlowInfoToJSONTyped,
-} from './ContextualFlowInfo';
+import type { ContextualFlowInfo } from "./ContextualFlowInfo";
+import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
+import type { ErrorDetail } from "./ErrorDetail";
 
 /**
  * Base login challenge for Identification stage
@@ -35,23 +23,23 @@ import {
  */
 export interface TelegramLoginChallenge {
     /**
-     * 
+     *
      * @type {ContextualFlowInfo}
      * @memberof TelegramLoginChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TelegramLoginChallenge
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
      * @memberof TelegramLoginChallenge
      */
-    responseErrors?: { [key: string]: Array<ErrorDetail>; };
+    responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      * Telegram bot username
      * @type {string}
@@ -59,7 +47,7 @@ export interface TelegramLoginChallenge {
      */
     botUsername: string;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof TelegramLoginChallenge
      */
@@ -70,8 +58,9 @@ export interface TelegramLoginChallenge {
  * Check if a given object implements the TelegramLoginChallenge interface.
  */
 export function instanceOfTelegramLoginChallenge(value: object): value is TelegramLoginChallenge {
-    if (!('botUsername' in value) || value['botUsername'] === undefined) return false;
-    if (!('requestMessageAccess' in value) || value['requestMessageAccess'] === undefined) return false;
+    if (!("botUsername" in value) || value["botUsername"] === undefined) return false;
+    if (!("requestMessageAccess" in value) || value["requestMessageAccess"] === undefined)
+        return false;
     return true;
 }
 
@@ -79,17 +68,20 @@ export function TelegramLoginChallengeFromJSON(json: any): TelegramLoginChalleng
     return TelegramLoginChallengeFromJSONTyped(json, false);
 }
 
-export function TelegramLoginChallengeFromJSONTyped(json: any, ignoreDiscriminator: boolean): TelegramLoginChallenge {
+export function TelegramLoginChallengeFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): TelegramLoginChallenge {
     if (json == null) {
         return json;
     }
     return {
-        
-        'flowInfo': json['flow_info'] == null ? undefined : ContextualFlowInfoFromJSON(json['flow_info']),
-        'component': json['component'] == null ? undefined : json['component'],
-        'responseErrors': json['response_errors'] == null ? undefined : json['response_errors'],
-        'botUsername': json['bot_username'],
-        'requestMessageAccess': json['request_message_access'],
+        flowInfo:
+            json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
+        component: json["component"] == null ? undefined : json["component"],
+        responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        botUsername: json["bot_username"],
+        requestMessageAccess: json["request_message_access"],
     };
 }
 
@@ -97,18 +89,19 @@ export function TelegramLoginChallengeToJSON(json: any): TelegramLoginChallenge 
     return TelegramLoginChallengeToJSONTyped(json, false);
 }
 
-export function TelegramLoginChallengeToJSONTyped(value?: TelegramLoginChallenge | null, ignoreDiscriminator: boolean = false): any {
+export function TelegramLoginChallengeToJSONTyped(
+    value?: TelegramLoginChallenge | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'flow_info': ContextualFlowInfoToJSON(value['flowInfo']),
-        'component': value['component'],
-        'response_errors': value['responseErrors'],
-        'bot_username': value['botUsername'],
-        'request_message_access': value['requestMessageAccess'],
+        flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
+        component: value["component"],
+        response_errors: value["responseErrors"],
+        bot_username: value["botUsername"],
+        request_message_access: value["requestMessageAccess"],
     };
 }
-

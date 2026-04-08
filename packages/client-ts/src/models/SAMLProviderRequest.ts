@@ -12,42 +12,19 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { DigestAlgorithmEnum } from './DigestAlgorithmEnum';
-import {
-    DigestAlgorithmEnumFromJSON,
-    DigestAlgorithmEnumFromJSONTyped,
-    DigestAlgorithmEnumToJSON,
-    DigestAlgorithmEnumToJSONTyped,
-} from './DigestAlgorithmEnum';
-import type { SignatureAlgorithmEnum } from './SignatureAlgorithmEnum';
+import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
+import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
+import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
+import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
+import type { SAMLLogoutMethods } from "./SAMLLogoutMethods";
+import { SAMLLogoutMethodsFromJSON, SAMLLogoutMethodsToJSON } from "./SAMLLogoutMethods";
+import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
+import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
+import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
 import {
     SignatureAlgorithmEnumFromJSON,
-    SignatureAlgorithmEnumFromJSONTyped,
     SignatureAlgorithmEnumToJSON,
-    SignatureAlgorithmEnumToJSONTyped,
-} from './SignatureAlgorithmEnum';
-import type { SAMLNameIDPolicyEnum } from './SAMLNameIDPolicyEnum';
-import {
-    SAMLNameIDPolicyEnumFromJSON,
-    SAMLNameIDPolicyEnumFromJSONTyped,
-    SAMLNameIDPolicyEnumToJSON,
-    SAMLNameIDPolicyEnumToJSONTyped,
-} from './SAMLNameIDPolicyEnum';
-import type { SAMLLogoutMethods } from './SAMLLogoutMethods';
-import {
-    SAMLLogoutMethodsFromJSON,
-    SAMLLogoutMethodsFromJSONTyped,
-    SAMLLogoutMethodsToJSON,
-    SAMLLogoutMethodsToJSONTyped,
-} from './SAMLLogoutMethods';
-import type { SAMLBindingsEnum } from './SAMLBindingsEnum';
-import {
-    SAMLBindingsEnumFromJSON,
-    SAMLBindingsEnumFromJSONTyped,
-    SAMLBindingsEnumToJSON,
-    SAMLBindingsEnumToJSONTyped,
-} from './SAMLBindingsEnum';
+} from "./SignatureAlgorithmEnum";
 
 /**
  * SAMLProvider Serializer
@@ -56,7 +33,7 @@ import {
  */
 export interface SAMLProviderRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof SAMLProviderRequest
      */
@@ -80,13 +57,13 @@ export interface SAMLProviderRequest {
      */
     invalidationFlow: string;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof SAMLProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
-     * 
+     *
      * @type {string}
      * @memberof SAMLProviderRequest
      */
@@ -140,13 +117,13 @@ export interface SAMLProviderRequest {
      */
     authnContextClassRefMapping?: string | null;
     /**
-     * 
+     *
      * @type {DigestAlgorithmEnum}
      * @memberof SAMLProviderRequest
      */
     digestAlgorithm?: DigestAlgorithmEnum;
     /**
-     * 
+     *
      * @type {SignatureAlgorithmEnum}
      * @memberof SAMLProviderRequest
      */
@@ -170,25 +147,25 @@ export interface SAMLProviderRequest {
      */
     encryptionKp?: string | null;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SAMLProviderRequest
      */
     signAssertion?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SAMLProviderRequest
      */
     signResponse?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SAMLProviderRequest
      */
     signLogoutRequest?: boolean;
     /**
-     * 
+     *
      * @type {boolean}
      * @memberof SAMLProviderRequest
      */
@@ -218,23 +195,21 @@ export interface SAMLProviderRequest {
      */
     defaultRelayState?: string;
     /**
-     * 
+     *
      * @type {SAMLNameIDPolicyEnum}
      * @memberof SAMLProviderRequest
      */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
 }
 
-
-
 /**
  * Check if a given object implements the SAMLProviderRequest interface.
  */
 export function instanceOfSAMLProviderRequest(value: object): value is SAMLProviderRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('authorizationFlow' in value) || value['authorizationFlow'] === undefined) return false;
-    if (!('invalidationFlow' in value) || value['invalidationFlow'] === undefined) return false;
-    if (!('acsUrl' in value) || value['acsUrl'] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
+    if (!("invalidationFlow" in value) || value["invalidationFlow"] === undefined) return false;
+    if (!("acsUrl" in value) || value["acsUrl"] === undefined) return false;
     return true;
 }
 
@@ -242,40 +217,72 @@ export function SAMLProviderRequestFromJSON(json: any): SAMLProviderRequest {
     return SAMLProviderRequestFromJSONTyped(json, false);
 }
 
-export function SAMLProviderRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SAMLProviderRequest {
+export function SAMLProviderRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): SAMLProviderRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'authenticationFlow': json['authentication_flow'] == null ? undefined : json['authentication_flow'],
-        'authorizationFlow': json['authorization_flow'],
-        'invalidationFlow': json['invalidation_flow'],
-        'propertyMappings': json['property_mappings'] == null ? undefined : json['property_mappings'],
-        'acsUrl': json['acs_url'],
-        'slsUrl': json['sls_url'] == null ? undefined : json['sls_url'],
-        'audience': json['audience'] == null ? undefined : json['audience'],
-        'issuer': json['issuer'] == null ? undefined : json['issuer'],
-        'assertionValidNotBefore': json['assertion_valid_not_before'] == null ? undefined : json['assertion_valid_not_before'],
-        'assertionValidNotOnOrAfter': json['assertion_valid_not_on_or_after'] == null ? undefined : json['assertion_valid_not_on_or_after'],
-        'sessionValidNotOnOrAfter': json['session_valid_not_on_or_after'] == null ? undefined : json['session_valid_not_on_or_after'],
-        'nameIdMapping': json['name_id_mapping'] == null ? undefined : json['name_id_mapping'],
-        'authnContextClassRefMapping': json['authn_context_class_ref_mapping'] == null ? undefined : json['authn_context_class_ref_mapping'],
-        'digestAlgorithm': json['digest_algorithm'] == null ? undefined : DigestAlgorithmEnumFromJSON(json['digest_algorithm']),
-        'signatureAlgorithm': json['signature_algorithm'] == null ? undefined : SignatureAlgorithmEnumFromJSON(json['signature_algorithm']),
-        'signingKp': json['signing_kp'] == null ? undefined : json['signing_kp'],
-        'verificationKp': json['verification_kp'] == null ? undefined : json['verification_kp'],
-        'encryptionKp': json['encryption_kp'] == null ? undefined : json['encryption_kp'],
-        'signAssertion': json['sign_assertion'] == null ? undefined : json['sign_assertion'],
-        'signResponse': json['sign_response'] == null ? undefined : json['sign_response'],
-        'signLogoutRequest': json['sign_logout_request'] == null ? undefined : json['sign_logout_request'],
-        'signLogoutResponse': json['sign_logout_response'] == null ? undefined : json['sign_logout_response'],
-        'spBinding': json['sp_binding'] == null ? undefined : SAMLBindingsEnumFromJSON(json['sp_binding']),
-        'slsBinding': json['sls_binding'] == null ? undefined : SAMLBindingsEnumFromJSON(json['sls_binding']),
-        'logoutMethod': json['logout_method'] == null ? undefined : SAMLLogoutMethodsFromJSON(json['logout_method']),
-        'defaultRelayState': json['default_relay_state'] == null ? undefined : json['default_relay_state'],
-        'defaultNameIdPolicy': json['default_name_id_policy'] == null ? undefined : SAMLNameIDPolicyEnumFromJSON(json['default_name_id_policy']),
+        name: json["name"],
+        authenticationFlow:
+            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+        authorizationFlow: json["authorization_flow"],
+        invalidationFlow: json["invalidation_flow"],
+        propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
+        acsUrl: json["acs_url"],
+        slsUrl: json["sls_url"] == null ? undefined : json["sls_url"],
+        audience: json["audience"] == null ? undefined : json["audience"],
+        issuer: json["issuer"] == null ? undefined : json["issuer"],
+        assertionValidNotBefore:
+            json["assertion_valid_not_before"] == null
+                ? undefined
+                : json["assertion_valid_not_before"],
+        assertionValidNotOnOrAfter:
+            json["assertion_valid_not_on_or_after"] == null
+                ? undefined
+                : json["assertion_valid_not_on_or_after"],
+        sessionValidNotOnOrAfter:
+            json["session_valid_not_on_or_after"] == null
+                ? undefined
+                : json["session_valid_not_on_or_after"],
+        nameIdMapping: json["name_id_mapping"] == null ? undefined : json["name_id_mapping"],
+        authnContextClassRefMapping:
+            json["authn_context_class_ref_mapping"] == null
+                ? undefined
+                : json["authn_context_class_ref_mapping"],
+        digestAlgorithm:
+            json["digest_algorithm"] == null
+                ? undefined
+                : DigestAlgorithmEnumFromJSON(json["digest_algorithm"]),
+        signatureAlgorithm:
+            json["signature_algorithm"] == null
+                ? undefined
+                : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
+        signingKp: json["signing_kp"] == null ? undefined : json["signing_kp"],
+        verificationKp: json["verification_kp"] == null ? undefined : json["verification_kp"],
+        encryptionKp: json["encryption_kp"] == null ? undefined : json["encryption_kp"],
+        signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
+        signResponse: json["sign_response"] == null ? undefined : json["sign_response"],
+        signLogoutRequest:
+            json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
+        signLogoutResponse:
+            json["sign_logout_response"] == null ? undefined : json["sign_logout_response"],
+        spBinding:
+            json["sp_binding"] == null ? undefined : SAMLBindingsEnumFromJSON(json["sp_binding"]),
+        slsBinding:
+            json["sls_binding"] == null ? undefined : SAMLBindingsEnumFromJSON(json["sls_binding"]),
+        logoutMethod:
+            json["logout_method"] == null
+                ? undefined
+                : SAMLLogoutMethodsFromJSON(json["logout_method"]),
+        defaultRelayState:
+            json["default_relay_state"] == null ? undefined : json["default_relay_state"],
+        defaultNameIdPolicy:
+            json["default_name_id_policy"] == null
+                ? undefined
+                : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
     };
 }
 
@@ -283,41 +290,42 @@ export function SAMLProviderRequestToJSON(json: any): SAMLProviderRequest {
     return SAMLProviderRequestToJSONTyped(json, false);
 }
 
-export function SAMLProviderRequestToJSONTyped(value?: SAMLProviderRequest | null, ignoreDiscriminator: boolean = false): any {
+export function SAMLProviderRequestToJSONTyped(
+    value?: SAMLProviderRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'authentication_flow': value['authenticationFlow'],
-        'authorization_flow': value['authorizationFlow'],
-        'invalidation_flow': value['invalidationFlow'],
-        'property_mappings': value['propertyMappings'],
-        'acs_url': value['acsUrl'],
-        'sls_url': value['slsUrl'],
-        'audience': value['audience'],
-        'issuer': value['issuer'],
-        'assertion_valid_not_before': value['assertionValidNotBefore'],
-        'assertion_valid_not_on_or_after': value['assertionValidNotOnOrAfter'],
-        'session_valid_not_on_or_after': value['sessionValidNotOnOrAfter'],
-        'name_id_mapping': value['nameIdMapping'],
-        'authn_context_class_ref_mapping': value['authnContextClassRefMapping'],
-        'digest_algorithm': DigestAlgorithmEnumToJSON(value['digestAlgorithm']),
-        'signature_algorithm': SignatureAlgorithmEnumToJSON(value['signatureAlgorithm']),
-        'signing_kp': value['signingKp'],
-        'verification_kp': value['verificationKp'],
-        'encryption_kp': value['encryptionKp'],
-        'sign_assertion': value['signAssertion'],
-        'sign_response': value['signResponse'],
-        'sign_logout_request': value['signLogoutRequest'],
-        'sign_logout_response': value['signLogoutResponse'],
-        'sp_binding': SAMLBindingsEnumToJSON(value['spBinding']),
-        'sls_binding': SAMLBindingsEnumToJSON(value['slsBinding']),
-        'logout_method': SAMLLogoutMethodsToJSON(value['logoutMethod']),
-        'default_relay_state': value['defaultRelayState'],
-        'default_name_id_policy': SAMLNameIDPolicyEnumToJSON(value['defaultNameIdPolicy']),
+        name: value["name"],
+        authentication_flow: value["authenticationFlow"],
+        authorization_flow: value["authorizationFlow"],
+        invalidation_flow: value["invalidationFlow"],
+        property_mappings: value["propertyMappings"],
+        acs_url: value["acsUrl"],
+        sls_url: value["slsUrl"],
+        audience: value["audience"],
+        issuer: value["issuer"],
+        assertion_valid_not_before: value["assertionValidNotBefore"],
+        assertion_valid_not_on_or_after: value["assertionValidNotOnOrAfter"],
+        session_valid_not_on_or_after: value["sessionValidNotOnOrAfter"],
+        name_id_mapping: value["nameIdMapping"],
+        authn_context_class_ref_mapping: value["authnContextClassRefMapping"],
+        digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
+        signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
+        signing_kp: value["signingKp"],
+        verification_kp: value["verificationKp"],
+        encryption_kp: value["encryptionKp"],
+        sign_assertion: value["signAssertion"],
+        sign_response: value["signResponse"],
+        sign_logout_request: value["signLogoutRequest"],
+        sign_logout_response: value["signLogoutResponse"],
+        sp_binding: SAMLBindingsEnumToJSON(value["spBinding"]),
+        sls_binding: SAMLBindingsEnumToJSON(value["slsBinding"]),
+        logout_method: SAMLLogoutMethodsToJSON(value["logoutMethod"]),
+        default_relay_state: value["defaultRelayState"],
+        default_name_id_policy: SAMLNameIDPolicyEnumToJSON(value["defaultNameIdPolicy"]),
     };
 }
-

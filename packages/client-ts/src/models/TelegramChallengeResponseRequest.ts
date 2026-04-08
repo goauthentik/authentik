@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Base class for all challenge responses
  * @export
@@ -20,49 +19,49 @@ import { mapValues } from '../runtime';
  */
 export interface TelegramChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {number}
      * @memberof TelegramChallengeResponseRequest
      */
     id: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TelegramChallengeResponseRequest
      */
     firstName?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TelegramChallengeResponseRequest
      */
     lastName?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TelegramChallengeResponseRequest
      */
     username?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TelegramChallengeResponseRequest
      */
     photoUrl?: string;
     /**
-     * 
+     *
      * @type {number}
      * @memberof TelegramChallengeResponseRequest
      */
     authDate: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TelegramChallengeResponseRequest
      */
     hash: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof TelegramChallengeResponseRequest
      */
@@ -72,53 +71,62 @@ export interface TelegramChallengeResponseRequest {
 /**
  * Check if a given object implements the TelegramChallengeResponseRequest interface.
  */
-export function instanceOfTelegramChallengeResponseRequest(value: object): value is TelegramChallengeResponseRequest {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('authDate' in value) || value['authDate'] === undefined) return false;
-    if (!('hash' in value) || value['hash'] === undefined) return false;
+export function instanceOfTelegramChallengeResponseRequest(
+    value: object,
+): value is TelegramChallengeResponseRequest {
+    if (!("id" in value) || value["id"] === undefined) return false;
+    if (!("authDate" in value) || value["authDate"] === undefined) return false;
+    if (!("hash" in value) || value["hash"] === undefined) return false;
     return true;
 }
 
-export function TelegramChallengeResponseRequestFromJSON(json: any): TelegramChallengeResponseRequest {
+export function TelegramChallengeResponseRequestFromJSON(
+    json: any,
+): TelegramChallengeResponseRequest {
     return TelegramChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function TelegramChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): TelegramChallengeResponseRequest {
+export function TelegramChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): TelegramChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'id': json['id'],
-        'firstName': json['first_name'] == null ? undefined : json['first_name'],
-        'lastName': json['last_name'] == null ? undefined : json['last_name'],
-        'username': json['username'] == null ? undefined : json['username'],
-        'photoUrl': json['photo_url'] == null ? undefined : json['photo_url'],
-        'authDate': json['auth_date'],
-        'hash': json['hash'],
-        'component': json['component'] == null ? undefined : json['component'],
+        id: json["id"],
+        firstName: json["first_name"] == null ? undefined : json["first_name"],
+        lastName: json["last_name"] == null ? undefined : json["last_name"],
+        username: json["username"] == null ? undefined : json["username"],
+        photoUrl: json["photo_url"] == null ? undefined : json["photo_url"],
+        authDate: json["auth_date"],
+        hash: json["hash"],
+        component: json["component"] == null ? undefined : json["component"],
     };
 }
 
-export function TelegramChallengeResponseRequestToJSON(json: any): TelegramChallengeResponseRequest {
+export function TelegramChallengeResponseRequestToJSON(
+    json: any,
+): TelegramChallengeResponseRequest {
     return TelegramChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function TelegramChallengeResponseRequestToJSONTyped(value?: TelegramChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function TelegramChallengeResponseRequestToJSONTyped(
+    value?: TelegramChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'id': value['id'],
-        'first_name': value['firstName'],
-        'last_name': value['lastName'],
-        'username': value['username'],
-        'photo_url': value['photoUrl'],
-        'auth_date': value['authDate'],
-        'hash': value['hash'],
-        'component': value['component'],
+        id: value["id"],
+        first_name: value["firstName"],
+        last_name: value["lastName"],
+        username: value["username"],
+        photo_url: value["photoUrl"],
+        auth_date: value["authDate"],
+        hash: value["hash"],
+        component: value["component"],
     };
 }
-

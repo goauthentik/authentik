@@ -22,13 +22,14 @@ var _ MappedNullable = &GroupLDAPSourceConnection{}
 
 // GroupLDAPSourceConnection Group Source Connection
 type GroupLDAPSourceConnection struct {
-	Pk                   int32     `json:"pk"`
-	Group                string    `json:"group"`
-	Source               string    `json:"source"`
-	SourceObj            Source    `json:"source_obj"`
-	Identifier           string    `json:"identifier"`
-	Created              time.Time `json:"created"`
-	LastUpdated          time.Time `json:"last_updated"`
+	Pk                   int32        `json:"pk"`
+	Group                string       `json:"group"`
+	Source               string       `json:"source"`
+	SourceObj            Source       `json:"source_obj"`
+	Identifier           string       `json:"identifier"`
+	Created              time.Time    `json:"created"`
+	LastUpdated          time.Time    `json:"last_updated"`
+	GroupObj             PartialGroup `json:"group_obj"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -38,7 +39,7 @@ type _GroupLDAPSourceConnection GroupLDAPSourceConnection
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGroupLDAPSourceConnection(pk int32, group string, source string, sourceObj Source, identifier string, created time.Time, lastUpdated time.Time) *GroupLDAPSourceConnection {
+func NewGroupLDAPSourceConnection(pk int32, group string, source string, sourceObj Source, identifier string, created time.Time, lastUpdated time.Time, groupObj PartialGroup) *GroupLDAPSourceConnection {
 	this := GroupLDAPSourceConnection{}
 	this.Pk = pk
 	this.Group = group
@@ -47,6 +48,7 @@ func NewGroupLDAPSourceConnection(pk int32, group string, source string, sourceO
 	this.Identifier = identifier
 	this.Created = created
 	this.LastUpdated = lastUpdated
+	this.GroupObj = groupObj
 	return &this
 }
 
@@ -226,6 +228,30 @@ func (o *GroupLDAPSourceConnection) SetLastUpdated(v time.Time) {
 	o.LastUpdated = v
 }
 
+// GetGroupObj returns the GroupObj field value
+func (o *GroupLDAPSourceConnection) GetGroupObj() PartialGroup {
+	if o == nil {
+		var ret PartialGroup
+		return ret
+	}
+
+	return o.GroupObj
+}
+
+// GetGroupObjOk returns a tuple with the GroupObj field value
+// and a boolean to check if the value has been set.
+func (o *GroupLDAPSourceConnection) GetGroupObjOk() (*PartialGroup, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.GroupObj, true
+}
+
+// SetGroupObj sets field value
+func (o *GroupLDAPSourceConnection) SetGroupObj(v PartialGroup) {
+	o.GroupObj = v
+}
+
 func (o GroupLDAPSourceConnection) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -243,6 +269,7 @@ func (o GroupLDAPSourceConnection) ToMap() (map[string]interface{}, error) {
 	toSerialize["identifier"] = o.Identifier
 	toSerialize["created"] = o.Created
 	toSerialize["last_updated"] = o.LastUpdated
+	toSerialize["group_obj"] = o.GroupObj
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -263,6 +290,7 @@ func (o *GroupLDAPSourceConnection) UnmarshalJSON(data []byte) (err error) {
 		"identifier",
 		"created",
 		"last_updated",
+		"group_obj",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -299,6 +327,7 @@ func (o *GroupLDAPSourceConnection) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "identifier")
 		delete(additionalProperties, "created")
 		delete(additionalProperties, "last_updated")
+		delete(additionalProperties, "group_obj")
 		o.AdditionalProperties = additionalProperties
 	}
 

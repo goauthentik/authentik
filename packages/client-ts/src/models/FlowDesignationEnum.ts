@@ -12,23 +12,21 @@
  * Do not edit the class manually.
  */
 
-
 /**
- * 
+ *
  * @export
  */
 export const FlowDesignationEnum = {
-    Authentication: 'authentication',
-    Authorization: 'authorization',
-    Invalidation: 'invalidation',
-    Enrollment: 'enrollment',
-    Unenrollment: 'unenrollment',
-    Recovery: 'recovery',
-    StageConfiguration: 'stage_configuration',
-    UnknownDefaultOpenApi: '11184809'
+    Authentication: "authentication",
+    Authorization: "authorization",
+    Invalidation: "invalidation",
+    Enrollment: "enrollment",
+    Unenrollment: "unenrollment",
+    Recovery: "recovery",
+    StageConfiguration: "stage_configuration",
+    UnknownDefaultOpenApi: "11184809",
 } as const;
-export type FlowDesignationEnum = typeof FlowDesignationEnum[keyof typeof FlowDesignationEnum];
-
+export type FlowDesignationEnum = (typeof FlowDesignationEnum)[keyof typeof FlowDesignationEnum];
 
 export function instanceOfFlowDesignationEnum(value: any): boolean {
     for (const key in FlowDesignationEnum) {
@@ -45,7 +43,10 @@ export function FlowDesignationEnumFromJSON(json: any): FlowDesignationEnum {
     return FlowDesignationEnumFromJSONTyped(json, false);
 }
 
-export function FlowDesignationEnumFromJSONTyped(json: any, ignoreDiscriminator: boolean): FlowDesignationEnum {
+export function FlowDesignationEnumFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): FlowDesignationEnum {
     return json as FlowDesignationEnum;
 }
 
@@ -53,7 +54,9 @@ export function FlowDesignationEnumToJSON(value?: FlowDesignationEnum | null): a
     return value as any;
 }
 
-export function FlowDesignationEnumToJSONTyped(value: any, ignoreDiscriminator: boolean): FlowDesignationEnum {
+export function FlowDesignationEnumToJSONTyped(
+    value: any,
+    ignoreDiscriminator: boolean,
+): FlowDesignationEnum {
     return value as FlowDesignationEnum;
 }
-

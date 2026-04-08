@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Summary of registered devices
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface DeviceSummary {
     /**
-     * 
+     *
      * @type {number}
      * @memberof DeviceSummary
      */
     totalCount: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof DeviceSummary
      */
     unreachableCount: number;
     /**
-     * 
+     *
      * @type {number}
      * @memberof DeviceSummary
      */
@@ -43,9 +42,9 @@ export interface DeviceSummary {
  * Check if a given object implements the DeviceSummary interface.
  */
 export function instanceOfDeviceSummary(value: object): value is DeviceSummary {
-    if (!('totalCount' in value) || value['totalCount'] === undefined) return false;
-    if (!('unreachableCount' in value) || value['unreachableCount'] === undefined) return false;
-    if (!('outdatedAgentCount' in value) || value['outdatedAgentCount'] === undefined) return false;
+    if (!("totalCount" in value) || value["totalCount"] === undefined) return false;
+    if (!("unreachableCount" in value) || value["unreachableCount"] === undefined) return false;
+    if (!("outdatedAgentCount" in value) || value["outdatedAgentCount"] === undefined) return false;
     return true;
 }
 
@@ -58,10 +57,9 @@ export function DeviceSummaryFromJSONTyped(json: any, ignoreDiscriminator: boole
         return json;
     }
     return {
-        
-        'totalCount': json['total_count'],
-        'unreachableCount': json['unreachable_count'],
-        'outdatedAgentCount': json['outdated_agent_count'],
+        totalCount: json["total_count"],
+        unreachableCount: json["unreachable_count"],
+        outdatedAgentCount: json["outdated_agent_count"],
     };
 }
 
@@ -69,16 +67,17 @@ export function DeviceSummaryToJSON(json: any): DeviceSummary {
     return DeviceSummaryToJSONTyped(json, false);
 }
 
-export function DeviceSummaryToJSONTyped(value?: DeviceSummary | null, ignoreDiscriminator: boolean = false): any {
+export function DeviceSummaryToJSONTyped(
+    value?: DeviceSummary | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'total_count': value['totalCount'],
-        'unreachable_count': value['unreachableCount'],
-        'outdated_agent_count': value['outdatedAgentCount'],
+        total_count: value["totalCount"],
+        unreachable_count: value["unreachableCount"],
+        outdated_agent_count: value["outdatedAgentCount"],
     };
 }
-

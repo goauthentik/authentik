@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * UserLogoutStage Serializer
  * @export
@@ -20,7 +19,7 @@ import { mapValues } from '../runtime';
  */
 export interface PatchedUserLogoutStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedUserLogoutStageRequest
      */
@@ -30,7 +29,9 @@ export interface PatchedUserLogoutStageRequest {
 /**
  * Check if a given object implements the PatchedUserLogoutStageRequest interface.
  */
-export function instanceOfPatchedUserLogoutStageRequest(value: object): value is PatchedUserLogoutStageRequest {
+export function instanceOfPatchedUserLogoutStageRequest(
+    value: object,
+): value is PatchedUserLogoutStageRequest {
     return true;
 }
 
@@ -38,13 +39,15 @@ export function PatchedUserLogoutStageRequestFromJSON(json: any): PatchedUserLog
     return PatchedUserLogoutStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedUserLogoutStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedUserLogoutStageRequest {
+export function PatchedUserLogoutStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedUserLogoutStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
+        name: json["name"] == null ? undefined : json["name"],
     };
 }
 
@@ -52,14 +55,15 @@ export function PatchedUserLogoutStageRequestToJSON(json: any): PatchedUserLogou
     return PatchedUserLogoutStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedUserLogoutStageRequestToJSONTyped(value?: PatchedUserLogoutStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedUserLogoutStageRequestToJSONTyped(
+    value?: PatchedUserLogoutStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
+        name: value["name"],
     };
 }
-

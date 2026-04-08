@@ -12,55 +12,44 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { Policy } from './Policy';
-import {
-    PolicyFromJSON,
-    PolicyFromJSONTyped,
-    PolicyToJSON,
-    PolicyToJSONTyped,
-} from './Policy';
-import type { Pagination } from './Pagination';
-import {
-    PaginationFromJSON,
-    PaginationFromJSONTyped,
-    PaginationToJSON,
-    PaginationToJSONTyped,
-} from './Pagination';
+import type { Pagination } from "./Pagination";
+import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
+import type { Policy } from "./Policy";
+import { PolicyFromJSON, PolicyToJSON } from "./Policy";
 
 /**
- * 
+ *
  * @export
  * @interface PaginatedPolicyList
  */
 export interface PaginatedPolicyList {
     /**
-     * 
+     *
      * @type {Pagination}
      * @memberof PaginatedPolicyList
      */
     pagination: Pagination;
     /**
-     * 
+     *
      * @type {Array<Policy>}
      * @memberof PaginatedPolicyList
      */
     results: Array<Policy>;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof PaginatedPolicyList
      */
-    autocomplete: { [key: string]: any; };
+    autocomplete: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the PaginatedPolicyList interface.
  */
 export function instanceOfPaginatedPolicyList(value: object): value is PaginatedPolicyList {
-    if (!('pagination' in value) || value['pagination'] === undefined) return false;
-    if (!('results' in value) || value['results'] === undefined) return false;
-    if (!('autocomplete' in value) || value['autocomplete'] === undefined) return false;
+    if (!("pagination" in value) || value["pagination"] === undefined) return false;
+    if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -68,15 +57,17 @@ export function PaginatedPolicyListFromJSON(json: any): PaginatedPolicyList {
     return PaginatedPolicyListFromJSONTyped(json, false);
 }
 
-export function PaginatedPolicyListFromJSONTyped(json: any, ignoreDiscriminator: boolean): PaginatedPolicyList {
+export function PaginatedPolicyListFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PaginatedPolicyList {
     if (json == null) {
         return json;
     }
     return {
-        
-        'pagination': PaginationFromJSON(json['pagination']),
-        'results': ((json['results'] as Array<any>).map(PolicyFromJSON)),
-        'autocomplete': json['autocomplete'],
+        pagination: PaginationFromJSON(json["pagination"]),
+        results: (json["results"] as Array<any>).map(PolicyFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -84,16 +75,17 @@ export function PaginatedPolicyListToJSON(json: any): PaginatedPolicyList {
     return PaginatedPolicyListToJSONTyped(json, false);
 }
 
-export function PaginatedPolicyListToJSONTyped(value?: PaginatedPolicyList | null, ignoreDiscriminator: boolean = false): any {
+export function PaginatedPolicyListToJSONTyped(
+    value?: PaginatedPolicyList | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'pagination': PaginationToJSON(value['pagination']),
-        'results': ((value['results'] as Array<any>).map(PolicyToJSON)),
-        'autocomplete': value['autocomplete'],
+        pagination: PaginationToJSON(value["pagination"]),
+        results: (value["results"] as Array<any>).map(PolicyToJSON),
+        autocomplete: value["autocomplete"],
     };
 }
-

@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Group Source Connection
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface GroupSAMLSourceConnectionRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupSAMLSourceConnectionRequest
      */
     group: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupSAMLSourceConnectionRequest
      */
     source: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GroupSAMLSourceConnectionRequest
      */
@@ -42,43 +41,52 @@ export interface GroupSAMLSourceConnectionRequest {
 /**
  * Check if a given object implements the GroupSAMLSourceConnectionRequest interface.
  */
-export function instanceOfGroupSAMLSourceConnectionRequest(value: object): value is GroupSAMLSourceConnectionRequest {
-    if (!('group' in value) || value['group'] === undefined) return false;
-    if (!('source' in value) || value['source'] === undefined) return false;
-    if (!('identifier' in value) || value['identifier'] === undefined) return false;
+export function instanceOfGroupSAMLSourceConnectionRequest(
+    value: object,
+): value is GroupSAMLSourceConnectionRequest {
+    if (!("group" in value) || value["group"] === undefined) return false;
+    if (!("source" in value) || value["source"] === undefined) return false;
+    if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
 }
 
-export function GroupSAMLSourceConnectionRequestFromJSON(json: any): GroupSAMLSourceConnectionRequest {
+export function GroupSAMLSourceConnectionRequestFromJSON(
+    json: any,
+): GroupSAMLSourceConnectionRequest {
     return GroupSAMLSourceConnectionRequestFromJSONTyped(json, false);
 }
 
-export function GroupSAMLSourceConnectionRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GroupSAMLSourceConnectionRequest {
+export function GroupSAMLSourceConnectionRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GroupSAMLSourceConnectionRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'group': json['group'],
-        'source': json['source'],
-        'identifier': json['identifier'],
+        group: json["group"],
+        source: json["source"],
+        identifier: json["identifier"],
     };
 }
 
-export function GroupSAMLSourceConnectionRequestToJSON(json: any): GroupSAMLSourceConnectionRequest {
+export function GroupSAMLSourceConnectionRequestToJSON(
+    json: any,
+): GroupSAMLSourceConnectionRequest {
     return GroupSAMLSourceConnectionRequestToJSONTyped(json, false);
 }
 
-export function GroupSAMLSourceConnectionRequestToJSONTyped(value?: GroupSAMLSourceConnectionRequest | null, ignoreDiscriminator: boolean = false): any {
+export function GroupSAMLSourceConnectionRequestToJSONTyped(
+    value?: GroupSAMLSourceConnectionRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'group': value['group'],
-        'source': value['source'],
-        'identifier': value['identifier'],
+        group: value["group"],
+        source: value["source"],
+        identifier: value["identifier"],
     };
 }
-

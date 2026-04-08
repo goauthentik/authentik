@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * GoogleWorkspaceProviderMapping Serializer
  * @export
@@ -26,13 +25,13 @@ export interface GoogleWorkspaceProviderMappingRequest {
      */
     managed?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProviderMappingRequest
      */
     name: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof GoogleWorkspaceProviderMappingRequest
      */
@@ -42,42 +41,51 @@ export interface GoogleWorkspaceProviderMappingRequest {
 /**
  * Check if a given object implements the GoogleWorkspaceProviderMappingRequest interface.
  */
-export function instanceOfGoogleWorkspaceProviderMappingRequest(value: object): value is GoogleWorkspaceProviderMappingRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('expression' in value) || value['expression'] === undefined) return false;
+export function instanceOfGoogleWorkspaceProviderMappingRequest(
+    value: object,
+): value is GoogleWorkspaceProviderMappingRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
+    if (!("expression" in value) || value["expression"] === undefined) return false;
     return true;
 }
 
-export function GoogleWorkspaceProviderMappingRequestFromJSON(json: any): GoogleWorkspaceProviderMappingRequest {
+export function GoogleWorkspaceProviderMappingRequestFromJSON(
+    json: any,
+): GoogleWorkspaceProviderMappingRequest {
     return GoogleWorkspaceProviderMappingRequestFromJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderMappingRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GoogleWorkspaceProviderMappingRequest {
+export function GoogleWorkspaceProviderMappingRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GoogleWorkspaceProviderMappingRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'managed': json['managed'] == null ? undefined : json['managed'],
-        'name': json['name'],
-        'expression': json['expression'],
+        managed: json["managed"] == null ? undefined : json["managed"],
+        name: json["name"],
+        expression: json["expression"],
     };
 }
 
-export function GoogleWorkspaceProviderMappingRequestToJSON(json: any): GoogleWorkspaceProviderMappingRequest {
+export function GoogleWorkspaceProviderMappingRequestToJSON(
+    json: any,
+): GoogleWorkspaceProviderMappingRequest {
     return GoogleWorkspaceProviderMappingRequestToJSONTyped(json, false);
 }
 
-export function GoogleWorkspaceProviderMappingRequestToJSONTyped(value?: GoogleWorkspaceProviderMappingRequest | null, ignoreDiscriminator: boolean = false): any {
+export function GoogleWorkspaceProviderMappingRequestToJSONTyped(
+    value?: GoogleWorkspaceProviderMappingRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'managed': value['managed'],
-        'name': value['name'],
-        'expression': value['expression'],
+        managed: value["managed"],
+        name: value["name"],
+        expression: value["expression"],
     };
 }
-

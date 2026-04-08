@@ -12,21 +12,20 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
- * 
+ *
  * @export
  * @interface ReviewerUser
  */
 export interface ReviewerUser {
     /**
-     * 
+     *
      * @type {number}
      * @memberof ReviewerUser
      */
     readonly pk: number;
     /**
-     * 
+     *
      * @type {string}
      * @memberof ReviewerUser
      */
@@ -49,10 +48,10 @@ export interface ReviewerUser {
  * Check if a given object implements the ReviewerUser interface.
  */
 export function instanceOfReviewerUser(value: object): value is ReviewerUser {
-    if (!('pk' in value) || value['pk'] === undefined) return false;
-    if (!('uuid' in value) || value['uuid'] === undefined) return false;
-    if (!('username' in value) || value['username'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (!("uuid" in value) || value["uuid"] === undefined) return false;
+    if (!("username" in value) || value["username"] === undefined) return false;
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
@@ -65,11 +64,10 @@ export function ReviewerUserFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        
-        'pk': json['pk'],
-        'uuid': json['uuid'],
-        'username': json['username'],
-        'name': json['name'],
+        pk: json["pk"],
+        uuid: json["uuid"],
+        username: json["username"],
+        name: json["name"],
     };
 }
 
@@ -77,15 +75,16 @@ export function ReviewerUserToJSON(json: any): ReviewerUser {
     return ReviewerUserToJSONTyped(json, false);
 }
 
-export function ReviewerUserToJSONTyped(value?: Omit<ReviewerUser, 'pk'|'uuid'> | null, ignoreDiscriminator: boolean = false): any {
+export function ReviewerUserToJSONTyped(
+    value?: Omit<ReviewerUser, "pk" | "uuid"> | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'username': value['username'],
-        'name': value['name'],
+        username: value["username"],
+        name: value["name"],
     };
 }
-

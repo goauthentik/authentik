@@ -22,6 +22,7 @@ var _ MappedNullable = &SSFStream{}
 // SSFStream SSFStream Serializer
 type SSFStream struct {
 	Pk                   string                `json:"pk"`
+	Status               *SSFStreamStatusEnum  `json:"status,omitempty"`
 	Provider             int32                 `json:"provider"`
 	ProviderObj          SSFProvider           `json:"provider_obj"`
 	DeliveryMethod       DeliveryMethodEnum    `json:"delivery_method"`
@@ -80,6 +81,38 @@ func (o *SSFStream) GetPkOk() (*string, bool) {
 // SetPk sets field value
 func (o *SSFStream) SetPk(v string) {
 	o.Pk = v
+}
+
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *SSFStream) GetStatus() SSFStreamStatusEnum {
+	if o == nil || IsNil(o.Status) {
+		var ret SSFStreamStatusEnum
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SSFStream) GetStatusOk() (*SSFStreamStatusEnum, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *SSFStream) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given SSFStreamStatusEnum and assigns it to the Status field.
+func (o *SSFStream) SetStatus(v SSFStreamStatusEnum) {
+	o.Status = &v
 }
 
 // GetProvider returns the Provider field value
@@ -320,6 +353,9 @@ func (o SSFStream) MarshalJSON() ([]byte, error) {
 func (o SSFStream) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["pk"] = o.Pk
+	if !IsNil(o.Status) {
+		toSerialize["status"] = o.Status
+	}
 	toSerialize["provider"] = o.Provider
 	toSerialize["provider_obj"] = o.ProviderObj
 	toSerialize["delivery_method"] = o.DeliveryMethod
@@ -383,6 +419,7 @@ func (o *SSFStream) UnmarshalJSON(data []byte) (err error) {
 
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "pk")
+		delete(additionalProperties, "status")
 		delete(additionalProperties, "provider")
 		delete(additionalProperties, "provider_obj")
 		delete(additionalProperties, "delivery_method")

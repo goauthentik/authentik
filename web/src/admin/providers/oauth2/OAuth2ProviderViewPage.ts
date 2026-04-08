@@ -62,6 +62,18 @@ export function TypeToLabel(type?: ClientTypeEnum): string {
     }
 }
 
+export function LogoutMethodToLabel(method?: OAuth2ProviderLogoutMethodEnum): string {
+    if (!method) return "";
+    switch (method) {
+        case OAuth2ProviderLogoutMethodEnum.Backchannel:
+            return msg("Back-channel");
+        case OAuth2ProviderLogoutMethodEnum.Frontchannel:
+            return msg("Front-channel");
+        case OAuth2ProviderLogoutMethodEnum.UnknownDefaultOpenApi:
+            return msg("Unknown");
+    }
+}
+
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends AKElement {
     @property({ type: Number })
@@ -183,11 +195,8 @@ export class OAuth2ProviderViewPage extends AKElement {
     }
 
     renderTabOverview(): SlottedTemplateResult {
-        if (!this.provider) {
-            return nothing;
-        }
         const [appLabel, modelName] = ModelEnum.AuthentikProvidersOauth2Oauth2provider.split(".");
-        return html` ${this.provider?.assignedApplicationName
+        return html`${this.provider?.assignedApplicationName
                 ? nothing
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
@@ -196,116 +205,56 @@ export class OAuth2ProviderViewPage extends AKElement {
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                 >
+                    <div class="pf-c-card__title">${msg("Info")}</div>
                     <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.name}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Assigned to application")}</span
+                        ${renderDescriptionList([
+                            [msg("Name"), html`${this.provider?.name}`],
+                            [
+                                msg("Assigned to application"),
+                                html`<ak-provider-related-application .provider=${this.provider}>
+                                </ak-provider-related-application>`,
+                            ],
+                            [msg("Client type"), html`${TypeToLabel(this.provider?.clientType)}`],
+                            [msg("Client ID"), html`${this.provider?.clientId}`],
+                            [
+                                msg("Redirect URIs"),
+                                (this.provider?.redirectUris || []).length > 0
+                                    ? html`<ul>
+                                          ${this.provider?.redirectUris.map((ru) => {
+                                              return html`<li class="pf-m-monospace">
+                                                  ${ru.matchingMode}: ${ru.url}
+                                              </li>`;
+                                          })}
+                                      </ul>`
+                                    : "-",
+                            ],
+                            [
+                                msg("Logout URI"),
+                                this.provider?.logoutUri !== "" ? this.provider?.logoutUri : "-",
+                            ],
+                            [
+                                msg("Logout Method"),
+                                html`${LogoutMethodToLabel(this.provider?.logoutMethod)}`,
+                            ],
+                            [
+                                msg("Related actions"),
+                                html`<ak-forms-modal>
+                                    <span slot="submit">${msg("Save Changes")}</span>
+                                    <span slot="header">${msg("Update OAuth2 Provider")}</span>
+                                    <ak-provider-oauth2-form
+                                        slot="form"
+                                        .instancePk=${this.provider?.pk || 0}
                                     >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ak-provider-related-application .provider=${this.provider}>
-                                        </ak-provider-related-application>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Client type")}</span
+                                    </ak-provider-oauth2-form>
+                                    <button
+                                        slot="trigger"
+                                        class="pf-c-button pf-m-primary pf-m-block"
                                     >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${TypeToLabel(this.provider.clientType)}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Client ID")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text pf-m-monospace">
-                                        ${this.provider.clientId}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Redirect URIs")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ul>
-                                            ${this.provider.redirectUris.map((ru) => {
-                                                return html`<li class="pf-m-monospace">
-                                                    ${ru.matchingMode}: ${ru.url}
-                                                </li>`;
-                                            })}
-                                        </ul>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Logout URI")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text pf-m-monospace">
-                                        ${this.provider.logoutUri}
-                                    </div>
-                                </dd>
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Logout Method")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.logoutMethod ===
-                                        OAuth2ProviderLogoutMethodEnum.Backchannel
-                                            ? msg("Back-channel")
-                                            : this.provider.logoutMethod ===
-                                                OAuth2ProviderLogoutMethodEnum.Frontchannel
-                                              ? msg("Front-channel")
-                                              : msg("")}
-                                    </div>
-                                </dd>
-                            </div>
-                        </dl>
-                    </div>
-                    <div class="pf-c-card__footer">
-                        <ak-forms-modal>
-                            <span slot="submit">${msg("Save Changes")}</span>
-                            <span slot="header">${msg("Update OAuth2 Provider")}</span>
-                            <ak-provider-oauth2-form
-                                slot="form"
-                                .instancePk=${this.provider.pk || 0}
-                            >
-                            </ak-provider-oauth2-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
-                            </button>
-                        </ak-forms-modal>
+                                        ${msg("Edit")}
+                                    </button>
+                                </ak-forms-modal>`,
+                            ],
+                        ])}
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-8-col">
@@ -345,7 +294,11 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     value="${this.providerUrls?.issuer || msg("-")}"
                                 />
                             </div>
-                            <hr class="pf-c-divider" />
+                        </form>
+                    </div>
+                    <hr class="pf-c-divider" />
+                    <div class="pf-c-card__body">
+                        <form class="pf-c-form">
                             <div class="pf-c-form__group">
                                 <label
                                     class="pf-c-form__label"
@@ -436,7 +389,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                         <ak-task-list
                             .relObjAppLabel=${appLabel}
                             .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
+                            .relObjId="${this.provider?.pk}"
                         ></ak-task-list>
                     </div>
                 </div>

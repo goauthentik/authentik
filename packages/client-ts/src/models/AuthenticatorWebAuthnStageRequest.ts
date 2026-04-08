@@ -12,28 +12,15 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { WebAuthnHintEnum } from './WebAuthnHintEnum';
-import {
-    WebAuthnHintEnumFromJSON,
-    WebAuthnHintEnumFromJSONTyped,
-    WebAuthnHintEnumToJSON,
-    WebAuthnHintEnumToJSONTyped,
-} from './WebAuthnHintEnum';
-import type { UserVerificationEnum } from './UserVerificationEnum';
-import {
-    UserVerificationEnumFromJSON,
-    UserVerificationEnumFromJSONTyped,
-    UserVerificationEnumToJSON,
-    UserVerificationEnumToJSONTyped,
-} from './UserVerificationEnum';
-import type { AuthenticatorAttachmentEnum } from './AuthenticatorAttachmentEnum';
+import type { AuthenticatorAttachmentEnum } from "./AuthenticatorAttachmentEnum";
 import {
     AuthenticatorAttachmentEnumFromJSON,
-    AuthenticatorAttachmentEnumFromJSONTyped,
     AuthenticatorAttachmentEnumToJSON,
-    AuthenticatorAttachmentEnumToJSONTyped,
-} from './AuthenticatorAttachmentEnum';
+} from "./AuthenticatorAttachmentEnum";
+import type { UserVerificationEnum } from "./UserVerificationEnum";
+import { UserVerificationEnumFromJSON, UserVerificationEnumToJSON } from "./UserVerificationEnum";
+import type { WebAuthnHintEnum } from "./WebAuthnHintEnum";
+import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHintEnum";
 
 /**
  * AuthenticatorWebAuthnStage Serializer
@@ -42,7 +29,7 @@ import {
  */
 export interface AuthenticatorWebAuthnStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorWebAuthnStageRequest
      */
@@ -54,37 +41,37 @@ export interface AuthenticatorWebAuthnStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorWebAuthnStageRequest
      */
     friendlyName?: string;
     /**
-     * 
+     *
      * @type {UserVerificationEnum}
      * @memberof AuthenticatorWebAuthnStageRequest
      */
     userVerification?: UserVerificationEnum;
     /**
-     * 
+     *
      * @type {AuthenticatorAttachmentEnum}
      * @memberof AuthenticatorWebAuthnStageRequest
      */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
     /**
-     * 
+     *
      * @type {UserVerificationEnum}
      * @memberof AuthenticatorWebAuthnStageRequest
      */
     residentKeyRequirement?: UserVerificationEnum;
     /**
-     * 
+     *
      * @type {Array<WebAuthnHintEnum>}
      * @memberof AuthenticatorWebAuthnStageRequest
      */
     hints?: Array<WebAuthnHintEnum>;
     /**
-     * 
+     *
      * @type {Array<string>}
      * @memberof AuthenticatorWebAuthnStageRequest
      */
@@ -96,67 +83,95 @@ export interface AuthenticatorWebAuthnStageRequest {
      */
     preventDuplicateDevices?: boolean;
     /**
-     * 
+     *
      * @type {number}
      * @memberof AuthenticatorWebAuthnStageRequest
      */
     maxAttempts?: number;
 }
 
-
-
 /**
  * Check if a given object implements the AuthenticatorWebAuthnStageRequest interface.
  */
-export function instanceOfAuthenticatorWebAuthnStageRequest(value: object): value is AuthenticatorWebAuthnStageRequest {
-    if (!('name' in value) || value['name'] === undefined) return false;
+export function instanceOfAuthenticatorWebAuthnStageRequest(
+    value: object,
+): value is AuthenticatorWebAuthnStageRequest {
+    if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
 
-export function AuthenticatorWebAuthnStageRequestFromJSON(json: any): AuthenticatorWebAuthnStageRequest {
+export function AuthenticatorWebAuthnStageRequestFromJSON(
+    json: any,
+): AuthenticatorWebAuthnStageRequest {
     return AuthenticatorWebAuthnStageRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorWebAuthnStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorWebAuthnStageRequest {
+export function AuthenticatorWebAuthnStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorWebAuthnStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'],
-        'configureFlow': json['configure_flow'] == null ? undefined : json['configure_flow'],
-        'friendlyName': json['friendly_name'] == null ? undefined : json['friendly_name'],
-        'userVerification': json['user_verification'] == null ? undefined : UserVerificationEnumFromJSON(json['user_verification']),
-        'authenticatorAttachment': json['authenticator_attachment'] == null ? undefined : AuthenticatorAttachmentEnumFromJSON(json['authenticator_attachment']),
-        'residentKeyRequirement': json['resident_key_requirement'] == null ? undefined : UserVerificationEnumFromJSON(json['resident_key_requirement']),
-        'hints': json['hints'] == null ? undefined : ((json['hints'] as Array<any>).map(WebAuthnHintEnumFromJSON)),
-        'deviceTypeRestrictions': json['device_type_restrictions'] == null ? undefined : json['device_type_restrictions'],
-        'preventDuplicateDevices': json['prevent_duplicate_devices'] == null ? undefined : json['prevent_duplicate_devices'],
-        'maxAttempts': json['max_attempts'] == null ? undefined : json['max_attempts'],
+        name: json["name"],
+        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        userVerification:
+            json["user_verification"] == null
+                ? undefined
+                : UserVerificationEnumFromJSON(json["user_verification"]),
+        authenticatorAttachment:
+            json["authenticator_attachment"] == null
+                ? undefined
+                : AuthenticatorAttachmentEnumFromJSON(json["authenticator_attachment"]),
+        residentKeyRequirement:
+            json["resident_key_requirement"] == null
+                ? undefined
+                : UserVerificationEnumFromJSON(json["resident_key_requirement"]),
+        hints:
+            json["hints"] == null
+                ? undefined
+                : (json["hints"] as Array<any>).map(WebAuthnHintEnumFromJSON),
+        deviceTypeRestrictions:
+            json["device_type_restrictions"] == null ? undefined : json["device_type_restrictions"],
+        preventDuplicateDevices:
+            json["prevent_duplicate_devices"] == null
+                ? undefined
+                : json["prevent_duplicate_devices"],
+        maxAttempts: json["max_attempts"] == null ? undefined : json["max_attempts"],
     };
 }
 
-export function AuthenticatorWebAuthnStageRequestToJSON(json: any): AuthenticatorWebAuthnStageRequest {
+export function AuthenticatorWebAuthnStageRequestToJSON(
+    json: any,
+): AuthenticatorWebAuthnStageRequest {
     return AuthenticatorWebAuthnStageRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorWebAuthnStageRequestToJSONTyped(value?: AuthenticatorWebAuthnStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorWebAuthnStageRequestToJSONTyped(
+    value?: AuthenticatorWebAuthnStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'configure_flow': value['configureFlow'],
-        'friendly_name': value['friendlyName'],
-        'user_verification': UserVerificationEnumToJSON(value['userVerification']),
-        'authenticator_attachment': AuthenticatorAttachmentEnumToJSON(value['authenticatorAttachment']),
-        'resident_key_requirement': UserVerificationEnumToJSON(value['residentKeyRequirement']),
-        'hints': value['hints'] == null ? undefined : ((value['hints'] as Array<any>).map(WebAuthnHintEnumToJSON)),
-        'device_type_restrictions': value['deviceTypeRestrictions'],
-        'prevent_duplicate_devices': value['preventDuplicateDevices'],
-        'max_attempts': value['maxAttempts'],
+        name: value["name"],
+        configure_flow: value["configureFlow"],
+        friendly_name: value["friendlyName"],
+        user_verification: UserVerificationEnumToJSON(value["userVerification"]),
+        authenticator_attachment: AuthenticatorAttachmentEnumToJSON(
+            value["authenticatorAttachment"],
+        ),
+        resident_key_requirement: UserVerificationEnumToJSON(value["residentKeyRequirement"]),
+        hints:
+            value["hints"] == null
+                ? undefined
+                : (value["hints"] as Array<any>).map(WebAuthnHintEnumToJSON),
+        device_type_restrictions: value["deviceTypeRestrictions"],
+        prevent_duplicate_devices: value["preventDuplicateDevices"],
+        max_attempts: value["maxAttempts"],
     };
 }
-

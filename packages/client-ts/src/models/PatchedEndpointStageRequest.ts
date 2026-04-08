@@ -12,14 +12,8 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
-import type { StageModeEnum } from './StageModeEnum';
-import {
-    StageModeEnumFromJSON,
-    StageModeEnumFromJSONTyped,
-    StageModeEnumToJSON,
-    StageModeEnumToJSONTyped,
-} from './StageModeEnum';
+import type { StageModeEnum } from "./StageModeEnum";
+import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
 
 /**
  * EndpointStage Serializer
@@ -28,31 +22,31 @@ import {
  */
 export interface PatchedEndpointStageRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEndpointStageRequest
      */
     name?: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof PatchedEndpointStageRequest
      */
     connector?: string;
     /**
-     * 
+     *
      * @type {StageModeEnum}
      * @memberof PatchedEndpointStageRequest
      */
     mode?: StageModeEnum;
 }
 
-
-
 /**
  * Check if a given object implements the PatchedEndpointStageRequest interface.
  */
-export function instanceOfPatchedEndpointStageRequest(value: object): value is PatchedEndpointStageRequest {
+export function instanceOfPatchedEndpointStageRequest(
+    value: object,
+): value is PatchedEndpointStageRequest {
     return true;
 }
 
@@ -60,15 +54,17 @@ export function PatchedEndpointStageRequestFromJSON(json: any): PatchedEndpointS
     return PatchedEndpointStageRequestFromJSONTyped(json, false);
 }
 
-export function PatchedEndpointStageRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): PatchedEndpointStageRequest {
+export function PatchedEndpointStageRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedEndpointStageRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'name': json['name'] == null ? undefined : json['name'],
-        'connector': json['connector'] == null ? undefined : json['connector'],
-        'mode': json['mode'] == null ? undefined : StageModeEnumFromJSON(json['mode']),
+        name: json["name"] == null ? undefined : json["name"],
+        connector: json["connector"] == null ? undefined : json["connector"],
+        mode: json["mode"] == null ? undefined : StageModeEnumFromJSON(json["mode"]),
     };
 }
 
@@ -76,16 +72,17 @@ export function PatchedEndpointStageRequestToJSON(json: any): PatchedEndpointSta
     return PatchedEndpointStageRequestToJSONTyped(json, false);
 }
 
-export function PatchedEndpointStageRequestToJSONTyped(value?: PatchedEndpointStageRequest | null, ignoreDiscriminator: boolean = false): any {
+export function PatchedEndpointStageRequestToJSONTyped(
+    value?: PatchedEndpointStageRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'name': value['name'],
-        'connector': value['connector'],
-        'mode': StageModeEnumToJSON(value['mode']),
+        name: value["name"],
+        connector: value["connector"],
+        mode: StageModeEnumToJSON(value["mode"]),
     };
 }
-

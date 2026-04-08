@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * WebAuthn Challenge response
  * @export
@@ -20,55 +19,64 @@ import { mapValues } from '../runtime';
  */
 export interface AuthenticatorWebAuthnChallengeResponseRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AuthenticatorWebAuthnChallengeResponseRequest
      */
     component?: string;
     /**
-     * 
+     *
      * @type {{ [key: string]: any; }}
      * @memberof AuthenticatorWebAuthnChallengeResponseRequest
      */
-    response: { [key: string]: any; };
+    response: { [key: string]: any };
 }
 
 /**
  * Check if a given object implements the AuthenticatorWebAuthnChallengeResponseRequest interface.
  */
-export function instanceOfAuthenticatorWebAuthnChallengeResponseRequest(value: object): value is AuthenticatorWebAuthnChallengeResponseRequest {
-    if (!('response' in value) || value['response'] === undefined) return false;
+export function instanceOfAuthenticatorWebAuthnChallengeResponseRequest(
+    value: object,
+): value is AuthenticatorWebAuthnChallengeResponseRequest {
+    if (!("response" in value) || value["response"] === undefined) return false;
     return true;
 }
 
-export function AuthenticatorWebAuthnChallengeResponseRequestFromJSON(json: any): AuthenticatorWebAuthnChallengeResponseRequest {
+export function AuthenticatorWebAuthnChallengeResponseRequestFromJSON(
+    json: any,
+): AuthenticatorWebAuthnChallengeResponseRequest {
     return AuthenticatorWebAuthnChallengeResponseRequestFromJSONTyped(json, false);
 }
 
-export function AuthenticatorWebAuthnChallengeResponseRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AuthenticatorWebAuthnChallengeResponseRequest {
+export function AuthenticatorWebAuthnChallengeResponseRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AuthenticatorWebAuthnChallengeResponseRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'component': json['component'] == null ? undefined : json['component'],
-        'response': json['response'],
+        component: json["component"] == null ? undefined : json["component"],
+        response: json["response"],
     };
 }
 
-export function AuthenticatorWebAuthnChallengeResponseRequestToJSON(json: any): AuthenticatorWebAuthnChallengeResponseRequest {
+export function AuthenticatorWebAuthnChallengeResponseRequestToJSON(
+    json: any,
+): AuthenticatorWebAuthnChallengeResponseRequest {
     return AuthenticatorWebAuthnChallengeResponseRequestToJSONTyped(json, false);
 }
 
-export function AuthenticatorWebAuthnChallengeResponseRequestToJSONTyped(value?: AuthenticatorWebAuthnChallengeResponseRequest | null, ignoreDiscriminator: boolean = false): any {
+export function AuthenticatorWebAuthnChallengeResponseRequestToJSONTyped(
+    value?: AuthenticatorWebAuthnChallengeResponseRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'component': value['component'],
-        'response': value['response'],
+        component: value["component"],
+        response: value["response"],
     };
 }
-

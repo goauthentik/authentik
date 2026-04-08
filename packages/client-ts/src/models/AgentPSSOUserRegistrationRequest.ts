@@ -12,7 +12,6 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
 /**
  * Register Apple device user via Platform SSO
  * @export
@@ -20,19 +19,19 @@ import { mapValues } from '../runtime';
  */
 export interface AgentPSSOUserRegistrationRequest {
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentPSSOUserRegistrationRequest
      */
     userAuth: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentPSSOUserRegistrationRequest
      */
     userSecureEnclaveKey: string;
     /**
-     * 
+     *
      * @type {string}
      * @memberof AgentPSSOUserRegistrationRequest
      */
@@ -42,43 +41,53 @@ export interface AgentPSSOUserRegistrationRequest {
 /**
  * Check if a given object implements the AgentPSSOUserRegistrationRequest interface.
  */
-export function instanceOfAgentPSSOUserRegistrationRequest(value: object): value is AgentPSSOUserRegistrationRequest {
-    if (!('userAuth' in value) || value['userAuth'] === undefined) return false;
-    if (!('userSecureEnclaveKey' in value) || value['userSecureEnclaveKey'] === undefined) return false;
-    if (!('enclaveKeyId' in value) || value['enclaveKeyId'] === undefined) return false;
+export function instanceOfAgentPSSOUserRegistrationRequest(
+    value: object,
+): value is AgentPSSOUserRegistrationRequest {
+    if (!("userAuth" in value) || value["userAuth"] === undefined) return false;
+    if (!("userSecureEnclaveKey" in value) || value["userSecureEnclaveKey"] === undefined)
+        return false;
+    if (!("enclaveKeyId" in value) || value["enclaveKeyId"] === undefined) return false;
     return true;
 }
 
-export function AgentPSSOUserRegistrationRequestFromJSON(json: any): AgentPSSOUserRegistrationRequest {
+export function AgentPSSOUserRegistrationRequestFromJSON(
+    json: any,
+): AgentPSSOUserRegistrationRequest {
     return AgentPSSOUserRegistrationRequestFromJSONTyped(json, false);
 }
 
-export function AgentPSSOUserRegistrationRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgentPSSOUserRegistrationRequest {
+export function AgentPSSOUserRegistrationRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): AgentPSSOUserRegistrationRequest {
     if (json == null) {
         return json;
     }
     return {
-        
-        'userAuth': json['user_auth'],
-        'userSecureEnclaveKey': json['user_secure_enclave_key'],
-        'enclaveKeyId': json['enclave_key_id'],
+        userAuth: json["user_auth"],
+        userSecureEnclaveKey: json["user_secure_enclave_key"],
+        enclaveKeyId: json["enclave_key_id"],
     };
 }
 
-export function AgentPSSOUserRegistrationRequestToJSON(json: any): AgentPSSOUserRegistrationRequest {
+export function AgentPSSOUserRegistrationRequestToJSON(
+    json: any,
+): AgentPSSOUserRegistrationRequest {
     return AgentPSSOUserRegistrationRequestToJSONTyped(json, false);
 }
 
-export function AgentPSSOUserRegistrationRequestToJSONTyped(value?: AgentPSSOUserRegistrationRequest | null, ignoreDiscriminator: boolean = false): any {
+export function AgentPSSOUserRegistrationRequestToJSONTyped(
+    value?: AgentPSSOUserRegistrationRequest | null,
+    ignoreDiscriminator: boolean = false,
+): any {
     if (value == null) {
         return value;
     }
 
     return {
-        
-        'user_auth': value['userAuth'],
-        'user_secure_enclave_key': value['userSecureEnclaveKey'],
-        'enclave_key_id': value['enclaveKeyId'],
+        user_auth: value["userAuth"],
+        user_secure_enclave_key: value["userSecureEnclaveKey"],
+        enclave_key_id: value["enclaveKeyId"],
     };
 }
-
