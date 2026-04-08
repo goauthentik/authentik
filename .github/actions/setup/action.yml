@@ -54,7 +54,7 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@94cb46f8d6e437890146ffbd78a778b78e623fb2 # v2
+      uses: taiki-e/install-action@cf39a74df4a72510be4e5b63348d61067f11e64a # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup node (web)
