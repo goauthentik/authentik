@@ -632,8 +632,6 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
 The `AUTHENTIK_EMAIL` settings are used to configure SMTP email delivery from authentik.
 
-Configure these values wherever you supply environment variables to the authentik server and worker—for example a `.env` file read by Docker Compose, environment entries in a Compose file, or the `email` block under `authentik` in the Helm chart `values.yaml`.
-
 The same variables power administrator notifications, release and configuration alerts, [notification rules](../../sys-mgmt/events/notifications.md), and any [Email stage](../../add-secure-apps/flows-stages/stages/email/) configured to use global settings.
 
 For complete setup examples, testing instructions, and TLS guidance, see the [Email configuration guide](../email.mdx).
