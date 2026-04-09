@@ -108,7 +108,7 @@ dev = [
   "types-jwcrypto==1.5.0.20260402",
   "types-ldap3==2.9.13.20260402",
   "types-requests==2.33.0.20260402",
-  "types-zxcvbn==4.5.0.20250809",
+  "types-zxcvbn==4.5.0.20260408",
 ]
 
 [tool.uv]
