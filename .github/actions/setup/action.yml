@@ -26,7 +26,7 @@ runs:
       uses: gerlero/apt-install@f4fa5265092af9e750549565d28c99aec7189639
       with:
         packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext krb5-multidev libkrb5-dev heimdal-multidev libclang-dev krb5-kdc krb5-user krb5-admin-server
-        update: false
+        update: true
         upgrade: false
         install-recommends: false
     - name: Make space on disk
