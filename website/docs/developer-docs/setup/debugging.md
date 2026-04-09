@@ -6,7 +6,7 @@ This page describes how to debug different components of an authentik instance, 
 
 ## authentik Server & Worker (Python)
 
-The majority of the authentik codebase is in Python, running in Gunicorn for the server and Dramatiq for the worker. These instructions show how this code can be debugged/inspected. The local debugging setup requires a setup as described in [Full development environment](./full-dev-environment.mdx)
+The majority of the authentik codebase is in Python, running in Gunicorn for the server and Dramatiq for the worker. These instructions show how this code can be debugged or inspected. The local debugging setup requires the setup described in [Full development environment](./full-dev-environment.mdx).
 
 Note that authentik uses [debugpy](https://github.com/microsoft/debugpy), which relies on the "Debug Adapter Protocol" (DAP). These instructions demonstrate debugging using [Visual Studio Code](https://code.visualstudio.com/), however they should be adaptable to other editors that support DAP.
 
@@ -28,7 +28,7 @@ Whichever process is first started listens on port `9901`. Additional processes 
 
 When debugging an authentik instance running in containers, there are some additional steps that need to be taken in addition to the steps above.
 
-A local clone of the authentik repository is required to be able to set breakpoints in the code. The locally checked out repository must be on the same version/commit as the authentik version running in the containers. To checkout version 2024.12.3 for example, you can run `git checkout version/2024.12.3`.
+A local clone of the authentik repository is required to set breakpoints in the code. The locally checked out repository must be on the same version/commit as the authentik version running in the containers. To check out version 2024.12.3, for example, run `git checkout version/2024.12.3`.
 
 The debug port needs to be accessible on the local machine. By default, this is port 9901. Additionally, the container being debugged must be started as `root`, because additional dependencies need to be installed on startup.
 
@@ -50,7 +50,7 @@ services:
 
 After re-creating the containers with `AUTHENTIK_DEBUGGER` set to `true` and the port mapped, the steps are identical to the steps above.
 
-If the authentik instance is running on a remote server, the `.vscode/launch.json` file needs to be adjusted to point to the IP of the remote server. Alternatively, it is also possible to forward the debug port via an SSH tunnel, using `-L 9901:127.0.0.1:9901`.
+If the authentik instance is running on a remote server, the `.vscode/launch.json` file needs to be adjusted to point to the IP of the remote server. Alternatively, you can forward the debug port via an SSH tunnel, using `-L 9901:127.0.0.1:9901`.
 
 ## authentik Server / Outposts (Golang)
 

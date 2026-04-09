@@ -2,18 +2,22 @@ import "#elements/messages/Message";
 
 import { APIError, pluckErrorDetail } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
-import { SentryIgnoredError } from "#common/sentry/index";
 
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/messages/styles.css";
+import { ifPresent } from "#elements/utils/attributes";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { CSSResult, html, PropertyValues } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+const logger = ConsoleLogger.prefix("messages");
 
 /**
  * Adds a message to the message container, displaying it to the user.
@@ -28,17 +32,20 @@ export function showMessage(message: APIMessage | null, unique = false): void {
         return;
     }
 
-    const container = document.querySelector<MessageContainer>("ak-message-container");
-
-    if (!container) {
-        throw new SentryIgnoredError("failed to find message container");
-    }
-
     if (!message.message.trim()) {
-        console.warn("authentik/messages: `showMessage` received an empty message", message);
+        logger.warn("authentik/messages: `showMessage` received an empty message", message);
 
         message.message = msg("An unknown error occurred");
         message.description ??= msg("Please check the browser console for more details.");
+    }
+
+    const container = document.querySelector<MessageContainer>("ak-message-container");
+
+    if (!container) {
+        logger.warn("authentik/messages: No message container found in DOM");
+        logger.info("authentik/messages: Message to show:", message);
+
+        return;
     }
 
     container.addMessage(message, unique);
@@ -82,26 +89,13 @@ export function showAPIErrorMessage(error: APIError, unique = false): void {
 
 @customElement("ak-message-container")
 export class MessageContainer extends AKElement {
-    @state()
-    protected messages: APIMessage[] = [];
+    @property({ attribute: false })
+    public messages: APIMessage[] = [];
 
     @property()
     alignment: "top" | "bottom" = "top";
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFAlertGroup,
-        css`
-            /* Fix spacing between messages */
-            ak-message {
-                display: block;
-            }
-            :host([alignment="bottom"]) .pf-c-alert-group.pf-m-toast {
-                bottom: var(--pf-c-alert-group--m-toast--Top);
-                top: unset;
-            }
-        `,
-    ];
+    static styles: CSSResult[] = [PFAlertGroup, Styles];
 
     constructor() {
         super();
@@ -112,6 +106,22 @@ export class MessageContainer extends AKElement {
         window.addEventListener("ak-message", (event) => {
             this.addMessage(event.message);
         });
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.popover = "manual";
+    }
+
+    public updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("messages") && this.messages.length) {
+            // Invoking the popover is only needed for browsers that support dialogs
+            // that support HTMLDialogElement.showModal()
+            this.showPopover?.();
+        }
     }
 
     public addMessage(message: APIMessage, unique = false): void {
@@ -126,6 +136,11 @@ export class MessageContainer extends AKElement {
 
     #removeMessage = (message: APIMessage) => {
         this.messages = this.messages.filter((v) => v !== message);
+
+        if (this.messages.length === 0) {
+            // Just the same, hide the popover for browsers that support native dialogs.
+            this.hidePopover?.();
+        }
     };
 
     render() {
@@ -135,10 +150,11 @@ export class MessageContainer extends AKElement {
             class="pf-c-alert-group pf-m-toast"
         >
             ${this.messages.toReversed().map((message, idx) => {
-                const { message: title, description, level } = message;
+                const { message: title, description, level, icon } = message;
 
                 return html`<ak-message
                     ?live=${idx === 0}
+                    icon=${ifPresent(icon)}
                     level=${level}
                     .description=${description}
                     .onDismiss=${() => this.#removeMessage(message)}

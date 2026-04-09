@@ -1,5 +1,7 @@
 """authentik core models"""
 
+import re
+import traceback
 from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
@@ -14,8 +16,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
-from django.db.models import Q, QuerySet, options
-from django.db.models.constants import LOOKUP_SEP
+from django.db.models import Manager, Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -43,6 +44,8 @@ from authentik.lib.models import (
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
+from authentik.lib.utils.inheritance import get_deepest_child
+from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.rbac.models import Role
@@ -50,6 +53,7 @@ from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGT
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
 LOGGER = get_logger()
+USERNAME_MAX_LENGTH = 150
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 _USER_ATTR_PREFIX = f"{USER_PATH_SYSTEM_PREFIX}/user"
 USER_ATTRIBUTE_DEBUG = f"{_USER_ATTR_PREFIX}/debug"
@@ -183,7 +187,7 @@ class Group(SerializerModel, AttributesMixin):
         default=False, help_text=_("Users added to this group will be superusers.")
     )
 
-    roles = models.ManyToManyField("authentik_rbac.Role", related_name="ak_groups", blank=True)
+    roles = models.ManyToManyField("authentik_rbac.Role", related_name="groups", blank=True)
 
     parents = models.ManyToManyField(
         "Group",
@@ -232,7 +236,7 @@ class Group(SerializerModel, AttributesMixin):
     def all_roles(self) -> QuerySet[Role]:
         """Get all roles of this group and all of its ancestors."""
         return Role.objects.filter(
-            ak_groups__in=Group.objects.filter(pk=self.pk).with_ancestors()
+            groups__in=Group.objects.filter(pk=self.pk).with_ancestors()
         ).distinct()
 
     def get_managed_role(self, create=False):
@@ -240,7 +244,7 @@ class Group(SerializerModel, AttributesMixin):
             name = managed_role_name(self)
             role, created = Role.objects.get_or_create(name=name, managed=name)
             if created:
-                role.ak_groups.add(self)
+                role.groups.add(self)
             return role
         else:
             return Role.objects.filter(name=managed_role_name(self)).first()
@@ -355,13 +359,17 @@ class UserManager(DjangoUserManager):
 class User(SerializerModel, AttributesMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
 
+    # Overwriting PermissionsMixin: permissions are handled by roles.
+    # (This knowingly violates the Liskov substitution principle. It is better to fail loudly.)
+    user_permissions = None
+
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
     path = models.TextField(default="users")
     type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    ak_groups = models.ManyToManyField("Group", related_name="users")
+    groups = models.ManyToManyField("Group", related_name="users")
     roles = models.ManyToManyField("authentik_rbac.Role", related_name="users", blank=True)
     password_change_date = models.DateTimeField(auto_now_add=True)
 
@@ -375,8 +383,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         permissions = [
             ("reset_user_password", _("Reset Password")),
             ("impersonate", _("Can impersonate other users")),
-            ("assign_user_permissions", _("Can assign permissions to users")),
-            ("unassign_user_permissions", _("Can unassign permissions from users")),
             ("preview_user", _("Can preview user data sent to providers")),
             ("view_user_applications", _("View applications the user has access to")),
         ]
@@ -400,11 +406,11 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     def all_groups(self) -> QuerySet[Group]:
         """Recursively get all groups this user is a member of."""
-        return self.ak_groups.all().with_ancestors()
+        return self.groups.all().with_ancestors()
 
     def all_roles(self) -> QuerySet[Role]:
         """Get all roles of this user and all of its groups (recursively)."""
-        return Role.objects.filter(Q(users=self) | Q(ak_groups__in=self.all_groups())).distinct()
+        return Role.objects.filter(Q(users=self) | Q(groups__in=self.all_groups())).distinct()
 
     def get_managed_role(self, create=False):
         if create:
@@ -507,6 +513,42 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def is_staff(self) -> bool:
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
+
+    # TODO: remove this after 2026.
+    @property
+    def ak_groups(self):
+        """This is a proxy for a renamed, deprecated field."""
+        from authentik.events.models import Event
+
+        deprecation = "authentik.core.models.User.ak_groups"
+        replacement = "authentik.core.models.User.groups"
+        message_logger = (
+            f"{deprecation} is deprecated and will be removed in a future version of "
+            f"authentik. Please use {replacement} instead."
+        )
+        message_event = (
+            f"{message_logger} This event will not be repeated until it expires (by "
+            "default: in 30 days). See authentik logs for every will invocation of this "
+            "deprecation."
+        )
+        stacktrace = traceback.format_stack()
+        # The last line is this function, the next-to-last line is its caller
+        cause = stacktrace[-2] if len(stacktrace) > 1 else "Unknown, see stacktrace in logs"
+        if search := re.search(r'"(.*?)"', cause):
+            cause = f"Property mapping or Expression policy named {search.group(1)}"
+
+        LOGGER.warning(
+            "deprecation used",
+            message=message_logger,
+            deprecation=deprecation,
+            replacement=replacement,
+            cause=cause,
+            stacktrace=stacktrace,
+        )
+        Event.log_deprecation(
+            deprecation, message=message_event, cause=cause, replacement=replacement
+        )
+        return self.groups
 
     def set_password(self, raw_password, signal=True, sender=None, request=None):
         if self.pk and signal:
@@ -713,6 +755,14 @@ class Application(SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).file_url(self.meta_icon)
 
+    @property
+    def get_meta_icon_themed_urls(self) -> dict[str, str] | None:
+        """Get themed URLs for meta_icon if it contains %(theme)s"""
+        if not self.meta_icon:
+            return None
+
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.meta_icon)
+
     def get_launch_url(self, user: User | None = None, user_data: dict | None = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider.
 
@@ -742,33 +792,15 @@ class Application(SerializerModel, PolicyBindingModel):
         """Get casted provider instance. Needs Application queryset with_provider"""
         if not self.provider:
             return None
-
-        candidates = []
-        base_class = Provider
-        for subclass in base_class.objects.get_queryset()._get_subclasses_recurse(base_class):
-            parent = self.provider
-            for level in subclass.split(LOOKUP_SEP):
-                try:
-                    parent = getattr(parent, level)
-                except AttributeError:
-                    break
-            if parent in candidates:
-                continue
-            idx = subclass.count(LOOKUP_SEP)
-            if type(parent) is not base_class:
-                idx += 1
-            candidates.insert(idx, parent)
-        if not candidates:
-            return None
-        return candidates[-1]
+        return get_deepest_child(self.provider)
 
     def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
         """Get Backchannel provider for a specific type"""
-        providers = self.backchannel_providers.filter(
+        provider: BackchannelProvider | None = self.backchannel_providers.filter(
             **{f"{provider_type._meta.model_name}__isnull": False},
             **kwargs,
-        )
-        return getattr(providers.first(), provider_type._meta.model_name)
+        ).first()
+        return getattr(provider, provider_type._meta.model_name) if provider else None
 
     def __str__(self):
         return str(self.name)
@@ -927,6 +959,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).file_url(self.icon)
 
+    @property
+    def icon_themed_urls(self) -> dict[str, str] | None:
+        """Get themed URLs for icon if it contains %(theme)s"""
+        if not self.icon:
+            return None
+
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.icon)
+
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""
         try:
@@ -1045,11 +1085,23 @@ class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
         unique_together = (("group", "source"),)
 
 
+class ExpiringManager(Manager):
+    """Manager for expiring objects which filters out expired objects by default"""
+
+    def get_queryset(self):
+        return QuerySet(self.model, using=self._db).exclude(expires__lt=now(), expiring=True)
+
+    def including_expired(self):
+        return QuerySet(self.model, using=self._db)
+
+
 class ExpiringModel(models.Model):
     """Base Model which can expire, and is automatically cleaned up."""
 
     expires = models.DateTimeField(default=None, null=True)
     expiring = models.BooleanField(default=True)
+
+    objects = ExpiringManager()
 
     class Meta:
         abstract = True
@@ -1064,13 +1116,33 @@ class ExpiringModel(models.Model):
         default the object is deleted. This is less efficient compared
         to bulk deleting objects, but classes like Token() need to change
         values instead of being deleted."""
-        return self.delete(*args, **kwargs)
+        try:
+            return self.delete(*args, **kwargs)
+        except self.DoesNotExist:
+            # Object has already been deleted, so this should be fine
+            return None
 
     @classmethod
     def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
-        for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):
+        from authentik.events.models import Event
+
+        deprecation_id = f"{class_to_path(cls)}.filter_not_expired"
+
+        Event.log_deprecation(
+            deprecation_id,
+            message=(
+                ".filter_not_expired() is deprecated as the default lookup now excludes "
+                "expired objects."
+            ),
+        )
+
+        for obj in (
+            cls.objects.including_expired()
+            .filter(**kwargs)
+            .filter(Q(expires__lt=now(), expiring=True))
+        ):
             obj.delete()
         return cls.objects.filter(**kwargs)
 

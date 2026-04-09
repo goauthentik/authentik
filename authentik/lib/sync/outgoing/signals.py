@@ -6,7 +6,6 @@ from django.db.models.signals import m2m_changed, post_save, pre_delete
 from dramatiq.actor import Actor
 
 from authentik.core.models import Group, User
-from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path
 
@@ -30,7 +29,8 @@ def sync_outgoing_inhibit_dispatch():
 
 def register_signals(
     provider_type: type[OutgoingSyncProvider],
-    task_sync_direct_dispatch: Actor[[str, str | int, str], None],
+    task_sync_direct_dispatch: Actor[[str, str | int], None],
+    task_sync_delete_dispatch: Actor[[str, list[tuple[str, str]]], None],
     task_sync_m2m_dispatch: Actor[[str, str, list[str], bool], None],
 ):
     """Register sync signals"""
@@ -55,7 +55,6 @@ def register_signals(
         task_sync_direct_dispatch.send(
             class_to_path(instance.__class__),
             instance.pk,
-            Direction.add.value,
         )
 
     post_save.connect(model_post_save, User, dispatch_uid=uid, weak=False)
@@ -65,12 +64,12 @@ def register_signals(
         """Pre-delete handler"""
         if _CTX_INHIBIT_DISPATCH.get():
             return
-        if not provider_type.objects.exists():
+        mappings = provider_type.get_object_mappings(instance)
+        if not mappings:
             return
-        task_sync_direct_dispatch.send(
+        task_sync_delete_dispatch.send(
             class_to_path(instance.__class__),
-            instance.pk,
-            Direction.remove.value,
+            mappings,
         )
 
     pre_delete.connect(model_pre_delete, User, dispatch_uid=uid, weak=False)
@@ -88,4 +87,4 @@ def register_signals(
             return
         task_sync_m2m_dispatch.send(instance.pk, action, list(pk_set), reverse)
 
-    m2m_changed.connect(model_m2m_changed, User.ak_groups.through, dispatch_uid=uid, weak=False)
+    m2m_changed.connect(model_m2m_changed, User.groups.through, dispatch_uid=uid, weak=False)

@@ -39,7 +39,6 @@ import { customElement, property } from "lit/decorators.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const highlightThemeOptions: HighlightOptions = {
     languages: {
@@ -73,7 +72,7 @@ export class AKMDX extends AKElement {
 
     static styles = [
         // ---
-        PFBase,
+
         PFList,
         PFTable,
         PFContent,

@@ -12,7 +12,6 @@ import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-available-pane-status"],
@@ -33,6 +32,10 @@ const hostAttributes = [
  *
  * @fires ak-dual-select-add-one - Double-click with the element clicked on.
  *
+ * @prop {DualSelectPair[]} options - The full list of key/value pairs that are currently available to be selected.
+ *
+ * @prop {Set<string|number>} selected - A set of keys that are currently selected, so they can be marked as such.
+ *
  * It is not expected that the `ak-dual-select-available-move-changed` event will be used; instead,
  * the attribute will be read by the parent when a control is clicked.
  */
@@ -40,13 +43,13 @@ const hostAttributes = [
 export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEventType>(
     AKElement,
 ) {
-    static styles = [PFBase, PFButton, PFDualListSelector, listStyles, availablePaneStyles];
+    static styles = [PFButton, PFDualListSelector, listStyles, availablePaneStyles];
 
     //#region Properties
 
     /* The array of key/value pairs this pane is currently showing */
     @property({ type: Array })
-    public readonly options?: DualSelectPair[];
+    public options?: DualSelectPair[];
 
     /**
      * A set (set being easy for lookups) of keys with all the pairs selected,
@@ -54,7 +57,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
      * can be marked and their clicks ignored.
      */
     @property({ type: Object })
-    public readonly selected: Set<string | number> = new Set();
+    public selected: Set<string | number> = new Set();
 
     //#endregion
 

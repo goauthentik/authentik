@@ -34,8 +34,10 @@ class AgentEnrollmentAuth(BaseAuthentication):
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         auth = get_authorization_header(request)
         key = validate_auth(auth)
-        token = EnrollmentToken.filter_not_expired(key=key).first()
+        token = EnrollmentToken.objects.filter(key=key).first()
         if not token:
+            raise PermissionDenied()
+        if not token.connector.enabled:
             raise PermissionDenied()
         CTX_AUTH_VIA.set("endpoint_token_enrollment")
         return (DeviceUser(), token)
@@ -48,8 +50,10 @@ class AgentAuth(BaseAuthentication):
         key = validate_auth(auth, format="bearer+agent")
         if not key:
             return None
-        device_token = DeviceToken.filter_not_expired(key=key).first()
+        device_token = DeviceToken.objects.filter(key=key).first()
         if not device_token:
+            raise PermissionDenied()
+        if not device_token.device.connector.enabled:
             raise PermissionDenied()
         if device_token.device.device.is_expired:
             raise PermissionDenied()
@@ -87,7 +91,7 @@ class DeviceAuthFedAuthentication(BaseAuthentication):
         if not raw_token:
             LOGGER.warning("Missing token")
             return None
-        device = Device.filter_not_expired(name=request.query_params.get("device")).first()
+        device = Device.objects.filter(name=request.query_params.get("device")).first()
         if not device:
             LOGGER.warning("Couldn't find device")
             return None

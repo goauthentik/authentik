@@ -16,7 +16,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import { FlowsInstancesListDesignationEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
+import { FlowDesignationEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -52,7 +52,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
@@ -71,7 +71,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 required
             >
                 <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    flowType=${FlowDesignationEnum.Authorization}
                     .currentFlow=${this.instance?.authorizationFlow}
                     required
                 ></ak-flow-search>

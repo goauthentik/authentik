@@ -31,7 +31,7 @@ export class UserLogoutStageForm extends BaseStageForm<UserLogoutStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>${msg("Remove the user from the current session.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

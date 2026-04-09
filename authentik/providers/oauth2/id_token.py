@@ -7,10 +7,7 @@ from typing import TYPE_CHECKING, Any
 from django.http import HttpRequest
 from django.utils import timezone
 
-from authentik.core.models import default_token_duration
-from authentik.events.signals import get_login_event
-from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     ACR_AUTHENTIK_DEFAULT,
     AMR_MFA,
     AMR_PASSWORD,
@@ -18,6 +15,9 @@ from authentik.providers.oauth2.constants import (
     AMR_WEBAUTHN,
     SubModes,
 )
+from authentik.core.models import default_token_duration
+from authentik.events.signals import get_login_event
+from authentik.lib.generators import generate_id
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 if TYPE_CHECKING:
@@ -68,6 +68,8 @@ class IDToken:
     at_hash: str | None = None
     # Session ID, https://openid.net/specs/openid-connect-frontchannel-1_0.html#ClaimsContents
     sid: str | None = None
+    # JWT ID, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.7
+    jti: str | None = None
 
     claims: dict[str, Any] = field(default_factory=dict)
 
@@ -81,6 +83,7 @@ class IDToken:
             (token.expires if token.expires is not None else default_token_duration()).timestamp()
         )
         id_token.iss = provider.get_issuer(request)
+        id_token.jti = generate_id()
         id_token.aud = provider.client_id
         id_token.claims = {}
 

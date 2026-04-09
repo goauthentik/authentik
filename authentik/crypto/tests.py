@@ -196,8 +196,10 @@ class TestCrypto(APITestCase):
         """Test certificate export (download)"""
         keypair = create_test_cert()
         user = create_test_user()
-        user.assign_perms_to_managed_role("view_certificatekeypair", keypair)
-        user.assign_perms_to_managed_role("view_certificatekeypair_certificate", keypair)
+        user.assign_perms_to_managed_role("authentik_crypto.view_certificatekeypair", keypair)
+        user.assign_perms_to_managed_role(
+            "authentik_crypto.view_certificatekeypair_certificate", keypair
+        )
         self.client.force_login(user)
         response = self.client.get(
             reverse(
@@ -220,8 +222,8 @@ class TestCrypto(APITestCase):
         """Test private_key export (download)"""
         keypair = create_test_cert()
         user = create_test_user()
-        user.assign_perms_to_managed_role("view_certificatekeypair", keypair)
-        user.assign_perms_to_managed_role("view_certificatekeypair_key", keypair)
+        user.assign_perms_to_managed_role("authentik_crypto.view_certificatekeypair", keypair)
+        user.assign_perms_to_managed_role("authentik_crypto.view_certificatekeypair_key", keypair)
         self.client.force_login(user)
         response = self.client.get(
             reverse(
@@ -353,6 +355,16 @@ class TestCrypto(APITestCase):
             subject_alt_names=[],
             validity_days=3,
         )
+
+        name3 = generate_id()
+        builder3 = CertificateBuilder(name3)
+        with self.assertRaises(ValueError):
+            builder3.save()
+        builder3.build(
+            subject_alt_names=[],
+            validity_days=3,
+        )
+
         with TemporaryDirectory() as temp_dir:
             with open(f"{temp_dir}/foo.pem", "w+", encoding="utf-8") as _cert:
                 _cert.write(builder.certificate)
@@ -363,6 +375,8 @@ class TestCrypto(APITestCase):
                 _cert.write(builder2.certificate)
             with open(f"{temp_dir}/foo.bar/privkey.pem", "w+", encoding="utf-8") as _key:
                 _key.write(builder2.private_key)
+            with open(f"{temp_dir}/tls-combined.pem", "w+", encoding="utf-8") as _cert:
+                _cert.write(builder3.certificate)
             with CONFIG.patch("cert_discovery_dir", temp_dir):
                 certificate_discovery.send()
         keypair: CertificateKeyPair = CertificateKeyPair.objects.filter(
@@ -373,6 +387,9 @@ class TestCrypto(APITestCase):
         self.assertIsNotNone(keypair.private_key)
         self.assertTrue(
             CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "foo.bar").exists()
+        )
+        self.assertFalse(
+            CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "tls-combined").exists()
         )
 
     def test_discovery_updating_same_private_key(self):

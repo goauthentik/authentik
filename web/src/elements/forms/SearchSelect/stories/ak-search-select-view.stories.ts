@@ -3,6 +3,7 @@ import "#elements/forms/SearchSelect/ak-search-select-view";
 import { groupedSampleData, sampleData } from "./sampleData.js";
 
 import { SearchSelectView } from "#elements/forms/SearchSelect/ak-search-select-view";
+import { SelectOptions } from "#elements/types";
 
 import { Meta } from "@storybook/web-components";
 import { kebabCase } from "change-case";
@@ -39,9 +40,9 @@ const container = (testItem: TemplateResult) =>
         <ul id="message-pad" style="margin-top: 1em"></ul>
     </div>`;
 
-const longGoodForYouPairs = {
+const longGoodForYouPairs: SelectOptions<string> = {
     grouped: false,
-    options: sampleData.map(({ produce }) => [kebabCase(produce), produce]),
+    options: sampleData.map(({ produce }) => [kebabCase(produce), produce, null]),
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

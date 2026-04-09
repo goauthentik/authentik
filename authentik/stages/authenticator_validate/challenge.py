@@ -1,6 +1,5 @@
 """Validation stage challenge checking"""
 
-from json import loads
 from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
@@ -12,12 +11,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField, ChoiceField, DateTimeField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
-from webauthn import options_to_json
 from webauthn.authentication.generate_authentication_options import generate_authentication_options
 from webauthn.authentication.verify_authentication_response import verify_authentication_response
 from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
+from webauthn.helpers.options_to_json_dict import options_to_json_dict
 from webauthn.helpers.structs import PublicKeyCredentialType, UserVerificationRequirement
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
@@ -39,6 +38,7 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -81,7 +81,10 @@ def get_webauthn_challenge_without_user(
         authentication_options.challenge
     )
 
-    return loads(options_to_json(authentication_options))
+    options_dict = options_to_json_dict(authentication_options)
+    if stage.webauthn_hints:
+        options_dict["hints"] = list(stage.webauthn_hints)
+    return options_dict
 
 
 def get_webauthn_challenge(
@@ -110,7 +113,10 @@ def get_webauthn_challenge(
         authentication_options.challenge
     )
 
-    return loads(options_to_json(authentication_options))
+    options_dict = options_to_json_dict(authentication_options)
+    if stage.webauthn_hints:
+        options_dict["hints"] = list(stage.webauthn_hints)
+    return options_dict
 
 
 def select_challenge(request: HttpRequest, device: Device):
@@ -144,7 +150,11 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
             credentials={"username": user.username},
             request=stage_view.request,
             stage=stage_view.executor.current_stage,
-            device_class=DeviceClasses.TOTP.value,
+            context={
+                PLAN_CONTEXT_METHOD_ARGS: {
+                    "device_class": DeviceClasses.TOTP.value,
+                }
+            },
         )
         raise ValidationError(
             _("Invalid Token. Please ensure the time on your device is accurate and try again.")
@@ -216,9 +226,13 @@ def validate_challenge_webauthn(
             credentials={"username": user.username},
             request=stage_view.request,
             stage=stage_view.executor.current_stage,
-            device=device,
-            device_class=DeviceClasses.WEBAUTHN.value,
-            device_type=device.device_type,
+            context={
+                PLAN_CONTEXT_METHOD_ARGS: {
+                    "device": device,
+                    "device_class": DeviceClasses.WEBAUTHN.value,
+                    "device_type": device.device_type,
+                },
+            },
         )
         raise ValidationError("Assertion failed") from exc
 
@@ -268,8 +282,12 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
                 credentials={"username": user.username},
                 request=stage_view.request,
                 stage=stage_view.executor.current_stage,
-                device_class=DeviceClasses.DUO.value,
-                duo_response=response,
+                context={
+                    PLAN_CONTEXT_METHOD_ARGS: {
+                        "device_class": DeviceClasses.DUO.value,
+                        "duo_response": response,
+                    }
+                },
             )
             raise ValidationError("Duo denied access", code="denied")
         return device

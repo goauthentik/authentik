@@ -24,7 +24,8 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.policies.api.exec import PolicyTestResultSerializer
@@ -47,12 +48,20 @@ class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
     launch_url = SerializerMethodField()
-    provider_obj = ProviderSerializer(source="get_provider", required=False, read_only=True)
+    provider_obj = ProviderSerializer(
+        source="get_provider",
+        required=False,
+        read_only=True,
+        allow_null=True,
+    )
     backchannel_providers_obj = ProviderSerializer(
         source="backchannel_providers", required=False, read_only=True, many=True
     )
 
     meta_icon_url = ReadOnlyField(source="get_meta_icon")
+    meta_icon_themed_urls = ThemedUrlsSerializer(
+        source="get_meta_icon_themed_urls", read_only=True, allow_null=True
+    )
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
@@ -63,7 +72,7 @@ class ApplicationSerializer(ModelSerializer):
             user = self.context["request"].user
 
         # Cache serialized user data to avoid N+1 when formatting launch URLs
-        # for multiple applications. UserSerializer accesses user.ak_groups which
+        # for multiple applications. UserSerializer accesses user.groups which
         # would otherwise trigger a query for each application.
         if user is not None:
             if "_cached_user_data" not in self.context:
@@ -102,6 +111,7 @@ class ApplicationSerializer(ModelSerializer):
             "meta_launch_url",
             "meta_icon",
             "meta_icon_url",
+            "meta_icon_themed_urls",
             "meta_description",
             "meta_publisher",
             "policy_engine_mode",
@@ -150,15 +160,16 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         return queryset
 
     def _get_allowed_applications(
-        self, pagined_apps: Iterator[Application], user: User | None = None
+        self, paginated_apps: Iterator[Application], user: User | None = None
     ) -> list[Application]:
         applications = []
         request = self.request._request
         if user:
             request = copy(request)
             request.user = user
-        for application in pagined_apps:
+        for application in paginated_apps:
             engine = PolicyEngine(application, request.user, request)
+            engine.empty_result = AppAccessWithoutBindings.get()
             engine.build()
             if engine.passing:
                 applications.append(application)
@@ -216,6 +227,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             if not for_user:
                 raise ValidationError({"for_user": "User not found"})
         engine = PolicyEngine(application, for_user, request)
+        engine.empty_result = AppAccessWithoutBindings.get()
         engine.use_cache = False
         with capture_logs() as logs:
             engine.build()

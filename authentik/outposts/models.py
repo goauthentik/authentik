@@ -403,7 +403,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     def token(self) -> Token:
         """Get/create token for auto-generated user"""
         managed = f"goauthentik.io/outpost/{self.token_identifier}"
-        tokens = Token.filter_not_expired(
+        tokens = Token.objects.filter(
             identifier=self.token_identifier,
             intent=TokenIntents.INTENT_API,
             managed=managed,
@@ -439,9 +439,13 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         if self.managed:
             for brand in Brand.objects.filter(web_certificate__isnull=False):
                 objects.append(brand)
-                objects.append(("view_certificatekeypair", brand.web_certificate))
-                objects.append(("view_certificatekeypair_certificate", brand.web_certificate))
-                objects.append(("view_certificatekeypair_key", brand.web_certificate))
+                objects.append(("authentik_crypto.view_certificatekeypair", brand.web_certificate))
+                objects.append(
+                    ("authentik_crypto.view_certificatekeypair_certificate", brand.web_certificate)
+                )
+                objects.append(
+                    ("authentik_crypto.view_certificatekeypair_key", brand.web_certificate)
+                )
         return objects
 
     def __str__(self) -> str:

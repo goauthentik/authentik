@@ -24,7 +24,7 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 :::caution
-A trusted web certificate is required to be bound to the GlobalProtect Portal. This can be signed by a trusted internal Root Certificate Authority (CA); however, a self signed certificate, a certificate outside of its validity, or a non-standard confirming certificate (such as a lifespan not trusted by modern browsers) will error out on SAML authentication.
+A trusted web certificate is required to be bound to the GlobalProtect Portal. This can be signed by a trusted internal Root Certificate Authority (CA); however, a self-signed certificate, a certificate outside of its validity, or a non-standard confirming certificate (such as a lifespan not trusted by modern browsers) will error out on SAML authentication.
 :::
 
 ## authentik Configuration
@@ -67,9 +67,9 @@ To support the integration of GlobalProtect with authentik, you need to create a
 - Certificate Profile: None (Optionally configure profile to validate the authentik signing cert)
 - Username Attribute: `username`
 
-4. Chose 'Advanced' within the profile and add 'all'. This will have only authentik control the authorization.
+4. Choose 'Advanced' within the profile and add 'all'. This will have only authentik control the authorization.
 
-5. Navigate to the 'GlobalProtect Portal Configuration' and chose the portal for SAML access.
+5. Navigate to the 'GlobalProtect Portal Configuration' and choose the portal for SAML access.
 
 - Under 'Authentication' select the 'Authentication Profile' to the one just created. Leave all other settings as default.
 - Optionally choose to require client access via separately issued client cert as well. If not using a client cert, select 'Yes (User Credentials OR Client Certificate Required)'.

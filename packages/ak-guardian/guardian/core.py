@@ -2,8 +2,7 @@ from django.contrib.auth.models import Permission
 from django.db.models import Model, Q
 from django.utils.encoding import force_str
 
-from guardian.ctypes import get_content_type
-from guardian.utils import get_identity
+from guardian.utils import get_content_type, get_identity
 
 
 def remove_app_label(perm: str) -> str:

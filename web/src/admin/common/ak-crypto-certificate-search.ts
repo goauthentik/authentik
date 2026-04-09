@@ -3,7 +3,7 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import { SearchSelect } from "#elements/forms/SearchSelect/index";
+import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
 import { ifPresent } from "#elements/utils/attributes";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
@@ -20,7 +20,7 @@ import { customElement, property, query } from "lit/decorators.js";
 
 const renderElement = (item: CertificateKeyPair): string => item.name;
 
-const renderValue = (item: CertificateKeyPair | undefined): string | undefined => item?.pk;
+const renderValue = (item: CertificateKeyPair | null) => item?.pk;
 
 /**
  * Cryptographic Certificate Search
@@ -36,10 +36,10 @@ const renderValue = (item: CertificateKeyPair | undefined): string | undefined =
 @customElement("ak-crypto-certificate-search")
 export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) {
     @property({ type: String, reflect: true })
-    certificate?: string;
+    certificate?: string | null;
 
     @query("ak-search-select")
-    search!: SearchSelect<CertificateKeyPair>;
+    search!: ISearchSelect<CertificateKeyPair>;
 
     @property({ type: String })
     public name?: string | null;

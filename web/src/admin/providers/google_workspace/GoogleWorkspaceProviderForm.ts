@@ -53,7 +53,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
                     type="text"

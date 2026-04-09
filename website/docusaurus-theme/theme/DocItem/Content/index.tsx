@@ -8,6 +8,8 @@
  * support badges, and Authentik version badges.
  */
 
+import "./styles.css";
+
 import { SupportBadge } from "#components/SupportBadge.tsx";
 import { VersionBadge } from "#components/VersionBadge.tsx";
 

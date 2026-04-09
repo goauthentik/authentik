@@ -1,4 +1,4 @@
-import "#admin/users/GroupSelectModal";
+import "#admin/users/ak-user-group-table";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -44,6 +44,9 @@ const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
 ];
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
+    public override entitySingular = msg("User");
+    public override entityPlural = msg("Users");
+
     @property({ attribute: false })
     public targetGroup: Group | null = null;
 
@@ -124,7 +127,7 @@ export class UserForm extends ModelForm<User, number> {
         return user;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-text-input
                 name="username"
                 label=${msg("Username")}

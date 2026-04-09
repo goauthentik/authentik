@@ -7,7 +7,7 @@ if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
 fi
 
 function log {
-    printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" >/dev/stderr
+    printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" >&2
 }
 
 function wait_for_db {
@@ -35,8 +35,8 @@ function check_if_root {
         GROUP="authentik:${GROUP_NAME}"
     fi
     # Fix permissions of certs and media
-    chown -R authentik:authentik /media /certs "${PROMETHEUS_MULTIPROC_DIR}"
-    chmod ug+rwx /media
+    chown -R authentik:authentik /data /certs "${PROMETHEUS_MULTIPROC_DIR}"
+    chmod ug+rwx /data
     chmod ug+rx /certs
     exec chpst -u authentik:$GROUP env HOME=/authentik $1
 }

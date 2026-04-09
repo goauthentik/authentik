@@ -53,12 +53,10 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             settingsRequest,
         });
 
-        this.dispatchEvent(new CustomEvent("ak-admin-setting-changed"));
-
         return result;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const { settings } = this;
 
         return html`
@@ -269,20 +267,38 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             >
                 <div class="pf-c-form">
                     <ak-switch-input
-                        name="flags.policiesBufferedAccessView"
-                        ?checked=${settings?.flags.policiesBufferedAccessView ?? false}
-                        label=${msg("Buffer PolicyAccessView requests")}
-                        help=${msg(
-                            "When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.",
-                        )}
-                    >
-                    </ak-switch-input>
-                    <ak-switch-input
                         name="flags.flowsRefreshOthers"
                         ?checked=${settings?.flags.flowsRefreshOthers ?? false}
                         label=${msg("Refresh other flow tabs upon authentication")}
                         help=${msg(
                             "When enabled, other flow tabs in a session will refresh upon a successful authentication.",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.coreDefaultAppAccess"
+                        ?checked=${settings?.flags.coreDefaultAppAccess ?? true}
+                        label=${msg("Require policies for application access")}
+                        help=${msg(
+                            "Configure if applications without any policy/group/user bindings should be accessible to any user.",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.enterpriseAuditIncludeExpandedDiff"
+                        ?checked=${settings?.flags.enterpriseAuditIncludeExpandedDiff ?? false}
+                        label=${msg("Include additional data in Audit logs")}
+                        help=${msg(
+                            "When enabled, additional data about objects added/removed is saved in the audit log. May reduce performance in certain requests.",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.flowsContinuousLogin"
+                        ?checked=${settings?.flags.flowsContinuousLogin ?? false}
+                        label=${msg("Continuous Login")}
+                        help=${msg(
+                            "Upon successful authentication, re-start authentication in other open tabs.",
                         )}
                     >
                     </ak-switch-input>

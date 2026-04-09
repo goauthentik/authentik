@@ -15,8 +15,8 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     AuthenticatorEmailStage,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
     TypeCreate,
@@ -133,7 +133,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span> ${msg("Stage used to configure an email-based authenticator.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
@@ -210,8 +210,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

@@ -1,5 +1,5 @@
 /**
- * @file Temporal utilitie for working with dates and times.
+ * @file Temporal utilities for working with dates and times.
  */
 
 /**

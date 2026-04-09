@@ -17,4 +17,4 @@ When the user reaches this stage, they are redirected to a static URL.
 
 When the user reaches this stage, they are redirected to a specified flow, retaining all [flow context](../../flow/context/index.mdx).
 
-Optionally, untoggle the "Keep flow context" switch. If this is untoggled, all flow context is cleared with the exception of the [is_redirected](../../flow/context#is_redirected-flow-object) key.
+Optionally, toggle the "Keep flow context" switch to "off". When this control is set to "off", all flow context is cleared with the exception of the [is_redirected](../../flow/context#is_redirected-flow-object) key.

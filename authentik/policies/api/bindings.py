@@ -39,7 +39,7 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
             return self.get_queryset().get_subclass(pk=data)
         except ObjectDoesNotExist:
             self.fail("does_not_exist", pk_value=data)
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             self.fail("incorrect_type", data_type=type(data).__name__)
 
     def to_representation(self, value):
@@ -57,9 +57,11 @@ class PolicyBindingSerializer(ModelSerializer):
         required=True,
     )
 
-    policy_obj = PolicySerializer(required=False, read_only=True, source="policy")
-    group_obj = PartialGroupSerializer(required=False, read_only=True, source="group")
-    user_obj = PartialUserSerializer(required=False, read_only=True, source="user")
+    policy_obj = PolicySerializer(required=False, allow_null=True, read_only=True, source="policy")
+    group_obj = PartialGroupSerializer(
+        required=False, allow_null=True, read_only=True, source="group"
+    )
+    user_obj = PartialUserSerializer(required=False, allow_null=True, read_only=True, source="user")
 
     class Meta:
         model = PolicyBinding

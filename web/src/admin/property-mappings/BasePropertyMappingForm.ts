@@ -30,7 +30,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
         return nothing;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

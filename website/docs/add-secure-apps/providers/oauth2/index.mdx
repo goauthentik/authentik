@@ -23,7 +23,7 @@ OAuth 2.0 is an authorization protocol that allows an application (the RP) to de
 1. An authorization request is prepared by the RP and contains parameters for its implementation of OAuth and which data it requires, and then the User's browser is redirected to that URL.
 2. The RP sends a request to authentik in the background to exchange the access code for an access token (and optionally a refresh token).
 
-In detail, with OAuth2 when a user accesses the application (the RP) via their browser, the RP then prepares a URL with parameters for the OpenID Provider (OP), which the users's browser is redirected to. The OP authenticates the user and generates an authorization code. The OP then redirects the client (the user's browser) back to the RP, along with that authorization code. In the background, the RP then sends that same authorization code in a request authenticated by the `client_id` and `client_secret` to the OP. Finally, the OP responds by sending an Access Token saying this user has been authorised (the RP is recommended to validate this token using cryptography) and optionally a Refresh Token.
+In detail, with OAuth2 when a user accesses the application (the RP) via their browser, the RP then prepares a URL with parameters for the OpenID Provider (OP), which the user's browser is redirected to. The OP authenticates the user and generates an authorization code. The OP then redirects the client (the user's browser) back to the RP, along with that authorization code. In the background, the RP then sends that same authorization code in a request authenticated by the `client_id` and `client_secret` to the OP. Finally, the OP responds by sending an Access Token saying this user has been authorized (the RP is recommended to validate this token using cryptography) and optionally a Refresh Token.
 
 The image below shows a typical authorization code flow.
 
@@ -102,7 +102,7 @@ The flows and grant types used in this case are those used for a typical authori
 
 The authorization code is for environments with both a Client and a application server, where the back and forth happens between the client and an app server (the logic lives on app server). The RP needs to authorise itself to the OP. Client ID (public, identifies which app is talking to it) and client secret (the password) that the RP uses to authenticate.
 
-If you configure authentik to use "Offline access" then during the initial auth the OP sends two tokens, an access token (short-lived, hours, can be customised) and a refresh token (typically longer validity, days or infinite). The RP (the app) saves both tokens. When the access token is about to expire, the RP sends the saved refresh token back to the OP, and requests a new access token. When the refresh token itself is about to expire, the RP can also ask for a new refresh token. This can all happen without user interaction if you configured the offline access.
+If you configure authentik to use "Offline access" then during the initial auth the OP sends two tokens, an access token (short-lived, hours, can be customized) and a refresh token (typically longer validity, days or infinite). The RP (the app) saves both tokens. When the access token is about to expire, the RP sends the saved refresh token back to the OP, and requests a new access token. When the refresh token itself is about to expire, the RP can also ask for a new refresh token. This can all happen without user interaction if you configured the offline access.
 
 :::info
 Starting with authentik 2024.2, applications only receive an access token. To receive a refresh token, both applications and authentik must be configured to request the `offline_access` scope. In authentik this can be done by selecting the `offline_access` Scope mapping in the provider settings.
@@ -183,6 +183,28 @@ This does _not_ apply to special scopes, as those are not configurable in the pr
 - `user:email`: Allows read-only access to `/user`, including email address
 - `read:org`: Allows read-only access to `/user/teams`, listing all the user's groups as teams.
 
+### Email scope verification
+
+In authentik releases prior to 2025.10, the email scope always set the `email_verified` claim to `True`. Since authentik does not have a single authoritative source to determine whether a user's email is actually verified, asserting this claim could have security implications. As of 2025.10, `email_verified` now defaults to `False`.
+
+Some applications require this claim to be `True` in order to authenticate users. In those cases, you can create a custom email scope mapping (**Customization** > **Property Mappings**) that always returns `email_verified` as `True`:
+
+```python
+return {
+    "email": request.user.email,
+    "email_verified": True
+}
+```
+
+For greater security guarantees, verify users' email addresses and store the verification status as a user attribute (for example, `email_verified` set to `True` or `False`). You can then configure the scope mapping to return this value dynamically:
+
+```python
+return {
+    "email": request.user.email,
+    "email_verified": request.user.attributes.get("email_verified", False)
+}
+```
+
 ## Signing & Encryption
 
 [JWTs](https://jwt.io/introduction) created by authentik will always be signed.
@@ -191,6 +213,6 @@ When a _Signing Key_ is selected in the provider, the JWT will be signed asymmet
 
 When no _Signing Key_ is selected, the JWT will be signed symmetrically with the _Client secret_ of the provider, which can be seen in the provider settings.
 
-### Encryption:ak-version[2024.10]
+### Encryption:ak-version
 
 authentik can also encrypt JWTs (turning them into JWEs) it issues by selecting an _Encryption Key_ in the provider. When selected, all JWTs will be encrypted symmetrically using the selected certificate. authentik uses the `RSA-OAEP-256` algorithm with the `A256CBC-HS512` encryption method.

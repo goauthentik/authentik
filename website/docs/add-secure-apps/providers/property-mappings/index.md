@@ -15,15 +15,7 @@ Scope mappings are used by the OAuth2 provider to map information from authentik
 :::info Default value for `email_verified`
 By default, authentik sets the `email_verified` claim to `False`, since it has no way to confirm whether a user's email is verified. Setting this claim to `True` by default could introduce unintended security risks.
 
-Be aware that some applications might require this claim to be true to successfully authenticate users. In this case you should create a custom email scope mapping that returns `email_verified` as `True`, using the following expression:
-
-```
-return {
-    "email": user.email,
-    "email_verified": True,
-}
-```
-
+Be aware that some applications might require this claim to be true to successfully authenticate users. See [Email scope verification](../oauth2/index.mdx#email-scope-verification) for more information.
 :::
 
 ## Skip objects during synchronization

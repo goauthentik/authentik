@@ -1,51 +1,54 @@
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/forms/Radio.css";
+import { SlottedTemplateResult } from "#elements/types";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface RadioOption<T> {
     label: string;
-    description?: TemplateResult;
+    description?: SlottedTemplateResult;
     className?: string;
     default?: boolean;
     value: T;
     disabled?: boolean;
 }
 
+export interface RadioChangeEventDetail<T> {
+    value: T;
+}
+
 @customElement("ak-radio")
-export class Radio<T> extends CustomEmitterElement(AKElement) {
+export class Radio<T = never> extends CustomEmitterElement(AKElement) {
+    static styles: CSSResult[] = [
+        // ---
+        PFRadio,
+        PFForm,
+        Styles,
+    ];
+
     /**
      * Options to display in the radio group.
      *
      * Can be either an array of RadioOption<T> or a function returning such an array.
      */
     @property({ attribute: false })
-    public options: RadioOption<T>[] | (() => RadioOption<T>[]) = [];
+    public options!: RadioOption<T>[] | (() => RadioOption<T>[]);
 
     @property()
     public name = "";
 
     @property({ attribute: false })
-    public value?: T;
+    public value?: T | unknown;
 
     #fieldID: string = this.name || IDGenerator.randomID();
-
-    static styles: CSSResult[] = [
-        // ---
-        PFBase,
-        PFRadio,
-        PFForm,
-        Styles,
-    ];
 
     #optionsArray(): RadioOption<T>[] {
         return typeof this.options === "function" ? this.options() : this.options;
@@ -78,8 +81,8 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
             this.value = option.value;
 
-            this.dispatchCustomEvent("change", { value: option.value });
-            this.dispatchCustomEvent("input", { value: option.value });
+            this.dispatchCustomEvent<RadioChangeEventDetail<T>>("change", { value: option.value });
+            this.dispatchCustomEvent<RadioChangeEventDetail<T>>("input", { value: option.value });
         };
     };
 
@@ -99,7 +102,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
                 aria-label=${option.label}
                 id=${id}
                 .checked=${option.value === this.value}
-                .disabled=${option.disabled}
+                .disabled=${!!option.disabled}
             />
             <label class="pf-c-radio__label ${option.className ?? ""}" for=${id}
                 >${option.label}</label
@@ -119,7 +122,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-radio": Radio<unknown>;
+        "ak-radio": Radio<never>;
     }
 }
 

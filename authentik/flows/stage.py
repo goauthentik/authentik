@@ -15,6 +15,7 @@ from rest_framework.request import Request
 from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.common.oauth.constants import PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI
 from authentik.core.models import Application, User
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
@@ -197,6 +198,9 @@ class ChallengeStageView(StageView):
                     data={
                         "title": self.format_title(),
                         "background": self.executor.flow.background_url(self.request),
+                        "background_themed_urls": self.executor.flow.background_themed_urls(
+                            self.request
+                        ),
                         "cancel_url": self.cancel_url,
                         "layout": self.executor.flow.layout,
                     }
@@ -297,7 +301,24 @@ class SessionEndStage(ChallengeStageView):
     that the user is likely to take after signing out of a provider."""
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        # Check for OIDC post_logout_redirect_uri in context
+        post_logout_redirect_uri = self.executor.plan.context.get(
+            PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI
+        )
+
+        if post_logout_redirect_uri:
+            self.logger.debug(
+                "SessionEndStage redirecting to post_logout_redirect_uri",
+                redirect_url=post_logout_redirect_uri,
+            )
+            return RedirectChallenge(
+                data={
+                    "to": post_logout_redirect_uri,
+                },
+            )
+
         if not self.request.user.is_authenticated:
+            # User is logged out with no redirect URI - go to default
             return RedirectChallenge(
                 data={
                     "to": reverse("authentik_core:root-redirect"),

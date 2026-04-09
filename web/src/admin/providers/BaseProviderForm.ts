@@ -5,7 +5,12 @@ import { ModelForm } from "#elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 
-export abstract class BaseProviderForm<T> extends ModelForm<T, number> {
+/**
+ * Base form for all provider forms.
+ *
+ * @prop {number} instancePk - The primary key of the instance to load.
+ */
+export abstract class BaseProviderForm<T extends object> extends ModelForm<T, number> {
     public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated provider.")

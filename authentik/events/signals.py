@@ -93,11 +93,13 @@ def on_login_failed(
     credentials: dict[str, str],
     request: HttpRequest,
     stage: Stage | None = None,
+    context: dict[str, Any] | None = None,
     **kwargs,
 ):
     """Failed Login, authentik custom event"""
     user = User.objects.filter(username=credentials.get("username")).first()
-    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **kwargs).from_http(
+    context = context or {}
+    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **context).from_http(
         request, user
     )
 

@@ -35,7 +35,7 @@ To support the integration of DigitalOcean with authentik, you need to create a 
 
     ```py
     # Extract the names of all groups the user belongs to
-    group_names = user.ak_groups.values_list("name", flat=True)
+    group_names = user.groups.values_list("name", flat=True)
 
     # From the group names, filter out those that start with "do:"
     # Strip off the "do:" prefix so we’re left with just the role name
@@ -67,7 +67,7 @@ To support the integration of DigitalOcean with authentik, you need to create a 
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Add the `profile` scope created in the previous section. Do not remove authentik’s `authentik default OAuth Mapping: OpenID 'profile'`, as claims such as `name` are required by DigitalOcean.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -90,7 +90,7 @@ To support the integration of DigitalOcean with authentik, you need to create a 
 3. Click **Edit**, expand **UI Settings**, and set **Launch URL** to the **SSO sign-in URL** copied from the DigitalOcean control panel.
 4. Click **Update**.
 
-## References
+## Resources
 
 - [DigitalOcean Documentation - How to Configure Single Sign-On for Teams](https://docs.digitalocean.com/platform/teams/how-to/configure-sso/)
 

@@ -1,7 +1,5 @@
 [part="table-container"] {
-    @media (max-width: 1199px) {
-        overflow-x: auto;
-    }
+    overflow-x: auto;
 }
 
 .pf-c-table {
@@ -27,18 +25,8 @@ td ak-mdx::part(content) {
 td:has(ak-action-button),
 td:has(ak-forms-modal),
 td:has(ak-rbac-object-permission-modal) {
-    & > .pf-c-button,
-    & > button[slot="trigger"]:has(i),
-    & > *::part(spinner-button),
-    & > *::part(button) {
-        --pf-global--spacer--form-element: 0;
-
-        padding-inline: 0.5em !important;
-    }
-
     button[slot="trigger"]:has(i) {
-        padding-inline-start: 0 !important;
-        padding-inline-end: 0.25em !important;
+        padding-inline: 0.5em !important;
     }
 
     *::part(spinner-button) {
@@ -47,6 +35,10 @@ td:has(ak-rbac-object-permission-modal) {
 
     button.pf-m-tertiary {
         margin-inline-start: 0.25em;
+    }
+
+    pf-tooltip {
+        color: inherit;
     }
 
     & > * {

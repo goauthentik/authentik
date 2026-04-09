@@ -56,6 +56,10 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         if kwargs.get("no_capture", False):
             self.args.append("--capture=no")
 
+        if kwargs.get("count", None):
+            self.args.append("--flake-finder")
+            self.args.append(f"--flake-runs={kwargs['count']}")
+
         self._setup_test_environment()
 
     def _setup_test_environment(self):
@@ -65,8 +69,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         # Test-specific configuration
         test_config = {
-            "events.context_processors.geoip": "tests/GeoLite2-City-Test.mmdb",
-            "events.context_processors.asn": "tests/GeoLite2-ASN-Test.mmdb",
+            "events.context_processors.geoip": "tests/geoip/GeoLite2-City-Test.mmdb",
+            "events.context_processors.asn": "tests/geoip/GeoLite2-ASN-Test.mmdb",
             "blueprints_dir": "./blueprints",
             "outposts.container_image_base": f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
             "tenants.enabled": False,
@@ -85,7 +89,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         sentry_init()
         self.logger.debug("Test environment configured")
 
-        use_test_broker()
+        self.task_broker = use_test_broker()
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")
@@ -113,6 +117,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             action="store_true",
             help="Disable any capturing of stdout/stderr during tests.",
         )
+        parser.add_argument("--count", type=int, help="Re-run selected tests n times")
 
     def _validate_test_label(self, label: str) -> bool:
         """Validate test label format"""
@@ -170,7 +175,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                                 self.args.append(path)
                             valid_label_found = True
                             break
-                    except (TypeError, IndexError):
+                    except TypeError, IndexError:
                         continue
 
             if not valid_label_found:
@@ -180,7 +185,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         self.logger.info("Running tests", test_files=self.args)
         with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
             try:
-                return pytest.main(self.args)
-            except Exception as e:  # noqa
-                self.logger.error("Error running tests", error=str(e), test_files=self.args)
+                ret = pytest.main(self.args)
+                self.task_broker.close()
+                return ret
+            except Exception as exc:  # noqa
+                self.logger.error("Error running tests", exc=exc, test_files=self.args)
                 return 1

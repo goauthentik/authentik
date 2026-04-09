@@ -1,7 +1,11 @@
 import { allLocales, sourceLocale as SourceLanguageTag } from "../../../locale-codes.js";
 
 import { resolveChineseScript, resolveChineseScriptLegacy } from "#common/ui/locale/cjk";
-import { PseudoLanguageTag, TargetLanguageTag } from "#common/ui/locale/definitions";
+import {
+    PseudoLanguageTag,
+    TargetLanguageTag,
+    TargetLanguageTags,
+} from "#common/ui/locale/definitions";
 
 //#region Cache
 
@@ -148,6 +152,19 @@ export function getSessionLocale(): string | null {
     }
 
     return null;
+}
+
+//#region Type Guards
+
+/**
+ * Predicate to determine if a given language tag is a supported locale target.
+ *
+ * @param languageTagHint The language tag to check.
+ */
+export function isTargetLanguageTag(
+    languageTagHint: Intl.UnicodeBCP47LocaleIdentifier,
+): languageTagHint is TargetLanguageTag {
+    return TargetLanguageTags.has(languageTagHint as TargetLanguageTag);
 }
 
 //#endregion

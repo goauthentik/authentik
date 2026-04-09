@@ -44,7 +44,7 @@ Navigate to **Settings > Auth**, and click on Configure next to SAML2
 
 In authentik, get the Metadata URL by right-clicking `Download Metadata` and selecting Copy Link Address, and paste that URL into Sentry.
 
-On the next screen, input these Values
+On the next screen, input these values.
 
 - IdP User ID: `http://schemas.goauthentik.io/2021/02/saml/uid`
 - User Email: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`

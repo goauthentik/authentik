@@ -34,7 +34,7 @@ To support the integration of OVHcloud with authentik, you need to create an app
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, set an available **Signing certificate**.
 
-    - **Configure Bindings** _(optional)_: You can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: You can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -61,7 +61,7 @@ To verify that authentik is properly integrated with OVHcloud, first log out of 
 
 You’ll be redirected to your authentik instance to complete authentication. Once successful, you’ll be logged in to OVHcloud.
 
-## References
+## Resources
 
 - [OVHcloud Help Center - User management & Federation](https://help.ovhcloud.com/csm/en-ie-documentation-manage-operate-user-federation?id=kb_browse_cat&kb_id=3d4a8129a884a950f07829d7d5c75243&kb_category=21734cbe50d47d90476b12dfd60b3542&spa=1)
 - [OVHcloud US Help Center - User management & Federation](https://support.us.ovhcloud.com/hc/en-us/sections/27230986868883-Federation)

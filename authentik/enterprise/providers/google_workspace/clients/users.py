@@ -35,28 +35,17 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
         """Convert authentik user"""
         return delete_none_values(super().to_schema(obj, connection, primaryEmail=obj.email))
 
-    def delete(self, obj: User):
+    def delete(self, identifier: str):
         """Delete user"""
-        google_user = GoogleWorkspaceProviderUser.objects.filter(
-            provider=self.provider, user=obj
-        ).first()
-        if not google_user:
-            self.logger.debug("User does not exist in Google, skipping")
-            return None
-        with transaction.atomic():
-            response = None
-            if self.provider.user_delete_action == OutgoingSyncDeleteAction.DELETE:
-                response = self._request(
-                    self.directory_service.users().delete(userKey=google_user.google_id)
-                )
-            elif self.provider.user_delete_action == OutgoingSyncDeleteAction.SUSPEND:
-                response = self._request(
-                    self.directory_service.users().update(
-                        userKey=google_user.google_id, body={"suspended": True}
-                    )
-                )
-            google_user.delete()
-        return response
+        GoogleWorkspaceProviderUser.objects.filter(
+            provider=self.provider, google_id=identifier
+        ).delete()
+        if self.provider.user_delete_action == OutgoingSyncDeleteAction.DELETE:
+            return self._request(self.directory_service.users().delete(userKey=identifier))
+        if self.provider.user_delete_action == OutgoingSyncDeleteAction.SUSPEND:
+            return self._request(
+                self.directory_service.users().update(userKey=identifier, body={"suspended": True})
+            )
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""

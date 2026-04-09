@@ -76,12 +76,12 @@ Change the following fields
 - Base DN: `DC=ldap,DC=goauthentik,DC=io`
 - Search Scope: Subtree
 - Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
-- Bind anonymous: **unticked**
+- Bind anonymous: **Unchecked**
 - Bind credentials:
     - User DN: `cn=pfsense-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
     - Password: `<pfsense-user password from step 2>`
 - Group member attribute: `memberOf`
-- Allow unauthenticated bind: **unticked**
+- Allow unauthenticated bind: **Unchecked**
 
 ## pfSense secure setup (with SSL)
 
@@ -135,12 +135,12 @@ Change the following fields
 - Base DN: `DC=ldap,DC=goauthentik,DC=io`
 - Search Scope: Subtree
 - Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
-- Bind anonymous: **unticked**
+- Bind anonymous: **Unchecked**
 - Bind credentials:
     - User DN: `cn=pfsense-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
     - Password: `<pfsense-user password from step 2>`
 - Extended Query: &(objectClass=user)
-- Allow unauthenticated bind: **unticked**
+- Allow unauthenticated bind: **Unchecked**
 
 ## Test your setup
 

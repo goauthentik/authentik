@@ -33,7 +33,7 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.",

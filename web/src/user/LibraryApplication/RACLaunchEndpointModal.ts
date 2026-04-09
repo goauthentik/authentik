@@ -1,18 +1,18 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
-import { TableModal } from "#elements/table/TableModal";
+import { AKModal } from "#elements/modals/ak-modal";
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { Application, Endpoint, RacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-library-rac-endpoint-launch")
-export class RACLaunchEndpointModal extends TableModal<Endpoint> {
-    clickable = true;
+export class RACLaunchEndpointLaunch extends Table<Endpoint> {
+    public override clickable = true;
     protected override searchEnabled = true;
 
     protected override rowClickListener(item: Endpoint, event?: InputEvent | PointerEvent) {
@@ -26,16 +26,20 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     }
 
     @property({ attribute: false })
-    app?: Application;
+    public app?: Application;
 
     async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         const endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({
             ...(await this.defaultEndpointConfig()),
             provider: this.app?.provider || 0,
         });
-        if (this.open && endpoints.pagination.count === 1) {
+
+        if (endpoints.pagination.count === 1) {
             this.rowClickListener(endpoints.results[0]);
-            this.open = false;
+
+            if (this.parentElement instanceof AKModal) {
+                this.parentElement.close();
+            }
         }
         return endpoints;
     }
@@ -48,29 +52,10 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     row(item: Endpoint): SlottedTemplateResult[] {
         return [html`${item.name}`];
     }
-
-    renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${msg("Select endpoint to connect to")}</h1>
-                </div>
-            </section>
-            <section class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</section>
-            <footer class="pf-c-modal-box__footer">
-                <ak-spinner-button
-                    .callAction=${async () => {
-                        this.open = false;
-                    }}
-                    class="pf-m-secondary"
-                >
-                    ${msg("Cancel")}
-                </ak-spinner-button>
-            </footer>`;
-    }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-library-rac-endpoint-launch": RACLaunchEndpointModal;
+        "ak-library-rac-endpoint-launch": RACLaunchEndpointLaunch;
     }
 }

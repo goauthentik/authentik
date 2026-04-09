@@ -11,7 +11,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const LevelIconMap = {
     [MessageLevel.error]: "fas fa-exclamation-circle",
@@ -29,7 +28,7 @@ const LevelARIALiveMap = {
 
 @customElement("ak-message")
 export class Message extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton, PFAlert, PFAlertGroup];
+    static styles: CSSResult[] = [PFButton, PFAlert, PFAlertGroup];
 
     //#region Properties
 
@@ -38,6 +37,9 @@ export class Message extends AKElement {
 
     @property({ type: String })
     public level?: MessageLevel;
+
+    @property({ type: String })
+    public icon?: string;
 
     @property({ attribute: false })
     public onDismiss?: (message: APIMessage) => void;
@@ -84,7 +86,7 @@ export class Message extends AKElement {
     //#endregion
 
     public render() {
-        const { description, level = MessageLevel.info } = this;
+        const { description, level = MessageLevel.info, icon = LevelIconMap[level] } = this;
         const ariaLive = this.live ? LevelARIALiveMap[level] : "off";
 
         return html`<li
@@ -103,7 +105,7 @@ export class Message extends AKElement {
                 })}"
             >
                 <div class="pf-c-alert__icon">
-                    <i class="${LevelIconMap[level]}" aria-hidden="true"></i>
+                    <i class="${icon}" aria-hidden="true"></i>
                 </div>
                 <p class="pf-c-alert__title" id="message-title">
                     <slot></slot>

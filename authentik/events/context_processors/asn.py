@@ -57,7 +57,7 @@ class ASNContextProcessor(MMDBContextProcessor):
             self.check_expired()
             try:
                 return self.reader.asn(ip_address)
-            except (GeoIP2Error, ValueError):
+            except GeoIP2Error, ValueError:
                 return None
 
     def asn_to_dict(self, asn: ASN | None) -> ASNDict | dict:

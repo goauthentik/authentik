@@ -33,6 +33,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import WebfingerProvider
+from authentik.common.oauth.constants import SubModes
 from authentik.core.models import (
     AuthenticatedSession,
     ExpiringModel,
@@ -44,7 +45,6 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.providers.oauth2.constants import SubModes
 from authentik.sources.oauth.models import OAuthSource
 
 if TYPE_CHECKING:
@@ -97,6 +97,11 @@ class RedirectURIMatchingMode(models.TextChoices):
     REGEX = "regex", _("Regular Expression URL matching")
 
 
+class RedirectURIType(models.TextChoices):
+    AUTHORIZATION = "authorization", _("Authorization")
+    LOGOUT = "logout", _("Logout")
+
+
 class OAuth2LogoutMethod(models.TextChoices):
     """OAuth2/OIDC Logout methods"""
 
@@ -110,6 +115,7 @@ class RedirectURI:
 
     matching_mode: RedirectURIMatchingMode
     url: str
+    redirect_uri_type: RedirectURIType = RedirectURIType.AUTHORIZATION
 
 
 class ResponseTypes(models.TextChoices):
@@ -220,7 +226,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
             "Frontchannel uses iframes in your browser"
         ),
     )
-
     include_claims_in_id_token = models.BooleanField(
         default=True,
         verbose_name=_("Include claims in id_token"),
@@ -343,7 +348,12 @@ class OAuth2Provider(WebfingerProvider, Provider):
                 from_dict(
                     RedirectURI,
                     entry,
-                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
+                    config=Config(
+                        type_hooks={
+                            RedirectURIMatchingMode: RedirectURIMatchingMode,
+                            RedirectURIType: RedirectURIType,
+                        }
+                    ),
                 )
             )
         return uris
@@ -356,9 +366,23 @@ class OAuth2Provider(WebfingerProvider, Provider):
         self._redirect_uris = cleansed
 
     @property
+    def authorization_redirect_uris(self) -> list[RedirectURI]:
+        return [
+            uri
+            for uri in self.redirect_uris
+            if uri.redirect_uri_type == RedirectURIType.AUTHORIZATION
+        ]
+
+    @property
+    def post_logout_redirect_uris(self) -> list[RedirectURI]:
+        return [
+            uri for uri in self.redirect_uris if uri.redirect_uri_type == RedirectURIType.LOGOUT
+        ]
+
+    @property
     def launch_url(self) -> str | None:
         """Guess launch_url based on first redirect_uri"""
-        redirects = self.redirect_uris
+        redirects = self.authorization_redirect_uris
         if len(redirects) < 1:
             return None
         main_url = redirects[0].url
@@ -386,11 +410,18 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
-    def encode(self, payload: dict[str, Any]) -> str:
-        """Represent the ID Token as a JSON Web Token (JWT)."""
+    def encode(self, payload: dict[str, Any], jwt_type: str | None = None) -> str:
+        """Represent the ID Token as a JSON Web Token (JWT).
+
+        :param payload The payload to encode into the JWT
+        :param jwt_type The type of the JWT. This will be put in the JWT header using the `typ`
+            parameter. See RFC7515 Section 4.1.9. If not set fallback to the default of `JWT`.
+        """
         headers = {}
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
+        if jwt_type is not None:
+            headers["typ"] = jwt_type
         key, alg = self.jwt_key
         encoded = encode(payload, key, algorithm=alg, headers=headers)
         if self.encryption_key:

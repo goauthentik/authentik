@@ -1,11 +1,12 @@
 import "#elements/buttons/Dropdown";
 
+import { torusIndex } from "#common/collections";
 import { StripHTMLTrustPolicy } from "#common/purify";
-import { rootInterface } from "#common/theme";
 
 import { FormAssociated, FormAssociatedElement } from "#elements/forms/form-associated-element";
 import { PaginatedResponse } from "#elements/table/Table";
 import { ifPresent } from "#elements/utils/attributes";
+import { resolveInterface } from "#elements/utils/render-roots";
 
 import Styles from "#components/ak-search-ql/styles.css";
 
@@ -19,7 +20,6 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export class QL extends DjangoQL {
     createCompletionElement() {
@@ -34,20 +34,6 @@ export class QL extends DjangoQL {
     }
 }
 
-/**
- * Given an array or length, return logical index of the element at the given delta.
- * This is effectively a modulo loop, allowing for positive and negative deltas.
- */
-function torusIndex(lengthLike: number | ArrayLike<number>, delta: number): number {
-    const length = typeof lengthLike === "number" ? lengthLike : lengthLike.length;
-
-    if (delta < 0) {
-        return (length + delta) % length;
-    }
-
-    return ((delta % length) + length) % length;
-}
-
 @customElement("ak-search-ql")
 export class QLSearch extends FormAssociatedElement<string> implements FormAssociated {
     static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
@@ -57,7 +43,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
     public static styles: CSSResult[] = [
         // ---
-        PFBase,
+
         PFFormControl,
         PFSearchInput,
         Styles,
@@ -144,8 +130,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     public override connectedCallback() {
         super.connectedCallback();
 
-        this.#scrollContainer =
-            rootInterface<LitElement>().renderRoot.querySelector("#main-content");
+        this.#scrollContainer = resolveInterface().renderRoot.querySelector("#main-content");
 
         this.#scrollContainer?.addEventListener("scroll", this.#updateDropdownPosition, {
             passive: true,

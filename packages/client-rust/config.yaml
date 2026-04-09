@@ -1,0 +1,10 @@
+---
+additionalProperties:
+  packageName: authentik-client
+  avoidBoxedModels: true
+  bestFitInt: true
+  preferUnsignedInt: true
+  library: reqwest
+  supportAsync: true
+  supportMiddleware: true
+  repositoryUrl: https://github.com/authentik-community/client-rust.git

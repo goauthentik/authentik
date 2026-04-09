@@ -11,11 +11,11 @@ import {
     CoreGroupsListRequest,
     CoreUsersListRequest,
     Group,
+    ModelEnum,
     PropertyMapping,
     PropertymappingsApi,
     PropertyMappingTestRequest,
     PropertyMappingTestResult,
-    RbacPermissionsAssignedByRolesListModelEnum,
     User,
 } from "@goauthentik/api";
 
@@ -72,7 +72,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
 
     renderExampleButtons() {
         return this.mapping?.metaModelName ===
-            RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
+            ModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
             ? html`<p>${msg("Example context data")}</p>
                   ${this.renderExampleLDAP()}`
             : nothing;
@@ -127,7 +127,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} name="user">
                 <ak-search-select
                     blankable

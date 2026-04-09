@@ -1,9 +1,10 @@
 """Test Users API"""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from json import loads
 
 from django.urls.base import reverse
+from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.brands.models import Brand
@@ -127,13 +128,62 @@ class TestUsersAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_recovery_duration(self):
+        """Test user recovery token duration"""
+        Token.objects.all().delete()
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        )
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk}),
+            data={"token_duration": "days=33"},
+        )
+        self.assertEqual(response.status_code, 200)
+        expires = Token.objects.first().expires
+        expected_expires = now() + timedelta(days=33)
+        self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
+
+    def test_recovery_duration_update(self):
+        """Test user recovery token duration update"""
+        Token.objects.all().delete()
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        )
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk}),
+            data={"token_duration": "days=33"},
+        )
+        self.assertEqual(response.status_code, 200)
+        expires = Token.objects.first().expires
+        expected_expires = now() + timedelta(days=33)
+        self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
+        response = self.client.post(
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk}),
+            data={"token_duration": "days=66"},
+        )
+        expires = Token.objects.first().expires
+        expected_expires = now() + timedelta(days=66)
+        self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
+
     def test_recovery_email_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
         self.user.email = ""
         self.user.save()
+        stage = EmailStage.objects.create(name="email")
         response = self.client.post(
-            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
+            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk}),
+            data={"email_stage": stage.pk},
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
@@ -142,7 +192,8 @@ class TestUsersAPI(APITestCase):
         self.user.email = "foo@bar.baz"
         self.user.save()
         response = self.client.post(
-            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
+            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk}),
+            data={"email_stage": stage.pk},
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"non_field_errors": "No recovery flow set."})
@@ -160,7 +211,7 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
         )
         self.assertEqual(response.status_code, 400)
-        self.assertJSONEqual(response.content, {"non_field_errors": "Email stage does not exist."})
+        self.assertJSONEqual(response.content, {"email_stage": ["This field is required."]})
 
     def test_recovery_email(self):
         """Test user recovery link"""
@@ -178,8 +229,8 @@ class TestUsersAPI(APITestCase):
             reverse(
                 "authentik_api:user-recovery-email",
                 kwargs={"pk": self.user.pk},
-            )
-            + f"?email_stage={stage.pk}"
+            ),
+            data={"email_stage": stage.pk},
         )
         self.assertEqual(response.status_code, 204)
 

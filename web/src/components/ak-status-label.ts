@@ -10,7 +10,6 @@ import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const statusToDetails = new Map<P4Disposition, [string, string]>([
     [P4Disposition.Error, ["pf-m-red", "fa-times"]],
@@ -41,7 +40,7 @@ const statusToDetails = new Map<P4Disposition, [string, string]>([
 
 @customElement("ak-status-label")
 export class AkStatusLabel extends AKElement {
-    static styles = [PFBase, PFLabel, Styles];
+    static styles = [PFLabel, Styles];
 
     @property({ type: Boolean })
     good = false;

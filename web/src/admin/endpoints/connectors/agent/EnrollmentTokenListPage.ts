@@ -12,12 +12,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    AgentConnector,
-    EndpointsApi,
-    EnrollmentToken,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { AgentConnector, EndpointsApi, EnrollmentToken, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -54,7 +49,7 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Enrollment Token(s)")}
+            object-label=${msg("Enrollment Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: EnrollmentToken) => {
                 return [
@@ -87,7 +82,7 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
             Timestamp(item.expires && item.expiring ? item.expires : null),
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Enrollment Token")}</span>
                     <ak-endpoints-agent-enrollment-token-form
                         slot="form"
@@ -101,7 +96,7 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsAgentEnrollmenttoken}
+                    model=${ModelEnum.AuthentikEndpointsConnectorsAgentEnrollmenttoken}
                     objectPk=${item.tokenUuid}
                 >
                 </ak-rbac-object-permission-modal>

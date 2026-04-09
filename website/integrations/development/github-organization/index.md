@@ -4,7 +4,7 @@ sidebar_label: GitHub Organization
 support_level: community
 ---
 
-## What is GitHub Organizations
+## What is a GitHub Organization
 
 > Organizations are shared accounts where businesses and open-source projects can collaborate across many projects at once, with sophisticated security and administrative features.
 >
@@ -38,7 +38,7 @@ To support the integration of GitHub Organization with authentik, you need to cr
     - Set the **Issuer** to `https://github.com/orgs/foo`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -46,7 +46,7 @@ To support the integration of GitHub Organization with authentik, you need to cr
 
 Navigate to your organization settings by going to your organization page at https://github.com/foo, then click Settings.
 
-In the left-hand navigation, scroll down to the Security section and click `Authentication security`
+In the left-hand navigation, scroll down to the Security section and click `Authentication security`.
 
 On this page:
 

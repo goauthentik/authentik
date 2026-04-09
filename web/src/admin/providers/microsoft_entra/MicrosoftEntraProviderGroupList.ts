@@ -50,7 +50,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Microsoft Entra Group(s)")}
+            object-label=${msg("Microsoft Entra Group(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: MicrosoftEntraProviderGroup) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsDestroy({

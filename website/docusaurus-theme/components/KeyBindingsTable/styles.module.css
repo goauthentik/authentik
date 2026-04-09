@@ -1,0 +1,55 @@
+.table {
+    width: 100%;
+
+    --ifm-table-border-color: var(--ifm-color-info-contrast-background);
+    --ifm-table-stripe-background: transparent;
+    --ifm-table-stripe-background: var(--ifm-color-emphasis-100);
+
+    thead {
+        background-color: var(--ifm-color-info-contrast-background);
+        text-align: left;
+    }
+
+    tr,
+    td,
+    th {
+        border-color: transparent;
+    }
+
+    tr {
+        th {
+            border-block-end-color: var(--ifm-color-info-contrast-background);
+        }
+
+        td:first-child {
+            text-align: end;
+
+            font-family: var(--ifm-heading-font-family);
+            font-weight: 300;
+            border-inline-end-color: var(--ifm-color-secondary-dark);
+        }
+    }
+
+    tbody tr th {
+        --ifm-table-cell-padding: 0.5rem;
+        font-weight: 600;
+        font-family: var(--ifm-heading-font-family);
+        text-align: end;
+        background-color: transparent;
+    }
+
+    kbd {
+        user-select: none;
+        text-rendering: optimizeLegibility;
+        font-weight: 900;
+        letter-spacing: 0.05em;
+        padding: 0.25rem 0.25rem;
+    }
+    .actionColumn {
+        min-width: 20rem;
+    }
+
+    .bindingColumn {
+        width: 100%;
+    }
+}

@@ -9,8 +9,8 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     AuthenticatorStaticStage,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
 } from "@goauthentik/api";
@@ -39,7 +39,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows.",
@@ -115,8 +115,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

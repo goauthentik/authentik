@@ -11,7 +11,7 @@ slug: "/releases/2025.8"
 
 ![Screenshot of the admin interface showing events plotted on a histogram chart and on a map](../../sys-mgmt/events/event-map-chart.png)
 
-- **Advanced search**: :ak-enterprise Search for [users](../../users-sources/user/user_basic_operations.md#tell-me-more) and [event logs](../../sys-mgmt/events/logging-events.md#tell-me-more) with custom query language to filter on their properties and attributes.
+- **Advanced search**: :ak-enterprise Search for [users](../../users-sources/user/user_basic_operations.md#advanced-queries) and [event logs](../../sys-mgmt/events/logging-events.mdx#advanced-queries) with custom query language to filter on their properties and attributes.
 
 - **Email stage rate limiting**: The email stage can now be configured to set a maximum number of emails that can be sent within a specified time period.
 
@@ -431,6 +431,13 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - tasks/middlewares/messages: make sure exceptions are always logged (cherry-pick #17237 to version-2025.8) (#17248)
 - web: Fix behavior for modals configured with closeAfterSuccessfulSubmit (cherry-pick #17277 to version-2025.8) (#17299)
 - web/admin: fix incorrect placeholder for scim provider (cherry-pick #17308 to version-2025.8) (#17309)
+
+## Fixed in 2025.8.6
+
+- root: update client-go generation (cherry-pick #19762 and #19906 to version-2025.8) (#19934)
+- security: [CVE-2026-25227](../../security/cves/CVE-2026-25227.md) (#20233)
+- security: [CVE-2026-25748](../../security/cves/CVE-2026-25748.md) (#20234)
+- security: [CVE-2026-25922](../../security/cves/CVE-2026-25922.md) (#20235)
 
 ## API Changes
 

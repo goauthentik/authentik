@@ -31,14 +31,20 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+// Fixes horizontal rule <hr> warning in select dropdowns.
+
+/**
+ * @prop {PromptChallenge} challenge - The challenge provided to this stage.
+ * @prop {StageHost} host - The host managing this stage.
+ */
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
+    static shadowRootOptions: ShadowRootInit = BaseStage.shadowRootOptions;
+
     static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFAlert,
         PFForm,
@@ -279,7 +285,7 @@ ${prompt.initialValue}</textarea
                 ${AKFormErrors({ errors })}
             </div>`;
         }
-        return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
+        return html`${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
 
     protected renderContinue(): SlottedTemplateResult {
@@ -294,7 +300,7 @@ ${prompt.initialValue}</textarea
     protected override render(): SlottedTemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
-                ${this.challenge.fields.map((prompt) => {
+                ${Array.from(this.challenge?.fields || [], (prompt) => {
                     return this.renderField(prompt);
                 })}
                 ${this.renderNonFieldErrors()} ${this.renderContinue()}
@@ -302,6 +308,8 @@ ${prompt.initialValue}</textarea
         </ak-flow-card>`;
     }
 }
+
+export default PromptStage;
 
 declare global {
     interface HTMLElementTagNameMap {

@@ -9,9 +9,9 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/types"
+	api "goauthentik.io/packages/client-go"
 )
 
 func TestForwardHandleCaddy_Single_Blank(t *testing.T) {
@@ -74,10 +74,10 @@ func TestForwardHandleCaddy_Single_Claims(t *testing.T) {
 	s.Values[constants.SessionClaims] = types.Claims{
 		Sub: "foo",
 		Proxy: &types.ProxyClaims{
-			UserAttributes: map[string]interface{}{
+			UserAttributes: map[string]any{
 				"username": "foo",
 				"password": "bar",
-				"additionalHeaders": map[string]interface{}{
+				"additionalHeaders": map[string]any{
 					"foo": "bar",
 				},
 			},
@@ -110,7 +110,7 @@ func TestForwardHandleCaddy_Single_Claims(t *testing.T) {
 func TestForwardHandleCaddy_Domain_Blank(t *testing.T) {
 	a := newTestApplication()
 	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
-	a.proxyConfig.CookieDomain = api.PtrString("foo")
+	a.proxyConfig.CookieDomain = new("foo")
 	req, _ := http.NewRequest("GET", "/outpost.goauthentik.io/auth/caddy", nil)
 
 	rr := httptest.NewRecorder()
@@ -122,7 +122,7 @@ func TestForwardHandleCaddy_Domain_Blank(t *testing.T) {
 func TestForwardHandleCaddy_Domain_Header(t *testing.T) {
 	a := newTestApplication()
 	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
-	a.proxyConfig.CookieDomain = api.PtrString("foo")
+	a.proxyConfig.CookieDomain = new("foo")
 	a.proxyConfig.ExternalHost = "http://auth.test.goauthentik.io"
 	req, _ := http.NewRequest("GET", "/outpost.goauthentik.io/auth/caddy", nil)
 	req.Header.Set("X-Forwarded-Proto", "http")

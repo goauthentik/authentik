@@ -26,7 +26,11 @@ class RootRedirectView(RedirectView):
     query_string = True
 
     def redirect_to_app(self, request: HttpRequest):
-        if request.user.is_authenticated and request.user.type == UserTypes.EXTERNAL:
+        if request.user.is_authenticated and request.user.type in (
+            UserTypes.EXTERNAL,
+            UserTypes.SERVICE_ACCOUNT,
+            UserTypes.INTERNAL_SERVICE_ACCOUNT,
+        ):
             brand: Brand = request.brand
             if brand.default_application:
                 return redirect(
@@ -62,7 +66,11 @@ class BrandDefaultRedirectView(InterfaceView):
     """By default redirect to default app"""
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if request.user.is_authenticated and request.user.type == UserTypes.EXTERNAL:
+        if request.user.is_authenticated and request.user.type in (
+            UserTypes.EXTERNAL,
+            UserTypes.SERVICE_ACCOUNT,
+            UserTypes.INTERNAL_SERVICE_ACCOUNT,
+        ):
             brand: Brand = request.brand
             if brand.default_application:
                 return redirect(

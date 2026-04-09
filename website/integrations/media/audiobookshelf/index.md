@@ -37,7 +37,7 @@ To support the integration of Audiobookshelf with authentik, you need to create 
             - `https://audiobookshelf.company/auth/openid/callback`
             - `https://audiobookshelf.company/auth/openid/mobile-redirect`
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -69,6 +69,6 @@ To bypass SSO for troubleshooting, navigate to `https://audiobookshelf.company/l
 
 To confirm that authentik is properly configured with Audiobookshelf, log out and attempt to log back in using OpenID Connect. You should be redirected to authentik for authentication and then redirected back to Audiobookshelf.
 
-## References
+## Resources
 
 - [Audiobookshelf OIDC Authentication documentation](https://www.audiobookshelf.org/guides/oidc_authentication/)

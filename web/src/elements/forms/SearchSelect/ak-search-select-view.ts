@@ -17,7 +17,6 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface ISearchSelectView {
     options: SelectOptions;
@@ -71,7 +70,6 @@ export interface ISearchSelectView {
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
     static styles: CSSResult[] = [
-        PFBase,
         PFForm,
         PFFormControl,
         PFSelect,
@@ -231,11 +229,13 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         this.setAttribute("data-ouia-component-safe", "true");
     }
 
-    public override firstUpdated() {
+    public override firstUpdated(changed: PropertyValues<this>) {
+        super.firstUpdated(changed);
+
         // Route around Lit's scheduling algorithm complaining about re-renders
-        window.setTimeout(() => {
+        requestAnimationFrame(() => {
             this.inputRefIsAvailable = Boolean(this.#inputRef?.value);
-        }, 0);
+        });
     }
 
     connectedCallback() {

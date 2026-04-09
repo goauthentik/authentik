@@ -24,7 +24,8 @@ from authentik.root.ws.consumer import build_device_group
 
 # Arguments: user: User, password: str
 password_changed = Signal()
-# Arguments: credentials: dict[str, any], request: HttpRequest, stage: Stage
+# Arguments: credentials: dict[str, any], request: HttpRequest,
+#            stage: Stage, context: dict[str, any]
 login_failed = Signal()
 
 LOGGER = get_logger()
@@ -51,7 +52,7 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     if session:
         session.save()
 
-    if not RefreshOtherFlowsAfterAuthentication().get():
+    if not RefreshOtherFlowsAfterAuthentication.get():
         return
     layer = get_channel_layer()
     device_cookie = request.COOKIES.get("authentik_device")

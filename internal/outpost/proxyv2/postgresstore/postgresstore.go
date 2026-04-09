@@ -187,10 +187,7 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	if connConfig.RuntimeParams == nil {
 		connConfig.RuntimeParams = make(map[string]string)
 	}
-
-	if cfg.DefaultSchema != "" {
-		connConfig.RuntimeParams["search_path"] = cfg.DefaultSchema
-	}
+	effectiveSearchPath := cfg.DefaultSchema
 
 	// Parse and apply connection options if specified
 	if cfg.ConnOptions != "" {
@@ -198,9 +195,36 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse connection options: %w", err)
 		}
+		// search_path from ConnOptions is not supported here; Django controls schema selection.
+		// Always remove it so it cannot end up in startup RuntimeParams via applyConnOptions.
+		delete(connOpts, "search_path")
 
 		if err := applyConnOptions(connConfig, connOpts); err != nil {
 			return nil, fmt.Errorf("failed to apply connection options: %w", err)
+		}
+	}
+
+	// search_path may already be present via pgx/libpq inherited defaults (e.g. service files).
+	// Always remove it from startup RuntimeParams; apply it via AfterConnect instead.
+	if inheritedSearchPath, hasInheritedSearchPath := connConfig.RuntimeParams["search_path"]; hasInheritedSearchPath {
+		if effectiveSearchPath == "" {
+			effectiveSearchPath = inheritedSearchPath
+		}
+		delete(connConfig.RuntimeParams, "search_path")
+	}
+
+	// Set search_path after connection startup to avoid startup-parameter issues with PgBouncer.
+	if effectiveSearchPath != "" {
+		connConfig.AfterConnect = func(ctx context.Context, pgConn *pgconn.PgConn) error {
+			result := pgConn.ExecParams(
+				ctx,
+				"select pg_catalog.set_config('search_path', $1, false)",
+				[][]byte{[]byte(effectiveSearchPath)},
+				nil,
+				nil,
+				nil,
+			).Read()
+			return result.Err
 		}
 	}
 
@@ -226,7 +250,7 @@ func parseConnOptions(encoded string) (map[string]string, error) {
 	}
 
 	// Parse JSON
-	var opts map[string]interface{}
+	var opts map[string]any
 	if err := json.Unmarshal(decoded, &opts); err != nil {
 		return nil, fmt.Errorf("invalid JSON: %w", err)
 	}
@@ -473,7 +497,7 @@ func (s *PostgresStore) Close() error {
 // save writes session to PostgreSQL
 func (s *PostgresStore) save(ctx context.Context, session *sessions.Session) error {
 	// Convert session.Values (map[interface{}]interface{}) to map[string]interface{} for JSON marshaling
-	stringKeyedValues := make(map[string]interface{})
+	stringKeyedValues := make(map[string]any)
 	for k, v := range session.Values {
 		if key, ok := k.(string); ok {
 			stringKeyedValues[key] = v
@@ -489,7 +513,7 @@ func (s *PostgresStore) save(ctx context.Context, session *sessions.Session) err
 	// Extract user ID from claims if it exists
 	var userID *uuid.UUID
 	if claims, hasClaims := session.Values[constants.SessionClaims]; hasClaims {
-		if claimsMap, ok := claims.(map[string]interface{}); ok {
+		if claimsMap, ok := claims.(map[string]any); ok {
 			if sub, exists := claimsMap["sub"]; exists {
 				if subStr, ok := sub.(string); ok {
 					if parsedUUID, err := uuid.Parse(subStr); err == nil {
@@ -539,14 +563,14 @@ func (s *PostgresStore) load(ctx context.Context, session *sessions.Session) err
 	// Deserialize session data from JSON
 	if proxySession.SessionData != "" {
 		// First unmarshal to map[string]interface{}
-		var stringKeyedValues map[string]interface{}
+		var stringKeyedValues map[string]any
 		err = json.Unmarshal([]byte(proxySession.SessionData), &stringKeyedValues)
 		if err != nil {
 			return fmt.Errorf("failed to unmarshal session data: %w", err)
 		}
 
 		// Convert back to map[interface{}]interface{} for gorilla/sessions compatibility
-		session.Values = make(map[interface{}]interface{})
+		session.Values = make(map[any]any)
 		for k, v := range stringKeyedValues {
 			session.Values[k] = v
 		}
@@ -595,7 +619,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 			continue
 		}
 
-		var sessionData map[string]interface{}
+		var sessionData map[string]any
 		if err := json.Unmarshal([]byte(session.SessionData), &sessionData); err != nil {
 			continue
 		}
@@ -605,7 +629,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 			continue
 		}
 
-		claimsMap, ok := claimsData.(map[string]interface{})
+		claimsMap, ok := claimsData.(map[string]any)
 		if !ok {
 			continue
 		}

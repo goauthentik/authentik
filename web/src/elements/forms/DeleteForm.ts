@@ -21,16 +21,16 @@ export class DeleteForm extends ModalButton {
     static styles: CSSResult[] = [...super.styles, PFList];
 
     @property({ attribute: false })
-    obj?: Record<string, unknown>;
+    public obj?: Record<string, unknown>;
 
-    @property()
-    objectLabel?: string;
-
-    @property({ attribute: false })
-    usedBy?: () => Promise<UsedBy[]>;
+    @property({ type: String, attribute: "object-label" })
+    public objectLabel?: string;
 
     @property({ attribute: false })
-    delete!: () => Promise<unknown>;
+    public usedBy?: () => Promise<UsedBy[]>;
+
+    @property({ attribute: false })
+    public delete!: () => Promise<unknown>;
 
     /**
      * Get the display name for the object being deleted/updated.
@@ -146,24 +146,26 @@ export class DeleteForm extends ModalButton {
                       }),
                   )
                 : nothing}
-            <footer class="pf-c-modal-box__footer">
+            <fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+
+                <ak-spinner-button
+                    .callAction=${async () => {
+                        this.open = false;
+                    }}
+                    class="pf-m-plain"
+                >
+                    ${msg("Cancel")}
+                </ak-spinner-button>
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm();
                     }}
                     class="pf-m-danger"
                 >
-                    ${msg("Delete")} </ak-spinner-button
-                >&nbsp;
-                <ak-spinner-button
-                    .callAction=${async () => {
-                        this.open = false;
-                    }}
-                    class="pf-m-secondary"
-                >
-                    ${msg("Cancel")}
+                    ${msg("Delete")}
                 </ak-spinner-button>
-            </footer>`;
+            </fieldset>`;
     }
 }
 

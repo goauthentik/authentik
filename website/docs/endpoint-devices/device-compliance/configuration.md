@@ -2,6 +2,7 @@
 title: Configuration
 sidebar_label: Configuration
 tags: [device compliance, compliance, configuration]
+authentik_version: "2025.12.0"
 ---
 
 ## Prerequisites

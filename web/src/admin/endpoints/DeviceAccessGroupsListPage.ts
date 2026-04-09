@@ -42,7 +42,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
             html`${item.name}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Group")}</span>
                     <ak-endpoints-device-access-groups-form slot="form" .instancePk=${item.pbmUuid}>
                     </ak-endpoints-device-access-groups-form>
@@ -76,7 +76,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     renderToolbarSelected() {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Device Group(s)")}
+            object-label=${msg("Device Group(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: DeviceAccessGroup) => {
                 return [{ key: msg("Name"), value: item.name }];

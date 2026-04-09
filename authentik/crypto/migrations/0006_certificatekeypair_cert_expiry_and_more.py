@@ -41,7 +41,7 @@ def backfill_certificate_metadata(apps, schema_editor):  # noqa: ARG001
                         "fingerprint_sha1",
                     ]
                 )
-            except (ValueError, TypeError, AttributeError):
+            except ValueError, TypeError, AttributeError:
                 pass
 
         # Backfill kid with MD5 for backwards compatibility

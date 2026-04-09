@@ -1,10 +1,10 @@
-:host {
+:host,
+ak-locale-select.style-scope {
     --ak-c-locale-select--PaddingInline: 0.5em;
     --ak-c-locale-select--PaddingBlock: 0.25em;
     --ak-c-locale-select__select--PaddingInline: calc(
         var(--ak-c-locale-select--PaddingInline) * 4.5
     );
-
     cursor: pointer;
     display: flex;
     flex-flow: row;
@@ -24,10 +24,12 @@
     cursor: pointer;
     user-select: none;
     opacity: var(--ak-c-locale-select--Opacity, 1);
+    will-change: opacity, text-decoration-color, background-color, color;
+    isolation: isolate;
 
     /* Compatibility mode */
     background-color: var(--ak-c-locale-select--BackgroundColor, transparent) !important;
-    color: inherit !important;
+    color: var(--ak-c-locale-select--Color, inherit) !important;
     text-decoration: underline;
     text-decoration-color: var(--ak-c-locale-select--TextDecorationColor, transparent);
 
@@ -40,6 +42,16 @@
         outline: 1px solid var(--ak-c-locale--select--OutlineColor, transparent);
 
         outline-offset: initial;
+    }
+
+    &:open {
+        /**
+         * Edge is more restrictive with selects state styling.
+         * Using the browser's preferred system colors here strikes
+         * a good balance between visibility and design consistency.
+         */
+        --ak-c-locale-select--BackgroundColor: Field;
+        --ak-c-locale-select--Color: FieldText;
     }
 
     padding-inline-start: var(
@@ -56,8 +68,8 @@
 
     &::picker-icon {
         /* Browser compatibility */
-        color: transparent;
-        display: none;
+        color: transparent !important;
+        display: none !important;
     }
 }
 
@@ -82,7 +94,8 @@
     }
 }
 
-:host::after {
+:host::after,
+ak-locale-select.style-scope::after {
     padding-inline-end: var(--ak-c-locale-select--PaddingInline);
     inset-inline-end: var(--ak-c-locale-select--PaddingInline);
 
@@ -97,7 +110,7 @@
 }
 
 [part="select"] {
-    transition-property: opacity, text-decoration-color;
+    transition-property: opacity;
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
 }

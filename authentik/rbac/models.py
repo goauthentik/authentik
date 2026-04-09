@@ -37,19 +37,7 @@ class Role(SerializerModel, ManagedModel):
     to it."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True, primary_key=True)
-    # Due to the way django and django-guardian work, this is somewhat of a hack.
-    # Django and django-guardian allow for setting permissions on users and groups, but they
-    # only allow for a custom user object, not a custom group object, which is why
-    # we have both authentik and django groups. With this model, we use the inbuilt group system
-    # for RBAC. This means that every Role needs a single django group that its assigned to
-    # which will hold all of the actual permissions
-    # The main advantage of that is that all the permission checking just works out of the box,
-    # as these permissions are checked by default by django and most other libraries that build
-    # on top of django
-    group = models.OneToOneField("auth.Group", on_delete=models.CASCADE, null=True)
-
-    # name field has the same constraints as the group model
-    name = models.TextField(max_length=150, unique=True)
+    name = models.TextField(unique=True)
 
     @property
     def serializer(self) -> type[BaseSerializer]:

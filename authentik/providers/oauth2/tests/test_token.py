@@ -2,21 +2,22 @@
 
 from base64 import b64encode
 from json import dumps
+from urllib.parse import quote
 
 from django.test import RequestFactory
 from django.urls import reverse
 from django.utils import timezone
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id, generate_key
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_REFRESH_TOKEN,
     TOKEN_TYPE,
 )
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.events.models import Event, EventAction
+from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -28,6 +29,7 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
+from authentik.providers.oauth2.utils import extract_client_auth
 from authentik.providers.oauth2.views.token import TokenParams
 
 
@@ -114,6 +116,20 @@ class TestToken(OAuthTestCase):
         )
         params = TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
         self.assertEqual(params.provider, provider)
+
+    def test_extract_client_auth_basic_auth_percent_decodes(self):
+        """test percent-decoding of client credentials in Basic auth"""
+        header = b64encode(
+            f"{quote('client/id', safe='')}:{quote('secret+/==', safe='')}".encode()
+        ).decode()
+        request = self.factory.post("/", HTTP_AUTHORIZATION=f"Basic {header}")
+        self.assertEqual(extract_client_auth(request), ("client/id", "secret+/=="))
+
+    def test_extract_client_auth_basic_auth_preserves_raw_plus(self):
+        """test compatibility with clients that still send raw plus characters"""
+        header = b64encode(b"client:secret+plus").decode()
+        request = self.factory.post("/", HTTP_AUTHORIZATION=f"Basic {header}")
+        self.assertEqual(extract_client_auth(request), ("client", "secret+plus"))
 
     def test_auth_code_view(self):
         """test request param"""

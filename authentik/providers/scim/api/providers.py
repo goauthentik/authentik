@@ -38,9 +38,9 @@ class SCIMProviderSerializer(
             "compatibility_mode",
             "service_provider_config_cache_timeout",
             "exclude_users_service_account",
-            "filter_group",
             "sync_page_size",
             "sync_page_timeout",
+            "group_filters",
             "dry_run",
         ]
         extra_kwargs = {}
@@ -51,7 +51,7 @@ class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelVie
 
     queryset = SCIMProvider.objects.all()
     serializer_class = SCIMProviderSerializer
-    filterset_fields = ["name", "exclude_users_service_account", "url", "filter_group"]
+    filterset_fields = ["name", "exclude_users_service_account", "url", "group_filters"]
     search_fields = ["name", "url"]
     ordering = ["name", "url"]
     sync_task = scim_sync

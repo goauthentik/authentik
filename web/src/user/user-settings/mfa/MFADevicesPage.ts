@@ -7,6 +7,7 @@ import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { createPaginatedResponse } from "#common/api/responses";
 import { globalAK } from "#common/global";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
@@ -38,18 +39,7 @@ export class MFADevicesPage extends Table<Device> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
-        return {
-            pagination: {
-                current: 0,
-                count: devices.length,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: devices.length,
-                next: 0,
-                previous: 0,
-            },
-            results: devices,
-        };
+        return createPaginatedResponse(devices);
     }
 
     protected columns: TableColumn[] = [
@@ -82,10 +72,9 @@ export class MFADevicesPage extends Table<Device> {
                     <span class="pf-c-dropdown__toggle-text">${msg("Enroll")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul
+                <menu
                     class="pf-c-dropdown__menu"
                     hidden
-                    role="menu"
                     id="add-mfa-menu"
                     aria-labelledby="add-mfa-toggle"
                     tabindex="-1"
@@ -105,7 +94,7 @@ export class MFADevicesPage extends Table<Device> {
                             </a>
                         </li>`;
                     })}
-                </ul>
+                </menu>
             </ak-dropdown>`;
         });
     }
@@ -140,7 +129,7 @@ export class MFADevicesPage extends Table<Device> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Device(s)")}
+            object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Device) => {
                 return this.deleteWrapper(item);
@@ -167,7 +156,7 @@ export class MFADevicesPage extends Table<Device> {
             Timestamp(item.lastUsed),
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Device")}</span>
                     <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
                     </ak-user-mfa-form>

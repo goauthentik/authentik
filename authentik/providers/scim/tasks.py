@@ -30,6 +30,16 @@ def scim_sync_direct_dispatch(*args, **kwargs):
     return sync_tasks.sync_signal_direct_dispatch(scim_sync_direct, *args, **kwargs)
 
 
+@actor(description=_("Delete an object (user, group) for SCIM provider."))
+def scim_sync_delete(*args, **kwargs):
+    return sync_tasks.sync_signal_delete(*args, **kwargs)
+
+
+@actor(description=_("Dispatch deletions for an object (user, group) for SCIM providers."))
+def scim_sync_delete_dispatch(*args, **kwargs):
+    return sync_tasks.sync_signal_delete_dispatch(scim_sync_delete, *args, **kwargs)
+
+
 @actor(description=_("Sync a related object (memberships) for SCIM provider."))
 def scim_sync_m2m(*args, **kwargs):
     return sync_tasks.sync_signal_m2m(*args, **kwargs)

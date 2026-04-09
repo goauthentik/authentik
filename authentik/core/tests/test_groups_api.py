@@ -122,8 +122,8 @@ class TestGroupsAPI(APITestCase):
     def test_superuser_update_no_perm(self):
         """Test updating a superuser group without permission"""
         group = Group.objects.create(name=generate_id(), is_superuser=True)
-        self.login_user.assign_perms_to_managed_role("view_group", group)
-        self.login_user.assign_perms_to_managed_role("change_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
         self.client.force_login(self.login_user)
         res = self.client.patch(
             reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
@@ -139,8 +139,8 @@ class TestGroupsAPI(APITestCase):
         """Test updating a superuser group without permission
         and without changing the superuser status"""
         group = Group.objects.create(name=generate_id(), is_superuser=True)
-        self.login_user.assign_perms_to_managed_role("view_group", group)
-        self.login_user.assign_perms_to_managed_role("change_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
         self.client.force_login(self.login_user)
         res = self.client.patch(
             reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),

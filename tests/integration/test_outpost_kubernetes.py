@@ -53,7 +53,7 @@ class OutpostKubernetesTests(TestCase):
         self.outpost.providers.add(self.provider)
         self.outpost.save()
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(120, func_only=True)
     def test_deployment_reconciler(self):
         """test that deployment requires update"""
         controller = ProxyKubernetesController(self.outpost, self.service_connection)
@@ -92,7 +92,7 @@ class OutpostKubernetesTests(TestCase):
 
         deployment_reconciler.delete(deployment_reconciler.get_reference_object())
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(120, func_only=True)
     def test_service_reconciler(self):
         """test that service requires update"""
         controller = ProxyKubernetesController(self.outpost, self.service_connection)
@@ -121,7 +121,7 @@ class OutpostKubernetesTests(TestCase):
 
         service_reconciler.delete(service_reconciler.get_reference_object())
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(120, func_only=True)
     def test_controller_rename(self):
         """test that objects get deleted and re-created with new names"""
         controller = ProxyKubernetesController(self.outpost, self.service_connection)
@@ -134,7 +134,7 @@ class OutpostKubernetesTests(TestCase):
             apps.read_namespaced_deployment("test", self.outpost.config.kubernetes_namespace)
         controller.down()
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(120, func_only=True)
     def test_controller_full_update(self):
         """Test an update that triggers all objects"""
         controller = ProxyKubernetesController(self.outpost, self.service_connection)

@@ -259,6 +259,7 @@ class _PostgresConsumer(Consumer):
         if Conf().schedule_model:
             self.scheduler = import_string(Conf().scheduler_class)()
             self.scheduler.broker = self.broker
+            self.scheduler.db_alias = self.db_alias
             self.scheduler_interval = timedelta(seconds=Conf().scheduler_interval)
             self.scheduler_last_run = timezone.now() - self.scheduler_interval
 
@@ -329,8 +330,7 @@ class _PostgresConsumer(Consumer):
 
         with self.locks_connection.cursor() as cursor:
             cursor.execute(
-                sql.SQL(
-                    """
+                sql.SQL("""
                     UPDATE {table}
                     SET {state} = %(state)s, {mtime} = %(mtime)s
                     WHERE
@@ -341,8 +341,7 @@ class _PostgresConsumer(Consumer):
                         ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
                         AND
                         pg_try_advisory_lock(%(lock_id)s)
-                    """
-                ).format(
+                    """).format(
                     table=sql.Identifier(self.query_set.model._meta.db_table),
                     state=sql.Identifier("state"),
                     mtime=sql.Identifier("mtime"),
