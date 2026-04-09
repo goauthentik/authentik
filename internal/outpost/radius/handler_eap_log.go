@@ -47,19 +47,19 @@ type logrusAdapter struct {
 	entry *logrus.Entry
 }
 
-func (l *logrusAdapter) Debug(format string, args ...interface{}) {
+func (l *logrusAdapter) Debug(format string, args ...any) {
 	l.entry.Debugf(format, args...)
 }
-func (l *logrusAdapter) Info(format string, args ...interface{}) {
+func (l *logrusAdapter) Info(format string, args ...any) {
 	l.entry.Infof(format, args...)
 }
-func (l *logrusAdapter) Warn(format string, args ...interface{}) {
+func (l *logrusAdapter) Warn(format string, args ...any) {
 	l.entry.Warnf(format, args...)
 }
-func (l *logrusAdapter) Error(format string, args ...interface{}) {
+func (l *logrusAdapter) Error(format string, args ...any) {
 	l.entry.Errorf(format, args...)
 }
-func (l *logrusAdapter) With(args ...interface{}) protocol.Logger {
+func (l *logrusAdapter) With(args ...any) protocol.Logger {
 	f := make(map[string]any, len(args)/2)
 	i := Fields(args).Iterator()
 	for i.Next() {

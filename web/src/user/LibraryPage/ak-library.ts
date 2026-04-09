@@ -82,7 +82,7 @@ export class LibraryPage extends AKElement {
         );
 
         return applicationLaterPages.reduce(
-            function (acc, result) {
+            (acc, result) => {
                 if (result.status === "rejected") {
                     const reason = JSON.stringify(result.reason, null, 2);
                     throw new Error(`Could not retrieve list of applications. Reason: ${reason}`);
@@ -107,7 +107,10 @@ export class LibraryPage extends AKElement {
             </ak-empty-state>`;
         }
 
-        return html`<ak-library-impl .apps=${this.apps}></ak-library-impl>`;
+        return html`<ak-library-impl
+            exportparts="search-input, app-list, app-group, app-group-header, app-group-separator, card-wrapper, card, card-header-icon"
+            .apps=${this.apps}
+        ></ak-library-impl>`;
     }
 }
 

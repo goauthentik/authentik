@@ -38,7 +38,7 @@ This documentation lists only the settings that you need to change from their de
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **LDAP Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name) and the authorization flow to use for this provider.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

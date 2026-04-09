@@ -8,7 +8,11 @@ from ldap3 import SUBTREE
 from ldap3.utils.conv import escape_filter_chars
 
 from authentik.core.models import Group, User
-from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAP_UNIQUENESS, LDAPSource
+from authentik.sources.ldap.models import (
+    LDAP_DISTINGUISHED_NAME,
+    GroupLDAPSourceConnection,
+    LDAPSource,
+)
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.tasks.models import Task
 
@@ -50,9 +54,9 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             self._task.info("Group syncing is disabled for this Source")
             return -1
         membership_count = 0
-        for group in page_data:
+        for group_data in page_data:
             if self._source.lookup_groups_from_user:
-                group_dn = group.get("dn", {})
+                group_dn = group_data.get("dn", {})
                 escaped_dn = escape_filter_chars(group_dn)
                 group_filter = f"({self._source.group_membership_field}={escaped_dn})"
                 group_members = self._source.connection().extend.standard.paged_search(
@@ -66,12 +70,12 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                     group_member_dn = group_member.get("dn", {})
                     members.append(group_member_dn)
             else:
-                if (attributes := self.get_attributes(group)) is None:
+                if (attributes := self.get_attributes(group_data)) is None:
                     continue
                 members = attributes.get(self._source.group_membership_field, [])
 
-            ak_group = self.get_group(group)
-            if not ak_group:
+            group = self.get_group(group_data)
+            if not group:
                 continue
 
             users = User.objects.filter(
@@ -79,14 +83,14 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 | Q(
                     **{
                         f"attributes__{self._source.user_membership_attribute}__isnull": True,
-                        "ak_groups__in": [ak_group],
+                        "groups__in": [group],
                     }
                 )
             ).distinct()
             membership_count += 1
             membership_count += users.count()
-            ak_group.users.set(users)
-            ak_group.save()
+            group.users.set(users)
+            group.save()
         self._logger.debug("Successfully updated group membership")
         return membership_count
 
@@ -104,7 +108,9 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 return None
             group_uniq = group_uniq[0]
         if group_uniq not in self.group_cache:
-            groups = Group.objects.filter(**{f"attributes__{LDAP_UNIQUENESS}": group_uniq})
+            groups = GroupLDAPSourceConnection.objects.filter(identifier=group_uniq).select_related(
+                "group"
+            )
             if not groups.exists():
                 if self._source.sync_groups:
                     self._task.info(
@@ -112,5 +118,5 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                         group=group_dn,
                     )
                 return None
-            self.group_cache[group_uniq] = groups.first()
+            self.group_cache[group_uniq] = groups.first().group
         return self.group_cache[group_uniq]

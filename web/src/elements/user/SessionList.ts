@@ -42,7 +42,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Session(s)")}
+            object-label=${msg("Session(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: AuthenticatedSession) => {
                 return [

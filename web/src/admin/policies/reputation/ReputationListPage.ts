@@ -10,11 +10,7 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    PoliciesApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    Reputation,
-} from "@goauthentik/api";
+import { ModelEnum, PoliciesApi, Reputation } from "@goauthentik/api";
 
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
@@ -58,7 +54,7 @@ export class ReputationListPage extends TablePage<Reputation> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Reputation")}
+            object-label=${msg("Reputation")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresUsedByList({
@@ -88,7 +84,7 @@ export class ReputationListPage extends TablePage<Reputation> {
             Timestamp(item.updated),
             html`
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikPoliciesReputationReputationpolicy}
+                    model=${ModelEnum.AuthentikPoliciesReputationReputationpolicy}
                     objectPk=${item.pk || ""}
                 >
                 </ak-rbac-object-permission-modal>

@@ -14,7 +14,7 @@ For instructions about creating and binding policies to flows and stages, refer 
 
 ## Standard policies
 
-The following are our standard, out-of-the box policies that you can [create and customize](./working_with_policies.md) as needed.
+The following are our standard, out-of-the-box policies that you can [create and customize](./working_with_policies.md) as needed.
 
 ### Event-matcher policy
 
@@ -28,7 +28,7 @@ See [Expression Policy](./expression.mdx).
 
 Use this policy for simple GeoIP lookups, such as country or ASN matching. (For a more advanced GeoIP lookup, use an [Expression policy](./expression.mdx).)
 
-With the GeoIP policy, you can use the **Distance Settings** options to set travel "expectations" and control login attempts based on GeoIP location. The GeoIP policy calculates the values defined for travel distances (in kilometers), and then either passes or fails based on the results. If the GeoIP policy failed, the current login attempt is not allowed.
+With the GeoIP policy, you can use the **Distance Settings** options to set travel "expectations" and control login attempts based on GeoIP location. The GeoIP policy calculates the values defined for travel distances (in kilometers), and then either passes or fails based on the results. If the GeoIP policy fails, the current login attempt is not allowed.
 
     -   **Maximum distance**: define the allowed maximum distance  between a login's initial GeoIP location and the GeoIP location of a subsequent login attempt.
 
@@ -57,16 +57,16 @@ By default, authentik's Password policy is compliant with [NIST's recommendation
 This policy allows you to specify password rules, such as length and required characters.
 The following rules can be set:
 
-- Minimum amount of uppercase characters.
-- Minimum amount of lowercase characters.
-- Minimum amount of symbols characters.
+- Minimum number of uppercase characters.
+- Minimum number of lowercase characters.
+- Minimum number of symbol characters.
 - Minimum length.
 - Symbol charset (define which characters are counted as symbols).
 
 The following checks can also be done with this policy:
 
 - Check the password hash against the database of [Have I Been Pwned](https://haveibeenpwned.com/). Only the first 5 characters of the hashed password are transmitted, the rest is compared in authentik.
-- Check the password against the password complexity checker [zxcvbn](https://github.com/dropbox/zxcvbn), which detects weak password on various metrics.
+- Check the password against the password complexity checker [zxcvbn](https://github.com/dropbox/zxcvbn), which detects weak passwords on various metrics.
 
 ### Password Uniqueness Policy
 

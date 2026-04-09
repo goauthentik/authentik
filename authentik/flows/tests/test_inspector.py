@@ -51,15 +51,18 @@ class TestFlowInspector(APITestCase):
                 "enable_remember_me": False,
                 "flow_info": {
                     "background": "/static/dist/assets/images/flow_background.jpg",
+                    "background_themed_urls": None,
                     "cancel_url": reverse("authentik_flows:cancel"),
                     "title": flow.title,
                     "layout": "stacked",
                 },
                 "flow_designation": "authentication",
+                "passkey_challenge": None,
                 "password_fields": False,
                 "primary_action": "Log in",
                 "sources": [],
                 "show_source_labels": False,
+                "pending_user_identifier": None,
                 "user_fields": ["username"],
             },
         )

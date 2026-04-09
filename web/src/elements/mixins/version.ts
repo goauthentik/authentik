@@ -6,16 +6,14 @@ import { consume, createContext } from "@lit/context";
 import { property } from "lit/decorators.js";
 
 /**
- * The Lit context for application branding.
+ * The Lit context for authentik's version.
  *
  * @category Context
  * @see {@linkcode VersionMixin}
  * @see {@linkcode WithVersion}
  */
 
-export const VersionContext = createContext<Version | null>(
-    Symbol.for("authentik-version-context"),
-);
+export const VersionContext = createContext<Version | null>(Symbol("authentik-version-context"));
 
 export type VersionContext = typeof VersionContext;
 

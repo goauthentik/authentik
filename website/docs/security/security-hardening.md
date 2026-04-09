@@ -25,7 +25,7 @@ However, for further hardening, it is possible to prevent any user (even super-u
 - `/api/v3/propertymappings*`
 - `/api/v3/managed/blueprints*`
 
-With these restrictions in place, expressions can only be edited using [Blueprints on the file system](../customize/blueprints/index.mdx#storage---file). Take care to restrict access to the file system itself.
+With these restrictions in place, expressions can only be edited using [Blueprints on the file system](../customize/blueprints/index.mdx#as-a-local-file). Take care to restrict access to the file system itself.
 
 ### Blueprints
 
@@ -35,18 +35,18 @@ To prevent any user from creating/editing blueprints, block API requests to this
 
 - `/api/v3/managed/blueprints*`
 
-With these restrictions in place, Blueprints can only be edited via [the file system](../customize/blueprints/index.mdx#storage---file).
+With these restrictions in place, Blueprints can only be edited via [the file system](../customize/blueprints/index.mdx#as-a-local-file).
 
 ### CAPTCHA Stage
 
-The CAPTCHA stage allows for additional verification of a user while authenticating or authorising an application. Because the CAPTCHA stage supports multiple different CAPTCHA providers, such as Google’s reCAPTCHA and Cloudflare’s Turnstile, the URL for the JavaScript snippet can be modified. Depending on the threat model, this could be exploited by a malicious internal actor.
+The CAPTCHA stage allows for additional verification of a user while authenticating or authorizing an application. Because the CAPTCHA stage supports multiple different CAPTCHA providers, such as Google’s reCAPTCHA and Cloudflare’s Turnstile, the URL for the JavaScript snippet can be modified. Depending on the threat model, this could be exploited by a malicious internal actor.
 
 To prevent any user from creating/editing CAPTCHA stages block API requests to these endpoints:
 
 - `/api/v3/stages/captcha*`
 - `/api/v3/managed/blueprints*`
 
-With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](../customize/blueprints/index.mdx#storage---file).
+With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](../customize/blueprints/index.mdx#as-a-local-file).
 
 ### Content Security Policy (CSP)
 

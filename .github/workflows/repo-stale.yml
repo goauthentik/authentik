@@ -15,11 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/stale@5f858e3efba33a5ca4407a664cc011ad407f2008 # v10
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+      - uses: actions/stale@b5d41d4e1d5dceea10e7104786b73624c18a190f # v10
         with:
           repo-token: ${{ steps.generate_token.outputs.token }}
           days-before-stale: 60

@@ -11,11 +11,10 @@ import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    static styles: CSSResult[] = [PFButton];
 
     @property({ attribute: false })
     provider?: Provider;

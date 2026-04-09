@@ -13,7 +13,8 @@ from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestFlowsRecovery(SeleniumTestCase):
@@ -26,8 +27,8 @@ class TestFlowsRecovery(SeleniumTestCase):
         identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "a[name='recovery']")))
-        identification_stage.find_element(By.CSS_SELECTOR, "a[name='recovery']").click()
+        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "a[ouiaId='recovery']")))
+        identification_stage.find_element(By.CSS_SELECTOR, "a[ouiaId='recovery']").click()
 
         # First prompt stage
         flow_executor = self.get_shadow_root("ak-flow-executor")

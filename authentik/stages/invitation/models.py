@@ -2,6 +2,7 @@
 
 from uuid import uuid4
 
+from django.core.validators import validate_slug
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -51,7 +52,7 @@ class Invitation(SerializerModel, ExpiringModel):
 
     invite_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.SlugField()
+    name = models.TextField(validators=[validate_slug])
 
     flow = models.ForeignKey(
         "authentik_flows.Flow",

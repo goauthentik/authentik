@@ -8,30 +8,48 @@ import { property } from "lit/decorators.js";
 import { createRef, Ref } from "lit/directives/ref.js";
 
 /**
+ * Properties common to elements which represent a form field.
+ */
+export interface FormField {
+    /**
+     * The name of the input, provided to the form.
+     */
+    name: string | null;
+
+    /**
+     * A JSON representation of the value.
+     */
+    toJSON(): Jsonifiable;
+}
+
+export function isFormField(element: object): element is FormField {
+    if (!("toJSON" in element)) return false;
+
+    return typeof element.toJSON === "function";
+}
+
+/**
  * A subset of form associated {@linkcode ElementInternals} properties.
  *
  * @see {@linkcode FormAssociatedElement} for usage.
  */
 export interface FormAssociated
-    extends Pick<
-        ElementInternals,
-        | "form"
-        | "validity"
-        | "validationMessage"
-        | "willValidate"
-        | "labels"
-        | "checkValidity"
-        | "reportValidity"
-    > {
-    /**
-     * The name of the input, provided to the form.
-     */
-    readonly name: string | null;
-
+    extends
+        FormField,
+        Pick<
+            ElementInternals,
+            | "form"
+            | "validity"
+            | "validationMessage"
+            | "willValidate"
+            | "labels"
+            | "checkValidity"
+            | "reportValidity"
+        > {
     /**
      * The type of the input, provided to the form.
      */
-    readonly type: string;
+    type: string;
 
     /**
      * Whether or not the input is required.
@@ -42,11 +60,6 @@ export interface FormAssociated
      * Whether or not the input is read-only.
      */
     readonly?: boolean;
-
-    /**
-     * A JSON representation of the value.
-     */
-    toJSON(): Jsonifiable;
 }
 
 export type FormValue = File | string | FormData | null;
@@ -57,10 +70,10 @@ export type FormValue = File | string | FormData | null;
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals | MDN}
  */
 export abstract class FormAssociatedElement<
-        V extends FormValue = string,
-        T extends Jsonifiable = V extends string ? V : Jsonifiable,
-        S extends FormValue = V,
-    >
+    V extends FormValue = string,
+    T extends Jsonifiable = V extends string ? V : Jsonifiable,
+    S extends FormValue = V,
+>
     extends AKElement
     implements FormAssociated
 {
@@ -113,9 +126,8 @@ export abstract class FormAssociatedElement<
         return this.internals.form;
     }
 
-    public get name() {
-        return this.getAttribute("name");
-    }
+    @property({ type: String, reflect: true })
+    name: string | null = null;
 
     public get type() {
         return this.localName;

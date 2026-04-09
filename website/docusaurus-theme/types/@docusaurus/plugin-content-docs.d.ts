@@ -22,6 +22,7 @@ declare module "@docusaurus/plugin-content-docs/client" {
      * @monkeypatch
      */
     export interface DocFrontMatter extends BaseDocFrontMatter {
+        beta?: boolean;
         support_level?: string;
         authentik_version?: string;
         authentik_preview: boolean;

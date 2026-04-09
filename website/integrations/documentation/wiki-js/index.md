@@ -18,8 +18,8 @@ This is based on authentik 2022.11 and Wiki.js 2.5. Instructions may differ betw
 
 The following placeholders are used in this guide:
 
-- `wiki.company` is the FQDN of Wiki.js installation.
-- `authentik.company` is the FQDN of authentik installation.
+- `wiki.company` is the FQDN of the Wiki.js installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -46,7 +46,7 @@ To support the integration of Wiki.js with authentik, you need to create an appl
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://wiki.company/login/id-from-wiki/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -59,17 +59,17 @@ In Wiki.js, configure the authentication strategy with these settings:
 - Authorization Endpoint URL: https://authentik.company/application/o/authorize/
 - Token Endpoint URL: https://authentik.company/application/o/token/
 - User Info Endpoint URL: https://authentik.company/application/o/userinfo/
-- Issuer: https://authentik.company/application/o/wikijs/
-- Logout URL: https://authentik.company/application/o/wikijs/end-session/
+- Issuer: `https://authentik.company/application/o/<application_slug>/`
+- Logout URL: `https://authentik.company/application/o/<application_slug>/end-session/`
 - Allow self-registration: Enabled
 - Assign to group: The group to which new users logging in from authentik should be assigned.
 
 ![](./wiki-js_strategy.png)
 
 :::info
-You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't you will have to manually provision users in Wiki.js and ensure that their emails match the email they have in authentik.
+You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't, you will have to manually provision users in Wiki.js and ensure that their email addresses match the ones they have in authentik.
 :::
 
 :::info
-If you're using self-signed certificates for authentik, you need to set the root certificate of your CA as trusted in WikiJS by setting the NODE_EXTRA_CA_CERTS variable as explained here: https://github.com/Requarks/wiki/discussions/3387.
+If you're using self-signed certificates for authentik, you need to set the root certificate of your CA as trusted in Wiki.js by setting the NODE_EXTRA_CA_CERTS variable as explained here: https://github.com/Requarks/wiki/discussions/3387.
 :::

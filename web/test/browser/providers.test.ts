@@ -15,7 +15,7 @@ test.describe("Provider Wizard", () => {
 
         providerNames.set(testId, providerName);
 
-        const wizard = page.getByRole("dialog", { name: "New provider" });
+        const dialog = page.getByRole("dialog", { name: "New provider" });
 
         await test.step("Authenticate", async () => {
             await session.login({
@@ -24,22 +24,22 @@ test.describe("Provider Wizard", () => {
         });
 
         await test.step("Navigate to provider wizard", async () => {
-            await expect(wizard, "Wizard is initially closed").toBeHidden();
+            await expect(dialog, "Dialog is initially closed").toBeHidden();
 
             await page.getByRole("button", { name: "New Provider" }).click();
 
-            await expect(wizard, "Wizard opens after clicking on New Provider").toBeVisible();
+            await expect(dialog, "Dialog opens after clicking on New Provider").toBeVisible();
 
             await expect(
                 page.getByRole("listbox", { name: "Select a provider type" }),
-                "Wizard opens with a list of provider types",
+                "Dialog opens with a list of provider types",
             ).toBeVisible();
 
             await expect(
-                wizard.getByRole("navigation").getByRole("button", {
+                dialog.getByRole("navigation").getByRole("button", {
                     name: /next|finish/i,
                 }),
-                "Wizard can't be navigated to next step",
+                "Dialog can't be navigated to next step",
             ).toBeDisabled();
         });
     });
@@ -112,7 +112,6 @@ test.describe("Provider Wizard", () => {
                 ).toBeVisible,
             ],
             [selectSearchValue, "Signing Key", /authentik Self-signed Certificate/],
-            [selectSearchValue, "Encryption Key", /authentik Self-signed Certificate/],
             [setFormGroup, "Advanced flow settings", true],
             [selectSearchValue, "Authentication flow", /default-source-authentication/],
             [selectSearchValue, "Invalidation flow", /default-invalidation-flow/],
@@ -120,6 +119,7 @@ test.describe("Provider Wizard", () => {
             [fill, "Access code validity", "minutes=2"],
             [fill, "Access token validity", "minutes=10"],
             [fill, "Refresh token validity", "days=40"],
+            [selectSearchValue, "Encryption Key", /authentik Self-signed Certificate/],
             [setInputCheck, "Include claims in id_token", false],
             [setRadio, "Subject mode", "Based on the User's username"],
             [setRadio, "Issuer mode", "Same identifier is used for all providers"],

@@ -26,13 +26,11 @@ class Migration(BaseMigration):
         """,
             (datetime.now(), authentik_version(), authentik_build_hash()),
         )
-        self.cur.execute(
-            """
+        self.cur.execute("""
             DELETE FROM authentik_version_history WHERE id NOT IN (
                 SELECT id FROM authentik_version_history
                 ORDER BY "timestamp" DESC
                 LIMIT 1000
             )
-        """
-        )
+        """)
         self.con.commit()

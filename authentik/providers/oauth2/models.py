@@ -33,6 +33,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import WebfingerProvider
+from authentik.common.oauth.constants import SubModes
 from authentik.core.models import (
     AuthenticatedSession,
     ExpiringModel,
@@ -42,9 +43,8 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import DomainlessURLValidator, SerializerModel
+from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.providers.oauth2.constants import SubModes
 from authentik.sources.oauth.models import OAuthSource
 
 if TYPE_CHECKING:
@@ -97,6 +97,11 @@ class RedirectURIMatchingMode(models.TextChoices):
     REGEX = "regex", _("Regular Expression URL matching")
 
 
+class RedirectURIType(models.TextChoices):
+    AUTHORIZATION = "authorization", _("Authorization")
+    LOGOUT = "logout", _("Logout")
+
+
 class OAuth2LogoutMethod(models.TextChoices):
     """OAuth2/OIDC Logout methods"""
 
@@ -110,6 +115,7 @@ class RedirectURI:
 
     matching_mode: RedirectURIMatchingMode
     url: str
+    redirect_uri_type: RedirectURIType = RedirectURIType.AUTHORIZATION
 
 
 class ResponseTypes(models.TextChoices):
@@ -220,7 +226,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
             "Frontchannel uses iframes in your browser"
         ),
     )
-
     include_claims_in_id_token = models.BooleanField(
         default=True,
         verbose_name=_("Include claims in id_token"),
@@ -343,7 +348,12 @@ class OAuth2Provider(WebfingerProvider, Provider):
                 from_dict(
                     RedirectURI,
                     entry,
-                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
+                    config=Config(
+                        type_hooks={
+                            RedirectURIMatchingMode: RedirectURIMatchingMode,
+                            RedirectURIType: RedirectURIType,
+                        }
+                    ),
                 )
             )
         return uris
@@ -356,9 +366,23 @@ class OAuth2Provider(WebfingerProvider, Provider):
         self._redirect_uris = cleansed
 
     @property
+    def authorization_redirect_uris(self) -> list[RedirectURI]:
+        return [
+            uri
+            for uri in self.redirect_uris
+            if uri.redirect_uri_type == RedirectURIType.AUTHORIZATION
+        ]
+
+    @property
+    def post_logout_redirect_uris(self) -> list[RedirectURI]:
+        return [
+            uri for uri in self.redirect_uris if uri.redirect_uri_type == RedirectURIType.LOGOUT
+        ]
+
+    @property
     def launch_url(self) -> str | None:
         """Guess launch_url based on first redirect_uri"""
-        redirects = self.redirect_uris
+        redirects = self.authorization_redirect_uris
         if len(redirects) < 1:
             return None
         main_url = redirects[0].url
@@ -386,11 +410,18 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
-    def encode(self, payload: dict[str, Any]) -> str:
-        """Represent the ID Token as a JSON Web Token (JWT)."""
+    def encode(self, payload: dict[str, Any], jwt_type: str | None = None) -> str:
+        """Represent the ID Token as a JSON Web Token (JWT).
+
+        :param payload The payload to encode into the JWT
+        :param jwt_type The type of the JWT. This will be put in the JWT header using the `typ`
+            parameter. See RFC7515 Section 4.1.9. If not set fallback to the default of `JWT`.
+        """
         headers = {}
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
+        if jwt_type is not None:
+            headers["typ"] = jwt_type
         key, alg = self.jwt_key
         encoded = encode(payload, key, algorithm=alg, headers=headers)
         if self.encryption_key:
@@ -462,7 +493,7 @@ class BaseGrantModel(models.Model):
         self._scope = " ".join(value)
 
 
-class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
+class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Authorization Code"""
 
     code = models.CharField(max_length=255, unique=True, verbose_name=_("Code"))
@@ -497,7 +528,7 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
         )
 
 
-class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
+class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 access token, non-opaque using a JWT as identifier"""
 
     token = models.TextField()
@@ -514,7 +545,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Access Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> "IDToken":
+    def id_token(self) -> IDToken:
         """Load ID Token from json"""
         from authentik.providers.oauth2.id_token import IDToken
 
@@ -522,7 +553,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: "IDToken"):
+    def id_token(self, value: IDToken):
         self.token = value.to_access_token(self.provider, self)
         self._id_token = json.dumps(asdict(value))
 
@@ -545,7 +576,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
-class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
+class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token, opaque"""
 
     token = models.TextField(default=generate_client_secret)
@@ -567,7 +598,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Refresh Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> "IDToken":
+    def id_token(self) -> IDToken:
         """Load ID Token from json"""
         from authentik.providers.oauth2.id_token import IDToken
 
@@ -575,7 +606,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: "IDToken"):
+    def id_token(self, value: IDToken):
         self._id_token = json.dumps(asdict(value))
 
     @property
@@ -585,7 +616,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
-class DeviceToken(ExpiringModel):
+class DeviceToken(InternallyManagedMixin, ExpiringModel):
     """Temporary device token for OAuth device flow"""
 
     user = models.ForeignKey(

@@ -21,6 +21,9 @@ class UILoginButton:
     # Icon URL, used as-is
     icon_url: str | None = None
 
+    # Whether this source should be displayed as a prominent button
+    promoted: bool = False
+
 
 class UserSettingSerializer(PassiveSerializer):
     """Serializer for User settings for stages and sources"""

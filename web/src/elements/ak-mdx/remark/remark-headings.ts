@@ -21,7 +21,6 @@ export const remarkHeadings: Plugin<[unknown], Root, VFile> = () => {
             };
         };
 
-        // @ts-ignore - visit cannot infer the type of the visitor.
         visit(tree, "heading", visitor);
     };
 };

@@ -1,6 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/sync/SyncObjectForm";
+import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -50,7 +51,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("SCIM User(s)")}
+            object-label=${msg("SCIM User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: SCIMProviderUser) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersDestroy({

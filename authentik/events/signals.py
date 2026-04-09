@@ -14,7 +14,12 @@ from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
-from authentik.flows.planner import PLAN_CONTEXT_OUTPOST, PLAN_CONTEXT_SOURCE, FlowPlan
+from authentik.flows.planner import (
+    PLAN_CONTEXT_DEVICE,
+    PLAN_CONTEXT_OUTPOST,
+    PLAN_CONTEXT_SOURCE,
+    FlowPlan,
+)
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
@@ -42,6 +47,9 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
         if PLAN_CONTEXT_OUTPOST in flow_plan.context:
             # Save outpost context
             kwargs[PLAN_CONTEXT_OUTPOST] = flow_plan.context[PLAN_CONTEXT_OUTPOST]
+        if PLAN_CONTEXT_DEVICE in flow_plan.context:
+            # Save device
+            kwargs[PLAN_CONTEXT_DEVICE] = flow_plan.context[PLAN_CONTEXT_DEVICE]
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
     request.session.save()
@@ -85,11 +93,13 @@ def on_login_failed(
     credentials: dict[str, str],
     request: HttpRequest,
     stage: Stage | None = None,
+    context: dict[str, Any] | None = None,
     **kwargs,
 ):
     """Failed Login, authentik custom event"""
     user = User.objects.filter(username=credentials.get("username")).first()
-    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **kwargs).from_http(
+    context = context or {}
+    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **context).from_http(
         request, user
     )
 

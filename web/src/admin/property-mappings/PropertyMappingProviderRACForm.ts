@@ -6,7 +6,6 @@ import "#elements/forms/Radio";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { docLink } from "#common/global";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import type { RadioOption } from "#elements/forms/Radio";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
@@ -55,7 +54,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
@@ -137,7 +136,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Expression")} name="expression">
                         <ak-codemirror
-                            mode=${CodeMirrorMode.Python}
+                            mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >
                         </ak-codemirror>

@@ -8,7 +8,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type TablePageChangeListener = (page: number) => void;
 
@@ -27,7 +26,6 @@ export class TablePagination extends AKElement {
     public onPageChange?: TablePageChangeListener;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPagination,
         css`
@@ -36,23 +34,6 @@ export class TablePagination extends AKElement {
 
                 &[inert] {
                     opacity: 0.5;
-                }
-            }
-
-            :host([theme="dark"]) {
-                .pf-c-pagination__nav-control {
-                    .pf-c-button {
-                        color: var(--pf-c-button--m-plain--disabled--Color);
-                        --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
-
-                        &:disabled {
-                            color: var(--pf-c-button--disabled--Color);
-                        }
-                    }
-                }
-
-                .pf-c-options-menu__toggle {
-                    color: var(--ak-dark-foreground);
                 }
             }
         `,

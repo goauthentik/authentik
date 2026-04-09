@@ -77,7 +77,7 @@ class Message(models.Model):
                 func=f"""
                     encoded_message := encode(NEW.message, 'base64');
                     epoch := extract(epoch from NEW.expires)::text;
-                    IF octet_length(NEW.id::text) + octet_length(NEW.channel) + octet_length(epoch) + octet_length(encoded_message) + 3 <= 8000 THEN
+                    IF octet_length(NEW.id::text) + octet_length(NEW.channel) + octet_length(epoch) + octet_length(encoded_message) + 3 < 8000 THEN
                         payload := NEW.id::text || ':' || NEW.channel || ':' || epoch || ':' || encoded_message;
                     ELSE
                         payload := NEW.id::text || ':' || NEW.channel || ':' || epoch;

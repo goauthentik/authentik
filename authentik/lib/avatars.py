@@ -4,13 +4,13 @@ from base64 import b64encode
 from functools import cache as funccache
 from hashlib import md5, sha256
 from typing import TYPE_CHECKING
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponseNotFound
 from django.templatetags.static import static
 from lxml import etree  # nosec
-from lxml.etree import Element, SubElement  # nosec
+from lxml.etree import Element, SubElement, _Element  # nosec
 from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
 
 from authentik.lib.utils.dict import get_path_from_dict
@@ -22,9 +22,7 @@ if TYPE_CHECKING:
 
 GRAVATAR_URL = "https://www.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
-CACHE_KEY_GRAVATAR = "goauthentik.io/lib/avatars/"
-CACHE_KEY_GRAVATAR_AVAILABLE = "goauthentik.io/lib/avatars/gravatar_available"
-GRAVATAR_STATUS_TTL_SECONDS = 60 * 60 * 8  # 8 Hours
+AVATAR_STATUS_TTL_SECONDS = 60 * 60 * 8  # 8 Hours
 
 SVG_XML_NS = "http://www.w3.org/2000/svg"
 SVG_NS_MAP = {None: SVG_XML_NS}
@@ -39,46 +37,25 @@ SVG_FONTS = [
 ]
 
 
-def avatar_mode_none(user: "User", mode: str) -> str | None:
+def avatar_mode_none(user: User, mode: str) -> str | None:
     """No avatar"""
     return DEFAULT_AVATAR
 
 
-def avatar_mode_attribute(user: "User", mode: str) -> str | None:
+def avatar_mode_attribute(user: User, mode: str) -> str | None:
     """Avatars based on a user attribute"""
     avatar = get_path_from_dict(user.attributes, mode[11:], default=None)
     return avatar
 
 
-def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
+def avatar_mode_gravatar(user: User, mode: str) -> str | None:
     """Gravatar avatars"""
-    if not cache.get(CACHE_KEY_GRAVATAR_AVAILABLE, True):
-        return None
 
     mail_hash = sha256(user.email.lower().encode("utf-8")).hexdigest()  # nosec
     parameters = {"size": "158", "rating": "g", "default": "404"}
     gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters)}"
 
-    full_key = CACHE_KEY_GRAVATAR + mail_hash
-    if cache.has_key(full_key):
-        cache.touch(full_key)
-        return cache.get(full_key)
-
-    try:
-        # Since we specify a default of 404, do a HEAD request
-        # (HEAD since we don't need the body)
-        # so if that returns a 404, move onto the next mode
-        res = get_http_session().head(gravatar_url, timeout=5)
-        if res.status_code == HttpResponseNotFound.status_code:
-            cache.set(full_key, None)
-            return None
-        res.raise_for_status()
-    except (Timeout, ConnectionError, HTTPError):
-        cache.set(CACHE_KEY_GRAVATAR_AVAILABLE, False, timeout=GRAVATAR_STATUS_TTL_SECONDS)
-    except RequestException:
-        return gravatar_url
-    cache.set(full_key, gravatar_url)
-    return gravatar_url
+    return avatar_mode_url(user, gravatar_url)
 
 
 def generate_colors(text: str) -> tuple[str, str]:
@@ -132,7 +109,7 @@ def generate_avatar_from_name(
     shape = "circle" if rounded else "rect"
     font_weight = "600" if bold else "400"
 
-    root_element: Element = Element(f"{{{SVG_XML_NS}}}svg", nsmap=SVG_NS_MAP)
+    root_element: _Element = Element(f"{{{SVG_XML_NS}}}svg", nsmap=SVG_NS_MAP)
     root_element.attrib["width"] = f"{size}px"
     root_element.attrib["height"] = f"{size}px"
     root_element.attrib["viewBox"] = f"0 0 {size} {size}"
@@ -164,7 +141,7 @@ def generate_avatar_from_name(
     return etree.tostring(root_element).decode()
 
 
-def avatar_mode_generated(user: "User", mode: str) -> str | None:
+def avatar_mode_generated(user: User, mode: str) -> str | None:
     """Wrapper that converts generated avatar to base64 svg"""
     # By default generate based off of user's display name
     name = user.name.strip()
@@ -178,17 +155,49 @@ def avatar_mode_generated(user: "User", mode: str) -> str | None:
     return f"data:image/svg+xml;base64,{b64encode(svg.encode('utf-8')).decode('utf-8')}"
 
 
-def avatar_mode_url(user: "User", mode: str) -> str | None:
+def avatar_mode_url(user: User, mode: str) -> str | None:
     """Format url"""
     mail_hash = md5(user.email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()  # nosec
-    return mode % {
+
+    formatted_url = mode % {
         "username": user.username,
         "mail_hash": mail_hash,
         "upn": user.attributes.get("upn", ""),
     }
 
+    hostname = urlparse(formatted_url).hostname
+    cache_key_hostname_available = f"goauthentik.io/lib/avatars/{hostname}/available"
 
-def get_avatar(user: "User", request: HttpRequest | None = None) -> str:
+    if not cache.get(cache_key_hostname_available, True):
+        return None
+
+    cache_key_image_url = f"goauthentik.io/lib/avatars/{hostname}/{mail_hash}"
+
+    if cache.has_key(cache_key_image_url):
+        cache.touch(cache_key_image_url)
+        return cache.get(cache_key_image_url)
+
+    try:
+        res = get_http_session().head(formatted_url, timeout=5, allow_redirects=True)
+
+        if res.status_code == HttpResponseNotFound.status_code:
+            cache.set(cache_key_image_url, None, timeout=AVATAR_STATUS_TTL_SECONDS)
+            return None
+        if not res.headers.get("Content-Type", "").startswith("image/"):
+            cache.set(cache_key_image_url, None, timeout=AVATAR_STATUS_TTL_SECONDS)
+            return None
+        res.raise_for_status()
+    except Timeout, ConnectionError, HTTPError:
+        cache.set(cache_key_hostname_available, False, timeout=AVATAR_STATUS_TTL_SECONDS)
+        return None
+    except RequestException:
+        return formatted_url
+
+    cache.set(cache_key_image_url, formatted_url, timeout=AVATAR_STATUS_TTL_SECONDS)
+    return formatted_url
+
+
+def get_avatar(user: User, request: HttpRequest | None = None) -> str:
     """Get avatar with configured mode"""
     mode_map = {
         "none": avatar_mode_none,

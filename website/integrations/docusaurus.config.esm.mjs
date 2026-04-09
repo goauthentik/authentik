@@ -34,7 +34,7 @@ const redirectsIndex = new RewriteIndex(redirects);
 export default createDocusaurusConfig(
     extendConfig({
         future: {
-            experimental_faster: true,
+            faster: true,
         },
 
         url: "https://integrations.goauthentik.io",

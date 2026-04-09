@@ -1,11 +1,14 @@
+import "#elements/EmptyState";
+
 import { updateURLParams } from "#elements/router/RouteMatch";
 import { Table } from "#elements/table/Table";
+import Styles from "#elements/table/TablePage.css";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -18,15 +21,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
         PFPage,
         PFContent,
         PFSidebar,
-        css`
-            .pf-c-sidebar__panel {
-                --pf-c-sidebar__panel--Position: static;
-                flex: 0 1 25%;
-            }
-            .pf-c-sidebar__content {
-                flex: 1 1 75%;
-            }
-        `,
+        Styles,
     ];
 
     //#region Abstract properties
@@ -115,7 +110,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${msg("No objects found.")}</span>
+                      ><span>${this.emptyStateMessage}</span>
                       <div slot="body">
                           ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
                       </div>
@@ -141,7 +136,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
         </button>`;
     }
 
-    render() {
+    protected override render(): SlottedTemplateResult {
         return html` ${this.renderSectionBefore?.()}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">

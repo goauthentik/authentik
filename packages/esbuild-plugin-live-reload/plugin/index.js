@@ -2,15 +2,15 @@
  * @file Live reload plugin for ESBuild.
  *
  * @import { ListenOptions } from "node:net";
- * @import {Server as HTTPServer} from "node:http";
- * @import {Server as HTTPSServer} from "node:https";
- * @import { Logger } from "@goauthentik/esbuild-plugin-live-reload/shared";
+ * @import { Server as HTTPServer } from "node:http";
+ * @import { Server as HTTPSServer } from "node:https";
+ * @import { Logger } from "@goauthentik/logger-js";
  */
 
 import * as http from "node:http";
 import { resolve as resolvePath } from "node:path";
 
-import { createLogger } from "@goauthentik/esbuild-plugin-live-reload/shared";
+import { createLogger } from "@goauthentik/logger-js";
 
 import { findFreePorts } from "find-free-ports";
 
@@ -31,7 +31,7 @@ export function serializeCustomEventToStream(event) {
 
     const eventContent = [`event: ${event.type}`, `data: ${JSON.stringify(data)}`];
 
-    return eventContent.join("\n") + "\n\n";
+    return `${eventContent.join("\n")}\n\n`;
 }
 
 const MIN_PORT = 1025;
@@ -44,11 +44,11 @@ const MAX_PORT = 65535;
 async function findDisparatePort() {
     const startPort = Math.floor(Math.random() * (MAX_PORT - MIN_PORT + 1)) + MIN_PORT;
 
-    const wathcherPorts = await findFreePorts(1, {
+    const watcherPorts = await findFreePorts(1, {
         startPort,
     });
 
-    const [port] = wathcherPorts;
+    const [port] = watcherPorts;
 
     if (!port) {
         throw new Error("No free ports available");
@@ -123,6 +123,13 @@ export function createRequestHandler({ pathname, dispatcher, logger = createLogg
         dispatcher.addEventListener("esbuild:error", listener);
         dispatcher.addEventListener("esbuild:end", listener);
 
+        const keepAliveInterval = setInterval(() => {
+            logger.debug("🏓 Keep-alive");
+
+            res.write("event: keep-alive\n\n");
+            res.write(serializeCustomEventToStream(new CustomEvent("esbuild:keep-alive")));
+        }, 15_000);
+
         req.on("close", () => {
             logger.debug("🔌 Client disconnected");
 
@@ -132,13 +139,6 @@ export function createRequestHandler({ pathname, dispatcher, logger = createLogg
             dispatcher.removeEventListener("esbuild:error", listener);
             dispatcher.removeEventListener("esbuild:end", listener);
         });
-
-        const keepAliveInterval = setInterval(() => {
-            logger.debug("🏓 Keep-alive");
-
-            res.write("event: keep-alive\n\n");
-            res.write(serializeCustomEventToStream(new CustomEvent("esbuild:keep-alive")));
-        }, 15_000);
     };
 
     return requestHandler;

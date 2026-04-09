@@ -15,12 +15,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    EventsApi,
-    ModelEnum,
-    NotificationRule,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
+import { EventsApi, ModelEnum, NotificationRule } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -57,7 +52,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Notification rule(s)")}
+            object-label=${msg("Notification rule(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationRule) => {
                 return new EventsApi(DEFAULT_CONFIG).eventsRulesUsedByList({
@@ -89,7 +84,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 : msg("-")}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Notification Rule")}</span>
                     <ak-event-rule-form slot="form" .instancePk=${item.pk}> </ak-event-rule-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -100,7 +95,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEventsNotificationrule}
+                    model=${ModelEnum.AuthentikEventsNotificationrule}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

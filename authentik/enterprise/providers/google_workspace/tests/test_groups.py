@@ -331,7 +331,7 @@ class GoogleWorkspaceGroupTests(TestCase):
                 ).exists()
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-            self.assertEqual(len(http.requests()), 5)
+            self.assertEqual(len(http.requests()), 7)
 
     def test_sync_discover_multiple(self):
         """Test group discovery"""
@@ -372,7 +372,7 @@ class GoogleWorkspaceGroupTests(TestCase):
                 ).exists()
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
-            self.assertEqual(len(http.requests()), 5)
+            self.assertEqual(len(http.requests()), 7)
             # Change response to trigger update
             http.add_response(
                 f"https://admin.googleapis.com/admin/directory/v1/groups?customer=my_customer&maxResults=500&orderBy=email&key={self.api_key}&alt=json",

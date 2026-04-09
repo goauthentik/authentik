@@ -1,18 +1,46 @@
 import "#elements/EmptyState";
 
-import { EVENT_REFRESH } from "#common/constants";
+import { AKRefreshEvent } from "#common/events";
 
+import { listen } from "#elements/decorators/listen";
 import { Form } from "#elements/forms/Form";
+import { asEditModalInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { html, TemplateResult } from "lit";
+import { ConsoleLogger } from "#logger/browser";
+
+import { msg, str } from "@lit/localize";
+import { html } from "lit";
 import { property } from "lit/decorators.js";
 
 /**
  * A base form that automatically tracks the server-side object (instance)
- * that we're interested in.  Handles loading and tracking of the instance.
+ * that we're interested in. Handles loading and tracking of the instance.
+ *
+ * @template T The type of the model instance.
+ * @template PKT The type of the primary key of the model instance.
+ * @template D The result of `toJSON()`, which is the data sent to the server on submit.
+ *
+ * @prop {T} instance - The current instance being edited or viewed.
+ * @prop {PKT} instancePk - The primary key of the instance to load.
  */
-export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
+export abstract class ModelForm<
+    T extends object = object,
+    PKT extends string | number = string | number,
+    D = T,
+> extends Form<T, D> {
+    /**
+     * A helper method to create an invoker for editing an instance of this form.
+     *
+     * The invoker will look for a `data-pk` attribute on the clicked element to determine which instance to load.
+     *
+     * @see {@linkcode Form.asModalInvoker} for opening a blank form in a modal.
+     * @see {@linkcode asInvoker} for the underlying implementation.
+     */
+    public static asEditModalInvoker = asEditModalInvoker;
+
+    protected logger = ConsoleLogger.prefix(`model-form/${this.tagName.toLowerCase()}`);
+
     /**
      * An overridable method for loading an instance.
      *
@@ -27,11 +55,11 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
      * @see {@linkcode loadInstance}
      * @returns A promise that resolves when the data has been loaded.
      */
-    async load(): Promise<void> {
+    protected async load(): Promise<void> {
         return Promise.resolve();
     }
 
-    @property({ attribute: false })
+    @property({ attribute: "pk", converter: { fromAttribute: (value) => value as PKT } })
     public set instancePk(value: PKT) {
         this.#instancePk = value;
 
@@ -54,7 +82,11 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         });
     }
 
-    #instancePk?: PKT;
+    #instancePk: PKT | null = null;
+
+    public get instancePk(): PKT | null {
+        return this.#instancePk;
+    }
 
     // Keep track if we've loaded the model instance
     #initialLoad = false;
@@ -71,30 +103,64 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         return undefined;
     }
 
-    constructor() {
-        super();
+    @listen(AKRefreshEvent, {
+        target: null,
+    })
+    protected refresh = async () => {
+        await new Promise((resolve) => requestAnimationFrame(resolve));
 
-        this.addEventListener(EVENT_REFRESH, () => {
-            if (!this.#instancePk) return;
-            this.loadInstance(this.#instancePk).then((instance) => {
-                this.instance = instance;
-            });
+        if (!this.#instancePk) return;
+
+        const viewportVisible = this.isInViewport || !this.viewportCheck;
+
+        if (!viewportVisible) {
+            this.logger.debug(`Instance not in viewport, skipping refresh`);
+            return;
+        }
+
+        return this.loadInstance(this.#instancePk).then((instance) => {
+            this.instance = instance;
         });
+    };
+
+    protected override formatSubmitLabel(): string {
+        if (this.#instancePk) {
+            return msg(str`Save Changes`, {
+                id: "model-form.apply-submit",
+            });
+        }
+
+        return super.formatSubmitLabel();
     }
 
-    reset(): void {
+    protected override formatHeadline(): string {
+        return super.formatHeadline(this.headline, this.#instancePk ? msg("Edit") : null);
+    }
+
+    //#region Public methods
+
+    public override reset(): void {
+        super.reset();
+
         this.instance = undefined;
         this.#initialLoad = false;
+        this.#initialDataLoad = false;
+
+        this.requestUpdate();
     }
 
-    renderVisible(): TemplateResult {
+    //#endregion
+
+    //#region Rendering
+
+    protected override renderVisible(): SlottedTemplateResult {
         if ((this.#instancePk && !this.instance) || !this.#initialDataLoad) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
         return super.renderVisible();
     }
 
-    render(): SlottedTemplateResult {
+    protected override render(): SlottedTemplateResult {
         // if we're in viewport now and haven't loaded AND have a PK set, load now
         // Or if we don't check for viewport in some cases
         const viewportVisible = this.isInViewport || !this.viewportCheck;
@@ -114,4 +180,6 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
 
         return super.render();
     }
+
+    //#endregion
 }

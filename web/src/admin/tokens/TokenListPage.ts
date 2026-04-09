@@ -14,12 +14,7 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    CoreApi,
-    IntentEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    Token,
-} from "@goauthentik/api";
+import { CoreApi, IntentEnum, ModelEnum, Token } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -60,7 +55,7 @@ export class TokenListPage extends TablePage<Token> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Token(s)")}
+            object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Token) => {
                 return [{ key: msg("Identifier"), value: item.identifier }];
@@ -86,7 +81,7 @@ export class TokenListPage extends TablePage<Token> {
         return html`
             <ak-forms-modal>
                 <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Token")}</span>
+                <span slot="header">${msg("New Token")}</span>
                 <ak-token-form slot="form"> </ak-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
@@ -106,7 +101,7 @@ export class TokenListPage extends TablePage<Token> {
             html`
                 ${!item.managed
                     ? html`<ak-forms-modal>
-                          <span slot="submit">${msg("Update")}</span>
+                          <span slot="submit">${msg("Save Changes")}</span>
                           <span slot="header">${msg("Update Token")}</span>
                           <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
                           <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -124,7 +119,7 @@ export class TokenListPage extends TablePage<Token> {
                           </pf-tooltip>
                       </button>`}
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreToken}
+                    model=${ModelEnum.AuthentikCoreToken}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

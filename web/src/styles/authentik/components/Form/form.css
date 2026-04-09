@@ -1,3 +1,25 @@
+.pf-c-form {
+    /**
+     * This variable is derived from PatternFly 4, modified to align with our borderless
+     * form controls.
+     * @see {@patternfly/patternfly/components/Form/form.scss}
+     */
+    /* prettier-ignore */
+    --pf-c-form--m-horizontal__group-label--md--PaddingTop: calc(
+        (((((var(
+            --pf-global--FontSize--md) * var(
+            --pf-global--LineHeight--md)) + (2 * var(
+            --pf-global--BorderWidth--sm))) - var(
+            --pf-global--FontSize--md)) / 2) + var(
+            --pf-global--FontSize--md)) - ((((var(
+            --pf-global--FontSize--sm) * var(
+            --pf-global--LineHeight--sm)) - var(
+            --pf-global--FontSize--sm)) / 2) + var(
+            --pf-global--FontSize--sm)) + (var(
+            --pf-global--BorderWidth--sm) * 4)
+    );
+}
+
 .pf-c-form__group {
     column-gap: var(--pf-global--spacer--md);
 }
@@ -54,43 +76,43 @@
 /* #region Fields */
 
 fieldset {
-    --ak-fieldset-border-width: thin;
-    --ak-fieldset-border-color: var(--pf-global--BackgroundColor--light-100);
-    --ak-legend-margin-inline-base: var(--pf-global--spacer--sm);
-    --ak-legend-padding-inline-base: var(--pf-global--spacer--sm);
+    --ak-fieldset--BorderWidth: thin;
+    --ak-fieldset__legend--MarginInlineBase: var(--pf-global--spacer--sm);
+    --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--sm);
 
-    border-color: var(--ak-fieldset-border-color);
-    border-width: var(--ak-fieldset-border-width);
-
-    padding: var(--ak-legend-padding-inline-base) !important;
+    border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BackgroundColor--light-100));
 
     @media (prefers-contrast: more) {
-        --ak-fieldset-border-color: var(--pf-global--BorderColor--200);
+        border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--200));
     }
 
     @media (prefers-contrast: less) {
-        --ak-fieldset-border-color: transparent;
+        border-color: var(--ak-fieldset--BorderColor, transparent);
     }
+
+    border-width: var(--ak-fieldset--BorderWidth);
+
+    padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
 
     & > legend {
         line-height: 1;
-        padding: var(--ak-legend-padding-inline-base) !important;
+        padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
         margin-inline-start: var(
-            --ak-legend-margin-inline-start,
-            var(--ak-legend-margin-inline-base)
+            --ak-fieldset__legend--MarginInlineStart,
+            var(--ak-fieldset__legend--MarginInlineBase)
         ) !important;
         margin-inline-end: var(
             --ak-legend-margin-inline-end,
-            var(--ak-legend-margin-inline-base)
+            var(--ak-fieldset__legend--MarginInlineBase)
         ) !important;
     }
 
-    &:has(legend.sr-only) {
+    &:has(legend.sr-only:not(.more-contrast-only)) {
         border-width: 0;
 
         &:not(.pf-c-modal-box__footer) {
-            --ak-legend-padding-inline-base: 0;
-            --ak-legend-margin-inline-base: 0;
+            --ak-fieldset__legend--PaddingInlineBase: 0;
+            --ak-fieldset__legend--MarginInlineBase: 0;
         }
     }
 
@@ -115,8 +137,12 @@ fieldset {
     }
 
     &.pf-c-modal-box__footer {
-        --ak-legend-padding-inline-base: var(--pf-global--spacer--md);
-        padding-block: calc(var(--ak-legend-padding-inline-base) / 2);
+        --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--lg);
+        --pf-c-modal-box__footer--c-button--MarginRight: 0;
+
+        gap: var(--pf-global--spacer--sm);
+        justify-content: end;
+        padding-block: calc(var(--ak-fieldset__legend--PaddingInlineBase) / 2);
         border-inline: none;
         border-block-end: none;
 
@@ -136,22 +162,13 @@ fieldset {
 :host([theme="dark"]) {
     /* #region Inputs */
 
-    optgroup,
-    option {
-        color: var(--ak-dark-foreground);
-    }
-    select[multiple] optgroup:checked,
-    select[multiple] option:checked {
-        color: var(--ak-dark-background);
-    }
-
     .pf-c-input-group:not(:has(.pf-c-switch)) {
         --pf-c-input-group--BackgroundColor: transparent;
 
         --pf-global--Color--100: var(--pf-global--Color--light-100);
         --pf-global--Color--200: var(--pf-global--Color--light-200);
         --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
-        --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+        --pf-global--primary-color--100: var(--pf-global--primary-color--300);
         --pf-global--link--Color: var(--pf-global--link--Color--light);
         --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
         --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100);
@@ -196,14 +213,17 @@ fieldset {
     }
 
     fieldset {
-        --ak-fieldset-border-color: var(--pf-global--BackgroundColor--dark-transparent-200);
+        border-color: var(
+            --ak-fieldset--BorderColor,
+            var(--pf-global--BackgroundColor--dark-transparent-200)
+        );
 
         @media (prefers-contrast: more) {
-            --ak-fieldset-border-color: var(--pf-global--BorderColor--300);
+            border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--300));
         }
 
         @media (prefers-contrast: less) {
-            --ak-fieldset-border-color: transparent;
+            border-color: var(--ak-fieldset--BorderColor, transparent);
         }
     }
 

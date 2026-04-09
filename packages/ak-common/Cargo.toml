@@ -1,0 +1,51 @@
+[package]
+name = "authentik-common"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+readme.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license-file.workspace = true
+publish.workspace = true
+
+[features]
+default = ["core", "proxy"]
+core = ["dep:sqlx"]
+proxy = []
+
+[dependencies]
+arc-swap.workspace = true
+aws-lc-rs.workspace = true
+axum-server.workspace = true
+config-rs.workspace = true
+console-subscriber.workspace = true
+eyre.workspace = true
+glob.workspace = true
+ipnet.workspace = true
+json-subscriber.workspace = true
+notify.workspace = true
+pin-project-lite.workspace = true
+rustls.workspace = true
+sentry.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx = { workspace = true, optional = true }
+thiserror.workspace = true
+time.workspace = true
+tokio-util.workspace = true
+tokio.workspace = true
+tracing-error.workspace = true
+tracing-subscriber.workspace = true
+tracing.workspace = true
+url.workspace = true
+
+[dev-dependencies]
+nix.workspace = true
+tempfile.workspace = true
+
+[lints]
+workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["aws-lc-rs"]

@@ -7,6 +7,14 @@ from django.urls import reverse
 from jwt import decode
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.oauth.constants import (
+    GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_PASSWORD,
+    SCOPE_OPENID,
+    SCOPE_OPENID_EMAIL,
+    SCOPE_OPENID_PROFILE,
+    TOKEN_TYPE,
+)
 from authentik.core.models import Application, Group, Token, TokenIntents, UserTypes
 from authentik.core.tests.utils import (
     create_test_admin_user,
@@ -15,14 +23,6 @@ from authentik.core.tests.utils import (
     create_test_user,
 )
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.constants import (
-    GRANT_TYPE_CLIENT_CREDENTIALS,
-    GRANT_TYPE_PASSWORD,
-    SCOPE_OPENID,
-    SCOPE_OPENID_EMAIL,
-    SCOPE_OPENID_PROFILE,
-    TOKEN_TYPE,
-)
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
@@ -106,6 +106,30 @@ class TestTokenClientCredentialsUserNamePassword(OAuthTestCase):
         """test no provider"""
         self.app.provider = None
         self.app.save()
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": SCOPE_OPENID,
+                "client_id": self.provider.client_id,
+                "username": "sa",
+                "password": self.token.key,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content.decode(),
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
+        )
+
+    def test_deactivate(self):
+        """test deactivated user"""
+        self.user.is_active = False
+        self.user.save()
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
             {

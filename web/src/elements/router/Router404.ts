@@ -6,14 +6,13 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-router-404")
 export class Router404 extends AKElement {
     @property()
     url = "";
 
-    static styles: CSSResult[] = [PFBase, PFEmptyState, PFTitle];
+    static styles: CSSResult[] = [PFEmptyState, PFTitle];
 
     render(): TemplateResult {
         return html`<div class="pf-c-empty-state pf-m-full-height">

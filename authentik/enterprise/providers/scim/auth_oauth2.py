@@ -19,11 +19,11 @@ class SCIMOAuthException(SCIMRequestException):
 
 class SCIMOAuthAuth:
 
-    def __init__(self, provider: "SCIMProvider"):
+    def __init__(self, provider: SCIMProvider):
         self.provider = provider
         self.user = provider.auth_oauth_user
-        self.connection = self.get_connection()
         self.logger = get_logger().bind()
+        self.connection = self.get_connection()
 
     def retrieve_token(self):
         if not self.provider.auth_oauth:

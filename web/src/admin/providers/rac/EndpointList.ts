@@ -11,12 +11,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    Endpoint,
-    RacApi,
-    RACProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
+import { Endpoint, ModelEnum, RacApi, RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -57,7 +52,7 @@ export class EndpointListPage extends Table<Endpoint> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Endpoint(s)")}
+            object-label=${msg("Endpoint(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Endpoint) => {
                 return [
@@ -88,7 +83,7 @@ export class EndpointListPage extends Table<Endpoint> {
             html`${item.host}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Endpoint")}</span>
                     <ak-rac-endpoint-form slot="form" .instancePk=${item.pk}>
                     </ak-rac-endpoint-form>
@@ -99,7 +94,7 @@ export class EndpointListPage extends Table<Endpoint> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacEndpoint}
+                    model=${ModelEnum.AuthentikProvidersRacEndpoint}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

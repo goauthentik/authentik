@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.validation import validate
 from authentik.core.api.applications import user_app_cache_key
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
@@ -129,16 +130,13 @@ class PolicyViewSet(
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def test(self, request: Request, pk: str) -> Response:
+    @validate(PolicyTestSerializer)
+    def test(self, request: Request, pk: str, body: PolicyTestSerializer) -> Response:
         """Test policy"""
         policy = self.get_object()
-        test_params = PolicyTestSerializer(data=request.data)
-        if not test_params.is_valid():
-            return Response(test_params.errors, status=400)
-
         # User permission check, only allow policy testing for users that are readable
         users = get_objects_for_user(request.user, "authentik_core.view_user").filter(
-            pk=test_params.validated_data["user"].pk
+            pk=body.validated_data["user"].pk
         )
         if not users.exists():
             return Response(status=400)
@@ -146,7 +144,7 @@ class PolicyViewSet(
         p_request = PolicyRequest(users.first())
         p_request.debug = True
         p_request.set_http_request(self.request)
-        p_request.context = test_params.validated_data.get("context", {})
+        p_request.context = body.validated_data.get("context", {})
 
         proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
         with capture_logs() as logs:

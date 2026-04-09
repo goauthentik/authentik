@@ -3,10 +3,11 @@
 from django.apps import apps
 from django.http import HttpResponseNotFound
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.utils import ModelSerializer
-from authentik.tenants.api.tenants import TenantApiKeyPermission
+from authentik.tenants.api.tenants import TenantApiKeyAuthentication
 from authentik.tenants.models import Domain
 
 
@@ -29,8 +30,8 @@ class DomainViewSet(ModelViewSet):
         "tenant__schema_name",
     ]
     ordering = ["domain"]
-    authentication_classes = []
-    permission_classes = [TenantApiKeyPermission]
+    authentication_classes = [TenantApiKeyAuthentication]
+    permission_classes = [IsAuthenticated]
     filter_backends = [OrderingFilter, SearchFilter]
     filterset_fields = []
 

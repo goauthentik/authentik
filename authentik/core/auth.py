@@ -12,7 +12,27 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
-class InbuiltBackend(ModelBackend):
+class ModelBackendNoAuthz(ModelBackend):
+    def get_user_permissions(self, user_obj, obj=None):
+        return set()
+
+    def get_group_permissions(self, user_obj, obj=None):
+        return set()
+
+    def get_all_permissions(self, user_obj, obj=None):
+        return set()
+
+    def has_perm(self, user_obj, perm, obj=None):
+        return False
+
+    def has_module_perms(self, user_obj, app_label):
+        return False
+
+    def with_perm(self, perm, is_active=True, include_superusers=True, obj=None):
+        return User.objects.none()
+
+
+class InbuiltBackend(ModelBackendNoAuthz):
     """Inbuilt backend"""
 
     def authenticate(
@@ -61,7 +81,7 @@ class TokenBackend(InbuiltBackend):
             User().set_password(password, request=request)
             return None
 
-        tokens = Token.filter_not_expired(
+        tokens = Token.objects.filter(
             user=user, key=password, intent=TokenIntents.INTENT_APP_PASSWORD
         )
         if not tokens.exists():

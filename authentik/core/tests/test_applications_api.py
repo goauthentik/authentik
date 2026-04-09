@@ -2,8 +2,6 @@
 
 from json import loads
 
-from django.core.files.base import ContentFile
-from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -57,91 +55,6 @@ class TestApplicationsAPI(APITestCase):
             f"https://{self.user.username}-test.test.goauthentik.io/{self.user.username}",
         )
 
-    def test_set_icon(self):
-        """Test set_icon"""
-        file = ContentFile(b"text", "name")
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse(
-                "authentik_api:application-set-icon",
-                kwargs={"slug": self.allowed.slug},
-            ),
-            data=encode_multipart(data={"file": file}, boundary=BOUNDARY),
-            content_type=MULTIPART_CONTENT,
-        )
-        self.assertEqual(response.status_code, 200)
-
-        app_raw = self.client.get(
-            reverse(
-                "authentik_api:application-detail",
-                kwargs={"slug": self.allowed.slug},
-            ),
-        )
-        app = loads(app_raw.content)
-        self.allowed.refresh_from_db()
-        self.assertEqual(self.allowed.get_meta_icon, app["meta_icon"])
-        self.assertEqual(self.allowed.meta_icon.read(), b"text")
-
-    def test_set_icon_relative(self):
-        """Test set_icon (relative path)"""
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse(
-                "authentik_api:application-set-icon-url",
-                kwargs={"slug": self.allowed.slug},
-            ),
-            data={"url": "relative/path"},
-        )
-        self.assertEqual(response.status_code, 200)
-
-        self.allowed.refresh_from_db()
-        self.assertEqual(self.allowed.get_meta_icon, "/media/public/relative/path")
-
-    def test_set_icon_absolute(self):
-        """Test set_icon (absolute path)"""
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse(
-                "authentik_api:application-set-icon-url",
-                kwargs={"slug": self.allowed.slug},
-            ),
-            data={"url": "/relative/path"},
-        )
-        self.assertEqual(response.status_code, 200)
-
-        self.allowed.refresh_from_db()
-        self.assertEqual(self.allowed.get_meta_icon, "/relative/path")
-
-    def test_set_icon_url(self):
-        """Test set_icon (url)"""
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse(
-                "authentik_api:application-set-icon-url",
-                kwargs={"slug": self.allowed.slug},
-            ),
-            data={"url": "https://authentik.company/img.png"},
-        )
-        self.assertEqual(response.status_code, 200)
-
-        self.allowed.refresh_from_db()
-        self.assertEqual(self.allowed.get_meta_icon, "https://authentik.company/img.png")
-
-    def test_set_icon_fa(self):
-        """Test set_icon (url)"""
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse(
-                "authentik_api:application-set-icon-url",
-                kwargs={"slug": self.allowed.slug},
-            ),
-            data={"url": "fa://fa-check-circle"},
-        )
-        self.assertEqual(response.status_code, 200)
-
-        self.allowed.refresh_from_db()
-        self.assertEqual(self.allowed.get_meta_icon, "fa://fa-check-circle")
-
     def test_check_access(self):
         """Test check_access operation"""
         self.client.force_login(self.user)
@@ -194,6 +107,8 @@ class TestApplicationsAPI(APITestCase):
                         "provider_obj": {
                             "assigned_application_name": "allowed",
                             "assigned_application_slug": "allowed",
+                            "assigned_backchannel_application_name": None,
+                            "assigned_backchannel_application_slug": None,
                             "authentication_flow": None,
                             "invalidation_flow": None,
                             "authorization_flow": str(self.provider.authorization_flow.pk),
@@ -210,7 +125,9 @@ class TestApplicationsAPI(APITestCase):
                         "launch_url": f"https://goauthentik.io/{self.user.username}",
                         "meta_launch_url": "https://goauthentik.io/%(username)s",
                         "open_in_new_tab": True,
-                        "meta_icon": None,
+                        "meta_icon": "",
+                        "meta_icon_url": None,
+                        "meta_icon_themed_urls": None,
                         "meta_description": "",
                         "meta_publisher": "",
                         "policy_engine_mode": "any",
@@ -248,6 +165,8 @@ class TestApplicationsAPI(APITestCase):
                         "provider_obj": {
                             "assigned_application_name": "allowed",
                             "assigned_application_slug": "allowed",
+                            "assigned_backchannel_application_name": None,
+                            "assigned_backchannel_application_slug": None,
                             "authentication_flow": None,
                             "invalidation_flow": None,
                             "authorization_flow": str(self.provider.authorization_flow.pk),
@@ -264,7 +183,9 @@ class TestApplicationsAPI(APITestCase):
                         "launch_url": f"https://goauthentik.io/{self.user.username}",
                         "meta_launch_url": "https://goauthentik.io/%(username)s",
                         "open_in_new_tab": True,
-                        "meta_icon": None,
+                        "meta_icon": "",
+                        "meta_icon_url": None,
+                        "meta_icon_themed_urls": None,
                         "meta_description": "",
                         "meta_publisher": "",
                         "policy_engine_mode": "any",
@@ -272,7 +193,9 @@ class TestApplicationsAPI(APITestCase):
                     {
                         "launch_url": None,
                         "meta_description": "",
-                        "meta_icon": None,
+                        "meta_icon": "",
+                        "meta_icon_url": None,
+                        "meta_icon_themed_urls": None,
                         "meta_launch_url": "",
                         "open_in_new_tab": False,
                         "meta_publisher": "",

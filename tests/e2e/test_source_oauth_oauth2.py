@@ -4,6 +4,10 @@ from pathlib import Path
 from time import sleep
 
 from docker.types import Healthcheck
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
@@ -15,7 +19,8 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import NoSuchElementException, SeleniumTestCase, TimeoutException, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 MAX_REFRESH_RETRIES = 5
 INTERFACE_TIMEOUT = 10
@@ -89,26 +94,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         interface = self.driver.find_element(By.CSS_SELECTOR, "ak-interface-user").shadow_root
 
-        interface_wait = WebDriverWait(interface, INTERFACE_TIMEOUT)
-
-        try:
-            interface_wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
-            )
-        except TimeoutException:
-            snippet = context.text.strip()[:1000].replace("\n", " ")
-            self.fail(
-                f"Timed out waiting for element text to appear at {self.driver.current_url}. "
-                f"Current content: {snippet or '<empty>'}"
-            )
-
-        interface_presentation = interface.find_element(
-            By.CSS_SELECTOR, "ak-interface-user-presentation"
-        ).shadow_root
-
-        user_settings = interface_presentation.find_element(
-            By.CSS_SELECTOR, "ak-user-settings"
-        ).shadow_root
+        user_settings = interface.find_element(By.CSS_SELECTOR, "ak-user-settings").shadow_root
 
         tab_panel = user_settings.find_element(By.CSS_SELECTOR, panel_content_selector).shadow_root
 

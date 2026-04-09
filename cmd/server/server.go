@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -51,9 +52,10 @@ var rootCmd = &cobra.Command{
 		ex := common.Init()
 		defer common.Defer()
 
-		u, err := url.Parse(fmt.Sprintf("http://%s%s", config.Get().Listen.HTTP, config.Get().Web.Path))
-		if err != nil {
-			panic(err)
+		u := url.URL{
+			Scheme: "unix",
+			Host:   fmt.Sprintf("%s/%s", os.TempDir(), web.SocketName),
+			Path:   config.Get().Web.Path,
 		}
 
 		ws := web.NewWebServer()
@@ -70,13 +72,13 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func attemptProxyStart(ws *web.WebServer, u *url.URL) {
+func attemptProxyStart(ws *web.WebServer, u url.URL) {
 	maxTries := 100
 	attempt := 0
 	l := log.WithField("logger", "authentik.server")
 	for {
 		l.Debug("attempting to init outpost")
-		ac := ak.NewAPIController(*u, config.Get().SecretKey)
+		ac := ak.NewAPIController(u, config.Get().SecretKey)
 		if ac == nil {
 			attempt += 1
 			time.Sleep(1 * time.Second)

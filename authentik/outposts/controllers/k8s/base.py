@@ -3,7 +3,7 @@
 import re
 from dataclasses import asdict
 from json import dumps
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from dacite.core import from_dict
 from django.http import HttpResponseNotFound
@@ -33,12 +33,12 @@ def get_version() -> str:
     return authentik_version()
 
 
-class KubernetesObjectReconciler(Generic[T]):
+class KubernetesObjectReconciler[T]:
     """Base Kubernetes Reconciler, handles the basic logic."""
 
-    controller: "KubernetesController"
+    controller: KubernetesController
 
-    def __init__(self, controller: "KubernetesController"):
+    def __init__(self, controller: KubernetesController):
         self.controller = controller
         self.namespace = controller.outpost.config.kubernetes_namespace
         self.logger = get_logger().bind(type=self.__class__.__name__)
@@ -185,8 +185,10 @@ class KubernetesObjectReconciler(Generic[T]):
 
         patch = self.get_patch()
         if patch is not None:
-            current_json = ApiClient().sanitize_for_serialization(current)
-
+            try:
+                current_json = ApiClient().sanitize_for_serialization(current)
+            except AttributeError:
+                current_json = asdict(current)
             try:
                 if apply_patch(current_json, patch) != current_json:
                     raise NeedsUpdate()
