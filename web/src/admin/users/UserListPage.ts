@@ -26,7 +26,6 @@ import { modalInvoker } from "#elements/modals/utils";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
-import { SlottedTemplateResult } from "#elements/types";
 
 import { ServiceAccountForm } from "#admin/users/ServiceAccountForm";
 import { UserForm } from "#admin/users/UserForm";
@@ -40,6 +39,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
@@ -120,6 +120,7 @@ export class UserListPage extends WithBrandConfig(
         PFDescriptionList,
         PFCard,
         PFAlert,
+        PFAvatar,
         recoveryButtonStyles,
     ];
 
@@ -187,6 +188,7 @@ export class UserListPage extends WithBrandConfig(
     }
 
     protected columns: TableColumn[] = [
+        ["", undefined, msg("Avatar")],
         [msg("Name"), "username"],
         [msg("Active"), "is_active"],
         [msg("Last login"), "last_login"],
@@ -284,7 +286,7 @@ export class UserListPage extends WithBrandConfig(
         </div>`;
     }
 
-    protected row(item: User): SlottedTemplateResult[] {
+    protected row(item: User) {
         const { currentUser } = this;
 
         const showImpersonation = this.canImpersonate && currentUser && item.pk !== currentUser.pk;
@@ -292,6 +294,12 @@ export class UserListPage extends WithBrandConfig(
         const displayName = formatUserDisplayName(item);
 
         return [
+            [
+                html`<img class="pf-c-avatar pf-m-hidden pf-m-visible-on-xl" src=${item.avatar} />`,
+                {
+                    style: "vertical-align: bottom;",
+                },
+            ],
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
                 <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
