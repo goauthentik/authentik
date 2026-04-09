@@ -25,6 +25,11 @@ export function themeMeta(theme: ResolvedUITheme) {
 export interface IFrameTemplateInit {
     challengeURL: URL | string;
     theme: ResolvedUITheme;
+    /**
+     * If `true`, the script element will fire `loadListener()` on load.
+     * Defaults to `true`.
+     */
+    scriptOnLoad?: boolean;
 }
 
 /**
@@ -37,7 +42,7 @@ export interface IFrameTemplateInit {
  */
 export function iframeTemplate(
     children: TemplateResult,
-    { challengeURL, theme }: IFrameTemplateInit,
+    { challengeURL, theme, scriptOnLoad = true }: IFrameTemplateInit,
 ) {
     return createDocumentTemplate({
         head: html`
@@ -90,7 +95,10 @@ export function iframeTemplate(
                 }
             </style>
             ${children}
-            <script onload="loadListener()" src="${challengeURL.toString()}"></script>
+            <script
+                ${scriptOnLoad ? 'onload="loadListener()"' : ""}
+                src="${challengeURL.toString()}"
+            ></script>
         `,
     });
 }
