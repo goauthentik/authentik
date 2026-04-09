@@ -1,5 +1,7 @@
 """Pagination which includes total pages and current page"""
 
+from typing import TYPE_CHECKING
+
 from drf_spectacular.plumbing import build_object_type
 from rest_framework import pagination
 from rest_framework.response import Response
@@ -8,6 +10,10 @@ from authentik.api.search.ql import QLSearch
 from authentik.api.v3.schema.pagination import PAGINATION
 from authentik.api.v3.schema.search import AUTOCOMPLETE_SCHEMA
 
+if TYPE_CHECKING:
+    from django.db.models import QuerySet
+    from rest_framework.request import Request
+
 
 class Pagination(pagination.PageNumberPagination):
     """Pagination which includes total pages and current page"""
@@ -15,14 +21,14 @@ class Pagination(pagination.PageNumberPagination):
     page_query_param = "page"
     page_size_query_param = "page_size"
 
-    def get_page_size(self, request):
+    def get_page_size(self, request: Request) -> int:
         if self.page_size_query_param in request.query_params:
             page_size = super().get_page_size(request)
             if page_size is not None:
                 return min(super().get_page_size(request), request.tenant.pagination_max_page_size)
         return request.tenant.pagination_default_page_size
 
-    def get_paginated_response(self, data):
+    def get_paginated_response(self, data) -> Response:
         previous_page_number = 0
         if self.page.has_previous():
             previous_page_number = self.page.previous_page_number()
@@ -45,7 +51,7 @@ class Pagination(pagination.PageNumberPagination):
             }
         )
 
-    def paginate_queryset(self, queryset, request, view=None):
+    def paginate_queryset(self, queryset: QuerySet, request: Request, view=None):
         self.view = view
         return super().paginate_queryset(queryset, request, view)
 
