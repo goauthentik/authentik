@@ -122,6 +122,13 @@ export class UserListPage extends WithBrandConfig(
         PFAlert,
         PFAvatar,
         recoveryButtonStyles,
+        css`
+            .pf-c-avatar {
+                max-height: var(--pf-c-avatar--Height);
+                max-width: var(--pf-c-avatar--Width);
+                margin-bottom: calc(var(--pf-c-avatar--Width) * -0.6);
+            }
+        `,
     ];
 
     public override expandable = true;
@@ -294,12 +301,7 @@ export class UserListPage extends WithBrandConfig(
         const displayName = formatUserDisplayName(item);
 
         return [
-            [
-                html`<img class="pf-c-avatar pf-m-hidden pf-m-visible-on-xl" src=${item.avatar} />`,
-                {
-                    style: "vertical-align: bottom;",
-                },
-            ],
+            html`<img class="pf-c-avatar pf-m-hidden pf-m-visible-on-xl" src=${item.avatar} />`,
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
                 <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
