@@ -4,7 +4,9 @@ from drf_spectacular.plumbing import build_object_type
 from rest_framework import pagination
 from rest_framework.response import Response
 
+from authentik.api.search.ql import QLSearch
 from authentik.api.v3.schema.pagination import PAGINATION
+from authentik.api.v3.schema.search import AUTOCOMPLETE_SCHEMA
 
 
 class Pagination(pagination.PageNumberPagination):
@@ -39,16 +41,33 @@ class Pagination(pagination.PageNumberPagination):
                     "end_index": self.page.end_index(),
                 },
                 "results": data,
+                "autocomplete": self.get_autocomplete(),
             }
         )
+
+    def paginate_queryset(self, queryset, request, view=None):
+        self.view = view
+        return super().paginate_queryset(queryset, request, view)
+
+    def get_autocomplete(self):
+        schema = QLSearch().get_schema(self.request, self.view)
+        introspections = {}
+        if hasattr(self.view, "get_ql_fields"):
+            from authentik.api.search.schema import AKQLSchemaSerializer
+
+            introspections = AKQLSchemaSerializer().serialize(
+                schema(self.page.paginator.object_list.model)
+            )
+        return introspections
 
     def get_paginated_response_schema(self, schema):
         return build_object_type(
             properties={
                 "pagination": PAGINATION.ref,
                 "results": schema,
+                "autocomplete": AUTOCOMPLETE_SCHEMA.ref,
             },
-            required=["pagination", "results"],
+            required=["pagination", "results", "autocomplete"],
         )
 
 

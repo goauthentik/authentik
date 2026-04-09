@@ -8889,7 +8889,6 @@
                         "authentik.providers.scim",
                         "authentik.rbac",
                         "authentik.recovery",
-                        "authentik.search",
                         "authentik.sources.kerberos",
                         "authentik.sources.ldap",
                         "authentik.sources.oauth",
