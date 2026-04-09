@@ -77,7 +77,7 @@ export function generateCVESidebar(args) {
                     items: [],
                 };
             }
-            yearCategories[year].items.push({
+            yearCategories[year]?.items.push({
                 type: "doc",
                 id: item.id,
             });
@@ -95,7 +95,7 @@ export function generateCVESidebar(args) {
 export default createDocusaurusConfig(
     extendConfig({
         future: {
-            experimental_faster: true,
+            faster: true,
         },
         clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
         url: "https://docs.goauthentik.io",

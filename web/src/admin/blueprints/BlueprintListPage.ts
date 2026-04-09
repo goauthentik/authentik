@@ -1,6 +1,7 @@
 import "#admin/blueprints/BlueprintForm";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
+import "#admin/blueprints/BlueprintImportForm";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
@@ -11,6 +12,7 @@ import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { docLink } from "#common/global";
 
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -21,7 +23,6 @@ import {
     BlueprintInstanceStatusEnum,
     ManagedApi,
     ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -156,7 +157,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Blueprint")}</span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
                     <button
@@ -171,7 +172,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
                     label=${item.name}
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikBlueprintsBlueprintinstance}
+                    model=${ModelEnum.AuthentikBlueprintsBlueprintinstance}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>
@@ -208,6 +209,27 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 <span slot="header">${msg("Create Blueprint Instance")}</span>
                 <ak-blueprint-form slot="form"> </ak-blueprint-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+            </ak-forms-modal>
+            <ak-forms-modal>
+                <span slot="submit">${msg("Import")}</span>
+                <span slot="header">${msg("Import Blueprint")}</span>
+                <ak-blueprint-import-form slot="form">
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href=${docLink("/customize/blueprints/working_with_blueprints/")}
+                        slot="read-more-link"
+                        >${msg("Flow Examples")}</a
+                    >
+                    <span slot="banner-warning">
+                        ${msg(
+                            "Warning: Blueprint files may contain objects such as users, policies and expression.",
+                        )}<br />${msg(
+                            "You should only import files from trusted sources and review blueprints before importing them.",
+                        )}
+                    </span>
+                </ak-blueprint-import-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">${msg("Import")}</button>
             </ak-forms-modal>
         `;
     }

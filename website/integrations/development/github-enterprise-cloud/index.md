@@ -18,7 +18,7 @@ GitHub Enterprise Cloud EMU (Enterprise Managed Users) are not compatible with a
 
 The following placeholders are used in this guide:
 
-- `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
+- `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -48,9 +48,9 @@ To support the integration of GitHub Enterprise Cloud with authentik, you need t
 
 ## GitHub Configuration
 
-Navigate to your enterprise settings by clicking your GitHub user portrait in the top right of GitHub.com, select `Your enterprises` and click `Settings` for the enterprise you wish to configure.
+Navigate to your enterprise settings by clicking your GitHub user portrait in the top right of GitHub.com, then select `Your enterprises` and click `Settings` for the enterprise you wish to configure.
 
-In the left-hand navigation, within the `Settings` section, click `Authentication security`
+In the left-hand navigation, within the `Settings` section, click `Authentication security`.
 
 On this page:
 

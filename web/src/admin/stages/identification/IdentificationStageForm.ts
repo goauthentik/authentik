@@ -14,7 +14,7 @@ import { groupBy } from "#common/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     IdentificationStage,
     Stage,
     StagesApi,
@@ -261,7 +261,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         name="passwordlessFlow"
                     >
                         <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.passwordlessFlow}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
@@ -275,7 +275,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         name="enrollmentFlow"
                     >
                         <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                         ></ak-flow-search>
 
@@ -287,7 +287,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="recoveryFlow">
                         <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Recovery}
+                            flowType=${FlowDesignationEnum.Recovery}
                             .currentFlow=${this.instance?.recoveryFlow}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">

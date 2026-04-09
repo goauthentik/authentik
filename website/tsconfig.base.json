@@ -12,14 +12,13 @@
         "checkJs": true,
         "allowJs": true,
         "composite": true,
-        "esModuleInterop": true,
+        "types": ["node"],
         "target": "esnext",
         "module": "esnext",
         "moduleResolution": "bundler",
         "allowImportingTsExtensions": true,
         "jsx": "preserve",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
-        "baseUrl": "${configDir}",
         "rootDir": "${configDir}"
     },
     "exclude": [

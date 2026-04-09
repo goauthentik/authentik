@@ -80,7 +80,7 @@ Users who are in none of these groups will not be able to log in to Gitea.
 3. Set the group name to `gituser` and click **Create**.
 4. Repeat steps 2 and 3 to create two additional groups named `gitadmin` and `gitrestricted`.
 5. Click the name of a newly created group and navigate to the **Users** tab.
-6. Click **Add existing user**, select the user/s that need Gitea access and click **Add**.
+6. Click **Add existing user**, select the users that need Gitea access, and click **Add**.
 7. Repeat steps 5 and 6 for the two additional groups.
 
 :::info
@@ -91,7 +91,7 @@ You can add users to the groups at any point.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following configurations:
-    - **Name**: Choose a descriptive name (.e.g `authentik gitea OAuth Mapping: OpenID 'gitea'`)
+    - **Name**: Choose a descriptive name (e.g. `authentik gitea OAuth Mapping: OpenID 'gitea'`)
     - **Scope name**: `gitea`
     - **Expression**:
 
@@ -125,7 +125,7 @@ You can add users to the groups at any point.
 #### Configure Gitea to use the new claims
 
 :::info
-For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must be set. More information on configurations variables in the [Gitea Configuration Cheat Sheet](https://docs.gitea.com/administration/config-cheat-sheet).
+For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must be set. More information on configuration variables is available in the [Gitea Configuration Cheat Sheet](https://docs.gitea.com/administration/config-cheat-sheet).
 :::
 
 1. Log in to Gitea as an admin. Click on your profile icon at the top right > **Site Administration**.

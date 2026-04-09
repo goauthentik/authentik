@@ -13,12 +13,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    EventsApi,
-    ModelEnum,
-    NotificationTransport,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { EventsApi, ModelEnum, NotificationTransport } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -80,7 +75,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
             html`${item.modeVerbose}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Notification Transport")}</span>
                     <ak-event-transport-form slot="form" .instancePk=${item.pk}>
                     </ak-event-transport-form>
@@ -92,7 +87,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEventsNotificationtransport}
+                    model=${ModelEnum.AuthentikEventsNotificationtransport}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

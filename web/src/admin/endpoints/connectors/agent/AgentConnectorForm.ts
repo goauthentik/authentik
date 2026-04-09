@@ -24,7 +24,7 @@ import {
     AgentConnector,
     AgentConnectorRequest,
     EndpointsApi,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -94,7 +94,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     >
                         <ak-flow-search
                             label=${msg("Authorization flow")}
-                            flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                            flowType=${FlowDesignationEnum.Authorization}
                             .currentFlow=${this.instance?.authorizationFlow}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
@@ -120,7 +120,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     >
                     </ak-switch-input>
                     <ak-form-element-horizontal
-                        label=${msg("Federated OIDC Providers")}
+                        label=${msg("Federated OAuth2/OpenID Providers")}
                         name="jwtFederationProviders"
                     >
                         <ak-dual-select-dynamic-selected

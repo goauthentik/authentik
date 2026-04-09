@@ -22,6 +22,10 @@ Configure if the created authenticator is stored in the encrypted memory on the 
 
 Configure if authentik will require either a removable device (like a YubiKey, Google Titan, etc) or a non-removable device (like Windows Hello, TouchID or password managers), or not send a requirement.
 
+### Prevent duplicate devices
+
+When enabled, any unique authenticator can only be registered once. This check can only be enforced if the authenticator stores a unique attestsion certificate.
+
 #### Device type restrictions
 
 Optionally restrict the types of devices allowed to be enrolled. This option can be used to ensure users are only able to enroll FIPS-compliant devices for example.

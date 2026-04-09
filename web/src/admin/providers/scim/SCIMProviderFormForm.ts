@@ -7,7 +7,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/CodeMirror";
-import "#admin/common/ak-license-notice";
+import "#elements/LicenseNotice";
 import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
@@ -197,6 +197,11 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                             label: msg("Salesforce"),
                             value: CompatibilityModeEnum.Sfdc,
                             description: html`${msg("Altered behavior for usage with Salesforce.")}`,
+                        },
+                        {
+                            label: msg("Webex"),
+                            value: CompatibilityModeEnum.Webex,
+                            description: html`${msg("Altered behavior for usage with Cisco Webex.")}`,
                         },
                     ]}
                     help=${msg(

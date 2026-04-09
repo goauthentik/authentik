@@ -132,7 +132,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             html`${item.accessGroupObj?.name || "-"}`,
             item.facts.created ? Timestamp(item.facts.created) : html`-`,
             html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
+                <span slot="submit">${msg("Save Changes")}</span>
                 <span slot="header">${msg("Update Device")}</span>
                 <ak-endpoints-device-form slot="form" .instancePk=${item.deviceUuid}>
                 </ak-endpoints-device-form>

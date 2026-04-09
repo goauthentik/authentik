@@ -79,7 +79,7 @@ class ReputationViewSet(
 ):
     """Reputation Viewset"""
 
-    queryset = Reputation.objects.all()
+    queryset = Reputation.objects.including_expired().all()
     serializer_class = ReputationSerializer
     search_fields = ["identifier", "ip", "score"]
     filterset_class = ReputationFilter

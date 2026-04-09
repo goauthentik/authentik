@@ -2,7 +2,7 @@
 title: Kubernetes installation
 ---
 
-You can install authentik to run on Kubernetes using a Helm Chart.
+You can install authentik to run on Kubernetes using a Helm chart.
 
 :::info
 You can also [view a video walk-through](https://www.youtube.com/watch?v=O1qUbrk4Yc8) of the installation process on Kubernetes (with bonus details about email configuration and other important options).
@@ -43,9 +43,9 @@ authentik:
         password: "ThisIsNotASecurePassword"
 
 server:
-    gateway:
-        # Specify kubernetes gateway controller class name
-        GatewayClassName: nginx | traefik | kong
+    ingress:
+        # Specify kubernetes ingress controller class name
+        ingressClassName: nginx | traefik | kong
         enabled: true
         hosts:
             - authentik.domain.tld
@@ -56,14 +56,38 @@ postgresql:
         password: "ThisIsNotASecurePassword"
 ```
 
+If your cluster or controller supports the Gateway API, replace the `server.ingress` section above with this Gateway API configuration:
+
+```yaml
+server:
+    route:
+        main:
+            enabled: true
+            hostnames:
+                - authentik.domain.tld
+            parentRefs:
+                - name: shared-gateway
+                  namespace: default
+```
+
+The Helm chart creates an `HTTPRoute`, but it does not create `Gateway` or `GatewayClass` resources. Create the `Gateway` separately, then set `server.route.main.parentRefs` to that `Gateway` resource's name and namespace. In the example above, `name: shared-gateway` and `namespace: default` must match the manually created `Gateway`.
+
+If your cluster or controller does not support the Gateway API, use the `server.ingress` configuration shown above.
+
 See all configurable values on [ArtifactHub](https://artifacthub.io/packages/helm/goauthentik/authentik).
 
 ## PostgreSQL production setup
 
-The PostgreSQL database that is created by default during installation is only intended for demonstration and testing purposes. For production instances, you should use another installation method using one of the following operators:
+The PostgreSQL database installed by default with the Helm chart is intended for demonstration and test environments.
+
+For production deployments, use a separately managed PostgreSQL installation instead of relying on the chart's bundled database.
+
+Common options include:
 
 - [CloudNativePG](https://github.com/cloudnative-pg/cloudnative-pg)
 - [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
+
+After you provision PostgreSQL externally, configure authentik to use it with the settings in the [PostgreSQL configuration reference](../configuration/configuration.mdx#postgresql-settings).
 
 ## Email configuration (optional but recommended)
 
@@ -85,7 +109,7 @@ During the installation process, the database migrations will be applied automat
 
 ## Access authentik
 
-After the installation is complete, access authentik at `https://<gateway-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
+After the installation is complete, access authentik at `https://<authentik-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
 
 :::info Initial setup in browser
 You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).

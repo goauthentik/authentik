@@ -49,6 +49,7 @@ class TestRBACPermissionRoles(APITestCase):
         self.assertJSONEqual(
             res.content,
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,

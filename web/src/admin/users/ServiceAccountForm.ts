@@ -9,6 +9,7 @@ import { dateTimeLocal } from "#common/temporal";
 
 import { Form } from "#elements/forms/Form";
 import { ModalForm } from "#elements/forms/ModalForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -30,6 +31,10 @@ const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360; // 360 days
 
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
+    public override entitySingular = msg("Service Account");
+    public override entityPlural = msg("Service Accounts");
+    public override cancelButtonLabel = msg("Close");
+
     @state()
     protected expiresAt: Date | null = new Date(Date.now() + EXPIRATION_DURATION);
 
@@ -153,7 +158,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </ak-form-element-horizontal>`;
     }
 
-    renderResponseForm(): TemplateResult {
+    protected renderResponseForm(): SlottedTemplateResult {
         return html`<p>
                 ${msg(
                     "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.",
@@ -182,7 +187,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </form>`;
     }
 
-    renderFormWrapper(): TemplateResult {
+    protected override renderFormWrapper(): SlottedTemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }

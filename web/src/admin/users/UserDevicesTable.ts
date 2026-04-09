@@ -1,6 +1,7 @@
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { createPaginatedResponse } from "#common/api/responses";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 
@@ -27,18 +28,7 @@ export class UserDeviceTable extends Table<Device> {
                 user: this.userId,
             })
             .then((res) => {
-                return {
-                    pagination: {
-                        count: res.length,
-                        current: 1,
-                        totalPages: 1,
-                        startIndex: 1,
-                        endIndex: res.length,
-                        next: 0,
-                        previous: 0,
-                    },
-                    results: res,
-                };
+                return createPaginatedResponse(res);
             });
     }
 
