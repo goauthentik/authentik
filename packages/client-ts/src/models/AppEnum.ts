@@ -48,7 +48,6 @@ export const AppEnum = {
     AuthentikProvidersScim: "authentik.providers.scim",
     AuthentikRbac: "authentik.rbac",
     AuthentikRecovery: "authentik.recovery",
-    AuthentikSearch: "authentik.search",
     AuthentikSourcesKerberos: "authentik.sources.kerberos",
     AuthentikSourcesLdap: "authentik.sources.ldap",
     AuthentikSourcesOauth: "authentik.sources.oauth",
