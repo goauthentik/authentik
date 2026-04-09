@@ -110,7 +110,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         this.#scrollBehavior ??= "smooth";
     };
 
-    @listen("hashchange")
+    @listen("hashchange", { target: window })
     public synchronize = (): void => {
         const activePath = window.location.hash.slice(1).split(ROUTE_SEPARATOR)[0];
         this.childItems.forEach((item) => {
