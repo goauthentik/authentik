@@ -345,7 +345,7 @@ requires-dist = [
     { name = "fido2", specifier = "==2.1.1" },
     { name = "geoip2", specifier = "==5.2.0" },
     { name = "geopy", specifier = "==2.4.1" },
-    { name = "google-api-python-client", specifier = "==2.193.0" },
+    { name = "google-api-python-client", specifier = "==2.194.0" },
     { name = "gssapi", specifier = "==1.11.1" },
     { name = "gunicorn", specifier = "==25.3.0" },
     { name = "jsonpatch", specifier = "==1.33" },
@@ -412,12 +412,12 @@ dev = [
     { name = "requests-mock", specifier = "==1.12.1" },
     { name = "ruff", specifier = "==0.15.9" },
     { name = "selenium", specifier = "==4.41.0" },
-    { name = "types-channels", specifier = "==4.3.0.20260402" },
+    { name = "types-channels", specifier = "==4.3.0.20260408" },
     { name = "types-docker", specifier = "==7.1.0.20260403" },
-    { name = "types-jwcrypto", specifier = "==1.5.0.20260402" },
+    { name = "types-jwcrypto", specifier = "==1.5.0.20260408" },
     { name = "types-ldap3", specifier = "==2.9.13.20260402" },
     { name = "types-requests", specifier = "==2.33.0.20260402" },
-    { name = "types-zxcvbn", specifier = "==4.5.0.20250809" },
+    { name = "types-zxcvbn", specifier = "==4.5.0.20260408" },
 ]
 
 [[package]]
@@ -1612,7 +1612,7 @@ wheels = [
 
 [[package]]
 name = "google-api-python-client"
-version = "2.193.0"
+version = "2.194.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google-api-core" },
@@ -1621,9 +1621,9 @@ dependencies = [
     { name = "httplib2" },
     { name = "uritemplate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/90/f4/e14b6815d3b1885328dd209676a3a4c704882743ac94e18ef0093894f5c8/google_api_python_client-2.193.0.tar.gz", hash = "sha256:8f88d16e89d11341e0a8b199cafde0fb7e6b44260dffb88d451577cbd1bb5d33", size = 14281006, upload-time = "2026-03-17T18:25:29.415Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/60/ab/e83af0eb043e4ccc49571ca7a6a49984e9d00f4e9e6e6f1238d60bc84dce/google_api_python_client-2.194.0.tar.gz", hash = "sha256:db92647bd1a90f40b79c9618461553c2b20b6a43ce7395fa6de07132dc14f023", size = 14443469, upload-time = "2026-04-08T23:07:35.757Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f0/6d/fe75167797790a56d17799b75e1129bb93f7ff061efc7b36e9731bd4be2b/google_api_python_client-2.193.0-py3-none-any.whl", hash = "sha256:c42aa324b822109901cfecab5dc4fc3915d35a7b376835233c916c70610322db", size = 14856490, upload-time = "2026-03-17T18:25:26.608Z" },
+    { url = "https://files.pythonhosted.org/packages/b0/34/5a624e49f179aa5b0cb87b2ce8093960299030ff40423bfbde09360eb908/google_api_python_client-2.194.0-py3-none-any.whl", hash = "sha256:61eaaac3b8fc8fdf11c08af87abc3d1342d1b37319cc1b57405f86ef7697e717", size = 15016514, upload-time = "2026-04-08T23:07:33.093Z" },
 ]
 
 [[package]]
@@ -3603,15 +3603,15 @@ wheels = [
 
 [[package]]
 name = "types-channels"
-version = "4.3.0.20260402"
+version = "4.3.0.20260408"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "django-stubs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/33/b039249d71b4a5a87dab2e7752944bafd6c0ff90e0788243f6d6722228db/types_channels-4.3.0.20260402.tar.gz", hash = "sha256:53327e391150e6f531986dd5aef12cde79ce10fb9b4097ad891318f166bba500", size = 15381, upload-time = "2026-04-02T04:20:54.493Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a6/b0/f5104254ea6cb193fa3d01f473a34a6262e10782a35b7779633fbe2a70cd/types_channels-4.3.0.20260408.tar.gz", hash = "sha256:0abc00c87f7df0770580e1f28a562987c691ce7a3cd38bd86633d0c68058a380", size = 15421, upload-time = "2026-04-08T04:36:32.888Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/60/e8/9c71ed00807f0293204de58453ce15087f421f40094788272aadf861ab58/types_channels-4.3.0.20260402-py3-none-any.whl", hash = "sha256:c7833775e1acf5fce74f403ff4c214d98e7d1bf894c6a39984b62db3d2301b4e", size = 21085, upload-time = "2026-04-02T04:20:53.647Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/f7/f246612d79681ad6520559190bcb5ec436f26e2413acdf23746e4a8ba727/types_channels-4.3.0.20260408-py3-none-any.whl", hash = "sha256:757f708c18196fcf2f84261427ade0e2b7ca4554a8896b8f329c9067fdabb263", size = 21089, upload-time = "2026-04-08T04:36:32.032Z" },
 ]
 
 [[package]]
@@ -3630,14 +3630,14 @@ wheels = [
 
 [[package]]
 name = "types-jwcrypto"
-version = "1.5.0.20260402"
+version = "1.5.0.20260408"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7f/bf/a6300ee0b34c936c1623051b1cc78afe295c1ca692cf46dc97efd9b14e0a/types_jwcrypto-1.5.0.20260402.tar.gz", hash = "sha256:890c9080fdde80787e843effde67b4f68905509252aba0b2ce907f73a3653c34", size = 11648, upload-time = "2026-04-02T04:20:23.063Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/54/16/8aafb9b58aea27d5bb6f25528d927ba369f1431027e0a4aa4de0f93af761/types_jwcrypto-1.5.0.20260408.tar.gz", hash = "sha256:72fe8fe4ed1cdc7c8f0d9190ba4f211e19baf0475dd15ff7ab31457baca7a363", size = 11712, upload-time = "2026-04-08T04:34:56.92Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b4/8b/078d33f81fca57f5d716cb8f1e229746c47817411d1fa104caf2b6148554/types_jwcrypto-1.5.0.20260402-py3-none-any.whl", hash = "sha256:f135a9b27532bf6d5485e70c4a9c8fd9c67a0de652b0e4111ade470bd576d4b3", size = 12978, upload-time = "2026-04-02T04:20:21.991Z" },
+    { url = "https://files.pythonhosted.org/packages/a5/0b/03d94bc145cfb9b004a3c091a77984f60e58c81c340f776bb1de26fa2818/types_jwcrypto-1.5.0.20260408-py3-none-any.whl", hash = "sha256:17958abd0a5c9978694ee0b114509b9f764b4356dae6a8090d0c673013f47948", size = 12979, upload-time = "2026-04-08T04:34:56.087Z" },
 ]
 
 [[package]]
@@ -3696,11 +3696,11 @@ wheels = [
 
 [[package]]
 name = "types-zxcvbn"
-version = "4.5.0.20250809"
+version = "4.5.0.20260408"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/6b/27/70ca6f3f295c48f87495e283061e60d53a814853bd213f24125cf4192cad/types_zxcvbn-4.5.0.20250809.tar.gz", hash = "sha256:da19c7c416ad26ecb934110260375e687f37f1ed897522214d97ca2e9ccb2de5", size = 9389, upload-time = "2025-08-09T03:15:01.058Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/17/31/12ead8825f64b9b4323ae5b25181be8885a2c40acf60f769b1327c835d46/types_zxcvbn-4.5.0.20260408.tar.gz", hash = "sha256:3d0a07df594bbc6b272dc3ac199bb1d82340f51ee187ca36aa5c101780763b53", size = 9444, upload-time = "2026-04-08T04:28:20.94Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6b/e0/0af4e865c28da104fa6ec45a2a336521fe34cbe606ef2ab6984b14d96e2c/types_zxcvbn-4.5.0.20250809-py3-none-any.whl", hash = "sha256:2cd151a5b35a976ae22017b5caed8f99d5e1be455cf9f9497cd86419073bc9cb", size = 10821, upload-time = "2025-08-09T03:15:00.299Z" },
+    { url = "https://files.pythonhosted.org/packages/c7/59/776d0db9b5fcd0db841727c16d4742ad6120da9ce93a09d030401432ebed/types_zxcvbn-4.5.0.20260408-py3-none-any.whl", hash = "sha256:5eff6991fa459590af1dd669b706d058ceeb599f175c5195864f81ada97d781a", size = 10839, upload-time = "2026-04-08T04:28:20.145Z" },
 ]
 
 [[package]]

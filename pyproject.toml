@@ -36,7 +36,7 @@ dependencies = [
   "fido2==2.1.1",
   "geoip2==5.2.0",
   "geopy==2.4.1",
-  "google-api-python-client==2.193.0",
+  "google-api-python-client==2.194.0",
   "gssapi==1.11.1",
   "gunicorn==25.3.0",
   "jsonpatch==1.33",
@@ -103,12 +103,12 @@ dev = [
   "requests-mock==1.12.1",
   "ruff==0.15.9",
   "selenium==4.41.0",
-  "types-channels==4.3.0.20260402",
+  "types-channels==4.3.0.20260408",
   "types-docker==7.1.0.20260403",
-  "types-jwcrypto==1.5.0.20260402",
+  "types-jwcrypto==1.5.0.20260408",
   "types-ldap3==2.9.13.20260402",
   "types-requests==2.33.0.20260402",
-  "types-zxcvbn==4.5.0.20250809",
+  "types-zxcvbn==4.5.0.20260408",
 ]
 
 [tool.uv]
