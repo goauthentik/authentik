@@ -4,6 +4,8 @@ from drf_spectacular.plumbing import ResolvedComponent, build_object_type
 
 if TYPE_CHECKING:
     from drf_spectacular.generators import SchemaGenerator
+
+
 AUTOCOMPLETE_SCHEMA = ResolvedComponent(
     name="Autocomplete",
     object="Autocomplete",
