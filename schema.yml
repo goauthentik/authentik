@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2026.2.1
+  version: 2026.2.2
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -34122,6 +34122,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/Provider'
           readOnly: true
+          nullable: true
         backchannel_providers:
           type: array
           items:
@@ -37269,14 +37270,17 @@ components:
           allOf:
           - $ref: '#/components/schemas/Policy'
           readOnly: true
+          nullable: true
         group_obj:
           allOf:
           - $ref: '#/components/schemas/PartialGroup'
           readOnly: true
+          nullable: true
         user_obj:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         target:
           type: string
           format: uuid
@@ -38290,6 +38294,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceAccessGroup'
           readOnly: true
+          nullable: true
         connector:
           type: string
           format: uuid
@@ -51310,14 +51315,17 @@ components:
           allOf:
           - $ref: '#/components/schemas/Policy'
           readOnly: true
+          nullable: true
         group_obj:
           allOf:
           - $ref: '#/components/schemas/PartialGroup'
           readOnly: true
+          nullable: true
         user_obj:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         target:
           type: string
           format: uuid
@@ -53170,12 +53178,10 @@ components:
       properties:
         metadata:
           type: string
-          readOnly: true
         download_url:
           type: string
-          readOnly: true
+          nullable: true
       required:
-      - download_url
       - metadata
     SAMLNameIDPolicyEnum:
       enum:

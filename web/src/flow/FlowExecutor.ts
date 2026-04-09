@@ -316,14 +316,15 @@ export class FlowExecutor
             this.#synchronizeFlowInfo();
         }
 
-        if (
-            changedProperties.has("inspectorOpen") &&
-            this.inspectorOpen &&
-            !this.#inspectorLoaded
-        ) {
-            import("#flow/FlowInspector").then(() => {
-                this.#inspectorLoaded = true;
-            });
+        if (changedProperties.has("inspectorOpen") && this.inspectorOpen) {
+            if (!this.#inspectorLoaded) {
+                import("#flow/FlowInspector").then(() => {
+                    this.#inspectorLoaded = true;
+                    this.hideShowInspector();
+                });
+            } else {
+                this.hideShowInspector();
+            }
         }
     }
 
@@ -535,18 +536,22 @@ export class FlowExecutor
 
     //#region Render Inspector
 
-    @listen(AKFlowInspectorChangeEvent)
-    protected toggleInspector = () => {
-        this.inspectorOpen = !this.inspectorOpen;
-
+    protected hideShowInspector() {
         const drawer = document.getElementById("flow-drawer");
 
         if (!drawer) {
+            this.#logger.debug("Not toggling inspector; inspector not found");
             return;
         }
 
         drawer.classList.toggle("pf-m-expanded", this.inspectorOpen);
         drawer.classList.toggle("pf-m-collapsed", !this.inspectorOpen);
+    }
+
+    @listen(AKFlowInspectorChangeEvent)
+    protected toggleInspector = () => {
+        this.inspectorOpen = !this.inspectorOpen;
+        this.hideShowInspector();
     };
 
     protected renderInspectorButton() {

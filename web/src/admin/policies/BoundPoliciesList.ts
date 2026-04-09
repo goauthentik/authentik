@@ -108,11 +108,11 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     getObjectEditButton(item: PolicyBinding): SlottedTemplateResult {
-        if (item.policy) {
+        if (item.policyObj) {
             return html`<ak-forms-modal>
-                ${StrictUnsafe<CustomFormElementTagName>(item.policyObj?.component, {
+                ${StrictUnsafe<CustomFormElementTagName>(item.policyObj.component, {
                     slot: "form",
-                    instancePk: item.policyObj?.pk,
+                    instancePk: item.policyObj.pk,
                     actionLabel: msg("Update"),
                     headline: msg(str`Update ${item.policyObj?.name}`, {
                         id: "form.headline.update",
@@ -123,20 +123,20 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     ${msg("Edit Policy")}
                 </button>
             </ak-forms-modal>`;
-        } else if (item.group) {
+        } else if (item.groupObj) {
             return html`<ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update Group")}</span>
-                <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}> </ak-group-form>
+                <ak-group-form slot="form" .instancePk=${item.groupObj.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Edit Group")}
                 </button>
             </ak-forms-modal>`;
-        } else if (item.user) {
+        } else if (item.userObj) {
             return html`<ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update User")}</span>
-                <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
+                <ak-user-form slot="form" .instancePk=${item.userObj.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Edit User")}
                 </button>
