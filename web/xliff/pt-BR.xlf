@@ -10908,6 +10908,9 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s444676dba7492f41">
   <source>Synced Groups</source>
 </trans-unit>
+<trans-unit id="s1967faf9ed8d3504">
+  <source>Avatar</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
