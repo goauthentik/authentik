@@ -269,7 +269,6 @@ class PolicyEngine:
                         proc_info.result = result
                     except Empty:
                         raise RuntimeError("Policy failed to return within timeout") from Empty()
-                    proc_info.result = proc_info.connection.recv()
                 if proc_info.result and proc_info.result._exec_time:
                     HIST_POLICIES_EXECUTION_TIME.labels(
                         binding_order=proc_info.binding.order,
