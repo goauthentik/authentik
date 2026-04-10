@@ -9933,6 +9933,9 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s444676dba7492f41">
   <source>Synced Groups</source>
 </trans-unit>
+<trans-unit id="s1967faf9ed8d3504">
+  <source>Avatar</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
