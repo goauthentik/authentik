@@ -4,7 +4,7 @@
 
 import { findNearestBoxTarget, isInViewport } from "#elements/utils/viewport";
 
-import { LitElement } from "lit";
+import { LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 /**
@@ -109,31 +109,51 @@ export function intersectionObserver({
             ...init,
         });
 
-        const { connectedCallback, disconnectedCallback } = target;
+        const synchronizeUseAncestorBox = (nextDisplayBox?: "contents" | "block") => {
+            useAncestorBox = nextDisplayBox === "contents" || initialUseAncestorBox;
+        };
 
-        target.connectedCallback = function connectedCallbackWrapper(this: T) {
-            connectedCallback?.call(this);
+        /**
+         * Applies the necessary lifecycle callback with access to protected properties of the target class.
+         */
+        function applyLifecycleCallbacks(this: T) {
+            const { connectedCallback, disconnectedCallback, updated } = this;
 
-            useAncestorBox = this.displayBox === "contents" || initialUseAncestorBox;
+            this.connectedCallback = function connectedCallbackWrapper(this: T) {
+                connectedCallback?.call(this);
 
-            if (this.hasUpdated) {
-                observer.observe(this);
-            } else {
-                this.updateComplete.then(() => {
+                synchronizeUseAncestorBox(this.displayBox);
+
+                if (this.hasUpdated) {
                     observer.observe(this);
-                });
-            }
-        };
+                } else {
+                    this.updateComplete.then(() => {
+                        observer.observe(this);
+                    });
+                }
+            };
 
-        target.disconnectedCallback = function disconnectedCallbackWrapper(
-            this: LitElementWithDisplayBox,
-        ) {
-            disconnectedCallback?.call(this);
+            this.disconnectedCallback = function disconnectedCallbackWrapper(
+                this: LitElementWithDisplayBox,
+            ) {
+                disconnectedCallback?.call(this);
 
-            if (observer) {
-                observer.disconnect();
-            }
-        };
+                if (observer) {
+                    observer.disconnect();
+                }
+            };
+
+            this.updated = function updatedWrapper(this: T, changedProperties: PropertyValues<T>) {
+                updated?.call(this, changedProperties);
+
+                if (changedProperties.has("displayBox")) {
+                    synchronizeUseAncestorBox(this.displayBox);
+                }
+            };
+        }
+
+        applyLifecycleCallbacks.call(target);
+
         //#endregion
     };
 }
