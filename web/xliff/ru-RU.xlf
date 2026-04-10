@@ -10381,6 +10381,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s444676dba7492f41">
   <source>Synced Groups</source>
 </trans-unit>
+<trans-unit id="s1967faf9ed8d3504">
+  <source>Avatar</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
