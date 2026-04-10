@@ -1,15 +1,15 @@
 """Test token view"""
 
 from base64 import b64encode
-from datetime import datetime, timedelta
+from datetime import timedelta
 from json import dumps
 from urllib.parse import quote
 
 from django.test import RequestFactory
 from django.urls import reverse
 from django.utils import timezone
-from freezegun import freeze_time
 from django.utils.timezone import now
+from freezegun import freeze_time
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
