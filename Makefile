@@ -350,7 +350,7 @@ ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy --workspace -- -D warnings
 
 ci-test: ci--meta-debug
-	$(UV) run coverage run manage.py test --keepdb authentik
+	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik
 	$(UV) run coverage combine
 	$(UV) run coverage report
 	$(UV) run coverage xml
