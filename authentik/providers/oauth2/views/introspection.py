@@ -46,13 +46,14 @@ class TokenIntrospectionParams:
         provider = authenticate_provider(request)
         if not provider:
             raise TokenIntrospectionError
+        providers = [provider, *provider.allowed_provider_tokens.all()]
 
-        access_token = AccessToken.objects.filter(token=raw_token, provider=provider).first()
+        access_token = AccessToken.objects.filter(token=raw_token, provider__in=providers).first()
         if access_token:
-            return TokenIntrospectionParams(access_token, provider)
-        refresh_token = RefreshToken.objects.filter(token=raw_token, provider=provider).first()
+            return TokenIntrospectionParams(access_token, access_token.provider)
+        refresh_token = RefreshToken.objects.filter(token=raw_token, provider__in=providers).first()
         if refresh_token:
-            return TokenIntrospectionParams(refresh_token, provider)
+            return TokenIntrospectionParams(refresh_token, refresh_token.provider)
         LOGGER.debug("Token does not exist", token=raw_token)
         raise TokenIntrospectionError()
 
