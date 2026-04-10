@@ -44,7 +44,7 @@ class TesOAuth2Introspection(OAuthTestCase):
 
     def test_introspect_refresh(self):
         """Test introspect"""
-        token: RefreshToken = RefreshToken.objects.create(
+        token = RefreshToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),
@@ -76,7 +76,7 @@ class TesOAuth2Introspection(OAuthTestCase):
 
     def test_introspect_access(self):
         """Test introspect"""
-        token: AccessToken = AccessToken.objects.create(
+        token = AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),
@@ -131,7 +131,7 @@ class TesOAuth2Introspection(OAuthTestCase):
         )
         auth = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
 
-        token: AccessToken = AccessToken.objects.create(
+        token = AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),
@@ -175,7 +175,7 @@ class TesOAuth2Introspection(OAuthTestCase):
         """Test introspect"""
         self.provider.client_type = ClientTypes.PUBLIC
         self.provider.save()
-        token: AccessToken = AccessToken.objects.create(
+        token = AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),
@@ -214,7 +214,7 @@ class TesOAuth2Introspection(OAuthTestCase):
 
         other_provider.jwt_federation_providers.add(self.provider)
 
-        token: AccessToken = AccessToken.objects.create(
+        token = AccessToken.objects.create(
             provider=other_provider,
             user=self.user,
             token=generate_id(),

@@ -46,7 +46,7 @@ class TesOAuth2Revoke(OAuthTestCase):
 
     def test_revoke_refresh(self):
         """Test revoke"""
-        token: RefreshToken = RefreshToken.objects.create(
+        token = RefreshToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),
