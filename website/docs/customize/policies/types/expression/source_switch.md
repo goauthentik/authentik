@@ -12,7 +12,7 @@ This is useful when different email domains should authenticate against differen
 
 ## Create the policy
 
-Create an expression policy that:
+[Create an expression policy](../../working_with_policies.md#create-a-policy) that:
 
 1. maps email domains to source slugs
 2. reads the identifier collected earlier in the flow
