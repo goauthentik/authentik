@@ -104,7 +104,7 @@ export abstract class ModelForm<
     }
 
     @listen(AKRefreshEvent, {
-        target: null,
+        target: window,
     })
     protected refresh = async () => {
         await new Promise((resolve) => requestAnimationFrame(resolve));
