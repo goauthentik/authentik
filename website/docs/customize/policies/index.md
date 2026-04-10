@@ -10,8 +10,9 @@ Policies are reusable decisions in authentik. They let you control whether a use
 
 If you are new to policies, start here:
 
+- [Working with policies](./working_with_policies.md) shows how to create a policy and bind it to a flow, stage, application, or source.
 - [Policy bindings and evaluation](./bindings.md) explains where policies are attached and how authentik combines the results.
-- [Policy types](./types/index.mdx) groups the built-in policy types by use case.
+- [Types of policies in authentik](./types/index.mdx) groups the built-in policy types by use case.
 - [Expression policies](./types/expression/index.mdx) covers Python-based policies for custom logic.
 
 ## How policies fit together

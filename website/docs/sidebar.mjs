@@ -418,6 +418,7 @@ const items = [
                     id: "customize/policies/index",
                 },
                 items: [
+                    "customize/policies/working_with_policies",
                     "customize/policies/bindings",
                     {
                         type: "category",

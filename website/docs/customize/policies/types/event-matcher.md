@@ -44,7 +44,7 @@ This policy is useful only when an event object is present in the policy context
 4. Configure the fields you want to match.
 5. Click **Finish**.
 
-## Common use
+## Send notifications about an event match
 
 To send notifications for a subset of authentik events:
 
