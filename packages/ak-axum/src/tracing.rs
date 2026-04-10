@@ -29,6 +29,7 @@ pub(crate) async fn span_middleware(request: Request, next: Next) -> Response {
         method = %request.method(),
         remote = field::Empty,
         scheme = field::Empty,
+        host = field::Empty,
         http_headers = ?http_headers,
     );
     next.run(request).instrument(span).await

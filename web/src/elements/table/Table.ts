@@ -17,7 +17,6 @@ import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
-import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { type TransclusionElement } from "#elements/modals/shared";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
@@ -81,7 +80,7 @@ export interface ColumnOptions {
  * @template D An optional `toJSON()` result type.
  */
 export abstract class Table<T extends object, D = T>
-    extends WithLicenseSummary(WithSession(AKElement))
+    extends WithSession(AKElement)
     implements TableLike, TransclusionElement
 {
     static styles: CSSResult[] = [
@@ -871,10 +870,8 @@ export abstract class Table<T extends object, D = T>
             return nothing;
         }
 
-        const isQL = this.supportsQL && this.hasEnterpriseLicense;
-
         return html`<ak-table-search
-            class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
+            class="pf-c-toolbar__item pf-m-search-filter ${this.supportsQL ? "ql" : ""}"
             part="toolbar-search"
             .defaultValue=${this.search}
             label=${ifDefined(this.searchLabel)}

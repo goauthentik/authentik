@@ -7,7 +7,7 @@ use tower_http::timeout::TimeoutLayer;
 
 use crate::{
     extract::{
-        client_ip::client_ip_middleware, scheme::scheme_middleware,
+        client_ip::client_ip_middleware, host::host_middleware, scheme::scheme_middleware,
         trusted_proxy::trusted_proxy_middleware,
     },
     tracing::{span_middleware, tracing_middleware},
@@ -32,7 +32,8 @@ pub fn wrap_router(router: Router, with_tracing: bool) -> Router {
         .layer(from_fn(span_middleware))
         .layer(from_fn(trusted_proxy_middleware))
         .layer(from_fn(client_ip_middleware))
-        .layer(from_fn(scheme_middleware));
+        .layer(from_fn(scheme_middleware))
+        .layer(from_fn(host_middleware));
     if with_tracing {
         router.layer(service_builder.layer(from_fn(tracing_middleware)))
     } else {

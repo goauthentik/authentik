@@ -23,6 +23,7 @@ var _ MappedNullable = &PaginatedExtraRoleObjectPermissionList{}
 type PaginatedExtraRoleObjectPermissionList struct {
 	Pagination           Pagination                  `json:"pagination"`
 	Results              []ExtraRoleObjectPermission `json:"results"`
+	Autocomplete         map[string]interface{}      `json:"autocomplete"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -32,10 +33,11 @@ type _PaginatedExtraRoleObjectPermissionList PaginatedExtraRoleObjectPermissionL
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPaginatedExtraRoleObjectPermissionList(pagination Pagination, results []ExtraRoleObjectPermission) *PaginatedExtraRoleObjectPermissionList {
+func NewPaginatedExtraRoleObjectPermissionList(pagination Pagination, results []ExtraRoleObjectPermission, autocomplete map[string]interface{}) *PaginatedExtraRoleObjectPermissionList {
 	this := PaginatedExtraRoleObjectPermissionList{}
 	this.Pagination = pagination
 	this.Results = results
+	this.Autocomplete = autocomplete
 	return &this
 }
 
@@ -95,6 +97,30 @@ func (o *PaginatedExtraRoleObjectPermissionList) SetResults(v []ExtraRoleObjectP
 	o.Results = v
 }
 
+// GetAutocomplete returns the Autocomplete field value
+func (o *PaginatedExtraRoleObjectPermissionList) GetAutocomplete() map[string]interface{} {
+	if o == nil {
+		var ret map[string]interface{}
+		return ret
+	}
+
+	return o.Autocomplete
+}
+
+// GetAutocompleteOk returns a tuple with the Autocomplete field value
+// and a boolean to check if the value has been set.
+func (o *PaginatedExtraRoleObjectPermissionList) GetAutocompleteOk() (map[string]interface{}, bool) {
+	if o == nil {
+		return map[string]interface{}{}, false
+	}
+	return o.Autocomplete, true
+}
+
+// SetAutocomplete sets field value
+func (o *PaginatedExtraRoleObjectPermissionList) SetAutocomplete(v map[string]interface{}) {
+	o.Autocomplete = v
+}
+
 func (o PaginatedExtraRoleObjectPermissionList) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -107,6 +133,7 @@ func (o PaginatedExtraRoleObjectPermissionList) ToMap() (map[string]interface{},
 	toSerialize := map[string]interface{}{}
 	toSerialize["pagination"] = o.Pagination
 	toSerialize["results"] = o.Results
+	toSerialize["autocomplete"] = o.Autocomplete
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -122,6 +149,7 @@ func (o *PaginatedExtraRoleObjectPermissionList) UnmarshalJSON(data []byte) (err
 	requiredProperties := []string{
 		"pagination",
 		"results",
+		"autocomplete",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -153,6 +181,7 @@ func (o *PaginatedExtraRoleObjectPermissionList) UnmarshalJSON(data []byte) (err
 	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "pagination")
 		delete(additionalProperties, "results")
+		delete(additionalProperties, "autocomplete")
 		o.AdditionalProperties = additionalProperties
 	}
 

@@ -31,12 +31,15 @@ export class NavigatorFixture extends PageFixture {
      *
      * @param to The pathname or URL to wait for.
      */
-    public waitForPathname = async (to: string | URL): Promise<void> => {
+    public waitForPathname = async (
+        to: string | URL,
+        options?: Parameters<Page["waitForURL"]>[1],
+    ): Promise<void> => {
         const expectedPathname = typeof to === "string" ? to : to.pathname;
 
         this.logger.info(`Waiting for URL to change to ${expectedPathname}`);
 
-        await this.page.waitForURL(`**${expectedPathname}**`);
+        await this.page.waitForURL(`**${expectedPathname}**`, options);
 
         this.logger.info(`URL changed to ${this.page.url()}`);
     };

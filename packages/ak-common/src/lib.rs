@@ -3,6 +3,8 @@
 pub mod arbiter;
 pub use arbiter::{Arbiter, Event, Tasks};
 pub mod config;
+#[cfg(feature = "core")]
+pub mod db;
 pub mod mode;
 pub use mode::Mode;
 pub mod tls;

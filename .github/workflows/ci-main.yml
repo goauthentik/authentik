@@ -329,7 +329,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          dependencies: rust
+          dependencies: rust,runtime
       - name: run tests
         run: |
           cargo llvm-cov --no-report nextest --workspace

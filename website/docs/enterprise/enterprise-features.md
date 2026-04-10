@@ -31,10 +31,6 @@ View recent events on both a world map view with pinpoints indicating where each
 
 You can export authentik event logs to a CSV file.
 
-#### [Advanced queries](../sys-mgmt/events/logging-events.mdx#advanced-queries)
-
-Allows you to construct advanced queries to find specific event logs using syntax similar to DjangoQL.
-
 ### [Google Workspace integration](../add-secure-apps/providers/gws/index.md)
 
 The Google Workspace provider syncs users and groups from authentik to Google Workspace, making authentik the source of truth. It supports direct syncs for real-time changes and automatically linking existing entities.

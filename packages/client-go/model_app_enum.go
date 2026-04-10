@@ -97,7 +97,6 @@ const (
 	APPENUM_AUTHENTIK_ENTERPRISE_PROVIDERS_SSF                      AppEnum = "authentik.enterprise.providers.ssf"
 	APPENUM_AUTHENTIK_ENTERPRISE_PROVIDERS_WS_FEDERATION            AppEnum = "authentik.enterprise.providers.ws_federation"
 	APPENUM_AUTHENTIK_ENTERPRISE_REPORTS                            AppEnum = "authentik.enterprise.reports"
-	APPENUM_AUTHENTIK_ENTERPRISE_SEARCH                             AppEnum = "authentik.enterprise.search"
 	APPENUM_AUTHENTIK_ENTERPRISE_STAGES_AUTHENTICATOR_ENDPOINT_GDTC AppEnum = "authentik.enterprise.stages.authenticator_endpoint_gdtc"
 	APPENUM_AUTHENTIK_ENTERPRISE_STAGES_MTLS                        AppEnum = "authentik.enterprise.stages.mtls"
 	APPENUM_AUTHENTIK_ENTERPRISE_STAGES_SOURCE                      AppEnum = "authentik.enterprise.stages.source"
@@ -181,7 +180,6 @@ var AllowedAppEnumEnumValues = []AppEnum{
 	"authentik.enterprise.providers.ssf",
 	"authentik.enterprise.providers.ws_federation",
 	"authentik.enterprise.reports",
-	"authentik.enterprise.search",
 	"authentik.enterprise.stages.authenticator_endpoint_gdtc",
 	"authentik.enterprise.stages.mtls",
 	"authentik.enterprise.stages.source",

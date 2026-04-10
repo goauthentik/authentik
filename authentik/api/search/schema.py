@@ -1,8 +1,6 @@
 from djangoql.serializers import DjangoQLSchemaSerializer
-from drf_spectacular.generators import SchemaGenerator
 
-from authentik.enterprise.search.fields import JSONSearchField
-from authentik.enterprise.search.ql import AUTOCOMPLETE_SCHEMA
+from authentik.api.search.fields import JSONSearchField
 
 
 class AKQLSchemaSerializer(DjangoQLSchemaSerializer):
@@ -20,9 +18,3 @@ class AKQLSchemaSerializer(DjangoQLSchemaSerializer):
         if isinstance(field, JSONSearchField):
             result["relation"] = field.relation()
         return result
-
-
-def postprocess_schema_search_autocomplete(result, generator: SchemaGenerator, **kwargs):
-    generator.registry.register_on_missing(AUTOCOMPLETE_SCHEMA)
-
-    return result

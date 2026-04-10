@@ -11,7 +11,7 @@ publish.workspace = true
 
 [features]
 default = ["core", "proxy"]
-core = []
+core = ["dep:sqlx"]
 proxy = []
 
 [dependencies]
@@ -30,6 +30,7 @@ rustls.workspace = true
 sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+sqlx = { workspace = true, optional = true }
 thiserror.workspace = true
 time.workspace = true
 tokio-util.workspace = true

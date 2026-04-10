@@ -33,7 +33,7 @@ You should see a confirmation pop-up on the top-right of the screen that the use
 To create a super-user, you need to add the user to a group that has super-user permissions. For more information, refer to [Create a Group](../groups/manage_groups.mdx#create-a-group).
 :::
 
-## Advanced queries for users:ak-enterprise {#advanced-queries}
+## Advanced queries for users {#advanced-queries}
 
 You can create advanced queries to locate specific users within the list shown under **Directory** > **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 

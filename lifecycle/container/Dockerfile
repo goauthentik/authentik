@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:45babd1b4ce0349fb12c4e24bf017b90b96d52806db32e001e3013f341bef0fe AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:9707cd4542f400df5078df04f9652a272429112f15202d22b5b8bdd148df494f AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -80,7 +80,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 4: Download uv
-FROM ghcr.io/astral-sh/uv:0.11.4@sha256:5164bf84e7b4e2e08ce0b4c66b4a8c996a286e6959f72ac5c6e0a3c80e8cb04a AS uv
+FROM ghcr.io/astral-sh/uv:0.11.5@sha256:555ac94f9a22e656fc5f2ce5dfee13b04e94d099e46bb8dd3a73ec7263f2e484 AS uv
 # Stage 5: Base python image
 FROM ghcr.io/goauthentik/fips-python:3.14.3-slim-trixie-fips@sha256:bf45eb77a010d76fe6abd7ae137d1b0c44b6227cd984945042135fdf05ebf8d9 AS python-base
 

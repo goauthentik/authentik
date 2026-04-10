@@ -558,7 +558,7 @@ Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) set
 
 Overrides [`AUTHENTIK_STORAGE__S3__[...]`](#s3-storage-backend-settings) settings.
 
-## authentik Settings
+## authentik settings
 
 ### `AUTHENTIK_SECRET_KEY`
 
@@ -630,41 +630,65 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
 ### `AUTHENTIK_EMAIL`
 
+The `AUTHENTIK_EMAIL` settings are used to configure SMTP email delivery from authentik.
+
+These global email settings are used for administrator notifications, release and configuration alerts, [notification rules](../../sys-mgmt/events/notifications.md), and any [Email stage](../../add-secure-apps/flows-stages/stages/email/) configured to use global settings.
+
+For complete setup examples, testing instructions, and TLS guidance, see the [Email configuration guide](../email.mdx).
+
 - `AUTHENTIK_EMAIL__HOST`
 
     Default: `localhost`
+
+    SMTP server hostname or IP address.
 
 - `AUTHENTIK_EMAIL__PORT`
 
     Default: `25`
 
+    SMTP server port. Common values are `25`, `587` for STARTTLS, and `465` for implicit TLS.
+
 - `AUTHENTIK_EMAIL__USERNAME`
 
     Default: `` (Don't add quotation marks)
+
+    SMTP username. If empty, authentik will not attempt SMTP authentication.
 
 - `AUTHENTIK_EMAIL__PASSWORD`
 
     Default: `` (Don't add quotation marks)
 
+    SMTP password. If empty, authentik will not attempt SMTP authentication.
+
 - `AUTHENTIK_EMAIL__USE_TLS`
 
     Default: `false`
+
+    Enable STARTTLS, also called explicit TLS. This is usually used with port `587`.
+
+    Mutually exclusive with `AUTHENTIK_EMAIL__USE_SSL`.
 
 - `AUTHENTIK_EMAIL__USE_SSL`
 
     Default: `false`
 
+    Enable implicit TLS. This is usually used with port `465`.
+
+    Mutually exclusive with `AUTHENTIK_EMAIL__USE_TLS`.
+
 - `AUTHENTIK_EMAIL__TIMEOUT`
 
     Default: `10`
+
+    SMTP connection timeout in seconds.
 
 - `AUTHENTIK_EMAIL__FROM`
 
     Default: `authentik@localhost`
 
-    Email address authentik will send from, should have a correct @domain
+    Email address that authentik will send emails from. This should be a valid address for your domain.
 
-    To change the sender's display name, use a format like `Name <account@domain>`.
+    To include a display name, use the format `Name <account@domain>`.
 
 ### `AUTHENTIK_OUTPOSTS`
 

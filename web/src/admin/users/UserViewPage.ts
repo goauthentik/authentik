@@ -486,7 +486,8 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
         setPageDetails({
-            icon: "pf-icon pf-icon-user",
+            icon: this.user?.avatar ?? "pf-icon pf-icon-user",
+            iconImage: !!this.user?.avatar,
             header: this.user?.username ? msg(str`User ${this.user.username}`) : msg("User"),
             description: this.user?.name || "",
         });

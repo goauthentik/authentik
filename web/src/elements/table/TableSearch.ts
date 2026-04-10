@@ -1,7 +1,6 @@
 import "#components/ak-search-ql/index";
 
 import { AKElement } from "#elements/Base";
-import { WithLicenseSummary } from "#elements/mixins/license";
 import { PaginatedResponse } from "#elements/table/Table";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -16,7 +15,7 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 
 @customElement("ak-table-search")
-export class TableSearchForm extends WithLicenseSummary(AKElement) {
+export class TableSearchForm extends AKElement {
     @property({ type: String, reflect: false })
     public defaultValue?: string;
 
@@ -111,7 +110,7 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
     };
 
     protected renderInput(): TemplateResult {
-        if (this.supportsQL && this.hasEnterpriseLicense) {
+        if (this.supportsQL) {
             return html`<ak-search-ql
                     label=${ifPresent(this.label)}
                     role="presentation"
