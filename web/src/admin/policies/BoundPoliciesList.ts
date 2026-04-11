@@ -89,7 +89,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
 
     protected getPolicyUserGroupRowLabel(item: PolicyBinding): string {
         if (item.policy) {
-            return msg(str`Policy ${item.policyObj.name}`);
+            return msg(str`Policy ${item.policyObj?.name}`);
         } else if (item.group) {
             return msg(str`Group ${item.groupObj?.name}`);
         } else if (item.user) {
@@ -114,7 +114,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             return html`<button
                 type="button"
                 class="pf-c-button pf-m-secondary"
-                ${asInstanceInvokerByTagName(item.policyObj.component, item.policyObj.pk)}
+                ${asInstanceInvokerByTagName(item.policyObj?.component, item.policyObj?.pk)}
             >
                 ${msg("Edit Policy")}
             </button>`;
