@@ -11547,6 +11547,10 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
   <source>Synced Groups</source>
   <target>Groupes synchronisés</target>
 </trans-unit>
+<trans-unit id="s1967faf9ed8d3504">
+  <source>Avatar</source>
+  <target>Avatar</target>
+</trans-unit>
 </body>
 </file>
 </xliff>
