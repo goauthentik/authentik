@@ -70,7 +70,7 @@ test.describe("Users", () => {
             [fill, /^Username/, username, dialog],
             [fill, /^Display Name/, displayName, dialog],
             [fill, /^Email Address/, `${username}@example.com`, dialog],
-            [fill, /^Path/, "user", dialog],
+            [fill, /^Path/, "users", dialog],
         );
 
         await dialog.getByRole("button", { name: "Create" }).click();
@@ -159,7 +159,7 @@ test.describe("Impersonation", () => {
                 [fill, /^Username/, username, createDialog],
                 [fill, /^Display Name/, displayName, createDialog],
                 [fill, /^Email Address/, `${username}@example.com`, createDialog],
-                [fill, /^Path/, "user", createDialog],
+                [fill, /^Path/, "users", createDialog],
             );
 
             await createDialog.getByRole("button", { name: "Create" }).click();
