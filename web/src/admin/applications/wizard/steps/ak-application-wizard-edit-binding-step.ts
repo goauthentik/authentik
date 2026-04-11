@@ -26,7 +26,7 @@ import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWiz
 
 import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
@@ -162,7 +162,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                 .config=${this.searchSelectConfigs(policyKind)}
                 class="policy-search-select"
                 blankable
-                placeholder=${msg(`Select a ${title}...`)}
+                placeholder=${msg(str`Select a ${title}...`)}
             ></ak-search-select-ez>
         </ak-form-element-horizontal>`;
     }
