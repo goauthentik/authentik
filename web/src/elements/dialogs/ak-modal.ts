@@ -472,7 +472,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
             }
 
             if (slottedElement && !slottedElement.renderHeader) {
-                // Slotted element is possibily nested, but does not implement a header render method,
+                // Slotted element is possibly nested, but does not implement a header render method,
                 // so we cannot render a header for it.
                 return null;
             }
@@ -511,7 +511,7 @@ export class AKModal extends AKElement implements TransclusionParentElement {
                 return null;
             }
             if (slottedElement && !slottedElement.renderActions) {
-                // Slotted element is possibily nested, but does not implement an actions render method,
+                // Slotted element is possibly nested, but does not implement an actions render method,
                 // so we cannot render actions for it.
                 return null;
             }
