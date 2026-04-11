@@ -162,12 +162,6 @@ export class FormFixture extends PageFixture {
         await expect(group, `Field "${groupName}" should be visible`).toBeVisible();
         const control = parent.getByRole("radio", { name: fieldName });
 
-        // await control.scrollIntoViewIfNeeded();
-        // await expect(control, `Option "${fieldName}" should be visible`).toBeVisible();
-
-        // TODO: setChecked seems to be buggy with our custom radio buttons, so we use click for now. Revisit this if we switch to native radios.
-        // await control.click();
-        // await expect(control, `Option "${fieldName}" should be checked`).toBeChecked();
         await control.setChecked(true);
     };
 
