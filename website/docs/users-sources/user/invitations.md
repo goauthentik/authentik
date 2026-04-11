@@ -58,7 +58,7 @@ We have two pre-defined blueprints, the`Example - Invitation-based Enrollment` b
 ### Step 3. Create the invitation object
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Invitations** and click **Create**.
+2. Navigate to **Directory** > **Invitations** and click **New Invitation**.
 
     The Create Invitation box appears.
 
@@ -155,7 +155,7 @@ If you prefer to create your invitation flow manually instead of using a bluepri
 ### Step 1: Create an Invitation stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Stages** and click **Create**.
+2. Navigate to **Flows and Stages** > **Stages** and click **New Stage**.
 3. Select **Invitation Stage** from the stage type list.
 4. Configure the stage:
     - **Name**: Provide a descriptive name (e.g., `enrollment-invitation-stage`)
