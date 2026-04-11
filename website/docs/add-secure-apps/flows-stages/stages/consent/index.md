@@ -33,7 +33,7 @@ Optionally, if you also want to customize the exact wording that appears on the 
 ### 1. Create a Consent stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Stages** and click **Create**.
+2. Navigate to **Flows and Stages** > **Stages** and click **New Stage**.
 3. On the **New stage** wizard select **Consent Stage** and then click **Next**.
 4. Provide the following configuration settings:
     - **Name**:
@@ -50,7 +50,7 @@ To include the Consent stage in the flow, follow [these directions](../../stages
 If you want to customize the text that appears on the consent prompt, you can create an Expression policy with the exact wording you want, and then bind it to the Consent stage in the flow.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Policies** and click **Create**.
+2. Navigate to **Customization** > **Policies** and click **New Policy**.
 3. On the **New policy** wizard select **Expression Policy** and then click **Next**.
 4. Provide the following configuration settings:
     - **Name**:
