@@ -79,6 +79,6 @@ This sends a request using the Slack-specific format. This is also compatible wi
 
 1. Log in as an administrator to the authentik Admin interface, and then navigate to **Event > Notification Transports**.
 
-2. Click **Create** to add a new transport or click the **Edit** icon next to an existing notification transport to modify it.
+2. Click **New Notification Transport** to add a new transport or click the **Edit** icon next to an existing notification transport to modify it.
 
-3. Define the **Name** and **Mode** for the notification transport, enter required configuration settings, and then click **Create**.
+3. Define the **Name** and **Mode** for the notification transport, enter required configuration settings, and then click **Create Notification Transport**.
