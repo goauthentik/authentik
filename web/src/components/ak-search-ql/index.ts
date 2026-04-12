@@ -113,9 +113,14 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     #ctx: OffscreenCanvasRenderingContext2D | null = null;
     #letterWidth = -1;
     #scrollContainer: HTMLElement | null = null;
+    #autocompleteCache: Introspections | null = null;
 
     public set apiResponse(value: PaginatedResponse<unknown> | undefined) {
-        if (!value?.autocomplete || !this.#ql) {
+        if (!value?.autocomplete) {
+            return;
+        }
+        if (!this.#ql) {
+            this.#autocompleteCache = value.autocomplete as unknown as Introspections;
             return;
         }
 
@@ -183,6 +188,10 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             selector: textarea,
             autoResize: false,
         });
+        if (this.#autocompleteCache) {
+            this.#ql.loadIntrospections(this.#autocompleteCache);
+            this.#autocompleteCache = null;
+        }
 
         const canvas = new OffscreenCanvas(300, 150);
         this.#ctx = canvas.getContext("2d");
