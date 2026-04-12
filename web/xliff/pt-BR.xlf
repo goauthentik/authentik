@@ -1021,10 +1021,6 @@
   <source>Pause this schedule</source>
   <target>Pausar este agendamento</target>
 </trans-unit>
-<trans-unit id="sfefce784ec55868f">
-  <source>Select an object.</source>
-  <target>Selecione um objeto.</target>
-</trans-unit>
 <trans-unit id="sc0448bc8a76227cb">
   <source>Failed to fetch objects: </source>
   <target>Falha ao buscar objetos:</target>
@@ -1108,14 +1104,6 @@
 <trans-unit id="s5e8250fb85d64c23">
   <source>Close</source>
   <target>Fechar</target>
-</trans-unit>
-<trans-unit id="sc08c153234510246">
-  <source>Update "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" Permissions</source>
-  <target>Atualizar Permissões de "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>"</target>
-</trans-unit>
-<trans-unit id="s6d25eef21a9e76ba">
-  <source>Open "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" permissions modal</source>
-  <target>Abrir modal de permissões de "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>"</target>
 </trans-unit>
 <trans-unit id="se8dca0132c66ae03">
   <source>Permissions</source>
@@ -1477,10 +1465,6 @@
   <source>Apply changes</source>
   <target>Aplicar modificações</target>
 </trans-unit>
-<trans-unit id="s48a2e97afd62c35e">
-  <source>Close wizard</source>
-  <target>Fechar assistente</target>
-</trans-unit>
 <trans-unit id="s498d08fb8f63727f">
   <source>UNNAMED</source>
 </trans-unit>
@@ -1491,14 +1475,6 @@
 <trans-unit id="sad59707375956ad2">
   <source>Finish</source>
   <target>Finalizar</target>
-</trans-unit>
-<trans-unit id="s74475586afc1fb0f">
-  <source>Select type</source>
-  <target>Selecione o tipo</target>
-</trans-unit>
-<trans-unit id="sa782d5a1919bcbb1">
-  <source>Select a provider type</source>
-  <target>Selecione um tipo de provedor</target>
 </trans-unit>
 <trans-unit id="scffa59cfac1951f2">
   <source><x id="0" equiv-text="${type.name}"/> Icon</source>
@@ -1685,17 +1661,9 @@
 <trans-unit id="s96dc816b1d1c3be0">
   <source>Type a provider name...</source>
 </trans-unit>
-<trans-unit id="se5973e7c8ba0fc71">
-  <source>Bind mode</source>
-  <target>Modo de vinculação</target>
-</trans-unit>
 <trans-unit id="scef3f4ad80abbd22">
   <source>Configure how the outpost authenticates requests.</source>
   <target>Configurar como o Outpost autentica requisições.</target>
-</trans-unit>
-<trans-unit id="sbcae51a6f06e53d4">
-  <source>Search mode</source>
-  <target>Modo de busca</target>
 </trans-unit>
 <trans-unit id="s8b87df5664de7eb8">
   <source>Configure how the outpost queries the core authentik server's users.</source>
@@ -1709,17 +1677,9 @@
   <source>Flow settings</source>
   <target>Configurações de fluxo</target>
 </trans-unit>
-<trans-unit id="sff69c1a637f899a6">
-  <source>Bind flow</source>
-  <target>Fluxo de vinculação</target>
-</trans-unit>
 <trans-unit id="s319040353f479853">
   <source>Flow used for users to authenticate.</source>
   <target>Flow utilizado para usuários autenticarem.</target>
-</trans-unit>
-<trans-unit id="s821d70ef9496e6f7">
-  <source>Unbind flow</source>
-  <target>Fluxo de desvinculação</target>
 </trans-unit>
 <trans-unit id="s6773ec2a233bbf41">
   <source>Flow used for unbinding users.</source>
@@ -1736,18 +1696,6 @@
 <trans-unit id="s0b15ff11a0049cfd">
   <source>LDAP DN under which bind requests and search requests can be made.</source>
   <target>DN do LDAP em que requisições sao vinculadas e requisições de busca podem ser feitas.</target>
-</trans-unit>
-<trans-unit id="scd247ffad6e04ac0">
-  <source>TLS Server name</source>
-  <target>Nome do servidor TLS</target>
-</trans-unit>
-<trans-unit id="sac43cb9690260b86">
-  <source>UID start number</source>
-  <target>Número inicial do UID</target>
-</trans-unit>
-<trans-unit id="s5acb607b40356974">
-  <source>GID start number</source>
-  <target>Número inicial do GID</target>
 </trans-unit>
 <trans-unit id="s1a711c19cda48375">
   <source>Configure LDAP Provider</source>
@@ -1865,10 +1813,6 @@
   <source>Flow used when authorizing this provider.</source>
   <target>Flow utilizado ao autorizar este provedor.</target>
 </trans-unit>
-<trans-unit id="sc8de93a7dc0d78ba">
-  <source>Client type</source>
-  <target>Tipo de Cliente</target>
-</trans-unit>
 <trans-unit id="s4d00e5de1c8213b7">
   <source>Client ID</source>
   <target>ID do cliente</target>
@@ -1914,10 +1858,6 @@
   <source>Advanced flow settings</source>
   <target>Configurações avançadas do fluxo</target>
 </trans-unit>
-<trans-unit id="sbb3243352661428f">
-  <source>Authentication flow</source>
-  <target>Fluxo de autenticação</target>
-</trans-unit>
 <trans-unit id="s91675ea72a0ebe3e">
   <source>Select an authentication flow...</source>
   <target>Selecionar um fluxo de autenticação...</target>
@@ -1925,10 +1865,6 @@
 <trans-unit id="sa72a3bd1e7e89926">
   <source>Flow used when a user access this provider and is not authenticated.</source>
   <target>Floe utilizado quando um usuário acessa este provedor e não está autenticado.</target>
-</trans-unit>
-<trans-unit id="s35e6e60e83a8c003">
-  <source>Invalidation flow</source>
-  <target>Fluxo de invalidação</target>
 </trans-unit>
 <trans-unit id="s19714b5520312d9a">
   <source>Select an invalidation flow...</source>
@@ -1942,33 +1878,17 @@
   <source>Advanced protocol settings</source>
   <target>Configurações avançadas de protocolo</target>
 </trans-unit>
-<trans-unit id="s926e0ecf124fb01a">
-  <source>Access code validity</source>
-  <target>Validade do código de acesso</target>
-</trans-unit>
 <trans-unit id="sa578033f134a83b6">
   <source>Configure how long access codes are valid for.</source>
   <target>Configurar por quanto tempo os códigos de acesso são válidos.</target>
-</trans-unit>
-<trans-unit id="sbea3db12fd799210">
-  <source>Access Token validity</source>
-  <target>Validade dos Tokens de Acesso.</target>
 </trans-unit>
 <trans-unit id="s72559845d38bf688">
   <source>Configure how long access tokens are valid for.</source>
   <target>Configurar por quanto tempo os Tokens de Acesso são válidos.</target>
 </trans-unit>
-<trans-unit id="s821f6014c1a435b9">
-  <source>Refresh Token validity</source>
-  <target>Validade do Refresh Token</target>
-</trans-unit>
 <trans-unit id="s00c2db16ea9bc263">
   <source>Configure how long refresh tokens are valid for.</source>
   <target>Configurar por quanto tempo os Refresh Tokens são válidos.</target>
-</trans-unit>
-<trans-unit id="s3e80c199c9e45456">
-  <source>Refresh Token threshold</source>
-  <target>Limite do Refresh Token</target>
 </trans-unit>
 <trans-unit id="sdff424992223a264">
   <source>When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</source>
@@ -2003,10 +1923,6 @@
 </trans-unit>
 <trans-unit id="s998fea0fa7bb4188">
   <source>authentik only supports RSA-OAEP-256 for encryption.</source>
-</trans-unit>
-<trans-unit id="s26bf2730430efbea">
-  <source>Subject mode</source>
-  <target>Modo de identificação</target>
 </trans-unit>
 <trans-unit id="s9f23ed1799b4d49a">
   <source>Configure what data should be used as unique User Identifier. For most cases, the default should be fine.</source>
@@ -2784,19 +2700,6 @@
   <source>Create</source>
   <target>Criar</target>
 </trans-unit>
-<trans-unit id="s58d1eb482059da12">
-  <source>New provider</source>
-  <target>Novo provedor</target>
-</trans-unit>
-<trans-unit id="sa661ea7d7a50f2e9">
-  <source>Create a new provider.</source>
-  <target>Criar um novo provedor.</target>
-</trans-unit>
-<trans-unit id="s5d6af4c100ad321b">
-  <source>Create <x id="0" equiv-text="${type.name}"/></source>
-  <target>Criar
-<x id="0" equiv-text="${type.name}"/></target>
-</trans-unit>
 <trans-unit id="sa9a4ce20b507b232">
   <source>New Provider</source>
   <target>Novo Provedor</target>
@@ -2926,10 +2829,6 @@
   <source>Provider Search</source>
   <target>Pesquisar Provedor</target>
 </trans-unit>
-<trans-unit id="s9db1679f3b234d4e">
-  <source>Search for providers…</source>
-  <target>Pesquisar provedores...</target>
-</trans-unit>
 <trans-unit id="s10929ca568ae10bc">
   <source>Provider(s)</source>
   <target>Provedor(es)</target>
@@ -2950,10 +2849,6 @@
   <source>Update <x id="0" equiv-text="${this.objectLabel}"/></source>
   <target>Atualizar
 <x id="0" equiv-text="${item.verboseName}"/></target>
-</trans-unit>
-<trans-unit id="sfbb87c9ced1fde54">
-  <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
-  <target>Editar provedor "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="s3b579c4bb6b447ae">
   <source>Successfully triggered sync.</source>
@@ -3705,14 +3600,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Number of previous passwords to check</source>
   <target>Número de senhas anteriores a serem verificadas</target>
 </trans-unit>
-<trans-unit id="sdbccb39a658f0e45">
-  <source>New policy</source>
-  <target>Nova política</target>
-</trans-unit>
-<trans-unit id="sf693300708a40d2c">
-  <source>Create a new policy.</source>
-  <target>Crie uma nova política.</target>
-</trans-unit>
 <trans-unit id="s5b1fb0d4c0daeba8">
   <source>Create Binding</source>
   <target>Criar Vínculo</target>
@@ -3744,10 +3631,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s9c3c272944dcfca3">
   <source>Successfully created user.</source>
   <target>Usuário criado com sucesso.</target>
-</trans-unit>
-<trans-unit id="s67ba000e66cdbd0d">
-  <source>Type a username for the user...</source>
-  <target>Digite um nome de usuário para o usuário...</target>
 </trans-unit>
 <trans-unit id="s7819072445baceee">
   <source>The user's primary identifier used for authentication. 150 characters or fewer.</source>
@@ -3825,10 +3708,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Policy binding(s)</source>
   <target>Vínculo(s) de política</target>
 </trans-unit>
-<trans-unit id="s7e87ab366c199345">
-  <source>Update Binding</source>
-  <target>Atualizar Vínculo</target>
-</trans-unit>
 <trans-unit id="sbad5b96fb855ef36">
   <source>No Policies bound.</source>
   <target>Nenhuma política vinculada.</target>
@@ -3853,17 +3732,9 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Endpoint(s)</source>
   <target>Endpoint(s)</target>
 </trans-unit>
-<trans-unit id="sf1dabfe0fe8a75ad">
-  <source>Update Endpoint</source>
-  <target>Atualizar Endpoint</target>
-</trans-unit>
 <trans-unit id="s008496c7716b9812">
   <source>These bindings control which users will have access to this endpoint. Users must also have access to the application.</source>
   <target>Essas vinculações controlam quais usuários terão acesso a este endpoint. Os usuários também devem ter acesso ao aplicativo.</target>
-</trans-unit>
-<trans-unit id="s38e7cd1a24e70faa">
-  <source>Create Endpoint</source>
-  <target>Criar Endpoint</target>
 </trans-unit>
 <trans-unit id="s5c18f85cda6e89be">
   <source>Connections</source>
@@ -4006,7 +3877,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>Atualizar Aplicativo</target>
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
-  <source>Edit "<x id="0" equiv-text="${item.name}"/>"</source>
+  <source>Edit "<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>"</source>
   <target>Editar "<x id="0" equiv-text="${item.name}"/>"</target>
 </trans-unit>
 <trans-unit id="sdb3b903354fbfb17">
@@ -4298,12 +4169,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sfb33118d419cd3c0">
   <source>NSS Group ID offset</source>
 </trans-unit>
-<trans-unit id="sc0c9cffcfb474d4e">
-  <source>New connector</source>
-</trans-unit>
-<trans-unit id="saf861ad08bb37fff">
-  <source>Create a new connector.</source>
-</trans-unit>
 <trans-unit id="sffc7bf978a049970">
   <source>Connectors are required to create devices. Depending on connector type, agents either directly talk to them or they talk to and external API to create devices.</source>
 </trans-unit>
@@ -4347,26 +4212,14 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Copy token</source>
   <target>Copiar token</target>
 </trans-unit>
-<trans-unit id="sb16ba96408c22012">
-  <source>Create Enrollment Token</source>
-</trans-unit>
 <trans-unit id="sfbf16ea8fef96f6d">
   <source>Enrollment Tokens</source>
-</trans-unit>
-<trans-unit id="s90dc0a58485b27fb">
-  <source>Group name...</source>
-</trans-unit>
-<trans-unit id="s030655287e89069f">
-  <source>Group name</source>
 </trans-unit>
 <trans-unit id="s3a38fceae14534dd">
   <source>Device access groups</source>
 </trans-unit>
 <trans-unit id="sbe0fb540e9dee187">
   <source>Create groups of devices to manage access.</source>
-</trans-unit>
-<trans-unit id="s505d8b43d0ead2be">
-  <source>Create Device Group</source>
 </trans-unit>
 <trans-unit id="s7924cdccf3592aa8">
   <source>Device Group(s)</source>
@@ -4965,14 +4818,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Telegram Attribute mapping</source>
   <target>Mapeamento de atributos do Telegram</target>
 </trans-unit>
-<trans-unit id="se12969ade44cd2b6">
-  <source>New source</source>
-  <target>Nova fonte</target>
-</trans-unit>
-<trans-unit id="s19b09f4fc72175d1">
-  <source>Create a new source.</source>
-  <target>Criar uma nova fonte.</target>
-</trans-unit>
 <trans-unit id="sb1a4e9b288e2f005">
   <source>Federation and Social login</source>
   <target>Federação e login social</target>
@@ -5080,10 +4925,6 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
   <source>SCIM Base URL</source>
   <target>URL Base do SCIM</target>
 </trans-unit>
-<trans-unit id="sad09c62cb4ebae68">
-  <source>Click to copy token</source>
-  <target>Clique para copiar o token</target>
-</trans-unit>
 <trans-unit id="s463491b90193d86b">
   <source>Telegram bot</source>
   <target>Bot do Telegram</target>
@@ -5164,10 +5005,6 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
   <source>Description shown to the user when consenting. If left empty, the user won't be informed.</source>
   <target>Descrição exibida ao usuário durante o consentimento. Se deixada em branco, o usuário não será informado.</target>
 </trans-unit>
-<trans-unit id="sb6c3bf5489d7556e">
-  <source>Example context data</source>
-  <target>Dados de contexto de exemplo</target>
-</trans-unit>
 <trans-unit id="s4a697f0b36c4fe83">
   <source>Active Directory User</source>
   <target>Usuário do Active Directory</target>
@@ -5175,14 +5012,6 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 <trans-unit id="s9277b90db38e1983">
   <source>Active Directory Group</source>
   <target>Grupo do Active Directory</target>
-</trans-unit>
-<trans-unit id="sc2e03590269d5a10">
-  <source>New property mapping</source>
-  <target>Novo mapeamento de propriedade</target>
-</trans-unit>
-<trans-unit id="s713e8666ed70f8b3">
-  <source>Create a new property mapping.</source>
-  <target>Criar um novo mapeamento de propriedade.</target>
 </trans-unit>
 <trans-unit id="sce106606ae84d46f">
   <source>Property Mappings</source>
@@ -5195,10 +5024,6 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 <trans-unit id="s59dc0eda07f9e2b6">
   <source>Property Mapping(s)</source>
   <target>Mapeamento(s) de propriedade</target>
-</trans-unit>
-<trans-unit id="sa57c393736e2732c">
-  <source>Test Property Mapping</source>
-  <target>Testar Mapeamento de Propriedade</target>
 </trans-unit>
 <trans-unit id="sc39fb3ff3753d5ab">
   <source>Hide managed mappings</source>
@@ -5444,18 +5269,6 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
   <source>Brand(s)</source>
   <target>Brand(s)</target>
 </trans-unit>
-<trans-unit id="s801bf3d03f4a3ff1">
-  <source>Update Brand</source>
-  <target>Atualizar Brand</target>
-</trans-unit>
-<trans-unit id="s5c3efec5330e0000">
-  <source>Create Brand</source>
-  <target>Criar Brand</target>
-</trans-unit>
-<trans-unit id="sb4661b2d2c2b3564">
-  <source>New Brand</source>
-  <target>Niva Marca</target>
-</trans-unit>
 <trans-unit id="s8cb7bb82e96d5d77">
   <source>Policies</source>
   <target>Políticas</target>
@@ -5471,10 +5284,6 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 <trans-unit id="s5a48d5171e1a1522">
   <source>Warning: Policy is not assigned.</source>
   <target>Aviso: A política não está atribuída.</target>
-</trans-unit>
-<trans-unit id="s544142ce35050751">
-  <source>Test Policy</source>
-  <target>Testar Política</target>
 </trans-unit>
 <trans-unit id="s00c8354318addfa0">
   <source>Policy / Policies</source>
@@ -5551,10 +5360,6 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 <trans-unit id="s416a540b16275f2e">
   <source>Create Group</source>
   <target>Criar Grupo</target>
-</trans-unit>
-<trans-unit id="s62dfa9c45cb3025a">
-  <source>New Group</source>
-  <target>Novo Grupo</target>
 </trans-unit>
 <trans-unit id="s7c5774fad9d050ce">
   <source>Create group</source>
@@ -5720,10 +5525,6 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 <trans-unit id="s824e0943a7104668">
   <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
   <target>Este usuário será adicionado ao grupo "<x id="0" equiv-text="${this.targetGroup.name}"/>".</target>
-</trans-unit>
-<trans-unit id="sc47c8364ef524c1d">
-  <source>New Service Account</source>
-  <target>Nova Conta de Serviço</target>
 </trans-unit>
 <trans-unit id="sc744f3691efe310d">
   <source>Hide service-accounts</source>
@@ -6053,14 +5854,6 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
   <source>Set initial permissions for newly created objects.</source>
   <target>Definir permissões iniciais para objetos recém-criados.</target>
 </trans-unit>
-<trans-unit id="sc7104a4d0fc35c7c">
-  <source>Update Initial Permissions</source>
-  <target>Atualizar Permissões Iniciais</target>
-</trans-unit>
-<trans-unit id="s83fa005829a65be9">
-  <source>Create Initial Permissions</source>
-  <target>Criar Permissões Iniciais</target>
-</trans-unit>
 <trans-unit id="s526e2c66bd51ff5f">
   <source>Role Info</source>
   <target>Informações da Função</target>
@@ -6132,14 +5925,6 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 <trans-unit id="s96dcf7ec8342c335">
   <source>Invitation not limited to any flow, and can be used with any enrollment flow.</source>
   <target>Convite não é limitado a nenhum fluxo, e pode ser utilizado com qualquer fluxo de inscrição.</target>
-</trans-unit>
-<trans-unit id="s1b42b49e7b392013">
-  <source>Update Invitation</source>
-  <target>Atualizar Convite</target>
-</trans-unit>
-<trans-unit id="s38c72e1cf120b8d8">
-  <source>Create Invitation</source>
-  <target>Criar Convite</target>
 </trans-unit>
 <trans-unit id="s802826db4e2c852e">
   <source>Warning: No invitation stage is bound to any flow. Invitations will not work as expected.</source>
@@ -6340,10 +6125,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
 <trans-unit id="sec7443a45fd141e5">
   <source>Prompt(s)</source>
   <target>Prompt(s)</target>
-</trans-unit>
-<trans-unit id="scc733ba98740038a">
-  <source>Update Prompt</source>
-  <target>Atualizar Prompt</target>
 </trans-unit>
 <trans-unit id="s61b6f3e6bc59c6dd">
   <source>Create Prompt</source>
@@ -7341,14 +7122,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
   <source>Configure how the flow executor should handle an invalid response to a challenge given by this bound stage.</source>
   <target>Configurar como o executor de fluxo deve lidar com uma resposta inválida a um desafio dado por este estágio vinculado.</target>
 </trans-unit>
-<trans-unit id="sd8417b41ca27bc8f">
-  <source>New stage</source>
-  <target>Nova etapa</target>
-</trans-unit>
-<trans-unit id="s293801033f9fc0d0">
-  <source>Create a new stage.</source>
-  <target>Criar uma nova etapa.</target>
-</trans-unit>
 <trans-unit id="s71633a67e0d7c0e4">
   <source>Successfully imported device.</source>
   <target>Dispositivo importado com sucesso.</target>
@@ -7408,10 +7181,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
 <trans-unit id="s3914cb410fca44d4">
   <source>Import</source>
   <target>Importar</target>
-</trans-unit>
-<trans-unit id="s8a67b33a0d70d322">
-  <source>Import Duo device</source>
-  <target>Importar dispositivo Duo</target>
 </trans-unit>
 <trans-unit id="s254a9a23dc1635df">
   <source>Import devices</source>
@@ -7549,14 +7318,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
   <source>Export</source>
   <target>Exportar</target>
 </trans-unit>
-<trans-unit id="s2f1bcfcc5cae94c3">
-  <source>Create Flow</source>
-  <target>Criar Fluxo</target>
-</trans-unit>
-<trans-unit id="s832282d415294df4">
-  <source>Import Flow</source>
-  <target>Importar Fluxo</target>
-</trans-unit>
 <trans-unit id="s098237f7ccb4dc4a">
   <source>Successfully cleared flow cache</source>
   <target>Cache de fluxo limpo com sucesso</target>
@@ -7587,10 +7348,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
   <source>Edit Stage</source>
   <target>Editar Estágio</target>
 </trans-unit>
-<trans-unit id="s980270d0fab7ecb3">
-  <source>Update Stage binding</source>
-  <target>Atualizar Vinculação de Estágio</target>
-</trans-unit>
 <trans-unit id="sfe938c1585e0bf68">
   <source>These bindings control if this stage will be applied to the flow.</source>
   <target>Essas vinculações controlam se este estágio será aplicado ao fluxo.</target>
@@ -7602,14 +7359,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
 <trans-unit id="s955c1fec1c6fb970">
   <source>No stages are currently bound to this flow.</source>
   <target>Nenhum estágio está atualmente vinculado a este fluxo.</target>
-</trans-unit>
-<trans-unit id="s6f367f5604d5056d">
-  <source>Create and bind Stage</source>
-  <target>Criar e vincular Etapa</target>
-</trans-unit>
-<trans-unit id="s9a393a04eaf1eb0e">
-  <source>Create Stage binding</source>
-  <target>Criar Vinculação de Estágio</target>
 </trans-unit>
 <trans-unit id="s30d1f50f476c3f48">
   <source>Flow Overview</source>
@@ -7747,14 +7496,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
   <source>Notification transport(s)</source>
   <target>Transportes de notificação</target>
 </trans-unit>
-<trans-unit id="sac1332e6f421526e">
-  <source>Update Notification Transport</source>
-  <target>Atualizar Transporte de Notificação</target>
-</trans-unit>
-<trans-unit id="s6b5002c605b39d6d">
-  <source>Create Notification Transport</source>
-  <target>Criar Transporte de Notificação</target>
-</trans-unit>
 <trans-unit id="s0a39e4f61ccafacb">
   <source>Successfully updated rule.</source>
   <target>Regra atualizada com sucesso.</target>
@@ -7810,14 +7551,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
 <trans-unit id="sc92ed9d5e01d3f24">
   <source>Notification rule(s)</source>
   <target>Regras de notificação</target>
-</trans-unit>
-<trans-unit id="sd1146418b344f81f">
-  <source>Update Notification Rule</source>
-  <target>Atualizar Regra de Notificação</target>
-</trans-unit>
-<trans-unit id="sbbc1de43ab6c1f76">
-  <source>Create Notification Rule</source>
-  <target>Criar Regra de Notificação</target>
 </trans-unit>
 <trans-unit id="s5795b310ab271d20">
   <source>These bindings control upon which events this rule triggers.
@@ -7980,14 +7713,6 @@ As vinculações a grupos/usuários são verificadas em relação ao usuário do
   <source>Verify Kubernetes API SSL Certificate</source>
   <target>Verificar Certificado SSL da API do Kubernetes</target>
 </trans-unit>
-<trans-unit id="se78364ee913ae2bd">
-  <source>New outpost integration</source>
-  <target>Nova integração de outpost</target>
-</trans-unit>
-<trans-unit id="s68d69ad0271c8ef6">
-  <source>Create a new outpost integration.</source>
-  <target>Criar uma nova integração de outpost.</target>
-</trans-unit>
 <trans-unit id="s1b85e6ac2978a2c0">
   <source>Outpost integrations</source>
   <target>Integrações de Outpost</target>
@@ -8103,17 +7828,9 @@ As vinculações a grupos/usuários são verificadas em relação ao usuário do
   <source>Download Private key</source>
   <target>Baixar Chave Privada</target>
 </trans-unit>
-<trans-unit id="se1d2545eda4b1600">
-  <source>Import Existing Certificate-Key Pair</source>
-  <target>Importar Par de Chaves-Certificado Existente</target>
-</trans-unit>
 <trans-unit id="s45cb501abd43ba52">
   <source>Generate</source>
   <target>Gerar</target>
-</trans-unit>
-<trans-unit id="sb3d5c0a0501669df">
-  <source>Generate New Certificate-Key Pair</source>
-  <target>Gerar Novo Par de Chaves-Certificado</target>
 </trans-unit>
 <trans-unit id="s8f36fb59c31d33eb">
   <source>Link Title</source>
@@ -8364,14 +8081,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
   <source>Blueprint(s)</source>
   <target>Blueprint(s)</target>
 </trans-unit>
-<trans-unit id="s880b8b70b22f9977">
-  <source>Update Blueprint</source>
-  <target>Atualizar Blueprint</target>
-</trans-unit>
-<trans-unit id="s08d24327ec788e78">
-  <source>Edit "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
-  <target>Editar "<x id="0" equiv-text="${item.name}"/>" blueprint</target>
-</trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
   <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
   <target>Aplicar "<x id="0" equiv-text="${item.name}"/>" blueprint</target>
@@ -8379,10 +8088,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="sb8f855b49234b81b">
   <source>Apply</source>
   <target>Aplicar</target>
-</trans-unit>
-<trans-unit id="sef3d102324bf8561">
-  <source>Create Blueprint Instance</source>
-  <target>Criar Instância de Blueprint</target>
 </trans-unit>
 <trans-unit id="s0e427111d750cc02">
   <source>Successfully updated license.</source>
@@ -8492,10 +8197,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
   <source>External: <x id="0" equiv-text="${item.externalUsers}"/></source>
   <target>Externo: <x id="0" equiv-text="${item.externalUsers}"/></target>
 </trans-unit>
-<trans-unit id="sdeb6cee42435dd07">
-  <source>Update License</source>
-  <target>Atualizar licença</target>
-</trans-unit>
 <trans-unit id="s8c4bc6e515949112">
   <source>Your Install ID</source>
   <target>Seu ID de instalação</target>
@@ -8511,10 +8212,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s6196153c4b0c1ea0">
   <source>Install</source>
   <target>Instalar</target>
-</trans-unit>
-<trans-unit id="s0285b4bd69130fa3">
-  <source>Install License</source>
-  <target>Instalar licença</target>
 </trans-unit>
 <trans-unit id="s1cdeecda0baf365e">
   <source>Release</source>
@@ -9571,9 +9268,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s3b4ad8abf4f08c35">
   <source>Hide managed roles</source>
 </trans-unit>
-<trans-unit id="sb5e95aaacac5d929">
-  <source>Bind existing Stage</source>
-</trans-unit>
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
 </trans-unit>
@@ -9673,9 +9367,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s4a3f19ff6e510c37">
   <source>Requires Docker socket/Kubernetes Integration.</source>
 </trans-unit>
-<trans-unit id="s361e9d929ee925e6">
-  <source>Assign Object Permission</source>
-</trans-unit>
 <trans-unit id="s5f6ad947b4824e40">
   <source>Next, download the configuration to deploy the authentik Agent via MDM</source>
 </trans-unit>
@@ -9692,9 +9383,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s54af3ec70642782c">
   <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
-</trans-unit>
-<trans-unit id="sb3be65525dd1f92c">
-  <source>Assign object permissions to role</source>
 </trans-unit>
 <trans-unit id="sbcd108b66363075c">
   <source>Device access group</source>
@@ -9749,9 +9437,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s04be2edfb0d2218a">
   <source>Type a name for the token...</source>
-</trans-unit>
-<trans-unit id="s84e29a714db544e9">
-  <source>Update Enrollment Token</source>
 </trans-unit>
 <trans-unit id="s5a7055a44dc83b1e">
   <source>Type a unique identifier...</source>
@@ -9917,9 +9602,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="sc9b84fdc2119ed1f">
   <source>Successfully created Fleet connector.</source>
 </trans-unit>
-<trans-unit id="s6a087e34edeadc1f">
-  <source>Connector name...</source>
-</trans-unit>
 <trans-unit id="sc8a067f02f4cf520">
   <source>Fleet settings</source>
 </trans-unit>
@@ -9946,9 +9628,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sf4cea728c240ee6b">
   <source>Paste your license key...</source>
-</trans-unit>
-<trans-unit id="form.headline.update">
-  <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
 </trans-unit>
 <trans-unit id="s5f404525692ee652">
   <source>You can select from popular providers with preset configurations or choose a custom setup to specify your own endpoints and keys.</source>
@@ -10089,9 +9768,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sc78d16417878afd0">
   <source>Copy Secret</source>
-</trans-unit>
-<trans-unit id="s7886195e5cfb6d41">
-  <source>Update settings</source>
 </trans-unit>
 <trans-unit id="s2df814c26d5c5e56">
   <source>ED25519</source>
@@ -10252,12 +9928,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s468f705986fff045">
   <source>Lifecycle rule(s)</source>
 </trans-unit>
-<trans-unit id="s73705b0f657e9866">
-  <source>Update Lifecycle Rule</source>
-</trans-unit>
-<trans-unit id="safae3d983f6cc576">
-  <source>Create Object Lifecycle Rule</source>
-</trans-unit>
 <trans-unit id="s9279704dfc98cdf9">
   <source>No reviews yet.</source>
 </trans-unit>
@@ -10302,12 +9972,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s30c9ff051aa083b0">
   <source>Required reviewers</source>
-</trans-unit>
-<trans-unit id="scdef09f44b68b189">
-  <source>Confirm Review</source>
-</trans-unit>
-<trans-unit id="sa89492933e1813ab">
-  <source>Confirm this object has been reviewed</source>
 </trans-unit>
 <trans-unit id="s7f3437809d931336">
   <source>Reviews</source>
@@ -10545,9 +10209,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="sea15e8e7527354c0">
   <source>Search for a provider...</source>
 </trans-unit>
-<trans-unit id="s846713ad5cb2727e">
-  <source>New Application Wizard</source>
-</trans-unit>
 <trans-unit id="sdfe21d69a2da53f4">
   <source>e.g. my-application</source>
 </trans-unit>
@@ -10556,9 +10217,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s4107487a961394e2">
   <source>The description is shown in the application library and may provide additional information about the application to end users.</source>
-</trans-unit>
-<trans-unit id="sbd6970890be85a9f">
-  <source>New Flow</source>
 </trans-unit>
 <trans-unit id="sfafe0cba4a679e37">
   <source>Select Groups</source>
@@ -10599,9 +10257,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s7ed2bed74a846fd0">
   <source>This name will be used to identify the role within authentik.</source>
 </trans-unit>
-<trans-unit id="sf24ef3ed7cd09fe7">
-  <source>New Role</source>
-</trans-unit>
 <trans-unit id="s99059109387c0163">
   <source>Service Account</source>
 </trans-unit>
@@ -10610,9 +10265,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sd518c86e47fc6f89">
   <source>Impersonate User</source>
-</trans-unit>
-<trans-unit id="sa80933980d6bd0c7">
-  <source>Edit <x id="0" equiv-text="${displayName}"/></source>
 </trans-unit>
 <trans-unit id="s05fc6161cadbe078">
   <source>Impersonate <x id="0" equiv-text="${displayName}"/></source>
@@ -10713,18 +10365,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="command-palette.prefix.reloads-page">
   <source>Reloads page</source>
 </trans-unit>
-<trans-unit id="model-form.headline.modifier.new">
-  <source>New</source>
-</trans-unit>
-<trans-unit id="model-form.create-submit">
-  <source>Create <x id="0" equiv-text="${this.entitySingular}"/></source>
-</trans-unit>
-<trans-unit id="model-form.create-submit-no-entity">
-  <source>Create</source>
-</trans-unit>
-<trans-unit id="model-form.apply-submit">
-  <source>Save Changes</source>
-</trans-unit>
 <trans-unit id="s35ed5cf95b0c7262">
   <source>authentik information</source>
 </trans-unit>
@@ -10773,9 +10413,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s67910ccb738e5fa5">
   <source>No instances running.</source>
 </trans-unit>
-<trans-unit id="sa3a84cfbaf6ea62a">
-  <source>Search outposts...</source>
-</trans-unit>
 <trans-unit id="s06763f4bb18a1897">
   <source>New Outpost</source>
 </trans-unit>
@@ -10823,9 +10460,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s8e2a8ba956a87d80">
   <source>File upload</source>
-</trans-unit>
-<trans-unit id="s39920e4c648f42d7">
-  <source>Import Blueprint</source>
 </trans-unit>
 <trans-unit id="s82ad1b952d1637ec">
   <source>Warning: Blueprint files may contain objects such as users, policies and expression.</source>
@@ -10910,6 +10544,533 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s1967faf9ed8d3504">
   <source>Avatar</source>
+</trans-unit>
+<trans-unit id="s870f7b2f8c27e219">
+  <source>Save changes</source>
+</trans-unit>
+<trans-unit id="s4d80f6e1da39d26e">
+  <source>Edit Settings</source>
+</trans-unit>
+<trans-unit id="s1f02775c374b659a">
+  <source>Server Version</source>
+</trans-unit>
+<trans-unit id="s16e5e5a4c64523c6">
+  <source>Applications search</source>
+</trans-unit>
+<trans-unit id="sf8057578c1d38b31">
+  <source>Search for application by name, group or provider...</source>
+</trans-unit>
+<trans-unit id="sb18de48205b43ea1">
+  <source>New Application options</source>
+</trans-unit>
+<trans-unit id="sea74880d1b9b5d2e">
+  <source>Select a <x id="0" equiv-text="${title}"/>...</source>
+</trans-unit>
+<trans-unit id="s6d46b842e227be57">
+  <source>Application Details</source>
+</trans-unit>
+<trans-unit id="sda5e30fff0fb8622">
+  <source>Provider Details</source>
+</trans-unit>
+<trans-unit id="s39291e42ae3e80aa">
+  <source>Flow Blueprint</source>
+</trans-unit>
+<trans-unit id="s5f5f444e1434f0bb">
+  <source>Flow Blueprints</source>
+</trans-unit>
+<trans-unit id="sc1e7f77a6c720bcd">
+  <source>Select a blueprint...</source>
+</trans-unit>
+<trans-unit id="sa8e7b3205641c888">
+  <source>Search for a blueprint by name or path...</source>
+</trans-unit>
+<trans-unit id="s4d9f501d9e0474b1">
+  <source>Type a name for this certificate...</source>
+</trans-unit>
+<trans-unit id="s229a13babcd2de4e">
+  <source>e.g. mydomain.com, *.mydomain.com, mydomain.local</source>
+</trans-unit>
+<trans-unit id="sa40227ee04d48241">
+  <source>Import Existing</source>
+</trans-unit>
+<trans-unit id="sb238ddbba442c653">
+  <source>Certificate Name</source>
+</trans-unit>
+<trans-unit id="se85985f43267d91d">
+  <source>Type a name for this certificate-key pair...</source>
+</trans-unit>
+<trans-unit id="sb694bfc9c4f22707">
+  <source>Search for a certificate or key name...</source>
+</trans-unit>
+<trans-unit id="s6fa221d26b4fb3a5">
+  <source>Select a device access group...</source>
+</trans-unit>
+<trans-unit id="sd3f8ab3f31961ff0">
+  <source>No enrollment tokens found for this connector.</source>
+</trans-unit>
+<trans-unit id="sfb36e6e2c9c181d0">
+  <source>Search for an enrollment token...</source>
+</trans-unit>
+<trans-unit id="s623334df0e007742">
+  <source>Search connectors by name or type...</source>
+</trans-unit>
+<trans-unit id="s77405bfeaefa5df7">
+  <source>Endpoint Connector</source>
+</trans-unit>
+<trans-unit id="s9cb9d5c3536ce74c">
+  <source>Endpoint Connectors</source>
+</trans-unit>
+<trans-unit id="s728b14f2c1fc517e">
+  <source>Provide your Fleet API token...</source>
+</trans-unit>
+<trans-unit id="s165414a623ee26dd">
+  <source>Device Access Groups</source>
+</trans-unit>
+<trans-unit id="s01c5aed3727459af">
+  <source>Search device groups by name...</source>
+</trans-unit>
+<trans-unit id="s672828ee2d469660">
+  <source>Search devices by name, OS, or group...</source>
+</trans-unit>
+<trans-unit id="s6206abae11837d59">
+  <source>Enterprise License</source>
+</trans-unit>
+<trans-unit id="s14d2e2c7c26dae5e">
+  <source>Enterprise Licenses</source>
+</trans-unit>
+<trans-unit id="s80966d6e3357ecac">
+  <source>Search for a license by name...</source>
+</trans-unit>
+<trans-unit id="sa1c74b747fb31ef4">
+  <source>Notification Rule</source>
+</trans-unit>
+<trans-unit id="s3af6eb77fe01e40a">
+  <source>Type a name for this rule...</source>
+</trans-unit>
+<trans-unit id="sdfd9e4c0a1431229">
+  <source>Search for a notification rule by name, severity or group...</source>
+</trans-unit>
+<trans-unit id="s9aed43e97f406ad7">
+  <source>Notification Transport</source>
+</trans-unit>
+<trans-unit id="s55e734a8740e4fb5">
+  <source>Transport Name</source>
+</trans-unit>
+<trans-unit id="s741d1ae8f09b3933">
+  <source>Type a name for this transport...</source>
+</trans-unit>
+<trans-unit id="s30e1f89ebb15a641">
+  <source>Search for a notification transport by name or mode...</source>
+</trans-unit>
+<trans-unit id="s56723699a26ba7a9">
+  <source>Search for a file by name...</source>
+</trans-unit>
+<trans-unit id="sc1fc93e04011152f">
+  <source>New Stage</source>
+</trans-unit>
+<trans-unit id="s0f2367a322aa1549">
+  <source>Bind Existing Stage</source>
+</trans-unit>
+<trans-unit id="s8262b0e4fe70ebcc">
+  <source>Flow Name</source>
+</trans-unit>
+<trans-unit id="saff2b1ef8e947a4c">
+  <source>Type a name for this flow...</source>
+</trans-unit>
+<trans-unit id="s655ef5bc26480d03">
+  <source>Type a title for this flow...</source>
+</trans-unit>
+<trans-unit id="s1b09d58f0940916a">
+  <source>e.g. my-flow</source>
+</trans-unit>
+<trans-unit id="s3e6d52672f8055a9">
+  <source>Select a designation...</source>
+</trans-unit>
+<trans-unit id="se215571219af3e03">
+  <source>Search for a flow by name or identifier...</source>
+</trans-unit>
+<trans-unit id="s05868889177f29b8">
+  <source>Stage Binding</source>
+</trans-unit>
+<trans-unit id="s2a3b8135c930d806">
+  <source>Select a stage...</source>
+</trans-unit>
+<trans-unit id="s7890253cbc3a0f11">
+  <source>Select one or more users to assign...</source>
+</trans-unit>
+<trans-unit id="sd436da52569717db">
+  <source>Lifecycle Rule</source>
+</trans-unit>
+<trans-unit id="s6e89acb429653073">
+  <source>Search for a lifecycle rule by name or target...</source>
+</trans-unit>
+<trans-unit id="sb5ff45c4476cd097">
+  <source>Search tasks...</source>
+</trans-unit>
+<trans-unit id="sfc53e352afbca881">
+  <source>Review</source>
+</trans-unit>
+<trans-unit id="sddd96d7a8c730493">
+  <source>Outpost Integration</source>
+</trans-unit>
+<trans-unit id="seeaf3a5c5dda2b0d">
+  <source>Search outposts by name, type or assigned integration...</source>
+</trans-unit>
+<trans-unit id="s627fcb2e3b756726">
+  <source>Search for an outpost integration by name, type or assigned integration...</source>
+</trans-unit>
+<trans-unit id="s3d50d9689caaf646">
+  <source>Open the wizard to create a new service connection.</source>
+</trans-unit>
+<trans-unit id="s6614cd5f6913ff3d">
+  <source>New Outpost Integration</source>
+</trans-unit>
+<trans-unit id="s0a6b1b964ef82473">
+  <source>Open the wizard to create a new policy.</source>
+</trans-unit>
+<trans-unit id="s6325a4d09680bd6e">
+  <source>Policy Name</source>
+</trans-unit>
+<trans-unit id="s9c114121ce05dde7">
+  <source>Type a policy name...</source>
+</trans-unit>
+<trans-unit id="sbedcbd307e07665a">
+  <source>Policy Binding</source>
+</trans-unit>
+<trans-unit id="sa7eca7691191ed58">
+  <source>Search for a policy by name or type...</source>
+</trans-unit>
+<trans-unit id="s978ae8e1a90ee465">
+  <source>New Policy</source>
+</trans-unit>
+<trans-unit id="s219823757f2e37a4">
+  <source>Search for a reputation by identifier or IP...</source>
+</trans-unit>
+<trans-unit id="sc58c4b5e2d20ac26">
+  <source>Property Mapping</source>
+</trans-unit>
+<trans-unit id="s161a4a481f0881bc">
+  <source>Mapping Name</source>
+</trans-unit>
+<trans-unit id="s4ce907c7a282926a">
+  <source>Type a name for this mapping...</source>
+</trans-unit>
+<trans-unit id="s9f8835681a5fbd87">
+  <source>Search for a property mapping by name or type...</source>
+</trans-unit>
+<trans-unit id="sef1dc39187dfbc50">
+  <source>New Property Mapping</source>
+</trans-unit>
+<trans-unit id="s4997e567d26705e6">
+  <source>Run Test</source>
+</trans-unit>
+<trans-unit id="sa2e6bc991ced226e">
+  <source>Example Context Data</source>
+</trans-unit>
+<trans-unit id="se4e493631651cffd">
+  <source>Select a user...</source>
+</trans-unit>
+<trans-unit id="s10253f888d117051">
+  <source>Bind Mode</source>
+</trans-unit>
+<trans-unit id="se3d652b2eefb9eb4">
+  <source>Search Mode</source>
+</trans-unit>
+<trans-unit id="s2691c2b23685e486">
+  <source>Bind Flow</source>
+</trans-unit>
+<trans-unit id="s033071f6ae08afd7">
+  <source>Unbind Flow</source>
+</trans-unit>
+<trans-unit id="sa2967eeed56fd6e0">
+  <source>TLS Server Name</source>
+</trans-unit>
+<trans-unit id="s1ead555caa1a2006">
+  <source>UID Start Number</source>
+</trans-unit>
+<trans-unit id="s1756bb69542d9db4">
+  <source>GID Start Number</source>
+</trans-unit>
+<trans-unit id="s8d85c6a707771cb6">
+  <source>Authorization Flow</source>
+</trans-unit>
+<trans-unit id="sf36c94b3dd7dec9a">
+  <source>Client Type</source>
+</trans-unit>
+<trans-unit id="se5c0444127d1b66f">
+  <source>Authentication Flow</source>
+</trans-unit>
+<trans-unit id="s0b58e50282384c23">
+  <source>Invalidation Flow</source>
+</trans-unit>
+<trans-unit id="scba3dc0c14daa5da">
+  <source>Access Code Validity</source>
+</trans-unit>
+<trans-unit id="s0d88c641cac72430">
+  <source>Access Token Validity</source>
+</trans-unit>
+<trans-unit id="s2de57d3c2a118199">
+  <source>Refresh Token Validity</source>
+</trans-unit>
+<trans-unit id="s92c4633a05e01db6">
+  <source>Refresh Token Threshold</source>
+</trans-unit>
+<trans-unit id="s514c283c447dbcca">
+  <source>Subject Mode</source>
+</trans-unit>
+<trans-unit id="s584808e53254531c">
+  <source>Search for provider by name, type or assigned application...</source>
+</trans-unit>
+<trans-unit id="sd8d09a02b5e34dda">
+  <source>RAC Endpoint</source>
+</trans-unit>
+<trans-unit id="s4dc35b9b113cf62b">
+  <source>RAC Endpoints</source>
+</trans-unit>
+<trans-unit id="s0be5af2db3c680cf">
+  <source>Endpoint Name</source>
+</trans-unit>
+<trans-unit id="sdaad41bf21e8e5f3">
+  <source>Type a name for this endpoint...</source>
+</trans-unit>
+<trans-unit id="sa6793a484bd8399b">
+  <source>e.g. myserver.example.com, 10.0.0.1:22</source>
+</trans-unit>
+<trans-unit id="s43f123e73d3882cb">
+  <source>Create an endpoint to get started.</source>
+</trans-unit>
+<trans-unit id="s0af49e3fd32c92a3">
+  <source>Search for an endpoint by name or host...</source>
+</trans-unit>
+<trans-unit id="s7fb4ba3dfb89c749">
+  <source>Initial Permission Name</source>
+</trans-unit>
+<trans-unit id="s3652c81a5ffc1615">
+  <source>Type a name for these initial permissions...</source>
+</trans-unit>
+<trans-unit id="s6bc2e91a41be13ec">
+  <source>Search for initial permissions by name...</source>
+</trans-unit>
+<trans-unit id="sd54afd99dfe64651">
+  <source>Create an initial permission to get started.</source>
+</trans-unit>
+<trans-unit id="s32a0d2b9937d43b7">
+  <source>Role Object Permission</source>
+</trans-unit>
+<trans-unit id="s8489d5559dda260c">
+  <source>Role Object Permissions</source>
+</trans-unit>
+<trans-unit id="se84477a0cb9d8781">
+  <source>Object Permission</source>
+</trans-unit>
+<trans-unit id="s49df3839fcae0036">
+  <source>Object Permissions</source>
+</trans-unit>
+<trans-unit id="s8b0432eecbd8b034">
+  <source>Update</source>
+</trans-unit>
+<trans-unit id="sa6f726a43ec55a63">
+  <source>Search for a role...</source>
+</trans-unit>
+<trans-unit id="sa22daca100d87eeb">
+  <source>Source Name</source>
+</trans-unit>
+<trans-unit id="s7536c9f915bbaa8b">
+  <source>Type a name for this source...</source>
+</trans-unit>
+<trans-unit id="sc0579421a31c3623">
+  <source>e.g. my-kerberos-source</source>
+</trans-unit>
+<trans-unit id="s4a0c13d21efc7415">
+  <source>e.g. my-oauth-source</source>
+</trans-unit>
+<trans-unit id="s4886f075eef75a43">
+  <source>e.g. my-plex-source</source>
+</trans-unit>
+<trans-unit id="s2fb85f1a1bb48d57">
+  <source>e.g. my-saml-source</source>
+</trans-unit>
+<trans-unit id="s5332fcfe64df14ec">
+  <source>e.g. my-scim-source</source>
+</trans-unit>
+<trans-unit id="s160e6d2ad16970b4">
+  <source>Search for a source...</source>
+</trans-unit>
+<trans-unit id="s276e897069177571">
+  <source>e.g. my-telegram-source</source>
+</trans-unit>
+<trans-unit id="sc27c88533d7bc7d3">
+  <source>Duo Device</source>
+</trans-unit>
+<trans-unit id="sf5634571795434e0">
+  <source>Duo Devices</source>
+</trans-unit>
+<trans-unit id="sa6c276b7373d4084">
+  <source>Importing</source>
+</trans-unit>
+<trans-unit id="sf52d3890bf1fe2cb">
+  <source>Type the Duo user ID for this device...</source>
+</trans-unit>
+<trans-unit id="s65466b58996b7efe">
+  <source>Invitation</source>
+</trans-unit>
+<trans-unit id="s5bbad639c6a30561">
+  <source>Invitation Name</source>
+</trans-unit>
+<trans-unit id="s4df6774172fa6602">
+  <source>Search for an invitation by name...</source>
+</trans-unit>
+<trans-unit id="s54393bfa280ea55b">
+  <source>Prompt</source>
+</trans-unit>
+<trans-unit id="s8aeb9bdd78a93bda">
+  <source>Search for a prompt by name, field or type...</source>
+</trans-unit>
+<trans-unit id="sde53bdf1d16d16ed">
+  <source>Search for a stage name, type, or flow...</source>
+</trans-unit>
+<trans-unit id="se34b4778849d4de2">
+  <source>User creation mode</source>
+</trans-unit>
+<trans-unit id="s33150140b9f2b929">
+  <source>Search for a token identifier, user, or intent...</source>
+</trans-unit>
+<trans-unit id="s7dfd1961c568811b">
+  <source>Review Credentials</source>
+</trans-unit>
+<trans-unit id="s92ac22a1f991b620">
+  <source>Type a username for the service account...</source>
+</trans-unit>
+<trans-unit id="sb80ecfb61d2fecc3">
+  <source>Internal User</source>
+</trans-unit>
+<trans-unit id="sf117a273986f2f10">
+  <source>Internal Users</source>
+</trans-unit>
+<trans-unit id="s6047fb3310b62771">
+  <source>External User</source>
+</trans-unit>
+<trans-unit id="s5076d9c565844866">
+  <source>External Users</source>
+</trans-unit>
+<trans-unit id="sa6e658c0b41f0dfc">
+  <source>Type a username for the internal user...</source>
+</trans-unit>
+<trans-unit id="sce17d331ba351972">
+  <source>Type a username for the external user...</source>
+</trans-unit>
+<trans-unit id="s32f0badba04157d2">
+  <source>Open the new user wizard</source>
+</trans-unit>
+<trans-unit id="s1dcda4e80fd2fc17">
+  <source>Select email stage...</source>
+</trans-unit>
+<trans-unit id="clipboard.progress.message.entity">
+  <source>Copying <x id="0" equiv-text="${entityLabel}"/>...</source>
+</trans-unit>
+<trans-unit id="clipboard.progress.generic">
+  <source>Copying to clipboard...</source>
+</trans-unit>
+<trans-unit id="s2d0afb31093af141">
+  <source>e.g. my-slug</source>
+</trans-unit>
+<trans-unit id="form.create-submit">
+  <source>Create <x id="0" equiv-text="${verboseName}"/></source>
+</trans-unit>
+<trans-unit id="form.create-submit-no-entity">
+  <source>Create</source>
+</trans-unit>
+<trans-unit id="sdccd8f78d52d3a87">
+  <source>Copy to clipboard</source>
+</trans-unit>
+<trans-unit id="s757a4c2248c0b9da">
+  <source>Entity</source>
+</trans-unit>
+<trans-unit id="entity.edit.named">
+  <source>Edit "<x id="0" equiv-text="${itemName}"/>" <x id="1" equiv-text="${noun}"/></source>
+</trans-unit>
+<trans-unit id="entity.edit">
+  <source>Edit <x id="0" equiv-text="${noun}"/></source>
+</trans-unit>
+<trans-unit id="permissions.modal-invoker.named">
+  <source>Open "<x id="0" equiv-text="${itemName}"/>" permissions</source>
+</trans-unit>
+<trans-unit id="permissions.modal-invoker">
+  <source>Open permissions</source>
+</trans-unit>
+<trans-unit id="s3741f519c32ac391">
+  <source>New</source>
+</trans-unit>
+<trans-unit id="invoker.label.modifier-noun">
+  <source><x id="0" equiv-text="${createLabel} ${verboseName}"/></source>
+</trans-unit>
+<trans-unit id="form.new-entity">
+  <source>New</source>
+</trans-unit>
+<trans-unit id="form.submit.verb.create">
+  <source>Create</source>
+</trans-unit>
+<trans-unit id="form.submit.verb.creating">
+  <source>Creating</source>
+</trans-unit>
+<trans-unit id="form.submit.verb-entity">
+  <source><x id="0" equiv-text="${verb} ${noun}"/></source>
+</trans-unit>
+<trans-unit id="form.modifier.edit">
+  <source>Edit</source>
+</trans-unit>
+<trans-unit id="form.submit.save-changes">
+  <source>Save Changes</source>
+</trans-unit>
+<trans-unit id="form.submit.saving-changes">
+  <source>Saving Changes...</source>
+</trans-unit>
+<trans-unit id="se0bf7f662ec09302">
+  <source>An error occurred while loading <x id="0" equiv-text="${this.verboseName}"/>.</source>
+</trans-unit>
+<trans-unit id="s4fd2fe9adfd426e9">
+  <source>Select an option...</source>
+</trans-unit>
+<trans-unit id="s4a45bb66596356ce">
+  <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
+</trans-unit>
+<trans-unit id="sdec65ee663d8a048">
+  <source>Choose type</source>
+</trans-unit>
+<trans-unit id="s32db18dac74db6c3">
+  <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
+</trans-unit>
+<trans-unit id="s195ea6447a6b5486">
+  <source>Cancel wizard</source>
+</trans-unit>
+<trans-unit id="s7ac4bf2be4d16ce4">
+  <source>Search for an endpoint by name...</source>
+</trans-unit>
+<trans-unit id="sacc17a59268b8cf3">
+  <source>No endpoints found for this application.</source>
+</trans-unit>
+<trans-unit id="sa769d10eac7fbdb7">
+  <source>Launch Endpoint</source>
+</trans-unit>
+<trans-unit id="wizard.ariaLabel.default">
+  <source>Wizard</source>
+  <note from="lit-localize">ARIA label for the creation wizard when no entity singular is provided.</note>
+</trans-unit>
+<trans-unit id="wizard.ariaLabel.entity-singular">
+  <source>New <x id="0" equiv-text="${verboseName}"/> Wizard</source>
+  <note from="lit-localize">ARIA label for the creation wizard, where the entity singular is interpolated.</note>
+</trans-unit>
+<trans-unit id="wizard.header.default">
+  <source>Create New Entity</source>
+  <note from="lit-localize">Header for the creation wizard when no entity singular is provided.</note>
+</trans-unit>
+<trans-unit id="wizard.header.entity-singular">
+  <source>Create New <x id="0" equiv-text="${verboseName}"/></source>
+  <note from="lit-localize">Header for the creation wizard, where the entity singular is interpolated.</note>
+</trans-unit>
+<trans-unit id="form.submitting">
+  <source><x id="0" equiv-text="${submittingVerb} ${verboseName}"/>...</source>
+  <note from="lit-localize">The message shown while a form is being submitted.</note>
 </trans-unit>
 </body>
 </file>
