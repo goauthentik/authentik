@@ -136,6 +136,7 @@ class StreamView(SSFStreamView):
                 "state": None,
             },
             stream_filter={"pk": instance.uuid},
+            request=request,
             sub_id={"format": "opaque", "id": str(instance.uuid)},
         )
         response = StreamResponseSerializer(instance=instance, context={"request": request}).data
@@ -181,6 +182,7 @@ class StreamVerifyView(SSFStreamView):
                 "state": state,
             },
             stream_filter={"pk": stream.uuid},
+            request=request,
             sub_id={"format": "opaque", "id": str(stream.uuid)},
         )
         return Response(status=204)
