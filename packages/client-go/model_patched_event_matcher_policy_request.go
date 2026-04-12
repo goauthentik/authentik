@@ -31,6 +31,7 @@ type PatchedEventMatcherPolicyRequest struct {
 	App NullableAppEnum `json:"app,omitempty"`
 	// Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 	Model                NullableModelEnum `json:"model,omitempty"`
+	Query                NullableString    `json:"query,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -289,6 +290,49 @@ func (o *PatchedEventMatcherPolicyRequest) UnsetModel() {
 	o.Model.Unset()
 }
 
+// GetQuery returns the Query field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PatchedEventMatcherPolicyRequest) GetQuery() string {
+	if o == nil || IsNil(o.Query.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.Query.Get()
+}
+
+// GetQueryOk returns a tuple with the Query field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PatchedEventMatcherPolicyRequest) GetQueryOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Query.Get(), o.Query.IsSet()
+}
+
+// HasQuery returns a boolean if a field has been set.
+func (o *PatchedEventMatcherPolicyRequest) HasQuery() bool {
+	if o != nil && o.Query.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetQuery gets a reference to the given NullableString and assigns it to the Query field.
+func (o *PatchedEventMatcherPolicyRequest) SetQuery(v string) {
+	o.Query.Set(&v)
+}
+
+// SetQueryNil sets the value for Query to be an explicit nil
+func (o *PatchedEventMatcherPolicyRequest) SetQueryNil() {
+	o.Query.Set(nil)
+}
+
+// UnsetQuery ensures that no value is present for Query, not even an explicit nil
+func (o *PatchedEventMatcherPolicyRequest) UnsetQuery() {
+	o.Query.Unset()
+}
+
 func (o PatchedEventMatcherPolicyRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -316,6 +360,9 @@ func (o PatchedEventMatcherPolicyRequest) ToMap() (map[string]interface{}, error
 	}
 	if o.Model.IsSet() {
 		toSerialize["model"] = o.Model.Get()
+	}
+	if o.Query.IsSet() {
+		toSerialize["query"] = o.Query.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -345,6 +392,7 @@ func (o *PatchedEventMatcherPolicyRequest) UnmarshalJSON(data []byte) (err error
 		delete(additionalProperties, "client_ip")
 		delete(additionalProperties, "app")
 		delete(additionalProperties, "model")
+		delete(additionalProperties, "query")
 		o.AdditionalProperties = additionalProperties
 	}
 

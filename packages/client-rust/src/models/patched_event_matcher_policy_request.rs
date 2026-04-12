@@ -54,6 +54,13 @@ pub struct PatchedEventMatcherPolicyRequest {
         skip_serializing_if = "Option::is_none"
     )]
     pub model: Option<Option<models::ModelEnum>>,
+    #[serde(
+        rename = "query",
+        default,
+        with = "::serde_with::rust::double_option",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub query: Option<Option<String>>,
 }
 
 impl PatchedEventMatcherPolicyRequest {
@@ -66,6 +73,7 @@ impl PatchedEventMatcherPolicyRequest {
             client_ip: None,
             app: None,
             model: None,
+            query: None,
         }
     }
 }

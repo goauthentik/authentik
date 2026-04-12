@@ -3285,6 +3285,7 @@ type ApiPoliciesEventMatcherListRequest struct {
 	page             *int32
 	pageSize         *int32
 	policyUuid       *string
+	query            *string
 	search           *string
 }
 
@@ -3348,6 +3349,11 @@ func (r ApiPoliciesEventMatcherListRequest) PageSize(pageSize int32) ApiPolicies
 
 func (r ApiPoliciesEventMatcherListRequest) PolicyUuid(policyUuid string) ApiPoliciesEventMatcherListRequest {
 	r.policyUuid = &policyUuid
+	return r
+}
+
+func (r ApiPoliciesEventMatcherListRequest) Query(query string) ApiPoliciesEventMatcherListRequest {
+	r.query = &query
 	return r
 }
 
@@ -3433,6 +3439,9 @@ func (a *PoliciesAPIService) PoliciesEventMatcherListExecute(r ApiPoliciesEventM
 	}
 	if r.policyUuid != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "policy_uuid", r.policyUuid, "form", "")
+	}
+	if r.query != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "query", r.query, "form", "")
 	}
 	if r.search != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "search", r.search, "form", "")

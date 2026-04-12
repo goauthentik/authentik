@@ -2218,6 +2218,7 @@ pub async fn policies_event_matcher_list(
     page: Option<i32>,
     page_size: Option<i32>,
     policy_uuid: Option<&str>,
+    query: Option<&str>,
     search: Option<&str>,
 ) -> Result<models::PaginatedEventMatcherPolicyList, Error<PoliciesEventMatcherListError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -2233,6 +2234,7 @@ pub async fn policies_event_matcher_list(
     let p_query_page = page;
     let p_query_page_size = page_size;
     let p_query_policy_uuid = policy_uuid;
+    let p_query_query = query;
     let p_query_search = search;
 
     let uri_str = format!("{}/policies/event_matcher/", configuration.base_path);
@@ -2273,6 +2275,9 @@ pub async fn policies_event_matcher_list(
     }
     if let Some(ref param_value) = p_query_policy_uuid {
         req_builder = req_builder.query(&[("policy_uuid", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_query {
+        req_builder = req_builder.query(&[("query", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_search {
         req_builder = req_builder.query(&[("search", &param_value.to_string())]);

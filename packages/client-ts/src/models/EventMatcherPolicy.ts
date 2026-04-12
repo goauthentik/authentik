@@ -97,6 +97,12 @@ export interface EventMatcherPolicy {
      * @memberof EventMatcherPolicy
      */
     model?: ModelEnum | null;
+    /**
+     *
+     * @type {string}
+     * @memberof EventMatcherPolicy
+     */
+    query?: string | null;
 }
 
 /**
@@ -137,6 +143,7 @@ export function EventMatcherPolicyFromJSONTyped(
         clientIp: json["client_ip"] == null ? undefined : json["client_ip"],
         app: json["app"] == null ? undefined : AppEnumFromJSON(json["app"]),
         model: json["model"] == null ? undefined : ModelEnumFromJSON(json["model"]),
+        query: json["query"] == null ? undefined : json["query"],
     };
 }
 
@@ -162,5 +169,6 @@ export function EventMatcherPolicyToJSONTyped(
         client_ip: value["clientIp"],
         app: AppEnumToJSON(value["app"]),
         model: ModelEnumToJSON(value["model"]),
+        query: value["query"],
     };
 }
