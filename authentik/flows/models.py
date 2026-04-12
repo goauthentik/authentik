@@ -185,25 +185,47 @@ class Flow(SerializerModel, PolicyBindingModel):
         help_text=_("Required level of authentication and authorization to access a flow."),
     )
 
-    def background_url(self, request: HttpRequest | None = None) -> str:
+    def background_url(
+        self,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> str:
         """Get the URL to the background image"""
         if not self.background:
             if request:
-                return request.brand.branding_default_flow_background_url()
+                return request.brand.branding_default_flow_background_url(
+                    request,
+                    use_cache=use_cache,
+                )
             return (
                 CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
             )
 
-        return get_file_manager(FileUsage.MEDIA).file_url(self.background, request)
+        return get_file_manager(FileUsage.MEDIA).file_url(
+            self.background,
+            request,
+            use_cache=use_cache,
+        )
 
-    def background_themed_urls(self, request: HttpRequest | None = None) -> dict[str, str] | None:
+    def background_themed_urls(
+        self,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> dict[str, str] | None:
         """Get themed URLs for background if it contains %(theme)s"""
         if not self.background:
             if request:
-                return request.brand.branding_default_flow_background_themed_urls()
+                return request.brand.branding_default_flow_background_themed_urls(
+                    request,
+                    use_cache=use_cache,
+                )
             return None
 
-        return get_file_manager(FileUsage.MEDIA).themed_urls(self.background, request)
+        return get_file_manager(FileUsage.MEDIA).themed_urls(
+            self.background,
+            request,
+            use_cache=use_cache,
+        )
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 
