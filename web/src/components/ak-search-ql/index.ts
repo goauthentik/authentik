@@ -15,7 +15,6 @@ import DjangoQL, { Introspections } from "@mrmarble/djangoql-completion";
 import { msg } from "@lit/localize";
 import { CSSResult, html, LitElement, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -478,9 +477,8 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                         @focus=${this.#focusListener}
                         @blur=${this.#blurListener}
                         @keydown=${this.#keydownListener}
-                    >
-${ifDefined(this.#value)}</textarea
-                    >
+                        .value=${this.#value}
+                    ></textarea>
                 </span>
             </div>
             ${this.renderMenu()}
