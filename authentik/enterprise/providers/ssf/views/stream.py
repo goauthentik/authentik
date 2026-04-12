@@ -132,9 +132,7 @@ class StreamView(SSFStreamView):
         LOGGER.info("Sending verification event", stream=instance)
         send_ssf_events(
             EventTypes.SET_VERIFICATION,
-            {
-                "state": None,
-            },
+            {},
             stream_filter={"pk": instance.uuid},
             request=request,
             sub_id={"format": "opaque", "id": str(instance.uuid)},
