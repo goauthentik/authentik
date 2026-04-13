@@ -1,0 +1,25 @@
+/**
+ * @deprecated Use `ak-c-modal` instead.
+ */
+
+.pf-c-modal-box {
+    --ak-c-modal-box__header--BlockSpacer: clamp(0.25em, var(--pf-global--spacer--lg), 3cqb);
+    --ak-c-modal-box__header--InlineSpacer: var(--pf-global--spacer--md);
+
+    --pf-c-modal-box__header--PaddingTop: var(--ak-c-modal-box__header--BlockSpacer);
+
+    --ak-c-modal-box__footer--BlockSpacer: clamp(0.25em, var(--pf-global--spacer--xl), 3cqb);
+    --pf-c-modal-box__footer--PaddingTop: var(--ak-c-modal-box__footer--BlockSpacer);
+    --pf-c-modal-box__footer--PaddingBottom: var(--ak-c-modal-box__footer--BlockSpacer);
+}
+/**
+     * Fixes padding in scrollable modal bodies, splitting the space between
+     * header and body.
+     */
+.pf-c-modal-box__header {
+    padding-bottom: calc(var(--pf-c-modal-box__body--PaddingTop) / 2);
+}
+
+.pf-c-modal-box__body {
+    padding-top: calc(var(--pf-c-modal-box__body--PaddingTop) / 2);
+}

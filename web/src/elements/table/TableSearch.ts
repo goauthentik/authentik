@@ -133,6 +133,7 @@ export class TableSearchForm extends AKElement {
         return html` <!-- @ts-ignore -->
             <input
                 aria-label=${ifPresent(this.label)}
+                part="search-input"
                 name="search"
                 type="search"
                 autocomplete="off"
@@ -147,6 +148,7 @@ export class TableSearchForm extends AKElement {
         return html`<form
             ${ref(this.#formRef)}
             class="pf-c-input-group"
+            part="search-form"
             @submit=${this.#submitListener}
             @reset=${this.reset}
         >

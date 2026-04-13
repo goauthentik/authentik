@@ -10,14 +10,20 @@ import { WizardStep } from "#components/ak-wizard/WizardStep";
 
 import { ApplicationWizardStyles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
 import {
-    type ApplicationWizardState,
-    type ApplicationWizardStateUpdate,
+    type ApplicationWizardContext,
+    type ApplicationWizardContextUpdate,
 } from "#admin/applications/wizard/steps/providers/shared";
 
 import { ApplicationRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { property } from "lit/decorators.js";
+
+export interface ApplicationDispatchInit {
+    update?: ApplicationWizardContextUpdate | null;
+    destination?: string | null;
+    details?: NavigationEventInit | null;
+}
 
 /**
  * Base class for application wizard steps. Provides common functionality such as form handling and wizard state management.
@@ -28,7 +34,7 @@ export abstract class ApplicationWizardStep<T = Partial<ApplicationRequest>> ext
     static styles = [...WizardStep.styles, ...ApplicationWizardStyles];
 
     @property({ type: Object, attribute: false })
-    public wizard!: ApplicationWizardState;
+    public wizard!: ApplicationWizardContext;
 
     protected override wizardTitle = msg("New application");
     protected override wizardDescription = msg(
@@ -78,19 +84,15 @@ export abstract class ApplicationWizardStep<T = Partial<ApplicationRequest>> ext
 
     // This pattern became visible during development, and the order is important: wizard updating
     // and validation must complete before navigation is attempted.
-    public handleUpdate(
-        update?: ApplicationWizardStateUpdate,
-        destination?: string,
-        enable?: NavigationEventInit,
-    ) {
+    public dispatchEvents({ update, destination, details }: ApplicationDispatchInit): void {
         // Inform ApplicationWizard of content state
         if (update) {
             this.dispatchEvent(new WizardUpdateEvent(update));
         }
 
         // Inform WizardStepManager of steps state
-        if (destination || enable) {
-            this.dispatchEvent(new WizardNavigationEvent(destination, enable));
+        if (destination || details) {
+            this.dispatchEvent(new WizardNavigationEvent(details, destination));
         }
     }
 }

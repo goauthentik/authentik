@@ -20,6 +20,12 @@ export interface APIMessage {
     message: string;
     description?: string | TemplateResult;
     icon?: string;
+    /**
+     * An optional key to determine uniqueness of the message.
+     *
+     * Defaults to the message text.
+     */
+    key?: PropertyKey;
 }
 
 export class AKMessageEvent extends Event {

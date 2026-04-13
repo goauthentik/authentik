@@ -120,7 +120,7 @@ export class DataExportListPage extends TablePage<DataExport> {
         </dl>`;
     }
 
-    protected renderEmpty(_inner?: TemplateResult): TemplateResult {
+    protected renderEmpty(_inner?: TemplateResult): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon=${this.pageIcon}
                 ><span

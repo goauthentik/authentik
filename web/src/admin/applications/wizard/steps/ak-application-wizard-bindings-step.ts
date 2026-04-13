@@ -1,5 +1,4 @@
 import "#elements/EmptyState";
-import "#admin/applications/wizard/ak-wizard-title";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
 import "#components/ak-status-label";
@@ -40,13 +39,11 @@ const COLUMNS = [
 export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     label = msg("Configure Bindings");
 
-    get buttons(): WizardButton[] {
-        return [
-            { kind: "cancel" },
-            { kind: "back", destination: "provider" },
-            { kind: "next", destination: "submit" },
-        ];
-    }
+    protected buttons: WizardButton[] = [
+        { kind: "cancel" },
+        { kind: "back", destination: "provider" },
+        { kind: "next", destination: "submit" },
+    ];
 
     @query("ak-select-table")
     selectTable!: SelectTable;
@@ -64,6 +61,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     get bindingsAsColumns() {
         return this.wizard.bindings.map((binding, index) => {
             const { order, enabled, timeout } = binding;
+
             const isSet = P.union(P.string.minLength(1), P.number);
             const policy = match(binding)
                 .with({ policy: isSet }, (v) => msg(str`Policy ${v.policyObj?.name}`))
@@ -89,26 +87,32 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     // TODO Fix those dispatches so that we handle them here, in this component, and *choose* how to
     // forward them.
     onBindingEvent(binding?: number) {
-        this.handleUpdate({ currentBinding: binding ?? -1 }, "edit-binding", {
-            enable: "edit-binding",
+        this.dispatchEvents({
+            update: { currentBinding: binding ?? -1 },
+            destination: "edit-binding",
+            details: { enable: "edit-binding" },
         });
     }
 
-    onDeleteBindings() {
+    protected onDeleteBindings() {
         const toDelete = this.selectTable
             .json()
             .map((i) => (typeof i === "string" ? parseInt(i, 10) : i));
         const bindings = this.wizard.bindings.filter((binding, index) => !toDelete.includes(index));
-        this.handleUpdate({ bindings }, "bindings");
+
+        return this.dispatchEvents({
+            update: { bindings },
+            destination: "bindings",
+        });
     }
 
-    renderEmptyCollection() {
-        return html`<ak-wizard-title
-                >${msg("Configure Policy/User/Group Bindings")}</ak-wizard-title
-            >
-            <h6 class="pf-c-title pf-m-md">
+    protected renderEmptyCollection() {
+        return html`<h3 class="pf-c-wizard__main-title">
+                ${msg("Configure Policy/User/Group Bindings")}
+            </h3>
+            <h4 class="pf-c-title pf-m-md">
                 ${msg("These policies control which users can access this application.")}
-            </h6>
+            </h4>
             <div class="pf-c-card">
                 <ak-application-wizard-bindings-toolbar
                     @clickNew=${() => this.onBindingEvent()}
@@ -136,11 +140,11 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
             </div>`;
     }
 
-    renderCollection() {
-        return html` <ak-wizard-title>${msg("Configure Policy Bindings")}</ak-wizard-title>
-            <h6 class="pf-c-title pf-m-md">
+    protected renderCollection() {
+        return html`<h3 class="pf-c-wizard__main-title">${msg("Configure Policy Bindings")}</h3>
+            <h4 class="pf-c-title pf-m-md">
                 ${msg("These policies control which users can access this application.")}
-            </h6>
+            </h4>
             <ak-application-wizard-bindings-toolbar
                 @clickNew=${() => this.onBindingEvent()}
                 @clickDelete=${() => this.onDeleteBindings()}
@@ -155,7 +159,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
             ></ak-select-table>`;
     }
 
-    renderMain() {
+    protected renderMain() {
         if ((this.wizard.bindings ?? []).length === 0) {
             return this.renderEmptyCollection();
         }

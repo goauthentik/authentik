@@ -8,92 +8,34 @@ import "#elements/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { AKElement } from "#elements/Base";
-import { StrictUnsafe } from "#elements/utils/unsafe";
-import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
-import { Wizard } from "#elements/wizard/Wizard";
+import { SlottedTemplateResult } from "#elements/types";
+import { CreateWizard } from "#elements/wizard/CreateWizard";
 
 import { EndpointsApi, TypeCreate } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { CSSResult, html, TemplateResult } from "lit";
-import { property, query } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-endpoint-connector-wizard")
-export class EndpointConnectorWizard extends AKElement {
-    static styles: CSSResult[] = [PFButton];
+export class AKEndpointConnectorWizard extends CreateWizard {
+    #api = new EndpointsApi(DEFAULT_CONFIG);
 
-    @property()
-    createText = msg("Create");
+    public static override verboseName = msg("Endpoint Connector");
+    public static override verboseNamePlural = msg("Endpoint Connectors");
 
-    @property({ attribute: false })
-    connectorTypes: TypeCreate[] = [];
+    protected apiEndpoint = (requestInit?: RequestInit): Promise<TypeCreate[]> => {
+        return this.#api.endpointsConnectorsTypesList(requestInit);
+    };
 
-    @query("ak-wizard")
-    wizard?: Wizard;
-
-    firstUpdated(): void {
-        new EndpointsApi(DEFAULT_CONFIG).endpointsConnectorsTypesList().then((types) => {
-            this.connectorTypes = types;
-        });
-    }
-
-    render(): TemplateResult {
-        return html`
-            <ak-wizard
-                .steps=${["initial"]}
-                header=${msg("New connector")}
-                description=${msg("Create a new connector.")}
-            >
-                <ak-wizard-page-type-create
-                    slot="initial"
-                    .types=${this.connectorTypes}
-                    layout=${TypeCreateWizardPageLayouts.grid}
-                    @select=${(ev: CustomEvent<TypeCreate>) => {
-                        if (!this.wizard) return;
-                        const idx = this.wizard.steps.indexOf("initial") + 1;
-                        // Exclude all current steps starting with type-,
-                        // this happens when the user selects a type and then goes back
-                        this.wizard.steps = this.wizard.steps.filter(
-                            (step) => !step.startsWith("type-"),
-                        );
-                        this.wizard.steps.splice(
-                            idx,
-                            0,
-                            `type-${ev.detail.component}-${ev.detail.modelName}`,
-                        );
-                        this.wizard.isValid = true;
-                    }}
-                >
-                    <div slot="above-form">
-                        <p>
-                            ${msg(
-                                "Connectors are required to create devices. Depending on connector type, agents either directly talk to them or they talk to and external API to create devices.",
-                            )}
-                        </p>
-                    </div>
-                </ak-wizard-page-type-create>
-                ${this.connectorTypes.map((type) => {
-                    return html`
-                        <ak-wizard-page-form
-                            slot=${`type-${type.component}-${type.modelName}`}
-                            label=${msg(str`Create ${type.name}`)}
-                        >
-                            ${StrictUnsafe(type.component)}
-                        </ak-wizard-page-form>
-                    `;
-                })}
-                <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
-            </ak-wizard>
-        `;
+    protected override renderInitialPageContent(): SlottedTemplateResult {
+        return msg(
+            "Connectors are required to create devices. Depending on connector type, agents either directly talk to them or they talk to and external API to create devices.",
+        );
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-endpoint-connector-wizard": EndpointConnectorWizard;
+        "ak-endpoint-connector-wizard": AKEndpointConnectorWizard;
     }
 }

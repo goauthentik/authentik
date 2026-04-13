@@ -6,6 +6,7 @@ import { APIMessage, MessageLevel } from "#common/messages";
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/messages/styles.css";
 import { ifPresent } from "#elements/utils/attributes";
+import { findTopmost } from "#elements/utils/render-roots";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -27,9 +28,9 @@ const logger = ConsoleLogger.prefix("messages");
  *
  * @todo Consider making this a static method on singleton {@linkcode MessageContainer}
  */
-export function showMessage(message: APIMessage | null, unique = false): void {
+export function showMessage(message: APIMessage | null, unique: boolean = false): boolean {
     if (!message) {
-        return;
+        return false;
     }
 
     if (!message.message.trim()) {
@@ -39,17 +40,21 @@ export function showMessage(message: APIMessage | null, unique = false): void {
         message.description ??= msg("Please check the browser console for more details.");
     }
 
-    const container = document.querySelector<MessageContainer>("ak-message-container");
+    const topmost = findTopmost();
+
+    const container = topmost.querySelector<MessageContainer>("ak-message-container");
 
     if (!container) {
         logger.warn("authentik/messages: No message container found in DOM");
         logger.info("authentik/messages: Message to show:", message);
 
-        return;
+        return false;
     }
 
     container.addMessage(message, unique);
     container.requestUpdate();
+
+    return true;
 }
 
 /**
@@ -87,13 +92,15 @@ export function showAPIErrorMessage(error: APIError, unique = false): void {
     );
 }
 
+export type MessageContainerAlignment = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
 @customElement("ak-message-container")
 export class MessageContainer extends AKElement {
     @property({ attribute: false })
     public messages: APIMessage[] = [];
 
-    @property()
-    alignment: "top" | "bottom" = "top";
+    @property({ type: String, reflect: true, useDefault: true })
+    public alignment: MessageContainerAlignment = "bottom-right";
 
     static styles: CSSResult[] = [PFAlertGroup, Styles];
 
@@ -120,18 +127,30 @@ export class MessageContainer extends AKElement {
         if (changedProperties.has("messages") && this.messages.length) {
             // Invoking the popover is only needed for browsers that support dialogs
             // that support HTMLDialogElement.showModal()
-            this.showPopover?.();
+            const source = findTopmost(this.ownerDocument);
+
+            this.showPopover?.({ source });
         }
     }
 
-    public addMessage(message: APIMessage, unique = false): void {
-        if (unique) {
-            const match = this.messages.some((m) => m.message === message.message);
+    public addMessage(message: APIMessage, unique?: boolean): boolean {
+        if (message.key) {
+            this.messages = [...this.messages.filter((m) => m.key !== message.key), message];
 
-            if (match) return;
+            return true;
+        }
+
+        if (unique) {
+            const existing = this.messages.find((m) => m.message === message.message);
+
+            if (existing) {
+                return false;
+            }
         }
 
         this.messages = [...this.messages, message];
+
+        return true;
     }
 
     #removeMessage = (message: APIMessage) => {
@@ -146,8 +165,10 @@ export class MessageContainer extends AKElement {
     render() {
         return html`<ul
             role="region"
+            part="messages"
             aria-label="${msg("Status messages")}"
             class="pf-c-alert-group pf-m-toast"
+            data-alignment=${this.alignment}
         >
             ${this.messages.toReversed().map((message, idx) => {
                 const { message: title, description, level, icon } = message;

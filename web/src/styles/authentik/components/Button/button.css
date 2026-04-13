@@ -18,6 +18,12 @@
     }
 }
 
+.ak-c-button--icon__progress {
+    position: absolute;
+    inset: 0;
+    line-height: calc(var(--pf-c-button--LineHeight) * 2);
+}
+
 a.pf-c-button {
     &.pf-m-plain,
     &.pf-m-secondary {

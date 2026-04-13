@@ -1,5 +1,6 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
+import "#components/ak-slug-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
@@ -19,6 +20,9 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-invitation-form")
 export class InvitationForm extends ModelForm<Invitation, string> {
+    public static override verboseName = msg("Invitation");
+    public static override verboseNamePlural = msg("Invitations");
+
     loadInstance(pk: string): Promise<Invitation> {
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsRetrieve({
             inviteUuid: pk,
@@ -44,28 +48,15 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     }
 
     protected override renderForm(): TemplateResult {
-        const checkSlug = (ev: InputEvent) => {
-            if (ev && ev.target && ev.target instanceof HTMLInputElement) {
-                ev.target.value = (ev.target.value ?? "").replace(/[^a-z0-9-]/g, "");
-            }
-        };
-
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    id="admin-stages-invitation-name"
-                    value="${this.instance?.name || ""}"
-                    class="pf-c-form-control"
-                    required
-                    @input=${(ev: InputEvent) => checkSlug(ev)}
-                    data-ak-slug="true"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+        return html`<ak-slug-input
+                label=${msg("Invitation Name")}
+                required
+                name="name"
+                value="${this.instance?.name || ""}"
+                help=${msg(
+                    "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
+                )}
+            ></ak-slug-input>
             <ak-form-element-horizontal label=${msg("Expires")} required name="expires">
                 <input
                     type="datetime-local"

@@ -1,4 +1,3 @@
-import "#admin/applications/wizard/ak-wizard-title";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-text-input";
@@ -23,8 +22,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
     label = msg("Configure Remote Access Provider");
 
     renderForm(provider: RACProvider) {
-        return html`
-            <ak-wizard-title>${this.label}</ak-wizard-title>
+        return html`<h3 class="pf-c-wizard__main-title">${this.label}</h3>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"
@@ -36,7 +34,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
 
                 <ak-form-element-horizontal
                     name="authorizationFlow"
-                    label=${msg("Authorization flow")}
+                    label=${msg("Authorization Flow")}
                     required
                 >
                     <ak-flow-search
@@ -75,8 +73,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                         </ak-form-element-horizontal>
                     </div>
                 </ak-form-group>
-            </form>
-        `;
+            </form>`;
     }
 
     render() {

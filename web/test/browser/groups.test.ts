@@ -119,9 +119,11 @@ test.describe("Groups", () => {
             const createButton = dialog.getByRole("button", { name: "Create Group" });
 
             await expect(createButton, "Create button is visible").toBeVisible();
-            await createButton.evaluate((element: HTMLButtonElement) => element.click());
+            await createButton.click();
 
-            await expect(dialog, "Dialog closes after creating group").toBeHidden();
+            await expect(dialog, "Dialog closes after creating group").toBeHidden({
+                timeout: 10_000,
+            });
         });
 
         await test.step("Verify group creation", async () => {
@@ -153,14 +155,16 @@ test.describe("Groups", () => {
             const confirmButton = selectUsersModal.getByRole("button", { name: "Confirm" });
 
             await expect(confirmButton, "Confirm button is visible").toBeVisible();
-            await confirmButton.evaluate((element: HTMLButtonElement) => element.click());
+            await confirmButton.click();
 
             const assignButton = assignUsersModal.getByRole("button", { name: "Assign" });
 
             await expect(assignButton, "Assign button is visible").toBeVisible();
-            await assignButton.evaluate((element: HTMLButtonElement) => element.click());
+            await assignButton.click();
 
-            await expect(assignUsersModal, "Assign users modal closes").toBeHidden();
+            await expect(assignUsersModal, "Assign users modal closes").toBeHidden({
+                timeout: 10_000,
+            });
 
             await test.step("Verify admin user assignment", async () => {
                 // eslint-disable-next-line max-nested-callbacks

@@ -40,9 +40,9 @@ import { Timestamp } from "#elements/table/shared";
 import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
+import { RecoveryButtons } from "#admin/users/recovery";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
-import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
 import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 
@@ -100,12 +100,6 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
             #reset-password-button {
                 margin-right: 0;
             }
-
-            #update-password-request .pf-c-button,
-            #ak-email-recovery-request .pf-c-button,
-            #ak-link-recovery-request .pf-c-button {
-                width: 100%;
-            }
         `,
     ];
 
@@ -147,7 +141,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
         return html`<div class="ak-button-collection">
             <button
                 class="pf-m-primary pf-c-button pf-m-block"
-                ${UserForm.asEditModalInvoker(user.pk)}
+                ${UserForm.asInstanceInvoker(user.pk)}
             >
                 ${msg("Edit User")}
             </button>
@@ -177,7 +171,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
             ${showImpersonate
                 ? html`<button
                       class="pf-c-button pf-m-tertiary pf-m-block"
-                      ${UserImpersonateForm.asEditModalInvoker(user.pk)}
+                      ${UserImpersonateForm.asInstanceInvoker(user.pk)}
                       aria-label=${msg(str`Impersonate ${displayName}`)}
                   >
                       <pf-tooltip
@@ -193,9 +187,9 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
 
     renderRecoveryButtons(user: User) {
         return html`<div class="ak-button-collection">
-            ${renderRecoveryButtons({
+            ${RecoveryButtons({
                 user,
-                brandHasRecoveryFlow: Boolean(this.brand.flowRecovery),
+                brandHasRecoveryFlow: !!this.brand.flowRecovery,
                 buttonClasses: "pf-m-block",
             })}
         </div>`;

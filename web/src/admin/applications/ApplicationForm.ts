@@ -27,7 +27,7 @@ import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { Application, CoreApi, Provider, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -40,8 +40,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
     #api = new CoreApi(DEFAULT_CONFIG);
 
-    public override entitySingular = msg("Application");
-    public override entityPlural = msg("Applications");
+    public static override verboseName = msg("Application");
+    public static override verboseNamePlural = msg("Applications");
 
     protected override async loadInstance(pk: string): Promise<Application> {
         const app = await this.#api.coreApplicationsRetrieve({
@@ -54,7 +54,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     }
 
     @property({ attribute: false })
-    public provider?: number;
+    public provider: number | null = null;
 
     @state()
     protected backchannelProviders: Provider[] = [];
@@ -115,10 +115,12 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         );
         const providerFromInstance = this.instance?.provider;
         const providerValue = providerFromInstance ?? this.provider;
-        const providerPrefilled = !this.instance && this.provider !== undefined;
+        const providerPrefilled = !this.instance && this.provider !== null;
 
         return html`
-            ${this.instance ? nothing : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
+            ${this.instance || this.provider
+                ? null
+                : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
             <ak-text-input
                 name="name"
                 autocomplete="off"

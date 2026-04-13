@@ -67,7 +67,7 @@ export type ApplicationWizardStateError = ValidationError | ApplicationTransacti
 // configured bindings" page in the wizard. The PolicyBinding is converted into a
 // PolicyBindingRequest during the submission phase.
 
-export interface ApplicationWizardState<
+export interface ApplicationWizardContext<
     P extends OneOfProvider = OneOfProvider,
     E = ApplicationTransactionValidationError,
 > {
@@ -80,7 +80,7 @@ export interface ApplicationWizardState<
     errors: E;
 }
 
-export interface ApplicationWizardStateUpdate {
+export interface ApplicationWizardContextUpdate {
     app?: Partial<ApplicationRequest>;
     providerModel?: string;
     provider?: OneOfProvider;

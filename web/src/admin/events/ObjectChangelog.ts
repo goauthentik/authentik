@@ -16,7 +16,7 @@ import { EventGeo, renderEventUser } from "#admin/events/utils";
 import { Event, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, PropertyValues, TemplateResult } from "lit";
+import { html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-object-changelog")
@@ -82,11 +82,11 @@ export class ObjectChangelog extends Table<Event> {
         ];
     }
 
-    renderExpanded(item: Event): TemplateResult {
+    renderExpanded(item: Event): SlottedTemplateResult {
         return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
     }
 
-    renderEmpty(): TemplateResult {
+    renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
                 ><span>${msg("No Events found.")}</span>

@@ -8,10 +8,12 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { createPaginatedResponse } from "#common/api/responses";
 import { isResponseErrorLike } from "#common/errors/network";
 
+import { ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPreviousValue } from "#elements/utils/properties";
 
+import { ObjectReviewForm } from "#admin/lifecycle/ObjectReviewForm";
 import { LifecycleIterationStatus } from "#admin/lifecycle/utils";
 
 import {
@@ -257,7 +259,7 @@ export class ObjectLifecyclePage extends Table<Review> {
         ];
     }
 
-    protected override renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-task"
                 ><span>${this.emptyStateMessage}</span></ak-empty-state
@@ -267,18 +269,12 @@ export class ObjectLifecyclePage extends Table<Review> {
 
     protected renderObjectCreate(): SlottedTemplateResult {
         if (!this.iteration?.userCanReview) {
-            return nothing;
+            return null;
         }
 
-        return html`<ak-forms-modal>
-            <span slot="submit">${msg("Confirm Review")}</span>
-            <span slot="header">${msg("Confirm this object has been reviewed")}</span>
-            <ak-object-review-form slot="form" .iteration=${this.iteration}>
-            </ak-object-review-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${msg("Confirm Review")}
-            </button>
-        </ak-forms-modal>`;
+        return ModalInvokerButton(ObjectReviewForm, {
+            iteration: this.iteration,
+        });
     }
 
     protected override render(): SlottedTemplateResult {

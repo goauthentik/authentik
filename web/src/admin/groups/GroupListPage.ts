@@ -7,6 +7,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -83,24 +84,14 @@ export class GroupListPage extends TablePage<Group> {
             >`,
             html`${Array.from(item.users || []).length}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
-            html`<div>
-                <button
-                    class="pf-c-button pf-m-plain"
-                    aria-label=${msg(str`Edit "${item.name}"`)}
-                    ${GroupForm.asEditModalInvoker(item.pk)}
-                >
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(GroupForm, item.pk, item.name)}
             </div>`,
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
-        return html`<button class="pf-c-button pf-m-primary" ${GroupForm.asModalInvoker()}>
-            ${msg("New Group")}
-        </button>`;
+    protected renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(GroupForm);
     }
 }
 

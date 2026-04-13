@@ -10,17 +10,19 @@ import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
 import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
+import { IconEditButton, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { FlowForm } from "#admin/flows/FlowForm";
 import { DesignationToLabel } from "#admin/flows/utils";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
@@ -29,17 +31,18 @@ export class FlowListPage extends TablePage<Flow> {
     static styles = [...super.styles, PFBanner];
 
     protected override searchEnabled = true;
-    public pageTitle = msg("Flows");
-    public pageDescription = msg(
+    public override searchPlaceholder = msg("Search for a flow by name or identifier...");
+
+    public override pageTitle = msg("Flows");
+    public override pageDescription = msg(
         "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
     );
-    public pageIcon = "pf-icon pf-icon-process-automation";
+    public override pageIcon = "pf-icon pf-icon-process-automation";
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    @property()
-    order = "slug";
+    public override order = "slug";
 
     async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
@@ -90,21 +93,8 @@ export class FlowListPage extends TablePage<Flow> {
             item.name,
             Array.from(item.stages || []).length,
             Array.from(item.policies || []).length,
-            html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Save Changes")}</span>
-                    <span slot="header">${msg("Update Flow")}</span>
-                    <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
-                    <button
-                        slot="trigger"
-                        class="pf-c-button pf-m-plain"
-                        aria-label=${msg(str`Edit "${item.name}"`)}
-                    >
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(FlowForm, item.slug, item.name)}
                 <button
                     aria-label=${msg(str`Execute "${item.name}"`)}
                     class="pf-c-button pf-m-plain"
@@ -132,39 +122,37 @@ export class FlowListPage extends TablePage<Flow> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create Flow")}</span>
-                <span slot="header">${msg("New Flow")}</span>
-                <ak-flow-form slot="form"> </ak-flow-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Flow")}</button>
-            </ak-forms-modal>
-            <ak-forms-modal>
-                <span slot="submit">${msg("Import")}</span>
-                <span slot="header">${msg("Import Flow")}</span>
-                <ak-blueprint-import-form slot="form">
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href=${docLink("/add-secure-apps/flows-stages/flow/examples/flows/")}
-                        slot="read-more-link"
-                        >${msg("Flow Examples")}</a
-                    >
-                    <span slot="banner-warning">
-                        ${msg(
-                            "Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).",
-                        )}<br />${msg(
-                            "You should only import files from trusted sources and review blueprints before importing them.",
-                        )}
-                    </span>
-                </ak-blueprint-import-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Import")}</button>
-            </ak-forms-modal>
-        `;
+    protected renderObjectCreate(): SlottedTemplateResult {
+        return [
+            ModalInvokerButton(FlowForm),
+            html`<button
+                class="pf-c-button pf-m-primary"
+                type="button"
+                ${modalInvoker(() => {
+                    return html`<ak-blueprint-import-form>
+                        <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href=${docLink("/add-secure-apps/flows-stages/flow/examples/flows/")}
+                            slot="read-more-link"
+                            >${msg("Flow Examples")}</a
+                        >
+                        <span slot="banner-warning">
+                            ${msg(
+                                "Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).",
+                            )}<br />${msg(
+                                "You should only import files from trusted sources and review blueprints before importing them.",
+                            )}
+                        </span>
+                    </ak-blueprint-import-form>`;
+                })}
+            >
+                ${msg("Import")}
+            </button>`,
+        ];
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): SlottedTemplateResult {
         return html`
             ${super.renderToolbar()}
             <ak-forms-confirm

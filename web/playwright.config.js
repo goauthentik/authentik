@@ -36,6 +36,7 @@ export default defineConfig({
         testIdAttribute: "data-test-id",
         baseURL,
         trace: "on-first-retry",
+        colorScheme: "dark",
         launchOptions: {
             logger: {
                 isEnabled() {

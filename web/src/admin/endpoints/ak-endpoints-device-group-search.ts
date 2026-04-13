@@ -10,6 +10,7 @@ import {
     EndpointsDeviceAccessGroupsListRequest,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
@@ -85,6 +86,7 @@ export class EndpointsDeviceAccessGroupSearch extends CustomListenerElement(AKEl
     render() {
         return html`
             <ak-search-select
+                placeholder=${msg("Select a device access group...")}
                 .fetchObjects=${fetchObjects}
                 .renderElement=${renderElement}
                 .value=${renderValue}

@@ -92,6 +92,43 @@ function resolvePropertyName<T extends WrappedPropertyDeclaration>(
 
     return key;
 }
+
+/**
+ * Given a Lit Element constructor and a record of properties,
+ * filter the properties to include only those that are declared in the constructor's
+ * `properties` or `observedAttributes`, and map them to their appropriate prefixed names for rendering.
+ *
+ * @param ElementConstructor The constructor of the Lit Element to analyze.
+ * @param props A record of properties to filter and map.
+ * @returns A new record containing only the properties that are declared in the constructor, with their appropriate prefixed names.
+ */
+export function mapElementProps(
+    ElementConstructor: typeof LitElement,
+    props?: Record<string, unknown>,
+): Record<string, unknown> {
+    const { elementProperties } = ElementConstructor;
+    const observedAttributes = new Set(ElementConstructor.observedAttributes);
+
+    const filteredProps: Record<string, unknown> = {};
+
+    for (const [propName, propValue] of Object.entries(props || {})) {
+        const propDeclaration = elementProperties.get(propName);
+
+        if (propDeclaration) {
+            const prefix = resolvePrefix(propDeclaration);
+            const name = resolvePropertyName(propDeclaration, prefix, propName);
+            filteredProps[`${prefix}${name}`] = propValue;
+            continue;
+        }
+
+        if (observedAttributes.has(propName) || propName in ElementConstructor.prototype) {
+            filteredProps[propName] = String(propValue);
+        }
+    }
+
+    return filteredProps;
+}
+
 /**
  * Given a pre-registered custom element tag name and a record of properties,
  * render the element with the given properties applied.
@@ -143,25 +180,7 @@ export function StrictUnsafe<T extends string>(
             throw new TypeError(`Custom element ${tagName} is not an authentik element`);
         }
 
-        const { elementProperties } = ElementConstructor;
-        const observedAttributes = new Set(ElementConstructor.observedAttributes);
-
-        const filteredProps: Record<string, unknown> = {};
-
-        for (const [propName, propValue] of Object.entries(props || {})) {
-            const propDeclaration = elementProperties.get(propName);
-
-            if (propDeclaration) {
-                const prefix = resolvePrefix(propDeclaration);
-                const name = resolvePropertyName(propDeclaration, prefix, propName);
-                filteredProps[`${prefix}${name}`] = propValue;
-                continue;
-            }
-
-            if (observedAttributes.has(propName) || propName in ElementConstructor.prototype) {
-                filteredProps[propName] = String(propValue);
-            }
-        }
+        const filteredProps = mapElementProps(ElementConstructor, props);
 
         return staticHTML`<${unsafeStatic(tagName)} ${spread(filteredProps)}></${unsafeStatic(tagName)}>`;
     });

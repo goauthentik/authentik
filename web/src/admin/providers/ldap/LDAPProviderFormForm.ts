@@ -39,12 +39,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 // Authentication flows, but we're storing them in the Authorization field of the target Provider.
 
 export interface LDAPProviderFormProps {
-    provider?: Partial<LDAPProvider>;
+    provider?: Partial<LDAPProvider> | null;
     errors?: ValidationError;
     brand?: CurrentBrand;
 }
 
-export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFormProps) {
+export function renderForm({ provider, errors = {}, brand }: LDAPProviderFormProps) {
+    provider ||= {};
+
     return html`
         <ak-text-input
             name="name"
@@ -56,7 +58,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
             required
         ></ak-text-input>
         <ak-radio-input
-            label=${msg("Bind mode")}
+            label=${msg("Bind Mode")}
             name="bindMode"
             .options=${bindModeOptions}
             .value=${provider.bindMode}
@@ -65,7 +67,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
         </ak-radio-input>
 
         <ak-radio-input
-            label=${msg("Search mode")}
+            label=${msg("Search Mode")}
             name="searchMode"
             .options=${searchModeOptions}
             .value=${provider.searchMode}
@@ -84,13 +86,13 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
         <ak-form-group open label="${msg("Flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Bind flow")}
+                    label=${msg("Bind Flow")}
                     required
                     name="authorizationFlow"
                     .errorMessages=${errors.authorizationFlow}
                 >
                     <ak-branded-flow-search
-                        label=${msg("Bind flow")}
+                        label=${msg("Bind Flow")}
                         flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authorizationFlow}
                         .brandFlow=${brand?.flowAuthentication}
@@ -102,7 +104,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
                 </ak-form-element-horizontal>
 
                 <ak-form-element-horizontal
-                    label=${msg("Unbind flow")}
+                    label=${msg("Unbind Flow")}
                     name="invalidationFlow"
                     required
                 >
@@ -150,7 +152,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
                 </ak-form-element-horizontal>
 
                 <ak-text-input
-                    label=${msg("TLS Server name")}
+                    label=${msg("TLS Server Name")}
                     name="tlsServerName"
                     value="${provider.tlsServerName ?? ""}"
                     .errorMessages=${errors.tlsServerName}
@@ -159,7 +161,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
                 ></ak-text-input>
 
                 <ak-number-input
-                    label=${msg("UID start number")}
+                    label=${msg("UID Start Number")}
                     required
                     name="uidStartNumber"
                     value="${provider.uidStartNumber ?? 2000}"
@@ -168,7 +170,7 @@ export function renderForm({ provider = {}, errors = {}, brand }: LDAPProviderFo
                 ></ak-number-input>
 
                 <ak-number-input
-                    label=${msg("GID start number")}
+                    label=${msg("GID Start Number")}
                     required
                     name="gidStartNumber"
                     value="${provider.gidStartNumber ?? 4000}"

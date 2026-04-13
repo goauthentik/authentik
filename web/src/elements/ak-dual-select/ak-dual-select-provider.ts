@@ -60,6 +60,9 @@ export class AkDualSelectProvider extends CustomListenerElement(AKControlElement
     @property({ attribute: "selected-label" })
     public selectedLabel = msg("Selected options");
 
+    @property({ type: String })
+    public name: string | null = null;
+
     /**
      * When true, the selected pane preserves insertion order instead of sorting alphabetically.
      *
@@ -92,11 +95,11 @@ export class AkDualSelectProvider extends CustomListenerElement(AKControlElement
     @property({ attribute: "search-delay", type: Number })
     public searchDelay = 250;
 
-    public get value() {
+    public get value(): Array<string | number> {
         return this.dualSelector.value!.selected.map(([k, _]) => k);
     }
 
-    public json() {
+    public toJSON(): Array<string | number> {
         return this.value;
     }
 

@@ -11,6 +11,9 @@ import { msg } from "@lit/localize";
  * @prop {number} instancePk - The primary key of the instance to load.
  */
 export abstract class BaseProviderForm<T extends object> extends ModelForm<T, number> {
+    public static override verboseName = msg("Provider");
+    public static override verboseNamePlural = msg("Providers");
+
     public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated provider.")

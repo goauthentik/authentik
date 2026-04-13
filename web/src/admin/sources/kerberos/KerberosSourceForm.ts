@@ -2,10 +2,10 @@ import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-secret-text-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-file-search-input";
 import "#components/ak-switch-input";
-import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -86,14 +86,16 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-text-input
-                name="name"
-                label=${msg("Name")}
-                value=${ifDefined(this.instance?.name)}
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
                 required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
             ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-kerberos-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
@@ -350,7 +352,7 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search

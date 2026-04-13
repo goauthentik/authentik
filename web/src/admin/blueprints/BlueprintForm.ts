@@ -31,6 +31,9 @@ export enum BlueprintSource {
 
 @customElement("ak-blueprint-form")
 export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
+    public static override verboseName = msg("Blueprint");
+    public static override verboseNamePlural = msg("Blueprints");
+
     @state()
     protected source: BlueprintSource = BlueprintSource.File;
 

@@ -2,6 +2,7 @@ import "#elements/forms/Radio";
 import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
@@ -51,7 +52,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     @property({ attribute: false })
     plexResources?: PlexResource[];
 
-    get defaultInstance(): PlexSource | undefined {
+    public override createDefaultInstance(): PlexSource {
         return {
             clientId: randomString(40, ascii_letters + digits),
         } as PlexSource;
@@ -142,23 +143,21 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-plex-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 input-hint="code"
             ></ak-slug-input>
-
             <ak-switch-input
                 name="enabled"
                 label=${msg("Enabled")}
@@ -276,7 +275,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search

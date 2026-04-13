@@ -3,8 +3,10 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -36,6 +38,11 @@ export function rbacPermissionPair(item: Permission): DualSelectPair {
 
 @customElement("ak-initial-permissions-form")
 export class InitialPermissionsForm extends ModelForm<InitialPermissions, string> {
+    public static override verboseName = msg("Initial Permissions");
+    public static override verboseNamePlural = msg("Initial Permissions");
+
+    public override size = PFSize.XLarge;
+
     loadInstance(pk: string): Promise<InitialPermissions> {
         return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsRetrieve({
             id: Number(pk),
@@ -62,16 +69,17 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
 
     protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Initial Permission Name")}
+                placeholder=${msg("Type a name for these initial permissions...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            >
+            </ak-text-input>
             <ak-form-element-horizontal label=${msg("Role")} required name="role">
                 <ak-search-select
+                    placeholder=${msg("Select a role...")}
                     .fetchObjects=${async (query?: string): Promise<Role[]> => {
                         const args: RbacRolesListRequest = {
                             ordering: "name",

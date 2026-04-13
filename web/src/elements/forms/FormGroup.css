@@ -1,6 +1,6 @@
 :host([theme="dark"]) {
-    --marker-color: var(--pf-global--Color--300);
-    --marker-color-hover: var(--pf-global--Color--200);
+    --ak-c-form-group__marker--Color: var(--pf-global--Color--300);
+    --ak-c-form-group__marker--ColorHover: var(--pf-global--Color--200);
 
     details {
         @media (prefers-contrast: more) {
@@ -16,16 +16,25 @@ details {
     }
 
     &::details-content {
-        padding-inline-start: var(--pf-c-form__field-group--GridTemplateColumns--toggle);
+        padding-inline-start: calc(
+            var(--pf-global--spacer--lg) + var(--pf-global--spacer--form-element)
+        );
         padding-inline-end: var(--pf-global--spacer--md);
         padding-block-end: var(--pf-global--spacer--sm);
     }
 
     & > summary {
+        backdrop-filter: var(--ak-c-dialog__backdrop--BackdropFilter);
+
+        inset-block-start: 0;
+        position: sticky;
+        background: var(--ak-c-form-group--BackgroundColor, transparent);
+        z-index: var(--ak-c-form-group--ZIndex, 1);
+
         list-style-position: outside;
-        margin-inline-start: 2em;
+        margin-inline-start: var(--pf-global--spacer--sm);
         padding-inline-start: calc(var(--pf-global--spacer--md) + 0.25rem);
-        padding-block: var(--pf-global--spacer--sm);
+        padding-block: var(--pf-global--spacer-xs);
         padding-inline: var(--pf-global--spacer--md);
         list-style-type: "\f105";
         cursor: pointer;
@@ -35,27 +44,29 @@ details {
 
         @media (prefers-contrast: more) {
             text-decoration: underline;
+            margin-inline-start: var(--pf-global--spacer--lg);
+            padding-block: var(--pf-global--spacer--sm);
         }
 
         &::marker {
-            color: var(--marker-color, var(--pf-global--Color--200));
+            color: var(--ak-c-form-group__marker--Color, var(--pf-global--Color--200));
             transition: var(--pf-c-form__field-group-toggle-icon--Transition);
             font-family: "Font Awesome 5 Free";
             font-weight: 900;
         }
 
         &:hover::marker {
-            color: var(--marker-color-hover, var(--pf-global--Color--100));
+            color: var(--ak-c-form-group__marker--ColorHover, var(--pf-global--Color--100));
         }
-    }
-
-    &:not([open]) summary {
-        padding-block: var(--pf-global--spacer--xs);
     }
 
     &[open] summary {
         list-style-type: "\f107";
     }
+}
+
+[part="label"] {
+    padding: var(--pf-global--spacer--xs);
 }
 
 .pf-c-form__field-group-header-description {

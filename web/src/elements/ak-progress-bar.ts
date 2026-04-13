@@ -88,14 +88,14 @@ export class ProgressBar extends AKElement {
                 ? "pf-m-indeterminate"
                 : ""} ${this.size}"
         >
-            ${this.hasSlotted("description")
+            ${this.findSlotted("description")
                 ? html`
                       <div class="pf-c-progress__description">
                           <slot name="description"></slot>
                       </div>
                   `
                 : nothing}
-            ${this.hasSlotted("status")
+            ${this.findSlotted("status")
                 ? html`
                       <div class="pf-c-progress__status" aria-hidden="true">
                           <span class="pf-c-progress__measure">
@@ -111,7 +111,7 @@ export class ProgressBar extends AKElement {
                 aria-valuemax=${this.max}
                 aria-valuenow=${ifPresent(this.indeterminate, this.value)}
                 aria-label=${ifPresent(this.label)}
-                aria-describedby=${this.hasSlotted("description") ? "description" : nothing}
+                aria-describedby=${this.findSlotted("description") ? "description" : nothing}
             >
                 <div
                     class="pf-c-progress__indicator"

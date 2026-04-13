@@ -13,11 +13,16 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-recovery-link-form")
 export class UserRecoveryLinkForm extends Form<UserRecoveryLinkRequest> {
-    @property({ attribute: false })
-    user!: User;
+    #api = new CoreApi(DEFAULT_CONFIG);
 
-    async send(data: UserRecoveryLinkRequest): Promise<Link> {
-        const response = await new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryCreate({
+    @property({ attribute: false })
+    public user!: User;
+
+    public override submitLabel = msg("Create link");
+    public override headline = msg("Create recovery link");
+
+    protected async send(data: UserRecoveryLinkRequest): Promise<Link> {
+        const response = await this.#api.coreUsersRecoveryCreate({
             id: this.user.pk,
             userRecoveryLinkRequest: data,
         });
@@ -27,7 +32,7 @@ export class UserRecoveryLinkForm extends Form<UserRecoveryLinkRequest> {
         return response;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`
             <ak-text-input
                 name="tokenDuration"
@@ -36,8 +41,7 @@ export class UserRecoveryLinkForm extends Form<UserRecoveryLinkRequest> {
                 .bighelp=${html`<p class="pf-c-form__helper-text">
                     ${msg("If a recovery token already exists, its duration is updated.")}
                 </p>`}
-            >
-            </ak-text-input>
+            ></ak-text-input>
         `;
     }
 }

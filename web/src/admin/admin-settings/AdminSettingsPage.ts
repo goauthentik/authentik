@@ -66,19 +66,18 @@ export class AdminSettingsPage extends AKElement {
         if (!this.settings) return nothing;
 
         return html`
-            <section class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
+            <main class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
                         <ak-admin-settings-form
                             id="form"
                             .settings=${this.settings}
-                            action-label=${msg("Update settings")}
                             @ak-form-submitted=${{ handleEvent: this.#refresh, passive: true }}
                         >
                         </ak-admin-settings-form>
                     </div>
                 </div>
-            </section>
+            </main>
         `;
     }
 

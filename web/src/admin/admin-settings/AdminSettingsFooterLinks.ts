@@ -43,13 +43,16 @@ export class FooterLinkInput extends AKControlElement<FooterLink> {
     @queryAll(".ak-form-control")
     controls?: HTMLInputElement[];
 
-    json() {
+    @property({ type: String })
+    public name: string | null = null;
+
+    toJSON(): FooterLink {
         return Object.fromEntries(
             Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
         ) as unknown as FooterLink;
     }
 
-    get isValid() {
+    get valid() {
         const href = this.json()?.href ?? "";
         return hasLegalScheme(href) && URL.canParse(href);
     }

@@ -6,6 +6,7 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
@@ -28,7 +29,7 @@ export interface ISearchSelectView {
     name?: string;
     placeholder: string;
     managed: boolean;
-    emptyOption: string;
+    emptyOption: string | null;
 }
 
 /**
@@ -165,7 +166,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: String })
-    public placeholder: string = msg("Select an object.");
+    public placeholder: string = msg("Select an object...");
 
     /**
      * A unique ID to associate with the input and label.
@@ -190,8 +191,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      *
      * @attr
      */
-    @property()
-    public emptyOption = "---------";
+    @property({ type: String })
+    public emptyOption: string | null = null;
 
     //#endregion
 
@@ -438,8 +439,11 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     //#region Render
 
     public override render() {
-        const emptyOption = this.blankable ? this.emptyOption : undefined;
-        const open = this.open;
+        const { open } = this;
+
+        const emptyOption = this.blankable
+            ? this.emptyOption || this.placeholder || msg("Select an option...")
+            : null;
 
         return html`<div class="pf-c-select" part="ak-search-select">
                 <div class="pf-c-select__toggle pf-m-typeahead" part="ak-search-select-toggle">
@@ -481,7 +485,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                               value=${ifDefined(this.value)}
                               @change=${this.#changeListener}
                               @blur=${this.#blurListener}
-                              emptyOption=${ifDefined(emptyOption)}
+                              emptyOption=${ifPresent(emptyOption)}
                               @keydown=${this.#listKeydownListener}
                               @keyup=${this.#listKeyupListener}
                           ></ak-list-select>

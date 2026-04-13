@@ -5,6 +5,7 @@ import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -17,8 +18,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-role-form")
 export class RoleForm extends ModelForm<Role, string> {
-    public override entitySingular = msg("Role");
-    public override entityPlural = msg("Roles");
+    public static override verboseName = msg("Role");
+    public static override verboseNamePlural = msg("Roles");
+
+    public override size = PFSize.Medium;
 
     loadInstance(pk: string): Promise<Role> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesRetrieve({

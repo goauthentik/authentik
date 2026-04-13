@@ -99,11 +99,14 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
 
 export interface SCIMProviderFormProps {
     update: () => void;
-    provider?: Partial<SCIMProvider>;
-    errors?: ValidationError;
+    provider?: Partial<SCIMProvider> | null;
+    errors?: ValidationError | null;
 }
 
-export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderFormProps) {
+export function renderForm({ provider, errors, update }: SCIMProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
     return html`
         <ak-text-input
             name="name"

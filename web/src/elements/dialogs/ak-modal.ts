@@ -1,15 +1,16 @@
+import Styles from "./ak-modal.css";
+import DialogStyles from "./dialog.css";
+
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
-import { isTransclusionElement, TransclusionElement } from "#elements/modals/shared";
-import Styles from "#elements/modals/styles.css";
+import { DialogInit, renderDialog } from "#elements/dialogs";
 import {
-    DialogInit,
-    modalInvoker,
-    ModalInvokerDirectiveResult,
-    ModalInvokerInit,
-    renderDialog,
-} from "#elements/modals/utils";
+    isTransclusionElement,
+    TransclusionChildElement,
+    TransclusionParentElement,
+    TransclusionParentSymbol,
+} from "#elements/dialogs/shared";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
@@ -28,20 +29,35 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+/**
+ * A component used to display any content in a modal dialog with a consistent style and behavior.
+ * This component may be used directly to wrap content, or extended for more specific modal implementations.
+ *
+ * @see {@link renderDialog} for a low-level API to render arbitrary content in a modal dialog.
+ *
+ * @remarks
+ * The flexibility this component offers is made possible with a parent `<dialog>` element.
+ * The browser-native `<dialog>` element provides the underlying functionality for modal behavior,
+ * along with screen-reader friendly semantics and accessibility features.
+ *
+ * The content within the modal is typically slotted in, however this can be
+ * customized by overriding the `render` method. If your slotted content includes
+ * a header or actions, consider implementing {@linkcode TransclusionChildElement}
+ * to allow this modal to automatically apply appropriate styles and structure.
+ */
 @customElement("ak-modal")
-export class AKModal extends AKElement {
+export class AKModal extends AKElement implements TransclusionParentElement {
     public static shadowRootOptions: ShadowRootInit = {
         ...AKElement.shadowRootOptions,
         delegatesFocus: true,
     };
 
-    /**
-     * An optional aria-label for the modal dialog, used for accessibility purposes.
-     */
-    public static formatARIALabel?(): string;
+    public [TransclusionParentSymbol] = true;
 
     /**
      * Whether the modal should open the parent dialog element when it is connected to the DOM.
+     *
+     * @default true
      */
     public static openOnConnect = true;
 
@@ -49,19 +65,11 @@ export class AKModal extends AKElement {
      * Show a modal containing this element.
      *
      * @see {@linkcode renderDialog} for the underlying implementation.
+     *
      * @returns A promise that resolves when the modal is closed.
      */
     public static showModal(init?: DialogInit) {
         return renderDialog(new this(), init);
-    }
-
-    /**
-     * A helper method to create an invoker for a modal containing this form.
-     *
-     * @see {@linkcode modalInvoker} for the underlying implementation.
-     */
-    public static asModalInvoker(init?: ModalInvokerInit): ModalInvokerDirectiveResult {
-        return modalInvoker(this, init);
     }
 
     public static styles: CSSResult[] = [
@@ -75,7 +83,7 @@ export class AKModal extends AKElement {
         Styles,
     ];
 
-    #hostResizeObserver: ResizeObserver;
+    public static hostStyles: CSSResult[] = [DialogStyles];
 
     //#region Protected Properties
 
@@ -86,11 +94,20 @@ export class AKModal extends AKElement {
      */
     protected scrollContainerRef = createRef<HTMLElement>();
 
+    protected get scrollContainer(): Element {
+        return this.scrollContainerRef.value || this;
+    }
+
     /**
      * A ref to the modal title element, used for accessibility purposes (e.g., setting `aria-labelledby` on the dialog).
      */
     protected modalTitleRef = createRef<HTMLElement>();
 
+    /**
+     * The parent element of the modal content.
+     *
+     * A runtime error will be thrown if this is not an {@linkcode HTMLDialogElement}.
+     */
     declare parentElement: HTMLDialogElement | null;
 
     //#region Public Properties
@@ -114,17 +131,30 @@ export class AKModal extends AKElement {
         }
     }
 
-    @property({ type: String })
-    public size: PFSize = PFSize.Large;
+    @property({ type: String, useDefault: true })
+    public size: PFSize | null = null;
 
-    @property({ type: String })
+    @property({ type: String, attribute: "cancel-button-label", useDefault: true })
     public cancelButtonLabel: string | null = null;
+
+    /**
+     * An optional aria-label formatter.
+     */
+    public formatARIALabel?(): string;
+
+    //#endregion
+
+    //#region Protected Properties
 
     protected defaultSlot: HTMLSlotElement;
     protected beforeBodySlot: HTMLSlotElement;
+    protected dialogBody: HTMLDivElement;
 
     @state()
-    protected slottedElement: TransclusionElement | null = null;
+    protected slottedElement: TransclusionChildElement | null = null;
+
+    @property({ attribute: false })
+    public slottedElementUpdatedAt: Date | null = null;
 
     //#endregion
 
@@ -142,14 +172,9 @@ export class AKModal extends AKElement {
             return;
         }
 
-        dialogElement.addEventListener("transitionend", this.fadeInListener, {
-            once: true,
-            passive: true,
-        });
-
         dialogElement.showModal();
 
-        dialogElement.classList.add("fade-in");
+        dialogElement.classList.add("ak-c-dialog--m-fade-in");
     }
 
     /**
@@ -168,11 +193,14 @@ export class AKModal extends AKElement {
 
         dialogElement.addEventListener(
             "transitionend",
-            (event) => this.delegateClose(event, returnValue),
-            { once: true, passive: true },
+            this.delegateClose.bind(this, returnValue),
+            {
+                passive: true,
+                once: true,
+            },
         );
 
-        dialogElement.classList.remove("fade-in", "fade-in-complete");
+        dialogElement.classList.remove("ak-c-dialog--m-fade-in");
     }
 
     //#endregion
@@ -189,103 +217,29 @@ export class AKModal extends AKElement {
         this.show();
     };
 
-    #heightSyncFrameID = -1;
-    /**
-     * A map of observed elements to their expected sizes,
-     * used to prevent unnecessary height synchronizations.
-     */
-    #expectedSizes = new WeakMap<Element, number>();
-
-    protected lastScrollHeight = 0;
-
-    protected synchronizeHeight: ResizeObserverCallback = ([entry]) => {
-        this.#heightSyncFrameID = requestAnimationFrame(() => {
-            const dialogElement = this.parentElement;
-
-            if (!dialogElement || !dialogElement.open) {
-                return;
-            }
-
-            const expectedSize = this.#expectedSizes.get(entry.target);
-            const blockSize = Math.ceil(entry.borderBoxSize[0].blockSize);
-            const desiredSize = Math.max(entry.target.scrollHeight, blockSize);
-
-            if (desiredSize === expectedSize) {
-                return;
-            }
-
-            dialogElement.style.height = desiredSize + "px";
-
-            this.#expectedSizes.set(entry.target, desiredSize);
-        });
-    };
-
-    #heightResetAnimationFrameID = -1;
-
-    protected resetHeight = () => {
-        cancelAnimationFrame(this.#heightResetAnimationFrameID);
-        cancelAnimationFrame(this.#heightSyncFrameID);
-
-        this.#heightResetAnimationFrameID = requestAnimationFrame(() => {
-            if (this.parentElement) {
-                this.parentElement.style.height = "";
-            }
-
-            this.#heightResetAnimationFrameID = requestAnimationFrame(() => {
-                const scrollContainer = this.scrollContainerRef.value || this;
-                const scrollHeight = scrollContainer.scrollHeight;
-
-                this.lastScrollHeight = scrollHeight;
-            });
-        });
-    };
-
-    protected fadeInListener = async (event: TransitionEvent) => {
-        this.logger.debug("fade-in complete", event);
-
-        this.removeEventListener("transitionend", this.fadeInListener);
-
-        const dialogElement = this.parentElement;
-
-        if (!dialogElement) {
-            this.logger.debug("Skipping height synchronization, no dialog element", this);
-            return;
-        }
-
-        dialogElement.classList.add("fade-in-complete");
-
-        dialogElement.style.height = dialogElement.clientHeight + "px";
-
-        const scrollContainer = this.scrollContainerRef.value || this;
-
-        this.#hostResizeObserver.observe(scrollContainer);
-
-        window.addEventListener("resize", this.resetHeight, {
-            passive: true,
-        });
-    };
-
     #closing = false;
 
     /**
      * Delegate the close action to the parent dialog element,
      * ensuring that the correct event listeners are triggered and the modal is properly closed.
      */
-    protected delegateClose(event: TransitionEvent, returnValue?: string) {
+    protected delegateClose(returnValue?: string, event?: TransitionEvent) {
         if (this.#closing) {
             return;
         }
 
         this.#closing = true;
 
-        this.parentElement?.close(returnValue);
-
-        requestAnimationFrame(() => {
+        if (!this.parentElement) {
+            this.logger.debug("No parentElement, cannot delegate close", this);
             this.#closing = false;
-            this.#hostResizeObserver.unobserve(this);
-            window.removeEventListener("resize", this.resetHeight);
-            this.resetHeight();
-        });
+            return;
+        }
+
+        this.logger.debug("Delegating close to parent dialog", { returnValue, event });
+
+        this.parentElement.close(returnValue);
+        this.#closing = false;
     }
 
     /**
@@ -294,11 +248,13 @@ export class AKModal extends AKElement {
      * may close the dialog when a form inside the modal is submitted.
      */
     public submitListener = (_event: SubmitEvent) => {
-        if (this.parentElement?.closedBy === "none") {
+        const { closedBy } = this.parentElement ?? {};
+
+        if (closedBy === "node" || closedBy === "closerequest") {
             return;
         }
 
-        this.close();
+        return this.close("submitted");
     };
 
     /**
@@ -307,7 +263,7 @@ export class AKModal extends AKElement {
      * This is useful for simplifying adding and removing event listeners.
      */
     public closeListener = (_event?: Event) => {
-        this.close();
+        this.close("close");
     };
 
     /**
@@ -318,24 +274,15 @@ export class AKModal extends AKElement {
      * the backdrop click may trigger a "cancel" event instead of a "click" event.
      */
     protected backdropClickListener = (event: Event) => {
-        if (event.target === this.parentElement) {
-            this.close();
-        }
-    };
-
-    /**
-     * A stable reference to the dialog's cancel event listener.
-     *
-     * This is useful for simplifying adding and removing event listeners.
-     */
-    protected cancelListener = (event: Event) => {
-        if (!this.parentElement) {
+        if (event.target !== this.parentElement) {
             return;
         }
 
-        event.preventDefault();
+        if (this.parentElement?.closedBy === "none") {
+            return;
+        }
 
-        this.close();
+        return this.close("backdrop");
     };
 
     //#endregion
@@ -354,17 +301,25 @@ export class AKModal extends AKElement {
     public constructor() {
         super();
 
-        this.logger = ConsoleLogger.prefix(this.tagName.toLowerCase());
+        this.logger = ConsoleLogger.prefix(this.localName);
 
         this.renderContent = this.render.bind(this);
         this.render = this.renderInternal;
-
-        this.#hostResizeObserver = new ResizeObserver(this.synchronizeHeight);
 
         this.defaultSlot = this.ownerDocument.createElement("slot");
 
         this.beforeBodySlot = this.ownerDocument.createElement("slot");
         this.beforeBodySlot.name = "before-body";
+
+        this.dialogBody = this.ownerDocument.createElement("div");
+        this.dialogBody.classList.add("ak-c-dialog__body", "ak-m-thin-scrollbar");
+        this.dialogBody.setAttribute("part", "body");
+
+        this.dialogBody.appendChild(this.defaultSlot);
+
+        this.addEventListener("command", (event) => {
+            this.logger.debug("Command event received", { event });
+        });
     }
 
     public override connectedCallback(): void {
@@ -377,21 +332,26 @@ export class AKModal extends AKElement {
             return;
         }
 
+        const { localName } = this;
+
         if (!(dialogElement instanceof HTMLDialogElement)) {
+            this.logger.error("Parent element is not a <dialog>, cannot initialize modal", {
+                parentElement: dialogElement,
+            });
             throw new TypeError(
-                `authentik/modal: ${this.tagName.toLowerCase()} must be placed inside a <dialog> element.`,
+                `authentik/modal: ${localName} must be placed inside a <dialog> element.`,
             );
         }
 
-        const tagName = this.tagName.toLowerCase();
+        dialogElement.dataset.akModal = localName;
 
-        dialogElement.dataset.akModal = tagName;
-        dialogElement.classList.add("ak-c-modal", this.size);
+        if (this.size) {
+            dialogElement.classList.add("ak-c-dialog", this.size);
+        }
 
         // eslint-disable-next-line wc/no-self-class
-        this.classList.add("ak-c-modal__content");
+        this.classList.add("ak-c-dialog__content");
 
-        dialogElement.addEventListener("cancel", this.cancelListener);
         dialogElement.addEventListener("click", this.backdropClickListener, { passive: true });
 
         this.addEventListener("submit", this.submitListener);
@@ -403,36 +363,23 @@ export class AKModal extends AKElement {
         }
     }
 
-    public override disconnectedCallback(): void {
-        super.disconnectedCallback();
-
-        this.#hostResizeObserver.disconnect();
-        window.removeEventListener("resize", this.resetHeight);
-    }
-
     public override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
         const assignedElements = this.defaultSlot.assignedElements({ flatten: true });
 
-        const form = assignedElements.find(isTransclusionElement) ?? null;
+        const nextSlottedElement = assignedElements.find(isTransclusionElement) ?? null;
 
-        if (form && form !== this.slottedElement) {
-            this.slottedElement = form;
-            this.slottedElement.viewportCheck = false;
-        }
+        if (nextSlottedElement && nextSlottedElement !== this.slottedElement) {
+            if (nextSlottedElement.displayBox) {
+                nextSlottedElement.displayBox = "contents";
+            }
 
-        const dialogElement = this.parentElement;
+            if ("visible" in nextSlottedElement) {
+                nextSlottedElement.visible = true;
+            }
 
-        if (dialogElement && dialogElement.open) {
-            requestAnimationFrame(() => {
-                const scrollContainer = this.scrollContainerRef.value || this;
-                const scrollHeight = scrollContainer.scrollHeight;
-
-                if (scrollHeight !== this.lastScrollHeight) {
-                    this.resetHeight();
-                }
-            });
+            this.slottedElement = nextSlottedElement;
         }
 
         requestAnimationFrame(this.synchronizeARIA);
@@ -452,11 +399,15 @@ export class AKModal extends AKElement {
 
         if (!dialogElement) return;
 
-        const ariaLabel = (this.constructor as typeof AKModal).formatARIALabel?.();
+        const ariaLabel = this.formatARIALabel?.();
 
         const modalTitleElement = this.modalTitleRef.value;
 
-        const label = modalTitleElement?.textContent?.trim() ?? ariaLabel ?? null;
+        let label = modalTitleElement?.textContent?.trim() ?? ariaLabel ?? null;
+
+        if (this.slottedElement) {
+            label ||= this.slottedElement.formatARIALabel?.() ?? null;
+        }
 
         dialogElement.ariaLabel = label;
     };
@@ -495,7 +446,7 @@ export class AKModal extends AKElement {
     protected renderCloseButton(): SlottedTemplateResult {
         return html`<button
             @click=${this.closeListener}
-            class="pf-c-button pf-m-plain"
+            class="pf-c-button pf-m-plain ak-c-dialog__close-button"
             type="button"
             aria-label=${msg("Close dialog")}
         >
@@ -512,24 +463,33 @@ export class AKModal extends AKElement {
      * @abstract
      */
     protected renderHeader(): SlottedTemplateResult {
-        const { headline, slottedElement } = this;
-        const hasHeaderSlot = this.hasSlotted("header");
+        const { headline, slottedElement, slottedElementUpdatedAt } = this;
+        const hasHeaderSlot = this.findSlotted("header");
 
-        return guard([headline, hasHeaderSlot, slottedElement], () => {
+        return guard([headline, hasHeaderSlot, slottedElement, slottedElementUpdatedAt], () => {
             if (!headline && !hasHeaderSlot && !slottedElement) {
                 return null;
             }
 
-            const content = slottedElement ? slottedElement.renderHeader?.(true) : null;
+            if (slottedElement && !slottedElement.renderHeader) {
+                // Slotted element is possibly nested, but does not implement a header render method,
+                // so we cannot render a header for it.
+                return null;
+            }
 
-            return html`<div class="ak-c-modal__header" part="header">
-                <div class="ak-c-modal__title">
-                    <h1 class="ak-c-modal__title-text" id="modal-title" ${ref(this.modalTitleRef)}>
+            const slottedHeader = slottedElement ? slottedElement.renderHeader?.(true) : null;
+
+            const content =
+                slottedHeader ??
+                html`<div class="ak-c-dialog__title">
+                    <h1 class="ak-c-dialog__title-text" id="modal-title">
                         ${this.headline}
                         <slot name="header"></slot>
-                        ${content}
                     </h1>
-                </div>
+                </div>`;
+
+            return html`<div class="ak-c-dialog__header" part="header" ${ref(this.modalTitleRef)}>
+                ${content}
             </div>`;
         });
     }
@@ -543,23 +503,38 @@ export class AKModal extends AKElement {
      * @abstract
      */
     protected renderActions(): SlottedTemplateResult {
-        const { slottedElement } = this;
-        const hasActionsSlot = this.hasSlotted("actions");
-        return guard([hasActionsSlot, slottedElement], () => {
+        const { slottedElement, slottedElementUpdatedAt } = this;
+        const hasActionsSlot = this.findSlotted("actions");
+
+        return guard([hasActionsSlot, slottedElement, slottedElementUpdatedAt], () => {
             if (!hasActionsSlot && !slottedElement) {
                 return null;
             }
+            if (slottedElement && !slottedElement.renderActions) {
+                // Slotted element is possibly nested, but does not implement an actions render method,
+                // so we cannot render actions for it.
+                return null;
+            }
+
+            const cancelButton = slottedElement?.cancelable
+                ? html`<button
+                      @click=${this.closeListener}
+                      class="pf-c-button pf-m-link"
+                      type="button"
+                  >
+                      ${this.cancelButtonLabel ??
+                      slottedElement?.cancelButtonLabel ??
+                      msg("Cancel")}
+                  </button>`
+                : null;
 
             return html`<footer
                 aria-label=${msg("Form actions")}
-                class="ak-c-modal__footer"
+                class="ak-c-dialog__footer"
                 part="actions"
             >
                 <slot name="actions"></slot>
-                <button @click=${this.closeListener} class="pf-c-button pf-m-plain" type="button">
-                    ${this.cancelButtonLabel ?? slottedElement?.cancelButtonLabel ?? msg("Cancel")}
-                </button>
-                ${slottedElement ? slottedElement.renderActions?.(true) : null}
+                ${cancelButton} ${slottedElement ? slottedElement.renderActions?.(true) : null}
             </footer>`;
         });
     }
@@ -573,8 +548,11 @@ export class AKModal extends AKElement {
      * @abstract
      */
     protected render(): unknown {
-        return html`${this.beforeBodySlot}
-            <div class="ak-c-modal__body" part="body">${this.defaultSlot}</div>`;
+        if (this.beforeBodySlot.assignedElements().length) {
+            return [this.beforeBodySlot, this.dialogBody];
+        }
+
+        return this.dialogBody;
     }
 
     //#endregion
