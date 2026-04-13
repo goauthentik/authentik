@@ -12,7 +12,6 @@ field_name = "email"
 email = request.context["prompt_data"][field_name]
 
 pending_user = request.context.get("pending_user")
-current_user = getattr(request, "user", None)
 
 from authentik.core.models import User
 
@@ -20,8 +19,8 @@ query = User.objects.filter(email__iexact=email)
 
 if pending_user:
     query = query.exclude(pk=pending_user.pk)
-elif current_user and current_user.is_authenticated:
-    query = query.exclude(pk=current_user.pk)
+elif request.user and request.user.is_authenticated:
+    query = query.exclude(pk=request.user.pk)
 
 if query.exists():
     ak_message("Email address in use")
