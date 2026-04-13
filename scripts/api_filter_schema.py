@@ -9,7 +9,7 @@ from typing import Any
 from yaml import dump, safe_load
 
 
-def collect_refs(obj, refs: set) -> None:
+def collect_refs(obj: Any, refs: set[str]) -> None:
     """Recursively collect all $ref strings from a schema object."""
     if isinstance(obj, dict):
         if "$ref" in obj:
@@ -21,20 +21,20 @@ def collect_refs(obj, refs: set) -> None:
             collect_refs(item, refs)
 
 
-def resolve_component_refs(schema: dict, refs: set) -> None:
+def resolve_component_refs(schema: dict[str, Any], refs: set[str]) -> None:
     """
     Expand refs by also collecting refs from the referenced components themselves,
     handling transitive dependencies.
     """
     components = schema.get("components", {})
-    visited = set()
+    visited: set[str] = set()
 
-    def expand(ref_set: set) -> None:
+    def expand(ref_set: set[str]) -> None:
         new_refs = ref_set - visited
         if not new_refs:
             return
         visited.update(new_refs)
-        next_refs = set()
+        next_refs: set[str] = set()
         for ref in new_refs:
             # Only handle local $refs like #/components/schemas/Foo
             match = re.match(r"^#/components/(\w+)/(.+)$", ref)
@@ -49,7 +49,7 @@ def resolve_component_refs(schema: dict, refs: set) -> None:
     refs.update(visited)
 
 
-def filter_components(schema: dict, refs: set) -> dict:
+def filter_components(schema: dict[str, Any], refs: set[str]) -> dict[str, Any]:
     """Return a filtered components dict containing only referenced entries."""
     components = schema.get("components", {})
     filtered = {}
@@ -68,9 +68,9 @@ def filter_components(schema: dict, refs: set) -> dict:
     return filtered
 
 
-def filter_schema(schema: dict[str, Any], operation_ids: set[str]) -> dict:
+def filter_schema(schema: dict[str, Any], operation_ids: set[str]) -> dict[str, Any]:
     filtered_paths = {}
-    all_refs = set()
+    all_refs: set[str] = set()
 
     for path, path_item in schema.get("paths", {}).items():
         filtered_methods = {}
@@ -105,7 +105,7 @@ def filter_schema(schema: dict[str, Any], operation_ids: set[str]) -> dict:
     return result
 
 
-def main(input_path: str, output_path: str, ids_path: str):
+def main(input_path: str, output_path: str, ids_path: str) -> None:
     schema = safe_load(Path(input_path).read_text())
     operation_ids = {
         line.strip() for line in Path(ids_path).read_text().splitlines() if line.strip()
