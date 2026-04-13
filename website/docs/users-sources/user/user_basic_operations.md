@@ -8,7 +8,7 @@ The following topics are for the basic management of users: how to create, modif
 
 ## Create a user
 
-> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/api/reference/core-users-create).
+> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write/index.md), or [using the API](/api/reference/core-users-create).
 
 1. In the Admin interface of your authentik instance, select **Directory** > **Users** in the left side menu.
 2. In the **User folders** area, select the folder where you want to create a user.
@@ -21,7 +21,7 @@ The following topics are for the basic management of users: how to create, modif
 5. Fill the **_optional_** fields if needed:
 
 - **Name**: The display name of the user.
-- **Email**: The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) and to receive [notifications](../../sys-mgmt/events/notifications.md), if configured.
+- **Email**: The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.md) and to receive [notifications](../../sys-mgmt/events/notifications.md), if configured.
 - **Is active**: Define if the newly created user account is active. Selected by default.
 - **Attributes**: Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 
@@ -145,7 +145,7 @@ A pop-up will appear on your browser with the link for you to copy and to send t
 ### 2. Email a recovery link
 
 :::info Email stage required
-This option is only available if the recovery flow has an [Email Stage](../../add-secure-apps/flows-stages/stages/email/index.mdx) bound to it. The example recovery flow includes an email stage.
+This option is only available if the recovery flow has an [Email Stage](../../add-secure-apps/flows-stages/stages/email/index.md) bound to it. The example recovery flow includes an email stage.
 :::
 
 You can send a link with the URL for the user to reset their password via Email. This option will only work if you have [configured email](../../install-config/email.mdx) and set an email address for the user.

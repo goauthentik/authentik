@@ -2,114 +2,119 @@
 title: Prompt stage
 ---
 
-This stage is used to show the user arbitrary prompts.
+The Prompt stage displays arbitrary fields to the user and stores the submitted values in flow context.
 
-## Prompt
+## Overview
 
-The prompt can be any of the following types:
+Use this stage when a flow needs to collect custom input, such as profile attributes, passwords, invitation tokens, file uploads, or approval choices.
 
-| Type                  | Description                                                                                |
-| --------------------- | ------------------------------------------------------------------------------------------ |
-| Text                  | Arbitrary text. No client-side validation is done.                                         |
-| Text (Read only)      | Same as above, but cannot be edited.                                                       |
-| Text Area             | Arbitrary multiline text. No client-side validation is done.                               |
-| Text Area (Read only) | Same as above, but cannot be edited.                                                       |
-| Username              | Same as text, except the username is validated to be unique.                               |
-| Email                 | Text input, ensures the value is an email address (validation is only done client-side).   |
-| Password              | Same as text, shown as a password field client-side, and custom validation (see below).    |
-| Number                | Numerical textbox.                                                                         |
-| Checkbox              | Simple checkbox.                                                                           |
-| Radio Button Group    | Similar to checkboxes, but allows selecting a value from a set of predefined values.       |
-| Dropdown              | A simple dropdown menu filled with predefined values.                                      |
-| Date                  | Same as text, except the client renders a date-picker                                      |
-| Date-time             | Same as text, except the client renders a date-time-picker                                 |
-| File                  | Allow users to upload a file, which will be available as base64-encoded data in the flow . |
-| Separator             | Passive element to group surrounding elements                                              |
-| Hidden                | Hidden input field. Allows for the pre-setting of default values.                          |
-| Static                | Display arbitrary value as is                                                              |
-| authentik: Locale     | Display a list of all locales authentik supports.                                          |
+Submitted values are written to `prompt_data` in the flow context and can be consumed by later stages or policies.
 
-:::info
-`TextArea`, `TextArea (Read only)`, `Radio Button Group` and `Dropdown` options require authentik 2023.4+
-:::
+## Configuration options
 
-Some types have special behaviors:
+### Stage options
 
-- _Username_: Input is validated against other usernames to ensure a unique value is provided.
-- _Password_: All prompts with the type password within the same stage are compared and must be equal. If they are not equal, an error is shown
-- _Hidden_ and _Static_: Their initial values are defaults and are not user-changeable.
-- _Radio Button Group_ and _Dropdown_: Only allow the user to select one of a set of predefined values.
+- **Fields**: the ordered set of prompt definitions included in the stage.
+- **Validation policies**: optional policies evaluated after submission to validate the entered data.
 
-A prompt has the following attributes:
+### Prompt field types
 
-### `field_key`
+Each prompt field can use one of these types:
 
-The field name used for the prompt. This key is also used to later retrieve the data in expression policies:
+| Type                  | Description                                                          |
+| --------------------- | -------------------------------------------------------------------- |
+| Text                  | Arbitrary text input.                                                |
+| Text (read-only)      | Text displayed but not editable.                                     |
+| Text area             | Multiline text input.                                                |
+| Text area (read-only) | Multiline text displayed but not editable.                           |
+| Username              | Text input with username uniqueness checks.                          |
+| Email                 | Text input validated as an email address.                            |
+| Password              | Masked input. Multiple password fields in the same stage must match. |
+| Number                | Numeric input.                                                       |
+| Checkbox              | Boolean checkbox input.                                              |
+| Radio Button Group    | Single-choice selection rendered as radio buttons.                   |
+| Dropdown              | Single-choice selection rendered as a dropdown.                      |
+| Date                  | Date picker.                                                         |
+| Date-time             | Date and time picker.                                                |
+| File                  | File upload stored in flow context as a data URI.                    |
+| Separator             | Static separator element.                                            |
+| Hidden                | Hidden value inserted into the form submission.                      |
+| Static                | Static value displayed as-is.                                        |
+| authentik: Locale     | Locale selector populated from authentik-supported locales.          |
+
+### Prompt field attributes
+
+Each prompt field definition includes these core attributes:
+
+- **field_key**: key used to store the field value in `prompt_data`.
+- **label**: label shown to the user.
+- **required**: whether the field must be provided.
+- **placeholder**: placeholder text, or for choice fields, the available choices.
+- **initial value**: pre-filled value, or for choice fields, the default selected choice.
+- **order**: numeric ordering among the prompt fields.
+- **Interpret placeholder as expression**: evaluate the placeholder dynamically.
+- **Interpret initial value as expression**: evaluate the initial value dynamically.
+
+For **Radio Button Group** and **Dropdown**, the placeholder defines the valid choices. It can be a plain string, a list of values, or a list of objects with `label` and `value`.
+
+Some field types also have special behavior:
+
+- **Username** checks for uniqueness.
+- **Password** fields within the same stage must all match.
+- **Hidden** and **Static** use their configured values without user editing.
+- **Radio Button Group** and **Dropdown** only allow values from the defined choice set.
+
+## Flow integration
+
+Use this stage anywhere a flow needs user-provided input.
+
+Common follow-up stages include:
+
+- [User Write](../user_write/index.md) to persist collected values
+- [Email](../email/index.md) or [Invitation](../invitation/index.md) to act on collected data
+- policy checks that read from `request.context["prompt_data"]`
+
+## Notes
+
+### Accessing submitted data
+
+Prompt values are stored in `prompt_data`:
 
 ```python
-request.context.get('prompt_data').get('<field_key>')
+request.context.get("prompt_data", {}).get("<field_key>")
 ```
 
-### `label`
+### Dynamic choices and defaults
 
-The label used to describe the field. Depending on the selected template, this may not be shown.
+For choice fields, placeholder and initial value can be generated dynamically with expressions. The prompt context is available during evaluation.
 
-### `required`
+Choice fields also support context overrides:
 
-A flag which decides whether or not this field is required.
+- `<field_key>__choices` overrides the available choices
+- `<field_key>` overrides the initial value
 
-### `placeholder`
-
-A field placeholder, shown within the input field.
-
-By default, the placeholder is interpreted as-is. If you enable _Interpret placeholder as expression_, the placeholder
-will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../../customize/policies/types/expression/index.mdx).
-
-For `Radio Button Group` and `Dropdown` prompts, this field defines the available choices. When used as a plain string, it represents a single allowed value (the placeholder). When used as an expression, it can return a list of choices. For example, `return ["first option", 42, {"label": "another option", "value": "some value"}]` defines three possible values.
-
-A choice can be a string (or any primitive that will be converted to a string) or an object with `value` and/or `label` properties. For example, `return ["Option 1"]` is equivalent to `return [{"label": "Option 1", "value": "Option 1"}]`.
-
-You can access both the HTTP request and the user as with a mapping. Additionally, you can access `prompt_context`, which is a dictionary of the current state of the prompt stage's data.
-
-For `Radio Button Group` and `Dropdown` prompts, if a key with the same name as the prompt's `field_key` and a suffix of `__choices` (`<field_key>__choices`) is present in the `prompt_context` dictionary, its value will be returned directly, even if _Interpret placeholder as expression_ is enabled.
-
-### `initial_value`
-
-The prompt's initial value. It can also be left empty, in which case the field will not have a pre-filled value.
-
-With the `hidden` prompt, the initial value will also be the actual value, because the field is hidden to the user.
-
-By default, the initial value is interpreted as-is. If you enable _Interpret initial value as expression_, the initial value
-will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../../customize/policies/types/expression/index.mdx).
-
-In the case of `Radio Button Group` and `Dropdown` prompts, this field defines the default choice. When interpreted as-is, the default choice will be the initial value string. When interpreted as expression, the default choice will be the returned value. For example, `return 42` defines `42` as the default choice. When a choice is defined as an object `{"label": "Option", "value": "internal-value"}`, the initial value needs to be set to the value string `internal-value` in this case.
-
-:::info
-The default choice defined for any fixed choice field **must** be one of the valid choices specified in the prompt's placeholder.
-:::
-
-You can access both the HTTP request and the user as with a mapping. Additionally, you can access `prompt_context`, which is a dictionary of the current state of the prompt stage's data. If a key with the same name as the prompt's `field_key` is present in the `prompt_context` dictionary, its value will be returned directly, even if _Interpret initial value as expression_ is enabled.
-
-### `order`
-
-The numerical index of the prompt. This applies to all stages which this prompt is a part of.
-
-# Validation
-
-Further validation of prompts can be done using policies.
-
-To validate that two password fields are identical, create the following expression policy:
+For `Radio Button Group` and `Dropdown`, choices can be plain values or objects like:
 
 ```python
-if request.context.get('prompt_data').get('password') == request.context.get('prompt_data').get('password_repeat'):
+return [
+    "first option",
+    42,
+    {"label": "another option", "value": "some value"},
+]
+```
+
+For fixed-choice fields, the default value must be one of the valid choices.
+
+When prompt expressions are evaluated, they run in the same general expression environment used by authentik mappings and policies and also have access to `prompt_context`.
+
+### Validation
+
+Additional validation can be done with validation policies bound directly to the Prompt stage. For example, to ensure two password fields match:
+
+```python
+if request.context["prompt_data"]["password"] == request.context["prompt_data"]["password_repeat"]:
     return True
 
 ak_message("Passwords don't match.")
 return False
 ```
-
-This policy expects you to have two password fields with `field_key` set to `password` and `password_repeat`.
-
-Afterwards, bind this policy to the prompt stage you want to validate.
-
-Before 2021.12, any policy was required to pass for the result to be considered valid. This has been changed, and now all policies are required to be valid.

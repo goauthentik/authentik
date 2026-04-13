@@ -2,80 +2,70 @@
 title: Consent stage
 ---
 
-The Consent stage is added to a flow to prompt the user for consent to share data such as User ID or other non-credential type information with the relying party (RP), the application the user is logging in to.
+The Consent stage asks the user to approve sharing data with an application or relying party.
 
-A Consent stage is typically added to an [authorization flow](../../flow/index.md#create-a-flow), but can be added to any flow.
+## Overview
 
-:::info Default authorization flow with a Consent stage
-Note that by default, the `default-provider-authorization-explicit-consent` flow already has a Consent stage bound to it. If you use this default flow, you do not need to take any of the below steps; the `default-provider-authorization-explicit-consent` flow is ready for use.
-:::
+This stage is commonly used in authorization flows, where a user should explicitly consent before authentik shares profile data or other claims with an application.
 
-## Example use case
+The default `default-provider-authorization-explicit-consent` flow already includes a Consent stage.
 
-This stage is to prompt users when they access an application to agree that authentik can provide user data to the application that the user is logging in to. This sharing of user data can facilitate tasks in the application; for example, providing an avatar, user name, or email address for the application to immediately use.
+A typical use case is prompting the user to allow authentik to share profile data such as name, email address, or avatar with the application they are signing in to.
 
-## Consent stage modes
+## Configuration options
 
-The Consent stage has three configurable modes:
+- **Mode**: control how long a granted consent remains valid.
+    - **Always require consent**: prompt every time.
+    - **Consent given lasts indefinitely**: store consent without expiration.
+    - **Consent expires**: store consent until the configured expiry time.
+- **Consent expires in**: expiration offset used when the mode is set to expiring consent.
 
-1. **Always require consent**: the user is prompted every time that they log in to give consent by clicking **Continue**.
-2. **Consent given lasts indefinitely**: this mode stores the fact that the user previously clicked **Continue**, and creates a Consent object with a link to the user and to the application, and stores which permissions were consented to.
-3. **Consent expires**: similar to **Consent given lasts indefinitely**, except the consent expires on the date defined in the stage in the field **Consent expires in**.
+## Flow integration
 
-## Create and configure a Consent stage
+Bind this stage into an authorization flow anywhere the user should see the consent prompt.
 
-If you want to add the consent stage to a flow other than the `default-provider-authorization-explicit-consent` flow (which already has a Consent stage bound to it), use the following steps.
+If you use the default explicit-consent authorization flow, the stage is already present and usually does not need to be added manually.
 
-The basic workflow for creating and configuring a Consent stage involves creating the stage and then binding it to an authorization flow.
+## Notes
 
-Optionally, if you also want to customize the exact wording that appears on the consent prompt, you can create an [Expression policy](../../../../customize/policies/types/expression/index.mdx) with the text that you want to display on the Consent prompt, and then [bind](../../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding) the policy to the Consent stage binding in the authorization flow.
+### Default flow
 
-### 1. Create a Consent stage
+If you are using the default `default-provider-authorization-explicit-consent` flow, you usually do not need to add a Consent stage manually because it is already present.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Stages** and click **New Stage**.
-3. On the **New stage** wizard select **Consent Stage** and then click **Next**.
-4. Provide the following configuration settings:
-    - **Name**:
-    - **Stage-specific settings**:
-        - **Mode**: Select the appropriate [mode](#consent-stage-modes) to use with this stage.
-5. Click **Create Stage** to save the new stage.
+If you are building a custom authorization flow, the usual sequence is:
 
-### 2. Bind the Consent stage to an authorization flow
+1. Create the Consent stage.
+2. Bind it into the authorization flow.
+3. Optionally bind an expression policy to the stage binding if the consent text should be customized.
 
-To include the Consent stage in the flow, follow [these directions](../../stages/index.md#bind-a-stage-to-a-flow).
+If you are adding the stage from scratch in the Admin interface, the typical workflow is:
 
-### 3. Create an Expression policy (_optional_)
+1. Go to **Flows and Stages** > **Stages** and create a **Consent Stage**.
+2. Set the **Mode** and, if needed, the expiry duration.
+3. Open the target authorization flow.
+4. Add the Consent stage to that flow's stage bindings.
 
-If you want to customize the text that appears on the consent prompt, you can create an Expression policy with the exact wording you want, and then bind it to the Consent stage in the flow.
+### Custom consent text
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Policies** and click **New Policy**.
-3. On the **New policy** wizard select **Expression Policy** and then click **Next**.
-4. Provide the following configuration settings:
-    - **Name**:
-    - **Policy-specific settings**:
-        - **Expression**: use the following syntax to customize the wording on the stage:
-        ````
-        context['flow_plan'].context['consent_header'] = "Are you OK with your IdP provider sharing your user identification data with the application?"
-        return True
-        ```python
-        ````
-5. Click **Create Policy** to save the policy.
+You can customize the text shown on the consent screen by setting the `consent_header` key in flow context before the stage runs, for example from an expression policy:
 
-### 4. Bind the policy to the Consent stage in the authorization flow (_optional_)
+```python
+request.context["flow_plan"].context["consent_header"] = (
+    "Are you OK with your IdP provider sharing your user identification data "
+    "with the application?"
+)
+return True
+```
 
-The last step is to bind the policy that you just created in Step 3 to the Consent stage binding, _within_ the authorization flow.
+Bind that policy to the Consent stage binding inside the authorization flow where you want the wording to change.
 
-:::info Important note about policy binding
-You need to bind the policy to the stage within this flow, so go first to the flow where you added the Consent stage.
-:::
+The binding workflow is:
 
-1. Log in to authentik as an administrator, open the authentik Admin interface, and navigate to **Flows and Stages > Flows**.
-2. In the list of flows, click on the name of the authorization flow that you want to use.
-3. On the **Flow overview** tab, confirm that the flow contains a Consent stage.
-4. Click the **Stage Bindings** tab.
-5. Click the caret (>) beside the Consent stage to which you want to bind the policy, and expand the stage details.
-6. Click **Bind existing Policy/Group/User**.
-7. In the **Create Binding** dialog, click **Policy** and then select the Expression policy that you created above.
-8. Click **Create Policy Binding** to save the binding.
+1. Open the authorization flow that contains the Consent stage.
+2. Go to **Stage Bindings**.
+3. Expand the Consent stage binding that should use the custom text.
+4. Bind the expression policy to that stage binding.
+
+### Stored consent
+
+When consent is stored, authentik keeps track of the user, the application, and the granted permissions so later requests can reuse or re-prompt according to the selected mode.

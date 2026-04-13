@@ -1,9 +1,28 @@
 ---
-title: TOTP Authenticator Setup stage
+title: TOTP authenticator setup stage
 ---
 
-This stage configures a time-based OTP Device, such as Google Authenticator or Authy.
+The TOTP Authenticator Setup stage enrolls a time-based one-time password device for the user, such as Google Authenticator, Authy, 1Password, or similar authenticator apps.
 
-You can configure how many digits should be used for the OTP Token.
+## Overview
 
-The Config URL's Issuer is set based on the currently active brand's branding title. The default setup can cause issues if the same username is used on multiple authentik issues within the same authenticator app, so changing the brand title is recommended.
+This stage creates a TOTP device for the current user and presents a standard OTP configuration URL that authenticator apps can scan or import.
+
+TOTP devices can then be used with the [Authenticator Validation stage](../authenticator_validate/index.md).
+
+## Configuration options
+
+- **Digits**: choose whether generated codes use 6 or 8 digits.
+- **Authenticator type name**: optional friendly name shown to the user in self-service settings.
+- **Configuration flow**: optional authenticated flow that lets users enroll this authenticator from user settings.
+
+## Flow integration
+
+Use this stage in an enrollment or user-settings flow where the user can add a TOTP device.
+
+To require that device during login, add an [Authenticator Validation stage](../authenticator_validate/index.md) to the authentication flow and allow the **TOTP** device class.
+
+## Notes
+
+- Six-digit TOTP codes are the most widely compatible option.
+- During enrollment, authentik uses the active brand's title as the issuer shown in the TOTP app. If you operate multiple authentik instances with the same usernames, distinct brand titles help avoid confusion in authenticator apps.

@@ -2,62 +2,79 @@
 title: Captcha stage
 ---
 
-This stage adds a form of verification using [Google's reCAPTCHA](https://www.google.com/recaptcha/intro/v3.html) or compatible services.
+The Captcha stage adds CAPTCHA verification to a flow by using Google reCAPTCHA or compatible services such as hCaptcha and Cloudflare Turnstile.
 
-Currently supported implementations:
+## Overview
 
-- [Google reCAPTCHA](#google-recaptcha)
-- [hCaptcha](#hcaptcha)
-- [Cloudflare Turnstile](#cloudflare-turnstile)
+This stage verifies that the current interaction appears human before the flow continues.
 
-## Captcha provider configuration
+It can either be bound directly into a flow or embedded inside the [Identification stage](../identification/index.md) by setting the Identification stage's **Captcha stage** option.
+
+## Configuration options
+
+- **Public key**: CAPTCHA site key.
+- **Private key**: CAPTCHA secret key.
+- **Interactive**: enable an interactive CAPTCHA widget instead of score-based verification.
+- **Score minimum threshold**: minimum accepted score for score-based providers.
+- **Score maximum threshold**: maximum accepted score for score-based providers.
+- **Error on invalid score**: show an error immediately when the score is outside the configured threshold. If disabled, the flow continues and policies can inspect the result from context.
+- **JS URL**: JavaScript loader URL for the provider.
+- **API URL**: verification endpoint URL for the provider.
+
+## Flow integration
+
+Use this stage anywhere a flow should require a CAPTCHA check, especially in enrollment, recovery, or other public-facing flows.
+
+If you embed it in the [Identification stage](../identification/index.md), configure the CAPTCHA provider for invisible or background use.
+
+## Notes
 
 ### Google reCAPTCHA
 
-This stage has two required fields: Public key and private key. These can both be acquired at https://www.google.com/recaptcha/admin.
+Use the keys from https://www.google.com/recaptcha/admin.
+
+Recommended defaults for reCAPTCHA:
+
+- **Interactive**: disabled for score-based reCAPTCHA
+- **Score minimum threshold**: `0.5`
+- **Score maximum threshold**: `1.0`
+- **JS URL**: `https://www.recaptcha.net/recaptcha/api.js`
+- **API URL**: `https://www.recaptcha.net/recaptcha/api/siteverify`
 
 ![](./captcha-admin.png)
 
-#### Configuration options
-
-- Interactive: Enabled when using reCAPTCHA v3
-- Score minimum threshold: `0.5`
-- Score maximum threshold: `1`
-- JS URL: `https://www.recaptcha.net/recaptcha/api.js`
-- API URL: `https://www.recaptcha.net/recaptcha/api/siteverify`
-
 ### hCaptcha
 
-See https://docs.hcaptcha.com/switch
+See https://docs.hcaptcha.com/switch.
 
-#### Configuration options
+Recommended values:
 
-- Interactive: Enabled
-- JS URL: `https://js.hcaptcha.com/1/api.js`
-- API URL: `https://api.hcaptcha.com/siteverify`
+- **Interactive**: enabled
+- **JS URL**: `https://js.hcaptcha.com/1/api.js`
+- **API URL**: `https://api.hcaptcha.com/siteverify`
 
-**Score options only apply to hCaptcha Enterprise**
-
-- Score minimum threshold: `0`
-- Score maximum threshold: `0.5`
+Score thresholds only apply to hCaptcha Enterprise.
 
 ### Cloudflare Turnstile
 
 See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recaptcha.
 
-#### Configuration options
+Recommended values:
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Stages** and click **New Stage**.
-3. Select **Captcha Stage** and click **Next**.
-4. Provide a descriptive name for the stage (e.g. `authentication-captcha`) and configure the following required settings based on the values of your [Cloudflare Turnstile Widget](https://developers.cloudflare.com/turnstile/concepts/widget/):
-    - Under **Stage-specific settings**:
-        - **Public Key**: set to the **Turnstile Site Key** value from the widget.
-        - **Private Key**: set to the **Turnstile Secret Key** value from the widget.
-        - **Enable Interactive**: Enable this option if the Turnstile instance is configured as **Invisible** or **Managed**.
-        - Leave both score thresholds at their default, as they are not supported for Turnstile.
+- **Public key**: Turnstile site key
+- **Private key**: Turnstile secret key
+- **Interactive**: enable when using invisible or managed Turnstile modes
+- **JS URL**: `https://challenges.cloudflare.com/turnstile/v0/api.js`
+- **API URL**: `https://challenges.cloudflare.com/turnstile/v0/siteverify`
 
-- JS URL: `https://challenges.cloudflare.com/turnstile/v0/api.js`
-- API URL: `https://challenges.cloudflare.com/turnstile/v0/siteverify`
+Turnstile does not use score thresholds.
 
-**Score options do not apply when using with turnstile**
+### Cloudflare Turnstile setup flow
+
+If you are configuring Turnstile from scratch:
+
+1. Create the Turnstile widget in Cloudflare.
+2. Copy the **Site Key** into **Public key**.
+3. Copy the **Secret Key** into **Private key**.
+4. Enable **Interactive** if the Turnstile widget is configured as **Invisible** or **Managed**.
+5. Leave score thresholds at their defaults because Turnstile does not use them.

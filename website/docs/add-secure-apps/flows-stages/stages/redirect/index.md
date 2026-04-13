@@ -3,18 +3,26 @@ title: Redirect stage
 authentik_version: "2024.12"
 ---
 
-This stage's main purpose is to redirect the user to a new Flow while keeping flow context. For convenience, it can also redirect the user to a static URL.
+The Redirect stage sends the user either to another flow or to a static URL.
 
-The redirection target can also be overwritten dynamically in an expression policy by setting the [redirect_stage_target](../../flow/context/#redirect_stage_target-string) key in the flow context.
+## Overview
 
-## Redirect stage modes
+This stage is most commonly used to branch from one flow into another while optionally preserving the current flow context.
 
-### Static mode
+## Configuration options
 
-When the user reaches this stage, they are redirected to a static URL.
+- **Keep flow context**: preserve the current flow context when redirecting to another flow.
+- **Mode**: choose whether the target is a static URL or another flow.
+- **Static target**: URL used in static mode.
+- **Target flow**: flow used in flow mode.
 
-### Flow mode
+## Flow integration
 
-When the user reaches this stage, they are redirected to a specified flow, retaining all [flow context](../../flow/context/index.mdx).
+Use this stage when the flow should hand off to another flow or redirect to a fixed destination.
 
-Optionally, toggle the "Keep flow context" switch to "off". When this control is set to "off", all flow context is cleared with the exception of the [is_redirected](../../flow/context#is_redirected-flow-object) key.
+In **flow** mode, the redirected flow can continue using the existing flow context if **Keep flow context** is enabled.
+
+## Notes
+
+- You can override the target dynamically from an expression policy by setting `redirect_stage_target` in the [flow context](../../flow/context/index.mdx#redirect_stage_target-string).
+- When **Keep flow context** is disabled, authentik clears the current flow context before handing off, except for the redirect marker used internally to track the redirect.

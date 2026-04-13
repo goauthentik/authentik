@@ -3,23 +3,40 @@ title: Source stage
 authentik_enterprise: true
 ---
 
-The source stage embeds an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).
+The Source stage suspends the current flow and sends the user through an OAuth or SAML source before returning to the original flow.
 
-### Example use case
+## Overview
 
-This stage can be used to leverage an external OAuth/SAML identity provider.
+Use this stage when an external identity provider should be part of the current authentik flow, for example during staged migrations or additional external verification.
 
-For example, you can authenticate users by routing them through a custom device-health solution.
+Common examples include:
 
-Another use case is to route users to authenticate with your legacy (Okta, etc) IdP and then use the returned identity and attributes within authentik as part of an authorization flow, for example as part of an IdP migration. For authentication/enrollment this is also possible with an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx)/[SAML](../../../../users-sources/sources/protocols/saml/index.md) source by itself.
+- routing users through an external OAuth or SAML identity provider
+- sending users through a custom device-health or posture-check system before continuing
+- authenticating against a legacy IdP during an IdP migration and then using the returned identity and attributes inside authentik
 
-### Considerations
+For pure authentication or enrollment, an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) source can also be used directly without a Source stage. Use the Source stage when that external step needs to be embedded inside another authentik flow.
 
-It is very important that the configured source's authentication and enrollment flows (when set; they can be left unselected to prevent authentication or enrollment with the source) do **not** have a [User login stage](../user_login/index.md) bound to them.
+## Configuration options
 
-This is because the Source stage works by appending a [dynamic in-memory](../../../../core/glossary?dynamic-in-memory-stage) stage to the source's flow, so having a [User login stage](../user_login/index.md) bound will cause the source's flow to not resume the original flow it was started from, and instead directly authenticating the pending user.
+- **Source**: the OAuth or SAML source to use.
+- **Resume timeout**: how long authentik keeps the suspended flow available while the user is away at the external source.
 
-## Source stage workflow
+## Flow integration
+
+Bind this stage into a flow when the user should authenticate or enroll through an external source and then return to the original authentik flow.
+
+The configured source must be a browser-based source such as OAuth or SAML. LDAP and other non-browser sources are not compatible.
+
+## Notes
+
+### Important source-flow behavior
+
+Do not bind a [User Login stage](../user_login/index.md) into the source's own authentication or enrollment flow.
+
+The Source stage resumes the original flow by appending a dynamic in-memory stage to the source flow. If the source flow logs the user in directly, the original flow will not resume correctly.
+
+### Workflow
 
 ```mermaid
 sequenceDiagram
@@ -28,28 +45,22 @@ sequenceDiagram
     participant eidp as External IDP
 
     u->>ak: User initiates flow
-    ak->>u: User reaches Source Stage
+    ak->>u: User reaches Source stage
 
     u->>eidp: User is redirected to external IDP
-    eidp->>ak: User has authenticated with external IDP
+    eidp->>ak: User authenticates with external IDP
 
-    alt User is connected to external IDP (auth)
-        ak->>u: Source's authentication flow is started
-        u->>ak: User finishes source's authentication flow
-    else User has not been connected to external IDP (enroll)
-        ak->>u: Source's enrollment flow is started
-        u->>ak: User finishes source's enrollment flow
+    alt User already linked to external IDP
+        ak->>u: Source authentication flow starts
+        u->>ak: User finishes source authentication flow
+    else User must be linked first
+        ak->>u: Source enrollment flow starts
+        u->>ak: User finishes source enrollment flow
     end
 
-    ak->>u: Execution of the previous flow is resumed
+    ak->>u: Original authentik flow resumes
 ```
 
-### Options
+### Resume timeout
 
-#### Source
-
-The source the user is redirected to. Must be a web-based source, such as [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md). Sources like [LDAP](../../../../users-sources/sources/protocols/ldap/index.md) are _not_ compatible.
-
-#### Resume timeout
-
-Because the execution of the current flow is suspended before the user is redirected to the configured source, this option configures how long the suspended flow is saved. If this timeout is exceeded, upon return from the configured source, the suspended flow will restart from the beginning.
+If the user takes longer than the configured timeout to return from the external source, the original suspended flow is discarded and the flow restarts from the beginning on return.
