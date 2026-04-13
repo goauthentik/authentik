@@ -28,7 +28,7 @@ If you want to add the consent stage to a flow other than the `default-provider-
 
 The basic workflow for creating and configuring a Consent stage involves creating the stage and then binding it to an authorization flow.
 
-Optionally, if you also want to customize the exact wording that appears on the consent prompt, you can create an [Expression policy](../../../../customize/policies/expression.mdx) with the text that you want to display on the Consent prompt, and then [bind](../../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding) the policy to the Consent stage binding in the authorization flow.
+Optionally, if you also want to customize the exact wording that appears on the consent prompt, you can create an [Expression policy](../../../../customize/policies/types/expression/index.mdx) with the text that you want to display on the Consent prompt, and then [bind](../../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding) the policy to the Consent stage binding in the authorization flow.
 
 ### 1. Create a Consent stage
 
