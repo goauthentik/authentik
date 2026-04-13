@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import sys
 import re
+import sys
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -116,7 +116,7 @@ def main(input_path: str, output_path: str, ids_path: str):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 4:  # noqa: PLR2004
         print("Usage: python filter_openapi.py <input_schema> <output_schema> <operationids_file>")
         sys.exit(1)
     main(*sys.argv[1:])
