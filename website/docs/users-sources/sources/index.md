@@ -32,4 +32,4 @@ To have sources show on the default login screen you will need to add them to th
 
 You can bind a policy to a source to control whether or not the users from the source can access an application.
 
-For instructions, refer to [Bind a policy to a source](../../customize/policies/bindings.md#bind-a-policy-to-a-source).
+For instructions, refer to [Bind a policy to a source](../../customize/policies/working_with_policies.md#bind-a-policy-to-a-source).

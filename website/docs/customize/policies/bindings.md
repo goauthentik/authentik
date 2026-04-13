@@ -16,10 +16,10 @@ In authentik, a stage is attached to a flow through a stage binding. When you at
 
 | Binding target | What it controls                                       | How to configure it                                                                             |
 | -------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| Flow           | Whether the user can start or continue using the flow  | [Bind a policy to a flow](./working_with_policies.md#bind-a-policy-to-a-flow)                  |
+| Flow           | Whether the user can start or continue using the flow  | [Bind a policy to a flow](./working_with_policies.md#bind-a-policy-to-a-flow)                   |
 | Stage binding  | Whether a specific stage runs in that flow             | [Bind a policy to a stage binding](./working_with_policies.md#bind-a-policy-to-a-stage-binding) |
-| Application    | Whether the user can access the application            | [Bind a policy to an application](./working_with_policies.md#bind-a-policy-to-an-application)  |
-| Source         | Whether the source can be used for login or enrollment | [Bind a policy to a source](./working_with_policies.md#bind-a-policy-to-a-source)              |
+| Application    | Whether the user can access the application            | [Bind a policy to an application](./working_with_policies.md#bind-a-policy-to-an-application)   |
+| Source         | Whether the source can be used for login or enrollment | [Bind a policy to a source](./working_with_policies.md#bind-a-policy-to-a-source)               |
 
 In the same binding UI, you can also bind a **user** or **group** directly. Those are evaluated as simple membership checks and are useful when you want a direct allow or deny rule without creating a separate policy object.
 
