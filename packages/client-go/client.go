@@ -49,55 +49,17 @@ type APIClient struct {
 
 	// API Services
 
-	AdminAPI *AdminAPIService
-
-	AuthenticatorsAPI *AuthenticatorsAPIService
-
 	CoreAPI *CoreAPIService
 
 	CryptoAPI *CryptoAPIService
-
-	EndpointsAPI *EndpointsAPIService
-
-	EnterpriseAPI *EnterpriseAPIService
 
 	EventsAPI *EventsAPIService
 
 	FlowsAPI *FlowsAPIService
 
-	LifecycleAPI *LifecycleAPIService
-
-	ManagedAPI *ManagedAPIService
-
-	Oauth2API *Oauth2APIService
-
 	OutpostsAPI *OutpostsAPIService
 
-	PoliciesAPI *PoliciesAPIService
-
-	PropertymappingsAPI *PropertymappingsAPIService
-
-	ProvidersAPI *ProvidersAPIService
-
-	RacAPI *RacAPIService
-
-	RbacAPI *RbacAPIService
-
-	ReportsAPI *ReportsAPIService
-
 	RootAPI *RootAPIService
-
-	SchemaAPI *SchemaAPIService
-
-	SourcesAPI *SourcesAPIService
-
-	SsfAPI *SsfAPIService
-
-	StagesAPI *StagesAPIService
-
-	TasksAPI *TasksAPIService
-
-	TenantsAPI *TenantsAPIService
 }
 
 type service struct {
@@ -116,31 +78,12 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.common.client = c
 
 	// API Services
-	c.AdminAPI = (*AdminAPIService)(&c.common)
-	c.AuthenticatorsAPI = (*AuthenticatorsAPIService)(&c.common)
 	c.CoreAPI = (*CoreAPIService)(&c.common)
 	c.CryptoAPI = (*CryptoAPIService)(&c.common)
-	c.EndpointsAPI = (*EndpointsAPIService)(&c.common)
-	c.EnterpriseAPI = (*EnterpriseAPIService)(&c.common)
 	c.EventsAPI = (*EventsAPIService)(&c.common)
 	c.FlowsAPI = (*FlowsAPIService)(&c.common)
-	c.LifecycleAPI = (*LifecycleAPIService)(&c.common)
-	c.ManagedAPI = (*ManagedAPIService)(&c.common)
-	c.Oauth2API = (*Oauth2APIService)(&c.common)
 	c.OutpostsAPI = (*OutpostsAPIService)(&c.common)
-	c.PoliciesAPI = (*PoliciesAPIService)(&c.common)
-	c.PropertymappingsAPI = (*PropertymappingsAPIService)(&c.common)
-	c.ProvidersAPI = (*ProvidersAPIService)(&c.common)
-	c.RacAPI = (*RacAPIService)(&c.common)
-	c.RbacAPI = (*RbacAPIService)(&c.common)
-	c.ReportsAPI = (*ReportsAPIService)(&c.common)
 	c.RootAPI = (*RootAPIService)(&c.common)
-	c.SchemaAPI = (*SchemaAPIService)(&c.common)
-	c.SourcesAPI = (*SourcesAPIService)(&c.common)
-	c.SsfAPI = (*SsfAPIService)(&c.common)
-	c.StagesAPI = (*StagesAPIService)(&c.common)
-	c.TasksAPI = (*TasksAPIService)(&c.common)
-	c.TenantsAPI = (*TenantsAPIService)(&c.common)
 
 	return c
 }
@@ -489,11 +432,6 @@ func (c *APIClient) prepareRequest(
 		localVarRequest = localVarRequest.WithContext(ctx)
 
 		// Walk through any authentication.
-
-		// AccessToken Authentication
-		if auth, ok := ctx.Value(ContextAccessToken).(string); ok {
-			localVarRequest.Header.Add("Authorization", "Bearer "+auth)
-		}
 
 	}
 
