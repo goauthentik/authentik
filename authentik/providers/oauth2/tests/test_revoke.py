@@ -114,9 +114,7 @@ class TesOAuth2Revoke(OAuthTestCase):
 
     def test_revoke_invalid_auth_secret(self):
         """Test revoke (invalid secret)"""
-        invalid_auth = b64encode(
-            f"{self.provider.client_id}:aaa".encode()
-        ).decode()
+        invalid_auth = b64encode(f"{self.provider.client_id}:aaa".encode()).decode()
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-revoke"),
             HTTP_AUTHORIZATION=f"Basic {invalid_auth}",
