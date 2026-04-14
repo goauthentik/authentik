@@ -50,7 +50,7 @@ To create a flow, follow these steps:
 
 1. Log in to authentik as an administrator and open the Admin interface.
 2. In the Admin interface, navigate to **Flows and Stages > Flows**.
-3. Click **Create**, define the flow using the [configuration settings](#flow-configuration-options) described below, and then click **Finish**.
+3. Click **New Flow**, define the flow using the [configuration settings](#flow-configuration-options) described below, and then click **Create Flow**.
 
 After creating the flow, you can then [bind specific stages](../stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../../../customize/policies/bindings.md) to the flow to further customize the user's log in and authentication process.
 

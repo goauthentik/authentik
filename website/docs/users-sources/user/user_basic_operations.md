@@ -12,7 +12,7 @@ The following topics are for the basic management of users: how to create, modif
 
 1. In the Admin interface of your authentik instance, select **Directory** > **Users** in the left side menu.
 2. In the **User folders** area, select the folder where you want to create a user.
-3. Click **Create** (for a default user).
+3. Click **New User** (for a default user).
 4. Fill in the required fields:
 
 - **Username**: This value must be unique across your user folders.
@@ -25,7 +25,7 @@ The following topics are for the basic management of users: how to create, modif
 - **Is active**: Define if the newly created user account is active. Selected by default.
 - **Attributes**: Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 
-6. Click **Create**
+6. Click **Create User**
 
 You should see a confirmation pop-up on the top-right of the screen that the user has been created, and see the new user in the user list. You can directly click the username if you want to [modify your user](./user_basic_operations.md#modify-a-user).
 

@@ -50,9 +50,9 @@ After you've created the policies to match the events you want, create a notific
 
 1. Log in as an administrator, open the authentik Admin interface, and navigate to **Event > Notification Rules**.
 
-2. Click **Create** to add a new notification rule or click the **Edit** icon next to an existing rule to modify it.
+2. Click **New Notification Rule** to add a new notification rule or click the **Edit** icon next to an existing rule to modify it.
 
-3. Define the policy configurations, and then click **Create** or **Update** to save the settings.
+3. Define the policy configurations, and then click **Create Notification Rule** or **Update** to save the settings.
 
 - Note that policies are executed regardless of whether a group is selected. However, notifications are only triggered when a group is selected.
 - You also have to select which [notification transport](./transports.md) should be used to send the notification. Two notification transports are created by default:
@@ -61,7 +61,7 @@ After you've created the policies to match the events you want, create a notific
 
 4. In the list of notification rules, click the arrow in the row of the notification rule to expand the details of the rule.
 
-5. Click **Bind existing Policy/Group/User** and in the **Create Binding** modal, select the policy that you created for this notification rule and then click **Create** to finalize the binding.
+5. Click **Bind existing Policy/Group/User** and in the **Create Binding** modal, select the policy that you created for this notification rule and then click **Create Policy Binding** to finalize the binding.
 
 :::info
 Be aware that policies are executed even when no group is selected.

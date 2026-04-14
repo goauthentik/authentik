@@ -48,9 +48,9 @@ When distance checks are enabled, authentik evaluates the current login against 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies**.
-3. Click **Create** and select **GeoIP Policy**.
+3. Click **New Policy** and select **GeoIP Policy**.
 4. Configure the country, ASN, and optional distance settings you need.
-5. Click **Finish**.
+5. Click **Create Policy**.
 
 ## Common use
 
