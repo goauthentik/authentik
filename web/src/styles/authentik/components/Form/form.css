@@ -185,13 +185,14 @@ label.pf-c-radio {
     --pf-c-radio--disabled--BackgroundColor: var(--pf-global--BackgroundColor--150);
 
     padding-inline: var(--pf-global--spacer--md);
-    padding-block: var(--pf-global--spacer--md);
+    padding-block: var(--pf-global--spacer--sm);
     cursor: pointer;
     background-color: var(--pf-c-radio--BackgroundColor, transparent);
     border: 1px solid var(--pf-c-radio--BorderColor);
     border-radius: var(--pf-global--BorderRadius--sm);
     position: relative;
 
+    align-content: center;
     display: grid;
     grid-template-areas:
         "input ."
@@ -259,43 +260,32 @@ label.pf-c-radio {
 }
 
 :has(ak-radio) {
-    &::part(form-group) {
-        grid-template-columns: [label] auto 1fr;
-    }
-
-    &::part(form-group) {
-        gap: 0;
-    }
-
-    &::part(group-control) {
-        grid-column: label / -label;
+    ::part(control) {
+        grid-auto-rows: 1fr;
     }
 }
 
 ::part(radio-help) {
-    padding-block-start: var(--pf-global--spacer--form-element);
+    padding-block-start: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
     font-size: var(--pf-c-form__label--FontSize);
-    line-height: var(--pf-global--LineHeight--md);
-    font-style: italic;
-    color: var(--pf-c-form__group-label-help--Color);
-    text-align: end;
+    line-height: var(--pf-c-form__label--LineHeight);
 }
 
 /* #endregion */
 
 ak-switch-input {
     padding-inline: var(--pf-global--spacer--form-element);
-
-    ::part(form-group) {
-        grid-template-columns: 1fr;
+    ::part(group-control) {
+        grid-area: control;
     }
 
     .pf-c-switch {
-        grid-template-columns: [label] 1fr [control] 1fr;
+        grid-template-columns: [label] auto [control] auto;
         grid-template-rows: [primary] auto [secondary] auto;
-        justify-content: space-between;
+        justify-content: start;
         padding-block: var(--pf-global--spacer--xs);
         width: 100%;
+        column-gap: var(--pf-global--spacer--sm);
     }
 
     .pf-c-switch__label {
