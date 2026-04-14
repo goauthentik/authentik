@@ -133,7 +133,7 @@
         "@typescript-eslint/eslint-plugin": "^8.57.2",
         "@typescript-eslint/parser": "^8.57.2",
         "@typescript-eslint/utils": "^8.57.2",
-        "@vitest/browser": "^4.1.3",
+        "@vitest/browser": "^4.1.4",
         "@vitest/browser-playwright": "^4.0.15",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
