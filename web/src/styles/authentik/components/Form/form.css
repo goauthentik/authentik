@@ -259,12 +259,6 @@ label.pf-c-radio {
     line-height: 1;
 }
 
-:has(ak-radio) {
-    ::part(control) {
-        grid-auto-rows: 1fr;
-    }
-}
-
 ::part(radio-help) {
     padding-block-start: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
     font-size: var(--pf-c-form__label--FontSize);
