@@ -201,7 +201,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                             "Opens the new application wizard, which will guide you through creating a new application with an existing provider.",
                         )}
                     >
-                        ${msg("With New Provider...")}
+                        ${msg("with New Provider...")}
                     </button>
                 </li>
                 <li role="presentation">
@@ -214,7 +214,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                             "Opens the new application form, which will guide you through creating a new application with an existing provider.",
                         )}
                     >
-                        ${msg("With Existing Provider...")}
+                        ${msg("with Existing Provider...")}
                     </button>
                 </li>
             </menu>
