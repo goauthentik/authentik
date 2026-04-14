@@ -6,15 +6,11 @@ import "#components/ak-search-ql/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { PaginatedResponse } from "#elements/table/shared";
-import { ifPresent } from "#elements/utils/attributes";
-
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import {
     AdminApi,
     App,
-    Event,
     EventMatcherPolicy,
     EventsApi,
     PoliciesApi,
@@ -23,23 +19,11 @@ import {
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
-    @state()
-    eventsSchema?: PaginatedResponse<Event>;
-
-    override async load() {
-        const ev = await new EventsApi(DEFAULT_CONFIG).eventsEventsList({
-            page: 1,
-            pageSize: 1,
-            ordering: "-created",
-        });
-        this.eventsSchema = ev;
-    }
-
     override loadInstance(pk: string): Promise<EventMatcherPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRetrieve({
             policyUuid: pk,
@@ -89,11 +73,13 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
             <ak-form-group open label="${msg("Policy-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Query")} name="query">
-                        <ak-search-ql
-                            role="presentation"
-                            value=${ifPresent(this.instance?.query)}
-                            .apiResponse=${this.eventsSchema}
-                        ></ak-search-ql>
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.query || "")}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                        />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Action")} name="action">
                         <ak-search-select
