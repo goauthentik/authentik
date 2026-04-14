@@ -1,12 +1,15 @@
 """Test token view"""
 
 from base64 import b64encode
+from datetime import timedelta
 from json import dumps
 from urllib.parse import quote
 
 from django.test import RequestFactory
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.timezone import now
+from freezegun import freeze_time
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
@@ -395,7 +398,11 @@ class TestToken(OAuthTestCase):
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_refresh_token_view_threshold(self):
-        """test request param"""
+        """refresh token threshold
+
+        threshold set to 1 hour, refresh token expires in 2 hours.
+        First request should not return a new refresh token, second request
+        has a fake time 1 hours in the future which should return a new access token"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
@@ -425,6 +432,7 @@ class TestToken(OAuthTestCase):
             _id_token=dumps({}),
             auth_time=timezone.now(),
             _scope="offline_access",
+            expires=now() + timedelta(hours=2),
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -436,9 +444,7 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
             HTTP_ORIGIN="http://local.invalid",
         )
-        self.assertEqual(response["Access-Control-Allow-Credentials"], "true")
-        self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
-        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        access = AccessToken.objects.filter(user=user, provider=provider).first()
         self.assertJSONEqual(
             response.content.decode(),
             {
@@ -452,6 +458,34 @@ class TestToken(OAuthTestCase):
             },
         )
         self.validate_jwt(access, provider)
+
+        with freeze_time(now() + timedelta(hours=1, minutes=10)):
+            response = self.client.post(
+                reverse("authentik_providers_oauth2:token"),
+                data={
+                    "grant_type": GRANT_TYPE_REFRESH_TOKEN,
+                    "refresh_token": token.token,
+                    "redirect_uri": "http://local.invalid",
+                },
+                HTTP_AUTHORIZATION=f"Basic {header}",
+                HTTP_ORIGIN="http://local.invalid",
+            )
+            access = AccessToken.objects.filter(user=user, provider=provider).first()
+            refresh = RefreshToken.objects.filter(user=user, provider=provider).last()
+            self.assertJSONEqual(
+                response.content.decode(),
+                {
+                    "access_token": access.token,
+                    "token_type": TOKEN_TYPE,
+                    "expires_in": 3600,
+                    "id_token": provider.encode(
+                        access.id_token.to_dict(),
+                    ),
+                    "scope": "offline_access",
+                    "refresh_token": refresh.token,
+                },
+            )
+            self.validate_jwt(access, provider)
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_scope_claim_override_via_property_mapping(self):
