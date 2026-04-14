@@ -283,12 +283,14 @@
 }
 
 .ak-c-dialog__content:has([part*="wizard"]) {
-    grid-template-rows: [body] auto;
     --ak-c-dialog__body--PaddingInlineEnd: 0;
     --ak-c-dialog__body--PaddingInlineStart: 0;
     --ak-c-dialog__body--last-child--PaddingBlockEnd: 0;
     --ak-c-dialog__body--PaddingBlockStart: 0;
     --ak-c-dialog__body--PaddingBlockEnd: 0;
+    --ak-m-scroll-shadows--BorderWidth: 0;
+
+    grid-template-rows: [body] auto;
 
     ::part(body) {
         overscroll-behavior: none;

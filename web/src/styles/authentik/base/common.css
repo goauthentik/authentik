@@ -183,6 +183,8 @@
 /* #endregion */
 
 .ak-m-scroll-shadows {
+    --ak-m-scroll-shadows--BorderWidth--light: 0.5px;
+    --ak-m-scroll-shadows--BorderWidth--dark: 1px;
     --ak-m-scroll-shadows--Translucency: 75%;
     --ak-m-scroll-shadows--BackgroundColor: var(--pf-global--BackgroundColor--100, white);
     --ak-m-scroll-shadows--ShadowColor: var(--pf-global--Color--400);
@@ -227,12 +229,19 @@
         )
     );
     border-block-style: var(--ak-m-scroll-shadows--BorderStyle, solid);
-    border-block-width: var(--ak-m-scroll-shadows--BorderWidth, 0.5px);
+    border-block-width: var(
+        --ak-m-scroll-shadows--BorderWidth,
+        var(--ak-m-scroll-shadows--BorderWidth--light)
+    );
 }
 
 html[data-theme="dark"],
 :host([theme="dark"]) {
     .ak-m-scroll-shadows {
-        --ak-m-scroll-shadow--ShadowDepth: 1px;
+        --ak-m-scroll-shadow--ShadowDepth: 0;
+        border-block-width: var(
+            --ak-m-scroll-shadows--BorderWidth,
+            var(--ak-m-scroll-shadows--BorderWidth--dark)
+        );
     }
 }
