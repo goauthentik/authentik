@@ -82,7 +82,7 @@ Negation only changes the boolean result. Any messages returned by the policy ar
 
 ### Timeout
 
-**Timeout** limits how long authentik will wait for a policy execution before it is terminated. This is especially relevant for expression policies or other policy types that may call external systems.
+**Timeout** limits how long authentik will wait for a policy execution before it is terminated. This is especially relevant for expression policies or other policy types that may call external systems. Defaults to 30 seconds.
 
 ### Failure result
 
@@ -99,7 +99,7 @@ Individual policies can enable **Execution logging**. When enabled, authentik lo
 
 ## Common patterns
 
-### Gate an application with a group or policy
+### Limit application access with a group or policy
 
 Bind a group directly when the rule is static. Bind a policy when access depends on runtime context such as network, source, prompt data, or request history.
 

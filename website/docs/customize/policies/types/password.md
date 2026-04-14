@@ -18,7 +18,7 @@ A Password policy can enforce:
 - minimum counts for uppercase, lowercase, digits, and symbols
 - a custom symbol set
 - [Have I Been Pwned](https://haveibeenpwned.com/) exposure checks
-- zxcvbn strength checks
+- [zxcvbn](https://github.com/dropbox/zxcvbn) strength checks
 
 The policy reads the configured password field from prompt data, so the field key in the policy must match the password field used by your prompt stage.
 

@@ -6,13 +6,13 @@ tags:
     - notifications
 ---
 
-Use an Event Matcher policy when you want to match authentik events by a small set of built-in fields instead of writing a custom expression.
+Use an Event Matcher policy when you want to match authentik events against a small set of built-in fields instead of writing a custom expression.
 
 This policy is most commonly used with [Notification Rules](../../../sys-mgmt/events/notifications.md).
 
 ## When to use it
 
-Use an Event Matcher policy when you want to react to events such as:
+Use an Event Matcher policy when you want to match against events such as:
 
 - a failed login
 - a model being created, updated, or deleted

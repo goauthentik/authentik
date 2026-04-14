@@ -10,7 +10,7 @@ tags:
 import Functions from "../../../../expressions/reference/_functions.mdx";
 import Objects from "../../../../expressions/reference/_objects.md";
 
-This page documents the expression-policy execution environment in authentik.
+This page documents the expression policy execution environment in authentik.
 
 ## Return values
 
@@ -21,13 +21,6 @@ return True
 ```
 
 ```python
-return False
-```
-
-To show the user why the policy failed, use `ak_message()` before returning `False`:
-
-```python
-ak_message("Access denied")
 return False
 ```
 
@@ -73,9 +66,6 @@ If the user is not authenticated, `request.user` will be `AnonymousUser`, which 
 
 The most commonly used values in flow-related expressions are:
 
-- `request.user`: the current user for this policy execution
-- `request.http_request`: the Django request, when one exists
-- `request.obj`: the object the policy is being evaluated against
 - `context["pending_user"]`: the user currently being identified or enrolled in a flow
 - `context["prompt_data"]`: data collected from a prompt stage
 - `context["application"]`: the application involved in the current authorization flow

@@ -6,7 +6,7 @@ tags:
     - access-control
 ---
 
-Policies are reusable decisions in authentik. They let you control whether a user can access an application, whether a stage in a flow should run, whether a source can be used, or whether data entered in a prompt stage is valid.
+Policies are reusable checks in authentik. They let you control whether a user can access an application, whether a stage in a flow should run, whether a source can be used, or whether data entered in a prompt stage is valid.
 
 If you are new to policies, start here:
 
@@ -19,7 +19,7 @@ If you are new to policies, start here:
 
 Every policy setup has three parts:
 
-1. A **policy** defines a single decision, such as "is the client in an allowed country?" or "did the user enter an acceptable password?"
+1. A **policy** defines a single check, such as "is the client in an allowed country?" or "did the user enter an acceptable password?"
 2. A **binding** decides where that policy applies, such as a flow, stage binding, application, or source.
 3. The **target object** combines all of its bindings using either `Any` or `All` mode.
 

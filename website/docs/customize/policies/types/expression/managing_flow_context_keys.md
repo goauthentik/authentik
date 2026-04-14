@@ -8,7 +8,7 @@ tags:
 
 [Flow context](../../../../add-secure-apps/flows-stages/flow/context/index.mdx) can be read and updated from an [Expression policy](./index.mdx) through `context["flow_plan"].context`.
 
-This is useful when you want to influence later stages in the same flow, such as changing a redirect target or passing derived data to another stage.
+This is useful when you want to influence later stages in the same flow, such as changing a redirect target or passing data to another stage.
 
 For `redirect_stage_target`, use the format `ak-flow://{slug}` when you want the [Redirect stage](../../../../add-secure-apps/flows-stages/stages/redirect/index.md) to redirect to another flow. See [`redirect_stage_target`](../../../../add-secure-apps/flows-stages/flow/context/index.mdx#redirect_stage_target-string) for the full behavior.
 

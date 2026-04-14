@@ -36,13 +36,13 @@ If either country or ASN matching is configured, the static part of the policy p
 
 GeoIP policies can also compare the current login against recent login history.
 
+When distance checks are enabled, authentik evaluates the current login against the configured number of historical login events. If any comparison exceeds the allowed distance or fails the impossible-travel check, the policy fails.
+
 - **Maximum distance**: the maximum allowed distance between a previous login location and the current login location.
 - **Distance tolerance**: an additional tolerance, in kilometers, added to the maximum distance before the policy fails.
 - **Historical Login Count**: how many recent login events authentik should compare against.
 - **Check impossible travel**: enables an additional check based on travel speed between recent login events.
 - **Impossible travel tolerance**: an additional tolerance, in kilometers, added to the built-in impossible-travel allowance.
-
-When distance checks are enabled, authentik evaluates the current login against the configured number of historical login events. If any comparison exceeds the allowed distance or fails the impossible-travel check, the policy fails.
 
 ## Create a GeoIP policy
 

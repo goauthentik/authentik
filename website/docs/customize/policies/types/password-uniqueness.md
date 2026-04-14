@@ -31,7 +31,7 @@ This policy only starts building password history once it is in use. The first p
 Use Password Uniqueness when you need password-history enforcement, such as:
 
 - security baselines that forbid password reuse
-- internal password rotation requirements
+- password rotation requirements
 - compliance frameworks that require password history checks
 
 For broader password controls, combine it with:
