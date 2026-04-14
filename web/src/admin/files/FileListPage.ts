@@ -37,6 +37,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
     public override pageTitle = msg("Files");
     public override pageDescription = msg("Manage uploaded files.");
     public override pageIcon = "pf-icon pf-icon-folder-open";
+    public override searchPlaceholder = msg("Search for a file by name...");
 
     @property({ type: String, useDefault: true })
     public order: FileListOrderKey = "name";

@@ -22,7 +22,7 @@ export class LogViewer extends StaticTable<LogEvent> {
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state><span>${msg("No log messages.")}</span> </ak-empty-state>`,
         );

@@ -21,13 +21,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-endpoints-device-list")
 export class DeviceListPage extends TablePage<EndpointDevice> {
-    public pageTitle = msg("Devices");
-    public pageDescription = "";
-    public pageIcon = "fa fa-laptop";
-
-    checkbox = true;
-
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         PFGrid,
         PFBanner,
@@ -37,6 +31,13 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             }
         `,
     ];
+    public override pageTitle = msg("Devices");
+    public override pageDescription = "";
+    public override pageIcon = "fa fa-laptop";
+
+    public override checkbox = true;
+
+    public override searchPlaceholder = msg("Search devices by name, OS, or group...");
 
     protected searchEnabled: boolean = true;
     protected columns: TableColumn[] = [
@@ -59,7 +60,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         );
     }
 
-    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected renderEmpty(inner?: TemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner

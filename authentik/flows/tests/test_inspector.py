@@ -33,7 +33,7 @@ class TestFlowInspector(APITestCase):
         FlowStageBinding.objects.create(
             target=flow,
             stage=ident_stage,
-            order=1,
+            order=0,
             invalid_response_action=InvalidResponseAction.RESTART_WITH_CONTEXT,
         )
         dummy_stage = DummyStage.objects.create(name=generate_id())

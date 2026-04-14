@@ -15,7 +15,7 @@ test.describe("Provider Wizard", () => {
 
         providerNames.set(testId, providerName);
 
-        const dialog = page.getByRole("dialog", { name: "New provider" });
+        const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
 
         await test.step("Authenticate", async () => {
             await session.login({
@@ -31,7 +31,7 @@ test.describe("Provider Wizard", () => {
             await expect(dialog, "Dialog opens after clicking on New Provider").toBeVisible();
 
             await expect(
-                page.getByRole("listbox", { name: "Select a provider type" }),
+                page.getByRole("listbox", { name: "Choose Provider Type" }),
                 "Dialog opens with a list of provider types",
             ).toBeVisible();
 
@@ -61,21 +61,21 @@ test.describe("Provider Wizard", () => {
 
     //#region OAuth2
 
-    test("Simple OAuth2 Provider", async ({ form, pointer }, testInfo) => {
+    test("Simple OAuth2 Provider", async ({ form, pointer, page }, testInfo) => {
         const providerName = providerNames.get(testInfo.testId)!;
         const { fill, selectSearchValue } = form;
         const { click } = pointer;
+        const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
 
         await series(
             [click, "OAuth2/OpenID", "option"],
-            [click, "Next"],
-            [fill, "Provider name", providerName],
+            [fill, "Provider Name", providerName],
             [
                 selectSearchValue,
-                "Authorization flow",
+                "Authorization Flow",
                 /default-provider-authorization-explicit-consent/,
             ],
-            [click, "Finish"],
+            [click, "Create", "button", dialog],
         );
     });
 
@@ -84,16 +84,16 @@ test.describe("Provider Wizard", () => {
 
         const { fill, selectSearchValue, setFormGroup, setRadio, setInputCheck } = form;
         const { click } = pointer;
+        const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
 
         const $clientSecretInput = page.getByRole("textbox", { name: "Client Secret" });
 
         await series(
             [click, "OAuth2/OpenID", "option"],
-            [click, "Next"],
-            [fill, "Provider name", providerName],
+            [fill, "Provider Name", providerName],
             [
                 selectSearchValue,
-                "Authorization flow",
+                "Authorization Flow",
                 /default-provider-authorization-explicit-consent/,
             ],
             [setFormGroup, "Protocol settings", true],
@@ -113,18 +113,18 @@ test.describe("Provider Wizard", () => {
             ],
             [selectSearchValue, "Signing Key", /authentik Self-signed Certificate/],
             [setFormGroup, "Advanced flow settings", true],
-            [selectSearchValue, "Authentication flow", /default-source-authentication/],
-            [selectSearchValue, "Invalidation flow", /default-invalidation-flow/],
+            [selectSearchValue, "Authentication Flow", /default-source-authentication/],
+            [selectSearchValue, "Invalidation Flow", /default-invalidation-flow/],
             [setFormGroup, "Advanced protocol settings", true],
-            [fill, "Access code validity", "minutes=2"],
-            [fill, "Access token validity", "minutes=10"],
-            [fill, "Refresh token validity", "days=40"],
+            [fill, "Access Code Validity", "minutes=2"],
+            [fill, "Access Token Validity", "minutes=10"],
+            [fill, "Refresh Token Validity", "days=40"],
             [selectSearchValue, "Encryption Key", /authentik Self-signed Certificate/],
             [setInputCheck, "Include claims in id_token", false],
-            [setRadio, "Subject mode", "Based on the User's username"],
-            [setRadio, "Issuer mode", "Same identifier is used for all providers"],
+            [setRadio, "Subject Mode", "Based on the User's username"],
+            [setRadio, "Issuer Mode", "Same identifier is used for all providers"],
             [setFormGroup, "Machine-to-Machine authentication settings", true],
-            [click, "Finish", "button", page.getByRole("dialog", { name: "New Provider" })],
+            [click, "Create", "button", dialog],
         );
     });
 
@@ -136,24 +136,23 @@ test.describe("Provider Wizard", () => {
         const providerName = providerNames.get(testInfo.testId)!;
         const { fill, setFormGroup, selectSearchValue, setInputCheck, setRadio } = form;
         const { click } = pointer;
+        const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
 
         await series(
             [click, "LDAP", "option"],
-            [click, "Next"],
-
-            [fill, "Provider name", providerName],
+            [fill, "Provider Name", providerName],
             [setFormGroup, "Flow settings", true],
             [setFormGroup, "Protocol settings", true],
-            [selectSearchValue, "Bind flow", /default-authentication-flow/],
+            [selectSearchValue, "Bind Flow", /default-authentication-flow/],
             [fill, "Base DN", "DC=ldap-2,DC=goauthentik,DC=io"],
             [selectSearchValue, "Certificate", /authentik Self-signed Certificate/],
-            [fill, "TLS Server name", "goauthentik.io"],
-            [fill, "UID start number", "2001"],
-            [fill, "GID start number", "4001"],
-            [setRadio, "Search mode", "Direct querying"],
-            [setRadio, "Bind mode", "Direct binding"],
+            [fill, "TLS Server Name", "goauthentik.io"],
+            [fill, "UID Start Number", "2001"],
+            [fill, "GID Start Number", "4001"],
+            [setRadio, "Search Mode", "Direct querying"],
+            [setRadio, "Bind Mode", "Direct binding"],
             [setInputCheck, "MFA Support", false],
-            [click, "Finish", "button", page.getByRole("dialog", { name: "New Provider" })],
+            [click, "Create", "button", dialog],
         );
     });
 
@@ -165,15 +164,15 @@ test.describe("Provider Wizard", () => {
         const providerName = providerNames.get(testInfo.testId)!;
         const { fill, selectSearchValue, setFormGroup } = form;
         const { click } = pointer;
+        const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
 
         await series(
             [click, "RADIUS", "option"],
-            [click, "Next"],
-            [fill, "Provider name", providerName],
-            [selectSearchValue, "Authentication flow", /default-authentication-flow/],
+            [fill, "Provider Name", providerName],
+            [selectSearchValue, "Authentication Flow", /default-authentication-flow/],
             [setFormGroup, "Protocol settings", true],
             [selectSearchValue, "Certificate", /------/],
-            [click, "Finish", "button", page.getByRole("dialog", { name: "New Provider" })],
+            [click, "Create", "button", dialog],
         );
     });
 

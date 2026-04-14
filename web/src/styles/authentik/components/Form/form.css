@@ -20,6 +20,15 @@
     );
 }
 
+.pf-c-form.ak-m-content-center {
+    --pf-c-form--GridGap: var(--pf-global--spacer--sm);
+
+    flex: 1 1 auto;
+    align-self: self-start;
+    align-content: center;
+    width: 100%;
+}
+
 .pf-c-form__group {
     column-gap: var(--pf-global--spacer--md);
 }
@@ -156,10 +165,164 @@ fieldset {
     }
 }
 
+/* #endregion */
+
+/* #region Radio */
+
+.pf-c-radio {
+    align-content: start;
+}
+
+label.pf-c-radio {
+    --pf-c-radio--BorderColor: var(--pf-global--BorderColor--300);
+    --pf-c-radio--BoxShadowColor: transparent;
+
+    --pf-c-radio--checked--BackgroundColor: transparent;
+    --pf-c-radio--checked--BorderColor: var(--pf-global--active-color--300);
+    --pf-c-radio--hover--BorderColor: var(--pf-global--active-color--200);
+
+    --pf-c-radio--disabled--BackgroundColor: var(--pf-global--BackgroundColor--150);
+
+    padding-inline: var(--pf-global--spacer--md);
+    padding-block: var(--pf-global--spacer--md);
+    cursor: pointer;
+    background-color: var(--pf-c-radio--BackgroundColor, transparent);
+    border: 1px solid var(--pf-c-radio--BorderColor);
+    border-radius: var(--pf-global--BorderRadius--sm);
+    position: relative;
+
+    display: grid;
+    grid-template-areas:
+        "input ."
+        "input .";
+    grid-template-columns: auto 1fr;
+    column-gap: var(--pf-global--spacer--md);
+
+    .pf-c-radio__input {
+        grid-area: input;
+        align-self: center;
+        margin-block: 0;
+        margin-inline-end: var(--pf-global--spacer--xs);
+        margin-inline-start: var(--pf-global--spacer--sm);
+        appearance: none;
+        content: none;
+        width: 1em;
+        height: 1em;
+
+        &::after {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+
+            content: "\f00c";
+            display: block;
+            line-height: 1;
+            color: var(--pf-c-radio--checkmark--Color, transparent);
+        }
+    }
+
+    &:not(:last-child) {
+        --pf-c-radio--BoxShadowColor: var(--pf-global--BorderColor--100);
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        display: block;
+        background-color: var(--pf-c-radio--BoxShadowColor);
+        height: 0.5px;
+        inset-inline: 0;
+        inset-block-end: 0;
+    }
+
+    &:has(.pf-c-radio__input:checked) {
+        --pf-c-radio--BackgroundColor: var(--pf-c-radio--checked--BackgroundColor);
+        --pf-c-radio--BorderColor: var(--pf-c-radio--checked--BorderColor);
+        --pf-c-radio--checkmark--Color: var(--pf-global--active-color--300);
+    }
+
+    &:hover {
+        --pf-c-radio--BorderColor: var(--pf-c-radio--hover--BorderColor);
+        --pf-c-radio--checkmark--Color: var(--pf-c-radio--hover--BorderColor);
+    }
+
+    &:has(.pf-c-radio__input:disabled) {
+        cursor: not-allowed;
+
+        --pf-c-radio--BackgroundColor: var(--pf-c-radio--disabled--BackgroundColor) !important;
+    }
+}
+
+.pf-c-form__helper-radio:first-child {
+    margin-block-end: var(--pf-global--spacer--sm);
+    line-height: 1;
+}
+
+:has(ak-radio) {
+    &::part(form-group) {
+        grid-template-columns: [label] auto 1fr;
+    }
+
+    &::part(form-group) {
+        gap: 0;
+    }
+
+    &::part(group-control) {
+        grid-column: label / -label;
+    }
+}
+
+::part(radio-help) {
+    padding-block-start: var(--pf-global--spacer--form-element);
+    font-size: var(--pf-c-form__label--FontSize);
+    line-height: var(--pf-global--LineHeight--md);
+    font-style: italic;
+    color: var(--pf-c-form__group-label-help--Color);
+    text-align: end;
+}
+
+/* #endregion */
+
+ak-switch-input {
+    padding-inline: var(--pf-global--spacer--form-element);
+
+    ::part(form-group) {
+        grid-template-columns: 1fr;
+    }
+
+    .pf-c-switch {
+        grid-template-columns: [label] 1fr [control] 1fr;
+        grid-template-rows: [primary] auto [secondary] auto;
+        justify-content: space-between;
+        padding-block: var(--pf-global--spacer--xs);
+        width: 100%;
+    }
+
+    .pf-c-switch__label {
+        grid-area: primary / label;
+        justify-self: start;
+        font-weight: 500;
+    }
+
+    .pf-c-switch__input,
+    .pf-c-switch__toggle {
+        grid-area: primary / control;
+        justify-self: end;
+    }
+
+    .pf-c-form__helper-text {
+        padding-inline-end: var(--pf-global--spacer--2xl);
+        grid-area: secondary / label / secondary / -1;
+    }
+}
+
 /* #region Dark Theme */
 
 [data-theme="dark"],
 :host([theme="dark"]) {
+    label.pf-c-radio {
+        --pf-c-radio__description--Color: var(--pf-global--palette--blue-50);
+    }
+
     /* #region Inputs */
 
     .pf-c-input-group:not(:has(.pf-c-switch)) {

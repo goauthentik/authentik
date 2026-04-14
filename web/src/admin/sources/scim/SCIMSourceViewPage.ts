@@ -153,7 +153,7 @@ export class SCIMSourceViewPage extends AKElement {
                                                     class="pf-m-primary"
                                                     identifier="${this.source?.tokenObj.identifier}"
                                                 >
-                                                    ${msg("Click to copy token")}
+                                                    ${msg("Copy token")}
                                                 </ak-token-copy-button>
                                             </div>
                                         </div>

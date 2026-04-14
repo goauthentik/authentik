@@ -13,6 +13,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-object-review-form")
 export class ObjectReviewForm extends ModelForm<Review, string, Review | null> {
+    public static override verboseName = msg("Review");
+    public static override verboseNamePlural = msg("Reviews");
+    public static override submitVerb = msg("Confirm");
+    public static override createLabel = msg("Confirm");
+
     @property({ attribute: false })
     public iteration: LifecycleIteration | null = null;
 

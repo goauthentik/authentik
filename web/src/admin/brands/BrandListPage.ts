@@ -8,14 +8,17 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { BrandForm } from "#admin/brands/BrandForm";
+
 import { Brand, CoreApi, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-brand-list")
@@ -47,8 +50,9 @@ export class BrandListPage extends TablePage<Brand> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Brand(s)")}
             .objects=${this.selectedElements}
@@ -72,22 +76,13 @@ export class BrandListPage extends TablePage<Brand> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Brand): SlottedTemplateResult[] {
+    protected override row(item: Brand): SlottedTemplateResult[] {
         return [
-            html`${item.domain}`,
-            html`${item.brandingTitle}`,
+            item.domain,
+            item.brandingTitle || msg("-"),
             html`<ak-status-label ?good=${item._default}></ak-status-label>`,
-            html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Save Changes")}</span>
-                    <span slot="header">${msg("Update Brand")}</span>
-                    <ak-brand-form slot="form" .instancePk=${item.brandUuid}> </ak-brand-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(BrandForm, item.brandUuid, item.brandingTitle)}
 
                 <ak-rbac-object-permission-modal
                     model=${ModelEnum.AuthentikBrandsBrand}
@@ -98,15 +93,8 @@ export class BrandListPage extends TablePage<Brand> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create Brand")}</span>
-                <span slot="header">${msg("New Brand")}</span>
-                <ak-brand-form slot="form"> </ak-brand-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Brand")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(BrandForm);
     }
 }
 

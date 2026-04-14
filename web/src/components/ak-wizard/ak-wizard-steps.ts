@@ -1,14 +1,18 @@
 import { NavigationEventInit, WizardNavigationEvent } from "./events.js";
-import { WizardStepLabel, WizardStepState } from "./shared.js";
+import { WizardStepLabel } from "./shared.js";
 import { wizardStepContext } from "./WizardContexts.js";
 import { type WizardStep } from "./WizardStep.js";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
+import { listen } from "#elements/decorators/listen";
 
-import { Context, ContextProvider } from "@lit/context";
+import { ContextProvider } from "@lit/context";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+const asArr = (v?: string[] | string) => {
+    return typeof v === "undefined" ? [] : Array.isArray(v) ? v : [v];
+};
 
 /**
  * @class WizardStepsManager
@@ -22,52 +26,46 @@ import { customElement, property } from "lit/decorators.js";
  * using this class changes them.
  *
  */
-
 @customElement("ak-wizard-steps")
 export class WizardStepsManager extends AKElement {
     public static styles = [
         css`
             :host {
-                display: block;
+                display: contents;
             }
         `,
     ];
 
     @property({ type: String, attribute: true })
-    public currentStep?: string;
+    public currentStep: string | null = null;
 
-    protected wizardStepContext!: ContextProvider<Context<symbol, WizardStepState>>;
-
-    protected slots: WizardStep[] = [];
-
-    constructor() {
-        super();
-
-        this.wizardStepContext = new ContextProvider(this, {
-            context: wizardStepContext,
-            initialValue: {
-                currentStep: undefined,
-                stepLabels: [],
-            },
-        });
-        this.addEventListener(WizardNavigationEvent.eventName, this.onNavigation);
-        this.addEventListener("slotchange", this.onSlotchange);
-    }
+    protected slotMap: ReadonlyMap<string, WizardStep> = new Map();
+    protected wizardStepContext = new ContextProvider(this, {
+        context: wizardStepContext,
+        initialValue: {
+            currentStep: null,
+            stepLabels: [],
+        },
+    });
 
     protected refreshSlots() {
-        this.slots = Array.from(this.querySelectorAll("[slot]")) as WizardStep[];
-    }
+        const nextSlots = new Map<string, WizardStep>();
 
-    protected findSlot(name?: string) {
-        const target = this.slots.find((slot) => slot.slot === name);
-        if (!target) {
-            throw new Error(`Request for wizard panel that does not exist: ${name}`);
+        for (const slot of Array.from(this.querySelectorAll<WizardStep>("[slot]"))) {
+            const name = slot.getAttribute("slot") ?? "";
+
+            if (nextSlots.has(name)) {
+                throw new Error(`Duplicate wizard step slot name detected: ${name}`);
+            }
+
+            nextSlots.set(name, slot);
         }
-        return target;
+
+        this.slotMap = nextSlots;
     }
 
     protected get stepLabels(): WizardStepLabel[] {
-        return this.slots
+        return Array.from(this.slotMap.values())
             .filter((slot) => !slot.hide)
             .map((slot) => ({
                 label: slot.label,
@@ -89,17 +87,22 @@ export class WizardStepsManager extends AKElement {
         this.refreshSlots();
         this.refreshStepLabels();
 
-        if (!this.currentStep && this.slots.length > 0) {
-            const currentStep = this.slots[0].getAttribute("slot");
-            if (!currentStep) {
-                throw new Error("All steps managed by this component must have a slot definition.");
+        if (!this.currentStep) {
+            const [firstEntry] = this.slotMap;
+
+            if (!firstEntry) {
+                throw new Error(
+                    "No current step set on wizard steps manager, and no steps found in slots.",
+                );
             }
+
+            const [currentStep] = firstEntry;
 
             this.currentStep = currentStep;
 
             this.wizardStepContext.setValue({
                 stepLabels: this.stepLabels,
-                currentStep: currentStep,
+                currentStep,
             });
         }
     }
@@ -108,13 +111,25 @@ export class WizardStepsManager extends AKElement {
         this.refreshStepLabels();
     }
 
-    @bound
-    protected onSlotchange(ev: Event) {
-        ev.stopPropagation();
-        this.refreshSlots();
-        this.findSlot(this.currentStep);
-        this.refreshStepLabels();
+    protected findSlot(name: string | null): WizardStep {
+        const slot = this.slotMap.get(name ?? "");
+
+        if (!slot) {
+            throw new Error(`Could not find step with slot name ${name}`);
+        }
+
+        return slot;
     }
+
+    protected refresh = (event: Event) => {
+        event.stopPropagation();
+
+        this.refreshSlots();
+
+        this.findSlot(this.currentStep);
+
+        this.refreshStepLabels();
+    };
 
     /**
      * This event sequence handles the following possibilities:
@@ -127,30 +142,32 @@ export class WizardStepsManager extends AKElement {
      *   unexpected.  None of the data will have been lost.
      */
     protected updateStepAvailability(details: NavigationEventInit) {
-        const asArr = (v?: string[] | string) =>
-            v === undefined ? [] : Array.isArray(v) ? v : [v];
         const enabled = asArr(details.enable);
+
         enabled.forEach((name) => {
             this.findSlot(name).enabled = true;
         });
-        if (details.disabled !== undefined) {
+
+        if (details.disabled) {
             const disabled = asArr(details.disabled);
-            this.slots.forEach((slot) => {
+            this.slotMap.forEach((slot) => {
                 slot.enabled = !disabled.includes(slot.slot);
             });
         }
-        if (details.hidden !== undefined) {
+
+        if (details.hidden) {
             const hidden = asArr(details.hidden);
-            this.slots.forEach((slot) => {
+            this.slotMap.forEach((slot) => {
                 slot.hide = hidden.includes(slot.slot);
             });
         }
     }
 
-    @bound
-    protected onNavigation(ev: WizardNavigationEvent) {
-        ev.stopPropagation();
-        const { destination, details } = ev;
+    @listen(WizardNavigationEvent)
+    protected synchronizeContext = (event: WizardNavigationEvent) => {
+        event.stopPropagation();
+
+        const { destination, details } = event;
 
         if (details) {
             this.updateStepAvailability(details);
@@ -160,7 +177,7 @@ export class WizardStepsManager extends AKElement {
             return;
         }
 
-        const target = this.slots.find((slot) => slot.slot === destination);
+        const target = this.slotMap.get(destination);
 
         if (!target) {
             throw new Error(`Attempted to navigate to unknown step: ${destination}`);
@@ -175,11 +192,12 @@ export class WizardStepsManager extends AKElement {
         }
 
         this.currentStep = target.slot;
+
         this.wizardStepContext.setValue({
             stepLabels: this.stepLabels,
             currentStep: target.slot,
         });
-    }
+    };
 
     protected override render() {
         return this.currentStep ? html`<slot name=${this.currentStep}></slot>` : nothing;

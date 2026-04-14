@@ -1,4 +1,6 @@
 .pf-c-form__group-control {
+    --pf-c-grid__group-control--m-stack--Gap: var(--pf-global--spacer--xs);
+
     /**
      * There's enough complexity within the group label variable composition
      * to add a fallback value.

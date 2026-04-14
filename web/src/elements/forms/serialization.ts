@@ -2,6 +2,7 @@ import { dateToUTC } from "#common/temporal";
 
 import { AKElement } from "#elements/Base";
 import { isControlElement } from "#elements/ControlElement";
+import { isFormField } from "#elements/forms/form-associated-element";
 import { isNamedElement, NamedElement } from "#elements/utils/inputs";
 
 function isIgnored<T extends Element>(element: T) {
@@ -51,7 +52,7 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
 
         if (element.hidden) return;
 
-        if (isNamedElement(element) && isControlElement(element)) {
+        if (isNamedElement(element) && (isFormField(element) || isControlElement(element))) {
             return assignValue(element, element.toJSON(), json);
         }
 
@@ -61,7 +62,10 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
             return;
         }
 
-        if (isNamedElement(element) && isControlElement(inputElement)) {
+        if (
+            isNamedElement(element) &&
+            (isFormField(inputElement) || isControlElement(inputElement))
+        ) {
             return assignValue(element, inputElement.toJSON(), json);
         }
 

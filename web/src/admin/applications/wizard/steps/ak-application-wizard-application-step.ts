@@ -1,4 +1,3 @@
-import "#admin/applications/wizard/ak-wizard-title";
 import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
@@ -16,7 +15,7 @@ import { type NavigableButton, type WizardButton } from "#components/ak-wizard/s
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import {
-    ApplicationWizardStateUpdate,
+    ApplicationWizardContextUpdate,
     WizardValidationRecord,
 } from "#admin/applications/wizard/steps/providers/shared";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -61,13 +60,11 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             : (this.wizard.errors?.app?.[name] ?? this.wizard.errors?.app?.[snakeCase(name)] ?? []);
     }
 
-    get buttons(): WizardButton[] {
-        return [
-            // ---
-            { kind: "cancel" },
-            { kind: "next", destination: "provider-choice" },
-        ];
-    }
+    protected buttons: WizardButton[] = [
+        // ---
+        { kind: "cancel" },
+        { kind: "next", destination: "provider-choice" },
+    ];
 
     get valid() {
         this.errors = new Map();
@@ -95,7 +92,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         }
 
         if (!this.valid) {
-            this.handleEnabling({
+            this.dispatchNavigationEvent({
                 disabled: ["provider-choice", "provider", "bindings", "submit"],
             });
 
@@ -104,24 +101,26 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
 
         const app = { ...this.formValues };
 
-        const payload: ApplicationWizardStateUpdate = {
+        const update: ApplicationWizardContextUpdate = {
             app,
             errors: omitKeys(this.wizard.errors, "app"),
         };
 
         if (!this.wizard.provider?.name?.trim() && app.name) {
-            payload.provider = {
+            update.provider = {
                 name: `Provider for ${app.name}`,
             };
         }
 
-        this.handleUpdate(payload, button.destination, {
-            enable: "provider-choice",
+        return this.dispatchEvents({
+            update,
+            destination: button.destination,
+            details: { enable: "provider-choice" },
         });
     }
 
     protected renderForm(app: Partial<ApplicationRequest>, errors: WizardValidationRecord = {}) {
-        return html` <ak-wizard-title>${msg("Configure the Application")}</ak-wizard-title>
+        return html`<h3 class="pf-c-wizard__main-title">${msg("Configure the Application")}</h3>
             <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"

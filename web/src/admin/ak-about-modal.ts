@@ -1,72 +1,51 @@
-import "#elements/EmptyState";
+import "#elements/ak-progress-bar";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { globalAK } from "#common/global";
 
+import { asInvoker } from "#elements/dialogs";
+import { AKModal } from "#elements/dialogs/ak-modal";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { AKModal } from "#elements/modals/ak-modal";
-import { asInvoker } from "#elements/modals/utils";
+import { SlottedTemplateResult } from "#elements/types";
 import { ThemedImage } from "#elements/utils/images";
 
-import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
+import {
+    AdminApi,
+    CapabilitiesEnum,
+    LicenseSummaryStatusEnum,
+    SystemInfo,
+    Version,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, html, TemplateResult } from "lit";
+import { css, html } from "lit";
 import { ref } from "lit-html/directives/ref.js";
 import { styleMap } from "lit-html/directives/style-map.js";
+import { until } from "lit-html/directives/until.js";
 import { customElement, state } from "lit/decorators.js";
 
 import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal-box.css";
 
 const DEFAULT_BRAND_IMAGE = "/static/dist/assets/images/flow_background.jpg";
 
-type AboutEntry = [label: string, content: string | TemplateResult];
+type AboutEntry = [label: string, content?: SlottedTemplateResult];
 
-async function fetchAboutDetails(): Promise<AboutEntry[]> {
-    const api = new AdminApi(DEFAULT_CONFIG);
-
-    const [status, version] = await Promise.all([
-        api.adminSystemRetrieve(),
-        api.adminVersionRetrieve(),
-    ]);
-
-    let build: string | TemplateResult = msg("Release");
-
-    if (globalAK().config.capabilities.includes(CapabilitiesEnum.CanDebug)) {
-        build = msg("Development");
-    } else if (version.buildHash) {
-        build = html`<a
-            rel="noopener noreferrer"
-            href="https://github.com/goauthentik/authentik/commit/${version.buildHash}"
-            target="_blank"
-            >${version.buildHash}</a
-        >`;
-    }
-
-    return [
-        [msg("Version"), version.versionCurrent],
-        [msg("UI Version"), import.meta.env.AK_VERSION],
-        [msg("Build"), build],
-        [msg("Python version"), status.runtime.pythonVersion],
-        [msg("Platform"), status.runtime.platform],
-        [msg("Kernel"), status.runtime.uname],
-        [
-            msg("OpenSSL"),
-            `${status.runtime.opensslVersion} ${status.runtime.opensslFipsEnabled ? "FIPS" : ""}`,
-        ],
-    ];
+function renderEntry([label, content = null]: AboutEntry): SlottedTemplateResult {
+    return html`<dt>${label}</dt>
+        <dd>${content === null ? msg("Loading...") : content}</dd>`;
 }
 
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
-    public static override formatARIALabel = () => msg("About authentik");
+    public override formatARIALabel = () => msg("About authentik");
 
     public static hostStyles = [
+        ...AKModal.hostStyles,
         css`
-            dialog.ak-c-modal:has(ak-about-modal) {
-                --ak-c-modal--BackgroundColor: var(--pf-global--palette--black-900);
-                --ak-c-modal--BorderColor: var(--pf-global--palette--black-600);
+            .ak-c-dialog:has(ak-about-modal) {
+                --ak-c-dialog--BackgroundColor: var(--pf-global--palette--black-900);
+                --ak-c-dialog--BorderColor: var(--pf-global--palette--black-600);
             }
         `,
     ];
@@ -80,7 +59,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
             }
 
             .pf-c-about-modal-box {
-                --pf-c-about-modal-box--BackgroundColor: var(--ak-c-modal--BackgroundColor);
+                --pf-c-about-modal-box--BackgroundColor: var(--ak-c-dialog--BackgroundColor);
                 width: unset;
                 height: 100%;
                 max-height: unset;
@@ -89,6 +68,17 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
                 position: unset;
                 box-shadow: unset;
             }
+
+            [part="brand"] {
+                position: relative;
+            }
+
+            [part="loading-bar"] {
+                position: absolute;
+                z-index: 1;
+                inset-block-start: 0;
+                inset-inline: 0;
+            }
         `,
     ];
 
@@ -96,24 +86,98 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
 
     public static open = asInvoker(AboutModal);
 
-    @state()
-    protected entries: AboutEntry[] | null = null;
+    #api = new AdminApi(DEFAULT_CONFIG);
 
-    public refresh() {
-        return fetchAboutDetails().then((entries) => {
-            this.entries = entries;
+    protected canDebug = globalAK().config.capabilities.includes(CapabilitiesEnum.CanDebug);
+
+    @state()
+    protected version: Version | null = null;
+
+    @state()
+    protected systemInfo: SystemInfo | null = null;
+
+    @state()
+    protected refreshPromise: Promise<[Version, SystemInfo]> | null = null;
+
+    public refresh = (): void => {
+        const versionPromise = this.#api.adminVersionRetrieve();
+        const systemInfoPromise = this.#api.adminSystemRetrieve();
+
+        this.refreshPromise = Promise.all([versionPromise, systemInfoPromise]).then((result) => {
+            this.version = result[0];
+            this.systemInfo = result[1];
+
+            return result;
         });
-    }
+    };
 
     public connectedCallback(): void {
         super.connectedCallback();
         this.refresh();
     }
 
+    protected renderVersionInfo = () => {
+        const { version } = this;
+
+        let build: SlottedTemplateResult = null;
+
+        if (this.canDebug) {
+            build = msg("Development");
+        } else if (version?.buildHash) {
+            build = html`<a
+                rel="noopener noreferrer"
+                href="https://github.com/goauthentik/authentik/commit/${version.buildHash}"
+                target="_blank"
+                >${version.buildHash}</a
+            >`;
+        } else if (version) {
+            build = msg("Release");
+        }
+
+        const entries: AboutEntry[] = [
+            [msg("Server Version"), version?.versionCurrent],
+            [msg("Build"), build],
+        ];
+
+        return entries.map(renderEntry);
+    };
+
+    protected renderSystemInfo = () => {
+        const { runtime } = this.systemInfo || {};
+
+        const sslLabel = runtime
+            ? `${runtime.opensslVersion} ${runtime.opensslFipsEnabled ? "FIPS" : ""}`
+            : null;
+
+        const entries: AboutEntry[] = [
+            [msg("Python version"), runtime?.pythonVersion],
+            [msg("Platform"), runtime?.platform],
+            [msg("OpenSSL"), sslLabel],
+            [
+                msg("Kernel"),
+                runtime?.uname ?? html`<div style="min-height: 3em;">${msg("Loading...")}</div>`,
+            ],
+        ];
+
+        return entries.map(renderEntry);
+    };
+
     //#region Renderers
 
     protected override renderCloseButton() {
         return null;
+    }
+
+    protected renderLoadingBar(): SlottedTemplateResult {
+        return until(
+            this.refreshPromise?.then(() => null),
+            html`<ak-progress-bar
+                part="loading-bar"
+                indeterminate
+                ?inert=${!!this.systemInfo && !!this.version}
+                label=${msg("Loading")}
+            ></ak-progress-bar>`,
+        );
     }
 
     protected override render() {
@@ -129,6 +193,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
             style=${styleMap({
                 "--pf-c-about-modal-box__hero--sm--BackgroundImage": `url(${DEFAULT_BRAND_IMAGE})`,
             })}
+            part="box"
         >
             <div class="pf-c-about-modal-box__close">
                 <button
@@ -140,7 +205,8 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
                     <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
-            <div class="pf-c-about-modal-box__brand">
+            <div class="pf-c-about-modal-box__brand" part="brand">
+                ${this.renderLoadingBar()}
                 ${ThemedImage({
                     src: this.brandingFavicon,
                     alt: msg("authentik Logo"),
@@ -149,21 +215,25 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
                     themedUrls: this.brandingFaviconThemedUrls,
                 })}
             </div>
-            <div class="pf-c-about-modal-box__header">
-                <h1 class="pf-c-title pf-m-4xl" id="modal-title">${product}</h1>
+            <div class="pf-c-about-modal-box__header" part="header">
+                <h1 class="pf-c-title pf-m-4xl" id="modal-title" part="title">${product}</h1>
             </div>
             <div class="pf-c-about-modal-box__hero"></div>
             <div class="pf-c-about-modal-box__content">
                 <div class="pf-c-about-modal-box__body">
                     <div class="pf-c-content">
-                        ${this.entries
-                            ? html`<dl>
-                                  ${this.entries.map(([label, value]) => {
-                                      return html`<dt>${label}</dt>
-                                          <dd>${value}</dd>`;
-                                  })}
-                              </dl>`
-                            : html`<ak-empty-state loading></ak-empty-state>`}
+                        <dl>
+                            <dt>${msg("UI Version")}</dt>
+                            <dd>${import.meta.env.AK_VERSION}</dd>
+                            ${until(
+                                this.refreshPromise?.then(this.renderVersionInfo),
+                                this.renderVersionInfo(),
+                            )}
+                            ${until(
+                                this.refreshPromise?.then(this.renderSystemInfo),
+                                this.renderSystemInfo(),
+                            )}
+                        </dl>
                     </div>
                 </div>
                 <p class="pf-c-about-modal-box__strapline"></p>

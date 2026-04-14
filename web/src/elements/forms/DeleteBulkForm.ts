@@ -115,7 +115,7 @@ export class DeleteBulkForm<T> extends ModalButton {
     @property({ type: String, attribute: "object-label" })
     public objectLabel: string | null = null;
 
-    @property({ type: String, attribute: "action-label" })
+    @property({ type: String, attribute: "submit-label" })
     public submitLabel: string | null = null;
 
     @property({ type: String, attribute: "action-subtext" })

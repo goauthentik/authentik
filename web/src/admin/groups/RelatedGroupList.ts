@@ -9,8 +9,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
-import { renderModal } from "#elements/modals/utils";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -52,7 +52,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
         return renderModal(html`
             <ak-form
                 headline=${msg("Select Groups")}
-                action-label=${msg("Confirm")}
+                submit-label=${msg("Confirm")}
                 @submit=${(event: AKFormSubmitEvent<Group[]>) => {
                     this.groupsToAdd = event.target.toJSON();
                 }}
@@ -125,7 +125,7 @@ export class RelatedGroupList extends Table<Group> {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Group(s)")}
-            action-label=${msg("Remove from Group(s)")}
+            submit-label=${msg("Remove from Group(s)")}
             action-subtext=${msg(
                 str`Are you sure you want to remove user ${this.targetUser?.username} from the following groups?`,
             )}

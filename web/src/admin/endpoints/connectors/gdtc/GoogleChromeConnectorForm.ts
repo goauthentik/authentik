@@ -43,7 +43,8 @@ export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, 
     renderForm() {
         return html`<ak-text-input
                 name="name"
-                placeholder=${msg("Connector name...")}
+                autofocus
+                placeholder=${msg("Type a connector name...")}
                 label=${msg("Connector name")}
                 value=${this.instance?.name ?? ""}
                 required

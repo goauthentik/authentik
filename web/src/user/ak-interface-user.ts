@@ -61,7 +61,7 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
     @property({ attribute: false, useDefault: true })
     public drawer: DrawerState = readDrawerParams();
 
-    @listen(AKDrawerChangeEvent)
+    @listen(AKDrawerChangeEvent, { target: window })
     protected drawerListener = (event: AKDrawerChangeEvent) => {
         this.drawer = event.drawer;
         persistDrawerParams(event.drawer);

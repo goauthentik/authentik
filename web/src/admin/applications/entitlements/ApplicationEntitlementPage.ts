@@ -105,7 +105,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         </div>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No app entitlements created.")}</span>

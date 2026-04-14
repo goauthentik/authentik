@@ -72,6 +72,7 @@ class SessionStore(SessionBase):
             #                  and their descriptors fail to initialize (e.g., missing storage)
             # TypeError - can happen with incompatible pickled objects
             # If any of these happen, just return an empty dictionary (an empty session)
+            LOGGER.warning("Failed to decode session data", exc_info=True)
             pass
         return {}
 

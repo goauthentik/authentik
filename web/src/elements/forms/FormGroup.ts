@@ -134,7 +134,7 @@ export class AKFormGroup extends AKElement {
                                 role="heading"
                                 aria-level="3"
                             >
-                                ${this.label}
+                                <div part="label">${this.label}</div>
                                 <slot name="header"></slot>
                             </div>
                         </header>

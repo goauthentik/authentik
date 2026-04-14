@@ -1,6 +1,5 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/endpoints/connectors/agent/EnrollmentTokenForm";
-import "#admin/endpoints/connectors/agent/ak-enrollment-token-copy-button";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -9,8 +8,13 @@ import "#components/ak-status-label";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { IconEnrollmentTokenCopyButton } from "#elements/buttons/IconEnrollmentTokenCopyButton";
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { EnrollmentTokenForm } from "#admin/endpoints/connectors/agent/EnrollmentTokenForm";
 
 import { AgentConnector, EndpointsApi, EnrollmentToken, ModelEnum } from "@goauthentik/api";
 
@@ -20,19 +24,23 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-endpoints-agent-enrollment-token-list")
 export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
-    checkbox = true;
-    clearOnRefresh = true;
+    #api = new EndpointsApi(DEFAULT_CONFIG);
 
     protected override searchEnabled = true;
+    protected emptyStateMessage = msg("No enrollment tokens found for this connector.");
 
-    @property()
-    order = "name";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    public override searchPlaceholder = msg("Search for an enrollment token...");
+
+    public override order = "name";
 
     @property({ attribute: false })
-    connector?: AgentConnector;
+    public connector: AgentConnector | null = null;
 
-    async apiEndpoint(): Promise<PaginatedResponse<EnrollmentToken>> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsEnrollmentTokensList({
+    protected override async apiEndpoint(): Promise<PaginatedResponse<EnrollmentToken>> {
+        return this.#api.endpointsAgentsEnrollmentTokensList({
             ...(await this.defaultEndpointConfig()),
             connector: this.connector?.connectorUuid,
         });
@@ -46,8 +54,9 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             object-label=${msg("Enrollment Token(s)")}
             .objects=${this.selectedElements}
@@ -58,12 +67,12 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
                 ];
             }}
             .usedBy=${(item: EnrollmentToken) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsEnrollmentTokensUsedByList({
+                return this.#api.endpointsAgentsEnrollmentTokensUsedByList({
                     tokenUuid: item.tokenUuid,
                 });
             }}
             .delete=${(item: EnrollmentToken) => {
-                return new EndpointsApi(DEFAULT_CONFIG).endpointsAgentsEnrollmentTokensDestroy({
+                return this.#api.endpointsAgentsEnrollmentTokensDestroy({
                     tokenUuid: item.tokenUuid,
                 });
             }}
@@ -74,54 +83,27 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: EnrollmentToken): SlottedTemplateResult[] {
+    protected override row(item: EnrollmentToken): SlottedTemplateResult[] {
         return [
-            html`${item.name}`,
-            html`${item.deviceGroupObj?.name || "-"}`,
+            item.name,
+            item.deviceGroupObj?.name || msg("-"),
             html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
             Timestamp(item.expires && item.expiring ? item.expires : null),
-            html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Save Changes")}</span>
-                    <span slot="header">${msg("Update Enrollment Token")}</span>
-                    <ak-endpoints-agent-enrollment-token-form
-                        slot="form"
-                        .instancePk=${item.tokenUuid}
-                    >
-                    </ak-endpoints-agent-enrollment-token-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
-                <ak-rbac-object-permission-modal
-                    model=${ModelEnum.AuthentikEndpointsConnectorsAgentEnrollmenttoken}
-                    objectPk=${item.tokenUuid}
-                >
-                </ak-rbac-object-permission-modal>
-                <ak-enrollment-token-copy-button .identifier=${item.tokenUuid}>
-                    <pf-tooltip position="top" content=${msg("Copy token")}>
-                        <i class="fas fa-copy" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </ak-enrollment-token-copy-button>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(EnrollmentTokenForm, item.tokenUuid, item.name)}
+                ${IconPermissionButton(item.name, {
+                    model: ModelEnum.AuthentikEndpointsConnectorsAgentEnrollmenttoken,
+                    objectPk: item.tokenUuid,
+                })}
+                ${IconEnrollmentTokenCopyButton(item.tokenUuid)}
             </div>`,
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Enrollment Token")}</span>
-                <ak-endpoints-agent-enrollment-token-form
-                    slot="form"
-                    .connectorID=${this.connector?.connectorUuid}
-                >
-                </ak-endpoints-agent-enrollment-token-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(EnrollmentTokenForm, {
+            connectorID: this.connector?.connectorUuid,
+        });
     }
 }
 

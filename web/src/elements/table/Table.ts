@@ -13,13 +13,13 @@ import { renderTableColumn, TableColumn } from "./TableColumn.js";
 import { type PaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { AKRefreshEvent } from "#common/events";
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
-import { WithLicenseSummary } from "#elements/mixins/license";
+import { type TransclusionChildElement, TransclusionChildSymbol } from "#elements/dialogs/shared";
 import { WithSession } from "#elements/mixins/session";
-import { type TransclusionElement } from "#elements/modals/shared";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import Styles from "#elements/table/Table.css";
 import { SlottedTemplateResult } from "#elements/types";
@@ -32,11 +32,10 @@ import { ConsoleLogger, Logger } from "#logger/browser";
 import { kebabCase } from "change-case";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -81,8 +80,8 @@ export interface ColumnOptions {
  * @template D An optional `toJSON()` result type.
  */
 export abstract class Table<T extends object, D = T>
-    extends WithLicenseSummary(WithSession(AKElement))
-    implements TableLike, TransclusionElement
+    extends WithSession(AKElement)
+    implements TableLike, TransclusionChildElement
 {
     static styles: CSSResult[] = [
         PFTable,
@@ -94,6 +93,8 @@ export abstract class Table<T extends object, D = T>
         PFPagination,
         Styles,
     ];
+
+    public [TransclusionChildSymbol] = true;
 
     //#region Abstract members
 
@@ -261,13 +262,13 @@ export abstract class Table<T extends object, D = T>
     public checkbox = false;
 
     @property({ type: Boolean })
-    public clickable = false;
-
-    @property({ type: Boolean })
     public radioSelect = false;
 
     @property({ type: Boolean })
     public checkboxChip = false;
+
+    @property({ type: String, attribute: "display-box", reflect: true, useDefault: true })
+    public displayBox: "contents" | "block" = "block";
 
     /**
      * Whether the table is visible in the viewport.
@@ -291,11 +292,14 @@ export abstract class Table<T extends object, D = T>
     @property({ type: Boolean })
     public expandable = false;
 
-    @property({ attribute: false })
-    public searchLabel?: string;
+    @property({ type: String, attribute: "row-class" })
+    public rowClassNames = `${this.checkbox || this.expandable ? "pf-m-hoverable" : ""}`;
 
-    @property({ attribute: false })
-    public searchPlaceholder?: string;
+    @property({ type: String, attribute: "search-label" })
+    public searchLabel: string | null = null;
+
+    @property({ type: String, attribute: "search-placeholder" })
+    public searchPlaceholder: string | null = null;
 
     //#endregion
 
@@ -315,25 +319,28 @@ export abstract class Table<T extends object, D = T>
 
     #selectAllCheckboxRef = createRef<HTMLInputElement>();
 
-    #refreshListener = () => {
+    protected refreshListener = (event?: Event) => {
+        this.logger.debug("Received refresh event:", event);
         return this.fetch();
     };
 
     constructor() {
         super();
-        const tagName = this.tagName.toLowerCase();
 
-        this.#pageParam = `${tagName}-page`;
-        this.#searchParam = `${tagName}-search`;
+        const { localName } = this;
+
+        this.#pageParam = `${localName}-page`;
+        this.#searchParam = `${localName}-search`;
         this.page = getURLParam(this.#pageParam, 1);
 
-        this.logger = ConsoleLogger.prefix(tagName);
+        this.logger = ConsoleLogger.prefix(localName);
     }
 
     public override connectedCallback(): void {
         super.connectedCallback();
-        this.addEventListener(EVENT_REFRESH, this.#refreshListener);
-        window.addEventListener("submit", this.#refreshListener);
+
+        this.addEventListener(AKRefreshEvent.eventName, this.refreshListener);
+        window.addEventListener("submit", this.refreshListener);
 
         if (this.searchEnabled) {
             this.search = getURLParam(this.#searchParam, "");
@@ -342,8 +349,8 @@ export abstract class Table<T extends object, D = T>
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
-        this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
-        window.removeEventListener("submit", this.#refreshListener);
+        this.removeEventListener(EVENT_REFRESH, this.refreshListener);
+        window.removeEventListener("submit", this.refreshListener);
     }
 
     protected override willUpdate(changedProperties: PropertyValues<this>): void {
@@ -481,7 +488,7 @@ export abstract class Table<T extends object, D = T>
         return guard(
             [this.loading, this.columnCount],
             () =>
-                html`<tr role="presentation" class="ak-fade-in">
+                html`<tr role="presentation" class="ak-fade-in ak-m-delayed">
                     <td role="presentation" colspan=${this.columnCount}>
                         <div class="pf-l-bullseye">
                             <ak-empty-state default-label></ak-empty-state>
@@ -491,7 +498,7 @@ export abstract class Table<T extends object, D = T>
         );
     }
 
-    protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+    protected renderEmpty(inner?: SlottedTemplateResult): SlottedTemplateResult {
         return html`
             <tr role="presentation">
                 <td role="presentation" colspan=${this.columnCount}>
@@ -686,7 +693,12 @@ export abstract class Table<T extends object, D = T>
         return [["", items]];
     }
 
-    #renderRowGroupItem(item: T, rowIndex: number, items: T[], groupIndex: number): TemplateResult {
+    #renderRowGroupItem(
+        item: T,
+        rowIndex: number,
+        items: T[],
+        groupIndex: number,
+    ): SlottedTemplateResult {
         const groupHeaderID = this.groups.length > 1 ? `table-group-${groupIndex}` : null;
 
         const itemKey = this.#itemKeys.get(item);
@@ -760,12 +772,7 @@ export abstract class Table<T extends object, D = T>
         }
 
         return html`
-            <tr
-                aria-selected=${selected ? "true" : "false"}
-                class="${classMap({
-                    "pf-m-hoverable": this.checkbox || this.expandable || this.clickable,
-                })}"
-            >
+            <tr aria-selected=${selected ? "true" : "false"} class="${this.rowClassNames}">
                 ${memoizedCheckbox} ${memoizedExpansion}
                 ${this.row(item).map((cell, columnIndex) => {
                     const columnID = this.#columnIDs.get(this.columns[columnIndex]);
@@ -800,7 +807,7 @@ export abstract class Table<T extends object, D = T>
 
     protected renderToolbar(): SlottedTemplateResult {
         return html`${this.renderObjectCreate()}
-            <ak-spinner-button .callAction=${this.#refreshListener} class="pf-m-secondary">
+            <ak-spinner-button .callAction=${this.refreshListener} class="pf-m-secondary">
                 ${msg("Refresh")}</ak-spinner-button
             >`;
     }
@@ -871,14 +878,13 @@ export abstract class Table<T extends object, D = T>
             return nothing;
         }
 
-        const isQL = this.supportsQL && this.hasEnterpriseLicense;
-
         return html`<ak-table-search
-            class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
+            exportparts="input:toolbar-search-input"
+            class="pf-c-toolbar__item pf-m-search-filter ${this.supportsQL ? "ql" : ""}"
             part="toolbar-search"
             .defaultValue=${this.search}
-            label=${ifDefined(this.searchLabel)}
-            placeholder=${ifDefined(this.searchPlaceholder)}
+            label=${ifPresent(this.searchLabel)}
+            placeholder=${ifPresent(this.searchPlaceholder)}
             .onSearch=${this.#searchListener}
             .supportsQL=${this.supportsQL}
             .apiResponse=${this.data}
@@ -919,7 +925,7 @@ export abstract class Table<T extends object, D = T>
      * "activate all on this page,"
      * "deactivate all on this page" with a single click.
      */
-    renderAllOnThisPageCheckbox(): TemplateResult {
+    renderAllOnThisPageCheckbox(): SlottedTemplateResult {
         const selectedCount = this.selectedMap.size;
         const pageItemCount = this.data?.results?.length ?? 0;
 
@@ -957,7 +963,7 @@ export abstract class Table<T extends object, D = T>
         return this.checkbox && this.checkboxChip;
     }
 
-    protected renderChipGroup(): TemplateResult {
+    protected renderChipGroup(): SlottedTemplateResult {
         return html`<ak-chip-group
             exportparts="chip-group:selected-chip-group"
             class="selected-chips"
@@ -981,16 +987,13 @@ export abstract class Table<T extends object, D = T>
             this.fetch();
         };
 
-        return html`
-            <ak-table-pagination
-                ?loading=${this.loading}
-                label=${ifPresent(this.label)}
-                class="pf-c-toolbar__item pf-m-pagination"
-                .pages=${this.data?.pagination}
-                .onPageChange=${handler}
-            >
-            </ak-table-pagination>
-        `;
+        return html`<ak-table-pagination
+            ?loading=${this.loading}
+            label=${ifPresent(this.label)}
+            class="pf-c-toolbar__item pf-m-pagination"
+            .pages=${this.data?.pagination}
+            .onPageChange=${handler}
+        ></ak-table-pagination>`;
     }
 
     protected renderLoadingBar(): SlottedTemplateResult {
@@ -1008,11 +1011,11 @@ export abstract class Table<T extends object, D = T>
         });
     }
 
-    protected renderTable(): TemplateResult {
+    protected renderTable(): SlottedTemplateResult {
         const totalItemCount = this.data?.pagination.count ?? -1;
 
         const renderBottomPagination = () =>
-            html`<div class="pf-c-pagination pf-m-bottom">
+            html`<div class="pf-c-pagination pf-m-bottom" part="pagination-bottom">
                 <ak-timestamp .timestamp=${this.lastRefreshedAt} refresh>
                     ${msg("Last refreshed")}
                 </ak-timestamp>
@@ -1025,6 +1028,7 @@ export abstract class Table<T extends object, D = T>
             ${this.renderToolbarContainer()}
             <div part="table-container">
                 <table
+                    part="table"
                     aria-live="polite"
                     aria-busy=${this.loading ? "true" : "false"}
                     aria-label=${this.label ? msg(str`${this.label} table`) : msg("Table content")}

@@ -2,6 +2,7 @@
 
 from collections.abc import Callable
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
@@ -10,6 +11,7 @@ from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import Provider, Source, Token
 from authentik.events.models import Event, EventAction
+from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.reflection import all_subclasses
 
@@ -45,6 +47,58 @@ class TestModels(TestCase):
         self.assertIsNotNone(event)
         self.assertEqual(
             event.context["deprecation"], "authentik.core.models.Token.filter_not_expired"
+        )
+
+    @patch("authentik.core.models.get_file_manager")
+    def test_source_icon_url_can_bypass_cache(self, get_file_manager):
+        request = RequestFactory().get("/")
+        manager = get_file_manager.return_value
+        manager.file_url.return_value = "/files/media/public/source-icons/icon.svg?token=fresh"
+
+        source = Source(icon="source-icons/icon.svg")
+
+        self.assertEqual(
+            source.get_icon_url(request, use_cache=False),
+            "/files/media/public/source-icons/icon.svg?token=fresh",
+        )
+        manager.file_url.assert_called_once_with(
+            "source-icons/icon.svg",
+            request,
+            use_cache=False,
+        )
+
+    @patch("authentik.flows.models.get_file_manager")
+    def test_flow_background_urls_can_bypass_cache(self, get_file_manager):
+        request = RequestFactory().get("/")
+        manager = get_file_manager.return_value
+        manager.file_url.return_value = "/files/media/public/background.svg?token=fresh"
+        manager.themed_urls.return_value = {
+            "light": "/files/media/public/background-light.svg?token=fresh",
+            "dark": "/files/media/public/background-dark.svg?token=fresh",
+        }
+
+        flow = Flow(background="background-%(theme)s.svg")
+
+        self.assertEqual(
+            flow.background_url(request, use_cache=False),
+            "/files/media/public/background.svg?token=fresh",
+        )
+        self.assertEqual(
+            flow.background_themed_urls(request, use_cache=False),
+            {
+                "light": "/files/media/public/background-light.svg?token=fresh",
+                "dark": "/files/media/public/background-dark.svg?token=fresh",
+            },
+        )
+        manager.file_url.assert_called_once_with(
+            "background-%(theme)s.svg",
+            request,
+            use_cache=False,
+        )
+        manager.themed_urls.assert_called_once_with(
+            "background-%(theme)s.svg",
+            request,
+            use_cache=False,
         )
 
 

@@ -15,10 +15,10 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { IconEditButton, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { renderModal } from "#elements/modals/utils";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -26,9 +26,9 @@ import { UserOption } from "#elements/user/utils";
 
 import { AKLabel } from "#components/ak-label";
 
+import { RecoveryButtons } from "#admin/users/recovery";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
-import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
 import {
     CapabilitiesEnum,
@@ -91,11 +91,15 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
         return data;
     }
 
-    protected openUserSelectionModal = () => {
+    protected openUserSelectionModal = (event?: Event) => {
+        if (event?.defaultPrevented) {
+            return;
+        }
+
         return renderModal(html`
             <ak-form
                 headline=${msg("Select users")}
-                action-label=${msg("Confirm")}
+                submit-label=${msg("Confirm")}
                 @submit=${(event: AKFormSubmitEvent<User[]>) => {
                     this.usersToAdd = event.target.toJSON();
                 }}
@@ -111,7 +115,7 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
         // table to allow the table to appear as an inline-block element next to the input group.
         // This should be fixed by moving the `@container` query off `:host`.
 
-        return html` <ak-form-element-horizontal name="users">
+        return html`<ak-form-element-horizontal name="users">
             ${AKLabel(
                 {
                     slot: "label",
@@ -130,14 +134,16 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
                         aria-label=${msg("Open user selection dialog")}
                         @click=${this.openUserSelectionModal}
                     >
-                        <pf-tooltip position="top" content=${msg("Add users")}>
+                        <pf-tooltip position="right" content=${msg("Add users")}>
                             <i class="fas fa-plus" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </div>
                 <div class="pf-c-form-control">
-                    <ak-chip-group>
-                        ${this.usersToAdd.map((user) => {
+                    <ak-chip-group
+                        @click=${this.openUserSelectionModal}
+                        placeholder=${msg("Select one or more users to assign...")}
+                        >${this.usersToAdd.map((user) => {
                             return html`<ak-chip
                                 removable
                                 value=${ifDefined(user.pk)}
@@ -149,8 +155,8 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
                             >
                                 ${UserOption(user)}
                             </ak-chip>`;
-                        })}
-                    </ak-chip-group>
+                        })}</ak-chip-group
+                    >
                 </div>
             </div>
         </ak-form-element-horizontal>`;
@@ -222,7 +228,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 
         return html`<ak-forms-delete-bulk
             object-label=${msg("User(s)")}
-            action-label=${msg("Remove User(s)")}
+            submit-label=${msg("Remove User(s)")}
             action=${msg("removed")}
             action-subtext=${targetLabel
                 ? msg(str`Are you sure you want to remove the selected users from ${targetLabel}?`)
@@ -271,16 +277,12 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             Timestamp(item.lastLogin),
 
-            html`<div>
-                <button class="pf-c-button pf-m-plain" ${UserForm.asEditModalInvoker(item.pk)}>
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(UserForm, item.pk)}
                 ${showImpersonate
                     ? html`<button
                           class="pf-c-button pf-m-tertiary"
-                          ${UserImpersonateForm.asEditModalInvoker(item.pk)}
+                          ${UserImpersonateForm.asInstanceInvoker(item.pk)}
                       >
                           <pf-tooltip
                               position="top"
@@ -340,7 +342,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        ${renderRecoveryButtons({
+                        ${RecoveryButtons({
                             user: item,
                             brandHasRecoveryFlow: Boolean(this.brand.flowRecovery),
                         })}

@@ -38,6 +38,12 @@ export interface PaginatedExtraRoleObjectPermissionList {
      * @memberof PaginatedExtraRoleObjectPermissionList
      */
     results: Array<ExtraRoleObjectPermission>;
+    /**
+     *
+     * @type {{ [key: string]: any; }}
+     * @memberof PaginatedExtraRoleObjectPermissionList
+     */
+    autocomplete: { [key: string]: any };
 }
 
 /**
@@ -48,6 +54,7 @@ export function instanceOfPaginatedExtraRoleObjectPermissionList(
 ): value is PaginatedExtraRoleObjectPermissionList {
     if (!("pagination" in value) || value["pagination"] === undefined) return false;
     if (!("results" in value) || value["results"] === undefined) return false;
+    if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
@@ -67,6 +74,7 @@ export function PaginatedExtraRoleObjectPermissionListFromJSONTyped(
     return {
         pagination: PaginationFromJSON(json["pagination"]),
         results: (json["results"] as Array<any>).map(ExtraRoleObjectPermissionFromJSON),
+        autocomplete: json["autocomplete"],
     };
 }
 
@@ -87,5 +95,6 @@ export function PaginatedExtraRoleObjectPermissionListToJSONTyped(
     return {
         pagination: PaginationToJSON(value["pagination"]),
         results: (value["results"] as Array<any>).map(ExtraRoleObjectPermissionToJSON),
+        autocomplete: value["autocomplete"],
     };
 }

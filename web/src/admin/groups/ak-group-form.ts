@@ -43,8 +43,8 @@ export class GroupForm extends ModelForm<Group, string> {
         `,
     ];
 
-    public entitySingular = msg("Group");
-    public entityPlural = msg("Groups");
+    public static verboseName = msg("Group");
+    public static verboseNamePlural = msg("Groups");
 
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
         return new CoreApi(DEFAULT_CONFIG)

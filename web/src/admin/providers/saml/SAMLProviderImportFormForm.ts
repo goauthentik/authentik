@@ -14,13 +14,15 @@ export function renderForm(provider: Partial<ProvidersSamlImportMetadataCreateRe
     return html`
         <ak-text-input
             name="name"
-            label=${msg("Name")}
-            .value=${provider.name ?? ""}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
+            value=${provider.name ?? ""}
             required
         ></ak-text-input>
 
         <ak-form-element-horizontal
-            label=${msg("Authorization flow")}
+            label=${msg("Authorization Flow")}
             required
             name="authorizationFlow"
         >
@@ -34,7 +36,7 @@ export function renderForm(provider: Partial<ProvidersSamlImportMetadataCreateRe
         </ak-form-element-horizontal>
 
         <ak-form-element-horizontal
-            label=${msg("Invalidation flow")}
+            label=${msg("Invalidation Flow")}
             required
             name="invalidationFlow"
         >

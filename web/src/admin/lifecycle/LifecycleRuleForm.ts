@@ -84,6 +84,9 @@ function formatContentTypePlaceholder(contentType: ContentTypeEnum): string {
 
 @customElement("ak-lifecycle-rule-form")
 export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, LifecycleRule | null> {
+    public static override verboseName = msg("Lifecycle Rule");
+    public static override verboseNamePlural = msg("Lifecycle Rules");
+
     #targetSelectRef = createRef<SearchSelect<TargetObject>>();
     #reviewerGroupsSelectRef = createRef<SearchSelect<Group>>();
     #reviewerUsersSelectRef = createRef<SearchSelect<Group>>();

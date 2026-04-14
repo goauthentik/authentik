@@ -78,7 +78,7 @@ export class APIDrawer extends AKElement {
         `,
     ];
 
-    @listen(AKRequestPostEvent)
+    @listen(AKRequestPostEvent, { target: window })
     protected enqueueRequest = ({ requestInfo }: AKRequestPostEvent) => {
         this.requests.push(requestInfo);
 

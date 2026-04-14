@@ -12,3 +12,27 @@ select[multiple] {
     gap: var(--pf-global--spacer--md);
     min-height: 3rem;
 }
+
+:host > [part="form-actions"] {
+    display: flex;
+    gap: var(--pf-global--spacer--md);
+}
+
+.ak-c-form__header {
+    display: grid;
+    grid-template-columns: [title] 1fr [actions] auto;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--pf-global--ZIndex--md);
+    background: var(--pf-c-card--BackgroundColor);
+    padding-block-start: var(--pf-global--spacer--md);
+    margin-top: calc(-1 * var(--pf-c-card--first-child--PaddingTop));
+    padding-block-end: var(--pf-global--spacer--md);
+    margin-block-end: var(--pf-global--spacer--lg);
+
+    [part="form-actions"] {
+        grid-area: actions;
+    }
+}

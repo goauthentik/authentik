@@ -214,7 +214,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 html`<ak-provider-related-application .provider=${this.provider}>
                                 </ak-provider-related-application>`,
                             ],
-                            [msg("Client type"), html`${TypeToLabel(this.provider?.clientType)}`],
+                            [msg("Client Type"), html`${TypeToLabel(this.provider?.clientType)}`],
                             [msg("Client ID"), html`${this.provider?.clientId}`],
                             [
                                 msg("Redirect URIs"),

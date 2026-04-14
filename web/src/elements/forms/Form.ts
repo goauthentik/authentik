@@ -3,6 +3,7 @@ import "#elements/LoadingOverlay";
 import { isFormField } from "./form-associated-element";
 
 import { EVENT_REFRESH } from "#common/constants";
+import { PFSize } from "#common/enums";
 import {
     APIError,
     parseAPIResponseError,
@@ -12,6 +13,18 @@ import {
 import { APIMessage, MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
+import {
+    DialogInit,
+    modalInvoker,
+    ModalInvokerDirectiveResult,
+    renderModal,
+} from "#elements/dialogs";
+import {
+    isTransclusionParentElement,
+    TransclusionChildElement,
+    TransclusionChildSymbol,
+} from "#elements/dialogs/shared";
 import { reportInvalidFields } from "#elements/forms/errors";
 import Styles from "#elements/forms/Form.css";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
@@ -19,15 +32,7 @@ import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { serializeForm } from "#elements/forms/serialization";
 import { showMessage } from "#elements/messages/MessageContainer";
-import { TransclusionElement } from "#elements/modals/shared";
-import {
-    DialogInit,
-    modalInvoker,
-    ModalInvokerDirectiveResult,
-    ModalInvokerInit,
-    renderModal,
-} from "#elements/modals/utils";
-import { SlottedTemplateResult } from "#elements/types";
+import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { createFileMap } from "#elements/utils/inputs";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -35,7 +40,7 @@ import { ConsoleLogger } from "#logger/browser";
 import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
@@ -95,7 +100,7 @@ export interface AKFormSubmitEvent<T> extends SubmitEvent {
 @customElement("ak-form")
 export class Form<T = Record<string, unknown>, D = T>
     extends AKElement
-    implements TransclusionElement
+    implements TransclusionChildElement
 {
     public static styles: CSSResult[] = [
         PFCard,
@@ -110,12 +115,50 @@ export class Form<T = Record<string, unknown>, D = T>
     ];
 
     /**
+     * Optional singular label for the type of entity this form creates/edits.
+     */
+    public static verboseName: string | null = null;
+
+    /**
+     * Optional plural label for the type of entity this form creates/edits
+     */
+    public static verboseNamePlural: string | null = null;
+
+    /**
+     * The modifier to use in the default headline, e.g. "New"
+     */
+    public static createLabel: string | null = msg("New", {
+        id: "form.new-entity",
+    });
+
+    /**
+     * The verb to use in the default submit button label, e.g. "Create" or "Update".
+     */
+    public static submitVerb: string = msg("Create", {
+        id: "form.submit.verb.create",
+    });
+
+    /**
+     * The gerund to use in the message key for the submission message, e.g. "Creating" or "Updating".
+     */
+    public static submittingVerb: string = msg("Creating", {
+        id: "form.submit.verb.creating",
+    });
+
+    //#region Modal helpers
+
+    public [TransclusionChildSymbol] = true;
+
+    /**
      * A helper method to create an invoker for a modal containing this form.
      *
      * @see {@linkcode modalInvoker} for the underlying implementation.
      */
-    public static asModalInvoker(init?: ModalInvokerInit): ModalInvokerDirectiveResult {
-        return modalInvoker(this, init);
+    public static asModalInvoker(
+        props?: LitPropertyRecord<Form>,
+        init?: DialogInit,
+    ): ModalInvokerDirectiveResult {
+        return modalInvoker(this, props, init);
     }
 
     /**
@@ -141,7 +184,9 @@ export class Form<T = Record<string, unknown>, D = T>
         return renderModal(this, init);
     }
 
-    protected logger = ConsoleLogger.prefix(`form/${this.tagName.toLowerCase()}`);
+    //#endregion
+
+    protected logger = ConsoleLogger.prefix(`form/${this.localName}`);
 
     /**
      * Send the serialized form to its destination.
@@ -152,9 +197,17 @@ export class Form<T = Record<string, unknown>, D = T>
      */
     protected send?(data: NonNullable<D>): Promise<unknown>;
 
-    viewportCheck = true;
-
     //#region Properties
+
+    /**
+     * Whether the table is visible in the viewport.
+     *
+     * @remarks
+     * We cache the visibility between frames to avoid the synchronous `getBoundingClientRect()`
+     * call within {@linkcode isInViewport}.
+     */
+    @intersectionObserver()
+    public visible = false;
 
     @property({ type: String })
     public successMessage?: string;
@@ -165,11 +218,33 @@ export class Form<T = Record<string, unknown>, D = T>
     @property({ type: String, useDefault: true })
     public headline?: string | null = null;
 
-    @property({ type: String, attribute: "action-label", useDefault: true })
+    @property({ type: String, useDefault: true })
+    public size: PFSize | null = null;
+
+    /**
+     * The label for the submit button. If not provided,
+     * a default label will be generated based on `verboseName`,
+     * falling back to "Create".
+     */
+    @property({ type: String, attribute: "submit-label", useDefault: true })
     public submitLabel: string | null = null;
 
+    /**
+     * The label for the submit button while the form is being submitted. If not provided,
+     * a default label will be generated based on `submittingVerb` and `verboseName`,
+     * falling back to "Submitting...".
+     */
+    @property({ type: String, attribute: "submitting-label", useDefault: true })
+    public submittingLabel: string | null = null;
+
     @property({ type: String, attribute: "cancel-label", useDefault: true })
-    public cancelButtonLabel: string | null = null;
+    public cancelButtonLabel: string | null = msg("Cancel");
+
+    @property({ type: Boolean, attribute: "cancelable", useDefault: true })
+    public cancelable = true;
+
+    @property({ type: Boolean, attribute: "submittable", useDefault: true })
+    public submittable = true;
 
     //#endregion
 
@@ -197,38 +272,58 @@ export class Form<T = Record<string, unknown>, D = T>
     }
 
     @state()
-    protected loading = false;
+    protected submitting = false;
 
-    protected loadingOverlay = this.ownerDocument.createElement("ak-loading-overlay");
+    protected sendingOverlay = this.ownerDocument.createElement("ak-loading-overlay");
 
     @state()
     protected nonFieldErrors: readonly string[] | null = null;
 
-    /**
-     * Optiona singular label for the type of entity this form creates/edits, used in success messages and the like.
-     */
-    @property({ type: String })
-    public entitySingular: string | null = null;
-    /**
-     * Optiona plural label for the type of entity this form creates/edits, used in success messages and the like.
-     */
-    @property({ type: String })
-    public entityPlural: string | null = null;
+    #verboseName: string | null = null;
 
     /**
-     * Called by the render function.
+     * Optional singular label for the type of entity this form creates/edits.
      *
-     * Blocks rendering the form if the form is not within the
-     * viewport.
-     *
-     * @todo Consider using a observer instead.
+     * Overrides the static `verboseName` property for this instance.
      */
-    public get isInViewport(): boolean {
-        const rect = this.getBoundingClientRect();
-        return rect.x + rect.y + rect.width + rect.height !== 0;
+    @property({ type: String, attribute: "entity-singular" })
+    public set verboseName(value: string | null) {
+        this.#verboseName = value;
+
+        if (isTransclusionParentElement(this.parentElement)) {
+            this.parentElement.slottedElementUpdatedAt = new Date();
+        }
+    }
+
+    public get verboseName(): string | null {
+        return this.#verboseName || (this.constructor as typeof Form).verboseName;
+    }
+
+    #verboseNamePlural: string | null = null;
+
+    /**
+     * Optional plural label for the type of entity this form creates/edits.
+     *
+     * Overrides the static `verboseNamePlural` property for this instance.
+     */
+    @property({ type: String, attribute: "entity-plural" })
+    public set verboseNamePlural(value: string | null) {
+        this.#verboseNamePlural = value;
+
+        if (isTransclusionParentElement(this.parentElement)) {
+            this.parentElement.slottedElementUpdatedAt = new Date();
+        }
+    }
+
+    public get verboseNamePlural(): string | null {
+        return this.#verboseNamePlural || (this.constructor as typeof Form).verboseNamePlural;
     }
 
     protected defaultSlot: HTMLSlotElement = this.ownerDocument.createElement("slot");
+
+    //#endregion
+
+    //#region Formatters
 
     /**
      * An overridable method for returning a success message after a successful submission.
@@ -274,13 +369,12 @@ export class Form<T = Record<string, unknown>, D = T>
             return headline;
         }
 
-        const noun = this.entitySingular;
-        modifier ||= msg("New", {
-            id: "model-form.headline.modifier.new",
-        });
+        const noun = this.verboseName;
+
+        modifier ||= (this.constructor as typeof Form).createLabel;
 
         if (!noun) {
-            return modifier;
+            return modifier || "";
         }
 
         return msg(str`${modifier} ${noun}`, {
@@ -297,14 +391,33 @@ export class Form<T = Record<string, unknown>, D = T>
             return submitLabel;
         }
 
-        return this.entitySingular
-            ? msg(str`Create ${this.entitySingular}`, {
-                  id: "model-form.create-submit",
+        const noun = this.verboseName;
+        const verb = (this.constructor as typeof Form).submitVerb;
+
+        return noun
+            ? msg(str`${verb} ${noun}`, {
+                  id: "form.submit.verb-entity",
               })
-            : msg("Create", {
-                  id: "model-form.create-submit-no-entity",
-              });
+            : verb;
     }
+
+    /**
+     * An overridable method for formatting the message shown while the form is being submitted.
+     */
+    protected formatSubmittingLabel(submittingLabel = this.submittingLabel): string {
+        if (submittingLabel) {
+            return submittingLabel;
+        }
+
+        const { submittingVerb, verboseName } = this.constructor as typeof Form;
+
+        return msg(str`${submittingVerb} ${verboseName}...`, {
+            id: "form.submitting",
+            desc: "The message shown while a form is being submitted.",
+        });
+    }
+
+    //#endregion
 
     //#region Public methods
 
@@ -375,14 +488,17 @@ export class Form<T = Record<string, unknown>, D = T>
      * Serialize and send the form to the destination. The `send()` method must be overridden for
      * this to work. If processing the data results in an error, we catch the error, distribute
      * field-levels errors to the fields, and send the rest of them to the Notifications.
+     *
+     * @returns A promise that resolves to the response from `send()`, or `false` if the form is invalid.
      */
-    public submit = (submitEvent: SubmitEvent): Promise<unknown | false> => {
+    public submit = <T = unknown>(submitEvent: SubmitEvent): Promise<T | false> => {
         submitEvent.preventDefault();
 
         if (!this.reportValidity()) {
             return Promise.resolve(false);
         }
 
+        const messageKey = `form-submission-${this.localName}-${Date.now()}`;
         let data: D;
 
         try {
@@ -394,6 +510,7 @@ export class Form<T = Record<string, unknown>, D = T>
                 level: MessageLevel.error,
                 message: msg("An unknown error occurred while submitting the form."),
                 description: pluckErrorDetail(error),
+                key: messageKey,
             });
 
             return Promise.resolve(false);
@@ -407,9 +524,23 @@ export class Form<T = Record<string, unknown>, D = T>
             return Promise.resolve(false);
         }
 
+        showMessage({
+            level: MessageLevel.info,
+            icon: "fas fa-spinner fa-spin",
+            message: this.formatSubmittingLabel(),
+            key: messageKey,
+        });
+
         return this.send(data)
             .then((response) => {
-                showMessage(this.formatAPISuccessMessage(response));
+                const successMessage = this.formatAPISuccessMessage(response);
+
+                if (successMessage) {
+                    showMessage({
+                        ...successMessage,
+                        key: messageKey,
+                    });
+                }
 
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {
@@ -421,7 +552,7 @@ export class Form<T = Record<string, unknown>, D = T>
                 // Re-dispatch the submit event so that parent components can listen for it.
                 this.dispatchEvent(submitEvent);
 
-                return response;
+                return response as T;
             })
             .catch(async (error: unknown) => {
                 if (error instanceof PreventFormSubmit) {
@@ -444,7 +575,7 @@ export class Form<T = Record<string, unknown>, D = T>
                             .find(Boolean);
 
                         if (focusTarget) {
-                            requestAnimationFrame(() => focusTarget.focus());
+                            requestAnimationFrame(() => focusTarget.focus?.());
                         } else if (Array.isArray(parsedError.nonFieldErrors)) {
                             this.nonFieldErrors = parsedError.nonFieldErrors;
                         } else {
@@ -456,7 +587,15 @@ export class Form<T = Record<string, unknown>, D = T>
                             );
                         }
                     }
-                    showMessage(this.formatAPIErrorMessage(parsedError), true);
+
+                    const errorMessage = this.formatAPIErrorMessage(parsedError);
+
+                    if (errorMessage) {
+                        showMessage({
+                            ...errorMessage,
+                            key: messageKey,
+                        });
+                    }
                 }
 
                 // Rethrow the error so the form doesn't close.
@@ -465,18 +604,44 @@ export class Form<T = Record<string, unknown>, D = T>
     };
 
     protected doSubmit = (event: SubmitEvent): void => {
-        if (this.loading) {
+        if (this.submitting) {
             this.logger.info("Skipping submit. Already submitting!");
         }
 
-        this.loading = true;
+        this.submitting = true;
 
         this.submit(event).finally(() => {
-            this.loading = false;
+            this.submitting = false;
         });
     };
 
+    protected dispatchSubmit = (): void => {
+        return this.doSubmit(
+            new SubmitEvent("submit", {
+                submitter: this,
+                cancelable: true,
+                bubbles: true,
+                composed: true,
+            }),
+        );
+    };
+
     //#endregion
+
+    //#region Lifecycle
+    public updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("size")) {
+            if (this.size) {
+                // eslint-disable-next-line wc/no-self-class
+                this.classList.add(this.size);
+            } else {
+                // eslint-disable-next-line wc/no-self-class
+                this.classList.remove(...Object.values(PFSize));
+            }
+        }
+    }
 
     //#endregion
 
@@ -489,19 +654,16 @@ export class Form<T = Record<string, unknown>, D = T>
             return this.defaultSlot;
         }
 
-        return html`<div part="form-wrapper">
-            <slot name="before-form"></slot>
-            <form
-                id="form"
-                ${ref(this.formRef)}
-                class="pf-c-form pf-m-horizontal"
-                autocomplete=${ifDefined(this.autocomplete)}
-                method="dialog"
-                @submit=${this.doSubmit}
-            >
-                ${inline}
-            </form>
-        </div>`;
+        return html`<form
+            id="form"
+            ${ref(this.formRef)}
+            class="pf-c-form pf-m-horizontal"
+            autocomplete=${ifDefined(this.autocomplete)}
+            method="dialog"
+            @submit=${this.doSubmit}
+        >
+            ${inline}
+        </form>`;
     }
 
     /**
@@ -545,15 +707,33 @@ export class Form<T = Record<string, unknown>, D = T>
      * allowing the slot parent to provide the header in a more visually appropriate manner.
      */
     public renderHeader(force?: boolean): SlottedTemplateResult {
-        const { assignedSlot, headline } = this;
+        const { headline, assignedSlot, verboseName } = this;
 
-        return guard([force, assignedSlot, headline], () => {
-            if (!force && assignedSlot && (!assignedSlot.name || assignedSlot.name === "form")) {
-                return nothing;
+        return guard([force, assignedSlot, verboseName, headline], () => {
+            if (
+                !force &&
+                assignedSlot &&
+                (assignedSlot.name === "form" || assignedSlot.name === "")
+            ) {
+                return null;
             }
 
-            return this.formatHeadline(headline);
+            return html`<h1 part="form-header" class="pf-c-title pf-m-2xl">
+                ${this.formatHeadline()}
+            </h1>`;
         });
+    }
+
+    public renderSubmitButton(submitLabel = this.submitLabel): SlottedTemplateResult {
+        return html`<button
+            type="button"
+            class="pf-c-button pf-m-primary"
+            @click=${this.dispatchSubmit}
+            part="submit-button"
+            aria-description=${msg("Submit action")}
+        >
+            ${this.formatSubmitLabel(submitLabel)}
+        </button>`;
     }
 
     /**
@@ -564,55 +744,35 @@ export class Form<T = Record<string, unknown>, D = T>
      * allowing the slot parent to provide the actions in a more visually appropriate manner.
      */
     public renderActions(force?: boolean): SlottedTemplateResult {
-        const { assignedSlot, submitLabel } = this;
+        const { submitLabel, assignedSlot } = this;
 
         return guard([force, assignedSlot, submitLabel], () => {
-            if (!force && assignedSlot && (!assignedSlot.name || assignedSlot.name === "form")) {
-                return nothing;
+            if (
+                !force &&
+                assignedSlot &&
+                (assignedSlot.name === "form" || assignedSlot.name === "")
+            ) {
+                return null;
             }
 
             return html`<div part="form-actions" class="pf-c-card__footer">
-                <button
-                    type="button"
-                    class="pf-c-button pf-m-primary"
-                    @click=${() => {
-                        this.doSubmit(
-                            new SubmitEvent("submit", {
-                                submitter: this,
-                                cancelable: true,
-                                bubbles: true,
-                                composed: true,
-                            }),
-                        );
-                    }}
-                    part="submit-button"
-                    aria-description=${msg("Submit action")}
-                >
-                    ${this.formatSubmitLabel(submitLabel)}
-                </button>
+                ${this.renderSubmitButton()}
             </div>`;
         });
     }
 
-    /**
-     * An overridable method for rendering the form when it is visible.
-     */
-    protected renderVisible(): SlottedTemplateResult {
-        return [
-            this.loading ? this.loadingOverlay : nothing,
-            this.renderHeader(),
-            this.renderNonFieldErrors(),
-            this.renderFormWrapper(),
-            this.renderActions(),
-        ];
-    }
-
     protected override render(): SlottedTemplateResult {
-        if (this.viewportCheck && !this.isInViewport) {
+        if (!this.visible) {
             return nothing;
         }
 
-        return this.renderVisible();
+        return [
+            this.submitting ? this.sendingOverlay : nothing,
+            this.renderHeader(),
+            this.renderNonFieldErrors(),
+            this.renderFormWrapper(),
+            this.renderActions?.() || null,
+        ];
     }
 
     //#endregion

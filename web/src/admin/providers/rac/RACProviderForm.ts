@@ -67,7 +67,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
             <ak-form-element-horizontal
                 name="authorizationFlow"
-                label=${msg("Authorization flow")}
+                label=${msg("Authorization Flow")}
                 required
             >
                 <ak-flow-search

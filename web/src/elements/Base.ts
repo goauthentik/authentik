@@ -10,7 +10,6 @@ import { applyUITheme, ResolvedUITheme, resolveUITheme, ThemeChangeEvent } from 
 import AKBase from "#styles/authentik/base.css" with { type: "bundled-text" };
 import PFBase from "#styles/patternfly/base.css" with { type: "bundled-text" };
 
-import { localized } from "@lit/localize";
 import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -33,7 +32,6 @@ export interface AKElementProps {
     activeTheme: ResolvedUITheme;
 }
 
-@localized()
 export class AKElement extends LitElement implements AKElementProps {
     //#region Static Properties
 
@@ -48,13 +46,27 @@ export class AKElement extends LitElement implements AKElementProps {
      * This is useful if the element is a wrapper around a third-party component
      * that requires styles to be applied to the host, such as Patternfly's modals.
      */
-    public static hostStyles?: Array<CSSResult | CSSModule>;
+    public static get hostStyles(): CSSResultOrNative[] {
+        return this.hostStyleSheets ?? [];
+    }
 
-    private static hostStyleSheets: CSSStyleSheet[] | null = null;
+    public static set hostStyles(styles: CSSResultOrNative[]) {
+        this.hostStyleSheets = styles.map(createStyleSheetUnsafe);
+    }
+
+    /**
+     * A cache of the element's host styles, converted to {@linkcode CSSStyleSheet}
+     * instances to avoid duplicated references.
+     *
+     * **You should not need to interact with this property directly.**
+     *
+     * @see {@linkcode hostStyles} for the public API for this property.
+     *
+     * @protected
+     */
+    protected static hostStyleSheets: CSSStyleSheet[] | null = null;
 
     protected static override finalizeStyles(styles: CSSResultGroup = []): CSSResultOrNative[] {
-        this.hostStyleSheets = this.hostStyles ? this.hostStyles.map(createStyleSheetUnsafe) : null;
-
         const elementStyles = [
             $PFBase,
             // Route around TSC`s known-to-fail typechecking of `.flat(Infinity)`. Removes types.
@@ -69,6 +81,26 @@ export class AKElement extends LitElement implements AKElementProps {
         const elementSet = new Set(elementStyles.reverse());
         // Reverse again because the return type is an array, and process as a CSSResult
         return Array.from(elementSet).reverse().map(createCSSResult);
+    }
+
+    protected static attachHostStyles(rootNode: StyleRoot): void {
+        const { hostStyleSheets } = this;
+
+        if (!hostStyleSheets) return;
+
+        setAdoptedStyleSheets(rootNode, (currentStyleSheets) => {
+            return [...currentStyleSheets, ...hostStyleSheets];
+        });
+    }
+
+    protected static detachHostStyles(rootNode: StyleRoot): void {
+        const { hostStyleSheets } = this;
+
+        if (!hostStyleSheets) return;
+
+        setAdoptedStyleSheets(rootNode, (currentStyleSheets) => {
+            return currentStyleSheets.filter((sheet) => !hostStyleSheets.includes(sheet));
+        });
     }
 
     //#endregion
@@ -125,14 +157,8 @@ export class AKElement extends LitElement implements AKElementProps {
 
         const rootNode = this.getRootNode();
 
-        if (rootNode instanceof ShadowRoot) {
-            const { hostStyleSheets } = this.constructor as typeof AKElement;
-
-            if (hostStyleSheets) {
-                setAdoptedStyleSheets(rootNode, (currentStyleSheets) => {
-                    return [...currentStyleSheets, ...hostStyleSheets];
-                });
-            }
+        if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
+            (this.constructor as typeof AKElement).attachHostStyles(rootNode);
         }
     }
 
@@ -142,13 +168,7 @@ export class AKElement extends LitElement implements AKElementProps {
         const rootNode = this.getRootNode();
 
         if (rootNode instanceof ShadowRoot) {
-            const { hostStyleSheets } = this.constructor as typeof AKElement;
-
-            if (hostStyleSheets) {
-                setAdoptedStyleSheets(rootNode, (currentStyleSheets) => {
-                    return currentStyleSheets.filter((sheet) => !hostStyleSheets.includes(sheet));
-                });
-            }
+            (this.constructor as typeof AKElement).detachHostStyles(rootNode);
         }
 
         super.disconnectedCallback();
@@ -242,22 +262,30 @@ export class AKElement extends LitElement implements AKElementProps {
         }
     }
 
-    protected hasSlotted(name: string | null) {
+    /**
+     * Finds a slotted element by name, ensuring that it is not nested within another slotted element.
+     *
+     * @param slotName The name of the slot to find. Omit to find elements in the default slot.
+     * @return The slotted element, or `null` if no matching element is found.
+     */
+    protected findSlotted<T extends Element = Element>(slotName?: string): T | null {
         const isNotNestedSlot = (start: Element) => {
             let node = start.parentNode;
+
             while (node && node !== this) {
                 if (node instanceof Element && node.hasAttribute("slot")) {
-                    return false;
+                    return null;
                 }
                 node = node.parentNode;
             }
-            return true;
+
+            return node;
         };
 
         // All child slots accessible from the component's LightDOM that match the request
         const allChildSlotRequests =
-            typeof name === "string"
-                ? [...this.querySelectorAll(`[slot="${name}"]`)]
+            typeof slotName === "string"
+                ? [...this.querySelectorAll(`[slot="${slotName}"]`)]
                 : [...this.children].filter((child) => {
                       const slotAttr = child.getAttribute("slot");
                       return !slotAttr || slotAttr === "";
@@ -265,7 +293,9 @@ export class AKElement extends LitElement implements AKElementProps {
 
         // All child slots accessible from the LightDom that match the request *and* are not nested
         // within another slotted element.
-        return allChildSlotRequests.filter((node) => isNotNestedSlot(node)).length > 0;
+        const match = allChildSlotRequests.find((node) => isNotNestedSlot(node));
+
+        return (match ?? null) as T | null;
     }
 
     //#endregion

@@ -1,6 +1,6 @@
 import { AKElement } from "#elements/Base";
 
-import { Jsonifiable } from "type-fest";
+import type { Jsonifiable } from "type-fest";
 
 import { msg } from "@lit/localize";
 import { LitElement } from "lit";
@@ -10,19 +10,23 @@ import { createRef, Ref } from "lit/directives/ref.js";
 /**
  * Properties common to elements which represent a form field.
  */
-export interface FormField {
+export interface FormField<T = Jsonifiable> extends HTMLElement {
     /**
      * The name of the input, provided to the form.
+     *
+     * @todo Remove optionality after replacing `AKControlElement`.
      */
-    name: string | null;
+    name?: string | null;
 
     /**
      * A JSON representation of the value.
      */
-    toJSON(): Jsonifiable;
+    toJSON(): T;
 }
 
-export function isFormField(element: object): element is FormField {
+export function isFormField<T extends Jsonifiable = Jsonifiable>(
+    element: object,
+): element is FormField<T> {
     if (!("toJSON" in element)) return false;
 
     return typeof element.toJSON === "function";

@@ -39,7 +39,9 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     T,
     string
 > {
-    static styles: CSSResult[] = [...super.styles, PFContent];
+    public static styles: CSSResult[] = [...super.styles, PFContent];
+    public static verboseName = msg("Policy Binding");
+    public static verboseNamePlural = msg("Policy Bindings");
 
     async loadInstance(pk: string): Promise<T> {
         const binding = await new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({

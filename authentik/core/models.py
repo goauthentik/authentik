@@ -951,21 +951,34 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
     objects = InheritanceManager()
 
+    def get_icon_url(self, request=None, use_cache: bool = True) -> str | None:
+        """Get the URL to the source icon."""
+        if not self.icon:
+            return None
+        return get_file_manager(FileUsage.MEDIA).file_url(self.icon, request, use_cache=use_cache)
+
     @property
     def icon_url(self) -> str | None:
         """Get the URL to the source icon"""
+        return self.get_icon_url()
+
+    def get_icon_themed_urls(
+        self,
+        request=None,
+        use_cache: bool = True,
+    ) -> dict[str, str] | None:
+        """Get themed URLs for icon if it contains %(theme)s."""
         if not self.icon:
             return None
-
-        return get_file_manager(FileUsage.MEDIA).file_url(self.icon)
+        return get_file_manager(FileUsage.MEDIA).themed_urls(
+            self.icon,
+            request,
+            use_cache=use_cache,
+        )
 
     @property
     def icon_themed_urls(self) -> dict[str, str] | None:
-        """Get themed URLs for icon if it contains %(theme)s"""
-        if not self.icon:
-            return None
-
-        return get_file_manager(FileUsage.MEDIA).themed_urls(self.icon)
+        return self.get_icon_themed_urls()
 
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""

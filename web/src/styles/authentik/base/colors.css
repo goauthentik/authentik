@@ -110,14 +110,14 @@
 /* #region Orange */
 
 :root {
-    --pf-global--palette--orange-50: oklab(0.9774 0.0055 0.0155);
-    --pf-global--palette--orange-100: oklab(0.8203 0.0444 0.097);
-    --pf-global--palette--orange-200: oklab(0.742 0.0735 0.1332);
-    --pf-global--palette--orange-300: oklab(0.6966 0.1001 0.1398);
-    --pf-global--palette--orange-400: oklab(0.6006 0.0915 0.1218);
-    --pf-global--palette--orange-500: oklab(0.4794 0.0692 0.0972);
-    --pf-global--palette--orange-600: oklab(0.4252 0.0555 0.0863);
-    --pf-global--palette--orange-700: oklab(0.2713 0.0269 0.0552);
+    --pf-global--palette--orange-50: oklab(0.977 0.005 0.015);
+    --pf-global--palette--orange-100: oklab(77.986% 0.109 0.063);
+    --pf-global--palette--orange-200: oklab(71.363% 0.145 0.092);
+    --pf-global--palette--orange-300: oklab(69.487% 0.163 0.1);
+    --pf-global--palette--orange-400: oklab(66.428% 0.185 0.116);
+    --pf-global--palette--orange-500: oklab(64.248% 0.203 0.125);
+    --pf-global--palette--orange-600: oklab(63.164% 0.209 0.126);
+    --pf-global--palette--orange-700: oklab(54.716% 0.179 0.109);
 }
 
 /* #endregion */

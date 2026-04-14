@@ -16,11 +16,9 @@ import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
@@ -68,8 +66,6 @@ export class AKPageNavbar
         PFDrawer,
         PFNotificationBadge,
         PFContent,
-        PFAvatar,
-        PFDropdown,
         Styles,
     ];
 

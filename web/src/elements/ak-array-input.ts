@@ -52,6 +52,9 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
         `,
     ];
 
+    @property({ type: String })
+    public name: string | null = null;
+
     @property({ type: Boolean })
     validate = false;
 
@@ -94,13 +97,13 @@ export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<
         return this.items;
     }
 
-    get isValid() {
+    get valid() {
         if (!this.validate) {
             return true;
         }
 
         const oneIsValid = (g: HTMLDivElement) =>
-            g.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")?.isValid ?? true;
+            g.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")?.valid ?? true;
         const allAreValid = Array.from(this.inputGroups ?? []).every(oneIsValid);
         return allAreValid && (this.validator ? this.validator(this.items) : true);
     }
