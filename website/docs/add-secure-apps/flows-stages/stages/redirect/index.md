@@ -3,7 +3,7 @@ title: Redirect stage
 authentik_version: "2024.12"
 ---
 
-The Redirect stage sends the user either to another flow or to a static URL.
+The Redirect stage sends the user to another flow or a static URL.
 
 ## Overview
 

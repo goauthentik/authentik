@@ -6,9 +6,9 @@ The SMS Authenticator Setup stage enrolls an SMS-based authenticator for the cur
 
 ## Overview
 
-This stage stores a phone-based authenticator device for the user and sends one-time codes over SMS.
+This stage stores a phone number, enabling one-time codes to be sent via SMS.
 
-In normal mode, the enrolled device can later be used with the [Authenticator Validation stage](../authenticator_validate/index.md). In **verify only** mode, the stage only verifies ownership of a phone number during enrollment and stores a hash instead of the number itself.
+In normal mode, the enrolled phone number can later be used with the [Authenticator Validation stage](../authenticator_validate/index.md). In **verify only** mode, the stage only verifies ownership of a phone number during enrollment and stores a hash instead of the number itself.
 
 ## Configuration options
 

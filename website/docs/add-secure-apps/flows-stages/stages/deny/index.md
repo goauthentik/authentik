@@ -23,3 +23,22 @@ To use this stage effectively, make sure **Evaluate when flow is planned** is di
 :::
 
 If the binding is evaluated during flow planning, the denial can happen earlier than intended and skip the checks that were meant to decide whether the user should be denied.
+
+### Example: block a known IP range
+
+One common pattern is to bind a Deny stage to an expression policy that blocks requests from a specific IP range.
+
+For example:
+
+1. Create a Deny stage.
+2. Create an [Expression policy](../../../../customize/policies/expression.mdx) with logic such as:
+
+```python
+from ipaddress import ip_network
+
+return ak_client_ip in ip_network("203.0.113.0/24")
+```
+
+3. Bind that policy to the Deny stage in the flow.
+
+When the policy passes, the Deny stage runs and the flow stops immediately.

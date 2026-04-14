@@ -6,7 +6,7 @@ The Identification stage is the primary user-identification step in most authent
 
 ## Overview
 
-This stage lets the user identify themselves by username, email address, UPN, or external source. It can also embed password entry, CAPTCHA verification, and passkey autofill directly into the identification step.
+This stage lets the user identify themselves by username, email address, UPN, or external source. You can also embed password entry, CAPTCHA verification, and passkey autofill directly into the identification step.
 
 ## Configuration options
 
@@ -65,7 +65,7 @@ Sources can also be marked as **Promoted** in their source configuration. Promot
 
 The **Enrollment flow** and **Recovery flow** settings control the links shown below the identification form. The passwordless flow setting adds a direct link to a separate passwordless authentication flow.
 
-When **Enable remember me on this device** is enabled, authentik can store the username locally and fast-forward to the password field on later visits. Users can still select **Not you?** to enter a different username or disable the remembered value.
+When **Enable remember me on this device** is enabled, authentik can store the username locally and jump to the password field on later visits. Users can still select **Not you?** to enter a different username or disable the remembered value.
 
 ### Passkey autofill (WebAuthn conditional UI):ak-version[2025.12]
 

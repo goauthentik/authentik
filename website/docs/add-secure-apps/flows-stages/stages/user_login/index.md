@@ -7,7 +7,7 @@ The User Login stage attaches the current `pending_user` to a new authentik sess
 
 ## Overview
 
-This stage is usually the final step in an authentication flow. It can also be used after [User Write](../user_write/index.md) in enrollment or recovery flows when the user should be signed in immediately after the flow succeeds.
+This stage is usually the final stage in authentication, enrollment and recovery flows, signing the user in immediately upon success.
 
 ## Configuration options
 

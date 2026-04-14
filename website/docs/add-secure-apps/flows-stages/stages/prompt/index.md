@@ -2,11 +2,11 @@
 title: Prompt stage
 ---
 
-The Prompt stage displays arbitrary fields to the user and stores the submitted values in flow context.
+The Prompt stage prompts the user to enter information. The submitted values are then stored in the flow context.
 
 ## Overview
 
-Use this stage when a flow needs to collect custom input, such as profile attributes, passwords, invitation tokens, file uploads, or approval choices.
+Use this stage to collect user input, such as profile attributes, passwords, invitation tokens, file uploads, or approval choices.
 
 Submitted values are written to `prompt_data` in the flow context and can be consumed by later stages or policies.
 

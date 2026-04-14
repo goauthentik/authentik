@@ -6,7 +6,7 @@ The Static Authenticator Setup stage creates one-time backup codes for a user. T
 
 ## Overview
 
-This stage enrolls a static authenticator device for the current user and generates a set of recovery codes. Each code can be used once.
+This stage enrolls static backup codes for the current user and generates a set of recovery codes. Each code can be used once.
 
 Because static codes are a device class supported by the [Authenticator Validation stage](../authenticator_validate/index.md), they are usually added as a backup factor rather than the primary factor.
 

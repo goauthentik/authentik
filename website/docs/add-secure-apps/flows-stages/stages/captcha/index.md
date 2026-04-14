@@ -2,13 +2,13 @@
 title: Captcha stage
 ---
 
-The Captcha stage adds CAPTCHA verification to a flow by using Google reCAPTCHA or compatible services such as hCaptcha and Cloudflare Turnstile.
+The Captcha stage adds CAPTCHA verification to a flow by using Google reCAPTCHA or compatible alternatives like hCaptcha and Cloudflare Turnstile.
 
 ## Overview
 
 This stage verifies that the current interaction appears human before the flow continues.
 
-It can either be bound directly into a flow or embedded inside the [Identification stage](../identification/index.md) by setting the Identification stage's **Captcha stage** option.
+It can either be bound to a flow or embedded inside the [Identification stage](../identification/index.md) by setting the Identification stage's **Captcha stage** option.
 
 ## Configuration options
 

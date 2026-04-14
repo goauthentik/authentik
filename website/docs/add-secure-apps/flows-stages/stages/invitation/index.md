@@ -2,11 +2,11 @@
 title: Invitation stage
 ---
 
-The Invitation stage lets an enrollment flow require an invitation token and optionally pre-fill or enforce fixed enrollment data.
+The Invitation stage is used to invite users to enroll in authentik. It can optionally enroll users with preset values.
 
 ## Overview
 
-This stage is typically used in enrollment flows where users should only be allowed to continue if they were invited.
+This stage is typically used in enrollment flows where users should only be allowed to continue if they were invited by an administrator.
 
 An invitation can also carry fixed data that is applied during enrollment.
 

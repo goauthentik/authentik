@@ -6,9 +6,9 @@ The TOTP Authenticator Setup stage enrolls a time-based one-time password device
 
 ## Overview
 
-This stage creates a TOTP device for the current user and presents a standard OTP configuration URL that authenticator apps can scan or import.
+This stage creates a TOTP authenticator for the current user and presents a standard OTP configuration URL that authenticator apps can scan or import.
 
-TOTP devices can then be used with the [Authenticator Validation stage](../authenticator_validate/index.md).
+The enrolled TOTP authenticator can then be used with the [Authenticator Validation stage](../authenticator_validate/index.md).
 
 ## Configuration options
 

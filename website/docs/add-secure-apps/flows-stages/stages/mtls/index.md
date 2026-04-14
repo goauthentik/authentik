@@ -6,7 +6,7 @@ authentik_enterprise: true
 toc_max_heading_level: 5
 ---
 
-The Mutual TLS stage authenticates or enrolls users by matching a presented client certificate to a user attribute.
+The Mutual TLS stage authenticates or enrolls users by validating a presented client certificate.
 
 ## Overview
 

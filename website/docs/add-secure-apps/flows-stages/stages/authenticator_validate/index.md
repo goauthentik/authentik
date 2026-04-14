@@ -17,7 +17,7 @@ This stage is used during authentication after a user has already enrolled one o
 
 ## Configuration options
 
-- **Not configured action**: control what happens when the user has no compatible device.
+- **Not configured action**: control what happens when the user has no compatible authenticator.
     - **Skip**: continue the flow without MFA.
     - **Deny**: deny access and end the flow.
     - **Configure**: inject one of the configured enrollment stages and continue after that stage succeeds.

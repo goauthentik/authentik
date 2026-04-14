@@ -3,7 +3,7 @@ title: Source stage
 authentik_enterprise: true
 ---
 
-The Source stage suspends the current flow and sends the user through an OAuth or SAML source before returning to the original flow.
+The Source stage sends the user to an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) source before returning to the flow.
 
 ## Overview
 
@@ -11,9 +11,9 @@ Use this stage when an external identity provider should be part of the current 
 
 Common examples include:
 
-- routing users through an external OAuth or SAML identity provider
-- sending users through a custom device-health or posture-check system before continuing
-- authenticating against a legacy IdP during an IdP migration and then using the returned identity and attributes inside authentik
+- Routing users through an external OAuth or SAML identity provider
+- Sending users through a custom device-health or posture-check system before continuing
+- Authenticating against a legacy IdP during an IdP migration and then using the returned identity and attributes inside authentik
 
 For pure authentication or enrollment, an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) source can also be used directly without a Source stage. Use the Source stage when that external step needs to be embedded inside another authentik flow.
 
@@ -24,7 +24,7 @@ For pure authentication or enrollment, an [OAuth](../../../../users-sources/sour
 
 ## Flow integration
 
-Bind this stage into a flow when the user should authenticate or enroll through an external source and then return to the original authentik flow.
+Bind this stage to a flow when the user should authenticate or enroll through an external source and then return to the authentik flow.
 
 The configured source must be a browser-based source such as OAuth or SAML. LDAP and other non-browser sources are not compatible.
 
@@ -32,7 +32,7 @@ The configured source must be a browser-based source such as OAuth or SAML. LDAP
 
 ### Important source-flow behavior
 
-Do not bind a [User Login stage](../user_login/index.md) into the source's own authentication or enrollment flow.
+Do not bind a [User Login stage](../user_login/index.md) to the source's own authentication or enrollment flow.
 
 The Source stage resumes the original flow by appending a dynamic in-memory stage to the source flow. If the source flow logs the user in directly, the original flow will not resume correctly.
 

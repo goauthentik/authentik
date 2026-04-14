@@ -2,7 +2,7 @@
 title: User logout stage
 ---
 
-The User Logout stage ends the user's authentik session and participates in Single Logout when configured provider sessions are present.
+The User Logout stage ends the user's authentik session and, if configured, initiates [Single Logout](../../../providers/single-logout/index.md).
 
 ## Overview
 
