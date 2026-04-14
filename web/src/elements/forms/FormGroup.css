@@ -1,7 +1,13 @@
-:host([theme="dark"]) {
-    --ak-c-form-group__marker--Color: var(--pf-global--Color--300);
-    --ak-c-form-group__marker--ColorHover: var(--pf-global--Color--200);
+:host {
+    --ak-c-form-group__marker--Color: var(--pf-global--Color--200);
+    --ak-c-form-group__marker--ColorHover: var(--pf-global--Color--100);
+    --ak-c-form-group__marker--Opacity: 75%;
 
+    --ak-c-form-group--marker--Content: "\f105";
+    --ak-c-form-group--marker--ContentOpen: "\f107";
+}
+
+:host([theme="dark"]) {
     details {
         @media (prefers-contrast: more) {
             background: var(--pf-global--BackgroundColor--150);
@@ -10,63 +16,79 @@
 }
 
 details {
+    &[open] {
+        --ak-c-form-group--marker--Content: var(--ak-c-form-group--marker--ContentOpen);
+        --ak-c-form-group__marker--Opacity: 25%;
+    }
+
     @media (prefers-contrast: more) {
         border: 1px solid var(--pf-global--BorderColor--200);
         background: var(--pf-global--BackgroundColor--150);
     }
+}
 
-    &::details-content {
-        padding-inline-start: calc(
-            var(--pf-global--spacer--lg) + var(--pf-global--spacer--form-element)
-        );
-        padding-inline-end: var(--pf-global--spacer--md);
-        padding-block-end: var(--pf-global--spacer--sm);
-    }
+details::details-content {
+    padding-inline-start: calc(
+        var(--pf-global--spacer--lg) + var(--pf-global--spacer--form-element)
+    );
+    padding-inline-end: var(--pf-global--spacer--md);
+    padding-block-end: var(--pf-global--spacer--sm);
+}
 
-    & > summary {
-        backdrop-filter: var(--ak-c-dialog__backdrop--BackdropFilter);
+details > summary:hover {
+    --ak-c-form-group__marker--Color: var(--ak-c-form-group__marker--ColorHover);
+}
 
-        inset-block-start: 0;
-        position: sticky;
-        background: var(--ak-c-form-group--BackgroundColor, transparent);
-        z-index: var(--ak-c-form-group--ZIndex, 1);
+details[open] > summary:hover {
+    --ak-c-form-group__marker--Opacity: 100%;
+}
 
-        list-style-position: outside;
-        margin-inline-start: var(--pf-global--spacer--sm);
-        padding-inline-start: calc(var(--pf-global--spacer--md) + 0.25rem);
-        padding-block: var(--pf-global--spacer-xs);
-        padding-inline: var(--pf-global--spacer--md);
-        list-style-type: "\f105";
-        cursor: pointer;
-        user-select: none;
+details > summary {
+    background: var(--ak-c-form-group--BackgroundColor, transparent);
 
-        font-weight: bold;
+    list-style-position: outside;
+    margin-inline-start: var(--pf-global--spacer--sm);
+    padding-inline-start: calc(var(--pf-global--spacer--md) + 0.25rem);
+    padding-block: var(--pf-global--spacer-xs);
+    padding-inline: var(--pf-global--spacer--md);
+    list-style-type: var(--ak-c-form-group--marker--Content);
+    cursor: pointer;
+    user-select: none;
 
-        @media (prefers-contrast: more) {
-            text-decoration: underline;
-            margin-inline-start: var(--pf-global--spacer--lg);
-            padding-block: var(--pf-global--spacer--sm);
-        }
-
-        &::marker {
-            color: var(--ak-c-form-group__marker--Color, var(--pf-global--Color--200));
-            transition: var(--pf-c-form__field-group-toggle-icon--Transition);
-            font-family: "Font Awesome 5 Free";
-            font-weight: 900;
-        }
-
-        &:hover::marker {
-            color: var(--ak-c-form-group__marker--ColorHover, var(--pf-global--Color--100));
-        }
-    }
-
-    &[open] summary {
-        list-style-type: "\f107";
+    @media (prefers-contrast: more) {
+        text-decoration: underline;
+        margin-inline-start: var(--pf-global--spacer--lg);
+        padding-block: var(--pf-global--spacer--sm);
     }
 }
 
+details summary::marker {
+    content: var(--ak-c-form-group--marker--Content, "\f105");
+    color: color-mix(
+        var(--ak-c-form-group__marker--Color) var(--ak-c-form-group__marker--Opacity),
+        transparent
+    );
+    transition: var(--pf-c-form__field-group-toggle-icon--Transition);
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    opacity: var(--ak-c-form-group__marker--Opacity);
+}
+
+[part="group-header-title"] {
+    flex: 1 1 auto;
+}
+
+[part="form-group-header-title"] {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: var(--pf-global--spacer--sm);
+    backdrop-filter: var(--ak-c-dialog__backdrop--BackdropFilter);
+}
+
 [part="label"] {
-    padding: var(--pf-global--spacer--xs);
+    font-weight: 500;
 }
 
 .pf-c-form__field-group-header-description {
