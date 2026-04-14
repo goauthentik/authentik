@@ -107,7 +107,7 @@
         var(--pf-global--FontSize--md) * var(--pf-global--LineHeight--md)
     );
 
-    --ak-c-dialog__body--PaddingTop: var(--pf-global--spacer--lg);
+    --ak-c-dialog__body--PaddingTop: var(--pf-global--spacer--md);
     --ak-c-dialog__body--PaddingRight: var(--pf-global--spacer--lg);
     --ak-c-dialog__body--PaddingLeft: var(--pf-global--spacer--lg);
     --ak-c-dialog__body--last-child--PaddingBottom: var(--pf-global--spacer--lg);
@@ -122,8 +122,6 @@
     --ak-c-dialog__footer--PaddingRight: var(--pf-global--spacer--lg);
     --ak-c-dialog__footer--PaddingBottom: var(--pf-global--spacer--lg);
     --ak-c-dialog__footer--PaddingLeft: var(--pf-global--spacer--lg);
-    --ak-c-dialog__footer--BoxShadow: inset 0 0.5px 0
-        var(--pf-global--BackgroundColor--dark-transparent-200);
 }
 
 /* #endregion */

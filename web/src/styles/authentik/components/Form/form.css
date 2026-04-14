@@ -58,6 +58,7 @@
 /* #region Form controls */
 
 .pf-c-form-control {
+    --pf-c-form-control--BackgroundColor: transparent !important;
     --pf-c-form-control--BorderTopColor: transparent !important;
     --pf-c-form-control--BorderRightColor: transparent !important;
     --pf-c-form-control--BorderLeftColor: transparent !important;
@@ -352,8 +353,6 @@ ak-switch-input {
         --pf-global--primary-color--100: var(--pf-global--primary-color--light-100) !important;
         --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
         --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover) !important;
-
-        --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light) !important;
 
         --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light) !important;
         --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light) !important;
