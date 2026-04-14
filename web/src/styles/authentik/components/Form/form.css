@@ -175,7 +175,9 @@ fieldset {
 }
 
 label.pf-c-radio {
-    --pf-c-radio--BorderColor: var(--pf-global--BorderColor--300);
+    --pf-c-radio--checkmark--BorderColor: var(--pf-global--BorderColor--300);
+    --pf-c-radio--checkmark--Color: transparent;
+    --pf-c-radio--BorderColor: transparent;
     --pf-c-radio--BoxShadowColor: transparent;
 
     --pf-c-radio--checked--BackgroundColor: transparent;
@@ -183,6 +185,9 @@ label.pf-c-radio {
     --pf-c-radio--hover--BorderColor: var(--pf-global--active-color--200);
 
     --pf-c-radio--disabled--BackgroundColor: var(--pf-global--BackgroundColor--150);
+    transition:
+        border-color 0.2s,
+        color 0.2s;
 
     padding-inline: var(--pf-global--spacer--md);
     padding-block: var(--pf-global--spacer--sm);
@@ -208,8 +213,17 @@ label.pf-c-radio {
         margin-inline-start: var(--pf-global--spacer--sm);
         appearance: none;
         content: none;
-        width: 1em;
-        height: 1em;
+
+        width: 1.5em;
+        height: 1.5em;
+        padding: 0.25em;
+        border: 1px solid;
+        color: var(--pf-c-radio--checkmark--BorderColor, transparent);
+        border-radius: 3px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
 
         &::after {
             font-family: "Font Awesome 5 Free";
@@ -218,7 +232,8 @@ label.pf-c-radio {
             content: "\f00c";
             display: block;
             line-height: 1;
-            color: var(--pf-c-radio--checkmark--Color, transparent);
+            color: var(--pf-c-radio--checkmark--Color);
+            transition: color 0.2s;
         }
     }
 
@@ -236,14 +251,15 @@ label.pf-c-radio {
         inset-block-end: 0;
     }
 
-    &:has(.pf-c-radio__input:checked) {
+    &:has(.pf-c-radio__input:checked:not(:disabled)) {
         --pf-c-radio--BackgroundColor: var(--pf-c-radio--checked--BackgroundColor);
         --pf-c-radio--BorderColor: var(--pf-c-radio--checked--BorderColor);
-        --pf-c-radio--checkmark--Color: var(--pf-global--active-color--300);
+        --pf-c-radio--checkmark--BorderColor: var(--pf-global--active-color--300);
+        --pf-c-radio--checkmark--Color: var(--pf-c-radio--checked--BorderColor);
     }
 
-    &:hover {
-        --pf-c-radio--BorderColor: var(--pf-c-radio--hover--BorderColor);
+    &:hover:not(:has(.pf-c-radio__input:checked)):not(:has(.pf-c-radio__input:disabled)) {
+        --pf-c-radio--checkmark--BorderColor: var(--pf-c-radio--hover--BorderColor);
         --pf-c-radio--checkmark--Color: var(--pf-c-radio--hover--BorderColor);
     }
 
