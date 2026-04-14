@@ -16,10 +16,10 @@ To create a policy:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies**.
-3. Click **Create**.
+3. Click **New Policy**.
 4. Select the policy type.
 5. Configure the policy-specific settings.
-6. Click **Finish**.
+6. Click **Create Policy**.
 
 If you are not sure which policy type to choose, see [Types of policies in authentik](./types/index.mdx).
 

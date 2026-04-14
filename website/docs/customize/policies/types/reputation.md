@@ -33,9 +33,9 @@ The threshold defaults to a low score, so the policy is naturally suited to "tri
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies**.
-3. Click **Create** and select **Reputation Policy**.
+3. Click **New Policy** and select **Reputation Policy**.
 4. Choose whether to check IP, username, or both, and set the threshold.
-5. Click **Finish**.
+5. Click **Create Policy**.
 
 ## Use it on stage bindings
 

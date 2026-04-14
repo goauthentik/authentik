@@ -33,13 +33,13 @@ Optionally, if you also want to customize the exact wording that appears on the 
 ### 1. Create a Consent stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Stages** and click **Create**.
+2. Navigate to **Flows and Stages** > **Stages** and click **New Stage**.
 3. On the **New stage** wizard select **Consent Stage** and then click **Next**.
 4. Provide the following configuration settings:
     - **Name**:
     - **Stage-specific settings**:
         - **Mode**: Select the appropriate [mode](#consent-stage-modes) to use with this stage.
-5. Click **Finish** to save the new stage.
+5. Click **Create Stage** to save the new stage.
 
 ### 2. Bind the Consent stage to an authorization flow
 
@@ -50,7 +50,7 @@ To include the Consent stage in the flow, follow [these directions](../../stages
 If you want to customize the text that appears on the consent prompt, you can create an Expression policy with the exact wording you want, and then bind it to the Consent stage in the flow.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Policies** and click **Create**.
+2. Navigate to **Customization** > **Policies** and click **New Policy**.
 3. On the **New policy** wizard select **Expression Policy** and then click **Next**.
 4. Provide the following configuration settings:
     - **Name**:
@@ -61,7 +61,7 @@ If you want to customize the text that appears on the consent prompt, you can cr
         return True
         ```python
         ````
-5. Click **Finish** to save the policy.
+5. Click **Create Policy** to save the policy.
 
 ### 4. Bind the policy to the Consent stage in the authorization flow (_optional_)
 
@@ -78,4 +78,4 @@ You need to bind the policy to the stage within this flow, so go first to the fl
 5. Click the caret (>) beside the Consent stage to which you want to bind the policy, and expand the stage details.
 6. Click **Bind existing Policy/Group/User**.
 7. In the **Create Binding** dialog, click **Policy** and then select the Expression policy that you created above.
-8. Click **Create** to save the binding.
+8. Click **Create Policy Binding** to save the binding.

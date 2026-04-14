@@ -40,9 +40,9 @@ When the zxcvbn check is enabled, authentik evaluates password strength and can 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies**.
-3. Click **Create** and select **Password Policy**.
+3. Click **New Policy** and select **Password Policy**.
 4. Configure the password field and validation rules you want to enforce.
-5. Click **Finish**.
+5. Click **Create Policy**.
 
 ## Attach it to password entry
 

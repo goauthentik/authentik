@@ -40,9 +40,9 @@ This policy is useful only when an event object is present in the policy context
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies**.
-3. Click **Create** and select **Event Matcher Policy**.
+3. Click **New Policy** and select **Event Matcher Policy**.
 4. Configure the fields you want to match.
-5. Click **Finish**.
+5. Click **Create Policy**.
 
 ## Send notifications about an event match
 

@@ -44,12 +44,12 @@ For broader password controls, combine it with:
 To create a Password Uniqueness policy:
 
 1. In the Admin interface, navigate to **Customization** > **Policies**.
-2. Click **Create** to define a new Password Uniqueness Policy.
+2. Click **New Policy** to define a new Password Uniqueness Policy.
 3. Configure the policy:
     - **Name**: use a descriptive name.
     - **Password field**: enter the field key that contains the new password. In the default flows this is usually `password`.
     - **Number of previous passwords to check**: choose how many previous passwords authentik should compare against and retain for future checks.
-4. Click **Finish**.
+4. Click **Create Policy**.
 
 ## Attach the policy to password entry
 
