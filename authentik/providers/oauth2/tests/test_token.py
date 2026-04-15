@@ -470,8 +470,16 @@ class TestToken(OAuthTestCase):
                 HTTP_AUTHORIZATION=f"Basic {header}",
                 HTTP_ORIGIN="http://local.invalid",
             )
-            access = AccessToken.objects.filter(user=user, provider=provider).first()
-            refresh = RefreshToken.objects.filter(user=user, provider=provider).last()
+            access = (
+                AccessToken.objects.filter(user=user, provider=provider)
+                .exclude(pk=access.pk)
+                .first()
+            )
+            refresh = (
+                RefreshToken.objects.filter(user=user, provider=provider)
+                .exclude(pk=token.pk)
+                .first()
+            )
             self.assertJSONEqual(
                 response.content.decode(),
                 {
