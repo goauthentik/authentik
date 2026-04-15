@@ -16,19 +16,11 @@ Be aware that when running a flow with the Inspector enabled, the flow is still 
 
 The Inspector is accessible to users that have been granted the [permission](../../../users-sources/access-control/permissions.md) **Can inspect a Flow's execution**, either directly or through a role. Superusers can always inspect flow executions.
 
-<<<<<<< HEAD
-When developing authentik with the debug mode enabled, the inspector is enabled by default and can be accessed by both unauthenticated users and standard users. However the debug mode should only be used for the development of authentik. So unless you are a developer and need the more verbose error information, the best practice for using the flow inspector is to assign the permission, not use debug mode.
-
 Starting with authentik 2025.2, for users with appropriate permissions to access the inspector a button is shown in the top right of the [default flow executor](./executors/if-flow.md) which opens the flow inspector.
 
-### Manually running a flow with the inspector
-
-1. To access the inspector, open the Admin interface and navigate to **Flows and Stages > Flows**.
-=======
 ### Manually running a flow with the Inspector
 
 1. To access the Inspector, open the Admin interface and navigate to **Flows and Stages > Flows**.
->>>>>>> a6c554036 (website/docs: add a single page about our user interface, document Consent stage (#20533))
 
 2. Select the specific flow that you want to inspect by clicking its name in the list.
 
