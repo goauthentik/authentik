@@ -18,11 +18,6 @@ impl ServerConfig {
             .host
             .clone()
             .ok_or_else(|| eyre!("environment variable `AUTHENTIK_HOST` not set"))?;
-        let host = if host.ends_with('/') {
-            host
-        } else {
-            format!("{host}/")
-        };
         let host = host.parse()?;
         let token = config::get()
             .token
