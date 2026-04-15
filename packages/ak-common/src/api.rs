@@ -2,17 +2,18 @@
 
 use ak_client::apis::configuration::Configuration;
 use eyre::{Result, eyre};
+use url::Url;
 
 use crate::{config, user_agent_outpost};
 
-struct ServerConfig {
-    host: String,
-    token: String,
-    insecure: bool,
+pub struct ServerConfig {
+    pub host: Url,
+    pub token: String,
+    pub insecure: bool,
 }
 
 impl ServerConfig {
-    fn new() -> Result<Self> {
+    pub fn new() -> Result<Self> {
         let host = config::get()
             .host
             .clone()
@@ -22,6 +23,7 @@ impl ServerConfig {
         } else {
             format!("{host}/")
         };
+        let host = host.parse()?;
         let token = config::get()
             .token
             .clone()
