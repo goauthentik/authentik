@@ -90,7 +90,7 @@ These are configured with most common LDAP setups.
 
 ### Expression data
 
-The following variables are available to LDAP source property mappings:
+The following variables are available to LDAP source property mappings:
 
 - `ldap`: A Python dictionary containing data from LDAP.
 - `dn`: The object DN.

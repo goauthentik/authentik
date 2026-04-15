@@ -17,7 +17,7 @@ Under the **Certificate ARN** input, enter the previously created certificate AR
 
 This stack will create the following resources:
 
-- AWS SSM secrets for the PostgreSQL user and the authentik secret key
+- AWS SSM secrets for the PostgreSQL user and the authentik secret key
 - A VPC for all other resources
 - A RDS PostgreSQL Multi-AZ cluster
 - An ECS cluster with two tasks:

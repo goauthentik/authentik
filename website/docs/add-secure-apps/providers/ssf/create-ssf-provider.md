@@ -16,7 +16,7 @@ Follow this workflow to create and configure an SSF provider for an application:
 ## Create the SSF provider
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click **New Provider** to create a provider.
+2. Navigate to **Applications** > **Providers** and click **New Provider** to create a provider.
 3. Select **Shared Signals Framework Provider** as the **Provider Type**, and then click **Next**.
 4. On the **Create SSF Provider** page, provide the configuration settings. Be sure to select a **Signing Key**.
 5. Click **Finish** to create the provider.
@@ -24,14 +24,14 @@ Follow this workflow to create and configure an SSF provider for an application:
 ## Create the OIDC provider
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click **New Provider** to create a provider.
+2. Navigate to **Applications** > **Providers** and click **New Provider** to create a provider.
 3. Select **OAuth2/OpenID Provider** as the **Provider Type**, and then click **Next**.
 4. On the **Create OAuth2/OpenID Provider** page, provide the configuration settings and then click **Finish** to create the provider.
 
 ## Create the application
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to create an application.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application.
 3. Configure the following required settings for the application:
     - **Name**: provide a descriptive name of the application.
     - **Slug**: provide the application slug used in URLs.

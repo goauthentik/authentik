@@ -39,7 +39,7 @@ If your goal is to only allow authentication via endpoint devices, this is achie
 #### Create an Endpoint stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages > Flows**.
+2. Navigate to **Flows and Stages > Flows**.
 3. Select the authentication flow that you want to modify.
 4. Open the **Stage Bindings** tab and click **New Stage**.
 5. Select Endpoint stage as the stage type, click **Next**, and configure the following settings:
@@ -59,7 +59,7 @@ The following example will only allow authentication via Apple devices.
 #### Create an Endpoint stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages > Flows**.
+2. Navigate to **Flows and Stages > Flows**.
 3. Select the authentication flow that you want to modify.
 4. Open the **Stage Bindings** tab and click **New Stage**.
 5. Select Endpoint stage as the stage type, click **Next**, and configure the following settings:
