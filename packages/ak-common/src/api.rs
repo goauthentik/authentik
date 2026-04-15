@@ -27,7 +27,7 @@ impl ServerConfig {
 
         if !host.path().ends_with('/') {
             host.path_segments_mut()
-                .expect("URL cannot be a base")
+                .map_err(|()| eyre!("URL cannot be a base"))?
                 .push("");
         }
 
