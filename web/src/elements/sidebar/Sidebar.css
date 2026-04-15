@@ -4,6 +4,7 @@
 }
 
 .pf-c-nav {
+    --ak-m-scroll-shadows--BorderStyle: none;
     --ak-c-nav__item--BorderColor: var(--pf-global--BorderColor--100);
     --pf-c-nav__subnav__link--hover--after--BorderColor: var(--ak-accent);
 
@@ -25,7 +26,6 @@
     flex-direction: column;
     height: 100%;
     overflow-y: hidden;
-    padding-block-start: var(--pf-global--spacer--sm);
 }
 
 .pf-c-nav__section + .pf-c-nav__section {
@@ -35,6 +35,7 @@
 .pf-c-nav__list {
     flex-grow: 1;
     overflow-y: auto;
+    padding-block-start: var(--pf-global--spacer--sm);
 }
 
 .pf-c-nav__link.pf-m-current::after,
