@@ -34,12 +34,7 @@ export class AkRadioInput<T extends Jsonifiable> extends HorizontalLightComponen
         const helpText = this.help?.trim();
 
         return html`${helpText
-                ? html`<p
-                      part="radio-help"
-                      class="pf-c-form__helper-radio"
-                      id=${this.helpID}
-                      slot="label-end"
-                  >
+                ? html`<p part="radio-help" class="pf-c-form__helper-radio" id=${this.helpID}>
                       ${helpText}
                   </p>`
                 : null}<ak-radio
