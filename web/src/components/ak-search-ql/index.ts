@@ -181,7 +181,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         this.#ql = new QL({
             completionEnabled: true,
-            introspections: {
+            introspections: this.#autocompleteCache || {
                 current_model: "",
                 models: {},
             },
@@ -189,7 +189,6 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             autoResize: false,
         });
         if (this.#autocompleteCache) {
-            this.#ql.loadIntrospections(this.#autocompleteCache);
             this.#autocompleteCache = null;
         }
 

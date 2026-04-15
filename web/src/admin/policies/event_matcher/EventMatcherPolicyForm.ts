@@ -2,9 +2,9 @@ import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#components/ak-search-ql/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
@@ -80,6 +80,16 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             autocomplete="off"
                             spellcheck="false"
                         />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Event query using the AKQL syntax.")}
+                            <a
+                                rel="noopener noreferrer"
+                                target="_blank"
+                                href=${docLink("/sys-mgmt/events/logging-events/#advanced-queries")}
+                            >
+                                ${msg("See documentation for examples.")}
+                            </a>
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Action")} name="action">
                         <ak-search-select
