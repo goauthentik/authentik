@@ -130,8 +130,10 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
             # according to the provider's settings
             base = User.objects.all().exclude_anonymous().filter(**kwargs)
             if self.exclude_users_service_account:
-                base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
-                    type=UserTypes.INTERNAL_SERVICE_ACCOUNT
+                base = (
+                    base.exclude(type=UserTypes.SERVICE_ACCOUNT)
+                    .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
+                    .exclude(type=UserTypes.AGENT)
                 )
             if self.filter_group:
                 base = base.filter(groups__in=[self.filter_group])

@@ -118,6 +118,7 @@ const _userTypeToLabel = new Map<UserTypeEnum | undefined, string>([
     [UserTypeEnum.External, msg("External")],
     [UserTypeEnum.ServiceAccount, msg("Service account")],
     [UserTypeEnum.InternalServiceAccount, msg("Service account (internal)")],
+    [UserTypeEnum.Agent, msg("Agent")],
 ]);
 
 export const userTypeToLabel = (type?: UserTypeEnum): string =>

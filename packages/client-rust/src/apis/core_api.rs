@@ -12,6 +12,15 @@ use serde::{Deserialize, Serialize, de::Error as _};
 use super::{ContentType, Error, configuration};
 use crate::{apis::ResponseContent, models};
 
+/// struct for typed errors of method [`core_agent_session_create`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum CoreAgentSessionCreateError {
+    Status400(models::ValidationError),
+    Status403(models::GenericError),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`core_application_entitlements_create`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -392,6 +401,15 @@ pub enum CoreTokensRetrieveError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`core_tokens_rotate_create`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum CoreTokensRotateCreateError {
+    Status403(),
+    Status400(models::ValidationError),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`core_tokens_set_key_create`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -470,6 +488,33 @@ pub enum CoreUserConsentRetrieveError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum CoreUserConsentUsedByListError {
+    Status400(models::ValidationError),
+    Status403(models::GenericError),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`core_users_agent_allowed_app_partial_update`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum CoreUsersAgentAllowedAppPartialUpdateError {
+    Status400(),
+    Status403(),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`core_users_agent_allowed_apps_update`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum CoreUsersAgentAllowedAppsUpdateError {
+    Status400(),
+    Status403(),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`core_users_agent_create`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum CoreUsersAgentCreateError {
     Status400(models::ValidationError),
     Status403(models::GenericError),
     UnknownValue(serde_json::Value),
@@ -617,6 +662,37 @@ pub enum CoreUsersUsedByListError {
     Status400(models::ValidationError),
     Status403(models::GenericError),
     UnknownValue(serde_json::Value),
+}
+
+/// Exchange an agent's API token for an authenticated session.
+pub async fn core_agent_session_create(
+    configuration: &configuration::Configuration,
+) -> Result<(), Error<CoreAgentSessionCreateError>> {
+    let uri_str = format!("{}/core/agent/session/", configuration.base_path);
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+
+    if !status.is_client_error() && !status.is_server_error() {
+        Ok(())
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<CoreAgentSessionCreateError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
 }
 
 /// ApplicationEntitlement Viewset
@@ -3481,6 +3557,70 @@ pub async fn core_tokens_retrieve(
     }
 }
 
+/// Rotate the token key and reset the expiry to 24 hours. Only callable by the token owner, the
+/// owning agent's human owner, or a superuser.
+pub async fn core_tokens_rotate_create(
+    configuration: &configuration::Configuration,
+    identifier: &str,
+) -> Result<models::TokenView, Error<CoreTokensRotateCreateError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_path_identifier = identifier;
+
+    let uri_str = format!(
+        "{}/core/tokens/{identifier}/rotate/",
+        configuration.base_path,
+        identifier = crate::apis::urlencode(p_path_identifier)
+    );
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => {
+                return Err(Error::from(serde_json::Error::custom(
+                    "Received `text/plain` content type response that cannot be converted to \
+                     `models::TokenView`",
+                )));
+            }
+            ContentType::Unsupported(unknown_type) => {
+                return Err(Error::from(serde_json::Error::custom(format!(
+                    "Received `{unknown_type}` content type response that cannot be converted to \
+                     `models::TokenView`"
+                ))));
+            }
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<CoreTokensRotateCreateError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
 /// Set token key. Action is logged as event. `authentik_core.set_token_key` permission is required.
 pub async fn core_tokens_set_key_create(
     configuration: &configuration::Configuration,
@@ -4016,6 +4156,200 @@ pub async fn core_user_consent_used_by_list(
     } else {
         let content = resp.text().await?;
         let entity: Option<CoreUserConsentUsedByListError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Add or remove a single application from an agent's allowed list. Caller must be the agent's
+/// owner or a superuser.
+pub async fn core_users_agent_allowed_app_partial_update(
+    configuration: &configuration::Configuration,
+    id: i32,
+    patched_user_agent_allowed_app_request: Option<models::PatchedUserAgentAllowedAppRequest>,
+) -> Result<models::UserAgentAllowedApps, Error<CoreUsersAgentAllowedAppPartialUpdateError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_path_id = id;
+    let p_body_patched_user_agent_allowed_app_request = patched_user_agent_allowed_app_request;
+
+    let uri_str = format!(
+        "{}/core/users/{id}/agent_allowed_app/",
+        configuration.base_path,
+        id = p_path_id
+    );
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::PATCH, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_patched_user_agent_allowed_app_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => {
+                return Err(Error::from(serde_json::Error::custom(
+                    "Received `text/plain` content type response that cannot be converted to \
+                     `models::UserAgentAllowedApps`",
+                )));
+            }
+            ContentType::Unsupported(unknown_type) => {
+                return Err(Error::from(serde_json::Error::custom(format!(
+                    "Received `{unknown_type}` content type response that cannot be converted to \
+                     `models::UserAgentAllowedApps`"
+                ))));
+            }
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<CoreUsersAgentAllowedAppPartialUpdateError> =
+            serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Replace the allowed application list for an agent user. Caller must be the agent's owner or a
+/// superuser.
+pub async fn core_users_agent_allowed_apps_update(
+    configuration: &configuration::Configuration,
+    id: i32,
+    user_agent_allowed_apps_request: models::UserAgentAllowedAppsRequest,
+) -> Result<models::UserAgentAllowedApps, Error<CoreUsersAgentAllowedAppsUpdateError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_path_id = id;
+    let p_body_user_agent_allowed_apps_request = user_agent_allowed_apps_request;
+
+    let uri_str = format!(
+        "{}/core/users/{id}/agent_allowed_apps/",
+        configuration.base_path,
+        id = p_path_id
+    );
+    let mut req_builder = configuration.client.request(reqwest::Method::PUT, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_user_agent_allowed_apps_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => {
+                return Err(Error::from(serde_json::Error::custom(
+                    "Received `text/plain` content type response that cannot be converted to \
+                     `models::UserAgentAllowedApps`",
+                )));
+            }
+            ContentType::Unsupported(unknown_type) => {
+                return Err(Error::from(serde_json::Error::custom(format!(
+                    "Received `{unknown_type}` content type response that cannot be converted to \
+                     `models::UserAgentAllowedApps`"
+                ))));
+            }
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<CoreUsersAgentAllowedAppsUpdateError> =
+            serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent {
+            status,
+            content,
+            entity,
+        }))
+    }
+}
+
+/// Create a new agent user. Enterprise only. Caller must be an internal user.
+pub async fn core_users_agent_create(
+    configuration: &configuration::Configuration,
+    user_agent_request: models::UserAgentRequest,
+) -> Result<models::UserAgentResponse, Error<CoreUsersAgentCreateError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_body_user_agent_request = user_agent_request;
+
+    let uri_str = format!("{}/core/users/agent/", configuration.base_path);
+    let mut req_builder = configuration
+        .client
+        .request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_body_user_agent_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => {
+                return Err(Error::from(serde_json::Error::custom(
+                    "Received `text/plain` content type response that cannot be converted to \
+                     `models::UserAgentResponse`",
+                )));
+            }
+            ContentType::Unsupported(unknown_type) => {
+                return Err(Error::from(serde_json::Error::custom(format!(
+                    "Received `{unknown_type}` content type response that cannot be converted to \
+                     `models::UserAgentResponse`"
+                ))));
+            }
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<CoreUsersAgentCreateError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent {
             status,
             content,

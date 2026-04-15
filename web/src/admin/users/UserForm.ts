@@ -102,6 +102,10 @@ export class UserForm extends ModelForm<User, number> {
                 verboseName: msg("Service Account"),
                 verboseNamePlural: msg("Service Accounts"),
             }))
+            .with(UserTypeEnum.Agent, () => ({
+                verboseName: msg("Agent User"),
+                verboseNamePlural: msg("Agent Users"),
+            }))
             .otherwise(() => ({
                 verboseName: msg("User"),
                 verboseNamePlural: msg("Users"),
@@ -203,27 +207,44 @@ export class UserForm extends ModelForm<User, number> {
 
             ${this.userType
                 ? null
-                : html`<ak-radio-input
-                      label=${msg("User type")}
-                      required
-                      name="type"
-                      .value=${this.instance?.type}
-                      .options=${[
-                          ...UserTypeOptions,
-                          ...(this.instance
-                              ? [
-                                    {
-                                        label: msg("Internal Service account"),
-                                        value: UserTypeEnum.InternalServiceAccount,
-                                        disabled: true,
-                                        description: html`${msg(
-                                            "Managed by authentik and cannot be assigned manually.",
-                                        )}`,
-                                    },
-                                ]
-                              : []),
-                      ] satisfies RadioOption<UserTypeEnum>[]}
-                  ></ak-radio-input>`}
+                : this.instance?.type === UserTypeEnum.Agent
+                  ? html`<ak-radio-input
+                        label=${msg("User type")}
+                        required
+                        name="type"
+                        .value=${UserTypeEnum.Agent}
+                        .options=${[
+                            {
+                                label: msg("Agent"),
+                                value: UserTypeEnum.Agent,
+                                disabled: true,
+                                description: html`${msg(
+                                    "Agent users are managed by their owner and cannot change type.",
+                                )}`,
+                            },
+                        ] satisfies RadioOption<UserTypeEnum>[]}
+                    ></ak-radio-input>`
+                  : html`<ak-radio-input
+                        label=${msg("User type")}
+                        required
+                        name="type"
+                        .value=${this.instance?.type}
+                        .options=${[
+                            ...UserTypeOptions,
+                            ...(this.instance
+                                ? [
+                                      {
+                                          label: msg("Internal Service account"),
+                                          value: UserTypeEnum.InternalServiceAccount,
+                                          disabled: true,
+                                          description: html`${msg(
+                                              "Managed by authentik and cannot be assigned manually.",
+                                          )}`,
+                                      },
+                                  ]
+                                : []),
+                        ] satisfies RadioOption<UserTypeEnum>[]}
+                    ></ak-radio-input>`}
             <ak-text-input
                 name="email"
                 label=${msg("Email Address")}

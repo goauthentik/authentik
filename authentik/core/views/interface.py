@@ -30,6 +30,7 @@ class RootRedirectView(RedirectView):
             UserTypes.EXTERNAL,
             UserTypes.SERVICE_ACCOUNT,
             UserTypes.INTERNAL_SERVICE_ACCOUNT,
+            UserTypes.AGENT,
         ):
             brand: Brand = request.brand
             if brand.default_application:
@@ -70,6 +71,7 @@ class BrandDefaultRedirectView(InterfaceView):
             UserTypes.EXTERNAL,
             UserTypes.SERVICE_ACCOUNT,
             UserTypes.INTERNAL_SERVICE_ACCOUNT,
+            UserTypes.AGENT,
         ):
             brand: Brand = request.brand
             if brand.default_application:

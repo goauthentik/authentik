@@ -19,6 +19,7 @@ from authentik.core.api.sources import (
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
 from authentik.core.api.users import UserViewSet
+from authentik.core.views.agent_session import AgentSessionView
 from authentik.core.views.apps import RedirectToAppLaunch
 from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.interface import (
@@ -78,6 +79,11 @@ api_urlpatterns = [
         "core/transactional/applications/",
         TransactionalApplicationView.as_view(),
         name="core-transactional-application",
+    ),
+    path(
+        "core/agent/session/",
+        AgentSessionView.as_view(),
+        name="agent-session",
     ),
     ("core/groups", GroupViewSet),
     ("core/users", UserViewSet),

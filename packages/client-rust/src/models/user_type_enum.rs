@@ -21,6 +21,8 @@ pub enum UserTypeEnum {
     ServiceAccount,
     #[serde(rename = "internal_service_account")]
     InternalServiceAccount,
+    #[serde(rename = "agent")]
+    Agent,
 }
 
 impl std::fmt::Display for UserTypeEnum {
@@ -30,6 +32,7 @@ impl std::fmt::Display for UserTypeEnum {
             Self::External => write!(f, "external"),
             Self::ServiceAccount => write!(f, "service_account"),
             Self::InternalServiceAccount => write!(f, "internal_service_account"),
+            Self::Agent => write!(f, "agent"),
         }
     }
 }

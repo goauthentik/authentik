@@ -21,6 +21,7 @@ export const UserTypeEnum = {
     External: "external",
     ServiceAccount: "service_account",
     InternalServiceAccount: "internal_service_account",
+    Agent: "agent",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type UserTypeEnum = (typeof UserTypeEnum)[keyof typeof UserTypeEnum];

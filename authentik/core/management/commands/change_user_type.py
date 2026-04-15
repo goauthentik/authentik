@@ -18,6 +18,7 @@ class Command(TenantCommand):
             User.objects.exclude_anonymous()
             .exclude(type=UserTypes.SERVICE_ACCOUNT)
             .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
+            .exclude(type=UserTypes.AGENT)
         )
         if options["usernames"] and options["all"]:
             self.stderr.write("--all and usernames specified, only one can be specified")

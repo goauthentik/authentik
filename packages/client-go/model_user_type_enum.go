@@ -25,6 +25,7 @@ const (
 	USERTYPEENUM_EXTERNAL                 UserTypeEnum = "external"
 	USERTYPEENUM_SERVICE_ACCOUNT          UserTypeEnum = "service_account"
 	USERTYPEENUM_INTERNAL_SERVICE_ACCOUNT UserTypeEnum = "internal_service_account"
+	USERTYPEENUM_AGENT                    UserTypeEnum = "agent"
 )
 
 // All allowed values of UserTypeEnum enum
@@ -33,6 +34,7 @@ var AllowedUserTypeEnumEnumValues = []UserTypeEnum{
 	"external",
 	"service_account",
 	"internal_service_account",
+	"agent",
 }
 
 func (v *UserTypeEnum) UnmarshalJSON(src []byte) error {

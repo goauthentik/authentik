@@ -5520,7 +5520,8 @@
                         "internal",
                         "external",
                         "service_account",
-                        "internal_service_account"
+                        "internal_service_account",
+                        "agent"
                     ],
                     "title": "Type"
                 },
@@ -5545,6 +5546,7 @@
                             "authentik_brands.change_brand",
                             "authentik_brands.delete_brand",
                             "authentik_brands.view_brand",
+                            "authentik_core.add_agent_user",
                             "authentik_core.add_application",
                             "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
@@ -6257,6 +6259,7 @@
                     "permission": {
                         "type": "string",
                         "enum": [
+                            "add_agent_user",
                             "add_user",
                             "change_user",
                             "delete_user",
@@ -11212,6 +11215,7 @@
                             "authentik_brands.change_brand",
                             "authentik_brands.delete_brand",
                             "authentik_brands.view_brand",
+                            "authentik_core.add_agent_user",
                             "authentik_core.add_application",
                             "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
@@ -15976,7 +15980,8 @@
                         "internal",
                         "external",
                         "service_account",
-                        "internal_service_account"
+                        "internal_service_account",
+                        "agent"
                     ],
                     "title": "User type"
                 },
