@@ -38,7 +38,7 @@ Refer to the [RAC Credentials Prompt](./rac_credentials_prompt.md) and [RAC SSH 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings**, and click **New Property Mapping**.
 3. Select **RAC Provider Property Mapping** as the property mapping type, and then click **Next**.
-4. On the **Create RAC Provider Property Mapping** page, provide the following configuration settings:
+4. On the **New RAC Provider Property Mapping** page, provide the following configuration settings:
     - **Name**: provide a name for the property mapping
     - Under **General settings**:
         - **Username**: the username for the remote machine

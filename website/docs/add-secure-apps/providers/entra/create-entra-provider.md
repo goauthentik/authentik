@@ -14,7 +14,7 @@ To create an Entra ID provider in authentik, you must have already [configured E
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click **New Provider**.
 3. Select **Microsoft Entra Provider** as the provider type, then click **Next**.
-4. On the **Create Microsoft Entra Provider** page, set the following configurations:
+4. On the **New Microsoft Entra Provider** page, set the following configurations:
     - **Name**: provide a descriptive name (e.g. `Entra ID provider`)
     - Under **Protocol settings**:
         - **Client ID**: the Client ID that you copied when [configuring Entra ID](./configure-entra.md)

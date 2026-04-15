@@ -7,7 +7,7 @@ An authentik WS-Federation provider is typically created as part of an applicati
 ## Create a WS-Federation provider and application pair
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications > Applications** and click **Create with provider** to create an application and provider pair.
+2. Navigate to **Applications > Applications** and click **New Provider** to create an application and provider pair.
 3. On the **New application** page, define the application details, and then click **Next**.
 4. Select **WS-Federation Provider** as the **Provider Type**, and then click **Next**.
 5. On the **Configure WS-Federation Provider** page, provide a name for the provider, select an authorization flow, and the two required configuration settings:
