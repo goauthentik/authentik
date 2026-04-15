@@ -194,12 +194,12 @@ pub mod sentry {
 
     /// Install the sentry client. This must happen before [`super::install`] is called.
     pub fn install() -> Result<Option<sentry::ClientInitGuard>> {
-        if !config::get().error_reporting.enabled {
+        let config = get_config()?;
+        if !config.enabled {
             return Ok(None);
         }
         trace!("setting up sentry");
         let debug = config::get().debug;
-        let config = get_config()?;
         Ok(Some(sentry::init(sentry::ClientOptions {
             dsn: config.sentry_dsn.clone().map(|dsn| {
                 sentry::types::Dsn::from_str(&dsn).expect("Failed to create sentry DSN")
