@@ -103,7 +103,7 @@ Alternatively, you can set the `client_secret` parameter to `<inputJWT>`, for ap
 
 Input JWTs are checked to verify that they are signed by any of the selected _Federated OIDC Sources_, and that their `exp` attribute is not set as now or in the past.
 
-To dynamically limit access based on the claims of the tokens, you can use [Expression policies](../../../customize/policies/expression.mdx), for example:
+To dynamically limit access based on the claims of the tokens, you can use [Expression policies](../../../customize/policies/types/expression/index.mdx), for example:
 
 ```python
 return request.context["oauth_jwt"]["iss"] == "https://my.issuer"
@@ -138,7 +138,7 @@ Alternatively, you can set the `client_secret` parameter to `<inputJWT>`, for ap
 
 Input JWTs must be valid access tokens issued by any of the configured _Federated OIDC Providers_, they must not have been revoked and must not have expired.
 
-To dynamically limit access based on the claims of the tokens, you can use [Expression policies](../../../customize/policies/expression.mdx), for example:
+To dynamically limit access based on the claims of the tokens, you can use [Expression policies](../../../customize/policies/types/expression/index.mdx), for example:
 
 ```python
 return request.context["oauth_jwt"]["iss"] == "https://my.issuer"

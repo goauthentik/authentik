@@ -28,7 +28,7 @@ If you want to add the consent stage to a flow other than the `default-provider-
 
 The basic workflow for creating and configuring a Consent stage involves creating the stage and then binding it to an authorization flow.
 
-Optionally, if you also want to customize the exact wording that appears on the consent prompt, you can create an [Expression policy](../../../../customize/policies/expression.mdx) with the text that you want to display on the Consent prompt, and then [bind](../../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding) the policy to the Consent stage binding in the authorization flow.
+Optionally, if you also want to customize the exact wording that appears on the consent prompt, you can create an [Expression policy](../../../../customize/policies/types/expression/index.mdx) with the text that you want to display on the Consent prompt, and then [bind](../../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding) the policy to the Consent stage binding in the authorization flow.
 
 ### 1. Create a Consent stage
 
@@ -39,7 +39,7 @@ Optionally, if you also want to customize the exact wording that appears on the 
     - **Name**:
     - **Stage-specific settings**:
         - **Mode**: Select the appropriate [mode](#consent-stage-modes) to use with this stage.
-5. Click **Finish** to save the new stage.
+5. Click **Create Stage** to save the new stage.
 
 ### 2. Bind the Consent stage to an authorization flow
 
@@ -61,7 +61,7 @@ If you want to customize the text that appears on the consent prompt, you can cr
         return True
         ```python
         ````
-5. Click **Finish** to save the policy.
+5. Click **Create Policy** to save the policy.
 
 ### 4. Bind the policy to the Consent stage in the authorization flow (_optional_)
 
@@ -78,4 +78,4 @@ You need to bind the policy to the stage within this flow, so go first to the fl
 5. Click the caret (>) beside the Consent stage to which you want to bind the policy, and expand the stage details.
 6. Click **Bind existing Policy/Group/User**.
 7. In the **Create Binding** dialog, click **Policy** and then select the Expression policy that you created above.
-8. Click **Create** to save the binding.
+8. Click **Create Policy Binding** to save the binding.

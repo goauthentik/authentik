@@ -27,7 +27,7 @@ You will need to create a policy (either the **Event Matcher** policy or a custo
 
 ### Event Matcher policy
 
-For simple event matching you can [create and configure](../../customize/policies/working_with_policies.md) an **Event Matcher policy** to define which events (known as _Actions_ in the policy) will trigger a notification. For example, whenever a user deletes a model object, or whenever any user fails to successfully log in.
+For simple event matching you can create and configure an [Event Matcher Policy](../../customize/policies/types/event-matcher.md) to define which events (known as _Actions_ in the policy) will trigger a notification. For example, whenever a user deletes a model object, or whenever any user fails to successfully log in.
 
 Be aware that an event has to match all configured fields in the policy, otherwise the notification rule will not trigger.
 
