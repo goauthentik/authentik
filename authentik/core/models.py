@@ -278,7 +278,7 @@ class GroupParentageNode(models.Model):
                 operation=pgtrigger.Insert | pgtrigger.Update | pgtrigger.Delete,
                 when=pgtrigger.After,
                 func="""
-                    REFRESH MATERIALIZED VIEW CONCURRENTLY authentik_core_groupancestry;
+                    REFRESH MATERIALIZED VIEW CONCURRENTLY public.authentik_core_groupancestry;
                     RETURN NULL;
                 """,
             ),
