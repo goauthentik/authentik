@@ -26,7 +26,9 @@ impl ServerConfig {
         let insecure = config::get().insecure.unwrap_or(false);
 
         if !host.path().ends_with('/') {
-            host.path_segments_mut().expect("URL cannot be a base").push("");
+            host.path_segments_mut()
+                .expect("URL cannot be a base")
+                .push("");
         }
 
         Ok(Self {
@@ -60,11 +62,10 @@ pub fn make_config() -> Result<Configuration> {
 
 #[cfg(test)]
 mod tests {
-    use crate::config;
-
-    use super::ServerConfig;
     use serde_json::json;
-    use super::make_config;
+
+    use super::{ServerConfig, make_config};
+    use crate::config;
 
     #[test]
     fn server_config_no_trailing_slash() {
@@ -105,7 +106,10 @@ mod tests {
 
         let server_config = ServerConfig::new().expect("failed to create server config");
 
-        assert_eq!(server_config.host.as_str(), "http://localhost:9000/authentik/");
+        assert_eq!(
+            server_config.host.as_str(),
+            "http://localhost:9000/authentik/"
+        );
     }
 
     #[test]
@@ -119,7 +123,10 @@ mod tests {
 
         let server_config = ServerConfig::new().expect("failed to create server config");
 
-        assert_eq!(server_config.host.as_str(), "http://localhost:9000/authentik/");
+        assert_eq!(
+            server_config.host.as_str(),
+            "http://localhost:9000/authentik/"
+        );
     }
 
     #[test]
@@ -161,7 +168,10 @@ mod tests {
 
         let api_config = make_config().expect("failed to make config");
 
-        assert_eq!(api_config.base_path, "http://localhost:9000/authentik/api/v3");
+        assert_eq!(
+            api_config.base_path,
+            "http://localhost:9000/authentik/api/v3"
+        );
     }
 
     #[test]
@@ -175,6 +185,9 @@ mod tests {
 
         let api_config = make_config().expect("failed to make config");
 
-        assert_eq!(api_config.base_path, "http://localhost:9000/authentik/api/v3");
+        assert_eq!(
+            api_config.base_path,
+            "http://localhost:9000/authentik/api/v3"
+        );
     }
 }
