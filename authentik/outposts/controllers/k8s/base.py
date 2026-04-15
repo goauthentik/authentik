@@ -1,10 +1,12 @@
 """Base Kubernetes Reconciler"""
 
 import re
+import ssl
 from dataclasses import asdict
 from json import dumps
 from typing import TYPE_CHECKING, TypeVar
 
+import urllib3
 from dacite.core import from_dict
 from django.http import HttpResponseNotFound
 from django.utils.text import slugify
@@ -41,7 +43,11 @@ class KubernetesObjectReconciler[T]:
     def __init__(self, controller: KubernetesController):
         self.controller = controller
         self.namespace = controller.outpost.config.kubernetes_namespace
+        self.kubernetes_disable_x509_strict = (
+            controller.outpost.config.kubernetes_disable_x509_strict
+        )
         self.logger = get_logger().bind(type=self.__class__.__name__)
+        self.api_client = self.k8s_client()
 
     def get_patch(self):
         """Get any patches that apply to this CRD"""
@@ -92,7 +98,7 @@ class KubernetesObjectReconciler[T]:
         reference = self.get_reference_object()
         patch = self.get_patch()
         try:
-            json = ApiClient().sanitize_for_serialization(reference)
+            json = self.api_client.sanitize_for_serialization(reference)
         # Custom objects will not be known to the clients openapi types
         except AttributeError:
             json = asdict(reference)
@@ -106,7 +112,7 @@ class KubernetesObjectReconciler[T]:
         mock_response.data = dumps(ref)
 
         try:
-            result = ApiClient().deserialize(mock_response, reference.__class__.__name__)
+            result = self.api_client.deserialize(mock_response, reference.__class__.__name__)
         # Custom objects will not be known to the clients openapi types
         except AttributeError:
             result = from_dict(reference.__class__, data=ref)
@@ -186,7 +192,7 @@ class KubernetesObjectReconciler[T]:
         patch = self.get_patch()
         if patch is not None:
             try:
-                current_json = ApiClient().sanitize_for_serialization(current)
+                current_json = self.api_client.sanitize_for_serialization(current)
             except AttributeError:
                 current_json = asdict(current)
             try:
@@ -226,3 +232,26 @@ class KubernetesObjectReconciler[T]:
             },
             **kwargs,
         )
+
+    def k8s_client(self) -> ApiClient:
+        """Get Kubernetes API client"""
+        api_client = ApiClient()
+        if self.kubernetes_disable_x509_strict:
+            self.logger.warning("Disabling strict X.509 certificate verification")
+            # Relax OpenSSL TLS validation to support legacy root CA certificates
+            # (e.g. from Kubernetes <= 1.16) which may not satisfy the stricter
+            # VERIFY_X509_STRICT flags enforced by default in Python 3.13+.
+            # See https://github.com/kubernetes-client/python/issues/2394
+            ctx = ssl.create_default_context()
+            ctx.verify_flags = ctx.verify_flags & ~ssl.VERIFY_X509_STRICT
+
+            # We need to recreate the pool manager with the new SSL context
+            # We try to preserve existing pool manager arguments
+            pool_args = api_client.rest_client.pool_manager.connection_pool_kw
+
+            api_client.rest_client.pool_manager = urllib3.PoolManager(
+                num_pools=4,
+                ssl_context=ctx,
+                **pool_args,
+            )
+        return api_client

@@ -1,5 +1,12 @@
 ---
-# templateDir: /local/templates/
+globalProperties:
+  supportingFiles: ""
+  apis: ""
+  models: ""
+  apiDocs: false
+  apiTests: false
+  modelDocs: false
+  modelTests: false
 additionalProperties:
   packageName: api
   enumClassPrefix: true

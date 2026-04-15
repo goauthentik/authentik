@@ -51,6 +51,7 @@ class PassthroughBackend(Backend):
         self,
         name: str,
         request: HttpRequest | None = None,
+        use_cache: bool = True,
     ) -> dict[str, str] | None:
         """Support themed URLs for external URLs with %(theme)s placeholder.
 

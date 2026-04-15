@@ -3,7 +3,4 @@ go.sum
 .gitignore
 .travis.yml
 README.md
-api/**
-docs/**
 git_push.sh
-test/**

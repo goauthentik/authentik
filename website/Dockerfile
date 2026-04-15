@@ -37,5 +37,14 @@ COPY ./SECURITY.md /work/
 RUN corepack npm run build
 
 FROM docker.io/library/nginx:1.29-trixie@sha256:7f0adca1fc6c29c8dc49a2e90037a10ba20dc266baaed0988e9fb4d0d8b85ba0
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="authentik product documentation" \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.title="authentik docs image" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc."
+
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html

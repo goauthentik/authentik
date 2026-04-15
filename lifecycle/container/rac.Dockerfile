@@ -42,7 +42,6 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.documentation="https://docs.goauthentik.io" \
     org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
     org.opencontainers.image.revision=${GIT_BUILD_HASH} \
-    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.title="authentik RAC outpost image" \
     org.opencontainers.image.url="https://goauthentik.io" \
     org.opencontainers.image.vendor="Authentik Security Inc." \

@@ -46,7 +46,7 @@ class TesOAuth2Revoke(OAuthTestCase):
 
     def test_revoke_refresh(self):
         """Test revoke"""
-        token: RefreshToken = RefreshToken.objects.create(
+        token = RefreshToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),
@@ -69,7 +69,7 @@ class TesOAuth2Revoke(OAuthTestCase):
 
     def test_revoke_access(self):
         """Test revoke"""
-        token: AccessToken = AccessToken.objects.create(
+        token = AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),
@@ -105,7 +105,19 @@ class TesOAuth2Revoke(OAuthTestCase):
         """Test revoke (invalid auth)"""
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-revoke"),
-            HTTP_AUTHORIZATION="Basic fqewr",
+            HTTP_AUTHORIZATION="Basic aaa",
+            data={
+                "token": generate_id(),
+            },
+        )
+        self.assertEqual(res.status_code, 401)
+
+    def test_revoke_invalid_auth_secret(self):
+        """Test revoke (invalid secret)"""
+        invalid_auth = b64encode(f"{self.provider.client_id}:aaa".encode()).decode()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:token-revoke"),
+            HTTP_AUTHORIZATION=f"Basic {invalid_auth}",
             data={
                 "token": generate_id(),
             },
@@ -116,7 +128,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         """Test revoke public client"""
         self.provider.client_type = ClientTypes.PUBLIC
         self.provider.save()
-        token: AccessToken = AccessToken.objects.create(
+        token = AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),
@@ -220,3 +232,74 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.assertEqual(AccessToken.objects.including_expired().all().count(), 0)
         self.assertEqual(RefreshToken.objects.including_expired().all().count(), 0)
         self.assertEqual(DeviceToken.objects.including_expired().all().count(), 0)
+
+    def test_revoke_provider_fed(self):
+        """Test revoke with federation. self.provider is a confidential
+        client and other_provider is a public client."""
+        other_provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            signing_key=create_test_cert(),
+            client_type=ClientTypes.PUBLIC,
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=other_provider)
+
+        other_provider.jwt_federation_providers.add(self.provider)
+
+        token = AccessToken.objects.create(
+            provider=other_provider,
+            user=self.user,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:token-revoke"),
+            HTTP_AUTHORIZATION=f"Basic {self.auth}",
+            data={"token": token.token},
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertJSONEqual(res.content.decode(), {})
+
+    def test_revoke_provider_fed_public(self):
+        """Test revoke with federation. self.provider is a public
+        client and other_provider is a public client."""
+        self.provider.client_type = ClientTypes.PUBLIC
+        self.provider.save()
+        other_provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            signing_key=create_test_cert(),
+            client_type=ClientTypes.PUBLIC,
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=other_provider)
+
+        other_provider.jwt_federation_providers.add(self.provider)
+
+        token = AccessToken.objects.create(
+            provider=other_provider,
+            user=self.user,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+        auth_public = b64encode(f"{self.provider.client_id}:{generate_id()}".encode()).decode()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:token-revoke"),
+            HTTP_AUTHORIZATION=f"Basic {auth_public}",
+            data={"token": token.token},
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(AccessToken.objects.filter(token=token.token).exists())

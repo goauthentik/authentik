@@ -1,7 +1,6 @@
 Cargo.toml
 .gitignore
 .openapi-generator/**
-docs/**
 git_push.sh
 .travis.yml
 README.md
