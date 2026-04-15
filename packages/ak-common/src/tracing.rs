@@ -180,8 +180,14 @@ pub mod sentry {
             sentry_dsn: Some(config.sentry_dsn),
             environment: config.environment,
             send_pii: config.send_pii,
-            #[expect(clippy::cast_possible_truncation, reason = "This is fine, we'll never get big values here.")]
-            #[expect(clippy::as_conversions, reason = "This is fine, we'll never get big values here.")]
+            #[expect(
+                clippy::cast_possible_truncation,
+                reason = "This is fine, we'll never get big values here."
+            )]
+            #[expect(
+                clippy::as_conversions,
+                reason = "This is fine, we'll never get big values here."
+            )]
             sample_rate: config.traces_sample_rate as f32,
         })
     }
