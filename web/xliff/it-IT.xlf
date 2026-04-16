@@ -10804,6 +10804,15 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source><x id="0" equiv-text="${submittingVerb} ${verboseName}"/>...</source>
   <note from="lit-localize">The message shown while a form is being submitted.</note>
 </trans-unit>
+<trans-unit id="sc74b7675f65c3e23">
+  <source>Query</source>
+</trans-unit>
+<trans-unit id="s6e8a8fbb24dfafb6">
+  <source>Event query using the AKQL syntax.</source>
+</trans-unit>
+<trans-unit id="s4970e93737e5a3de">
+  <source>See documentation for examples.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
