@@ -12,7 +12,7 @@ Use this migration tool to:
 ## Steps to install
 
 1. Verify that you have the latest version of rust installed
-    - Install [rust](rustup.rs) or update rust to the latest version with `rustup update`
+    - Install [rust](https://rustup.rs) or update rust to the latest version with `rustup update`
     - If installing rust from scratch, you may need to run `. $HOME/.cargo/env`
 2. Install the cli tool with `cargo install --git https://github.com/goauthentik/authentik --bin docsmg`
 3. In the `/website` directory, create a file named `docsmg.env` with the entry of `MIGRATE_PATH=./docs`.

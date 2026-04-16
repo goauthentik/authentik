@@ -96,11 +96,13 @@ WORKDIR /ak-root/
 COPY --from=uv /uv /uvx /bin/
 
 # Stage 6: Python dependencies
+FROM docker.io/library/rust:1.94.1-slim-trixie@sha256:1d0000a49fb62f4fde24455f49d59c6c088af46202d65d8f455b722f7263e8f8 AS rust
 FROM python-base AS python-deps
 
 ARG TARGETARCH
 ARG TARGETVARIANT
 
+COPY --from=rust /usr/local/cargo/bin/rustup /usr/bin/rustup
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 
 ENV PATH="/root/.cargo/bin:$PATH"
@@ -123,7 +125,6 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     # xmlsec
     libltdl-dev && \
     export RUST_TOOLCHAIN="$(awk -F'\"' '/^[[:space:]]*channel[[:space:]]*=/{print $2; exit}' rust-toolchain.toml)" && \
-    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain "${RUST_TOOLCHAIN}" && \
     rustup default "${RUST_TOOLCHAIN}" && \
     rustc --version && \
     cargo --version
