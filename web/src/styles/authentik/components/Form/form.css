@@ -204,6 +204,7 @@ label.pf-c-radio {
         "input .";
     grid-template-columns: auto 1fr;
     column-gap: var(--pf-global--spacer--md);
+    row-gap: 0;
 
     .pf-c-radio__input {
         grid-area: input;
@@ -267,6 +268,18 @@ label.pf-c-radio {
         cursor: not-allowed;
 
         --pf-c-radio--BackgroundColor: var(--pf-c-radio--disabled--BackgroundColor) !important;
+    }
+
+    .pf-c-radio__description {
+        margin-block-start: var(--pf-global--spacer--xs);
+    }
+
+    .pf-c-radio__label {
+        align-self: center;
+    }
+
+    &:has(.pf-c-radio__input:last-child) .pf-c-radio__label {
+        grid-row: 1 / -1;
     }
 }
 
