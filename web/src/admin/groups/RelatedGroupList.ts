@@ -78,7 +78,10 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
                     </pf-tooltip>
                 </button>
                 <div class="pf-c-form-control">
-                    <ak-chip-group>
+                    <ak-chip-group
+                        @click=${this.openUserGroupSelectModal}
+                        placeholder=${msg("Select one or more groups...")}
+                    >
                         ${this.groupsToAdd.map((group) => {
                             return html`<ak-chip
                                 removable
@@ -176,10 +179,7 @@ export class RelatedGroupList extends Table<Group> {
                       ${msg("Add to existing group")}
                   </button>`
                 : nothing}
-            <button
-                class="pf-c-button pf-m-secondary"
-                ${modalInvoker(GroupForm)}
-            >
+            <button class="pf-c-button pf-m-secondary" ${modalInvoker(GroupForm)}>
                 ${msg("Add new group")}
             </button>
             ${super.renderToolbar()}

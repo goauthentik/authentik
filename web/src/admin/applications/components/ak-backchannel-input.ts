@@ -73,7 +73,6 @@ export class AkBackchannelProvidersInput extends AKElement {
                 }}
             >
                 ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
-
                 <ak-provider-table backchannel></ak-provider-table>
             </ak-form>
         `);
@@ -100,7 +99,11 @@ export class AkBackchannelProvidersInput extends AKElement {
                         <i class="fas fa-plus" aria-hidden="true"></i>
                     </button>
                     <div class="pf-c-form-control">
-                        <ak-chip-group>${map(this.providers, renderOneChip)}</ak-chip-group>
+                        <ak-chip-group
+                            @click=${this.openSelectBackchannelProvidersModal}
+                            placeholder=${msg("Select one or more backchannel providers...")}
+                            >${map(this.providers, renderOneChip)}</ak-chip-group
+                        >
                     </div>
                 </div>
                 ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}

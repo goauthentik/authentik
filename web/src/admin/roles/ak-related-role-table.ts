@@ -83,7 +83,10 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
                     </pf-tooltip>
                 </button>
                 <div class="pf-c-form-control">
-                    <ak-chip-group>
+                    <ak-chip-group
+                        @click=${this.openRolesSelectionModal}
+                        placeholder=${msg("Select one or more roles...")}
+                    >
                         ${this.rolesToAdd.map((role) => {
                             return html`<ak-chip
                                 removable
