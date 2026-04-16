@@ -5,11 +5,12 @@ GID = $(shell id -g)
 
 build:
 	rm -rf "${PWD}"/*.go
+	"${PWD}/../../scripts/api_filter_schema.py" "${PWD}/../../schema.yml" "${PWD}/schema.yml" "${PWD}/operation_ids"
 	docker compose run --rm --user "${UID}:${GID}" gen \
 		generate \
-		-i /schema.yml \
+		-i /local/schema.yml \
 		-g go \
 		-o local \
 		-c /local/config.yaml
-	rm -rf "${PWD}/.openapi-generator"
+	rm -rf "${PWD}/.openapi-generator" "${PWD}/api/openapi.yaml" "${PWD}/schema.yml"
 	go fmt .

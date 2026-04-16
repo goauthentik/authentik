@@ -207,7 +207,7 @@ export abstract class SearchSelectBase<T>
         return String(this.value(this.selectedObject ?? null) ?? "");
     }
 
-    public json() {
+    public toJSON() {
         return this.toForm();
     }
 

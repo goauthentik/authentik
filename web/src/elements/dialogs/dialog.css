@@ -9,6 +9,7 @@
 
     --ak-c-dialog--WidthBasis: 100%;
     --ak-c-dialog--HeightBasis: 75dvh;
+    --ak-c-dialog--HeightBasis: clamp(75dvh, 40rem, 95dvh);
 
     --ak-c-dialog--MarginBlock: var(--pf-global--spacer--xl);
     --ak-c-dialog--MarginInline: var(--pf-global--spacer--4xl);
@@ -221,7 +222,6 @@
 
     @media (width <= 768px) or (height <= 600px) {
         --ak-c-dialog--MaxHeight: 100dvh;
-        --ak-c-dialog--AspectRatioHeight: none;
         /* Note that a unit is required for to perform the calculation. */
         --ak-c-dialog--MarginBlock: 0em;
         --ak-c-dialog--MarginInline: 0em;
@@ -231,7 +231,6 @@
 
     .ak-m-dialog--full-screen {
         --ak-c-dialog--MaxHeight: 100dvh;
-        --ak-c-dialog--AspectRatioHeight: none;
         /* Note that a unit is required for to perform the calculation. */
         --ak-c-dialog--MarginBlock: 0em;
         --ak-c-dialog--MarginInline: 0em;

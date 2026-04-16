@@ -83,7 +83,7 @@ export class AkMultiSelect extends AKControlElement {
      * control that produces values of specific interest to our REST API. This is our modern
      * accessor name.
      */
-    json() {
+    toJSON() {
         return this.values;
     }
 

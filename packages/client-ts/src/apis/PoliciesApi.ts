@@ -239,6 +239,7 @@ export interface PoliciesEventMatcherListRequest {
     page?: number;
     pageSize?: number;
     policyUuid?: string;
+    query?: string;
     search?: string;
 }
 
@@ -2218,6 +2219,10 @@ export class PoliciesApi extends runtime.BaseAPI {
 
         if (requestParameters["policyUuid"] != null) {
             queryParameters["policy_uuid"] = requestParameters["policyUuid"];
+        }
+
+        if (requestParameters["query"] != null) {
+            queryParameters["query"] = requestParameters["query"];
         }
 
         if (requestParameters["search"] != null) {

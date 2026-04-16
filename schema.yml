@@ -11424,6 +11424,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: query
+        schema:
+          type: string
       - $ref: '#/components/parameters/QuerySearch'
       tags:
       - policies
@@ -38255,6 +38259,9 @@ components:
           description: Match events created by selected model. When left empty, all
             models are matched. When an app is selected, all the application's models
             are matched.
+        query:
+          type: string
+          nullable: true
       required:
       - bound_to
       - component
@@ -38299,6 +38306,10 @@ components:
           description: Match events created by selected model. When left empty, all
             models are matched. When an app is selected, all the application's models
             are matched.
+        query:
+          type: string
+          nullable: true
+          minLength: 1
       required:
       - name
     EventRequest:
@@ -47867,6 +47878,10 @@ components:
           description: Match events created by selected model. When left empty, all
             models are matched. When an app is selected, all the application's models
             are matched.
+        query:
+          type: string
+          nullable: true
+          minLength: 1
     PatchedEventRequest:
       type: object
       description: Event Serializer

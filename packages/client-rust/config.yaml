@@ -1,4 +1,12 @@
 ---
+globalProperties:
+  supportingFiles: ""
+  apis: ""
+  models: ""
+  apiDocs: false
+  apiTests: false
+  modelDocs: false
+  modelTests: false
 additionalProperties:
   packageName: authentik-client
   avoidBoxedModels: true

@@ -22,6 +22,7 @@ import { type TransclusionChildElement, TransclusionChildSymbol } from "#element
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import Styles from "#elements/table/Table.css";
+import { TableSearchForm } from "#elements/table/TableSearch";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { isInteractiveElement } from "#elements/utils/interactivity";
@@ -315,9 +316,20 @@ export abstract class Table<T extends object, D = T>
         return this.selectedElements as unknown as D[];
     }
 
+    public clearSearch = () => {
+        this.data = null;
+        this.searchInputRef.value?.reset();
+        this.requestUpdate("search");
+
+        return this.fetch();
+    };
+
+    //#endregion
+
     //#region Lifecycle
 
-    #selectAllCheckboxRef = createRef<HTMLInputElement>();
+    protected selectAllCheckboxRef = createRef<HTMLInputElement>();
+    protected searchInputRef = createRef<TableSearchForm>();
 
     protected refreshListener = (event?: Event) => {
         this.logger.debug("Received refresh event:", event);
@@ -460,7 +472,7 @@ export abstract class Table<T extends object, D = T>
                     if (this.selectedMap.size) {
                         this.selectedMap = new Map();
 
-                        const selectAllCheckbox = this.#selectAllCheckboxRef.value;
+                        const selectAllCheckbox = this.selectAllCheckboxRef.value;
 
                         if (selectAllCheckbox) {
                             selectAllCheckbox.checked = false;
@@ -677,7 +689,7 @@ export abstract class Table<T extends object, D = T>
             this.requestUpdate("selectedMap");
         }
 
-        const selectAllCheckbox = this.#selectAllCheckboxRef.value;
+        const selectAllCheckbox = this.selectAllCheckboxRef.value;
         const pageItemCount = this.data?.results?.length ?? 0;
         const selectedCount = this.selectedMap.size;
 
@@ -868,9 +880,13 @@ export abstract class Table<T extends object, D = T>
     #searchListener = (value: string) => {
         this.search = value;
         this.page = 1;
-        this.fetch();
+
+        return this.fetch();
     };
 
+    /**
+     * Whether the search input should be rendered.
+     */
     protected searchEnabled = false;
 
     protected renderSearch(): SlottedTemplateResult {
@@ -879,6 +895,7 @@ export abstract class Table<T extends object, D = T>
         }
 
         return html`<ak-table-search
+            ${ref(this.searchInputRef)}
             exportparts="input:toolbar-search-input"
             class="pf-c-toolbar__item pf-m-search-filter ${this.supportsQL ? "ql" : ""}"
             part="toolbar-search"
@@ -888,8 +905,7 @@ export abstract class Table<T extends object, D = T>
             .onSearch=${this.#searchListener}
             .supportsQL=${this.supportsQL}
             .apiResponse=${this.data}
-        >
-        </ak-table-search>`;
+        ></ak-table-search>`;
     }
 
     //#endregion
@@ -897,7 +913,7 @@ export abstract class Table<T extends object, D = T>
     //#region Chips
 
     #synchronizeCheckboxAll = () => {
-        const checkbox = this.#selectAllCheckboxRef.value;
+        const checkbox = this.selectAllCheckboxRef.value;
 
         if (!checkbox) return;
 
@@ -935,7 +951,7 @@ export abstract class Table<T extends object, D = T>
 
         return html`<th class="pf-c-table__check" role="presentation">
             <input
-                ${ref(this.#selectAllCheckboxRef)}
+                ${ref(this.selectAllCheckboxRef)}
                 name="select-all"
                 type="checkbox"
                 aria-label=${msg(

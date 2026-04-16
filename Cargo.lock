@@ -169,8 +169,6 @@ dependencies = [
  "serde_json",
  "serde_repr",
  "serde_with",
- "tokio",
- "tokio-util",
  "url",
  "uuid",
 ]
@@ -180,6 +178,7 @@ name = "authentik-common"
 version = "2026.5.0-rc1"
 dependencies = [
  "arc-swap",
+ "authentik-client",
  "aws-lc-rs",
  "axum-server",
  "config",
@@ -191,6 +190,8 @@ dependencies = [
  "nix 0.31.2",
  "notify",
  "pin-project-lite",
+ "reqwest",
+ "reqwest-middleware",
  "rustls",
  "sentry",
  "serde",
@@ -200,6 +201,7 @@ dependencies = [
  "thiserror 2.0.18",
  "time",
  "tokio",
+ "tokio-retry2",
  "tokio-util",
  "tracing",
  "tracing-error",
@@ -2800,9 +2802,9 @@ checksum = "f87165f0995f63a9fbeea62b64d10b4d9d8e78ec6d7d51fb2125fda7bb36788f"
 
 [[package]]
 name = "rustls-webpki"
-version = "0.103.10"
+version = "0.103.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df33b2b81ac578cabaf06b89b0631153a3f416b0a886e8a7a1707fb51abbd1ef"
+checksum = "8279bb85272c9f10811ae6a6c547ff594d6a7f3c6c6b02ee9726d1d0dcfcdd06"
 dependencies = [
  "aws-lc-rs",
  "ring",
@@ -3621,6 +3623,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "tokio-retry2"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0266d56e57e6b29becbfce5daa6add8730941ca8192ddd7c24d25bf90c32a743"
+dependencies = [
+ "pin-project",
+ "tokio",
 ]
 
 [[package]]

@@ -90,6 +90,7 @@ tempfile = "= 3.27.0"
 thiserror = "= 2.0.18"
 time = { version = "= 0.3.47", features = ["macros"] }
 tokio = { version = "= 1.51.1", features = ["full", "tracing"] }
+tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 tower = "= 0.5.3"
@@ -105,6 +106,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
 url = "= 2.5.8"
 uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
 
+ak-client = { package = "authentik-client", version = "2026.5.0-rc1", path = "./packages/client-rust" }
 ak-common = { package = "authentik-common", version = "2026.5.0-rc1", path = "./packages/ak-common", default-features = false }
 
 [profile.dev.package.backtrace]

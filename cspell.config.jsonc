@@ -138,7 +138,8 @@
         "SshRsa",
         "UnicodeRef",
         "Email",
-        "HashStrings"
+        "HashStrings",
+        "AKQL"
     ],
     "languageSettings": [
         {

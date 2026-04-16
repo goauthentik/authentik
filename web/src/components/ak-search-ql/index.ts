@@ -15,7 +15,6 @@ import DjangoQL, { Introspections } from "@mrmarble/djangoql-completion";
 import { msg } from "@lit/localize";
 import { CSSResult, html, LitElement, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -114,9 +113,14 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     #ctx: OffscreenCanvasRenderingContext2D | null = null;
     #letterWidth = -1;
     #scrollContainer: HTMLElement | null = null;
+    #autocompleteCache: Introspections | null = null;
 
     public set apiResponse(value: PaginatedResponse<unknown> | undefined) {
-        if (!value?.autocomplete || !this.#ql) {
+        if (!value?.autocomplete) {
+            return;
+        }
+        if (!this.#ql) {
+            this.#autocompleteCache = value.autocomplete as unknown as Introspections;
             return;
         }
 
@@ -177,13 +181,16 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
         this.#ql = new QL({
             completionEnabled: true,
-            introspections: {
+            introspections: this.#autocompleteCache || {
                 current_model: "",
                 models: {},
             },
             selector: textarea,
             autoResize: false,
         });
+        if (this.#autocompleteCache) {
+            this.#autocompleteCache = null;
+        }
 
         const canvas = new OffscreenCanvas(300, 150);
         this.#ctx = canvas.getContext("2d");
@@ -478,9 +485,8 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
                         @focus=${this.#focusListener}
                         @blur=${this.#blurListener}
                         @keydown=${this.#keydownListener}
-                    >
-${ifDefined(this.#value)}</textarea
-                    >
+                        .value=${this.#value}
+                    ></textarea>
                 </span>
             </div>
             ${this.renderMenu()}

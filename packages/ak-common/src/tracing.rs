@@ -128,33 +128,91 @@ mod json {
 
 /// Utilities for Sentry
 pub mod sentry {
-    use std::str::FromStr as _;
+    use std::{str::FromStr as _, time::Duration};
 
-    use tracing::trace;
+    use ak_client::apis::root_api::root_config_retrieve;
+    use eyre::{Error, Result};
+    use tokio_retry2::{Retry, RetryError, strategy::FixedInterval};
+    use tracing::{error, trace};
 
-    use crate::{VERSION, authentik_user_agent, config};
+    use crate::{
+        Mode, VERSION, api, authentik_user_agent,
+        config::{self, schema::ErrorReportingConfig},
+    };
+
+    fn get_config() -> Result<ErrorReportingConfig> {
+        // In non-core mode, we are running an outpost and need to grab the error reporting
+        // configuration from the API.
+        if Mode::is_core() {
+            return Ok(config::get().error_reporting.clone());
+        }
+
+        let api_config = api::make_config()?;
+
+        let config = {
+            let retry_strategy = FixedInterval::new(Duration::from_secs(3));
+            let retrieve_config = async || {
+                root_config_retrieve(&api_config)
+                    .await
+                    .map_err(Error::new)
+                    .map_err(RetryError::transient)
+            };
+            let retry_notify = |err: &Error, _duration| {
+                error!(
+                    ?err,
+                    "Failed to fetch configuration from API, retrying in 3 seconds"
+                );
+            };
+            tokio::runtime::Builder::new_current_thread()
+                .enable_all()
+                .build()?
+                .block_on(Retry::spawn_notify(
+                    retry_strategy,
+                    retrieve_config,
+                    retry_notify,
+                ))?
+        };
+
+        let config = config.error_reporting;
+
+        Ok(ErrorReportingConfig {
+            enabled: config.enabled,
+            sentry_dsn: Some(config.sentry_dsn),
+            environment: config.environment,
+            send_pii: config.send_pii,
+            #[expect(
+                clippy::cast_possible_truncation,
+                reason = "This is fine, we'll never get big values here."
+            )]
+            #[expect(
+                clippy::as_conversions,
+                reason = "This is fine, we'll never get big values here."
+            )]
+            sample_rate: config.traces_sample_rate as f32,
+        })
+    }
 
     /// Install the sentry client. This must happen before [`super::install`] is called.
-    pub fn install() -> sentry::ClientInitGuard {
+    pub fn install() -> Result<Option<sentry::ClientInitGuard>> {
+        let config = get_config()?;
+        if !config.enabled {
+            return Ok(None);
+        }
         trace!("setting up sentry");
-        let config = config::get();
-        sentry::init(sentry::ClientOptions {
-            dsn: config.error_reporting.sentry_dsn.clone().map(|dsn| {
+        let debug = config::get().debug;
+        Ok(Some(sentry::init(sentry::ClientOptions {
+            dsn: config.sentry_dsn.clone().map(|dsn| {
                 sentry::types::Dsn::from_str(&dsn).expect("Failed to create sentry DSN")
             }),
             release: Some(format!("authentik@{VERSION}").into()),
-            environment: Some(config.error_reporting.environment.clone().into()),
+            environment: Some(config.environment.clone().into()),
             attach_stacktrace: true,
-            send_default_pii: config.error_reporting.send_pii,
-            sample_rate: config.error_reporting.sample_rate,
-            traces_sample_rate: if config.debug {
-                1.0
-            } else {
-                config.error_reporting.sample_rate
-            },
+            send_default_pii: config.send_pii,
+            sample_rate: config.sample_rate,
+            traces_sample_rate: if debug { 1.0 } else { config.sample_rate },
             user_agent: authentik_user_agent().into(),
             ..sentry::ClientOptions::default()
-        })
+        })))
     }
 }
 
