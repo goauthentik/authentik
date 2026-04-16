@@ -29,7 +29,7 @@ Use this stage in an enrollment or user-settings flow where the user should add 
 
 To require SMS during login, add an [Authenticator Validation stage](../authenticator_validate/index.md) to the authentication flow and allow the **SMS** device class.
 
-If you enable **Verify only**, devices enrolled through this stage cannot be used by the Authenticator Validation stage.
+If you enable **Verify only**, phone numbers enrolled through this stage cannot be used by the [Authenticator Validation stage](../authenticator_validate/index.md).
 
 ## Notes
 

@@ -6,7 +6,7 @@ The User Delete stage deletes the current `pending_user`.
 
 ## Overview
 
-This stage is intended for unenrollment or account-removal flows where the user has already been verified and the flow should remove the account.
+This stage is intended for unenrollment or account-removal flows where a user account should be removed from authentik after the user has already been verified.
 
 ## Configuration options
 

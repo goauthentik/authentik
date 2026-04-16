@@ -11,9 +11,9 @@ Use this stage when an external identity provider should be part of the current 
 
 Common examples include:
 
+- Authenticating against a legacy IdP such as [Microsoft Entra ID](../../../../users-sources/sources/social-logins/entra-id/oauth/index.mdx), [Google Workspace](../../../../users-sources/sources/social-logins/google/workspace/index.md), or [Okta](../../../../users-sources/sources/social-logins/okta/index.md) during an IdP migration and then using the returned identity and attributes inside authentik
 - Routing users through an external OAuth or SAML identity provider
 - Sending users through a custom device-health or posture-check system before continuing
-- Authenticating against a legacy IdP during an IdP migration and then using the returned identity and attributes inside authentik
 
 For pure authentication or enrollment, an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) source can also be used directly without a Source stage. Use the Source stage when that external step needs to be embedded inside another authentik flow.
 

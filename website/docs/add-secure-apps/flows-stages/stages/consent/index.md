@@ -69,3 +69,5 @@ The binding workflow is:
 ### Stored consent
 
 When consent is stored, authentik keeps track of the user, the application, and the granted permissions so later requests can reuse or re-prompt according to the selected mode.
+
+Users can check their past consent approvals via the User Settings menu.

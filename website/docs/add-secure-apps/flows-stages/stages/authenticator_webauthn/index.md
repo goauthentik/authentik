@@ -2,17 +2,17 @@
 title: WebAuthn / FIDO2 / Passkeys authenticator setup stage
 ---
 
-The WebAuthn / FIDO2 / Passkeys Authenticator setup stage enrolls a WebAuthn device for the current user.
+The WebAuthn / FIDO2 / Passkeys Authenticator setup stage enrolls a WebAuthn authenticator for the current user.
 
 ## Overview
 
-This stage supports common WebAuthn device types, including:
+This stage supports common WebAuthn authenticator types, including:
 
 - security keys such as YubiKey or Google Titan
 - platform authenticators such as Windows Hello, Touch ID, or Face ID
 - passkeys stored by operating systems or password managers
 
-Enrolled devices can later be used with the [Authenticator Validation stage](../authenticator_validate/index.md).
+Enrolled authenticators can later be used with the [Authenticator Validation stage](../authenticator_validate/index.md).
 
 ## Configuration options
 

@@ -2,7 +2,7 @@
 title: Authenticator validation stage
 ---
 
-The Authenticator Validation stage validates an already enrolled authenticator device.
+The Authenticator Validation stage validates an already enrolled authenticator.
 
 ## Overview
 
@@ -123,13 +123,13 @@ Optional hints can guide the browser toward a preferred authenticator type durin
 
 The order of selected hints matters. For example, selecting **Security key** before **Hybrid** asks the browser to prefer security keys before hybrid authentication.
 
-### Automatic device selection
+### Automatic authenticator selection
 
-If the user has multiple compatible devices, authentik lets them choose one. After a successful validation, the last-used device is automatically preferred the next time this stage runs.
+If the user has multiple compatible authenticators, authentik lets them choose one. After a successful validation, the last-used authenticator is automatically preferred the next time this stage runs.
 
-### WebAuthn device type restrictions
+### WebAuthn authenticator type restrictions
 
-If you restrict allowed WebAuthn device types, those restrictions only apply to WebAuthn devices that authentik knows how to classify. This is useful when you need to limit authentication to specific hardware families or compliance profiles.
+If you restrict allowed WebAuthn authenticator types, those restrictions only apply to WebAuthn authenticators that authentik knows how to classify. This is useful when you need to limit authentication to specific hardware families or compliance profiles.
 
 ### Throttling
 

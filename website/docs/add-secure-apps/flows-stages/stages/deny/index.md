@@ -26,12 +26,12 @@ If the binding is evaluated during flow planning, the denial can happen earlier 
 
 ### Example: block a known IP range
 
-One common pattern is to bind a Deny stage to an expression policy that blocks requests from a specific IP range.
+One common use case is to bind a Deny stage to an expression policy that blocks requests from a specific IP range.
 
 For example:
 
 1. Create a Deny stage.
-2. Create an [Expression policy](../../../../customize/policies/expression.mdx) with logic such as:
+2. Create an [Expression policy](../../../../customize/policies/types/expression/index.mdx) with logic such as:
 
 ```python
 from ipaddress import ip_network
