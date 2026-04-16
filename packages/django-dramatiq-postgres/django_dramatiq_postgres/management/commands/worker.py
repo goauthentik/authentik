@@ -16,6 +16,19 @@ from django_dramatiq_postgres.conf import Conf
 class Command(BaseCommand):
     """Run worker"""
 
+    def _collect_forks(self) -> list:
+        import dramatiq
+        forks = []
+        try:
+            broker = dramatiq.get_broker()
+            for middleware in broker.middleware:
+                if hasattr(middleware, 'forks'):
+                    for fork in middleware.forks:
+                        forks.append(f"{fork.__module__}:{fork.__qualname__}")
+        except Exception:
+            pass
+        return forks
+
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument(
             "--pid-file",
@@ -49,7 +62,7 @@ class Command(BaseCommand):
             log_file=None,
             skip_logging=True,
             use_spawn=False,
-            forks=[],
+            forks=self._collect_forks(),
             worker_shutdown_timeout=600000,
             watch=None,
             watch_use_polling=False,
