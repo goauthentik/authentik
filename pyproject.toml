@@ -92,7 +92,7 @@ dev = [
   "importlib-metadata==8.7.1",
   "k5test==0.10.4",
   "lxml-stubs==0.5.1",
-  "mypy==1.20.0",
+  "mypy==1.20.1",
   "pdoc==16.0.0",
   "pytest-django==4.12.0",
   "pytest-flakefinder==1.1.0",
