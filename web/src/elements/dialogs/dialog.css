@@ -83,12 +83,12 @@
 /* #region Header */
 
 .ak-c-dialog {
-    --ak-c-dialog__header--PaddingTop: var(--pf-global--spacer--lg);
-    --ak-c-dialog__header--PaddingBottom: var(--pf-global--spacer--lg);
-    --ak-c-dialog__header--PaddingRight: var(--pf-global--spacer--lg);
-    --ak-c-dialog__header--PaddingLeft: var(--pf-global--spacer--lg);
-    --ak-c-dialog__header--last-child--PaddingBottom: var(--pf-global--spacer--lg);
-    --ak-c-dialog__header--body--PaddingTop: var(--pf-global--spacer--md);
+    --ak-c-dialog__header--PaddingBlockStart: var(--pf-global--spacer--lg);
+    --ak-c-dialog__header--PaddingBlockEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__header--PaddingInlineEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__header--PaddingInlineStart: var(--pf-global--spacer--lg);
+    --ak-c-dialog__header--last-child--PaddingBlockEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__header--body--PaddingBlockStart: var(--pf-global--spacer--md);
 
     --ak-c-dialog__title--LineHeight: var(--pf-global--LineHeight--sm);
     --ak-c-dialog__title--FontFamily: var(--pf-global--FontFamily--heading--sans-serif);
@@ -96,7 +96,7 @@
     --ak-c-dialog__title-icon--MarginRight: var(--pf-global--spacer--sm);
     --ak-c-dialog__title-icon--Color: var(--pf-global--Color--100);
 
-    --ak-c-dialog__description--PaddingTop: var(--pf-global--spacer--xs);
+    --ak-c-dialog__description--PaddingBlockStart: var(--pf-global--spacer--xs);
 }
 
 /* #endregion */
@@ -108,10 +108,11 @@
         var(--pf-global--FontSize--md) * var(--pf-global--LineHeight--md)
     );
 
-    --ak-c-dialog__body--PaddingTop: var(--pf-global--spacer--lg);
-    --ak-c-dialog__body--PaddingRight: var(--pf-global--spacer--lg);
-    --ak-c-dialog__body--PaddingLeft: var(--pf-global--spacer--lg);
-    --ak-c-dialog__body--last-child--PaddingBottom: var(--pf-global--spacer--lg);
+    --ak-c-dialog__body--PaddingBlockStart: var(--pf-global--spacer--md);
+    --ak-c-dialog__body--PaddingBlockEnd: var(--pf-global--spacer--md);
+    --ak-c-dialog__body--PaddingInlineEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__body--PaddingInlineStart: var(--pf-global--spacer--lg);
+    --ak-c-dialog__body--last-child--PaddingBlockEnd: var(--pf-global--spacer--lg);
 }
 
 /* #endregion */
@@ -119,12 +120,10 @@
 /* #region Footer */
 
 .ak-c-dialog {
-    --ak-c-dialog__footer--PaddingTop: var(--pf-global--spacer--lg);
-    --ak-c-dialog__footer--PaddingRight: var(--pf-global--spacer--lg);
-    --ak-c-dialog__footer--PaddingBottom: var(--pf-global--spacer--lg);
-    --ak-c-dialog__footer--PaddingLeft: var(--pf-global--spacer--lg);
-    --ak-c-dialog__footer--BoxShadow: inset 0 0.5px 0
-        var(--pf-global--BackgroundColor--dark-transparent-200);
+    --ak-c-dialog__footer--PaddingBlockStart: var(--pf-global--spacer--lg);
+    --ak-c-dialog__footer--PaddingInlineEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__footer--PaddingBlockEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__footer--PaddingInlineStart: var(--pf-global--spacer--lg);
 }
 
 /* #endregion */
@@ -283,11 +282,14 @@
 }
 
 .ak-c-dialog__content:has([part*="wizard"]) {
+    --ak-c-dialog__body--PaddingInlineEnd: 0;
+    --ak-c-dialog__body--PaddingInlineStart: 0;
+    --ak-c-dialog__body--last-child--PaddingBlockEnd: 0;
+    --ak-c-dialog__body--PaddingBlockStart: 0;
+    --ak-c-dialog__body--PaddingBlockEnd: 0;
+    --ak-m-scroll-shadows--BorderWidth: 0;
+
     grid-template-rows: [body] auto;
-    --ak-c-dialog__body--PaddingRight: 0;
-    --ak-c-dialog__body--PaddingLeft: 0;
-    --ak-c-dialog__body--last-child--PaddingBottom: 0;
-    --ak-c-dialog__body--PaddingTop: 0;
 
     ::part(body) {
         overscroll-behavior: none;

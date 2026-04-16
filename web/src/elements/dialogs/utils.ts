@@ -7,6 +7,7 @@ import "#elements/dialogs/ak-modal";
 import { AKRefreshEvent } from "#common/events";
 
 import { DialogInit } from "#elements/dialogs/shared";
+import { RouteChangeEvent } from "#elements/router/events";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { html, render } from "lit";
@@ -89,6 +90,8 @@ export function renderDialog(
         onDispose,
     }: DialogInit = {},
 ): Promise<void> {
+    const eventAbortController = new AbortController();
+
     const dialog = ownerDocument.createElement("dialog");
     dialog.classList.add("ak-c-dialog", ...classList);
     dialog.closedBy = closedBy;
@@ -121,7 +124,14 @@ export function renderDialog(
         setDialogCountAttribute(-1, ownerDocument);
 
         onDispose?.(event);
+        eventAbortController.abort();
     };
+
+    window.addEventListener(RouteChangeEvent.eventName, dispose, {
+        passive: true,
+        once: true,
+        signal: eventAbortController.signal,
+    });
 
     dialog.addEventListener("close", dispose, {
         passive: true,

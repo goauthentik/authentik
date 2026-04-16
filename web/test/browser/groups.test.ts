@@ -179,5 +179,123 @@ test.describe("Groups", () => {
         });
     });
 
+    test("Edit group from view page", async ({ navigator, form, pointer, page }, testInfo) => {
+        const groupName = groupNames.get(testInfo.testId)!;
+
+        const { fill, search } = form;
+        const { click } = pointer;
+
+        const newGroupDialog = page.getByRole("dialog", { name: "New Group" });
+        const editGroupDialog = page.getByRole("dialog", { name: "Edit Group" });
+
+        await test.step("Create group", async () => {
+            await click("New Group", "button");
+
+            await expect(newGroupDialog, "Dialog opens").toBeVisible();
+
+            await fill(/^Group Name/, groupName, newGroupDialog);
+
+            await newGroupDialog.getByRole("button", { name: "Create Group" }).click();
+
+            await expect(newGroupDialog, "Dialog closes after creating group").toBeHidden({
+                timeout: 10_000,
+            });
+        });
+
+        await test.step("Navigate to group view page", async () => {
+            const $group = await search(groupName);
+
+            await expect($group, "Group is visible").toBeVisible();
+
+            const viewLink = $group.getByRole("link", { name: "view details" });
+            await expect(viewLink, "View details link is visible").toBeVisible();
+
+            await viewLink.click();
+        });
+
+        const updatedName = `${groupName} Edited`;
+
+        await test.step("Edit group from view page", async () => {
+            await expect(editGroupDialog, "Edit dialog is initially closed").toBeHidden();
+
+            await click("Edit", "button");
+
+            await expect(editGroupDialog, "Edit dialog opens").toBeVisible();
+
+            const nameInput = editGroupDialog.getByRole("textbox", { name: /Group Name/ });
+
+            await expect(nameInput, "Name input is visible").toBeVisible();
+            await expect(nameInput, "Name is pre-filled").toHaveValue(groupName);
+
+            await nameInput.fill(updatedName);
+
+            await editGroupDialog.getByRole("button", { name: "Save Changes" }).click();
+
+            await expect(editGroupDialog, "Edit dialog closes after saving").toBeHidden();
+        });
+
+        await test.step("Verify group name updated on view page", async () => {
+            await expect(
+                page.getByRole("heading", { name: updatedName }).first(),
+                "Updated group name is visible on view page",
+            ).toBeVisible();
+        });
+    });
+
+    test("Edit group from related group list", async ({
+        navigator,
+        form,
+        pointer,
+        page,
+    }, testInfo) => {
+        const groupName = groupNames.get(testInfo.testId)!;
+
+        const { fill, search } = form;
+        const { click } = pointer;
+
+        const newGroupDialog = page.getByRole("dialog", { name: "New Group" });
+
+        await test.step("Create group with admin user", async () => {
+            await click("New Group", "button");
+
+            await expect(newGroupDialog, "Dialog opens").toBeVisible();
+
+            await fill(/^Group Name/, groupName, newGroupDialog);
+
+            await newGroupDialog.getByRole("button", { name: "Create Group" }).click();
+
+            await expect(newGroupDialog, "Dialog closes").toBeHidden({ timeout: 10_000 });
+        });
+
+        await test.step("Navigate to admin user", async () => {
+            await navigator.navigate("/if/admin/#/identity/users");
+
+            const $adminUser = await search(adminUsername);
+
+            await expect($adminUser, "Admin user is visible").toBeVisible();
+
+            const viewLink = $adminUser.getByRole("link", {
+                name: "View details for authentik Default Admin",
+            });
+            await expect(viewLink, "View details link is visible").toBeVisible();
+
+            await viewLink.click();
+        });
+
+        await test.step("Add user to group via related group list", async () => {
+            await click("Groups", "tab");
+
+            const groupsPanel = page.getByRole("tabpanel", { name: "Groups" });
+
+            const addGroupDialog = page.getByRole("dialog", { name: "Add Group" });
+
+            await expect(addGroupDialog, "Add dialog is initially closed").toBeHidden();
+
+            await groupsPanel.getByRole("button", { name: "Add to existing group" }).click();
+
+            await expect(addGroupDialog, "Add dialog opens").toBeVisible();
+        });
+    });
+
     //#endregion
 });

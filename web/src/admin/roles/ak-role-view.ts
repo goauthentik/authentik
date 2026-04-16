@@ -2,20 +2,21 @@ import "#admin/groups/RelatedGroupList";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/lifecycle/ObjectLifecyclePage";
-import "#admin/roles/ak-role-form";
 import "#admin/events/ObjectChangelog";
 import "#admin/events/UserEvents";
 import "#elements/Tabs";
-import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
+
+import { RoleForm } from "#admin/roles/ak-role-form";
 
 import { ContentTypeEnum, ModelEnum, RbacApi, Role } from "@goauthentik/api";
 
@@ -99,21 +100,14 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                                     [msg("Name"), this.targetRole.name],
                                     [
                                         msg("Related actions"),
-                                        html`<ak-forms-modal>
-                                            <span slot="submit">${msg("Save Changes")}</span>
-                                            <span slot="header">${msg("Update Role")}</span>
-                                            <ak-role-form
-                                                slot="form"
-                                                .instancePk=${this.targetRole.pk}
-                                            >
-                                            </ak-role-form>
-                                            <button
-                                                slot="trigger"
-                                                class="pf-c-button pf-m-primary pf-m-block"
-                                            >
-                                                ${msg("Edit")}
-                                            </button>
-                                        </ak-forms-modal>`,
+                                        html`<button
+                                            class="pf-c-button pf-m-primary pf-m-block"
+                                            ${modalInvoker(RoleForm, {
+                                                instancePk: this.targetRole.pk,
+                                            })}
+                                        >
+                                            ${msg("Edit")}
+                                        </button>`,
                                     ],
                                 ])}
                             </div>

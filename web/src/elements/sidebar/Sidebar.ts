@@ -29,7 +29,7 @@ export class Sidebar extends AKElement {
                 ?hidden=${this.hidden}
                 aria-label=${msg("Global navigation")}
                 role="navigation"
-                class="pf-c-nav__list"
+                class="pf-c-nav__list ak-m-thin-scrollbar ak-m-scroll-shadows"
                 part="list"
             >
                 <slot></slot>
