@@ -1,11 +1,23 @@
+import { StorageAccessor } from "#common/storage";
 import { getCookie } from "#common/utils";
+
+import { SlottedTemplateResult } from "#elements/types";
 
 import type { IdentificationStage } from "#flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing, ReactiveController, ReactiveControllerHost } from "lit";
+import { css, html, ReactiveController, ReactiveControllerHost } from "lit";
 
 type RememberMeHost = ReactiveControllerHost & IdentificationStage;
+
+export class RememberMeStorage {
+    static readonly username = StorageAccessor.local("authentik-remember-me-user");
+    static readonly session = StorageAccessor.local("authentik-remember-me-session");
+    static reset = () => {
+        this.username.delete();
+        this.session.delete();
+    };
+}
 
 /**
  * Remember the user's `username` "on this device."
@@ -35,31 +47,32 @@ export class RememberMe implements ReactiveController {
         `,
     ];
 
-    public username?: string;
+    public username: string | null = null;
 
     #trackRememberMe = () => {
         if (!this.#usernameField || this.#usernameField.value === undefined) {
             return;
         }
         this.username = this.#usernameField.value;
-        localStorage?.setItem("authentik-remember-me-user", this.username);
+        RememberMeStorage.username.write(this.username);
     };
 
     // When active, save current details and record every keystroke to the username.
     // When inactive, clear all fields and remove keystroke recorder.
     #toggleRememberMe = () => {
         if (!this.#rememberMeToggle || !this.#rememberMeToggle.checked) {
-            localStorage?.removeItem("authentik-remember-me-user");
-            localStorage?.removeItem("authentik-remember-me-session");
-            this.username = undefined;
+            RememberMeStorage.reset();
+            this.username = null;
             this.#usernameField?.removeEventListener("keyup", this.#trackRememberMe);
             return;
         }
         if (!this.#usernameField) {
             return;
         }
-        localStorage?.setItem("authentik-remember-me-user", this.#usernameField.value);
-        localStorage?.setItem("authentik-remember-me-session", this.#localSession);
+
+        RememberMeStorage.username.write(this.#usernameField.value);
+        RememberMeStorage.session.write(this.#localSession);
+
         this.#usernameField.addEventListener("keyup", this.#trackRememberMe);
     };
 
@@ -68,17 +81,14 @@ export class RememberMe implements ReactiveController {
     // Record a stable token that we can use between requests to track if we've
     // been here before.  If we can't, clear out the username.
     public hostConnected() {
-        try {
-            const sessionId = localStorage.getItem("authentik-remember-me-session");
-            if (!!this.#localSession && sessionId === this.#localSession) {
-                this.username = undefined;
-                localStorage?.removeItem("authentik-remember-me-user");
-            }
-            localStorage?.setItem("authentik-remember-me-session", this.#localSession);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (_e: any) {
-            this.username = undefined;
+        const sessionID = RememberMeStorage.session.read();
+
+        if (this.#localSession && sessionID === this.#localSession) {
+            this.username = null;
+            RememberMeStorage.username.delete();
         }
+
+        RememberMeStorage.session.write(this.#localSession);
     }
 
     get #localSession() {
@@ -101,15 +111,15 @@ export class RememberMe implements ReactiveController {
         return this.host.renderRoot.querySelector('button[type="submit"]') as HTMLButtonElement;
     }
 
-    get #isEnabled() {
-        return this.host.challenge?.enableRememberMe && typeof localStorage !== "undefined";
+    get enabled(): boolean {
+        return !!(this.host.challenge?.enableRememberMe && localStorage);
     }
 
-    get #canAutoSubmit() {
-        return (
-            !!this.host.challenge &&
-            !!this.username &&
-            !!this.#usernameField?.value &&
+    get #canAutoSubmit(): boolean {
+        return !!(
+            this.host.challenge &&
+            this.username &&
+            this.#usernameField?.value &&
             !this.host.challenge.passwordFields &&
             !this.host.challenge.passwordlessUrl
         );
@@ -117,38 +127,35 @@ export class RememberMe implements ReactiveController {
 
     // Before the page is updated, try to extract the username from localstorage.
     public hostUpdate() {
-        if (!this.#isEnabled) {
+        if (!this.enabled) {
             return;
         }
 
-        try {
-            this.username = localStorage.getItem("authentik-remember-me-user") || undefined;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (_e: any) {
-            this.username = undefined;
-        }
+        this.username = RememberMeStorage.username.read();
     }
 
     // After the page is updated, if everything is ready to go, do the autosubmit.
     public hostUpdated() {
-        if (this.#isEnabled && this.#canAutoSubmit) {
+        if (this.enabled && this.#canAutoSubmit) {
             this.#submitButton?.click();
         }
     }
 
-    public render() {
-        return this.#isEnabled
-            ? html` <label class="pf-c-switch remember-me-switch">
-                  <input
-                      class="pf-c-switch__input"
-                      id="authentik-remember-me"
-                      @click=${this.#toggleRememberMe}
-                      type="checkbox"
-                      ?checked=${!!this.username}
-                  />
-                  <span class="pf-c-form__label">${msg("Remember me on this device")}</span>
-              </label>`
-            : nothing;
+    public render(): SlottedTemplateResult {
+        if (!this.enabled) {
+            return null;
+        }
+
+        return html`<label class="pf-c-switch remember-me-switch">
+            <input
+                class="pf-c-switch__input"
+                id="authentik-remember-me"
+                @click=${this.#toggleRememberMe}
+                type="checkbox"
+                ?checked=${!!this.username}
+            />
+            <span class="pf-c-form__label">${msg("Remember me on this device")}</span>
+        </label>`;
     }
 }
 
