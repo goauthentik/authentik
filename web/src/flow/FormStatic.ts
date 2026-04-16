@@ -4,6 +4,7 @@ import { ifPresent } from "#elements/utils/attributes";
 import { isDefaultAvatar } from "#elements/utils/images";
 
 import Styles from "#flow/FormStatic.css";
+import { RememberMeStorage } from "#flow/stages/identification/controllers/RememberMeController";
 import { StageChallengeLike } from "#flow/types";
 
 import { msg, str } from "@lit/localize";
@@ -69,7 +70,9 @@ export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
                 ${flowInfo?.cancelUrl
                     ? html`
                           <div slot="link">
-                              <a href=${flowInfo.cancelUrl}>${msg("Not you?")}</a>
+                              <a href=${flowInfo.cancelUrl} @click=${RememberMeStorage.reset}>
+                                  >${msg("Not you?")}</a
+                              >
                           </div>
                       `
                     : nothing}
