@@ -84,7 +84,7 @@ pub(crate) async fn run_unix(
         .handle(handle)
         .serve(router.into_make_service())
         .await;
-    if let Some(path) = addr.as_pathname() {
+    if !allow_failure && let Some(path) = addr.as_pathname() {
         trace!(?addr, "removing socket");
         if let Err(err) = std::fs::remove_file(path) {
             trace!(?err, "failed to remove socket, ignoring");
