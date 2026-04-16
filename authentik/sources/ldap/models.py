@@ -12,7 +12,13 @@ from django.db import connection, models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
+from ldap3.core.exceptions import (
+    LDAPAdminLimitExceededResult,
+    LDAPAttributeError,
+    LDAPException,
+    LDAPInsufficientAccessRightsResult,
+    LDAPSchemaError,
+)
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -278,10 +284,17 @@ class LDAPSource(IncomingSyncSource):
             successful = conn.bind()
             if successful:
                 return conn
-        except (LDAPSchemaError, LDAPInsufficientAccessRightsResult) as exc:
-            # Schema error, so try connecting without schema info
+        except (
+            LDAPSchemaError,
+            LDAPInsufficientAccessRightsResult,
+            LDAPAdminLimitExceededResult,
+            LDAPAttributeError,
+        ) as exc:
+            # Schema error or rate limit during schema fetch, retry without schema info
             # See https://github.com/goauthentik/authentik/issues/4590
             # See also https://github.com/goauthentik/authentik/issues/3399
+            # LDAPAdminLimitExceededResult: Google Secure LDAP rate-limits schema queries
+            # LDAPAttributeError: Google Secure LDAP returns unsupported attrs in schema
             if server_kwargs.get("get_info", ALL) == NONE:
                 LOGGER.warning("Failed to connect after schema downgrade", source=self, exc=exc)
                 raise exc
