@@ -60,31 +60,31 @@ To support the integration of Gitea with authentik, you need to create an applic
 ### Claims for authorization management (optional)
 
 :::info
-This step is _optional_ and shows how to set claims to control the permissions of users in Gitea by adding them to groups.
+This step is _optional_ and shows how to set claims to control the permissions of users in Gitea by assigning them application entitlements.
 :::
 
-#### Create groups
+#### Create application entitlements
 
-The following groups will be created:
+The following application entitlements will be created:
 
 - `gituser`: normal Gitea users.
 - `gitadmin`: Gitea users with administrative permissions.
 - `gitrestricted`: restricted Gitea users.
 
 :::info
-Users who are in none of these groups will not be able to log in to Gitea.
+Users who are assigned none of these entitlements will not be able to log in to Gitea.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Groups** and click **Create**.
-3. Set the group name to `gituser` and click **Create**.
-4. Repeat steps 2 and 3 to create two additional groups named `gitadmin` and `gitrestricted`.
-5. Click the name of a newly created group and navigate to the **Users** tab.
-6. Click **Add existing user**, select the users that need Gitea access, and click **Add**.
-7. Repeat steps 5 and 6 for the two additional groups.
+2. Navigate to **Applications** > **Applications** and open the Gitea application.
+3. Click the **Application entitlements** tab.
+4. Click **New Entitlement**, set the name to `gituser`, and then click **Create**.
+5. Repeat step 4 to create two additional entitlements named `gitadmin` and `gitrestricted`.
+6. Open an entitlement and bind the users or groups that need Gitea access to it.
+7. Repeat step 6 for the two additional entitlements.
 
 :::info
-You can add users to the groups at any point.
+You can add users or groups to the entitlements at any point.
 :::
 
 #### Create custom property mapping
@@ -96,14 +96,18 @@ You can add users to the groups at any point.
     - **Expression**:
 
     ```python showLineNumbers
+    entitlement_names = {
+        entitlement.name
+        for entitlement in request.user.app_entitlements(provider.application)
+    }
     gitea_claims = {}
 
-    if request.user.groups.filter(name="gituser").exists():
-        gitea_claims["gitea"]= "user"
-    if request.user.groups.filter(name="gitadmin").exists():
-        gitea_claims["gitea"]= "admin"
-    if request.user.groups.filter(name="gitrestricted").exists():
-        gitea_claims["gitea"]= "restricted"
+    if "gituser" in entitlement_names:
+        gitea_claims["gitea"] = "user"
+    if "gitadmin" in entitlement_names:
+        gitea_claims["gitea"] = "admin"
+    if "gitrestricted" in entitlement_names:
+        gitea_claims["gitea"] = "restricted"
 
     return gitea_claims
     ```
@@ -139,8 +143,8 @@ For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must b
 4. Click **Update Authentication Source**.
 
 :::info
-Users who are not part of any defined group will be denied login access.
-In contrast, members of the `gitadmin` group will have full administrative privileges, while those in the `gitrestricted` group will have limited access.
+Users who are assigned none of the defined entitlements will be denied login access.
+In contrast, users assigned the `gitadmin` entitlement will have full administrative privileges, while users assigned the `gitrestricted` entitlement will have limited access.
 :::
 
 ### Helm Chart Configuration
