@@ -111,7 +111,7 @@ Input JWTs are checked to verify that they are signed by any of the selected **F
 
 #### Kubernetes service account tokens
 
-[Projected Kubernetes service account tokens](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) work with this flow. The cluster or an auxiliary service must expose the service account issuer through OpenID Connect discovery or a JWKS endpoint. In practice, that means you can:
+[Projected Kubernetes service account tokens](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) work with this flow. The cluster or an auxiliary service must expose the service account issuer through OpenID Connect discovery or a JWKS endpoint. In practice, this means you can:
 
 1. Create a generic **OAuth Source** in authentik.
 2. Configure the source with either the issuer's `.well-known/openid-configuration` URL or the issuer's JWKS URL.
