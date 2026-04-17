@@ -77,7 +77,7 @@ The same LDAP source property mapping type is used for both users and groups. A 
 
 ### Copy a custom LDAP group attribute
 
-To store a custom LDAP group field in authentik's group `attributes`, create an **LDAP Source Property Mapping** and assign it to **Group Property Mappings** on the source:
+To store a custom LDAP group attribute in authentik's group `attributes`, create an **LDAP Source Property Mapping** and assign it to **Group Property Mappings** on the source:
 
 ```python
 return {
