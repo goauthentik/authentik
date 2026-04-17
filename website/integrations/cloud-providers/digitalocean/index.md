@@ -76,13 +76,13 @@ To support the integration of DigitalOcean with authentik, you need to create a 
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Add the `profile` scope created in the previous section. Do not remove authentik’s `authentik default OAuth Mapping: OpenID 'profile'`, as claims such as `name` are required by DigitalOcean.
-    - **Configure Bindings** _(optional)_: you can create a [binding](../../../docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ### Create application entitlements for DigitalOcean roles
 
-Use [application entitlements](../../../docs/add-secure-apps/applications/manage_apps/#application-entitlements) to represent the DigitalOcean roles that this application should assign.
+Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to represent the DigitalOcean roles that this application should assign.
 
 1. Open the DigitalOcean application that you just created in the authentik Admin interface.
 2. Click the **Application entitlements** tab.
