@@ -13,16 +13,16 @@ It is commonly used in enrollment, recovery, and profile-update flows after a [P
 ## Configuration options
 
 - **User creation mode**: control whether the stage never creates users, creates them only when required, or always creates them.
-- **Create users as inactive**: mark newly created users inactive.
+- **Create users as inactive**: mark newly created users as inactive.
 - **Create users group**: optionally add newly created users to a specific group.
-- **User type**: select the user type applied to newly created users.
-- **User path template**: optional template used to place newly created users into a path.
+- **User type**: select the user type for newly created users: Internal, External, or Service Account.
+- **User path template**: optionally set the path new users will be created under. If left blank, the default path will be used.
 
 ## Flow integration
 
-Use this stage after one or more stages that populate flow context, usually a [Prompt stage](../prompt/index.md), [Identification stage](../identification/index.md), or [Email stage](../email/index.md).
+Use this stage after one or more stages that populate flow context, usually a [Identification stage](../identification/index.md), [Prompt stage](../prompt/index.md), or [Email stage](../email/index.md).
 
-In enrollment flows, this stage is often followed by [User Login](../user_login/index.md) so the newly created user is signed in immediately.
+In enrollment flows, this stage is often followed by a [User Login](../user_login/index.md) stage so the newly created user is immediately signed in.
 
 ## Notes
 

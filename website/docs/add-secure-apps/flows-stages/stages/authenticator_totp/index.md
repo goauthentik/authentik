@@ -2,7 +2,7 @@
 title: TOTP authenticator setup stage
 ---
 
-The TOTP Authenticator Setup stage enrolls a time-based one-time password device for the user, such as Google Authenticator, Authy, 1Password, or similar authenticator apps.
+The TOTP Authenticator Setup stage enrolls a time-based one-time password authenticator for the user, such as Google Authenticator, Authy, 1Password, or similar authenticator apps.
 
 ## Overview
 
@@ -18,9 +18,9 @@ The enrolled TOTP authenticator can then be used with the [Authenticator Validat
 
 ## Flow integration
 
-Use this stage in an enrollment or user-settings flow where the user can add a TOTP device.
+Use this stage in an enrollment or user-settings flow where the user can add a TOTP authenticator.
 
-To require that device during login, add an [Authenticator Validation stage](../authenticator_validate/index.md) to the authentication flow and allow the **TOTP** device class.
+To require that authenticator during login, add an [Authenticator Validation stage](../authenticator_validate/index.md) to the authentication flow and allow the **TOTP** device class.
 
 ## Notes
 

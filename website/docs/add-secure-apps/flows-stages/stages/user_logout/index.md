@@ -29,4 +29,4 @@ When this stage runs, authentik can inject additional logout stages for active p
 - front-channel native logout stages
 - back-channel logout execution
 
-This lets provider-specific logout happen automatically without manually adding those stages to the flow.
+This enables automatic provider-specific logout without manually adding those stages to the flow.

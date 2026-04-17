@@ -21,7 +21,7 @@ The following topics are for the basic management of users: how to create, modif
 5. Fill the **_optional_** fields if needed:
 
 - **Name**: The display name of the user.
-- **Email**: The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.md) and to receive [notifications](../../sys-mgmt/events/notifications.md), if configured.
+- **Email**: The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.md) and, if configured, to receive [notifications](../../sys-mgmt/events/notifications.md).
 - **Is active**: Define if the newly created user account is active. Selected by default.
 - **Attributes**: Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 

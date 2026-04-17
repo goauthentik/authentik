@@ -14,7 +14,7 @@ This stage has no stage-specific configuration options.
 
 ## Flow integration
 
-Use this stage near the end of an unenrollment flow after any confirmation, re-authentication, or policy checks have already happened.
+Use this stage near the end of an unenrollment flow after any confirmation, re-authentication, or policy checks have occurred.
 
 ## Notes
 

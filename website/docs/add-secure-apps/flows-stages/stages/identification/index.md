@@ -84,7 +84,7 @@ authentik automatically falls back to the normal identification flow when passke
 
 1. Create or edit an [Authenticator Validation stage](../authenticator_validate/index.md) that allows the **WebAuthn** device class.
 2. Set the Identification stage's **WebAuthn Authenticator Validation stage** to that stage.
-3. Make sure users have already enrolled a WebAuthn device, for example with the [WebAuthn / FIDO2 / Passkeys Authenticator setup stage](../authenticator_webauthn/index.md).
+3. Make sure users have already enrolled a WebAuthn authenticator, for example with the [WebAuthn / FIDO2 / Passkeys Authenticator setup stage](../authenticator_webauthn/index.md).
 
 If the user has multiple passkeys, the browser shows its own picker. In the default authentication flow, authentik skips the MFA validation stage after a passkey login with an expression policy; adjust that policy if you still want a second factor after passkey login.
 
@@ -92,4 +92,4 @@ If the user has multiple passkeys, the browser shows its own picker. In the defa
 
 - If no passkey prompt appears, check HTTPS, browser support, and that the validation stage is configured. The browser normally triggers the passkey suggestion when the user focuses the username field.
 - If no passkey prompt appears, make sure the login page is not embedded in an iframe because some browsers block conditional UI outside top-level browsing contexts.
-- If the prompt appears but falls back to username/password, check that the referenced validation stage allows WebAuthn and that the user has a valid enrolled device.
+- If the prompt appears but falls back to username/password, check that the referenced validation stage allows WebAuthn and that the user has a valid enrolled authenticator.

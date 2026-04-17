@@ -24,8 +24,8 @@ Use this stage near the end of flows that should create an authenticated browser
 
 Common placements include:
 
-- after [Password](../password/index.md) or [Authenticator Validation](../authenticator_validate/index.md) in authentication flows
-- after [User Write](../user_write/index.md) in enrollment flows
+- after a [Password](../password/index.md) or [Authenticator Validation](../authenticator_validate/index.md) stage in authentication flows
+- after a [User Write](../user_write/index.md) stage in enrollment flows
 
 ## Notes
 
@@ -47,7 +47,7 @@ Valid keys in those duration strings include:
 - days
 - weeks
 
-- If **Remember me offset** is greater than `seconds=0`, authentik shows the user a remember-me choice during login.
+- If **Remember me offset** is greater than `seconds=0`, authentik shows the user a **Remember me on this device** option during login.
 
 ![](./stay_signed_in.png)
 
@@ -94,7 +94,7 @@ When a session is terminated because a binding is broken, the generated logout e
 }
 ```
 
-For alerting and policy use, authentik can also classify a login as coming from a known or unknown device based on the remember-device cookie and related session information.
+For alerting and policy use, authentik can also classify a login as coming from a known or unknown device based on the "Remember me on this device" cookie and related session information.
 
 See the notification policy examples for [logins from unknown devices](../../../../sys-mgmt/events/notification_rule_expression_policies.mdx#trigger-alert-when-user-logs-in-from-unknown-device).
 

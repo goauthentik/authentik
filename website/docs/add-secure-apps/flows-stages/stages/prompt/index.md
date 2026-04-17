@@ -68,11 +68,11 @@ Some field types also have special behavior:
 
 Use this stage anywhere a flow needs user-provided input.
 
-Common follow-up stages include:
+Common follow-ups include:
 
-- [User Write](../user_write/index.md) to persist collected values
-- [Email](../email/index.md) or [Invitation](../invitation/index.md) to act on collected data
-- policy checks that read from `request.context["prompt_data"]`
+- A [User Write](../user_write/index.md) stage to persist collected values
+- An [Email](../email/index.md) or [Invitation](../invitation/index.md) stage to act on collected data
+- Policy checks that read from `request.context["prompt_data"]`
 
 ## Notes
 

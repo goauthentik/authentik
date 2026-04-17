@@ -86,9 +86,9 @@ If you select multiple **Configuration stages** on a single validation stage, us
 
 ### Less-frequent validation
 
-Set **Last validation threshold** to a non-zero value to avoid prompting on every login. Any compatible device within the allowed classes can satisfy that threshold.
+Set **Last validation threshold** to a non-zero value to avoid prompting on every login. Any compatible authenticator within the allowed classes can satisfy that threshold.
 
-For code-based devices such as TOTP, Static, and SMS, values below `seconds=30` are not useful because those devices do not store exact validation timestamps at sub-window precision.
+For code-based authenticators such as TOTP, Static, and SMS, values below `seconds=30` are not useful because those authenticators do not store exact validation timestamps at sub-window precision.
 
 ### Passwordless authentication
 
@@ -96,7 +96,7 @@ For code-based devices such as TOTP, Static, and SMS, values below `seconds=30` 
 Firefox has known issues with some Touch ID and platform-authenticator flows. See Mozilla bug `1536482` for one longstanding example.
 :::
 
-Passwordless authentication in this stage currently relies on **WebAuthn** devices.
+Passwordless authentication in this stage currently relies on **WebAuthn** authenticators.
 
 To build a dedicated passwordless flow:
 
