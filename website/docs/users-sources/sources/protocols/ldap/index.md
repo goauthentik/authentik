@@ -73,7 +73,7 @@ return {
 }
 ```
 
-The same LDAP source property mapping type is used for both users and groups. A mapping only applies to groups when you assign it under **Group Property Mappings** on the LDAP source. If you only use the built-in group naming mappings, synced groups will keep the automatically populated LDAP identifiers, such as `distinguishedName`, but custom LDAP attributes won't be copied unless you add your own group mapping.
+The same LDAP source property mapping type is used for both users and groups. A mapping only applies to groups when you assign it under **Group Property Mappings** on the LDAP source. If you only use the built-in group property mappings, synced groups will keep the automatically populated LDAP attributes, such as `distinguishedName`, but custom LDAP attributes won't be copied unless you add your own group mapping.
 
 ### Copy a custom LDAP group attribute
 
