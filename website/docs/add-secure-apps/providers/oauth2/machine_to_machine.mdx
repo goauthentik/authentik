@@ -120,7 +120,7 @@ Input JWTs are checked to verify that they are signed by any of the selected **F
 
 When the token validates, authentik creates or updates a generated service account and then issues a new access token from the selected OAuth2 provider. The generated account is derived from the provider name and the incoming JWT subject claim.
 
-If you want to carry claims from the Kubernetes token into the token authentik issues, use an **OAuth Source Property Mapping** to copy values from the incoming JWT onto the generated service account, and then use an OAuth2 **Scope Mapping** to emit those values as claims for the relying party.
+To propagate claims from the Kubernetes token into the token issued by authentik, create an **OAuth Source Property Mapping** to transfer the incoming JWT values to the generated service account, then use an **OAuth2 Scope Mapping** to include them as claims for the relying party.
 
 Example OAuth source property mapping:
 
