@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
           go-version-file: "go.mod"
       - name: Prepare and generate API
@@ -31,8 +31,6 @@ jobs:
           mkdir -p web/dist
           mkdir -p website/help
           touch web/dist/test website/help/test
-      - name: Generate API
-        run: make gen-client-go
       - name: golangci-lint
         uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v8
         with:
@@ -43,13 +41,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
           go-version-file: "go.mod"
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: Generate API
-        run: make gen-client-go
       - name: prepare database
         run: |
           uv run make migrate
@@ -102,16 +98,14 @@ jobs:
           image-name: ghcr.io/goauthentik/dev-${{ matrix.type }}
       - name: Login to Container Registry
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate API
-        run: make gen-client-go
       - name: Build Docker Image
         id: push
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
           file: lifecycle/container/${{ matrix.type }}.Dockerfile
@@ -148,7 +142,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
           go-version-file: "go.mod"
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
@@ -156,8 +150,6 @@ jobs:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
-      - name: Generate API
-        run: make gen-client-go
       - name: Build web
         working-directory: web/
         run: |

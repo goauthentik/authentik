@@ -28,7 +28,7 @@ To support the integration of NetBird with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -50,14 +50,14 @@ It is important to set a signing key to secure the provider because this is a `P
 :::
 
 :::info
-If an access group is created for the Netbird application, the Netbird service account must be included in the group. Otherwise you will see a 401 error after login.
+If an access group is created for the NetBird application, the NetBird service account must be included in the group. Otherwise you will see a 401 error after login.
 :::
 
 3. Click **Submit** to save the new application and provider.
 
 ### Set up a service account
 
-1. Log into authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Users**, and click **Create a service account**.
 3. Set the **Username** to `NetBird` and disable the **Create group** option. Click **Create** and take note of the **password**.
 
@@ -65,9 +65,9 @@ If an access group is created for the Netbird application, the Netbird service a
 
 NetBird requires the service account to have full administrative access to the authentik instance. Follow these steps to make it an administrator.
 
-1. Log into authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups**, and click **`authentik Admins`**.
-3. On the top of the group configuration page, switch to the **Users** tab near the top of the page, then click **Add existing user**, and select the service account you just created.
+3. At the top of the group configuration page, switch to the **Users** tab, then click **Add existing user**, and select the service account you just created.
 
 ### Create and apply a device token authentication flow
 
@@ -76,7 +76,7 @@ NetBird requires the service account to have full administrative access to the a
 3. Set the following required configurations:
     - **Name**: provide a name (e.g. `default-device-code-flow`)
     - **Title**: provide a title (e.g. `Device code flow`)
-    - **Slug**: provide a slug (e.g `default-device-code-flow`)
+    - **Slug**: provide a slug (e.g. `default-device-code-flow`)
     - **Designation**: `Stage Configuration`
     - **Authentication**: `Require authentication`
 4. Click **Create**.
@@ -97,7 +97,7 @@ NETBIRD_AUTH_DEVICE_AUTH_CLIENT_ID="<Your Client ID>"
 NETBIRD_AUTH_DEVICE_AUTH_AUDIENCE="<Your Client ID>"
 NETBIRD_MGMT_IDP="authentik"
 NETBIRD_IDP_MGMT_CLIENT_ID="<Your Client ID>"
-NETBIRD_IDP_MGMT_EXTRA_USERNAME="Netbird"
+NETBIRD_IDP_MGMT_EXTRA_USERNAME="NetBird"
 NETBIRD_IDP_MGMT_EXTRA_PASSWORD="<Your Service Account password>"
 NETBIRD_AUTH_REDIRECT_URI="/auth"
 NETBIRD_AUTH_SILENT_REDIRECT_URI="/silent-auth"

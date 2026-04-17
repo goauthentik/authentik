@@ -31,7 +31,7 @@ export class AKFormGroup extends AKElement {
     public label = msg("Details");
 
     @property({ type: String, reflect: true })
-    public description?: string;
+    public description: string | null = null;
 
     //#endregion
 
@@ -126,19 +126,22 @@ export class AKFormGroup extends AKElement {
                 aria-describedby="form-group-expandable-content-description"
             >
                 <summary @click=${this.toggle}>
-                    <div class="pf-c-form__field-group-header-main">
-                        <header class="pf-c-form__field-group-header-title">
+                    <div class="pf-c-form__field-group-header-main" part="group-header">
+                        <header
+                            class="pf-c-form__field-group-header-title"
+                            part="group-header-title"
+                        >
                             <div
                                 class="pf-c-form__field-group-header-title-text"
+                                part="form-group-header-title"
                                 id="form-group-header-title"
                                 role="heading"
                                 aria-level="3"
                             >
-                                ${this.label}
+                                <div part="label">${this.label}</div>
                                 <slot name="header"></slot>
                             </div>
                         </header>
-
                         <div
                             class="pf-c-form__field-group-header-description"
                             data-test-id="form-group-header-description"
@@ -149,9 +152,7 @@ export class AKFormGroup extends AKElement {
                         </div>
                     </div>
                 </summary>
-                <div id="form-group-expandable-content">
-                    <slot></slot>
-                </div>
+                <slot></slot>
             </details>
         `;
     }

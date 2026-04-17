@@ -32,7 +32,7 @@ export class Loading extends AKElement {
 
     public connectedCallback(): void {
         super.connectedCallback();
-        this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
+        this.dataset.akInterfaceRoot = this.localName;
     }
 
     render(): TemplateResult {

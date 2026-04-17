@@ -1,4 +1,5 @@
 import "#components/ak-secret-textarea-input";
+import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
@@ -6,16 +7,24 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { EnterpriseApi, License } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-enterprise-license-form")
 export class EnterpriseLicenseForm extends ModelForm<License, string> {
+    public static override verboseName = msg("Enterprise License");
+    public static override verboseNamePlural = msg("Enterprise Licenses");
+    public static override createLabel = msg("Install");
+    public static override submitVerb = msg("Install");
+
+    #api = new EnterpriseApi(DEFAULT_CONFIG);
+
     @state()
     protected installID: string | null = null;
 
@@ -26,7 +35,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
     }
 
     loadInstance(pk: string): Promise<License> {
-        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseRetrieve({
+        return this.#api.enterpriseLicenseRetrieve({
             licenseUuid: pk,
         });
     }
@@ -38,19 +47,17 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
     }
 
     async load(): Promise<void> {
-        this.installID = (
-            await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseInstallIdRetrieve()
-        ).installId;
+        this.installID = (await this.#api.enterpriseLicenseInstallIdRetrieve()).installId;
     }
 
     async send(data: License): Promise<License> {
         return (
             this.instance
-                ? new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicensePartialUpdate({
+                ? this.#api.enterpriseLicensePartialUpdate({
                       licenseUuid: this.instance.licenseUuid || "",
                       patchedLicenseRequest: data,
                   })
-                : new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseCreate({
+                : this.#api.enterpriseLicenseCreate({
                       licenseRequest: data,
                   })
         ).then((data) => {
@@ -59,19 +66,21 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
         });
     }
 
-    protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Install ID")}>
-                <input
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                    readonly
-                    type="text"
-                    value="${ifPresent(this.installID)}"
-                />
-            </ak-form-element-horizontal>
+    protected override renderForm(): SlottedTemplateResult {
+        return html`<ak-text-input
+                label=${msg("Install ID")}
+                autocomplete="off"
+                spellcheck="false"
+                readonly
+                type="text"
+                name="installID"
+                input-hint="code"
+                value="${ifPresent(this.installID)}"
+            >
+            </ak-text-input>
             <ak-secret-textarea-input
                 name="key"
+                ?required=${!this.instance}
                 ?revealed=${!this.instance}
                 placeholder=${msg("Paste your license key...")}
                 label=${msg("License key")}

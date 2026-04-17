@@ -1,8 +1,11 @@
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
 import Styles from "#components/ak-status-label.css";
 
 import { P4Disposition } from "#styles/patternfly/constants";
+
+import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -43,30 +46,35 @@ export class AkStatusLabel extends AKElement {
     static styles = [PFLabel, Styles];
 
     @property({ type: Boolean })
-    good = false;
+    public good: boolean | null = null;
 
     @property({ type: String, attribute: "good-label" })
-    goodLabel = msg("Yes");
+    public goodLabel = msg("Yes");
 
     @property({ type: String, attribute: "bad-label" })
-    badLabel = msg("No");
+    public badLabel = msg("No");
+
+    @property({ type: String, attribute: "neutral-label" })
+    public neutralLabel = msg("-");
 
     @property({ type: Boolean })
-    compact = false;
+    public compact = false;
 
     @property({ type: String })
-    type: P4Disposition = P4Disposition.Error;
+    public type: P4Disposition = P4Disposition.Error;
 
-    render() {
+    protected override render(): SlottedTemplateResult {
         const details = statusToDetails.get(this.type);
 
         if (!details) {
             throw new TypeError(`Bad status type [${this.type}] passed to ak-status-label`);
         }
 
-        const [label, color, icon] = this.good
-            ? [this.goodLabel, "pf-m-green", "fa-check"]
-            : [this.badLabel, ...details];
+        const [label, color, icon] = match(this.good)
+            .with(P.nullish, () => [this.neutralLabel, "pf-m-gray", "fa-question"] as const)
+            .with(true, () => [this.goodLabel, "pf-m-green", "fa-check"] as const)
+            .with(false, () => [this.badLabel, ...details] as const)
+            .exhaustive();
 
         const classes = {
             "pf-c-label": true,

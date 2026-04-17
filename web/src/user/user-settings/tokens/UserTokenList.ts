@@ -11,6 +11,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { intentToLabel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
 
+import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -160,7 +161,7 @@ export class UserTokenList extends Table<Token> {
             html`<span class="pf-m-monospace">${item.identifier}</span>`,
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Token")}</span>
                     <ak-user-token-form
                         intent=${item.intent ?? IntentEnum.Api}
@@ -174,14 +175,7 @@ export class UserTokenList extends Table<Token> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                <ak-token-copy-button
-                    class="pf-c-button pf-m-plain"
-                    identifier="${item.identifier}"
-                >
-                    <pf-tooltip position="top" content=${msg("Copy token")}>
-                        <i class="fas fa-copy" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </ak-token-copy-button>
+                ${IconTokenCopyButton(item.identifier)}
             `,
         ];
     }

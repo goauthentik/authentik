@@ -1,10 +1,7 @@
-import "#admin/applications/wizard/ak-wizard-title";
-
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
 import { WizardUpdateEvent } from "#components/ak-wizard/events";
 
-import { ValidationRecord } from "#admin/applications/wizard/types";
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
+import { WizardValidationRecord } from "#admin/applications/wizard/steps/providers/shared";
 import {
     ProxyModeValue,
     renderForm,
@@ -25,7 +22,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
     @state()
     showHttpBasic = true;
 
-    renderForm(provider: ProxyProvider, errors: ValidationRecord) {
+    protected renderForm(provider: ProxyProvider, errors: WizardValidationRecord = {}) {
         const onSetMode: SetMode = (ev: CustomEvent<ProxyModeValue>) => {
             this.dispatchEvent(
                 new WizardUpdateEvent({ ...this.wizard, proxyMode: ev.detail.value }),
@@ -40,7 +37,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
             this.showHttpBasic = el.checked;
         };
 
-        return html` <ak-wizard-title>${this.label}</ak-wizard-title>
+        return html`<h3 class="pf-c-wizard__main-title">${this.label}</h3>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm({
                     provider,
@@ -59,10 +56,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Proxy Provider Step received uninitialized wizard context.");
         }
-        return this.renderForm(
-            this.wizard.provider as ProxyProvider,
-            this.wizard.errors?.provider ?? {},
-        );
+        return this.renderForm(this.wizard.provider, this.wizard.errors?.provider);
     }
 }
 

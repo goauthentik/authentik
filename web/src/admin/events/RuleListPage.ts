@@ -11,16 +11,14 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { severityToLabel } from "#common/labels";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    EventsApi,
-    ModelEnum,
-    NotificationRule,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { RuleForm } from "#admin/events/RuleForm";
+
+import { EventsApi, ModelEnum, NotificationRule } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -28,9 +26,12 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override searchPlaceholder = msg(
+        "Search for a notification rule by name, severity or group...",
+    );
 
     protected override searchEnabled = true;
     public pageTitle = msg("Notification Rules");
@@ -40,9 +41,9 @@ export class RuleListPage extends TablePage<NotificationRule> {
     public pageIcon = "pf-icon pf-icon-attention-bell";
 
     @property()
-    order = "name";
+    public order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<NotificationRule>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<NotificationRule>> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesList(await this.defaultEndpointConfig());
     }
 
@@ -54,7 +55,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Notification rule(s)")}
@@ -76,7 +77,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: NotificationRule): SlottedTemplateResult[] {
+    protected override row(item: NotificationRule): SlottedTemplateResult[] {
         const enabled = !!item.destinationGroupObj || item.destinationEventUser;
         return [
             html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,
@@ -87,20 +88,11 @@ export class RuleListPage extends TablePage<NotificationRule> {
                       >${item.destinationGroupObj.name}</a
                   >`
                 : msg("-")}`,
-            html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Notification Rule")}</span>
-                    <ak-event-rule-form slot="form" .instancePk=${item.pk}> </ak-event-rule-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(RuleForm, item.pk, item.name)}
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEventsNotificationrule}
+                    model=${ModelEnum.AuthentikEventsNotificationrule}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>
@@ -108,19 +100,13 @@ export class RuleListPage extends TablePage<NotificationRule> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Notification Rule")}</span>
-                <ak-event-rule-form slot="form"> </ak-event-rule-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(RuleForm);
     }
 
-    renderExpanded(item: NotificationRule): TemplateResult {
+    protected override renderExpanded(item: NotificationRule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationrule.split(".");
+
         return html`<p>
                 ${msg(
                     `These bindings control upon which events this rule triggers.

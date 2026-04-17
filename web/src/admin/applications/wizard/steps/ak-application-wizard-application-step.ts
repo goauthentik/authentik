@@ -1,4 +1,3 @@
-import "#admin/applications/wizard/ak-wizard-title";
 import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
@@ -8,16 +7,20 @@ import "#components/ak-textarea-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { ApplicationWizardStateUpdate, ValidationRecord } from "../types.js";
+import { omitKeys, trimMany } from "#common/objects";
 
 import { isSlug } from "#elements/router/utils";
 
-import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
+import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import {
+    ApplicationWizardContextUpdate,
+    WizardValidationRecord,
+} from "#admin/applications/wizard/steps/providers/shared";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { AdminFileListUsageEnum, type ApplicationRequest } from "@goauthentik/api";
+import { type ApplicationRequest, UsageEnum } from "@goauthentik/api";
 
 import { snakeCase } from "change-case";
 
@@ -26,18 +29,14 @@ import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-function trimMany<T extends object, K extends keyof T>(target: T, keys: K[]): Pick<T, K> {
-    const output = {} as Record<K, unknown>;
-
-    for (const key of keys) {
-        const value = target[key];
-
-        output[key] = typeof value === "string" ? value.trim() : value;
-    }
-
-    return output as Pick<T, K>;
-}
-
+/**
+ * The first step of the application wizard, responsible for collecting
+ * basic application information such as name, slug, group, and UI settings.
+ *
+ * This step performs validation on the form inputs and updates the wizard state accordingly when the "Next" button is clicked.
+ *
+ * @prop wizard - The current state of the application wizard, shared across all steps.
+ */
 @customElement("ak-application-wizard-application-step")
 export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     label = msg("Application");
@@ -61,14 +60,16 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             : (this.wizard.errors?.app?.[name] ?? this.wizard.errors?.app?.[snakeCase(name)] ?? []);
     }
 
-    get buttons(): WizardButton[] {
-        return [{ kind: "next", destination: "provider-choice" }, { kind: "cancel" }];
-    }
+    protected buttons: WizardButton[] = [
+        // ---
+        { kind: "cancel" },
+        { kind: "next", destination: "provider-choice" },
+    ];
 
     get valid() {
         this.errors = new Map();
 
-        const values = trimMany(this.formValues, ["metaLaunchUrl", "name", "slug"]);
+        const values = trimMany(this.formValues, "metaLaunchUrl", "name", "slug");
 
         if (!values.name) {
             this.errors.set("name", msg("An application name is required"));
@@ -85,13 +86,13 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         return this.errors.size === 0;
     }
 
-    override handleButton(button: NavigableButton) {
+    public override handleButton(button: NavigableButton) {
         if (button.kind !== "next") {
             return super.handleButton(button);
         }
 
         if (!this.valid) {
-            this.handleEnabling({
+            this.dispatchNavigationEvent({
                 disabled: ["provider-choice", "provider", "bindings", "submit"],
             });
 
@@ -100,24 +101,26 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
 
         const app = { ...this.formValues };
 
-        const payload: ApplicationWizardStateUpdate = {
+        const update: ApplicationWizardContextUpdate = {
             app,
-            errors: this.removeErrors("app"),
+            errors: omitKeys(this.wizard.errors, "app"),
         };
 
         if (!this.wizard.provider?.name?.trim() && app.name) {
-            payload.provider = {
+            update.provider = {
                 name: `Provider for ${app.name}`,
             };
         }
 
-        this.handleUpdate(payload, button.destination, {
-            enable: "provider-choice",
+        return this.dispatchEvents({
+            update,
+            destination: button.destination,
+            details: { enable: "provider-choice" },
         });
     }
 
-    renderForm(app: Partial<ApplicationRequest>, errors: ValidationRecord) {
-        return html` <ak-wizard-title>${msg("Configure the Application")}</ak-wizard-title>
+    protected renderForm(app: Partial<ApplicationRequest>, errors: WizardValidationRecord = {}) {
+        return html`<h3 class="pf-c-wizard__main-title">${msg("Configure the Application")}</h3>
             <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"
@@ -139,6 +142,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     .errorMessages=${this.errorMessages("slug")}
                     help=${msg("Internal application name used in URLs.")}
                     input-hint="code"
+                    placeholder=${msg("e.g. my-application")}
                 ></ak-slug-input>
                 <ak-text-input
                     name="group"
@@ -187,7 +191,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             name="metaIcon"
                             label=${msg("Icon")}
                             value=${ifDefined(app.metaIcon)}
-                            .usage=${AdminFileListUsageEnum.Media}
+                            .usage=${UsageEnum.Media}
                             help=${msg(
                                 "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
                             )}
@@ -198,12 +202,16 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             name="metaPublisher"
                             value="${ifDefined(app.metaPublisher)}"
                             .errorMessages=${errors.metaPublisher}
+                            help=${msg("The publisher is shown in the application library.")}
                         ></ak-text-input>
                         <ak-textarea-input
                             label=${msg("Description")}
                             name="metaDescription"
                             value=${ifDefined(app.metaDescription)}
                             .errorMessages=${errors.metaDescription}
+                            help=${msg(
+                                "The description is shown in the application library and may provide additional information about the application to end users.",
+                            )}
                         ></ak-textarea-input>
                     </div>
                 </ak-form-group>
@@ -214,10 +222,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         if (!(this.wizard.app && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }
-        return this.renderForm(
-            this.wizard.app as ApplicationRequest,
-            this.wizard.errors?.app ?? {},
-        );
+        return this.renderForm(this.wizard.app, this.wizard.errors?.app);
     }
 }
 

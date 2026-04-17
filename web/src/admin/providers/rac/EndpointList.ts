@@ -8,39 +8,38 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    Endpoint,
-    RacApi,
-    RACProvider,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { EndpointForm } from "#admin/providers/rac/EndpointForm";
+
+import { Endpoint, ModelEnum, RacApi, RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-rac-endpoint-list")
 export class EndpointListPage extends Table<Endpoint> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     protected override searchEnabled = true;
+    protected override emptyStateMessage = msg("Create an endpoint to get started.");
 
-    @property()
-    order = "name";
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    public override searchPlaceholder = msg("Search for an endpoint by name or host...");
+    public override order = "name";
 
     @property({ attribute: false })
-    provider?: RACProvider;
+    public provider: RACProvider | null = null;
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
-
-    async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsList({
             ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
@@ -48,13 +47,13 @@ export class EndpointListPage extends Table<Endpoint> {
         });
     }
 
-    protected columns: TableColumn[] = [
+    protected override columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Host"), "host"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Endpoint(s)")}
@@ -82,24 +81,15 @@ export class EndpointListPage extends Table<Endpoint> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Endpoint): SlottedTemplateResult[] {
+    protected override row(item: Endpoint): SlottedTemplateResult[] {
         return [
-            html`${item.name}`,
-            html`${item.host}`,
-            html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Endpoint")}</span>
-                    <ak-rac-endpoint-form slot="form" .instancePk=${item.pk}>
-                    </ak-rac-endpoint-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            item.name,
+            item.host,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(EndpointForm, item.pk)}
+
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersRacEndpoint}
+                    model=${ModelEnum.AuthentikProvidersRacEndpoint}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>
@@ -107,7 +97,7 @@ export class EndpointListPage extends Table<Endpoint> {
         ];
     }
 
-    renderExpanded(item: Endpoint): TemplateResult {
+    protected override renderExpanded(item: Endpoint): SlottedTemplateResult {
         return html`<div class="pf-c-content">
             <p>
                 ${msg(
@@ -118,16 +108,10 @@ export class EndpointListPage extends Table<Endpoint> {
         </div>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Endpoint")}</span>
-                <ak-rac-endpoint-form slot="form" .providerID=${this.provider?.pk}>
-                </ak-rac-endpoint-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(EndpointForm, {
+            providerID: this.provider?.pk,
+        });
     }
 }
 

@@ -7,7 +7,7 @@ An authentik WS-Federation provider is typically created as part of an applicati
 ## Create a WS-Federation provider and application pair
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications > Applications** and click **Create with provider** to create an application and provider pair.
+2. Navigate to **Applications > Applications** and click **New Provider** to create an application and provider pair.
 3. On the **New application** page, define the application details, and then click **Next**.
 4. Select **WS-Federation Provider** as the **Provider Type**, and then click **Next**.
 5. On the **Configure WS-Federation Provider** page, provide a name for the provider, select an authorization flow, and the two required configuration settings:
@@ -24,7 +24,7 @@ After an authentik WS-Federation provider has been created via any of the above 
 To download the metadata of an authentik WS-Federation provider, follow these steps:
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications > Providers**.
+2. Navigate to **Applications > Providers**.
 3. Click the name of the provider you want metadata for.
 4. On the **Overview** tab, in the **Related objects** section, click on **Download** under **Metadata**. This will download the metadata XML file for that provider.
 
@@ -33,6 +33,6 @@ To download the metadata of an authentik WS-Federation provider, follow these st
 To view and optionally download the metadata of an authentik WS-Federation provider, follow these steps:
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications > Providers**.
+2. Navigate to **Applications > Providers**.
 3. Click the name of the provider you want metadata for, and then click the **Metadata** tab.
 4. The metadata for the provider will be shown in a code box. You can optionally use the **Download** button to obtain the metadata as a file.

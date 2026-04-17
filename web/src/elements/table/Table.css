@@ -1,12 +1,73 @@
-[part="table-container"] {
-    overflow-x: auto;
+:host {
+    --ak-c-table--expandable-overlay--Color: color-mix(
+        var(--pf-global--palette--purple-100),
+        transparent 80%
+    );
+}
+
+:host([theme="dark"]) {
+    --ak-c-table--expandable-overlay--Color: color-mix(
+        var(--pf-global--palette--blue-700),
+        transparent 90%
+    );
+
+    --ak-c-table--expandable-overlay--Color: color-mix(
+        var(--pf-global--palette--blue-100),
+        transparent 90%
+    );
 }
 
 .pf-c-table {
     --pf-global--primary-color--100: var(--pf-global--primary-color--300);
+    --pf-c-table--m-compact__expandable-row-content--PaddingTop: var(--pf-global--spacer--sm);
+    --pf-c-table--m-compact__expandable-row-content--PaddingBottom: var(--pf-global--spacer--sm);
 
     .presentational {
         --pf-c-table--cell--MinWidth: 0;
+    }
+}
+
+::part(search-form) {
+    --pf-c-input-group--BackgroundColor: transparent;
+}
+
+::part(search-input) {
+    background-color: transparent !important;
+}
+
+.pf-c-table__expandable-row {
+    background: color-mix(
+        var(--pf-c-table--BackgroundColor),
+        var(--ak-c-table--expandable-overlay--Color)
+    );
+
+    ::part(table) {
+        --pf-c-table--BackgroundColor: transparent;
+        --pf-c-table--tr--m-hoverable--hover--BackgroundColor: color-mix(
+            var(--pf-c-table--BackgroundColor),
+            var(--ak-c-table--expandable-overlay--Color)
+        );
+    }
+
+    ::part(toolbar) {
+        --pf-c-toolbar--BackgroundColor: transparent;
+    }
+
+    ::part(pagination-bottom) {
+        --pf-c-pagination--m-bottom--BackgroundColor: transparent;
+    }
+}
+
+.ak-c-table__actions {
+    display: flex;
+    justify-content: start;
+
+    ::part(spinner-button) {
+        padding-inline: var(--pf-global--spacer--md);
+    }
+
+    .pf-c-button:not(:has(i)):not(:first-child) {
+        margin-inline-start: var(--pf-global--spacer--sm);
     }
 }
 
@@ -25,21 +86,8 @@ td ak-mdx::part(content) {
 td:has(ak-action-button),
 td:has(ak-forms-modal),
 td:has(ak-rbac-object-permission-modal) {
-    & > .pf-c-button,
-    & > button[slot="trigger"]:has(i),
-    & > *::part(spinner-button),
-    & > *::part(button) {
-        --pf-global--spacer--form-element: 0;
-
-        padding-inline: 0.5em !important;
-    }
-
     button[slot="trigger"]:has(i) {
         padding-inline: 0.5em !important;
-    }
-
-    *::part(spinner-button) {
-        padding-inline-start: 0.5em !important;
     }
 
     button.pf-m-tertiary {
@@ -139,16 +187,13 @@ time {
     }
 }
 
-/**
- * TODO: Remove after <dialog> modals are implemented.
- */
-.pf-c-dropdown__menu:has(ak-forms-modal) {
-    z-index: var(--pf-global--ZIndex--lg);
-}
-
 :host {
     display: block;
     container-type: inline-size;
+}
+
+:host([display-box="contents"]) {
+    display: contents;
 }
 
 .pf-c-table {

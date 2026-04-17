@@ -92,4 +92,18 @@ kubernetes_ingress_class_name: null
 #         cpu: 4000m
 #         memory: 8000Mi
 kubernetes_json_patches: null
+# Disable strict x509 validation for Kubernetes API server.
+#
+# On some older Kubernetes clusters, the root certificate may have been
+# generated without certain x509 extensions. `urllib3`, which is used in
+# the official kubernetes client, introduced stricter validation for
+# certificates in version 2.4.0 which will cause `certificate verify failed`
+# errors to appear in outpost logs. This option disables the stricter
+# validation and allows the outpost to connect to the Kubernetes API server
+# even with older certificates.
+#
+# It is recommended to only enable this option if you are experiencing
+# certificate validation issues and understand the security implications
+# of disabling strict x509 validation.
+kubernetes_disable_x509_strict: false
 ```

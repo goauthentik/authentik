@@ -136,7 +136,7 @@ class OAuthSource(NonCreatableType, Source):
         return UILoginButton(
             name=self.name,
             challenge=provider.login_challenge(self, request),
-            icon_url=self.icon_url,
+            icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
             promoted=self.promoted,
         )
 

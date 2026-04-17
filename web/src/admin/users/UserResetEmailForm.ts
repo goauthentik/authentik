@@ -22,10 +22,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-reset-email-form")
 export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
-    @property({ attribute: false })
-    user!: User;
+    public override submitLabel = msg("Send link");
+    public override headline = msg("Send recovery link to user");
 
-    getSuccessMessage(): string {
+    @property({ attribute: false })
+    public user!: User;
+
+    public override getSuccessMessage(): string {
         return msg("Successfully queued email.");
     }
 
@@ -43,6 +46,7 @@ export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
                 name="emailStage"
             >
                 <ak-search-select
+                    placeholder=${msg("Select email stage...")}
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {
                             ordering: "name",

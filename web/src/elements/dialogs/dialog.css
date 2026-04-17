@@ -1,0 +1,328 @@
+/* #region Variables */
+
+.ak-c-dialog {
+    --ak-c-dialog--BackgroundColor: var(--pf-global--BackgroundColor--100);
+
+    --ak-c-dialog--BoxShadow: var(--pf-global--BoxShadow--xl);
+
+    --ak-c-dialog--ZIndex: var(--pf-global--ZIndex--xl);
+
+    --ak-c-dialog--WidthBasis: 100%;
+    --ak-c-dialog--HeightBasis: 75dvh;
+    --ak-c-dialog--HeightBasis: clamp(75dvh, 40rem, 95dvh);
+
+    --ak-c-dialog--MarginBlock: var(--pf-global--spacer--xl);
+    --ak-c-dialog--MarginInline: var(--pf-global--spacer--4xl);
+
+    --ak-c-dialog--MaxWidth: calc(100dvw - var(--ak-c-dialog--MarginInline));
+
+    --ak-c-dialog--Ratio: calc(3 / 4);
+    --ak-c-dialog--AspectRatioHeight: calc(
+        var(--ak-c-dialog--WidthBasis) * var(--ak-c-dialog--Ratio)
+    );
+    --ak-c-dialog--MaxHeight: calc(
+        min(var(--ak-c-dialog--AspectRatioHeight), var(--ak-c-dialog--HeightBasis)) -
+            var(--ak-c-dialog--MarginBlock)
+    );
+
+    --ak-c-dialog--BorderColor: var(--pf-global--BackgroundColor--150);
+
+    --ak-c-dialog--BorderWidth: 0;
+
+    --ak-c-dialog--TransitionDuration--Transform: 250ms;
+    --ak-c-dialog--TransitionDuration--Opacity: 100ms;
+    --ak-c-dialog--TransitionDuration--Backdrop: 100ms;
+    --ak-c-dialog--TransitionDuration--Overlay: 50ms;
+    --ak-c-dialog--TransitionDuration--Display: 50ms;
+}
+
+/* #endregion */
+
+/* #region Dialog */
+
+.ak-c-dialog {
+    overscroll-behavior: none;
+    color: var(--pf-global--Color--100, CanvasText);
+    background-color: var(--ak-c-dialog--BackgroundColor);
+    box-shadow: var(--ak-c-dialog--BoxShadow);
+    padding: var(--ak-c-dialog--Padding);
+
+    z-index: var(--ak-c-dialog--ZIndex);
+    width: min(var(--ak-c-dialog--WidthBasis), var(--ak-c-dialog--MaxWidth));
+    max-width: var(--ak-c-dialog--MaxWidth);
+    max-height: var(--ak-c-dialog--MaxHeight);
+
+    background-color: var(--ak-c-dialog--BackgroundColor);
+    box-shadow: var(--ak-c-dialog--BoxShadow);
+
+    border-width: var(--ak-c-dialog--BorderWidth);
+    border-color: var(--ak-c-dialog--BorderColor);
+
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+
+    &:focus-visible {
+        outline: none;
+    }
+}
+
+/* #endregion */
+
+/* #region Buttons */
+
+.ak-c-dialog {
+    --ak-c-dialog--c-button--Top: var(--pf-global--spacer--lg);
+    --ak-c-dialog--c-button--Right: var(--pf-global--spacer--md);
+    --ak-c-dialog--c-button--sibling--MarginRight: calc(
+        var(--pf-global--spacer--xl) + var(--pf-global--spacer--sm)
+    );
+}
+
+/* #endregion */
+
+/* #region Header */
+
+.ak-c-dialog {
+    --ak-c-dialog__header--PaddingBlockStart: var(--pf-global--spacer--lg);
+    --ak-c-dialog__header--PaddingBlockEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__header--PaddingInlineEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__header--PaddingInlineStart: var(--pf-global--spacer--lg);
+    --ak-c-dialog__header--last-child--PaddingBlockEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__header--body--PaddingBlockStart: var(--pf-global--spacer--md);
+
+    --ak-c-dialog__title--LineHeight: var(--pf-global--LineHeight--sm);
+    --ak-c-dialog__title--FontFamily: var(--pf-global--FontFamily--heading--sans-serif);
+    --ak-c-dialog__title--FontSize: var(--pf-global--FontSize--2xl);
+    --ak-c-dialog__title-icon--MarginRight: var(--pf-global--spacer--sm);
+    --ak-c-dialog__title-icon--Color: var(--pf-global--Color--100);
+
+    --ak-c-dialog__description--PaddingBlockStart: var(--pf-global--spacer--xs);
+}
+
+/* #endregion */
+
+/* #region Body */
+
+.ak-c-dialog {
+    --ak-c-dialog__body--MinHeight: calc(
+        var(--pf-global--FontSize--md) * var(--pf-global--LineHeight--md)
+    );
+
+    --ak-c-dialog__body--PaddingBlockStart: var(--pf-global--spacer--md);
+    --ak-c-dialog__body--PaddingBlockEnd: var(--pf-global--spacer--md);
+    --ak-c-dialog__body--PaddingInlineEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__body--PaddingInlineStart: var(--pf-global--spacer--lg);
+    --ak-c-dialog__body--last-child--PaddingBlockEnd: var(--pf-global--spacer--lg);
+}
+
+/* #endregion */
+
+/* #region Footer */
+
+.ak-c-dialog {
+    --ak-c-dialog__footer--PaddingBlockStart: var(--pf-global--spacer--lg);
+    --ak-c-dialog__footer--PaddingInlineEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__footer--PaddingBlockEnd: var(--pf-global--spacer--lg);
+    --ak-c-dialog__footer--PaddingInlineStart: var(--pf-global--spacer--lg);
+}
+
+/* #endregion */
+
+/* #region Backdrop */
+
+.ak-c-dialog {
+    --ak-c-dialog__backdrop--BackgroundColor: transparent;
+    --ak-c-dialog__backdrop--BackdropFilter: blur(0);
+    --ak-c-dialog__backdrop--active--BackgroundColor: hsla(0, 0%, 0%, 0.5);
+    --ak-c-dialog__backdrop--active--BackdropFilter: blur(2px);
+
+    &::backdrop {
+        backdrop-filter: var(--ak-c-dialog__backdrop--BackdropFilter);
+        background-color: var(--ak-c-dialog__backdrop--BackgroundColor);
+
+        transition:
+            backdrop-filter,
+            overlay allow-discrete,
+            background-color;
+
+        transition-timing-function: ease-in-out;
+        transition-duration: var(--ak-c-dialog--TransitionDuration--Backdrop);
+    }
+}
+
+/* #endregion */
+
+/* #region Transitions */
+
+.ak-c-dialog {
+    interpolate-size: allow-keywords;
+    transition:
+        opacity var(--ak-c-dialog--TransitionDuration--Opacity),
+        transform var(--ak-c-dialog--TransitionDuration--Transform),
+        overlay var(--ak-c-dialog--TransitionDuration--Overlay) allow-discrete;
+
+    transition-timing-function: ease-in-out;
+
+    opacity: 0;
+    transform: translateY(1em);
+}
+
+.ak-c-dialog--m-fade-in {
+    --ak-c-dialog__backdrop--BackdropFilter: var(--ak-c-dialog__backdrop--active--BackdropFilter);
+    --ak-c-dialog__backdrop--BackgroundColor: var(--ak-c-dialog__backdrop--active--BackgroundColor);
+
+    opacity: 1;
+}
+
+.ak-c-dialog[open] {
+    transform: translateY(0);
+
+    @starting-style {
+        transform: translateY(-1em);
+    }
+}
+
+/* #endregion */
+
+/* #region Modifiers */
+
+.ak-c-dialog {
+    --ak-c-dialog--m-md--WidthBasis: 52.5rem;
+    --ak-c-dialog--m-sm--WidthBasis: 35rem;
+    --ak-c-dialog--m-lg--WidthBasis: 70rem;
+    --ak-c-dialog--m-xl--WidthBasis: 110rem;
+
+    --ak-c-dialog--m-danger__title-icon--Color: var(--pf-global--danger-color--100);
+    --ak-c-dialog--m-warning__title-icon--Color: var(--pf-global--warning-color--100);
+    --ak-c-dialog--m-success__title-icon--Color: var(--pf-global--success-color--100);
+    --ak-c-dialog--m-info__title-icon--Color: var(--pf-global--info-color--100);
+    --ak-c-dialog--m-default__title-icon--Color: var(--pf-global--default-color--200);
+}
+
+.ak-c-dialog {
+    --ak-c-dialog--WidthBasis: var(--ak-c-dialog--m-lg--WidthBasis);
+
+    &.pf-m-sm,
+    &:has(.pf-m-sm) {
+        --ak-c-dialog--WidthBasis: var(--ak-c-dialog--m-sm--WidthBasis);
+    }
+
+    &.pf-m-md,
+    &:has(.pf-m-md) {
+        --ak-c-dialog--WidthBasis: var(--ak-c-dialog--m-md--WidthBasis);
+    }
+
+    &.pf-m-xl,
+    &:has(.pf-m-xl) {
+        --ak-c-dialog--AspectRatioHeight: 100dvh;
+        --ak-c-dialog--WidthBasis: var(--ak-c-dialog--m-xl--WidthBasis);
+        --ak-c-dialog--MaxHeight: calc(100dvh - var(--ak-c-dialog--MarginBlock));
+    }
+
+    @media (width <= 768px) or (height <= 600px) {
+        --ak-c-dialog--MaxHeight: 100dvh;
+        /* Note that a unit is required for to perform the calculation. */
+        --ak-c-dialog--MarginBlock: 0em;
+        --ak-c-dialog--MarginInline: 0em;
+
+        height: 100dvh;
+    }
+
+    .ak-m-dialog--full-screen {
+        --ak-c-dialog--MaxHeight: 100dvh;
+        /* Note that a unit is required for to perform the calculation. */
+        --ak-c-dialog--MarginBlock: 0em;
+        --ak-c-dialog--MarginInline: 0em;
+
+        height: 100dvh;
+    }
+}
+
+.ak-c-dialog {
+    &.pf-m-danger {
+        --ak-c-dialog__title-icon--Color: var(--ak-c-dialog--m-danger__title-icon--Color);
+    }
+
+    &.pf-m-warning {
+        --ak-c-dialog__title-icon--Color: var(--ak-c-dialog--m-warning__title-icon--Color);
+    }
+
+    &.pf-m-success {
+        --ak-c-dialog__title-icon--Color: var(--ak-c-dialog--m-success__title-icon--Color);
+    }
+
+    &.pf-m-default {
+        --ak-c-dialog__title-icon--Color: var(--ak-c-dialog--m-default__title-icon--Color);
+    }
+
+    &.pf-m-info {
+        --ak-c-dialog__title-icon--Color: var(--ak-c-dialog--m-info__title-icon--Color);
+    }
+}
+
+/* #endregion */
+
+/* #region Content */
+
+.ak-c-dialog__content {
+    display: grid;
+    grid-template-rows: [header] auto [body] 1fr [footer] auto;
+    max-height: min(var(--ak-c-dialog--AspectRatioHeight), var(--ak-c-dialog--MaxHeight));
+    height: stretch;
+}
+
+.ak-c-dialog__content ::part(toolbar) {
+    position: var(--ak-c-dialog--toolbar--Position, sticky);
+    inset-block-start: var(--ak-c-dialog--toolbar--InsetBlockStart, 0);
+    z-index: var(--ak-c-dialog--toolbar--ZIndex, 1);
+}
+
+.ak-c-dialog__content [slot="before-body"] {
+    margin-block-end: 1rem;
+}
+
+.ak-c-dialog__content:has([part*="wizard"]) {
+    --ak-c-dialog__body--PaddingInlineEnd: 0;
+    --ak-c-dialog__body--PaddingInlineStart: 0;
+    --ak-c-dialog__body--last-child--PaddingBlockEnd: 0;
+    --ak-c-dialog__body--PaddingBlockStart: 0;
+    --ak-c-dialog__body--PaddingBlockEnd: 0;
+    --ak-m-scroll-shadows--BorderWidth: 0;
+
+    grid-template-rows: [body] auto;
+
+    ::part(body) {
+        overscroll-behavior: none;
+    }
+
+    ::part(header),
+    ::part(actions) {
+        display: none;
+    }
+}
+
+[part*="wizard"] {
+    max-height: var(--ak-c-dialog--MaxHeight);
+    display: block;
+    height: 100%;
+
+    [part="main"] {
+        display: block;
+    }
+
+    [part*="wizard-page"] {
+        flex: 1 1 auto;
+        display: flex;
+        flex-flow: column;
+    }
+}
+
+[part*="step-heading"] {
+    flex: 0 0 auto;
+    padding-inline: var(--pf-global--spacer--lg);
+    padding-block-start: var(--pf-global--spacer--sm);
+    background: var(--pf-global--BackgroundColor--150);
+    padding-block-end: var(--pf-global--spacer--sm);
+}
+
+/* #endregion */

@@ -45,15 +45,15 @@ export class ActionWizardPage extends WizardPage {
         }));
 
         this.host.canBack = false;
-        this.host.canCancel = false;
+        this.host.cancelable = false;
 
         await this.run();
 
         // Ensure wizard is closable, even when run() failed
-        this.host.isValid = true;
+        this.host.valid = true;
     };
 
-    public label = msg("Apply changes");
+    public headline = msg("Apply changes");
 
     async run(): Promise<void> {
         this.currentStep = this.states[0];
@@ -86,7 +86,7 @@ export class ActionWizardPage extends WizardPage {
             }
         }
 
-        this.host.isValid = true;
+        this.host.valid = true;
 
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {

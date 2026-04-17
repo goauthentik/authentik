@@ -1,6 +1,6 @@
 import "#admin/reports/ExportButton";
-import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
+import "#admin/users/ak-user-wizard";
 import "#admin/users/UserBulkRevokeSessionsForm";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
@@ -15,10 +15,11 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
+import { formatUserDisplayName } from "#common/users";
 
+import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
@@ -27,67 +28,22 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKUserWizard } from "#admin/users/ak-user-wizard";
+import { RecoveryButtons } from "#admin/users/recovery";
+import { UserForm } from "#admin/users/UserForm";
+import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
+
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { guard } from "lit-html/directives/guard.js";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-export const renderRecoveryButtons = ({
-    user,
-    brandHasRecoveryFlow,
-}: {
-    user: User;
-    brandHasRecoveryFlow: boolean;
-}) =>
-    html` <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
-            <span slot="submit">${msg("Update password")}</span>
-            <span slot="header">
-                ${msg(str`Update ${user.name || user.username}'s password`)}
-            </span>
-            <ak-user-password-form
-                username=${user.username}
-                email=${ifDefined(user.email)}
-                slot="form"
-                .instancePk=${user.pk}
-            ></ak-user-password-form>
-            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                ${msg("Set password")}
-            </button>
-        </ak-forms-modal>
-        ${brandHasRecoveryFlow
-            ? html`
-                  <ak-forms-modal id="ak-link-recovery-request">
-                      <span slot="submit"> ${msg("Create link")} </span>
-                      <span slot="header"> ${msg("Create recovery link")} </span>
-                      <ak-user-recovery-link-form slot="form" .user=${user}>
-                      </ak-user-recovery-link-form>
-                      <button slot="trigger" class="pf-c-button pf-m-secondary">
-                          ${msg("Create recovery link")}
-                      </button>
-                  </ak-forms-modal>
-                  ${user.email
-                      ? html`<ak-forms-modal id="ak-email-recovery-request">
-                            <span slot="submit">${msg("Send link")}</span>
-                            <span slot="header">${msg("Send recovery link to user")}</span>
-                            <ak-user-reset-email-form slot="form" .user=${user}>
-                            </ak-user-reset-email-form>
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                ${msg("Email recovery link")}
-                            </button>
-                        </ak-forms-modal>`
-                      : html`<p>
-                            ${msg("To email a recovery link, set an email address for this user.")}
-                        </p>`}
-              `
-            : html` <p>
-                  ${msg("To create a recovery link, set a recovery flow for the current brand.")}
-              </p>`}`;
 
 const recoveryButtonStyles = css`
     #recovery-request-buttons {
@@ -96,20 +52,34 @@ const recoveryButtonStyles = css`
         flex-wrap: wrap;
         gap: 0.375rem;
     }
-    #recovery-request-buttons > *,
-    #update-password-request .pf-c-button {
-        margin: 0;
-    }
 `;
 
 @customElement("ak-user-list")
 export class UserListPage extends WithBrandConfig(
     WithCapabilitiesConfig(WithSession(TablePage<User>)),
 ) {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
-    supportsQL = true;
+    static styles: CSSResult[] = [
+        ...TablePage.styles,
+        PFDescriptionList,
+        PFCard,
+        PFAlert,
+        PFAvatar,
+        recoveryButtonStyles,
+        css`
+            .pf-c-avatar {
+                max-height: var(--pf-c-avatar--Height);
+                max-width: var(--pf-c-avatar--Width);
+                margin-bottom: calc(var(--pf-c-avatar--Width) * -0.6);
+            }
+        `,
+    ];
+
+    #api = new CoreApi(DEFAULT_CONFIG);
+
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override supportsQL = true;
 
     protected override searchEnabled = true;
     public override searchPlaceholder = msg("Search by username, email, etc...");
@@ -119,45 +89,50 @@ export class UserListPage extends WithBrandConfig(
     public pageDescription = "";
     public pageIcon = "pf-icon pf-icon-user";
 
-    @property()
-    order = "last_login";
+    @property({ type: String })
+    public order = "last_login";
 
-    @property()
-    activePath;
-
-    @state()
-    hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
+    @property({ type: String })
+    public activePath: string;
 
     @state()
-    userPaths?: UserPath;
+    protected hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
 
-    static styles: CSSResult[] = [
-        ...TablePage.styles,
-        PFDescriptionList,
-        PFCard,
-        PFAlert,
-        recoveryButtonStyles,
-    ];
+    @state()
+    protected userPaths: UserPath | null = null;
 
     constructor() {
         super();
+
         const defaultPath = DefaultUIConfig.defaults.userPath;
+
         this.activePath = getURLParam<string>("path", defaultPath);
+
         if (this.uiConfig.defaults.userPath !== defaultPath) {
             this.activePath = this.uiConfig.defaults.userPath;
         }
     }
 
+    protected canImpersonate = false;
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.canImpersonate = this.can(CapabilitiesEnum.CanImpersonate);
+    }
+
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
-        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
+        const users = await this.#api.coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
             isActive: this.hideDeactivated ? true : undefined,
             includeGroups: false,
         });
-        this.userPaths = await new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve({
+
+        this.userPaths = await this.#api.coreUsersPathsRetrieve({
             search: this.search,
         });
+
         return users;
     }
 
@@ -170,6 +145,7 @@ export class UserListPage extends WithBrandConfig(
     }
 
     protected columns: TableColumn[] = [
+        ["", null, msg("Avatar")],
         [msg("Name"), "username"],
         [msg("Active"), "is_active"],
         [msg("Last login"), "last_login"],
@@ -177,7 +153,7 @@ export class UserListPage extends WithBrandConfig(
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         const { currentUser, originalUser } = this;
 
@@ -200,12 +176,12 @@ export class UserListPage extends WithBrandConfig(
                     ];
                 }}
                 .usedBy=${(item: User) => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
+                    return this.#api.coreUsersUsedByList({
                         id: item.pk,
                     });
                 }}
                 .delete=${(item: User) => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
+                    return this.#api.coreUsersDestroy({
                         id: item.pk,
                     });
                 }}
@@ -230,7 +206,7 @@ export class UserListPage extends WithBrandConfig(
             </ak-forms-delete-bulk>`;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <div class="pf-c-input-group">
@@ -267,51 +243,47 @@ export class UserListPage extends WithBrandConfig(
         </div>`;
     }
 
-    row(item: User): SlottedTemplateResult[] {
+    protected row(item: User) {
         const { currentUser } = this;
 
-        const impersonationVisible =
-            this.can(CapabilitiesEnum.CanImpersonate) && currentUser && item.pk !== currentUser.pk;
+        const showImpersonation = this.canImpersonate && currentUser && item.pk !== currentUser.pk;
+
+        const displayName = formatUserDisplayName(item);
 
         return [
-            html`<a href="#/identity/users/${item.pk}">
-                <div>${item.username}</div>
-                <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
+            html`<img
+                class="pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
+                src=${item.avatar}
+                alt=${msg(str`Avatar for ${displayName}`)}
+            />`,
+            html`<a
+                href="#/identity/users/${item.pk}"
+                aria-label=${msg(str`View details for ${displayName}`)}
+            >
+                <div aria-label=${msg(str`Username: ${item.username}`)}>${item.username}</div>
+                <small aria-label=${msg(str`Display name: ${displayName || msg("No name set")}`)}
+                    >${displayName ? item.name : html`&lt;${msg("No name set")}&gt;`}</small
+                >
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
-            html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update User")}</span>
-                    <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
-                ${impersonationVisible
-                    ? html`
-                          <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
-                              <span slot="submit">${msg("Impersonate")}</span>
-                              <span slot="header">${msg("Impersonate")} ${item.username}</span>
-                              <ak-user-impersonate-form
-                                  slot="form"
-                                  .instancePk=${item.pk}
-                              ></ak-user-impersonate-form>
-                              <button slot="trigger" class="pf-c-button pf-m-tertiary">
-                                  <pf-tooltip
-                                      position="top"
-                                      content=${msg("Temporarily assume the identity of this user")}
-                                  >
-                                      <span>${msg("Impersonate")}</span>
-                                  </pf-tooltip>
-                              </button>
-                          </ak-forms-modal>
-                      `
-                    : nothing}
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(UserForm, item.pk, displayName)}
+                ${showImpersonation
+                    ? html`<button
+                          class="pf-c-button pf-m-tertiary"
+                          ${UserImpersonateForm.asInstanceInvoker(item.pk)}
+                          aria-label=${msg(str`Impersonate ${displayName}`)}
+                      >
+                          <pf-tooltip
+                              position="top"
+                              content=${msg("Temporarily assume the identity of this user")}
+                          >
+                              <span>${msg("Impersonate")}</span>
+                          </pf-tooltip>
+                      </button>`
+                    : null}
             </div>`,
         ];
     }
@@ -341,7 +313,7 @@ export class UserListPage extends WithBrandConfig(
                             object-label=${msg("User")}
                             .obj=${item}
                             .delete=${() => {
-                                return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+                                return this.#api.coreUsersPartialUpdate({
                                     id: item.pk,
                                     patchedUserRequest: {
                                         isActive: !item.isActive,
@@ -362,7 +334,7 @@ export class UserListPage extends WithBrandConfig(
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text" id="recovery-request-buttons">
-                        ${renderRecoveryButtons({
+                        ${RecoveryButtons({
                             user: item,
                             brandHasRecoveryFlow: Boolean(this.brand.flowRecovery),
                         })}
@@ -372,35 +344,39 @@ export class UserListPage extends WithBrandConfig(
         </dl>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create User")}</span>
-                <span slot="header">${msg("New User")}</span>
-                <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New User")}</button>
-            </ak-forms-modal>
-            <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
-                <span slot="submit">${msg("Create Service Account")}</span>
-                <span slot="header">${msg("New Service Account")}</span>
-                <ak-user-service-account-form slot="form"> </ak-user-service-account-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("New Service Account")}
-                </button>
-            </ak-forms-modal>
-            <ak-reports-export-button
-                .createExport=${(params: CoreUsersExportCreateRequest) => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate(params);
-                }}
-                .exportParams=${async () => {
-                    return {
-                        ...(await this.defaultEndpointConfig()),
-                        pathStartswith: this.activePath,
-                        isActive: this.hideDeactivated ? true : undefined,
-                    };
-                }}
-            ></ak-reports-export-button>
-        `;
+    protected buildExportParams = async () => {
+        return {
+            ...(await this.defaultEndpointConfig()),
+            pathStartswith: this.activePath,
+            isActive: this.hideDeactivated ? true : undefined,
+        };
+    };
+
+    protected createExport = (params: CoreUsersExportCreateRequest) => {
+        return this.#api.coreUsersExportCreate(params);
+    };
+
+    protected renderObjectCreate(): SlottedTemplateResult {
+        const { activePath } = this;
+
+        return guard([activePath], () => {
+            return [
+                html`<button
+                    class="pf-c-button pf-m-primary"
+                    type="button"
+                    ${modalInvoker(AKUserWizard, {
+                        defaultPath: activePath,
+                    })}
+                    aria-description=${msg("Open the new user wizard")}
+                >
+                    ${msg("New User")}
+                </button> `,
+                html`<ak-reports-export-button
+                    .createExport=${this.createExport}
+                    .exportParams=${this.buildExportParams}
+                ></ak-reports-export-button> `,
+            ];
+        });
     }
 
     protected renderSidebarBefore(): TemplateResult {

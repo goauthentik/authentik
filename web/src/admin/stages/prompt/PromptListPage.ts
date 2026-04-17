@@ -9,30 +9,35 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { Prompt, RbacPermissionsAssignedByRolesListModelEnum, StagesApi } from "@goauthentik/api";
+import { PromptForm } from "#admin/stages/prompt/PromptForm";
+
+import { ModelEnum, Prompt, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Prompts");
-    public pageDescription = msg("Single Prompts that can be used for Prompt Stages.");
-    public pageIcon = "pf-icon pf-icon-plugged";
+    public override searchPlaceholder = msg("Search for a prompt by name, field or type...");
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override pageTitle = msg("Prompts");
+    public override pageDescription = msg("Single Prompts that can be used for Prompt Stages.");
+    public override pageIcon = "pf-icon pf-icon-plugged";
 
-    @property()
-    order = "name";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Prompt>> {
+    public override order = "name";
+
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Prompt>> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList(
             await this.defaultEndpointConfig(),
         );
@@ -47,7 +52,7 @@ export class PromptListPage extends TablePage<Prompt> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Prompt(s)")}
@@ -69,42 +74,31 @@ export class PromptListPage extends TablePage<Prompt> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Prompt): SlottedTemplateResult[] {
+    protected override row(item: Prompt): SlottedTemplateResult[] {
         return [
-            html`${item.name}`,
+            item.name,
             html`<code>${item.fieldKey}</code>`,
-            html`${item.type}`,
-            html`${item.order}`,
+            item.type,
+            item.order || msg("-"),
             html`${item.promptStagesObj.map((stage) => {
                 return html`<li>${stage.name}</li>`;
             })}`,
-            html`<ak-forms-modal size=${PFSize.XLarge}>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Prompt")}</span>
-                    <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
-                <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikStagesPromptPrompt}
-                    objectPk=${item.pk}
-                >
-                </ak-rbac-object-permission-modal> `,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(PromptForm, item.pk, item.name, {
+                    size: PFSize.XLarge,
+                })}
+                ${IconPermissionButton(item.name, {
+                    model: ModelEnum.AuthentikStagesPromptPrompt,
+                    objectPk: item.pk,
+                })}
+            </div>`,
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal size=${PFSize.XLarge}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Prompt")}</span>
-                <ak-prompt-form slot="form"> </ak-prompt-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(PromptForm, null, null, {
+            size: PFSize.XLarge,
+        });
     }
 }
 

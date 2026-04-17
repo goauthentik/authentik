@@ -12,6 +12,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.apps import apps
 from django.db import models
+from django.db.models import Q
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -250,6 +251,28 @@ class Event(SerializerModel, ExpiringModel):
         self.save()
         return self
 
+    @staticmethod
+    def log_deprecation(
+        identifier: str, message: str, cause: str | None = None, expiry_days=30, **kwargs
+    ):
+        query = Q(
+            action=EventAction.CONFIGURATION_WARNING,
+            context__deprecation=identifier,
+        )
+        if cause:
+            query &= Q(context__cause=cause)
+        if Event.objects.filter(query).exists():
+            return
+        event = Event.new(
+            EventAction.CONFIGURATION_WARNING,
+            deprecation=identifier,
+            message=message,
+            cause=cause,
+            **kwargs,
+        )
+        event.expires = now() + timedelta(days=expiry_days)
+        event.save()
+
     def save(self, *args, **kwargs):
         if self._state.adding:
             LOGGER.info(
@@ -297,6 +320,10 @@ class Event(SerializerModel, ExpiringModel):
             models.Index(
                 models.F("context__authorized_application"),
                 name="authentik_e_ctx_app__idx",
+            ),
+            models.Index(
+                models.F("user__pk"),
+                name="authentik_e_user_pk__idx",
             ),
         ]
 
@@ -433,7 +460,7 @@ class NotificationTransport(TasksModel, SerializerModel):
                 response.raise_for_status()
             except RequestException as exc:
                 raise NotificationTransportError(
-                    exc.response.text if exc.response else str(exc)
+                    exc.response.text if exc.response is not None else str(exc)
                 ) from exc
             return [
                 response.status_code,
@@ -496,7 +523,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             response = get_http_session().post(self.webhook_url, json=body)
             response.raise_for_status()
         except RequestException as exc:
-            text = exc.response.text if exc.response else str(exc)
+            text = exc.response.text if exc.response is not None else str(exc)
             raise NotificationTransportError(text) from exc
         return [
             response.status_code,

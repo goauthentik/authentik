@@ -3,10 +3,12 @@ from typing import Self
 from uuid import UUID, uuid4
 
 import pgtrigger
-from django.contrib.contenttypes.fields import ContentType, GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import TaskBase, TaskState
+from dramatiq.errors import Retry
 
 from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
@@ -102,11 +104,14 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
         cls, logger: str, log_level: TaskStatus, message: str | Exception, **attributes
     ) -> LogEvent:
         if isinstance(message, Exception):
+            exc = message
             attributes = {
-                "exception": exception_to_dict(message),
+                "exception": exception_to_dict(exc),
                 **attributes,
             }
             message = str(message)
+            if not message and isinstance(exc, Retry):
+                message = "Task has encountered an error and will be retried"
         return LogEvent(
             message,
             logger=logger,

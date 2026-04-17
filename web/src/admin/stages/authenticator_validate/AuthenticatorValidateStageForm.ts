@@ -6,6 +6,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-text-input";
 
 import {
     authenticatorWebauthnDeviceTypesListProvider,
@@ -102,14 +103,15 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+
+            <ak-text-input
+                autofocus
+                label=${msg("Stage Name")}
+                placeholder=${msg("Type a stage name...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name || "")}"
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal

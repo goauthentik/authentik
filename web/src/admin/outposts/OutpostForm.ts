@@ -95,16 +95,19 @@ function providerProvider(type: OutpostTypeEnum): DataProvider {
 
 @customElement("ak-outpost-form")
 export class OutpostForm extends ModelForm<Outpost, string> {
-    @property()
-    type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
+    public static verboseName = msg("Outpost");
+    public static verboseNamePlural = msg("Outposts");
+
+    @property({ type: String })
+    public type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
 
     @property({ type: Boolean })
-    embedded = false;
+    public embedded = false;
 
     @state()
-    providers: DataProvider = providerProvider(this.type);
+    protected providers: DataProvider = providerProvider(this.type);
 
-    defaultConfig?: OutpostDefaultConfig;
+    protected defaultConfig?: OutpostDefaultConfig;
 
     public override reset(): void {
         super.reset();

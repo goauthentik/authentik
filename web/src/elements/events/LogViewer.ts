@@ -4,49 +4,31 @@ import "#elements/timestamp/ak-timestamp";
 
 import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { StaticTable } from "#elements/table/StaticTable";
+import { TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-log-viewer")
-export class LogViewer extends Table<LogEvent> {
-    @property({ attribute: false })
-    logs?: LogEvent[] = [];
+export class LogViewer extends StaticTable<LogEvent> {
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    expandable = true;
-    paginated = false;
+    public override expandable = true;
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
-
-    async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
-        return {
-            pagination: {
-                next: 0,
-                previous: 0,
-                count: this.logs?.length || 0,
-                current: 1,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: this.logs?.length || 0,
-            },
-            results: this.logs || [],
-        };
-    }
-
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state><span>${msg("No log messages.")}</span> </ak-empty-state>`,
         );
     }
 
-    renderExpanded(item: LogEvent): TemplateResult {
+    protected override renderExpanded(item: LogEvent): SlottedTemplateResult {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
@@ -71,8 +53,8 @@ export class LogViewer extends Table<LogEvent> {
         </dl>`;
     }
 
-    renderToolbarContainer(): SlottedTemplateResult {
-        return nothing;
+    protected override renderToolbarContainer(): SlottedTemplateResult {
+        return null;
     }
 
     protected columns: TableColumn[] = [
@@ -82,7 +64,7 @@ export class LogViewer extends Table<LogEvent> {
         [msg("Logger")],
     ];
 
-    statusForItem(item: LogEvent): string {
+    protected statusForItem(item: LogEvent): string {
         switch (item.logLevel) {
             case LogLevelEnum.Critical:
             case LogLevelEnum.Error:
@@ -100,15 +82,15 @@ export class LogViewer extends Table<LogEvent> {
         return formatElapsedTime(item.timestamp);
     }
 
-    row(item: LogEvent): SlottedTemplateResult[] {
+    protected override row(item: LogEvent): SlottedTemplateResult[] {
         return [
             html`<ak-timestamp .timestamp=${item.timestamp} refresh></ak-timestamp>`,
             html`<ak-status-label
                 type=${this.statusForItem(item)}
                 bad-label=${item.logLevel}
             ></ak-status-label>`,
-            html`${item.event}`,
-            html`${item.logger}`,
+            item.event,
+            item.logger,
         ];
     }
 }

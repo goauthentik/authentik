@@ -1,0 +1,21 @@
+:host {
+    display: flex;
+}
+
+.pf-c-sidebar__panel {
+    --pf-c-sidebar__panel--Position: static;
+    flex: 0 1 25%;
+}
+.pf-c-sidebar__content {
+    flex: 1 1 75%;
+    min-width: 0;
+}
+
+.pf-c-dropdown {
+    --pf-c-dropdown__toggle--PaddingLeft: var(--pf-global--spacer--md);
+}
+
+.empty-state-primary {
+    display: flex;
+    gap: var(--pf-global--spacer--sm);
+}

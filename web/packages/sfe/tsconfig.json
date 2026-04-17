@@ -4,10 +4,8 @@
         "moduleResolution": "bundler",
         "module": "preserve",
         "noEmit": true,
-        "baseUrl": ".",
         "outDir": "out",
         "types": [],
-        "esModuleInterop": true,
         "lib": ["DOM", "ES2015", "ES2017"]
     }
 }

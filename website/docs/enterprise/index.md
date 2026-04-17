@@ -9,7 +9,7 @@ Enterprise licenses can be purchased via our [Customer Portal](https://customers
 Refer to our Enterprise documentation for further information:
 
 - [Get started with Enterprise](./get-started.md)
-- [Using the customer portal](./manage-enterprise.mdx)
+- [Using the Customer Portal](./manage-enterprise.mdx)
 - [Accessing Enterprise support](./enterprise-support.md)
 
 Our standard technical documentation covers how to configure, customize, and use authentik, whether the open source version that we have built our reputation on or our Enterprise version with dedicated support.

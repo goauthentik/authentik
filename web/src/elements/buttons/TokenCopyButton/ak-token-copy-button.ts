@@ -27,7 +27,7 @@ import { customElement, property } from "lit/decorators.js";
  */
 
 @customElement("ak-token-copy-button")
-export class TokenCopyButton extends BaseTaskButton<null> {
+export class AKTokenCopyButton extends BaseTaskButton<null> {
     /**
      * The identifier key associated with this token.
      * @attr
@@ -39,20 +39,18 @@ export class TokenCopyButton extends BaseTaskButton<null> {
     public entityLabel: string = msg("Token");
 
     public override callAction() {
-        if (!this.identifier) {
+        const { identifier } = this;
+
+        if (!identifier) {
             throw new TypeError("No `identifier` set for `TokenCopyButton`");
         }
 
         // Safari permission hack.
-        const text = new ClipboardItem({
-            "text/plain": new CoreApi(DEFAULT_CONFIG)
-                .coreTokensViewKeyRetrieve({
-                    identifier: this.identifier,
-                })
-                .then((tokenView) => new Blob([tokenView.key], { type: "text/plain" })),
-        });
+        const data = new CoreApi(DEFAULT_CONFIG)
+            .coreTokensViewKeyRetrieve({ identifier })
+            .then((tokenView) => new Blob([tokenView.key], { type: "text/plain" }));
 
-        return writeToClipboard(text, this.entityLabel).then(() => null);
+        return writeToClipboard(data, this.entityLabel).then(() => null);
     }
 
     protected async onError(error: unknown) {
@@ -69,10 +67,10 @@ export class TokenCopyButton extends BaseTaskButton<null> {
     }
 }
 
-export default TokenCopyButton;
+export default AKTokenCopyButton;
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-token-copy-button": TokenCopyButton;
+        "ak-token-copy-button": AKTokenCopyButton;
     }
 }

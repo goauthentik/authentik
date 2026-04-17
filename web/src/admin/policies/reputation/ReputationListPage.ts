@@ -10,34 +10,29 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    PoliciesApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    Reputation,
-} from "@goauthentik/api";
+import { ModelEnum, PoliciesApi, Reputation } from "@goauthentik/api";
 
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { html, nothing } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-policy-reputation-list")
 export class ReputationListPage extends TablePage<Reputation> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Reputation scores");
-    public pageDescription = msg(
+
+    public override pageTitle = msg("Reputation scores");
+    public override pageDescription = msg(
         "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login.",
     );
-    public pageIcon = "fa fa-ban";
+    public override pageIcon = "fa fa-ban";
+    public override order = "identifier";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override searchPlaceholder = msg("Search for a reputation by identifier or IP...");
 
-    @property()
-    order = "identifier";
-
-    checkbox = true;
-    clearOnRefresh = true;
-
-    async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
             ...(await this.defaultEndpointConfig()),
         });
@@ -55,7 +50,7 @@ export class ReputationListPage extends TablePage<Reputation> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Reputation")}
@@ -77,9 +72,9 @@ export class ReputationListPage extends TablePage<Reputation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Reputation): SlottedTemplateResult[] {
+    protected override row(item: Reputation): SlottedTemplateResult[] {
         return [
-            html`${item.identifier}`,
+            item.identifier,
             html`${item.ipGeoData?.country
                 ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
                 : nothing}
@@ -88,7 +83,7 @@ export class ReputationListPage extends TablePage<Reputation> {
             Timestamp(item.updated),
             html`
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikPoliciesReputationReputationpolicy}
+                    model=${ModelEnum.AuthentikPoliciesReputationReputationpolicy}
                     objectPk=${item.pk || ""}
                 >
                 </ak-rbac-object-permission-modal>

@@ -17,6 +17,7 @@ export const DefaultBrand = {
     defaultLocale: "",
     flags: {
         flowsRefreshOthers: false,
+        coreDefaultAppAccess: true,
         enterpriseAuditIncludeExpandedDiff: false,
         flowsContinuousLogin: false,
     },
@@ -92,7 +93,7 @@ export const DefaultUIConfig = {
     },
     locale: "",
     defaults: {
-        userPath: "users",
+        userPath: "",
     },
 } as const satisfies UIConfig;
 

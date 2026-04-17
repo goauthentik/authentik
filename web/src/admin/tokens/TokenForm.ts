@@ -22,6 +22,9 @@ const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
+    public static override verboseName = msg("Token");
+    public static override verboseNamePlural = msg("Tokens");
+
     protected expirationMinimumDate = new Date();
 
     @state()
@@ -100,6 +103,7 @@ export class TokenForm extends ModelForm<Token, string> {
 
             <ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
+                    placeholder=${msg("Select a user...")}
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",

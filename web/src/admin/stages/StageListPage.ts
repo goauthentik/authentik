@@ -6,45 +6,47 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CustomFormElementTagName } from "#elements/forms/unsafe";
+import { IconEditButtonByTagName, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
+import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-import { StrictUnsafe } from "#elements/utils/unsafe";
 
-import { Stage, StagesApi } from "@goauthentik/api";
+import { AKStageWizard } from "#admin/stages/ak-stage-wizard";
+import { DuoDeviceImportForm } from "#admin/stages/authenticator_duo/DuoDeviceImportForm";
 
-import { msg, str } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { ModelEnum, Stage, StagesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
-    public pageTitle = msg("Stages");
-    public pageDescription = msg(
+    public override pageTitle = msg("Stages");
+    public override pageDescription = msg(
         "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
     );
-    public pageIcon = "pf-icon pf-icon-plugged";
+    public override pageIcon = "pf-icon pf-icon-plugged";
     protected override searchEnabled = true;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override order = "name";
+    public override searchPlaceholder = msg("Search for a stage name, type, or flow...");
 
-    @property()
-    order = "name";
-
-    async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
         return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());
     }
 
-    protected columns: TableColumn[] = [
+    protected override columns: TableColumn[] = [
         // ---
         [msg("Name"), "name"],
         [msg("Flows")],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Stage(s)")}
@@ -66,26 +68,22 @@ export class StageListPage extends TablePage<Stage> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderStageActions(stage: Stage) {
-        return stage.component === "ak-stage-authenticator-duo-form"
-            ? html`<ak-forms-modal>
-                  <span slot="submit">${msg("Import")}</span>
-                  <span slot="header">${msg("Import Duo device")}</span>
-                  <ak-stage-authenticator-duo-device-import-form
-                      slot="form"
-                      .instancePk=${stage.pk}
-                  >
-                  </ak-stage-authenticator-duo-device-import-form>
-                  <button slot="trigger" class="pf-c-button pf-m-plain">
-                      <pf-tooltip position="top" content=${msg("Import devices")}>
-                          <i class="fas fa-file-import" aria-hidden="true"></i>
-                      </pf-tooltip>
-                  </button>
-              </ak-forms-modal>`
-            : nothing;
+    protected renderStageActions(stage: Stage): SlottedTemplateResult {
+        if (stage.component !== "ak-stage-authenticator-duo-form") {
+            return null;
+        }
+
+        return html`<button
+            class="pf-c-button pf-m-plain"
+            ${modalInvoker(DuoDeviceImportForm, { instancePk: stage.pk })}
+        >
+            <pf-tooltip position="top" content=${msg("Import devices")}>
+                <i class="fas fa-file-import" aria-hidden="true"></i>
+            </pf-tooltip>
+        </button>`;
     }
 
-    row(item: Stage): SlottedTemplateResult[] {
+    protected override row(item: Stage): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 <small>${item.verboseName}</small>`,
@@ -98,31 +96,19 @@ export class StageListPage extends TablePage<Stage> {
                     </li>`;
                 })}
             </ul>`,
-            html`<div>
-                <ak-forms-modal>
-                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
-                        slot: "form",
-                        instancePk: item.pk,
-                        actionLabel: msg("Update"),
-                        headline: msg(str`Update ${item.verboseName}`, {
-                            id: "form.headline.update",
-                        }),
-                    })}
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
-                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
-                </ak-rbac-object-permission-modal>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButtonByTagName(item.component, item.pk)}
+                ${IconPermissionButton(item.name, {
+                    model: item.metaModelName as ModelEnum,
+                    objectPk: item.pk,
+                })}
                 ${this.renderStageActions(item)}
             </div>`,
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`<ak-stage-wizard></ak-stage-wizard> `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(AKStageWizard);
     }
 }
 

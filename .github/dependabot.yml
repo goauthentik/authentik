@@ -20,6 +20,8 @@ updates:
       prefix: "ci:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 3
 
   #endregion
 
@@ -35,10 +37,35 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
+      exclude:
+        - "golang.org/x/crypto"
+        - "golang.org/x/net"
+        - "github.com/golang-jwt/jwt/*"
+        - "github.com/coreos/go-oidc/*"
+        - "github.com/go-ldap/ldap/*"
 
   #endregion
 
   #region Rust
+
+  - package-ecosystem: cargo
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "core:"
+    labels:
+      - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
 
   - package-ecosystem: rust-toolchain
     directory: "/"
@@ -50,6 +77,8 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 3
 
   #endregion
 
@@ -68,6 +97,10 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "web:"
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
     groups:
       sentry:
         patterns:
@@ -131,6 +164,10 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "core, web:"
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
     groups:
       sentry:
         patterns:
@@ -189,6 +226,10 @@ updates:
       prefix: "website:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
     groups:
       docusaurus:
         patterns:
@@ -227,6 +268,10 @@ updates:
       prefix: "lifecycle/aws:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
 
   #endregion
 
@@ -242,6 +287,18 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-patch-days: 3
+      exclude:
+        - "django"
+        - "cryptography"
+        - "pyjwt"
+        - "xmlsec"
+        - "lxml"
+        - "psycopg"
+        - "pyopenssl"
 
   #endregion
 
@@ -259,10 +316,14 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 3
   - package-ecosystem: docker-compose
     directories:
+      - /packages/client-go
+      - /packages/client-rust
+      - /packages/client-ts
       # - /scripts # Maybe
-      - /scripts/api
       - /tests/e2e
     schedule:
       interval: daily
@@ -272,5 +333,7 @@ updates:
       prefix: "core:"
     labels:
       - dependencies
+    cooldown:
+      default-days: 3
 
   #endregion

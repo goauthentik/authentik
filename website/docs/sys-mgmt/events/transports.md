@@ -1,6 +1,6 @@
 ---
-title: Transport rules
-sidebar_label: Transport rules
+title: Notification Transports
+sidebar_label: Notification Transports
 ---
 
 To receive notifications about events you must first [create a notification transport](#create-a-notification-transport), and then define a notification rule with a bound policy. For more information, see the [Workflow overview](./notifications.md#workflow-overview).
@@ -77,8 +77,8 @@ This sends a request using the Slack-specific format. This is also compatible wi
 
 ## Create a notification transport
 
-1. Log in as an administrator to the authentik Admin interface, and then navigate to **Event > Notification Transports**.
+1. Log in as an administrator to the authentik Admin interface, and then navigate to **Event > Notification Transports**.
 
-2. Click **Create** to add a new transport or click the **Edit** icon next to an existing notification transport to modify it.
+2. Click **New Notification Transport** to add a new transport or click the **Edit** icon next to an existing notification transport to modify it.
 
-3. Define the **Name** and **Mode** for the notification transport, enter required configuration settings, and then click **Create**.
+3. Define the **Name** and **Mode** for the notification transport, enter required configuration settings, and then click **Create Notification Transport**.

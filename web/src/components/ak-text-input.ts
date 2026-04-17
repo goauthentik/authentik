@@ -43,11 +43,11 @@ export class AkTextInput extends HorizontalLightComponent<string> {
             return this.placeholder;
         }
 
-        if (this.inputMode === "url" || this.type === "url") {
+        if (this.inputMode === "url" || this.type === "url" || this.name === "url") {
             return "https://...";
         }
 
-        if (this.inputMode === "email" || this.type === "email") {
+        if (this.inputMode === "email" || this.type === "email" || this.name === "email") {
             return msg("Type an email address...");
         }
 
@@ -74,6 +74,7 @@ export class AkTextInput extends HorizontalLightComponent<string> {
             placeholder=${ifPresent(this.#formatPlaceholder())}
             inputmode=${this.inputMode}
             ?required=${this.required}
+            ?readonly=${this.readOnly}
             ?autofocus=${this.autofocus}
             ${this.autofocusTarget.toRef()}
         />`;

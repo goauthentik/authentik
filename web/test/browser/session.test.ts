@@ -18,7 +18,9 @@ test.describe("Session management", () => {
             page.getByRole("heading", {
                 level: 1,
             }),
-        ).toHaveText("My applications");
+        ).toHaveText("My applications", {
+            timeout: 10_000,
+        });
     });
 
     test("Reject bad username", async ({ session }) => {

@@ -1,9 +1,11 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
 import { bound } from "#elements/decorators/bound";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { kebabCase } from "change-case";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -49,6 +51,9 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
     @query("input")
     private input!: HTMLInputElement;
+
+    @property({ type: String })
+    public placeholder: string | null = msg("e.g. my-slug");
 
     #origin?: HTMLInputElement | null;
 
@@ -128,9 +133,12 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
             id=${ifDefined(this.fieldID)}
             @input=${(ev: Event) => this.handleTouch(ev)}
             type="text"
+            spellcheck="false"
+            autocomplete="off"
             value=${ifDefined(this.value)}
-            class="pf-c-form-control"
+            class="pf-c-form-control pf-m-monospace"
             ?required=${this.required}
+            placeholder=${ifPresent(this.placeholder)}
         />`;
     }
 

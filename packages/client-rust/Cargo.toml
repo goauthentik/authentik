@@ -1,0 +1,39 @@
+[package]
+name = "authentik-client"
+version.workspace = true
+authors.workspace = true
+description.workspace = true
+edition = "2021"
+readme.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license-file.workspace = true
+publish = false
+
+[dependencies]
+aws-lc-rs.workspace = true
+serde.workspace = true
+serde_with.workspace = true
+serde_json.workspace = true
+serde_repr.workspace = true
+url.workspace = true
+uuid.workspace = true
+reqwest.workspace = true
+reqwest-middleware.workspace = true
+rustls.workspace = true
+
+[lints.rust]
+non_snake_case = "allow"
+
+[lints.rustdoc]
+invalid_html_tags = "allow"
+
+[lints.clippy]
+derivable_impls = "allow"
+empty_docs = "allow"
+into_iter_on_ref = "allow"
+large_enum_variant = "allow"
+needless_return = "allow"
+
+[package.metadata.cargo-machete]
+ignored = ["aws-lc-rs", "rustls"]

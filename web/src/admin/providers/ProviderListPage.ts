@@ -1,5 +1,5 @@
 import "#admin/applications/ApplicationWizardHint";
-import "#admin/providers/ProviderWizard";
+import "#admin/providers/ak-provider-wizard";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "#admin/providers/ldap/LDAPProviderForm";
 import "#admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
@@ -13,20 +13,20 @@ import "#admin/providers/ssf/SSFProviderFormPage";
 import "#admin/providers/wsfed/WSFederationProviderForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
-import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CustomFormElementTagName } from "#elements/forms/unsafe";
+import { IconEditButtonByTagName } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-import { StrictUnsafe } from "#elements/utils/unsafe";
+
+import { AKProviderWizard } from "#admin/providers/ak-provider-wizard";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -49,7 +49,7 @@ export class ProviderListPage extends TablePage<Provider> {
     public order = "name";
 
     public searchLabel = msg("Provider Search");
-    public searchPlaceholder = msg("Search for providers…");
+    public searchPlaceholder = msg("Search for provider by name, type or assigned application...");
 
     override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList(
@@ -112,33 +112,24 @@ export class ProviderListPage extends TablePage<Provider> {
         return [
             html`<a href="#/core/providers/${item.pk}">${item.name}</a>`,
             this.#rowApp(item),
-            html`${item.verboseName}`,
-            html`<div>
-                <ak-forms-modal>
-                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
-                        slot: "form",
-                        instancePk: item.pk,
-                        actionLabel: msg("Update"),
-                        headline: msg(str`Update ${item.verboseName}`, {
-                            id: "form.headline.update",
-                        }),
-                    })}
-                    <button
-                        aria-label=${msg(str`Edit "${item.name}" provider`)}
-                        slot="trigger"
-                        class="pf-c-button pf-m-plain"
-                    >
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i aria-hidden="true" class="fas fa-edit"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            item.verboseName,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButtonByTagName(item.component, item.pk)}
             </div>`,
         ];
     }
 
-    override renderObjectCreate(): TemplateResult {
-        return html`<ak-provider-wizard> </ak-provider-wizard> `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return html`
+            <button
+                class="pf-c-button pf-m-primary"
+                type="button"
+                aria-description="${msg("Open the wizard to create a new provider.")}"
+                ${AKProviderWizard.asModalInvoker()}
+            >
+                ${msg("New Provider")}
+            </button>
+        `;
     }
 }
 

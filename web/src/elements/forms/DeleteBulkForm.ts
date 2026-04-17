@@ -6,7 +6,8 @@ import { MessageLevel } from "#common/messages";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { StaticTable } from "#elements/table/StaticTable";
+import { TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
@@ -21,13 +22,8 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 type BulkDeleteMetadata = { key: string; value: string }[];
 
 @customElement("ak-delete-objects-table")
-export class DeleteObjectsTable<T extends object> extends Table<T> {
+export class DeleteObjectsTable<T extends object> extends StaticTable<T> {
     static styles: CSSResult[] = [...super.styles, PFList];
-
-    public override paginated = false;
-
-    @property({ attribute: false })
-    public objects: T[] = [];
 
     @property({ attribute: false })
     public metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
@@ -44,21 +40,6 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
     @state()
     protected usedByData: Map<T, UsedBy[]> = new Map();
 
-    protected async apiEndpoint(): Promise<PaginatedResponse<T>> {
-        return Promise.resolve({
-            pagination: {
-                count: this.objects.length,
-                current: 1,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: this.objects.length,
-                next: 0,
-                previous: 0,
-            },
-            results: this.objects,
-        });
-    }
-
     protected override rowLabel(item: T): string | null {
         const name = "name" in item && typeof item.name === "string" ? item.name.trim() : null;
         return name || null;
@@ -66,7 +47,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
 
     @state()
     protected get columns(): TableColumn[] {
-        return this.metadata(this.objects[0]).map((element) => [element.key]);
+        return this.metadata(this.items![0]).map((element) => [element.key]);
     }
 
     protected row(item: T): SlottedTemplateResult[] {
@@ -134,8 +115,8 @@ export class DeleteBulkForm<T> extends ModalButton {
     @property({ type: String, attribute: "object-label" })
     public objectLabel: string | null = null;
 
-    @property({ type: String, attribute: "action-label" })
-    public actionLabel: string | null = null;
+    @property({ type: String, attribute: "submit-label" })
+    public submitLabel: string | null = null;
 
     @property({ type: String, attribute: "action-subtext" })
     public actionSubtext: string | null = null;
@@ -207,8 +188,8 @@ export class DeleteBulkForm<T> extends ModalButton {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">
-                        ${this.actionLabel
-                            ? this.actionLabel
+                        ${this.submitLabel
+                            ? this.submitLabel
                             : msg(str`Delete ${this.objectLabel}`)}
                     </h1>
                 </div>
@@ -227,30 +208,27 @@ export class DeleteBulkForm<T> extends ModalButton {
             </section>
             <section class="pf-c-modal-box__body pf-m-light">
                 <ak-delete-objects-table
-                    .objects=${this.objects}
+                    .items=${this.objects}
                     .usedBy=${this.usedBy}
                     .metadata=${this.metadata}
                 >
                 </ak-delete-objects-table>
             </section>
-            <footer class="pf-c-modal-box__footer">
-                <ak-spinner-button
-                    .callAction=${() => {
-                        return this.confirm();
-                    }}
-                    class="pf-m-danger"
-                >
-                    ${this.buttonLabel} </ak-spinner-button
-                >&nbsp;
+            <fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;
                     }}
-                    class="pf-m-secondary"
+                    class="pf-m-plain"
                 >
                     ${msg("Cancel")}
                 </ak-spinner-button>
-            </footer>`;
+
+                <ak-spinner-button .callAction=${() => this.confirm()} class="pf-m-danger">
+                    ${this.buttonLabel}
+                </ak-spinner-button>
+            </fieldset>`;
     }
 }
 

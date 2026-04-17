@@ -5,11 +5,13 @@ import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
+import type { Jsonifiable } from "type-fest";
+
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-radio-input")
-export class AkRadioInput<T> extends HorizontalLightComponent<T> {
+export class AkRadioInput<T extends Jsonifiable> extends HorizontalLightComponent<T> {
     public override role = "radiogroup";
 
     @property({ type: Object })
@@ -28,21 +30,27 @@ export class AkRadioInput<T> extends HorizontalLightComponent<T> {
         return nothing;
     }
 
-    renderControl() {
+    protected override renderControl(): SlottedTemplateResult {
         const helpText = this.help?.trim();
 
-        return html`<ak-radio
+        return html`${helpText
+                ? html`<p part="radio-help" class="pf-c-form__helper-radio" id=${this.helpID}>
+                      ${helpText}
+                  </p>`
+                : null}<ak-radio
                 .options=${this.options}
                 .value=${this.value}
                 @input=${this.handleInput}
-            ></ak-radio>
-            ${helpText ? html`<p class="pf-c-form__helper-radio">${helpText}</p>` : nothing}`;
+                aria-describedby=${this.help ? this.helpID : nothing}
+                part="radio"
+            >
+            </ak-radio>`;
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-radio-input": AkRadioInput<unknown>;
+        "ak-radio-input": AkRadioInput<Jsonifiable>;
     }
 }
 

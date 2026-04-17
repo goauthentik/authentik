@@ -28,7 +28,7 @@ To support the integration of Forgejo with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -75,14 +75,14 @@ Users who are not part of any defined group will be denied login access. In cont
 3. Set the group name to `gituser` and click **Create**.
 4. Repeat steps 2 and 3 to create two additional groups named `gitadmin` and `gitrestricted`.
 5. Click the name of a newly created group and navigate to the **Users** tab.
-6. Click **Add existing user**, select the user/s that need Forgejo access and click **Add**.
+6. Click **Add existing user**, select the users that need Forgejo access, and click **Add**.
 7. Repeat steps 5 and 6 for the two additional groups.
 
 #### Create custom property mapping
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following configurations:
-    - **Name**: Choose a descriptive name (.e.g `authentik forgejo OAuth Mapping: OpenID 'forgejo'`)
+    - **Name**: Choose a descriptive name (e.g. `authentik forgejo OAuth Mapping: OpenID 'forgejo'`)
     - **Scope name**: `forgejo`
     - **Expression**:
 
@@ -116,7 +116,7 @@ Users who are not part of any defined group will be denied login access. In cont
 #### Configure Forgejo to use the new claims
 
 :::info
-For this to function, the Forgejo `ENABLE_AUTO_REGISTRATION: true` variable must be set. More information on configurations variables in the [Forgejo Configuration Cheat Sheet](https://forgejo.org/docs/latest/admin/config-cheat-sheet/).
+For this to function, the Forgejo `ENABLE_AUTO_REGISTRATION: true` variable must be set. More information on configuration variables is available in the [Forgejo Configuration Cheat Sheet](https://forgejo.org/docs/latest/admin/config-cheat-sheet/).
 :::
 
 1. Log in to Forgejo as an admin. Click on your profile icon at the top right > **Site Administration**.

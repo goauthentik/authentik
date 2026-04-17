@@ -3,6 +3,7 @@ import "#components/ak-text-input";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIMessage, MessageLevel } from "#common/messages";
 
+import { asInstanceInvoker } from "#elements/dialogs";
 import { Form } from "#elements/forms/Form";
 
 import { AdminApi, CoreApi, ImpersonationRequest } from "@goauthentik/api";
@@ -13,13 +14,17 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-user-impersonate-form")
 export class UserImpersonateForm extends Form<ImpersonationRequest> {
+    public static asInstanceInvoker = asInstanceInvoker;
+    public override submitLabel = msg("Impersonate");
+    public override headline = msg("Impersonate User");
+
     @property({ type: Number })
     public instancePk?: number;
 
     @state()
-    private requireReason = false;
+    protected requireReason = false;
 
-    #onOpen = async () => {
+    protected refreshReasonRequirement = async () => {
         try {
             const settings = await new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve();
             this.requireReason = settings.impersonationRequireReason ?? false;
@@ -30,19 +35,9 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
         }
     };
 
-    constructor() {
-        super();
-        this.#onOpen = this.#onOpen.bind(this);
-    }
-
-    connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
-        this.addEventListener("ak-modal-show", this.#onOpen);
-    }
-
-    public disconnectedCallback(): void {
-        super.disconnectedCallback();
-        this.removeEventListener("ak-modal-show", this.#onOpen);
+        this.refreshReasonRequirement();
     }
 
     protected override formatAPISuccessMessage(): APIMessage | null {

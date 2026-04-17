@@ -3,32 +3,41 @@ import "#admin/applications/ApplicationCheckAccessForm";
 import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/lifecycle/ObjectLifecyclePage";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/AppIcon";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#admin/applications/ApplicationEvents";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
+import renderDescriptionList from "#components/DescriptionList";
+
+import { ApplicationCheckAccessForm } from "#admin/applications/ApplicationCheckAccessForm";
+import { ApplicationForm } from "#admin/applications/ApplicationForm";
 
 import {
     Application,
     ContentTypeEnum,
     CoreApi,
+    EventActions,
+    EventsApi,
+    EventStats,
+    ModelEnum,
     OutpostsApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -53,6 +62,11 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
         PFGrid,
         PFFlex,
         PFCard,
+        css`
+            .big-number {
+                font-size: 250%;
+            }
+        `,
     ];
 
     //#region Properties
@@ -65,6 +79,9 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
 
     @state()
     protected application?: Application;
+
+    @state()
+    protected stats?: EventStats;
 
     @state()
     protected error?: APIError;
@@ -97,12 +114,21 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 if (
                     app.providerObj &&
                     [
-                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
-                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
+                        ModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
+                        ModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
                     ].includes(app.providerObj.metaModelName)
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
                 }
+                return new EventsApi(DEFAULT_CONFIG)
+                    .eventsEventsStatsRetrieve({
+                        action: EventActions.AuthorizeApplication,
+                        contextAuthorizedApp: app.pk.replaceAll("-", ""),
+                        countSteps: ["hours=24", "days=7", "days=30"],
+                    })
+                    .then((stats) => {
+                        this.stats = stats;
+                    });
             })
             .catch(async (error) => {
                 this.error = await parseAPIResponseError(error);
@@ -116,6 +142,133 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     }
 
     //#region Render
+
+    renderTabOverview() {
+        if (!this.application) {
+            return nothing;
+        }
+        return html`<div class="pf-l-grid pf-m-gutter">
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl">
+                <div class="pf-c-card__title">${msg("Related")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList([
+                        [
+                            msg("Provider"),
+                            this.application.providerObj
+                                ? html` <a
+                                      href="#/core/providers/${this.application.providerObj?.pk}"
+                                  >
+                                      ${this.application.providerObj?.name}
+                                      (${this.application.providerObj?.verboseName})
+                                  </a>`
+                                : html`-`,
+                        ],
+                        [
+                            msg("Backchannel Providers"),
+                            (this.application.backchannelProvidersObj || []).length > 0
+                                ? html`<ul class="pf-c-list">
+                                      ${this.application.backchannelProvidersObj.map((provider) => {
+                                          return html`
+                                              <li>
+                                                  <a href="#/core/providers/${provider.pk}">
+                                                      ${provider.name} (${provider.verboseName})
+                                                  </a>
+                                              </li>
+                                          `;
+                                      })}
+                                  </ul>`
+                                : html`-`,
+                        ],
+                        [
+                            msg("Policy engine mode"),
+                            html`${this.application.policyEngineMode?.toUpperCase()}`,
+                        ],
+                        [
+                            msg("Related actions"),
+                            html`<button
+                                    class="pf-c-button pf-m-secondary pf-m-block"
+                                    ${modalInvoker(ApplicationForm, {
+                                        instancePk: this.application.slug,
+                                    })}
+                                >
+                                    ${msg("Edit")}
+                                </button>
+                                <button
+                                    class="pf-c-button pf-m-secondary pf-m-block"
+                                    ${modalInvoker(
+                                        ApplicationCheckAccessForm,
+                                        {
+                                            application: this.application,
+                                        },
+                                        {
+                                            closedBy: "closerequest",
+                                        },
+                                    )}
+                                >
+                                    ${msg("Check access")}
+                                </button>
+                                ${this.application.launchUrl
+                                    ? html`<a
+                                          target="_blank"
+                                          href=${this.application.launchUrl}
+                                          slot="trigger"
+                                          class="pf-c-button pf-m-secondary pf-m-block"
+                                      >
+                                          ${msg("Launch")}
+                                      </a>`
+                                    : null}`,
+                        ],
+                    ])}
+                </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl">
+                <div class="pf-c-card__title">${msg("Statistics")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList([
+                        [
+                            msg("Users"),
+                            html`<p class="big-number">
+                                ${this.stats ? this.stats?.uniqueUsers : "-"}
+                            </p>`,
+                        ],
+                        [
+                            msg("Authorizations (24 hours)"),
+                            html`<p class="big-number">
+                                ${this.stats ? this.stats?.countStep.hours24 : "-"}
+                            </p>`,
+                        ],
+                        [
+                            msg("Authorizations (7 days)"),
+                            html`<p class="big-number">
+                                ${this.stats ? this.stats?.countStep.days7 : "-"}
+                            </p>`,
+                        ],
+                        [
+                            msg("Authorizations (1 month)"),
+                            html`<p class="big-number">
+                                ${this.stats ? this.stats?.countStep.days30 : "-"}
+                            </p>`,
+                        ],
+                    ])}
+                </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl">
+                <div class="pf-c-card__title">
+                    ${msg("Logins over the last week (per 8 hours)")}
+                </div>
+                <div class="pf-c-card__body">
+                    ${this.application &&
+                    html`<ak-charts-application-authorize application-id=${this.application.pk}>
+                    </ak-charts-application-authorize>`}
+                </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                <div class="pf-c-card__title">${msg("Events")}</div>
+                <ak-events-application application-id=${this.application.pk || ""}>
+                </ak-events-application>
+            </div>
+        </div>`;
+    }
 
     render(): TemplateResult {
         if (this.error) {
@@ -160,183 +313,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     aria-label="${msg("Overview")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div
-                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
-                        >
-                            <div class="pf-c-card__title">${msg("Related")}</div>
-                            <div class="pf-c-card__body">
-                                <dl class="pf-c-description-list">
-                                    ${this.application.providerObj
-                                        ? html`<div class="pf-c-description-list__group">
-                                              <dt class="pf-c-description-list__term">
-                                                  <span class="pf-c-description-list__text"
-                                                      >${msg("Provider")}</span
-                                                  >
-                                              </dt>
-                                              <dd class="pf-c-description-list__description">
-                                                  <div class="pf-c-description-list__text">
-                                                      <a
-                                                          href="#/core/providers/${this.application
-                                                              .providerObj?.pk}"
-                                                      >
-                                                          ${this.application.providerObj?.name}
-                                                          (${this.application.providerObj
-                                                              ?.verboseName})
-                                                      </a>
-                                                  </div>
-                                              </dd>
-                                          </div>`
-                                        : nothing}
-                                    ${(this.application.backchannelProvidersObj || []).length > 0
-                                        ? html`<div class="pf-c-description-list__group">
-                                              <dt class="pf-c-description-list__term">
-                                                  <span class="pf-c-description-list__text"
-                                                      >${msg("Backchannel Providers")}</span
-                                                  >
-                                              </dt>
-                                              <dd class="pf-c-description-list__description">
-                                                  <div class="pf-c-description-list__text">
-                                                      <ul class="pf-c-list">
-                                                          ${this.application.backchannelProvidersObj.map(
-                                                              (provider) => {
-                                                                  return html`
-                                                                      <li>
-                                                                          <a
-                                                                              href="#/core/providers/${provider.pk}"
-                                                                          >
-                                                                              ${provider.name}
-                                                                              (${provider.verboseName})
-                                                                          </a>
-                                                                      </li>
-                                                                  `;
-                                                              },
-                                                          )}
-                                                      </ul>
-                                                  </div>
-                                              </dd>
-                                          </div>`
-                                        : nothing}
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Policy engine mode")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text pf-m-monospace">
-                                                ${this.application.policyEngineMode?.toUpperCase()}
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Edit")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                <ak-forms-modal>
-                                                    <span slot="submit">${msg("Update")}</span>
-                                                    <span slot="header">
-                                                        ${msg("Update Application")}
-                                                    </span>
-                                                    <ak-application-form
-                                                        slot="form"
-                                                        .instancePk=${this.application.slug}
-                                                    >
-                                                    </ak-application-form>
-                                                    <button
-                                                        slot="trigger"
-                                                        class="pf-c-button pf-m-secondary"
-                                                    >
-                                                        ${msg("Edit")}
-                                                    </button>
-                                                </ak-forms-modal>
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
-                                                >${msg("Check access")}</span
-                                            >
-                                        </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                <ak-forms-modal
-                                                    .closeAfterSuccessfulSubmit=${false}
-                                                >
-                                                    <span slot="submit">${msg("Check")}</span>
-                                                    <span slot="header">
-                                                        ${msg("Check Application access")}
-                                                    </span>
-                                                    <ak-application-check-access-form
-                                                        slot="form"
-                                                        .application=${this.application}
-                                                    >
-                                                    </ak-application-check-access-form>
-                                                    <button
-                                                        slot="trigger"
-                                                        class="pf-c-button pf-m-secondary"
-                                                    >
-                                                        ${msg("Test")}
-                                                    </button>
-                                                </ak-forms-modal>
-                                            </div>
-                                        </dd>
-                                    </div>
-                                    ${this.application.launchUrl
-                                        ? html`<div class="pf-c-description-list__group">
-                                              <dt class="pf-c-description-list__term">
-                                                  <span class="pf-c-description-list__text"
-                                                      >${msg("Launch")}</span
-                                                  >
-                                              </dt>
-                                              <dd class="pf-c-description-list__description">
-                                                  <div class="pf-c-description-list__text">
-                                                      <a
-                                                          target="_blank"
-                                                          href=${this.application.launchUrl}
-                                                          slot="trigger"
-                                                          class="pf-c-button pf-m-secondary"
-                                                      >
-                                                          ${msg("Launch")}
-                                                      </a>
-                                                  </div>
-                                              </dd>
-                                          </div>`
-                                        : nothing}
-                                </dl>
-                            </div>
-                        </div>
-                        <div
-                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
-                        >
-                            <div class="pf-c-card__title">
-                                ${msg("Logins over the last week (per 8 hours)")}
-                            </div>
-                            <div class="pf-c-card__body">
-                                ${this.application &&
-                                html` <ak-charts-application-authorize
-                                    application-id=${this.application.pk}
-                                >
-                                </ak-charts-application-authorize>`}
-                            </div>
-                        </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">${msg("Changelog")}</div>
-                            <div class="pf-c-card__body">
-                                <ak-object-changelog
-                                    targetModelPk=${this.application.pk || ""}
-                                    targetModelApp="authentik_core"
-                                    targetModelName="application"
-                                >
-                                </ak-object-changelog>
-                            </div>
-                        </div>
-                    </div>
+                    ${this.renderTabOverview()}
                 </section>
                 <section
                     role="tabpanel"
@@ -402,19 +379,33 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                         </ak-bound-policies-list>
                     </div>
                 </section>
-                <ak-rbac-object-permission-page
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <ak-object-changelog
+                            targetModelPk=${this.application.pk || ""}
+                            targetModelName=${ModelEnum.AuthentikCoreApplication}
+                        >
+                        </ak-object-changelog>
+                    </div>
+                </div>
+                <ak-rbac-object-permission-page
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplication}
+                    model=${ModelEnum.AuthentikCoreApplication}
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
                     ? html`<ak-object-lifecycle-page
-                          class="pf-c-page__main-section pf-m-no-padding-mobile"
                           role="tabpanel"
                           tabindex="0"
                           slot="page-lifecycle"
@@ -434,6 +425,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
             header: this.application?.name ?? msg("Loading application..."),
             description: this.application?.metaPublisher,
             icon: this.application?.metaIconUrl,
+            iconImage: true,
         });
     }
 }

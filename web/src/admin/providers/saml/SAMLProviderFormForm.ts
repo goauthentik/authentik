@@ -13,6 +13,7 @@ import "#elements/utils/TimeDeltaHelp";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
 import {
     availableHashes,
+    DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
     retrieveSignatureAlgorithm,
     SAMLSupportedKeyTypes,
@@ -23,7 +24,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { RadioOption } from "#elements/forms/Radio";
 
 import {
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     KeyTypeEnum,
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
@@ -128,8 +129,8 @@ function renderHasSlsUrl(
         </ak-radio-input>`;
 }
 export interface SAMLProviderFormProps {
-    provider?: Partial<SAMLProvider>;
-    errors?: ValidationError;
+    provider?: Partial<SAMLProvider> | null;
+    errors?: ValidationError | null;
     setHasSigningKp: (ev: InputEvent) => void;
     hasSigningKp: boolean;
     signingKeyType: KeyTypeEnum | null;
@@ -142,8 +143,8 @@ export interface SAMLProviderFormProps {
 }
 
 export function renderForm({
-    provider = {},
-    errors = {},
+    provider,
+    errors,
     setHasSigningKp,
     hasSigningKp,
     signingKeyType,
@@ -154,6 +155,9 @@ export function renderForm({
     logoutMethod,
     setLogoutMethod,
 }: SAMLProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
     // Get available hash algorithms for the selected key type
     const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
 
@@ -166,11 +170,11 @@ export function renderForm({
         ></ak-text-input>
         <ak-form-element-horizontal
             name="authorizationFlow"
-            label=${msg("Authorization flow")}
+            label=${msg("Authorization Flow")}
             required
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
                 .errorMessages=${errors.authorizationFlow}
                 required
@@ -238,11 +242,11 @@ export function renderForm({
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Authentication flow")}
+                    label=${msg("Authentication Flow")}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
@@ -252,12 +256,12 @@ export function renderForm({
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
+                    label=${msg("Invalidation Flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
                         required
@@ -532,7 +536,8 @@ export function renderForm({
                                 <option
                                     value=${algorithmValue}
                                     ?selected=${provider?.signatureAlgorithm === algorithmValue ||
-                                    (!isCurrentAlgorithmAvailable && hash === "SHA256")}
+                                    (!isCurrentAlgorithmAvailable &&
+                                        hash === DEFAULT_HASH_ALGORITHM)}
                                 >
                                     ${hash}
                                 </option>

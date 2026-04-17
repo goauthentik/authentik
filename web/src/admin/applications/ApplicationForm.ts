@@ -1,4 +1,4 @@
-import "#admin/applications/ProviderSelectModal";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
@@ -11,9 +11,9 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "./components/ak-backchannel-input.js";
-import "./components/ak-provider-search-input.js";
+import "#admin/applications/ak-provider-table";
+import "#admin/applications/components/ak-backchannel-input";
+import "#admin/applications/components/ak-provider-search-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -24,10 +24,10 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { AdminFileListUsageEnum, Application, CoreApi, Provider } from "@goauthentik/api";
+import { Application, CoreApi, Provider, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -40,6 +40,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
     #api = new CoreApi(DEFAULT_CONFIG);
 
+    public static override verboseName = msg("Application");
+    public static override verboseNamePlural = msg("Applications");
+
     protected override async loadInstance(pk: string): Promise<Application> {
         const app = await this.#api.coreApplicationsRetrieve({
             slug: pk,
@@ -51,7 +54,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     }
 
     @property({ attribute: false })
-    public provider?: number;
+    public provider: number | null = null;
 
     @state()
     protected backchannelProviders: Provider[] = [];
@@ -104,16 +107,20 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         };
     };
 
+    //#region Rendering
+
     protected override renderForm(): TemplateResult {
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );
         const providerFromInstance = this.instance?.provider;
         const providerValue = providerFromInstance ?? this.provider;
-        const providerPrefilled = !this.instance && this.provider !== undefined;
+        const providerPrefilled = !this.instance && this.provider !== null;
 
         return html`
-            ${this.instance ? nothing : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
+            ${this.instance || this.provider
+                ? null
+                : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
             <ak-text-input
                 name="name"
                 autocomplete="off"
@@ -130,6 +137,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 label=${msg("Slug")}
                 required
                 help=${msg("Internal application name used in URLs.")}
+                placeholder=${msg("e.g. my-application")}
                 input-hint="code"
             ></ak-slug-input>
             <ak-text-input
@@ -197,7 +205,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         name="metaIcon"
                         label=${msg("Icon")}
                         value=${ifPresent(this.instance?.metaIcon)}
-                        .usage=${AdminFileListUsageEnum.Media}
+                        .usage=${UsageEnum.Media}
                         help=${msg(
                             "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
                         )}
@@ -207,16 +215,24 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         label=${msg("Publisher")}
                         name="metaPublisher"
                         value="${ifDefined(this.instance?.metaPublisher)}"
+                        placeholder=${msg("Type an optional publisher name...")}
+                        help=${msg("The publisher is shown in the application library.")}
                     ></ak-text-input>
                     <ak-textarea-input
                         label=${msg("Description")}
                         name="metaDescription"
+                        placeholder=${msg("Type an optional description...")}
                         value=${ifDefined(this.instance?.metaDescription)}
+                        help=${msg(
+                            "The description is shown in the application library and may provide additional information about the application to end users.",
+                        )}
                     ></ak-textarea-input>
                 </div>
             </ak-form-group>
         `;
     }
+
+    //#endregion
 }
 
 declare global {

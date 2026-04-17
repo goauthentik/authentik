@@ -60,7 +60,7 @@ To integrate Apple with authentik, you will need to register two identifiers and
 To support the integration of Apple with authentik, you need to create an Apple OAuth source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, then configure the following settings:
     - **Select type**: select **Apple OAuth Source**.
     - **Create Apple OAuth Source**: provide a name, a slug which must match the slug used in the Apple `Return URL`, and the following required configurations:
         - Under **Protocol Settings**:

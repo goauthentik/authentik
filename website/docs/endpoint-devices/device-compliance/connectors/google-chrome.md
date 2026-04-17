@@ -65,7 +65,7 @@ For detailed instructions, refer to Google documentation.
 ### Create the connector
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
+2. Navigate to **Endpoint Devices** > **Connectors** and click **New Endpoint Connector**.
 3. Select **Google Device Trust Connector** as the connector type, click **Next**, and configure the following settings:
     - **Name**: define a descriptive name, such as "chrome-device-trust".
     - **Google Verified Access API**

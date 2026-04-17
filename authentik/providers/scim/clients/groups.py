@@ -54,6 +54,13 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             ["group", "provider", "connection"],
         )
 
+    def _create_group_member(self, id: str) -> GroupMember:
+        member = GroupMember(value=id)
+        # https://developer.webex.com/admin/docs/api/v1/scim-2-groups/create-a-group
+        if self.provider.compatibility_mode == SCIMCompatibilityMode.WEBEX:
+            member.type = "user"
+        return member
+
     def to_schema(self, obj: Group, connection: SCIMProviderGroup) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
         raw_scim_group = super().to_schema(obj, connection)
@@ -77,9 +84,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             members = []
             for user in connections:
                 members.append(
-                    GroupMember(
-                        value=user.scim_id,
-                    )
+                    self._create_group_member(user.scim_id),
                 )
             if members:
                 scim_group.members = members
@@ -322,7 +327,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                     op=PatchOp.add,
                     path="members",
                     value=[
-                        GroupMember(value=x).model_dump(
+                        self._create_group_member(x).model_dump(
                             mode="json",
                             exclude_unset=True,
                         )
@@ -335,7 +340,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                     op=PatchOp.remove,
                     path="members",
                     value=[
-                        GroupMember(value=x).model_dump(
+                        self._create_group_member(x).model_dump(
                             mode="json",
                             exclude_unset=True,
                         )
@@ -363,7 +368,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                     op=PatchOp.add,
                     path="members",
                     value=[
-                        GroupMember(value=x).model_dump(
+                        self._create_group_member(x).model_dump(
                             mode="json",
                             exclude_unset=True,
                         )
@@ -391,7 +396,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                     op=PatchOp.remove,
                     path="members",
                     value=[
-                        GroupMember(value=x).model_dump(
+                        self._create_group_member(x).model_dump(
                             mode="json",
                             exclude_unset=True,
                         )

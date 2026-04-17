@@ -1,9 +1,6 @@
-import "#admin/applications/wizard/ak-wizard-title";
-
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
-
 import { createFileMap } from "#elements/utils/inputs";
 
+import { ApplicationWizardProviderForm } from "#admin/applications/wizard/steps/providers/ApplicationWizardProviderForm";
 import { renderForm } from "#admin/providers/saml/SAMLProviderImportFormForm";
 
 import type { ProvidersSamlImportMetadataCreateRequest } from "@goauthentik/api";
@@ -31,12 +28,10 @@ export class ApplicationWizardProviderSamlMetadataForm extends ApplicationWizard
     }
 
     renderForm() {
-        return html`
-            <ak-wizard-title>${this.label}</ak-wizard-title>
+        return html`<h3 class="pf-c-wizard__main-title">${this.label}</h3>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm(this.wizard.provider)}
-            </form>
-        `;
+            </form>`;
     }
 
     render() {

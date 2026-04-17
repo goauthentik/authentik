@@ -31,10 +31,6 @@ View recent events on both a world map view with pinpoints indicating where each
 
 You can export authentik event logs to a CSV file.
 
-#### [Advanced queries](../sys-mgmt/events/logging-events.mdx#advanced-queries)
-
-Allows you to construct advanced queries to find specific event logs using syntax similar to DjangoQL.
-
 ### [Google Workspace integration](../add-secure-apps/providers/gws/index.md)
 
 The Google Workspace provider syncs users and groups from authentik to Google Workspace, making authentik the source of truth. It supports direct syncs for real-time changes and automatically linking existing entities.
@@ -55,7 +51,7 @@ This authenticator stage validates Chrome browsers and ChromeOS devices against 
 
 The SSF Provider enables authentik to transmit real-time security events (e.g., MFA changes, logouts) as Security Event Tokens to subscribed OIDC applications via secure webhooks. Also allows for integration with Apple Business Manager (ABM).
 
-### [Password history compliance checks](../customize/policies/unique_password.md)
+### [Password history compliance checks](../customize/policies/types/password-uniqueness.md)
 
 The Password Uniqueness Policy blocks reuse of previous passwords by comparing new ones against stored hashes of previous passwords.
 

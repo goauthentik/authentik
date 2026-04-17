@@ -20,12 +20,12 @@ import { AKLabel } from "#components/ak-label";
 import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
 
 import {
-    AdminFileListUsageEnum,
     Application,
     Brand,
     CoreApi,
     CoreApplicationsListRequest,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
+    UsageEnum,
 } from "@goauthentik/api";
 
 import YAML from "yaml";
@@ -36,6 +36,9 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
+    public static override verboseName = msg("Brand");
+    public static override verboseNamePlural = msg("Brands");
+
     loadInstance(pk: string): Promise<Brand> {
         return new CoreApi(DEFAULT_CONFIG).coreBrandsRetrieve({
             brandUuid: pk,
@@ -100,7 +103,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="brandingLogo"
                         label=${msg("Logo")}
                         value="${this.instance?.brandingLogo ?? DefaultBrand.brandingLogo}"
-                        .usage=${AdminFileListUsageEnum.Media}
+                        .usage=${UsageEnum.Media}
                         help=${msg("Logo shown in sidebar/header and flow executor.")}
                     ></ak-file-search-input>
 
@@ -109,7 +112,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="brandingFavicon"
                         label=${msg("Favicon")}
                         value="${this.instance?.brandingFavicon ?? DefaultBrand.brandingFavicon}"
-                        .usage=${AdminFileListUsageEnum.Media}
+                        .usage=${UsageEnum.Media}
                         help=${msg("Icon shown in the browser tab.")}
                     ></ak-file-search-input>
 
@@ -119,7 +122,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         label=${msg("Default flow background")}
                         value="${this.instance?.brandingDefaultFlowBackground ??
                         "/static/dist/assets/images/flow_background.jpg"}"
-                        .usage=${AdminFileListUsageEnum.Media}
+                        .usage=${UsageEnum.Media}
                         help=${msg(
                             "Default background used during flow execution. Can be overridden per flow.",
                         )}
@@ -192,12 +195,12 @@ export class BrandForm extends ModelForm<Brand, string> {
             <ak-form-group label="${msg("Default flows")} ">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         name="flowAuthentication"
                     >
                         <ak-flow-search
                             placeholder=${msg("Select an authentication flow...")}
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.flowAuthentication}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
@@ -207,12 +210,12 @@ export class BrandForm extends ModelForm<Brand, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Invalidation flow")}
+                        label=${msg("Invalidation Flow")}
                         name="flowInvalidation"
                     >
                         <ak-flow-search
                             placeholder=${msg("Select an invalidation flow...")}
-                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            flowType=${FlowDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.flowInvalidation}
                         ></ak-flow-search>
 
@@ -225,7 +228,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="flowRecovery">
                         <ak-flow-search
                             placeholder=${msg("Select a recovery flow...")}
-                            flowType=${FlowsInstancesListDesignationEnum.Recovery}
+                            flowType=${FlowDesignationEnum.Recovery}
                             .currentFlow=${this.instance?.flowRecovery}
                         ></ak-flow-search>
                     </ak-form-element-horizontal>
@@ -235,7 +238,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     >
                         <ak-flow-search
                             placeholder=${msg("Select an unenrollment flow...")}
-                            flowType=${FlowsInstancesListDesignationEnum.Unenrollment}
+                            flowType=${FlowDesignationEnum.Unenrollment}
                             .currentFlow=${this.instance?.flowUnenrollment}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
@@ -250,7 +253,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     >
                         <ak-flow-search
                             placeholder=${msg("Select a user settings flow...")}
-                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowUserSettings}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
@@ -263,7 +266,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     >
                         <ak-flow-search
                             placeholder=${msg("Select a device code flow...")}
-                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowDeviceCode}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">

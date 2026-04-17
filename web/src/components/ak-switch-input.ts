@@ -60,18 +60,14 @@ export class AkSwitchInput extends AKElement {
     }
 
     render() {
-        const doCheck = this.checked ? this.checked : undefined;
-
-        return html` <ak-form-element-horizontal name=${this.name} ?required=${this.required}>
-            <div slot="label" class="pf-c-form__group-label"></div>
-
+        return html`<ak-form-element-horizontal name=${this.name} ?required=${this.required}>
             <label class="pf-c-switch" for="${this.#fieldID}">
                 <input
                     id="${this.#fieldID}"
                     aria-describedby="${this.#fieldID}-help"
                     class="pf-c-switch__input"
                     type="checkbox"
-                    ?checked=${doCheck}
+                    ?checked=${this.checked}
                 />
                 <span class="pf-c-switch__toggle">
                     <span class="pf-c-switch__toggle-icon">

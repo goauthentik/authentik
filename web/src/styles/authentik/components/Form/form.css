@@ -20,6 +20,15 @@
     );
 }
 
+.pf-c-form.ak-m-content-center {
+    --pf-c-form--GridGap: var(--pf-global--spacer--sm);
+
+    flex: 1 1 auto;
+    align-self: self-start;
+    align-content: center;
+    width: 100%;
+}
+
 .pf-c-form__group {
     column-gap: var(--pf-global--spacer--md);
 }
@@ -49,6 +58,7 @@
 /* #region Form controls */
 
 .pf-c-form-control {
+    --pf-c-form-control--BackgroundColor: transparent !important;
     --pf-c-form-control--BorderTopColor: transparent !important;
     --pf-c-form-control--BorderRightColor: transparent !important;
     --pf-c-form-control--BorderLeftColor: transparent !important;
@@ -76,34 +86,34 @@
 /* #region Fields */
 
 fieldset {
-    --ak-fieldset-border-width: thin;
-    --ak-fieldset-border-color: var(--pf-global--BackgroundColor--light-100);
-    --ak-legend-margin-inline-base: var(--pf-global--spacer--sm);
-    --ak-legend-padding-inline-base: var(--pf-global--spacer--sm);
+    --ak-fieldset--BorderWidth: thin;
+    --ak-fieldset__legend--MarginInlineBase: var(--pf-global--spacer--sm);
+    --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--sm);
 
-    border-color: var(--ak-fieldset-border-color);
-    border-width: var(--ak-fieldset-border-width);
-
-    padding: var(--ak-legend-padding-inline-base) !important;
+    border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BackgroundColor--light-100));
 
     @media (prefers-contrast: more) {
-        --ak-fieldset-border-color: var(--pf-global--BorderColor--200);
+        border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--200));
     }
 
     @media (prefers-contrast: less) {
-        --ak-fieldset-border-color: transparent;
+        border-color: var(--ak-fieldset--BorderColor, transparent);
     }
+
+    border-width: var(--ak-fieldset--BorderWidth);
+
+    padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
 
     & > legend {
         line-height: 1;
-        padding: var(--ak-legend-padding-inline-base) !important;
+        padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
         margin-inline-start: var(
-            --ak-legend-margin-inline-start,
-            var(--ak-legend-margin-inline-base)
+            --ak-fieldset__legend--MarginInlineStart,
+            var(--ak-fieldset__legend--MarginInlineBase)
         ) !important;
         margin-inline-end: var(
             --ak-legend-margin-inline-end,
-            var(--ak-legend-margin-inline-base)
+            var(--ak-fieldset__legend--MarginInlineBase)
         ) !important;
     }
 
@@ -111,8 +121,8 @@ fieldset {
         border-width: 0;
 
         &:not(.pf-c-modal-box__footer) {
-            --ak-legend-padding-inline-base: 0;
-            --ak-legend-margin-inline-base: 0;
+            --ak-fieldset__legend--PaddingInlineBase: 0;
+            --ak-fieldset__legend--MarginInlineBase: 0;
         }
     }
 
@@ -137,8 +147,12 @@ fieldset {
     }
 
     &.pf-c-modal-box__footer {
-        --ak-legend-padding-inline-base: var(--pf-global--spacer--md);
-        padding-block: calc(var(--ak-legend-padding-inline-base) / 2);
+        --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--lg);
+        --pf-c-modal-box__footer--c-button--MarginRight: 0;
+
+        gap: var(--pf-global--spacer--sm);
+        justify-content: end;
+        padding-block: calc(var(--ak-fieldset__legend--PaddingInlineBase) / 2);
         border-inline: none;
         border-block-end: none;
 
@@ -152,10 +166,177 @@ fieldset {
     }
 }
 
+/* #endregion */
+
+/* #region Radio */
+
+.pf-c-radio {
+    align-content: start;
+}
+
+label.pf-c-radio {
+    --pf-c-radio--checkmark--BorderColor: var(--pf-global--BorderColor--300);
+    --pf-c-radio--checkmark--Color: transparent;
+    --pf-c-radio--BorderColor: transparent;
+    --pf-c-radio--BoxShadowColor: transparent;
+
+    --pf-c-radio--checked--BackgroundColor: transparent;
+    --pf-c-radio--checked--BorderColor: var(--pf-global--active-color--300);
+    --pf-c-radio--hover--BorderColor: var(--pf-global--active-color--200);
+
+    --pf-c-radio--disabled--BackgroundColor: var(--pf-global--BackgroundColor--150);
+    transition:
+        border-color 0.2s,
+        color 0.2s;
+
+    padding-inline: var(--pf-global--spacer--md);
+    padding-block: var(--pf-global--spacer--sm);
+    cursor: pointer;
+    background-color: var(--pf-c-radio--BackgroundColor, transparent);
+    border: 1px solid var(--pf-c-radio--BorderColor);
+    border-radius: var(--pf-global--BorderRadius--sm);
+    position: relative;
+
+    align-content: center;
+    display: grid;
+    grid-template-areas:
+        "input ."
+        "input .";
+    grid-template-columns: auto 1fr;
+    column-gap: var(--pf-global--spacer--md);
+    row-gap: 0;
+
+    .pf-c-radio__input {
+        grid-area: input;
+        align-self: center;
+        margin-block: 0;
+        margin-inline-end: var(--pf-global--spacer--xs);
+        margin-inline-start: var(--pf-global--spacer--sm);
+        appearance: none;
+        content: none;
+
+        width: 1.5em;
+        height: 1.5em;
+        padding: 0.25em;
+        border: 1px solid;
+        color: var(--pf-c-radio--checkmark--BorderColor, transparent);
+        border-radius: 3px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+
+        &::after {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+
+            content: "\f00c";
+            display: block;
+            line-height: 1;
+            color: var(--pf-c-radio--checkmark--Color);
+            transition: color 0.2s;
+        }
+    }
+
+    &:not(:last-child) {
+        --pf-c-radio--BoxShadowColor: var(--pf-global--BorderColor--100);
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        display: block;
+        background-color: var(--pf-c-radio--BoxShadowColor);
+        height: 0.5px;
+        inset-inline: 0;
+        inset-block-end: 0;
+    }
+
+    &:has(.pf-c-radio__input:checked:not(:disabled)) {
+        --pf-c-radio--BackgroundColor: var(--pf-c-radio--checked--BackgroundColor);
+        --pf-c-radio--BorderColor: var(--pf-c-radio--checked--BorderColor);
+        --pf-c-radio--checkmark--BorderColor: var(--pf-global--active-color--300);
+        --pf-c-radio--checkmark--Color: var(--pf-c-radio--checked--BorderColor);
+    }
+
+    &:hover:not(:has(.pf-c-radio__input:checked)):not(:has(.pf-c-radio__input:disabled)) {
+        --pf-c-radio--checkmark--BorderColor: var(--pf-c-radio--hover--BorderColor);
+        --pf-c-radio--checkmark--Color: var(--pf-c-radio--hover--BorderColor);
+    }
+
+    &:has(.pf-c-radio__input:disabled) {
+        cursor: not-allowed;
+
+        --pf-c-radio--BackgroundColor: var(--pf-c-radio--disabled--BackgroundColor) !important;
+    }
+
+    .pf-c-radio__description {
+        margin-block-start: var(--pf-global--spacer--xs);
+    }
+
+    .pf-c-radio__label {
+        align-self: center;
+    }
+
+    &:has(.pf-c-radio__input:last-child) .pf-c-radio__label {
+        grid-row: 1 / -1;
+    }
+}
+
+.pf-c-form__helper-radio:first-child {
+    margin-block-end: var(--pf-global--spacer--sm);
+    line-height: 1;
+}
+
+::part(radio-help) {
+    padding-block-start: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+    font-size: var(--pf-c-form__label--FontSize);
+    line-height: var(--pf-c-form__label--LineHeight);
+}
+
+/* #endregion */
+
+ak-switch-input {
+    padding-inline: var(--pf-global--spacer--form-element);
+    ::part(group-control) {
+        grid-area: control;
+    }
+
+    .pf-c-switch {
+        grid-template-columns: [label] auto [control] auto;
+        grid-template-rows: [primary] auto [secondary] auto;
+        justify-content: start;
+        padding-block: var(--pf-global--spacer--xs);
+        width: 100%;
+        column-gap: var(--pf-global--spacer--sm);
+    }
+
+    .pf-c-switch__label {
+        grid-area: primary / label;
+        justify-self: start;
+        font-weight: 500;
+    }
+
+    .pf-c-switch__input,
+    .pf-c-switch__toggle {
+        grid-area: primary / control;
+        justify-self: end;
+    }
+
+    .pf-c-form__helper-text {
+        padding-inline-end: var(--pf-global--spacer--2xl);
+        grid-area: secondary / label / secondary / -1;
+    }
+}
+
 /* #region Dark Theme */
 
 [data-theme="dark"],
 :host([theme="dark"]) {
+    label.pf-c-radio {
+        --pf-c-radio__description--Color: var(--pf-global--palette--blue-50);
+    }
+
     /* #region Inputs */
 
     .pf-c-input-group:not(:has(.pf-c-switch)) {
@@ -186,8 +367,6 @@ fieldset {
         --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
         --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover) !important;
 
-        --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light) !important;
-
         --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light) !important;
         --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light) !important;
     }
@@ -209,14 +388,17 @@ fieldset {
     }
 
     fieldset {
-        --ak-fieldset-border-color: var(--pf-global--BackgroundColor--dark-transparent-200);
+        border-color: var(
+            --ak-fieldset--BorderColor,
+            var(--pf-global--BackgroundColor--dark-transparent-200)
+        );
 
         @media (prefers-contrast: more) {
-            --ak-fieldset-border-color: var(--pf-global--BorderColor--300);
+            border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--300));
         }
 
         @media (prefers-contrast: less) {
-            --ak-fieldset-border-color: transparent;
+            border-color: var(--ak-fieldset--BorderColor, transparent);
         }
     }
 

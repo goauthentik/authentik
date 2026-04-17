@@ -1,4 +1,4 @@
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { bound } from "#elements/decorators/bound";
 import { type Spread } from "#elements/types";
 import { randomId } from "#elements/utils/randomId";
@@ -27,7 +27,7 @@ export interface IArrayInput<T> {
 type Keyed<T> = { key: string; item: T };
 
 @customElement("ak-array-input")
-export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<T> {
+export class ArrayInput<T> extends AKControlElement<T[]> implements IArrayInput<T> {
     static styles = [
         PFButton,
         PFInputGroup,
@@ -51,6 +51,9 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
             }
         `,
     ];
+
+    @property({ type: String })
+    public name: string | null = null;
 
     @property({ type: Boolean })
     validate = false;
@@ -87,20 +90,20 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
     @queryAll("div.ak-input-group")
     inputGroups?: HTMLDivElement[];
 
-    json() {
+    toJSON() {
         if (!this.inputGroups) {
             throw new Error("Could not find input group collection in ak-array-input");
         }
         return this.items;
     }
 
-    get isValid() {
+    get valid() {
         if (!this.validate) {
             return true;
         }
 
         const oneIsValid = (g: HTMLDivElement) =>
-            g.querySelector<HTMLInputElement & AkControlElement<T>>("[name]")?.isValid ?? true;
+            g.querySelector<HTMLInputElement & AKControlElement<T>>("[name]")?.valid ?? true;
         const allAreValid = Array.from(this.inputGroups ?? []).every(oneIsValid);
         return allAreValid && (this.validator ? this.validator(this.items) : true);
     }
@@ -109,8 +112,9 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
         return Array.from(this.inputGroups ?? [])
             .map(
                 (group) =>
-                    group.querySelector<HTMLInputElement & AkControlElement<T>>("[name]")?.json() ??
-                    null,
+                    group
+                        .querySelector<HTMLInputElement & AKControlElement<T>>("[name]")
+                        ?.toJSON() ?? null,
             )
             .filter((i) => i !== null);
     }
