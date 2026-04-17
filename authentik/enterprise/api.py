@@ -144,10 +144,14 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     def forecast(self, request: Request) -> Response:
         """Forecast how many users will be required in a year"""
         last_month = now() - timedelta(days=30)
-        # Forecast for internal users
-        internal_in_last_month = User.objects.filter(
-            type=UserTypes.INTERNAL, date_joined__gte=last_month
-        ).count()
+        # Forecast for internal users (excluding agents)
+        from authentik.core.models import USER_ATTRIBUTE_AGENT_OWNER_PK
+
+        internal_in_last_month = (
+            User.objects.filter(type=UserTypes.INTERNAL, date_joined__gte=last_month)
+            .exclude(attributes__has_key=USER_ATTRIBUTE_AGENT_OWNER_PK)
+            .count()
+        )
         # Forecast for external users
         external_in_last_month = LicenseKey.get_external_user_count()
         forecast_for_months = 12

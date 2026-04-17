@@ -1,5 +1,6 @@
 """Tokens API Viewset"""
 
+from datetime import timedelta
 from typing import Any
 
 from django.utils.timezone import now
@@ -18,12 +19,14 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import (
+    USER_ATTRIBUTE_AGENT_OWNER_PK,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
     Token,
     TokenIntents,
     User,
     default_token_duration,
+    default_token_key,
 )
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
@@ -169,6 +172,40 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         """Return token key and log access"""
         token: Token = self.get_object()
         Event.new(EventAction.SECRET_VIEW, secret=token).from_http(request)  # noqa # nosec
+        return Response(TokenViewSerializer({"key": token.key}).data)
+
+    @extend_schema(
+        request=None,
+        responses={
+            200: TokenViewSerializer(many=False),
+            403: OpenApiResponse(description="Not the token owner, agent owner, or superuser"),
+            404: OpenApiResponse(description="Token not found"),
+        },
+    )
+    @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
+    def rotate(self, request: Request, identifier: str) -> Response:
+        """Rotate the token key and reset the expiry to 24 hours. Only callable by the token
+        owner, the owning agent's human owner, or a superuser."""
+        token = (
+            Token.objects.including_expired()
+            .select_related("user")
+            .filter(identifier=identifier)
+            .first()
+        )
+        if not token:
+            return Response(status=404)
+
+        if not request.user.is_superuser:
+            is_token_owner = token.user_id == request.user.pk
+            owner_pk = token.user.attributes.get(USER_ATTRIBUTE_AGENT_OWNER_PK)
+            is_agent_owner = owner_pk and str(request.user.pk) == owner_pk
+            if not is_token_owner and not is_agent_owner:
+                return Response(status=403)
+
+        token.key = default_token_key()
+        token.expires = now() + timedelta(hours=24)
+        token.save()
+        Event.new(EventAction.SECRET_ROTATE, secret=token).from_http(request)  # noqa # nosec
         return Response(TokenViewSerializer({"key": token.key}).data)
 
     @permission_required("authentik_core.set_token_key")

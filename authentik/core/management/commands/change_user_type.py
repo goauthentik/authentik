@@ -1,6 +1,6 @@
 """Change user type"""
 
-from authentik.core.models import User, UserTypes
+from authentik.core.models import USER_ATTRIBUTE_AGENT_OWNER_PK, User, UserTypes
 from authentik.tenants.management import TenantCommand
 
 
@@ -18,6 +18,7 @@ class Command(TenantCommand):
             User.objects.exclude_anonymous()
             .exclude(type=UserTypes.SERVICE_ACCOUNT)
             .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
+            .exclude(attributes__has_key=USER_ATTRIBUTE_AGENT_OWNER_PK)
         )
         if options["usernames"] and options["all"]:
             self.stderr.write("--all and usernames specified, only one can be specified")

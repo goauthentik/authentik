@@ -15,7 +15,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { userTypeToLabel } from "#common/labels";
+import { userDisplayLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
 import { formatUserDisplayName } from "#common/users";
 
@@ -267,7 +267,7 @@ export class UserListPage extends WithBrandConfig(
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             Timestamp(item.lastLogin),
-            html`${userTypeToLabel(item.type)}`,
+            html`${userDisplayLabel(item)}`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(UserForm, item.pk, displayName)}
                 ${showImpersonation

@@ -28,7 +28,7 @@ import "./UserDevicesTable.js";
 import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { userTypeToLabel } from "#common/labels";
+import { userDisplayLabel } from "#common/labels";
 import { formatUserDisplayName } from "#common/users";
 
 import { AKElement } from "#elements/Base";
@@ -118,7 +118,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
             [msg("Last login"), Timestamp(user.lastLogin)],
             [msg("Last password change"), Timestamp(user.passwordChangeDate)],
             [msg("Active"), html`<ak-status-label ?good=${user.isActive}></ak-status-label>`],
-            [msg("Type"), userTypeToLabel(user.type)],
+            [msg("Type"), userDisplayLabel(user)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
             [msg("Actions"), this.renderActionButtons(user)],
             [msg("Recovery"), this.renderRecoveryButtons(user)],

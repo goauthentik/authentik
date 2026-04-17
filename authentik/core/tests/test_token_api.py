@@ -199,6 +199,50 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(body["results"][0]["identifier"], token_should.identifier)
         self.assertEqual(body["results"][1]["identifier"], token_should_not.identifier)
 
+    def test_token_rotate_by_owner(self):
+        """Token owner can rotate their own token"""
+        token = Token.objects.create(
+            identifier=generate_id(),
+            intent=TokenIntents.INTENT_API,
+            user=self.user,
+            expiring=True,
+        )
+        original_key = token.key
+        response = self.client.post(
+            reverse("authentik_api:token-rotate", kwargs={"identifier": token.identifier}),
+        )
+        self.assertEqual(response.status_code, 200)
+        token.refresh_from_db()
+        self.assertNotEqual(token.key, original_key)
+        self.assertEqual(token.key, loads(response.content)["key"])
+
+    def test_token_rotate_by_superuser(self):
+        """Superuser can rotate any token"""
+        token = Token.objects.create(
+            identifier=generate_id(),
+            intent=TokenIntents.INTENT_API,
+            user=self.user,
+            expiring=True,
+        )
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:token-rotate", kwargs={"identifier": token.identifier}),
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_token_rotate_unauthorized(self):
+        """Non-owner cannot rotate another user's token"""
+        token = Token.objects.create(
+            identifier=generate_id(),
+            intent=TokenIntents.INTENT_API,
+            user=self.admin,
+            expiring=True,
+        )
+        response = self.client.post(
+            reverse("authentik_api:token-rotate", kwargs={"identifier": token.identifier}),
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_serializer_no_request(self):
         """Test serializer without request"""
         self.assertTrue(

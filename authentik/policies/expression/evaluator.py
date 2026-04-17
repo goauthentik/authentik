@@ -50,6 +50,50 @@ class PolicyEvaluator(BaseEvaluator):
             self._context["ak_client_ip"] = ip_address(
                 request.obj.client_ip or ClientIPMiddleware.default_ip
             )
+        from authentik.core.models import Application  # noqa: PLC0415
+
+        if request.obj and isinstance(request.obj, Application):
+            self._context["has_access_to_application"] = self._make_has_access_to_application(
+                request
+            )
+
+    def _make_has_access_to_application(self, request: PolicyRequest):
+        """Return a no-argument callable that checks whether the current agent user's owner
+        has access to the application currently being evaluated (request.obj)."""
+
+        def has_access_to_application() -> bool:
+            from authentik.core.apps import AppAccessWithoutBindings
+            from authentik.core.models import (
+                USER_ATTRIBUTE_AGENT_ALLOWED_APPS,
+                USER_ATTRIBUTE_AGENT_OWNER_PK,
+                User,
+            )
+            from authentik.policies.engine import PolicyEngine
+
+            user = request.user
+            app = request.obj
+
+            if not hasattr(user, "attributes"):
+                return False
+            owner_pk = user.attributes.get(USER_ATTRIBUTE_AGENT_OWNER_PK)
+            if not owner_pk:
+                return False
+
+            allowed_apps = user.attributes.get(USER_ATTRIBUTE_AGENT_ALLOWED_APPS, [])
+            if str(app.pk) not in allowed_apps:
+                return False
+
+            owner = User.objects.filter(pk=owner_pk).first()
+            if not owner:
+                return False
+
+            engine = PolicyEngine(app, owner)
+            engine.empty_result = AppAccessWithoutBindings.get()
+            engine.use_cache = False
+            engine.build()
+            return engine.passing
+
+        return has_access_to_application
 
     def set_http_request(self, request: HttpRequest):
         """Update context based on http request"""

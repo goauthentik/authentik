@@ -188,8 +188,12 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
             # according to the provider's settings
             base = User.objects.all().exclude_anonymous().filter(**kwargs)
             if self.exclude_users_service_account:
-                base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
-                    type=UserTypes.INTERNAL_SERVICE_ACCOUNT
+                from authentik.core.models import USER_ATTRIBUTE_AGENT_OWNER_PK
+
+                base = (
+                    base.exclude(type=UserTypes.SERVICE_ACCOUNT)
+                    .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
+                    .exclude(attributes__has_key=USER_ATTRIBUTE_AGENT_OWNER_PK)
                 )
 
             # Filter users by their access to the backchannel application if an application is set

@@ -154,8 +154,15 @@ class LicenseKey:
 
     @staticmethod
     def base_user_qs() -> QuerySet:
-        """Base query set for all users"""
-        return User.objects.all().exclude_anonymous().exclude(is_active=False)
+        """Base query set for all users (excludes agents from license counting)"""
+        from authentik.core.models import USER_ATTRIBUTE_AGENT_OWNER_PK
+
+        return (
+            User.objects.all()
+            .exclude_anonymous()
+            .exclude(is_active=False)
+            .exclude(attributes__has_key=USER_ATTRIBUTE_AGENT_OWNER_PK)
+        )
 
     @staticmethod
     def get_internal_user_count():

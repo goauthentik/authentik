@@ -202,9 +202,49 @@ class PolicyEngine:
                     ).observe(proc_info.result._exec_time)
             return self
 
+    def _check_agent_access(self) -> PolicyResult | None:
+        """For agent users accessing an Application, enforce allowed_apps + owner access.
+        Returns a deny PolicyResult if the agent should be blocked, or None to continue
+        with normal policy evaluation."""
+        from authentik.core.models import (
+            USER_ATTRIBUTE_AGENT_ALLOWED_APPS,
+            USER_ATTRIBUTE_AGENT_OWNER_PK,
+            Application,
+        )
+
+        user = self.request.user
+        if not hasattr(user, "attributes"):
+            return None
+        owner_pk = user.attributes.get(USER_ATTRIBUTE_AGENT_OWNER_PK)
+        if not owner_pk:
+            return None
+        if not isinstance(self.__pbm, Application):
+            return None
+
+        allowed_apps = user.attributes.get(USER_ATTRIBUTE_AGENT_ALLOWED_APPS, [])
+        if str(self.__pbm.pk) not in allowed_apps:
+            return PolicyResult(False, "Agent does not have access to this application.")
+
+        owner = User.objects.filter(pk=owner_pk).first()
+        if not owner:
+            return PolicyResult(False, "Agent owner does not exist.")
+
+        from authentik.core.apps import AppAccessWithoutBindings
+
+        owner_engine = PolicyEngine(self.__pbm, owner)
+        owner_engine.empty_result = AppAccessWithoutBindings.get()
+        owner_engine.use_cache = False
+        owner_engine.build()
+        if not owner_engine.passing:
+            return PolicyResult(False, "Agent owner does not have access to this application.")
+        return None
+
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
+        agent_result = self._check_agent_access()
+        if agent_result is not None:
+            return agent_result
         self.__processes.sort(key=lambda x: x.binding.order)
         process_results: list[PolicyResult] = [x.result for x in self.__processes if x.result]
         all_results = list(process_results + self.__cached_policies)

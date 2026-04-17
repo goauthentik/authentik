@@ -5,10 +5,13 @@ import {
     EventActions,
     IntentEnum,
     SeverityEnum,
+    User,
     UserTypeEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
+
+const USER_ATTRIBUTE_AGENT_OWNER_PK = "goauthentik.io/agent/owner-pk";
 
 /* Various tables in the API for which we need to supply labels */
 
@@ -122,3 +125,6 @@ const _userTypeToLabel = new Map<UserTypeEnum | undefined, string>([
 
 export const userTypeToLabel = (type?: UserTypeEnum): string =>
     _userTypeToLabel.get(type) ?? type ?? "";
+
+export const userDisplayLabel = (user: User): string =>
+    user.attributes?.[USER_ATTRIBUTE_AGENT_OWNER_PK] ? msg("Agent") : userTypeToLabel(user.type);

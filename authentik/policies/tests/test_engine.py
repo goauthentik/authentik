@@ -5,7 +5,14 @@ from django.db import connections
 from django.test import TestCase
 from django.test.utils import CaptureQueriesContext
 
-from authentik.core.models import Group
+from authentik.core.models import (
+    USER_ATTRIBUTE_AGENT_ALLOWED_APPS,
+    USER_ATTRIBUTE_AGENT_OWNER_PK,
+    Application,
+    Group,
+    User,
+    UserTypes,
+)
 from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
@@ -209,3 +216,91 @@ class TestPolicyEngine(TestCase):
             engine.build()
         self.assertLess(ctx.final_queries, 1000)
         self.assertTrue(engine.result.passing)
+
+    def test_anonymous_user(self):
+        """AnonymousUser (no attributes) does not break policy evaluation"""
+        from django.contrib.auth.models import AnonymousUser
+
+        pbm = PolicyBindingModel.objects.create()
+        engine = PolicyEngine(pbm, AnonymousUser())
+        engine.empty_result = True
+        engine.use_cache = False
+        engine.build()
+        self.assertTrue(engine.passing)
+
+
+class TestPolicyEngineAgent(TestCase):
+    """PolicyEngine agent access enforcement tests"""
+
+    def setUp(self):
+        clear_policy_cache()
+        self.owner = create_test_user()
+        self.app = Application.objects.create(name=generate_id(), slug=generate_id())
+
+    def _create_agent(self, allowed_apps=None):
+        return User.objects.create(
+            username=generate_id(),
+            type=UserTypes.INTERNAL,
+            attributes={
+                USER_ATTRIBUTE_AGENT_OWNER_PK: str(self.owner.pk),
+                USER_ATTRIBUTE_AGENT_ALLOWED_APPS: allowed_apps if allowed_apps is not None else [],
+            },
+        )
+
+    def test_agent_allowed_app_passes(self):
+        """Agent with app in allowed_apps and owner access passes"""
+        agent = self._create_agent(allowed_apps=[str(self.app.pk)])
+        engine = PolicyEngine(self.app, agent)
+        engine.use_cache = False
+        engine.build()
+        self.assertTrue(engine.passing)
+
+    def test_agent_disallowed_app_denied(self):
+        """Agent without app in allowed_apps is denied"""
+        agent = self._create_agent(allowed_apps=[])
+        engine = PolicyEngine(self.app, agent)
+        engine.use_cache = False
+        engine.build()
+        self.assertFalse(engine.passing)
+
+    def test_agent_empty_allowed_apps_denied(self):
+        """Agent with empty allowed_apps is denied even for unbound apps"""
+        agent = self._create_agent()
+        engine = PolicyEngine(self.app, agent)
+        engine.empty_result = True
+        engine.use_cache = False
+        engine.build()
+        self.assertFalse(engine.passing)
+
+    def test_non_agent_unaffected(self):
+        """Non-agent users are not affected by agent access check"""
+        engine = PolicyEngine(self.app, self.owner)
+        engine.empty_result = True
+        engine.use_cache = False
+        engine.build()
+        self.assertTrue(engine.passing)
+
+    def test_agent_missing_owner_denied(self):
+        """Agent with non-existent owner is denied"""
+        agent = User.objects.create(
+            username=generate_id(),
+            type=UserTypes.INTERNAL,
+            attributes={
+                USER_ATTRIBUTE_AGENT_OWNER_PK: "999999",
+                USER_ATTRIBUTE_AGENT_ALLOWED_APPS: [str(self.app.pk)],
+            },
+        )
+        engine = PolicyEngine(self.app, agent)
+        engine.use_cache = False
+        engine.build()
+        self.assertFalse(engine.passing)
+
+    def test_agent_non_application_target_unaffected(self):
+        """Agent check only applies to Application targets"""
+        agent = self._create_agent(allowed_apps=[])
+        pbm = PolicyBindingModel.objects.create()
+        engine = PolicyEngine(pbm, agent)
+        engine.empty_result = True
+        engine.use_cache = False
+        engine.build()
+        self.assertTrue(engine.passing)

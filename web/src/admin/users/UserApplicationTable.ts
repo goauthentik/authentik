@@ -1,8 +1,10 @@
+import "#admin/users/AgentAddApplicationForm";
 import "#elements/AppIcon";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { renderModal } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -15,12 +17,18 @@ import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+const USER_ATTRIBUTE_AGENT_OWNER_PK = "goauthentik.io/agent/owner-pk";
+
 @customElement("ak-user-application-table")
 export class UserApplicationTable extends Table<Application> {
     @property({ attribute: false })
     user?: User;
 
     static styles: CSSResult[] = [...super.styles, applicationListStyle];
+
+    private get isAgent(): boolean {
+        return !!this.user?.attributes?.[USER_ATTRIBUTE_AGENT_OWNER_PK];
+    }
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
@@ -37,6 +45,35 @@ export class UserApplicationTable extends Table<Application> {
         [msg("Provider Type")],
         [msg("Actions"), null, msg("Row Actions")],
     ];
+
+    private async removeApplication(app: Application): Promise<void> {
+        if (!this.user) return;
+        await new CoreApi(DEFAULT_CONFIG).coreUsersAgentAllowedAppPartialUpdate({
+            id: this.user.pk,
+            patchedUserAgentAllowedAppRequest: { app: String(app.pk), action: "remove" },
+        });
+        this.fetch();
+    }
+
+    protected openAddApplicationModal = () => {
+        renderModal(
+            html`<ak-agent-add-application-form
+                .agent=${this.user}
+            ></ak-agent-add-application-form>`,
+        ).then(() => {
+            this.fetch();
+        });
+    };
+
+    protected override renderToolbar(): SlottedTemplateResult {
+        if (!this.isAgent) {
+            return super.renderToolbar();
+        }
+        return html`<button class="pf-c-button pf-m-primary" @click=${this.openAddApplicationModal}>
+                ${msg("Add Application")}
+            </button>
+            ${super.renderToolbar()}`;
+    }
 
     row(item: Application): SlottedTemplateResult[] {
         return [
@@ -70,6 +107,16 @@ export class UserApplicationTable extends Table<Application> {
                               <i class="fas fa-share-square" aria-hidden="true"></i>
                           </pf-tooltip>
                       </a>`
+                    : nothing}
+                ${this.isAgent
+                    ? html`<button
+                          class="pf-c-button pf-m-plain"
+                          @click=${() => this.removeApplication(item)}
+                      >
+                          <pf-tooltip position="top" content=${msg("Remove")}>
+                              <i class="fas fa-trash" aria-hidden="true"></i>
+                          </pf-tooltip>
+                      </button>`
                     : nothing}
             </div>`,
         ];

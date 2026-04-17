@@ -22,6 +22,8 @@ import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+const USER_ATTRIBUTE_AGENT_OWNER_PK = "goauthentik.io/agent/owner-pk";
+
 const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
     {
         label: msg("Internal"),
@@ -86,8 +88,18 @@ export class UserForm extends ModelForm<User, number> {
         });
     }
 
+    private get isAgent(): boolean {
+        return !!this.instance?.attributes?.[USER_ATTRIBUTE_AGENT_OWNER_PK];
+    }
+
     protected override assignInstance(instance: User): void {
         super.assignInstance(instance);
+
+        if (this.isAgent) {
+            this.verboseName = msg("Agent User");
+            this.verboseNamePlural = msg("Agent Users");
+            return;
+        }
 
         const { verboseName, verboseNamePlural } = match(instance.type)
             .with(UserTypeEnum.Internal, () => ({
@@ -203,27 +215,44 @@ export class UserForm extends ModelForm<User, number> {
 
             ${this.userType
                 ? null
-                : html`<ak-radio-input
-                      label=${msg("User type")}
-                      required
-                      name="type"
-                      .value=${this.instance?.type}
-                      .options=${[
-                          ...UserTypeOptions,
-                          ...(this.instance
-                              ? [
-                                    {
-                                        label: msg("Internal Service account"),
-                                        value: UserTypeEnum.InternalServiceAccount,
-                                        disabled: true,
-                                        description: html`${msg(
-                                            "Managed by authentik and cannot be assigned manually.",
-                                        )}`,
-                                    },
-                                ]
-                              : []),
-                      ] satisfies RadioOption<UserTypeEnum>[]}
-                  ></ak-radio-input>`}
+                : this.isAgent
+                  ? html`<ak-radio-input
+                        label=${msg("User type")}
+                        required
+                        name="type"
+                        .value=${UserTypeEnum.Internal}
+                        .options=${[
+                            {
+                                label: msg("Agent"),
+                                value: UserTypeEnum.Internal,
+                                disabled: true,
+                                description: html`${msg(
+                                    "Agent users are managed by their owner and cannot change type.",
+                                )}`,
+                            },
+                        ] satisfies RadioOption<UserTypeEnum>[]}
+                    ></ak-radio-input>`
+                  : html`<ak-radio-input
+                        label=${msg("User type")}
+                        required
+                        name="type"
+                        .value=${this.instance?.type}
+                        .options=${[
+                            ...UserTypeOptions,
+                            ...(this.instance
+                                ? [
+                                      {
+                                          label: msg("Internal Service account"),
+                                          value: UserTypeEnum.InternalServiceAccount,
+                                          disabled: true,
+                                          description: html`${msg(
+                                              "Managed by authentik and cannot be assigned manually.",
+                                          )}`,
+                                      },
+                                  ]
+                                : []),
+                        ] satisfies RadioOption<UserTypeEnum>[]}
+                    ></ak-radio-input>`}
             <ak-text-input
                 name="email"
                 label=${msg("Email Address")}

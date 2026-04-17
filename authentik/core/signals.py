@@ -11,6 +11,7 @@ from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
+    USER_ATTRIBUTE_AGENT_OWNER_PK,
     Application,
     AuthenticatedSession,
     BackchannelProvider,
@@ -67,6 +68,34 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
 def authenticated_session_delete(sender: type[Model], instance: AuthenticatedSession, **_):
     """Delete session when authenticated session is deleted"""
     Session.objects.filter(session_key=instance.pk).delete()
+
+
+def _agent_qs_for_owner(owner_pk: int):
+    """Return a queryset of agent users belonging to the given owner pk"""
+    return User.objects.filter(
+        attributes__contains={USER_ATTRIBUTE_AGENT_OWNER_PK: str(owner_pk)},
+    )
+
+
+@receiver(post_delete, sender=User)
+def user_delete_cascade_agents(sender: type[Model], instance: User, **_):
+    """Delete agent users when their owner is deleted"""
+    _agent_qs_for_owner(instance.pk).delete()
+
+
+@receiver(post_save, sender=User)
+def user_save_propagate_agent_active(
+    sender: type[Model], instance: User, update_fields: frozenset[str] | None = None, **_
+):
+    """Propagate is_active changes to owned agent users"""
+    if update_fields is not None and "is_active" not in update_fields:
+        return
+    agents = _agent_qs_for_owner(instance.pk)
+    if not instance.is_active:
+        Session.objects.filter(
+            authenticatedsession__user__in=agents.filter(is_active=True)
+        ).delete()
+    agents.update(is_active=instance.is_active)
 
 
 @receiver(pre_save)
