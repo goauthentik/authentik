@@ -1,3 +1,5 @@
+import type { Invitation } from "@goauthentik/api";
+
 export interface InvitationWizardState {
     // Step 1: Flow selection
     flowMode: "existing" | "create";
@@ -24,4 +26,5 @@ export interface InvitationWizardState {
     createdFlowPk?: string;
     createdFlowSlug?: string;
     createdInvitationPk?: string;
+    createdInvitation?: Invitation;
 }

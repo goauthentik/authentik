@@ -10,7 +10,7 @@ import { AKElement } from "#elements/Base";
 import { Invitation, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -27,7 +27,21 @@ export class InvitationListLink extends AKElement {
     @property()
     selectedFlow?: string;
 
-    static styles: CSSResult[] = [PFForm, PFFormControl, PFDescriptionList, PFButton];
+    static styles: CSSResult[] = [
+        PFForm,
+        PFFormControl,
+        PFDescriptionList,
+        PFButton,
+        css`
+            :host {
+                display: block;
+                width: 100%;
+            }
+            input.pf-c-form-control {
+                width: 100%;
+            }
+        `,
+    ];
 
     renderLink(): string {
         if (this.invitation?.flowObj) {
@@ -103,6 +117,7 @@ export class InvitationListLink extends AKElement {
                             class="pf-c-form-control"
                             readonly
                             type="text"
+                            style="width: 100%;"
                             value=${this.renderLink()}
                         />
                     </div>

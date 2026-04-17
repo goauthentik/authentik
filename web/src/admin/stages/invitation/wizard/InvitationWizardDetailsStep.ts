@@ -10,9 +10,10 @@ import {
     pluckErrorDetail,
     pluckFallbackFieldErrors,
 } from "#common/errors/network";
-import { AKRefreshEvent } from "#common/events";
+import { MessageLevel } from "#common/messages";
 import { dateTimeLocal } from "#common/temporal";
 
+import { showMessage } from "#elements/messages/MessageContainer";
 import { WizardPage } from "#elements/wizard/WizardPage";
 
 import { FlowDesignationEnum, FlowsApi, StagesApi } from "@goauthentik/api";
@@ -20,17 +21,16 @@ import { FlowDesignationEnum, FlowsApi, StagesApi } from "@goauthentik/api";
 import YAML from "yaml";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-invitation-wizard-details-step")
 export class InvitationWizardDetailsStep extends WizardPage {
-    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFAlert];
+    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl];
 
     @state()
     invitationName = "";
@@ -44,12 +44,6 @@ export class InvitationWizardDetailsStep extends WizardPage {
     @state()
     singleUse = true;
 
-    @state()
-    errorTitle: string | null = null;
-
-    @state()
-    errorDetail: string | null = null;
-
     activeCallback = async (): Promise<void> => {
         this.host.valid = this.invitationName.length > 0;
     };
@@ -57,9 +51,12 @@ export class InvitationWizardDetailsStep extends WizardPage {
     async #fail(step: string, err: unknown): Promise<false> {
         const parsed = await parseAPIResponseError(err);
         const fieldErrors = pluckFallbackFieldErrors(parsed);
-        this.errorTitle = msg(str`${step} failed`);
-        this.errorDetail =
-            fieldErrors.length > 0 ? fieldErrors.join(" ") : pluckErrorDetail(parsed);
+        const detail = fieldErrors.length > 0 ? fieldErrors.join(" ") : pluckErrorDetail(parsed);
+        showMessage({
+            level: MessageLevel.error,
+            message: msg(str`${step} failed`),
+            description: detail,
+        });
         this.logger.error("Invitation wizard step failed", { step, error: err });
         return false;
     }
@@ -86,13 +83,15 @@ export class InvitationWizardDetailsStep extends WizardPage {
         }
 
         const wizardState = this.host.state as unknown as InvitationWizardState;
+
+        if (wizardState.createdInvitationPk) {
+            return true;
+        }
+
         wizardState.invitationName = this.invitationName;
         wizardState.invitationExpires = this.invitationExpires;
         wizardState.invitationFixedData = fixedData;
         wizardState.invitationSingleUse = this.singleUse;
-
-        this.errorTitle = null;
-        this.errorDetail = null;
 
         if (wizardState.needsStage) {
             try {
@@ -158,11 +157,11 @@ export class InvitationWizardDetailsStep extends WizardPage {
                 },
             });
             wizardState.createdInvitationPk = invitation.pk;
+            wizardState.createdInvitation = invitation;
         } catch (err) {
             return this.#fail(msg("Creating invitation"), err);
         }
 
-        this.dispatchEvent(new AKRefreshEvent());
         return true;
     };
 
@@ -171,8 +170,6 @@ export class InvitationWizardDetailsStep extends WizardPage {
         this.invitationExpires = dateTimeLocal(new Date(Date.now() + 48 * 60 * 60 * 1000));
         this.fixedDataRaw = "{}";
         this.singleUse = true;
-        this.errorTitle = null;
-        this.errorDetail = null;
     }
 
     render(): TemplateResult {
@@ -183,19 +180,6 @@ export class InvitationWizardDetailsStep extends WizardPage {
                 : wizardState.newFlowSlug;
 
         return html`<form class="pf-c-form pf-m-horizontal">
-            ${this.errorTitle
-                ? html`<div class="pf-c-alert pf-m-danger pf-m-inline" role="alert">
-                      <div class="pf-c-alert__icon">
-                          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
-                      </div>
-                      <h4 class="pf-c-alert__title">${this.errorTitle}</h4>
-                      ${this.errorDetail
-                          ? html`<div class="pf-c-alert__description">
-                                <p>${this.errorDetail}</p>
-                            </div>`
-                          : nothing}
-                  </div>`
-                : nothing}
             <ak-form-element-horizontal label=${msg("Name")} required>
                 <input
                     type="text"

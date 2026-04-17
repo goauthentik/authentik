@@ -1,5 +1,6 @@
 import "#admin/stages/invitation/wizard/InvitationWizardDetailsStep";
 import "#admin/stages/invitation/wizard/InvitationWizardFlowStep";
+import "#admin/stages/invitation/wizard/InvitationWizardSuccessStep";
 import "#elements/wizard/Wizard";
 
 import { AKElement } from "#elements/Base";
@@ -24,7 +25,7 @@ export class InvitationWizard extends AKElement implements TransclusionChildElem
         return html`<ak-wizard
             entity-singular=${msg("Invitation")}
             description=${msg("Create a new invitation with an enrollment flow.")}
-            .initialSteps=${["flow-step", "details-step"]}
+            .initialSteps=${["flow-step", "details-step", "success-step"]}
         >
             <ak-invitation-wizard-flow-step
                 slot="flow-step"
@@ -34,6 +35,10 @@ export class InvitationWizard extends AKElement implements TransclusionChildElem
                 slot="details-step"
                 headline=${msg("Invitation Details")}
             ></ak-invitation-wizard-details-step>
+            <ak-invitation-wizard-success-step
+                slot="success-step"
+                headline=${msg("Invitation Link")}
+            ></ak-invitation-wizard-success-step>
         </ak-wizard>`;
     }
 }
