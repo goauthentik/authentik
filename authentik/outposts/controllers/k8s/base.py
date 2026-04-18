@@ -2,12 +2,10 @@
 
 import re
 import ssl
-from dataclasses import asdict
 from json import dumps
 from typing import TYPE_CHECKING, TypeVar
 
 import urllib3
-from dacite.core import from_dict
 from django.http import HttpResponseNotFound
 from django.utils.text import slugify
 from jsonpatch import JsonPatchConflict, JsonPatchException, JsonPatchTestFailed, apply_patch
@@ -15,6 +13,7 @@ from kubernetes.client import ApiClient, V1ObjectMeta
 from kubernetes.client.exceptions import ApiException, OpenApiException
 from kubernetes.client.models.v1_deployment import V1Deployment
 from kubernetes.client.models.v1_pod import V1Pod
+from pydantic import BaseModel
 from requests import Response
 from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
@@ -97,11 +96,10 @@ class KubernetesObjectReconciler[T]:
         """Get patched reference object"""
         reference = self.get_reference_object()
         patch = self.get_patch()
-        try:
+        if isinstance(reference, BaseModel):
+            json = reference.model_dump(mode="json")
+        else:
             json = self.api_client.sanitize_for_serialization(reference)
-        # Custom objects will not be known to the clients openapi types
-        except AttributeError:
-            json = asdict(reference)
         try:
             ref = json
             if patch is not None:
@@ -111,12 +109,10 @@ class KubernetesObjectReconciler[T]:
         mock_response = Response()
         mock_response.data = dumps(ref)
 
-        try:
+        if isinstance(reference, BaseModel):
+            json = reference.model_dump(mode="json")
+        else:
             result = self.api_client.deserialize(mock_response, reference.__class__.__name__)
-        # Custom objects will not be known to the clients openapi types
-        except AttributeError:
-            result = from_dict(reference.__class__, data=ref)
-
         return result
 
     def up(self):
@@ -191,10 +187,10 @@ class KubernetesObjectReconciler[T]:
 
         patch = self.get_patch()
         if patch is not None:
-            try:
+            if isinstance(reference, BaseModel):
+                current_json = reference.model_dump(mode="json")
+            else:
                 current_json = self.api_client.sanitize_for_serialization(current)
-            except AttributeError:
-                current_json = asdict(current)
             try:
                 if apply_patch(current_json, patch) != current_json:
                     raise NeedsUpdate()

@@ -1,10 +1,9 @@
 """Kubernetes Prometheus ServiceMonitor Reconciler"""
 
-from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING
 
-from dacite.core import from_dict
 from kubernetes.client import ApiextensionsV1Api, CustomObjectsApi
+from pydantic import BaseModel, Field
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
@@ -15,23 +14,20 @@ if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
 
 
-@dataclass(slots=True)
-class PrometheusServiceMonitorSpecEndpoint:
+class PrometheusServiceMonitorSpecEndpoint(BaseModel):
     """Prometheus ServiceMonitor endpoint spec"""
 
     port: str
-    path: str = field(default="/metrics")
+    path: str = Field(default="/metrics")
 
 
-@dataclass(slots=True)
-class PrometheusServiceMonitorSpecSelector:
+class PrometheusServiceMonitorSpecSelector(BaseModel):
     """Prometheus ServiceMonitor selector spec"""
 
     matchLabels: dict
 
 
-@dataclass(slots=True)
-class PrometheusServiceMonitorSpec:
+class PrometheusServiceMonitorSpec(BaseModel):
     """Prometheus ServiceMonitor spec"""
 
     endpoints: list[PrometheusServiceMonitorSpecEndpoint]
@@ -39,17 +35,15 @@ class PrometheusServiceMonitorSpec:
     selector: PrometheusServiceMonitorSpecSelector
 
 
-@dataclass(slots=True)
-class PrometheusServiceMonitorMetadata:
+class PrometheusServiceMonitorMetadata(BaseModel):
     """Prometheus ServiceMonitor metadata"""
 
     name: str
     namespace: str
-    labels: dict = field(default_factory=dict)
+    labels: dict = Field(default_factory=dict)
 
 
-@dataclass(slots=True)
-class PrometheusServiceMonitor:
+class PrometheusServiceMonitor(BaseModel):
     """Prometheus ServiceMonitor"""
 
     apiVersion: str
@@ -59,7 +53,7 @@ class PrometheusServiceMonitor:
 
     def to_dict(self):
         """`to_dict` to conform to how the kubernetes client converts objects to dicts"""
-        return asdict(self)
+        return self.model_dump(mode="json")
 
 
 CRD_NAME = "servicemonitors.monitoring.coreos.com"
@@ -132,7 +126,7 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
             version=CRD_VERSION,
             plural=CRD_PLURAL,
             namespace=self.namespace,
-            body=asdict(reference),
+            body=reference.model_dump(mode="json"),
             field_manager=FIELD_MANAGER,
         )
 
@@ -146,15 +140,14 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
         )
 
     def retrieve(self) -> PrometheusServiceMonitor:
-        return from_dict(
-            PrometheusServiceMonitor,
+        return PrometheusServiceMonitor.model_validate(
             self.api.get_namespaced_custom_object(
                 group=CRD_GROUP,
                 version=CRD_VERSION,
                 namespace=self.namespace,
                 plural=CRD_PLURAL,
                 name=self.name,
-            ),
+            )
         )
 
     def update(self, current: PrometheusServiceMonitor, reference: PrometheusServiceMonitor):
@@ -164,6 +157,6 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
             namespace=self.namespace,
             plural=CRD_PLURAL,
             name=self.name,
-            body=asdict(reference),
+            body=reference.model_dump(mode="json"),
             field_manager=FIELD_MANAGER,
         )

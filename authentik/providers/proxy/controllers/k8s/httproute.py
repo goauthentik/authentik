@@ -1,9 +1,8 @@
-from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
-from dacite.core import from_dict
 from kubernetes.client import ApiextensionsV1Api, CustomObjectsApi, V1ObjectMeta
+from pydantic import BaseModel, Field
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
@@ -15,14 +14,12 @@ if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
 
 
-@dataclass(slots=True)
-class RouteBackendRef:
+class RouteBackendRef(BaseModel):
     name: str
     port: int
 
 
-@dataclass(slots=True)
-class RouteSpecParentRefs:
+class RouteSpecParentRefs(BaseModel):
     name: str
     sectionName: str | None = None
     port: int | None = None
@@ -31,48 +28,41 @@ class RouteSpecParentRefs:
     group: str = "gateway.networking.k8s.io"
 
 
-@dataclass(slots=True)
-class HTTPRouteSpecRuleMatchPath:
+class HTTPRouteSpecRuleMatchPath(BaseModel):
     type: str
     value: str
 
 
-@dataclass(slots=True)
-class HTTPRouteSpecRuleMatchHeader:
+class HTTPRouteSpecRuleMatchHeader(BaseModel):
     name: str
     value: str
     type: str = "Exact"
 
 
-@dataclass(slots=True)
-class HTTPRouteSpecRuleMatch:
+class HTTPRouteSpecRuleMatch(BaseModel):
     path: HTTPRouteSpecRuleMatchPath
     headers: list[HTTPRouteSpecRuleMatchHeader]
 
 
-@dataclass(slots=True)
-class HTTPRouteSpecRule:
+class HTTPRouteSpecRule(BaseModel):
     backendRefs: list[RouteBackendRef]
     matches: list[HTTPRouteSpecRuleMatch]
 
 
-@dataclass(slots=True)
-class HTTPRouteSpec:
+class HTTPRouteSpec(BaseModel):
     parentRefs: list[RouteSpecParentRefs]
     hostnames: list[str]
     rules: list[HTTPRouteSpecRule]
 
 
-@dataclass(slots=True)
-class HTTPRouteMetadata:
+class HTTPRouteMetadata(BaseModel):
     name: str
     namespace: str
-    annotations: dict = field(default_factory=dict)
-    labels: dict = field(default_factory=dict)
+    annotations: dict = Field(default_factory=dict)
+    labels: dict = Field(default_factory=dict)
 
 
-@dataclass(slots=True)
-class HTTPRoute:
+class HTTPRoute(BaseModel):
     apiVersion: str
     kind: str
     metadata: HTTPRouteMetadata
@@ -183,7 +173,7 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
             ),
             spec=HTTPRouteSpec(
                 parentRefs=[
-                    from_dict(RouteSpecParentRefs, spec)
+                    RouteSpecParentRefs.model_validate(spec)
                     for spec in self.controller.outpost.config.kubernetes_httproute_parent_refs
                 ],
                 hostnames=hostnames,
@@ -197,7 +187,7 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
             version=self.crd_version,
             plural=self.crd_plural,
             namespace=self.namespace,
-            body=asdict(reference),
+            body=reference.model_dump(mode="json"),
             field_manager=FIELD_MANAGER,
         )
 
@@ -211,15 +201,14 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
         )
 
     def retrieve(self) -> HTTPRoute:
-        return from_dict(
-            HTTPRoute,
+        return HTTPRoute.model_validate(
             self.api.get_namespaced_custom_object(
                 group=self.crd_group,
                 version=self.crd_version,
                 plural=self.crd_plural,
                 namespace=self.namespace,
                 name=self.name,
-            ),
+            )
         )
 
     def update(self, current: HTTPRoute, reference: HTTPRoute):
@@ -229,6 +218,6 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
             plural=self.crd_plural,
             namespace=self.namespace,
             name=self.name,
-            body=asdict(reference),
+            body=reference.model_dump(mode="json"),
             field_manager=FIELD_MANAGER,
         )

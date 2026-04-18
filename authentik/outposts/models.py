@@ -1,12 +1,10 @@
 """Outpost models"""
 
 from collections.abc import Iterable
-from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
-from dacite.core import from_dict
 from django.contrib.auth.models import Permission
 from django.core.cache import cache
 from django.db import IntegrityError, models, transaction
@@ -14,6 +12,7 @@ from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from packaging.version import Version, parse
+from pydantic import BaseModel, Field
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -49,8 +48,7 @@ class ServiceConnectionInvalid(SentryIgnoredException):
     """Exception raised when a Service Connection has invalid parameters"""
 
 
-@dataclass
-class OutpostConfig:
+class OutpostConfig(BaseModel):
     """Configuration an outpost uses to configure it self"""
 
     # update website/docs/add-secure-apps/outposts/_config.md
@@ -60,28 +58,28 @@ class OutpostConfig:
     authentik_host_browser: str = ""
 
     log_level: str = CONFIG.get("log_level")
-    object_naming_template: str = field(default="ak-outpost-%(name)s")
+    object_naming_template: str = Field(default="ak-outpost-%(name)s")
     refresh_interval: str = "minutes=5"
 
-    container_image: str | None = field(default=None)
+    container_image: str | None = Field(default=None)
 
-    docker_network: str | None = field(default=None)
-    docker_map_ports: bool = field(default=True)
-    docker_labels: dict[str, str] | None = field(default=None)
+    docker_network: str | None = Field(default=None)
+    docker_map_ports: bool = Field(default=True)
+    docker_labels: dict[str, str] | None = Field(default=None)
 
-    kubernetes_replicas: int = field(default=1)
-    kubernetes_namespace: str = field(default_factory=get_namespace)
-    kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
-    kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
-    kubernetes_ingress_class_name: str | None = field(default=None)
-    kubernetes_ingress_path_type: str | None = field(default=None)
-    kubernetes_httproute_annotations: dict[str, str] = field(default_factory=dict)
-    kubernetes_httproute_parent_refs: list[dict[str, str]] = field(default_factory=list)
-    kubernetes_service_type: str = field(default="ClusterIP")
-    kubernetes_disabled_components: list[str] = field(default_factory=list)
-    kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
-    kubernetes_json_patches: dict[str, list[dict[str, Any]]] | None = field(default=None)
-    kubernetes_disable_x509_strict: bool = field(default=False)
+    kubernetes_replicas: int = Field(default=1)
+    kubernetes_namespace: str = Field(default_factory=get_namespace)
+    kubernetes_ingress_annotations: dict[str, str] = Field(default_factory=dict)
+    kubernetes_ingress_secret_name: str = Field(default="authentik-outpost-tls")
+    kubernetes_ingress_class_name: str | None = Field(default=None)
+    kubernetes_ingress_path_type: str | None = Field(default=None)
+    kubernetes_httproute_annotations: dict[str, str] = Field(default_factory=dict)
+    kubernetes_httproute_parent_refs: list[dict[str, str]] = Field(default_factory=list)
+    kubernetes_service_type: str = Field(default="ClusterIP")
+    kubernetes_disabled_components: list[str] = Field(default_factory=list)
+    kubernetes_image_pull_secrets: list[str] = Field(default_factory=list)
+    kubernetes_json_patches: dict[str, list[dict[str, Any]]] | None = Field(default=None)
+    kubernetes_disable_x509_strict: bool = Field(default=False)
 
 
 class OutpostModel(Model):
@@ -104,13 +102,12 @@ class OutpostType(models.TextChoices):
     RAC = "rac"
 
 
-def default_outpost_config(host: str | None = None):
+def default_outpost_config(host: str | None = None) -> dict[str, Any]:
     """Get default outpost config"""
-    return asdict(OutpostConfig(authentik_host=host or ""))
+    return OutpostConfig(authentik_host=host or "").model_dump(mode="json")
 
 
-@dataclass
-class OutpostServiceConnectionState:
+class OutpostServiceConnectionState(BaseModel):
     """State of an Outpost Service Connection"""
 
     version: str
@@ -292,12 +289,12 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     @property
     def config(self) -> OutpostConfig:
         """Load config as OutpostConfig object"""
-        return from_dict(OutpostConfig, self._config)
+        return OutpostConfig.model_validate(self._config)
 
     @config.setter
-    def config(self, value):
+    def config(self, value: OutpostConfig):
         """Dump config into json"""
-        self._config = asdict(value)
+        self._config = value.model_dump(mode="json")
 
     @property
     def state_cache_prefix(self) -> str:
@@ -457,23 +454,25 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         verbose_name_plural = _("Outposts")
 
 
-@dataclass
-class OutpostState:
+class OutpostState(BaseModel):
     """Outpost instance state, last_seen and version"""
 
     uid: str
-    last_seen: datetime | None = field(default=None)
-    version: str | None = field(default=None)
-    version_should: Version = field(default=OUR_VERSION)
-    build_hash: str = field(default="")
-    golang_version: str = field(default="")
-    openssl_enabled: bool = field(default=False)
-    openssl_version: str = field(default="")
-    fips_enabled: bool = field(default=False)
-    hostname: str = field(default="")
-    args: dict = field(default_factory=dict)
+    last_seen: datetime | None = Field(default=None)
+    version: str | None = Field(default=None)
+    version_should: Version = Field(default=OUR_VERSION)
+    build_hash: str = Field(default="")
+    golang_version: str = Field(default="")
+    openssl_enabled: bool = Field(default=False)
+    openssl_version: str = Field(default="")
+    fips_enabled: bool = Field(default=False)
+    hostname: str = Field(default="")
+    args: dict = Field(default_factory=dict)
 
-    _outpost: Outpost | None = field(default=None)
+    _outpost: Outpost | None
+
+    def model_post_init(self, context):
+        self._outpost = None
 
     @property
     def version_outdated(self) -> bool:
@@ -505,7 +504,7 @@ class OutpostState:
         if isinstance(data, str):
             cache.delete(key)
             data = default_data
-        state = from_dict(OutpostState, data)
+        state = OutpostState.model_validate(data)
 
         state._outpost = outpost
         return state
@@ -513,7 +512,7 @@ class OutpostState:
     def save(self, timeout=OUTPOST_HELLO_INTERVAL):
         """Save current state to cache"""
         full_key = f"{self._outpost.state_cache_prefix}/{self.uid}"
-        return cache.set(full_key, asdict(self), timeout=timeout)
+        return cache.set(full_key, self.model_dump(mode="json"), timeout=timeout)
 
     def delete(self):
         """Manually delete from cache, used on channel disconnect"""
