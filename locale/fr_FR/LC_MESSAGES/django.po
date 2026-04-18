@@ -4459,7 +4459,7 @@ msgstr "Étape de Courriel"
 
 #: authentik/stages/email/models.py
 msgid "Email Stages"
-msgstr "Étapes Courriel"
+msgstr "Étapes de Courriel"
 
 #: authentik/stages/email/stage.py
 msgid "Successfully verified Email."
