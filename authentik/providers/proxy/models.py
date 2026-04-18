@@ -55,8 +55,9 @@ def get_cookie_secret():
 def _get_callback_url(uri: str) -> list[RedirectURI]:
     return [
         RedirectURI(
-            RedirectURIMatchingMode.STRICT,
-            urljoin(uri, "outpost.goauthentik.io/callback") + f"?{OUTPOST_CALLBACK_SIGNATURE}=true",
+            matching_mode=RedirectURIMatchingMode.STRICT,
+            url=urljoin(uri, "outpost.goauthentik.io/callback")
+            + f"?{OUTPOST_CALLBACK_SIGNATURE}=true",
         ),
         RedirectURI(
             matching_mode=RedirectURIMatchingMode.STRICT,
