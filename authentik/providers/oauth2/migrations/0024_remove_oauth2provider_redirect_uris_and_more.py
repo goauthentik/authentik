@@ -19,7 +19,7 @@ def migrate_redirect_uris(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
             mode = RedirectURIMatchingMode.STRICT
             if old == "*" or old == ".*":
                 mode = RedirectURIMatchingMode.REGEX
-            uris.append(asdict(RedirectURI(mode, url=old)))
+            uris.append(asdict(RedirectURI(matching_mode=mode, url=old)))
         provider._redirect_uris = uris
         provider.save()
 

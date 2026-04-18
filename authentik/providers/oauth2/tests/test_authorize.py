@@ -188,7 +188,11 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, "http://local.invalid?")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.REGEX, url="http://local.invalid?"
+                )
+            ],
         )
         with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get(
@@ -208,7 +212,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, "+")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.REGEX, url="+")],
         )
         with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get(
@@ -228,7 +232,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, ".+")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.REGEX, url=".+")],
         )
         request = self.factory.get(
             "/",

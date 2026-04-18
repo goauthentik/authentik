@@ -60,8 +60,8 @@ class TestAPI(APITestCase):
         """Test launch_url"""
         self.provider.redirect_uris = [
             RedirectURI(
-                RedirectURIMatchingMode.REGEX,
-                "https://[\\d\\w]+.pr.test.goauthentik.io/source/oauth/callback/authentik/",
+                matching_mode=RedirectURIMatchingMode.REGEX,
+                url="https://[\\d\\w]+.pr.test.goauthentik.io/source/oauth/callback/authentik/",
             ),
         ]
         self.provider.save()
