@@ -320,7 +320,7 @@ ci--meta-debug:
 	node --version || echo "No node installed"
 
 ci-lint-mypy: ci--meta-debug
-	$(UV) run mypy --strict $(PY_SOURCES)
+	$(UV) run mypy --show-traceback --strict $(PY_SOURCES)
 
 ci-lint-black: ci--meta-debug
 	$(UV) run black --check $(PY_SOURCES)

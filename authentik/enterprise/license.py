@@ -137,7 +137,13 @@ class LicenseKey(BaseModel):
     @staticmethod
     def get_total() -> LicenseKey:
         """Get a summarized version of all (not expired) licenses"""
-        total = LicenseKey(get_license_aud(), 0, "Summarized license", 0, 0)
+        total = LicenseKey(
+            aud=get_license_aud(),
+            exp=0,
+            name="Summarized license",
+            internal_users=0,
+            external_users=0,
+        )
         for lic in License.objects.all():
             if lic.is_valid:
                 total.internal_users += lic.internal_users
