@@ -1,6 +1,5 @@
 """LDAP and Outpost e2e tests"""
 
-from dataclasses import asdict
 from time import sleep
 
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
@@ -72,7 +71,7 @@ class TestProviderLDAP(ChannelsE2ETestCase):
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
             type=OutpostType.LDAP,
-            _config=asdict(OutpostConfig(log_level="debug")),
+            _config=OutpostConfig(log_level="debug").model_dump(mode="json"),
         )
         outpost.providers.add(ldap)
 
