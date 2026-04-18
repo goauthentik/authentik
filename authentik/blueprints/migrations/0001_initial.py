@@ -4,7 +4,6 @@ from glob import glob
 from pathlib import Path
 
 import django.contrib.postgres.fields
-from dacite.core import from_dict
 from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
@@ -33,7 +32,7 @@ def check_blueprint_v1_file(BlueprintInstance: type, db_alias, path: Path):
     rel_path = path.relative_to(Path(CONFIG.get("blueprints_dir")))
     meta = None
     if metadata:
-        meta = from_dict(BlueprintMetadata, metadata)
+        meta = BlueprintMetadata.model_validate(metadata)
         if meta.labels.get(LABEL_AUTHENTIK_INSTANTIATE, "").lower() == "false":
             return
     if not instance:

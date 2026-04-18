@@ -3,7 +3,6 @@
 from collections import OrderedDict
 from collections.abc import Generator, Iterable, Mapping
 from copy import copy
-from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
 from json import JSONDecodeError, loads
@@ -15,12 +14,14 @@ from uuid import UUID
 from deepmerge import always_merger
 from django.apps import apps
 from django.db.models import Model, Q
+from pydantic import BaseModel, ConfigDict, Field
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import Field
+from rest_framework.fields import Field as DRFField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
 
+from authentik.blueprints.v1.meta.registry import MetaResult
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.models import PolicyBindingModel
@@ -38,7 +39,7 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
     data = dict(serializer.data)
 
     for field_name, _field in serializer.fields.items():
-        _field: Field
+        _field: DRFField
         if field_name not in data:
             continue
         if _field.read_only:
@@ -48,11 +49,12 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
     return data
 
 
-@dataclass
-class BlueprintEntryState:
+class BlueprintEntryState(BaseModel):
     """State of a single instance"""
 
-    instance: Model | None = None
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    instance: Model | MetaResult | None = None
 
 
 class BlueprintEntryDesiredState(Enum):
@@ -64,32 +66,35 @@ class BlueprintEntryDesiredState(Enum):
     MUST_CREATED = "must_created"
 
 
-@dataclass
-class BlueprintEntryPermission:
+class BlueprintEntryPermission(BaseModel):
     """Describe object-level permissions"""
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     permission: str | YAMLTag
-    user: int | YAMLTag | None = field(default=None)
-    role: str | YAMLTag | None = field(default=None)
+    user: int | YAMLTag | None = Field(default=None)
+    role: str | UUID | YAMLTag | None = Field(default=None)
 
 
-@dataclass
-class BlueprintEntry:
+class BlueprintEntry(BaseModel):
     """Single entry of a blueprint"""
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     model: str | YAMLTag
-    state: BlueprintEntryDesiredState | YAMLTag = field(default=BlueprintEntryDesiredState.PRESENT)
-    conditions: list[Any] = field(default_factory=list)
-    identifiers: dict[str, Any] = field(default_factory=dict)
-    attrs: dict[str, Any] | None = field(default_factory=dict)
-    permissions: list[BlueprintEntryPermission] = field(default_factory=list)
+    state: BlueprintEntryDesiredState | YAMLTag = Field(default=BlueprintEntryDesiredState.PRESENT)
+    conditions: list[Any] = Field(default_factory=list)
+    identifiers: dict[str, Any] = Field(default_factory=dict)
+    attrs: dict[str, Any] | None = Field(default_factory=dict)
+    permissions: list[BlueprintEntryPermission] = Field(default_factory=list)
 
     id: str | None = None
 
-    _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
+    _state: BlueprintEntryState
 
-    def __post_init__(self, *args, **kwargs) -> None:
+    def model_post_init(self, __context: Any) -> None:
         self.__tag_contexts: list[YAMLTagContext] = []
+        self._state = BlueprintEntryState()
 
     @staticmethod
     def from_model(model: SerializerModel, *extra_identifier_names: str) -> BlueprintEntry:
@@ -178,23 +183,23 @@ class BlueprintEntry:
         return all(self.tag_resolver(self.conditions, blueprint))
 
 
-@dataclass
-class BlueprintMetadata:
+class BlueprintMetadata(BaseModel):
     """Optional blueprint metadata"""
 
     name: str
-    labels: dict[str, str] = field(default_factory=dict)
+    labels: dict[str, str] = Field(default_factory=dict)
 
 
-@dataclass
-class Blueprint:
+class Blueprint(BaseModel):
     """Dataclass used for a full export"""
 
-    version: int = field(default=1)
-    entries: list[BlueprintEntry] | dict[str, list[BlueprintEntry]] = field(default_factory=list)
-    context: dict = field(default_factory=dict)
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    metadata: BlueprintMetadata | None = field(default=None)
+    version: int = Field(default=1)
+    entries: list[BlueprintEntry] | dict[str, list[BlueprintEntry]] = Field(default_factory=list)
+    context: dict = Field(default_factory=dict)
+
+    metadata: BlueprintMetadata | None = Field(default=None)
 
     def iter_entries(self) -> Iterable[BlueprintEntry]:
         if isinstance(self.entries, dict):
@@ -208,7 +213,7 @@ class YAMLTag:
     """Base class for all YAML Tags"""
 
     def __repr__(self) -> str:
-        return str(self.resolve(BlueprintEntry(""), Blueprint()))
+        return str(self.resolve(BlueprintEntry(model=""), Blueprint()))
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""
@@ -696,18 +701,8 @@ class BlueprintDumper(SafeDumper):
         return True
 
     def represent(self, data) -> None:
-        if is_dataclass(data):
-
-            def factory(items):
-                final_dict = dict(items)
-                # Remove internal state variables
-                final_dict.pop("_state", None)
-                # Future-proof to only remove the ID if we don't set a value
-                if "id" in final_dict and final_dict.get("id") is None:
-                    final_dict.pop("id")
-                return final_dict
-
-            data = asdict(data, dict_factory=factory)
+        if isinstance(data, BaseModel):
+            data = data.model_dump(mode="json", exclude_none=True)
         return super().represent(data)
 
 
