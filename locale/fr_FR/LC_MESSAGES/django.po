@@ -1469,11 +1469,11 @@ msgstr "Évènement utilisateur"
 
 #: authentik/events/models.py
 msgid "Notification Transport"
-msgstr "Transport de Notification"
+msgstr "Transport de notification"
 
 #: authentik/events/models.py
 msgid "Notification Transports"
-msgstr "Transports de notification"
+msgstr "Transports de notifications"
 
 #: authentik/events/models.py
 msgid "Notice"
