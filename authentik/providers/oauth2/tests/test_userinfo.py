@@ -44,7 +44,7 @@ class TestUserinfo(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=IDToken().model_dump_json(),
+            _id_token=IDToken(iss="foo", sub="bar").model_dump_json(),
         )
 
     def test_userinfo_normal(self):

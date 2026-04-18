@@ -514,7 +514,7 @@ class OutpostState(BaseModel):
     def save(self, timeout=OUTPOST_HELLO_INTERVAL):
         """Save current state to cache"""
         full_key = f"{self._outpost.state_cache_prefix}/{self.uid}"
-        return cache.set(full_key, self.model_dump(mode="json"), timeout=timeout)
+        return cache.set(full_key, self.model_dump(), timeout=timeout)
 
     def delete(self):
         """Manually delete from cache, used on channel disconnect"""
