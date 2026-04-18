@@ -1,6 +1,5 @@
 """Test userinfo view"""
 
-
 from django.urls import reverse
 from django.utils import timezone
 
