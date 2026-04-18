@@ -3497,7 +3497,7 @@ msgstr "Kein PKCE"
 
 #: authentik/sources/oauth/models.py
 msgid "Plain"
-msgstr "Roh"
+msgstr "Plain"
 
 #: authentik/sources/oauth/models.py
 msgid "S256"
