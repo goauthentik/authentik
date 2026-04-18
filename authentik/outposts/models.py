@@ -12,7 +12,7 @@ from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from packaging.version import Version, parse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -456,6 +456,8 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
 
 class OutpostState(BaseModel):
     """Outpost instance state, last_seen and version"""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     uid: str
     last_seen: datetime | None = Field(default=None)
