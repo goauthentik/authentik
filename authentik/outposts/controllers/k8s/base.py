@@ -110,7 +110,7 @@ class KubernetesObjectReconciler[T]:
         mock_response.data = dumps(ref)
 
         if isinstance(reference, BaseModel):
-            json = reference.model_dump(mode="json")
+            result = reference.__class__.model_validate(ref)
         else:
             result = self.api_client.deserialize(mock_response, reference.__class__.__name__)
         return result
