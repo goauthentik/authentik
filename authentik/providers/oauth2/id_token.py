@@ -1,11 +1,11 @@
 """id_token utils"""
 
-from dataclasses import asdict, dataclass, field
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any
 
 from django.http import HttpRequest
 from django.utils import timezone
+from pydantic import BaseModel, Field
 
 from authentik.common.oauth.constants import (
     ACR_AUTHENTIK_DEFAULT,
@@ -29,8 +29,7 @@ def hash_session_key(session_key: str) -> str:
     return sha256(session_key.encode("ascii")).hexdigest()
 
 
-@dataclass(slots=True)
-class IDToken:
+class IDToken(BaseModel):
     """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be
     Authenticated is the ID Token data structure. The ID Token is a security token that contains
     Claims about the Authentication of an End-User by an Authorization Server when using a Client,
@@ -71,7 +70,7 @@ class IDToken:
     # JWT ID, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.7
     jti: str | None = None
 
-    claims: dict[str, Any] = field(default_factory=dict)
+    claims: dict[str, Any] = Field(default_factory=dict)
 
     @staticmethod
     def new(
@@ -140,7 +139,7 @@ class IDToken:
 
     def to_dict(self) -> dict[str, Any]:
         """Convert dataclass to dict, and update with keys from `claims`"""
-        id_dict = asdict(self)
+        id_dict = self.model_dump(mode="json")
         # All items without a value should be removed instead being set to None/null
         # https://openid.net/specs/openid-connect-core-1_0.html#JSONSerialization
         for key in list(id_dict.keys()):
