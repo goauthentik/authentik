@@ -4455,7 +4455,7 @@ msgstr "Activer les utilisateurs à la complétion de l'étape."
 
 #: authentik/stages/email/models.py
 msgid "Email Stage"
-msgstr "Étape Courriel"
+msgstr "Étape de Courriel"
 
 #: authentik/stages/email/models.py
 msgid "Email Stages"
