@@ -50,9 +50,9 @@ export interface PaginatedResponse<T, A extends object = object> {
  * @param input An iterable of items to include in the results array.
  */
 export function createPaginatedResponse<T = unknown, A extends object = object>(
-    input: Iterable<T> = [],
+    input?: Iterable<T> | null,
 ): PaginatedResponse<T, A> {
-    const results = Array.from(input);
+    const results = Array.from(input ?? []);
 
     return {
         pagination: {

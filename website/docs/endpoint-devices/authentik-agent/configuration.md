@@ -18,7 +18,7 @@ The OAuth device code flow enables secure authentication for input-limited clien
 If you have already deployed the authentik OAuth device code flow, skip to the [next section](#create-an-application-and-provider-in-authentik-for-cli).
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Flows** and click **Create**.
+2. Navigate to **Flows and Stages** > **Flows** and click **New Flow**.
 3. Set the following required configurations:
     - **Name**: provide a name (e.g. `default-device-code-flow`)
     - **Title**: provide a title (e.g. `Device code flow`)
@@ -34,7 +34,7 @@ If you have already deployed the authentik OAuth device code flow, skip to the [
 The authentik Agent requires an OAuth application/provider pair to handle authentication.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. Alternatively, you can first create a provider separately, then create the application and connect it to the provider.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard. Alternatively, you can first create a provider separately, then create the application and connect it to the provider.
     - **Application**: set the **Name** and **Slug** to `authentik-cli`, and provide an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -52,7 +52,7 @@ The authentik Agent requires an OAuth application/provider pair to handle authen
 The authentik Agent [Connector](../device-compliance/connectors/authentik-agent.md) allows device information to be reported to authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
+2. Navigate to **Endpoint Devices** > **Connectors** and click **New Endpoint Connector**.
 3. Select **Agent Connector** as the agent type and click **Next**.
 4. Configure the following required settings:
     - **Connector name**: provide a descriptive name (e.g. `authentik Agent`)

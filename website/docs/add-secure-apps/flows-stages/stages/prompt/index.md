@@ -63,7 +63,7 @@ A flag which decides whether or not this field is required.
 A field placeholder, shown within the input field.
 
 By default, the placeholder is interpreted as-is. If you enable _Interpret placeholder as expression_, the placeholder
-will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../../customize/policies/expression.mdx).
+will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../../customize/policies/types/expression/index.mdx).
 
 For `Radio Button Group` and `Dropdown` prompts, this field defines the available choices. When used as a plain string, it represents a single allowed value (the placeholder). When used as an expression, it can return a list of choices. For example, `return ["first option", 42, {"label": "another option", "value": "some value"}]` defines three possible values.
 
@@ -80,7 +80,7 @@ The prompt's initial value. It can also be left empty, in which case the field w
 With the `hidden` prompt, the initial value will also be the actual value, because the field is hidden to the user.
 
 By default, the initial value is interpreted as-is. If you enable _Interpret initial value as expression_, the initial value
-will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../../customize/policies/expression.mdx).
+will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../../customize/policies/types/expression/index.mdx).
 
 In the case of `Radio Button Group` and `Dropdown` prompts, this field defines the default choice. When interpreted as-is, the default choice will be the initial value string. When interpreted as expression, the default choice will be the returned value. For example, `return 42` defines `42` as the default choice. When a choice is defined as an object `{"label": "Option", "value": "internal-value"}`, the initial value needs to be set to the value string `internal-value` in this case.
 

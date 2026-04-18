@@ -178,6 +178,7 @@ name = "authentik-common"
 version = "2026.5.0-rc1"
 dependencies = [
  "arc-swap",
+ "authentik-client",
  "aws-lc-rs",
  "axum-server",
  "config",
@@ -189,6 +190,8 @@ dependencies = [
  "nix 0.31.2",
  "notify",
  "pin-project-lite",
+ "reqwest",
+ "reqwest-middleware",
  "rustls",
  "sentry",
  "serde",
@@ -198,6 +201,7 @@ dependencies = [
  "thiserror 2.0.18",
  "time",
  "tokio",
+ "tokio-retry2",
  "tokio-util",
  "tracing",
  "tracing-error",
@@ -3619,6 +3623,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "tokio-retry2"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0266d56e57e6b29becbfce5daa6add8730941ca8192ddd7c24d25bf90c32a743"
+dependencies = [
+ "pin-project",
+ "tokio",
 ]
 
 [[package]]

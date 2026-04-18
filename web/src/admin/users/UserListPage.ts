@@ -251,10 +251,19 @@ export class UserListPage extends WithBrandConfig(
         const displayName = formatUserDisplayName(item);
 
         return [
-            html`<img class="pf-c-avatar pf-m-hidden pf-m-visible-on-xl" src=${item.avatar} />`,
-            html`<a href="#/identity/users/${item.pk}">
-                <div>${item.username}</div>
-                <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
+            html`<img
+                class="pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
+                src=${item.avatar}
+                alt=${msg(str`Avatar for ${displayName}`)}
+            />`,
+            html`<a
+                href="#/identity/users/${item.pk}"
+                aria-label=${msg(str`View details for ${displayName}`)}
+            >
+                <div aria-label=${msg(str`Username: ${item.username}`)}>${item.username}</div>
+                <small aria-label=${msg(str`Display name: ${displayName || msg("No name set")}`)}
+                    >${displayName ? item.name : html`&lt;${msg("No name set")}&gt;`}</small
+                >
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             Timestamp(item.lastLogin),

@@ -12,7 +12,7 @@ This applies to:
 - **System** > **Brands** > **Default flow background**
 - **Flows and Stages** > **Flows** > **Background**
 - **Applications** > **Applications** > **Icon**
-- **Applications** > **Create application** wizard > **Icon**
+- **Applications** > **New Application** wizard > **Icon**
 - **Directory** > **Federation and Social login** > source **Icon** fields for SAML, OAuth, Plex, and Kerberos sources
 
 ## Accepted values

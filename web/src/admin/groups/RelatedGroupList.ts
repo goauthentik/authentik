@@ -1,18 +1,18 @@
-import "#admin/groups/ak-group-form";
 import "#admin/users/ak-user-group-table";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { renderModal } from "#elements/dialogs";
+import { modalInvoker, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { GroupForm } from "#admin/groups/ak-group-form";
 
 import { CoreApi, Group, User } from "@goauthentik/api";
 
@@ -23,6 +23,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-group-related-add")
 export class RelatedGroupAdd extends Form<{ groups: string[] }> {
+    public static override verboseName = msg("Group");
+    public static override submitVerb = msg("Add");
+    public static override createLabel = msg("Add");
+
     @property({ attribute: false })
     public user?: User;
 
@@ -74,7 +78,10 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
                     </pf-tooltip>
                 </button>
                 <div class="pf-c-form-control">
-                    <ak-chip-group>
+                    <ak-chip-group
+                        @click=${this.openUserGroupSelectModal}
+                        placeholder=${msg("Select one or more groups...")}
+                    >
                         ${this.groupsToAdd.map((group) => {
                             return html`<ak-chip
                                 removable
@@ -151,40 +158,30 @@ export class RelatedGroupList extends Table<Group> {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
-            html` <ak-forms-modal>
-                <span slot="submit">${msg("Save Changes")}</span>
-                <span slot="header">${msg("Update Group")}</span>
-                <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<button
+                class="pf-c-button pf-m-plain"
+                ${modalInvoker(GroupForm, { instancePk: item.pk })}
+            >
+                <pf-tooltip position="top" content=${msg("Edit")}>
+                    <i class="fas fa-edit" aria-hidden="true"></i>
+                </pf-tooltip>
+            </button>`,
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`
             ${this.targetUser
-                ? html`<ak-forms-modal>
-                      <span slot="submit">${msg("Add")}</span>
-                      <span slot="header">${msg("Add Group")}</span>
-                      <ak-group-related-add .user=${this.targetUser} slot="form">
-                      </ak-group-related-add>
-                      <button slot="trigger" class="pf-c-button pf-m-primary">
-                          ${msg("Add to existing group")}
-                      </button>
-                  </ak-forms-modal>`
+                ? html`<button
+                      class="pf-c-button pf-m-primary"
+                      ${modalInvoker(RelatedGroupAdd, { user: this.targetUser })}
+                  >
+                      ${msg("Add to existing group")}
+                  </button>`
                 : nothing}
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Group")}</span>
-                <ak-group-form slot="form"> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Add new group")}
-                </button>
-            </ak-forms-modal>
+            <button class="pf-c-button pf-m-secondary" ${modalInvoker(GroupForm)}>
+                ${msg("Add new group")}
+            </button>
             ${super.renderToolbar()}
         `;
     }

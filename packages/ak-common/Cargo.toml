@@ -15,6 +15,7 @@ core = ["dep:sqlx"]
 proxy = []
 
 [dependencies]
+ak-client.workspace = true
 arc-swap.workspace = true
 aws-lc-rs.workspace = true
 axum-server.workspace = true
@@ -26,6 +27,8 @@ ipnet.workspace = true
 json-subscriber.workspace = true
 notify.workspace = true
 pin-project-lite.workspace = true
+reqwest.workspace = true
+reqwest-middleware.workspace = true
 rustls.workspace = true
 sentry.workspace = true
 serde.workspace = true
@@ -33,6 +36,7 @@ serde_json.workspace = true
 sqlx = { workspace = true, optional = true }
 thiserror.workspace = true
 time.workspace = true
+tokio-retry2.workspace = true
 tokio-util.workspace = true
 tokio.workspace = true
 tracing-error.workspace = true

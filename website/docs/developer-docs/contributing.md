@@ -49,47 +49,47 @@ authentik
 ├── lib - Generic library of functions, few dependencies on other packages.
 ├── outposts - Configure and deploy outposts on Kubernetes and Docker.
 ├── policies - General PolicyEngine
-│   ├── dummy - A Dummy policy used for testing
-│   ├── event_matcher - Match events based on different criteria
-│   ├── expiry - Check when a user's password was last set
-│   ├── expression - Execute any arbitrary python code
-│   ├── password - Check a password against several rules
-│   └── reputation - Check the user's/client's reputation
+│   ├── dummy - A Dummy policy used for testing
+│   ├── event_matcher - Match events based on different criteria
+│   ├── expiry - Check when a user's password was last set
+│   ├── expression - Execute any arbitrary python code
+│   ├── password - Check a password against several rules
+│   └── reputation - Check the user's/client's reputation
 ├── providers
-│   ├── ldap - Provide LDAP access to authentik users/groups using an outpost
-│   ├── oauth2 - OIDC-compliant OAuth2 provider
-│   ├── proxy - Provides an identity-aware proxy using an outpost
-│   ├── radius - Provides a RADIUS server that authenticates using flows
-│   ├── saml - SAML2 provider
-│   └── scim - SCIM provider
+│   ├── ldap - Provide LDAP access to authentik users/groups using an outpost
+│   ├── oauth2 - OIDC-compliant OAuth2 provider
+│   ├── proxy - Provides an identity-aware proxy using an outpost
+│   ├── radius - Provides a RADIUS server that authenticates using flows
+│   ├── saml - SAML2 provider
+│   └── scim - SCIM provider
 ├── recovery - Generate keys to use in case you lock yourself out
 ├── root - Root Django application, contains global settings and routes
 ├── sources
-│   ├── kerberos - Sync Kerberos users into authentik
-│   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
-│   ├── oauth - OAuth1 and OAuth2 source
-│   ├── plex - Plex source
-│   ├── saml - SAML2 source
-│   └── telegram - Telegram source
+│   ├── kerberos - Sync Kerberos users into authentik
+│   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
+│   ├── oauth - OAuth1 and OAuth2 source
+│   ├── plex - Plex source
+│   ├── saml - SAML2 source
+│   └── telegram - Telegram source
 ├── stages
-│   ├── authenticator_duo - Configure a DUO authenticator
-│   ├── authenticator_static - Configure TOTP backup keys
-│   ├── authenticator_totp - Configure a TOTP authenticator
-│   ├── authenticator_validate - Validate any authenticator
-│   ├── authenticator_webauthn - Configure a WebAuthn / Passkeys authenticator
-│   ├── captcha - Make the user pass a captcha
-│   ├── consent - Let the user decide if they want to consent to an action
-│   ├── deny - Static deny, can be used with policies
-│   ├── dummy - Dummy stage to test
-│   ├── email - Send the user an email and block execution until they click the link
-│   ├── identification - Identify a user with any combination of fields
-│   ├── invitation - Invitation system to limit flows to certain users
-│   ├── password - Password authentication
-│   ├── prompt - Arbitrary prompts
-│   ├── user_delete - Delete the currently pending user
-│   ├── user_login - Login the currently pending user
-│   ├── user_logout - Logout the currently pending user
-│   └── user_write - Write any currently pending data to the user.
+│   ├── authenticator_duo - Configure a DUO authenticator
+│   ├── authenticator_static - Configure TOTP backup keys
+│   ├── authenticator_totp - Configure a TOTP authenticator
+│   ├── authenticator_validate - Validate any authenticator
+│   ├── authenticator_webauthn - Configure a WebAuthn / Passkeys authenticator
+│   ├── captcha - Make the user pass a captcha
+│   ├── consent - Let the user decide if they want to consent to an action
+│   ├── deny - Static deny, can be used with policies
+│   ├── dummy - Dummy stage to test
+│   ├── email - Send the user an email and block execution until they click the link
+│   ├── identification - Identify a user with any combination of fields
+│   ├── invitation - Invitation system to limit flows to certain users
+│   ├── password - Password authentication
+│   ├── prompt - Arbitrary prompts
+│   ├── user_delete - Delete the currently pending user
+│   ├── user_login - Login the currently pending user
+│   ├── user_logout - Logout the currently pending user
+│   └── user_write - Write any currently pending data to the user.
 ├── tasks - Background tasks
 └── tenants - Soft tenancy, configure defaults and branding per domain
 ```

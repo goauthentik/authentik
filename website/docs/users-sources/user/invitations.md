@@ -58,7 +58,7 @@ We have two pre-defined blueprints, the`Example - Invitation-based Enrollment` b
 ### Step 3. Create the invitation object
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Invitations** and click **Create**.
+2. Navigate to **Directory** > **Invitations** and click **New Invitation**.
 
     The Create Invitation box appears.
 
@@ -155,7 +155,7 @@ If you prefer to create your invitation flow manually instead of using a bluepri
 ### Step 1: Create an Invitation stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Stages** and click **Create**.
+2. Navigate to **Flows and Stages** > **Stages** and click **New Stage**.
 3. Select **Invitation Stage** from the stage type list.
 4. Configure the stage:
     - **Name**: Provide a descriptive name (e.g., `enrollment-invitation-stage`)
@@ -163,7 +163,7 @@ If you prefer to create your invitation flow manually instead of using a bluepri
         - Set to `false` if you want to require a valid invitation token (recommended for invitation-only flows).
         - Set to `true` if you want to allow both invited and non-invited users to use the same enrollment flow.
 
-5. Click **Create**.
+5. Click **Create Stage**.
 
 :::info
 The **Continue flow without invitation** setting determines whether users can proceed through the flow without a valid invitation token. When set to `false`, only users with valid invitation links can complete enrollment.
@@ -226,7 +226,7 @@ Groups cannot be set directly in invitation custom attributes because they requi
 
 ### Expression policies with invitations
 
-You can use [expression policies](../../../customize/policies/expression/) to make decisions based on invitation data:
+You can use [expression policies](../../../customize/policies/types/expression/) to make decisions based on invitation data:
 
 ```python
 # Check if user was invited

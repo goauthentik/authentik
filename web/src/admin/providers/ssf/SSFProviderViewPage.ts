@@ -1,5 +1,4 @@
 import "#admin/providers/RelatedApplicationButton";
-import "#admin/providers/ssf/SSFProviderFormPage";
 import "#admin/providers/ssf/StreamTable";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ObjectPermissionModal";
@@ -14,9 +13,12 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
+
+import { SSFProviderFormPage } from "#admin/providers/ssf/SSFProviderFormPage";
 
 import { ModelEnum, ProvidersApi, SSFProvider } from "@goauthentik/api";
 
@@ -155,15 +157,14 @@ export class SSFProviderViewPage extends AKElement {
                         ],
                         [
                             msg("Related actions"),
-                            html`<ak-forms-modal>
-                                <span slot="submit">${msg("Save Changes")}</span>
-                                <span slot="header">${msg("Update SSF Provider")}</span>
-                                <ak-provider-ssf-form slot="form" .instancePk=${this.provider.pk}>
-                                </ak-provider-ssf-form>
-                                <button slot="trigger" class="pf-c-button pf-m-primary pf-m-block">
-                                    ${msg("Edit")}
-                                </button>
-                            </ak-forms-modal>`,
+                            html`<button
+                                class="pf-c-button pf-m-primary pf-m-block"
+                                ${modalInvoker(SSFProviderFormPage, {
+                                    instancePk: this.provider.pk,
+                                })}
+                            >
+                                ${msg("Edit")}
+                            </button>`,
                         ],
                     ])}
                 </div>

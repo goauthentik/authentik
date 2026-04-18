@@ -60,7 +60,7 @@ The pipe character (`|`) is required to preserve linebreaks in the YAML text. Se
 ## Apply a private key to an RAC property mapping
 
 1.  Log in to authentik as an administrator and open the authentik Admin interface.
-2.  Navigate to **Customization** > **Property Mappings** and click **Create**, then create a **RAC Provider Property Mapping** with the following settings:
+2.  Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**, then create a **RAC Provider Property Mapping** with the following settings:
     - **Name**: Choose a descriptive name
     - Under **Advanced Settings**:
         - **Expression**:
@@ -95,7 +95,7 @@ The pipe character (`|`) is required to preserve linebreaks in the YAML text. Se
 ## Retrieve a private key from a user's attributes and apply it to an RAC property mapping
 
 1.  Log in to authentik as an administrator and open the authentik Admin interface.
-2.  Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **RAC Provider Property Mapping** with the following settings:
+2.  Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**. Create a **RAC Provider Property Mapping** with the following settings:
     - **Name**: Choose a descriptive name
     - Under **Advanced Settings**:
         - **Expression**:

@@ -21,10 +21,10 @@ Depending on whether you are connecting using RDP, SSH, or VNC, the exact config
 
 ### Create a RAC provider and application pair
 
-To create a provider along with the corresponding application that uses it for authentication, navigate to **Applications** > **Applications** and click **Create with Provider**. We recommend this combined approach for most common use cases. Alternatively, you can use the legacy method to create only the provider by navigating to **Applications** > **Providers** and clicking **Create**.
+To create a provider along with the corresponding application that uses it for authentication, navigate to **Applications** > **Applications** and click **New Application**. We recommend this combined approach for most common use cases. Alternatively, you can use the legacy method to create only the provider by navigating to **Applications** > **Providers** and clicking **New Provider**.
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 3. On the **New application** page, define the application details, and then click **Next**.
 4. Select the **RAC** provider type, and then click **Next**.
 5. On the **Configure Remote Access Provider** page, provide the configuration settings and then click **Submit** to create both the application and the provider.
@@ -36,9 +36,9 @@ Next, you need to add property mappings for each remote machine you want to acce
 Refer to the [RAC Credentials Prompt](./rac_credentials_prompt.md) and [RAC SSH Public Key Authentication](./rac-public-key.md) documentation for alternative methods of handling RAC authentication.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings**, and click **Create**.
+2. Navigate to **Customization** > **Property Mappings**, and click **New Property Mapping**.
 3. Select **RAC Provider Property Mapping** as the property mapping type, and then click **Next**.
-4. On the **Create RAC Provider Property Mapping** page, provide the following configuration settings:
+4. On the **New RAC Provider Property Mapping** page, provide the following configuration settings:
     - **Name**: provide a name for the property mapping
     - Under **General settings**:
         - **Username**: the username for the remote machine
@@ -55,7 +55,7 @@ Then, you need to create an endpoint corresponding to each remote machine you wa
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**.
 3. Click the **Edit** button on the RAC provider that you previously created.
-4. On the Provider page, under **Endpoints**, click **Create**, and provide the following settings:
+4. On the Provider page, under **Endpoints**, click **New RAC Endpoint**, and provide the following settings:
     - **Provider Name** (endpoint name): define a name for the endpoint
     - **Protocol**: select the appropriate protocol
     - **Host**: enter the host name or IP address of the remote machine. Optionally include the port.
