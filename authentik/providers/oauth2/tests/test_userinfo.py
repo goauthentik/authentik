@@ -1,7 +1,5 @@
 """Test userinfo view"""
 
-import json
-from dataclasses import asdict
 
 from django.urls import reverse
 from django.utils import timezone
@@ -46,11 +44,7 @@ class TestUserinfo(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
 
     def test_userinfo_normal(self):

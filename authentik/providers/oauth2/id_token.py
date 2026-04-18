@@ -77,7 +77,7 @@ class IDToken(BaseModel):
         provider: OAuth2Provider, token: BaseGrantModel, request: HttpRequest, **kwargs
     ) -> IDToken:
         """Create ID Token"""
-        id_token = IDToken(provider, token, **kwargs)
+        id_token = IDToken()
         id_token.exp = int(
             (token.expires if token.expires is not None else default_token_duration()).timestamp()
         )
