@@ -32,7 +32,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="")],
             signing_key=create_test_cert(),
         )
         self.app = Application.objects.create(
@@ -239,7 +239,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         other_provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="")],
             signing_key=create_test_cert(),
             client_type=ClientTypes.PUBLIC,
         )
@@ -275,7 +275,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         other_provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="")],
             signing_key=create_test_cert(),
             client_type=ClientTypes.PUBLIC,
         )

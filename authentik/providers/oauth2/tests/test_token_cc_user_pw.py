@@ -43,7 +43,9 @@ class TestTokenClientCredentialsUserNamePassword(OAuthTestCase):
         self.provider = OAuth2Provider.objects.create(
             name="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://testserver")
+            ],
             signing_key=create_test_cert(),
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())

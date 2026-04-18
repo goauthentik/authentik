@@ -49,7 +49,11 @@ class TestJWKS(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://local.invalid"
+                )
+            ],
             signing_key=create_test_cert(),
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)
@@ -68,7 +72,11 @@ class TestJWKS(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://local.invalid"
+                )
+            ],
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)
         response = self.client.get(
@@ -82,7 +90,11 @@ class TestJWKS(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://local.invalid"
+                )
+            ],
             signing_key=create_test_cert(PrivateKeyAlg.ECDSA),
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)
@@ -99,7 +111,11 @@ class TestJWKS(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://local.invalid"
+                )
+            ],
             signing_key=create_test_cert(PrivateKeyAlg.ECDSA),
             encryption_key=create_test_cert(PrivateKeyAlg.ECDSA),
         )
@@ -122,7 +138,11 @@ class TestJWKS(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://local.invalid"
+                )
+            ],
             signing_key=cert,
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)

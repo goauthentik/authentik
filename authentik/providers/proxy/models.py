@@ -58,7 +58,10 @@ def _get_callback_url(uri: str) -> list[RedirectURI]:
             RedirectURIMatchingMode.STRICT,
             urljoin(uri, "outpost.goauthentik.io/callback") + f"?{OUTPOST_CALLBACK_SIGNATURE}=true",
         ),
-        RedirectURI(RedirectURIMatchingMode.STRICT, uri + f"?{OUTPOST_CALLBACK_SIGNATURE}=true"),
+        RedirectURI(
+            matching_mode=RedirectURIMatchingMode.STRICT,
+            url=uri + f"?{OUTPOST_CALLBACK_SIGNATURE}=true",
+        ),
     ]
 
 

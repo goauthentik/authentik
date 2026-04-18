@@ -22,7 +22,11 @@ class TestApplicationsAPI(APITestCase):
         self.user = create_test_admin_user()
         self.provider = OAuth2Provider.objects.create(
             name="test",
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://some-other-domain")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://some-other-domain"
+                )
+            ],
             authorization_flow=create_test_flow(),
         )
         self.allowed: Application = Application.objects.create(
