@@ -248,6 +248,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 role="radiogroup"
                 aria-label=${ifPresent(this.headline)}
             >
+                <slot name="pre-items"></slot>
                 ${this.renderListItems()}
             </form>`,
         ];
