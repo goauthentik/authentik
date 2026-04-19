@@ -127,11 +127,15 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     protected override renderExpanded(item: FlowStageBinding): TemplateResult {
         return html`<div class="pf-c-content">
-            <p>${msg("These bindings control if this stage will be applied to the flow.")}</p>
             <ak-bound-policies-list
                 .target=${item.policybindingmodelPtrId}
                 .policyEngineMode=${item.policyEngineMode}
             >
+                <span slot="description"
+                    >${msg(
+                        "These bindings control if this stage will be applied to the flow.",
+                    )}</span
+                >
             </ak-bound-policies-list>
         </div>`;
     }
