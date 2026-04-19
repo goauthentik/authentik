@@ -17,7 +17,7 @@ import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { html, PropertyValues } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 @customElement("ak-stage-wizard")
@@ -57,10 +57,38 @@ export class AKStageWizard extends CreateWizard {
 
         if (!bindingForm) return;
 
-        bindingForm.instance = {
-            stage: (context.host.state[createSlot] as Stage).pk,
-        } as FlowStageBinding;
+        if (context.host.state[createSlot]) {
+            bindingForm.instance = {
+                stage: (context.host.state[createSlot] as Stage).pk,
+            } as FlowStageBinding;
+        }
     };
+
+    renderCreateBefore() {
+        return this.showBindingPage
+            ? html`
+                  <div slot="pre-items">
+                      <ak-radio
+                          .options=${[
+                              {
+                                  label: "Bind existing stage",
+                                  description: html`${msg("Bind an existing stage to this flow.")}`,
+                                  value: true,
+                              },
+                          ]}
+                          @change=${() => {
+                              if (!this.wizard) {
+                                  return;
+                              }
+                              this.wizard.navigateNext();
+                          }}
+                      >
+                      </ak-radio>
+                      <hr style="margin: 1rem 0;" />
+                  </div>
+              `
+            : nothing;
+    }
 
     protected renderForms(): SlottedTemplateResult {
         const bindingPage = this.showBindingPage
