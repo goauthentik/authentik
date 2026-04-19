@@ -29,7 +29,7 @@ import { AKWizard } from "#elements/wizard/Wizard";
 import { TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, PropertyValues } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { guard } from "lit-html/directives/guard.js";
 import { createRef, ref } from "lit-html/directives/ref.js";
 import { property } from "lit/decorators.js";
@@ -302,6 +302,7 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
                     : msg("Choose type")}
                 @ak-type-create-select=${this.typeSelectListener}
             >
+                ${this.renderCreateBefore()}
                 ${guard([initialPageContent], () => {
                     if (!initialPageContent) {
                         return null;
@@ -314,6 +315,10 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
             </ak-wizard-page-type-create>
             ${this.renderForms()}
         </ak-wizard>`;
+    }
+
+    renderCreateBefore(): SlottedTemplateResult {
+        return nothing;
     }
 
     /**

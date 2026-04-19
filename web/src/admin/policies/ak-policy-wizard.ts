@@ -11,7 +11,9 @@ import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
+import { RadioChangeEventDetail } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { FormWizardPage } from "#elements/wizard/FormWizardPage";
@@ -23,8 +25,10 @@ import { PoliciesApi, Policy, PolicyBinding, TypeCreate } from "@goauthentik/api
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { html, PropertyValues } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
+
+const initialStep = "initial";
 
 @customElement("ak-policy-wizard")
 export class PolicyWizard extends CreateWizard {
@@ -63,10 +67,52 @@ export class PolicyWizard extends CreateWizard {
 
         if (!bindingForm) return;
 
-        bindingForm.instance = {
-            policy: (page.host.state[createSlot] as Policy).pk,
-        } as PolicyBinding;
+        if (page.host.state[createSlot]) {
+            bindingForm.instance = {
+                policy: (page.host.state[createSlot] as Policy).pk,
+            } as PolicyBinding;
+            bindingForm.allowedTypes = [PolicyBindingCheckTarget.Policy];
+            bindingForm.policyGroupUser = PolicyBindingCheckTarget.Policy;
+        }
+        if (page.host.state[initialStep]) {
+            bindingForm.allowedTypes = [page.host.state[initialStep] as PolicyBindingCheckTarget];
+            bindingForm.policyGroupUser = page.host.state[initialStep] as PolicyBindingCheckTarget;
+        }
     };
+
+    renderCreateBefore() {
+        return this.showBindingPage
+            ? html`
+                  <div slot="pre-items">
+                      <ak-radio
+                          .options=${[
+                              {
+                                  label: "Bind a user",
+                                  description: html`${msg("Statically bind an existing user.")}`,
+                                  value: PolicyBindingCheckTarget.User,
+                              },
+                              {
+                                  label: "Bind a group",
+                                  description: html`${msg("Statically bind an existing group.")}`,
+                                  value: PolicyBindingCheckTarget.Group,
+                              },
+                          ]}
+                          @change=${(
+                              ev: CustomEvent<RadioChangeEventDetail<PolicyBindingCheckTarget>>,
+                          ) => {
+                              if (!this.wizard) {
+                                  return;
+                              }
+                              this.wizard.state[initialStep] = ev.detail.value;
+                              this.wizard.navigateNext();
+                          }}
+                      >
+                      </ak-radio>
+                      <hr style="margin: 1rem 0;" />
+                  </div>
+              `
+            : nothing;
+    }
 
     protected renderForms(): SlottedTemplateResult {
         const bindingPage = this.showBindingPage

@@ -63,7 +63,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     public targetPk = "";
 
     @state()
-    protected policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
+    public policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
 
     @property({ type: Array })
     public allowedTypes: PolicyBindingCheckTarget[] = [
