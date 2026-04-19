@@ -242,10 +242,15 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         if (policyEngineMode === undefined) {
             return nothing;
         }
-        return html`<p class="policy-desc">
-            ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
-            ${policyEngineMode.description}
-        </p>`;
+        return html`${this.findSlotted("description")
+                ? html`<p class="policy-desc">
+                      <slot name="description"></slot>
+                  </p>`
+                : nothing}
+            <p class="policy-desc">
+                ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
+                ${policyEngineMode.description}
+            </p>`;
     }
 
     renderToolbarContainer(): SlottedTemplateResult {
