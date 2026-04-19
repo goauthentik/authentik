@@ -38,6 +38,7 @@ To support the integration of Grafana with authentik, you need to create an appl
     - Set the Logout URI to `https://grafana.company/logout`.
     - Set the Logout Method to `Front-channel`.
     - Select any available signing key.
+    - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`. This scope is available by default, but it is not selected on new providers automatically.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the display and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -75,6 +76,10 @@ data "authentik_property_mapping_provider_scope" "scope-openid" {
   name = "authentik default OAuth Mapping: OpenID 'openid'"
 }
 
+data "authentik_property_mapping_provider_scope" "scope-entitlements" {
+  name = "authentik default OAuth Mapping: OpenID 'entitlements'"
+}
+
 resource "authentik_provider_oauth2" "grafana" {
   name          = "Grafana"
   #  Required. You can use the output of:
@@ -97,6 +102,7 @@ resource "authentik_provider_oauth2" "grafana" {
     data.authentik_property_mapping_provider_scope.scope-email.id,
     data.authentik_property_mapping_provider_scope.scope-profile.id,
     data.authentik_property_mapping_provider_scope.scope-openid.id,
+    data.authentik_property_mapping_provider_scope.scope-entitlements.id,
   ]
 }
 
