@@ -35,6 +35,7 @@ To support the integration of Forgejo with authentik, you need to create an appl
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://<forgejo.company>/user/oauth2/authentik/callback`.
         - Select any available signing key.
+        - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
