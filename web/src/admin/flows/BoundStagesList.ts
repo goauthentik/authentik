@@ -115,21 +115,14 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     protected renderActions(): SlottedTemplateResult {
         return html`<button
-                class="pf-c-button pf-m-primary"
-                ${modalInvoker(AKStageWizard, {
-                    showBindingPage: true,
-                    bindingTarget: this.target,
-                })}
-            >
-                ${msg("New Stage")}
-            </button>
-            <button
-                slot="trigger"
-                class="pf-c-button pf-m-primary"
-                ${modalInvoker(StageBindingForm, { targetPk: this.target })}
-            >
-                ${msg("Bind Existing Stage")}
-            </button>`;
+            class="pf-c-button pf-m-primary"
+            ${modalInvoker(AKStageWizard, {
+                showBindingPage: true,
+                bindingTarget: this.target,
+            })}
+        >
+            ${msg("New Stage")}
+        </button>`;
     }
 
     protected override renderExpanded(item: FlowStageBinding): TemplateResult {
