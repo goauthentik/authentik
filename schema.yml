@@ -35833,13 +35833,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        flow_lockdown_authentication:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticationEnum'
-          description: Required level of authentication and authorization to access
-            a flow.
-          readOnly: true
-          nullable: true
         default_application:
           type: string
           format: uuid
@@ -35863,7 +35856,6 @@ components:
       required:
       - brand_uuid
       - domain
-      - flow_lockdown_authentication
     BrandRequest:
       type: object
       description: Brand Serializer

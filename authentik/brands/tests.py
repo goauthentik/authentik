@@ -230,7 +230,6 @@ class TestBrands(APITestCase):
         self.assertEqual(response.status_code, 201)
         body = loads(response.content.decode())
         self.assertEqual(body["flow_lockdown"], str(flow.pk))
-        self.assertEqual(body["flow_lockdown_authentication"], flow.authentication)
 
     def test_update_brand_with_lockdown_flow_changed_after_assignment(self):
         """Test unrelated brand edits still work after the lockdown flow changes later."""
@@ -257,7 +256,6 @@ class TestBrands(APITestCase):
         body = loads(response.content.decode())
         self.assertEqual(body["branding_custom_css"], "body { color: red; }")
         self.assertEqual(body["flow_lockdown"], str(flow.pk))
-        self.assertEqual(body["flow_lockdown_authentication"], flow.authentication)
 
     def test_webfinger_no_app(self):
         """Test Webfinger"""

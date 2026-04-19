@@ -85,12 +85,6 @@ pub struct Brand {
         skip_serializing_if = "Option::is_none"
     )]
     pub flow_lockdown: Option<Option<uuid::Uuid>>,
-    /// Required level of authentication and authorization to access a flow.
-    #[serde(
-        rename = "flow_lockdown_authentication",
-        deserialize_with = "Option::deserialize"
-    )]
-    pub flow_lockdown_authentication: Option<models::AuthenticationEnum>,
     /// When set, external users will be redirected to this application after authenticating.
     #[serde(
         rename = "default_application",
@@ -119,11 +113,7 @@ pub struct Brand {
 
 impl Brand {
     /// Brand Serializer
-    pub fn new(
-        brand_uuid: uuid::Uuid,
-        domain: String,
-        flow_lockdown_authentication: Option<models::AuthenticationEnum>,
-    ) -> Brand {
+    pub fn new(brand_uuid: uuid::Uuid, domain: String) -> Brand {
         Brand {
             brand_uuid,
             domain,
@@ -140,7 +130,6 @@ impl Brand {
             flow_user_settings: None,
             flow_device_code: None,
             flow_lockdown: None,
-            flow_lockdown_authentication,
             default_application: None,
             web_certificate: None,
             client_certificates: None,

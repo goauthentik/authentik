@@ -37,8 +37,6 @@ type Brand struct {
 	FlowUserSettings              NullableString `json:"flow_user_settings,omitempty"`
 	FlowDeviceCode                NullableString `json:"flow_device_code,omitempty"`
 	FlowLockdown                  NullableString `json:"flow_lockdown,omitempty"`
-	// Required level of authentication and authorization to access a flow.
-	FlowLockdownAuthentication NullableAuthenticationEnum `json:"flow_lockdown_authentication"`
 	// When set, external users will be redirected to this application after authenticating.
 	DefaultApplication NullableString `json:"default_application,omitempty"`
 	// Web Certificate used by the authentik Core webserver.
@@ -55,11 +53,10 @@ type _Brand Brand
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBrand(brandUuid string, domain string, flowLockdownAuthentication NullableAuthenticationEnum) *Brand {
+func NewBrand(brandUuid string, domain string) *Brand {
 	this := Brand{}
 	this.BrandUuid = brandUuid
 	this.Domain = domain
-	this.FlowLockdownAuthentication = flowLockdownAuthentication
 	return &this
 }
 
@@ -612,32 +609,6 @@ func (o *Brand) UnsetFlowLockdown() {
 	o.FlowLockdown.Unset()
 }
 
-// GetFlowLockdownAuthentication returns the FlowLockdownAuthentication field value
-// If the value is explicit nil, the zero value for AuthenticationEnum will be returned
-func (o *Brand) GetFlowLockdownAuthentication() AuthenticationEnum {
-	if o == nil || o.FlowLockdownAuthentication.Get() == nil {
-		var ret AuthenticationEnum
-		return ret
-	}
-
-	return *o.FlowLockdownAuthentication.Get()
-}
-
-// GetFlowLockdownAuthenticationOk returns a tuple with the FlowLockdownAuthentication field value
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Brand) GetFlowLockdownAuthenticationOk() (*AuthenticationEnum, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.FlowLockdownAuthentication.Get(), o.FlowLockdownAuthentication.IsSet()
-}
-
-// SetFlowLockdownAuthentication sets field value
-func (o *Brand) SetFlowLockdownAuthentication(v AuthenticationEnum) {
-	o.FlowLockdownAuthentication.Set(&v)
-}
-
 // GetDefaultApplication returns the DefaultApplication field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Brand) GetDefaultApplication() string {
 	if o == nil || IsNil(o.DefaultApplication.Get()) {
@@ -839,7 +810,6 @@ func (o Brand) ToMap() (map[string]interface{}, error) {
 	if o.FlowLockdown.IsSet() {
 		toSerialize["flow_lockdown"] = o.FlowLockdown.Get()
 	}
-	toSerialize["flow_lockdown_authentication"] = o.FlowLockdownAuthentication.Get()
 	if o.DefaultApplication.IsSet() {
 		toSerialize["default_application"] = o.DefaultApplication.Get()
 	}
@@ -867,7 +837,6 @@ func (o *Brand) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"brand_uuid",
 		"domain",
-		"flow_lockdown_authentication",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -912,7 +881,6 @@ func (o *Brand) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_user_settings")
 		delete(additionalProperties, "flow_device_code")
 		delete(additionalProperties, "flow_lockdown")
-		delete(additionalProperties, "flow_lockdown_authentication")
 		delete(additionalProperties, "default_application")
 		delete(additionalProperties, "web_certificate")
 		delete(additionalProperties, "client_certificates")

@@ -4,8 +4,6 @@ pub mod apple_challenge_response_request;
 pub use self::apple_challenge_response_request::AppleChallengeResponseRequest;
 pub mod apple_login_challenge;
 pub use self::apple_login_challenge::AppleLoginChallenge;
-pub mod authentication_enum;
-pub use self::authentication_enum::AuthenticationEnum;
 pub mod authenticator_duo_challenge;
 pub use self::authenticator_duo_challenge::AuthenticatorDuoChallenge;
 pub mod authenticator_duo_challenge_response_request;

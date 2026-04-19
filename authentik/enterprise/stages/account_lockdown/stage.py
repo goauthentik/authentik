@@ -7,8 +7,6 @@ from django.urls import reverse
 from authentik.core.models import Session, Token, User
 from authentik.enterprise.stages.account_lockdown.models import (
     ACCOUNT_LOCKDOWN_FAILED_MESSAGE,
-    DEFAULT_SELF_SERVICE_MESSAGE,
-    DEFAULT_SELF_SERVICE_MESSAGE_TITLE,
     PLAN_CONTEXT_LOCKDOWN_REASON,
     PLAN_CONTEXT_LOCKDOWN_RESULT,
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
@@ -18,7 +16,6 @@ from authentik.enterprise.stages.account_lockdown.models import (
     TARGET_REQUIRED_MESSAGE,
     AccountLockdownStage,
     render_lockdown_message_html,
-    translate_lockdown_text,
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -115,7 +112,7 @@ class AccountLockdownStageView(StageView):
         user = self.get_target_user(request)
         if not user:
             self.logger.warning("No target user found for account lockdown")
-            return self.executor.stage_invalid(translate_lockdown_text(TARGET_REQUIRED_MESSAGE))
+            return self.executor.stage_invalid(TARGET_REQUIRED_MESSAGE)
 
         reason = self.get_reason()
         self_service = self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE, False)
@@ -153,9 +150,7 @@ class AccountLockdownStageView(StageView):
             return self.executor.stage_ok()
 
         if failed:
-            return self.executor.stage_invalid(
-                translate_lockdown_text(ACCOUNT_LOCKDOWN_FAILED_MESSAGE)
-            )
+            return self.executor.stage_invalid(ACCOUNT_LOCKDOWN_FAILED_MESSAGE)
 
         return self.executor.stage_ok()
 
@@ -192,13 +187,8 @@ class AccountLockdownStageView(StageView):
             request.session.flush()
         if success:
             title = stage.self_service_message_title
-            if title == DEFAULT_SELF_SERVICE_MESSAGE_TITLE:
-                title = translate_lockdown_text(DEFAULT_SELF_SERVICE_MESSAGE_TITLE)
-
             body = stage.self_service_message
-            if body == DEFAULT_SELF_SERVICE_MESSAGE:
-                body = translate_lockdown_text(DEFAULT_SELF_SERVICE_MESSAGE)
         else:
-            title = translate_lockdown_text(SELF_SERVICE_FAILURE_MESSAGE_TITLE)
-            body = translate_lockdown_text(SELF_SERVICE_FAILURE_MESSAGE)
+            title = SELF_SERVICE_FAILURE_MESSAGE_TITLE
+            body = SELF_SERVICE_FAILURE_MESSAGE
         return HttpResponse(render_lockdown_message_html(title, body))

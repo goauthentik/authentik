@@ -10,7 +10,6 @@ from rest_framework.fields import (
     CharField,
     ChoiceField,
     ListField,
-    ReadOnlyField,
     SerializerMethodField,
 )
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -39,11 +38,6 @@ class FooterLinkSerializer(PassiveSerializer):
 class BrandSerializer(ModelSerializer):
     """Brand Serializer"""
 
-    flow_lockdown_authentication = ReadOnlyField(
-        source="flow_lockdown.authentication",
-        allow_null=True,
-    )
-
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         if attrs.get("default", False):
             brands = Brand.objects.filter(default=True)
@@ -71,7 +65,6 @@ class BrandSerializer(ModelSerializer):
             "flow_user_settings",
             "flow_device_code",
             "flow_lockdown",
-            "flow_lockdown_authentication",
             "default_application",
             "web_certificate",
             "client_certificates",
