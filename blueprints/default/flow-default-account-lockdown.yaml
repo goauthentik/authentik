@@ -1,13 +1,13 @@
 version: 1
 metadata:
   name: Default - Account lockdown flow
-context:
-  enterprise_license: !Find [authentik_enterprise.license, [pk__isnull, False]]
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
 entries:
   flows:
     # Main lockdown flow - requires authentication
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         designation: stage_configuration
         name: Account Lockdown
@@ -19,7 +19,7 @@ entries:
       id: flow
     # Self-service completion flow - no authentication required
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         designation: stage_configuration
         name: Account Lockdown Complete
@@ -32,22 +32,62 @@ entries:
   prompt_fields:
     # Warning field - danger alert box (content varies based on self-service vs admin)
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         order: 50
         initial_value: |
-          is_self_service = prompt_context.get("lockdown_self_service", False)
-          from authentik.enterprise.stages.account_lockdown.models import get_lockdown_warning_html
-          pending_user = user if getattr(user, "pk", None) else None
+          target_uuid = (http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
+          current_user_uuid = str(getattr(user, "pk", "") or getattr(http_request.user, "pk", ""))
+          is_self_service = not target_uuid or target_uuid == current_user_uuid
+          pending_user = None
+          if target_uuid and not is_self_service:
+              from authentik.core.models import User
 
-          targets = prompt_context.get("lockdown_target_users", [])
-          target = targets[0] if targets else pending_user
-          return get_lockdown_warning_html(self_service=is_self_service, target=target)
+              pending_user = User.objects.filter(pk=target_uuid).first()
+          if is_self_service:
+              return (
+                  "<p><strong>You are about to lock down your own account.</strong></p>"
+                  "<p>This is an emergency action for cutting off access to your account right away.</p>"
+                  "<p><strong>This will immediately:</strong></p>"
+                  "<ul>"
+                  "<li><strong>Invalidate your password</strong> - Your password will be set to a random value "
+                  "and cannot be recovered</li>"
+                  "<li><strong>Deactivate your account</strong> - Your account will be disabled</li>"
+                  "<li><strong>Terminate all your sessions</strong> - You will be logged out everywhere</li>"
+                  "<li><strong>Revoke all your tokens</strong> - All your API, app password, recovery, and "
+                  "verification tokens will be revoked</li>"
+                  "</ul>"
+                  "<p><strong>This action cannot be easily undone.</strong></p>"
+              )
+
+          from django.utils.html import escape
+
+          if pending_user:
+              email = escape(pending_user.email or pending_user.name or "No email")
+              user_html = f"<p><code>{escape(pending_user.username)}</code> ({email})</p>"
+          else:
+              user_html = "<p>the account selected when this one-time lockdown link was created</p>"
+
+          return (
+              "<p><strong>You are about to lock down the following account:</strong></p>"
+              f"{user_html}"
+              "<p>This is an emergency action for cutting off access to that account right away. "
+              "It does not lock the administrator who opened this page.</p>"
+              "<p><strong>This will immediately:</strong></p>"
+              "<ul>"
+              "<li>Invalidate passwords - Passwords will be set to random values</li>"
+              "<li>Deactivate accounts - Accounts will be disabled</li>"
+              "<li>Terminate all sessions - All active sessions will be ended</li>"
+              "<li>Revoke all tokens - All API, app password, recovery, and verification tokens "
+              "will be revoked</li>"
+              "</ul>"
+              "<p><strong>This action cannot be easily undone.</strong></p>"
+          )
         initial_value_expression: true
         required: false
         type: alert_danger
         field_key: lockdown_warning
-        label: ""
+        label: Warning
         sub_text: ""
       identifiers:
         name: default-account-lockdown-field-warning
@@ -55,18 +95,34 @@ entries:
       model: authentik_stages_prompt.prompt
     # Info field - when to use lockdown (content varies based on self-service vs admin)
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         order: 100
         initial_value: |
-          is_self_service = prompt_context.get("lockdown_self_service", False)
-          from authentik.enterprise.stages.account_lockdown.models import get_lockdown_info_html
-          return get_lockdown_info_html(self_service=is_self_service)
+          target_uuid = (http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
+          current_user_uuid = str(getattr(user, "pk", "") or getattr(http_request.user, "pk", ""))
+          is_self_service = not target_uuid or target_uuid == current_user_uuid
+          if is_self_service:
+              info = (
+                  "Use this if you no longer trust your current password or sessions. "
+                  "After lockdown, you will need help from your administrator or security team to regain access."
+              )
+          else:
+              info = (
+                  "Use this for incident response on the listed account, for example after a compromise report "
+                  "or suspicious activity. The reason you enter below will be recorded in the audit log."
+              )
+          return (
+              f"<p>{info}</p>"
+              '<p><a href="https://docs.goauthentik.io/docs/security/'
+              'account-lockdown?utm_source=authentik" '
+              'target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a></p>'
+          )
         initial_value_expression: true
         required: false
         type: alert_info
         field_key: lockdown_info
-        label: ""
+        label: Information
         sub_text: ""
       identifiers:
         name: default-account-lockdown-field-info
@@ -74,13 +130,16 @@ entries:
       model: authentik_stages_prompt.prompt
     # Reason field - text area for lockdown reason
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         order: 200
         placeholder: |
-          is_self_service = prompt_context.get("lockdown_self_service", False)
-          from authentik.enterprise.stages.account_lockdown.models import get_lockdown_reason_placeholder
-          return get_lockdown_reason_placeholder(self_service=is_self_service)
+          target_uuid = (http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
+          current_user_uuid = str(getattr(user, "pk", "") or getattr(http_request.user, "pk", ""))
+          is_self_service = not target_uuid or target_uuid == current_user_uuid
+          if is_self_service:
+              return "Describe why you are locking your account..."
+          return "Describe why this account is being locked down..."
         placeholder_expression: true
         required: true
         type: text_area
@@ -94,7 +153,7 @@ entries:
   prompt_stages:
     # Prompt stage for warnings and reason input
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         fields:
         - !KeyOf prompt-field-warning
@@ -107,7 +166,7 @@ entries:
   lockdown_stage:
     # Account lockdown stage - performs the actual lockdown
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       identifiers:
         name: default-account-lockdown-stage
       id: default-account-lockdown-stage
@@ -117,22 +176,36 @@ entries:
         set_unusable_password: true
         delete_sessions: true
         revoke_tokens: true
+        self_service_message_title: Your account has been locked
+        self_service_message: |
+          <p>You have been logged out of all sessions and your password has been invalidated.</p>
+          <p>To regain access to your account, please contact your IT administrator or security team.</p>
         self_service_completion_flow: !KeyOf completion-flow
   completion_prompt:
     # Completion message field - dynamic content for admin lockdown results
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         order: 300
         initial_value: |
           result = prompt_context.get("lockdown_result")
-          from authentik.enterprise.stages.account_lockdown.models import get_lockdown_completion_html
-          return get_lockdown_completion_html(result)
+          if not result:
+              return "<p>The account has been locked down.</p>"
+
+          from django.utils.html import escape
+
+          user = result.get("user")
+          username = f"<code>{escape(user.username if user else 'Unknown')}</code>"
+          if result.get("success"):
+              return f"<p>{username} has been locked down.</p>"
+
+          error = escape(result.get("error", "Unknown error"))
+          return f"<p>Failed to lock down {username}: {error}</p>"
         initial_value_expression: true
         required: false
         type: alert_info
         field_key: lockdown_complete
-        label: ""
+        label: Result
         sub_text: ""
       identifiers:
         name: default-account-lockdown-field-complete
@@ -140,7 +213,7 @@ entries:
       model: authentik_stages_prompt.prompt
     # Prompt stage for admin completion message
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         fields:
         - !KeyOf prompt-field-complete
@@ -151,11 +224,13 @@ entries:
   policies:
     # Expression policy to check if this is NOT a self-service lockdown (admin)
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         name: default-account-lockdown-admin-policy
         expression: |
-          return not request.context.get("lockdown_self_service", False)
+          target_uuid = (request.http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
+          current_user_uuid = str(getattr(request.user, "pk", "") or getattr(request.http_request.user, "pk", ""))
+          return bool(target_uuid) and target_uuid != current_user_uuid
       identifiers:
         name: default-account-lockdown-admin-policy
       id: admin-policy
@@ -163,14 +238,14 @@ entries:
   bindings:
     # Stage bindings
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       identifiers:
         order: 0
         stage: !KeyOf default-account-lockdown-prompt
         target: !KeyOf flow
       model: authentik_flows.flowstagebinding
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       identifiers:
         order: 10
         stage: !KeyOf default-account-lockdown-stage
@@ -178,7 +253,7 @@ entries:
       model: authentik_flows.flowstagebinding
     # Admin completion stage binding - shown for admin lockdown only
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       identifiers:
         order: 20
         stage: !KeyOf default-account-lockdown-complete-prompt
@@ -187,7 +262,7 @@ entries:
       model: authentik_flows.flowstagebinding
     # Bind the admin policy to the admin completion stage
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         enabled: true
         negate: false
@@ -199,19 +274,20 @@ entries:
   self_service_completion:
     # Self-service completion message field (for the unauthenticated completion flow)
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         order: 100
         initial_value: |
-          from authentik.enterprise.stages.account_lockdown.models import (
-              get_default_self_service_message_html,
+          return (
+              "<h1>Your account has been locked</h1>"
+              "<p>You have been logged out of all sessions and your password has been invalidated.</p>"
+              "<p>To regain access to your account, please contact your IT administrator or security team.</p>"
           )
-          return get_default_self_service_message_html()
         initial_value_expression: true
         required: false
         type: alert_warning
         field_key: self_lockdown_complete
-        label: ""
+        label: Account locked
         sub_text: ""
       identifiers:
         name: default-account-lockdown-self-field-complete
@@ -219,7 +295,7 @@ entries:
       model: authentik_stages_prompt.prompt
     # Prompt stage for self-service completion (unauthenticated)
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       attrs:
         fields:
         - !KeyOf self-prompt-field-complete
@@ -229,7 +305,7 @@ entries:
       model: authentik_stages_prompt.promptstage
     # Bind self-service completion stage to the completion flow
     - conditions:
-      - !Context enterprise_license
+      - !Context goauthentik.io/enterprise/licensed
       identifiers:
         order: 0
         stage: !KeyOf default-account-lockdown-self-complete-prompt

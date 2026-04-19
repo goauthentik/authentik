@@ -12,19 +12,19 @@ from authentik.core.tests.utils import (
     create_test_admin_user,
     create_test_cert,
     create_test_flow,
+    create_test_user,
 )
-from authentik.enterprise.stages.account_lockdown.models import (
+from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
+from authentik.enterprise.stages.account_lockdown.stage import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
-    PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
-    PLAN_CONTEXT_LOCKDOWN_TARGETS,
-    AccountLockdownStage,
+    QS_LOCKDOWN_USER,
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
@@ -70,6 +70,7 @@ class TestAccountLockdownStage(FlowTestCase):
 
     def test_lockdown_with_pending_user(self):
         """Test lockdown stage with pending user"""
+        self.client.force_login(self.user)
         self.target_user.is_active = True
         self.target_user.save()
 
@@ -96,14 +97,15 @@ class TestAccountLockdownStage(FlowTestCase):
         self.assertEqual(event.context["affected_user"], self.target_user.username)
 
     def test_lockdown_with_target_user(self):
-        """Test lockdown stage with explicit target user"""
+        """Test lockdown stage with a query-param target."""
+        self.client.force_login(self.user)
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user]
         plan.context[PLAN_CONTEXT_LOCKDOWN_REASON] = "Compromised account"
         session = self.client.session
+        session[SESSION_KEY_GET] = {QS_LOCKDOWN_USER: str(self.target_user.pk)}
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
@@ -136,11 +138,12 @@ class TestAccountLockdownStage(FlowTestCase):
 
     def test_lockdown_reason_from_prompt(self):
         """Test lockdown stage reads reason from prompt data"""
+        self.client.force_login(self.user)
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user]
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         plan.context[PLAN_CONTEXT_PROMPT] = {"reason": "User requested lockdown"}
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
@@ -160,12 +163,11 @@ class TestAccountLockdownStage(FlowTestCase):
         self.stage.delete_sessions = False
         self.stage.save()
 
+        self.client.force_login(self.target_user)
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user]
-        plan.context[PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE] = True
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -196,12 +198,11 @@ class TestAccountLockdownStage(FlowTestCase):
         self.stage.self_service_completion_flow = completion_flow
         self.stage.save()
 
+        self.client.force_login(self.target_user)
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user]
-        plan.context[PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE] = True
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -215,6 +216,28 @@ class TestAccountLockdownStage(FlowTestCase):
             reverse("authentik_core:if-flow", kwargs={"flow_slug": completion_flow.slug}),
         )
 
+    def test_lockdown_denies_other_user_without_permission(self):
+        """Test lockdown stage rejects non-self requests without change_user permission."""
+        actor = create_test_user()
+        self.client.force_login(actor)
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_GET] = {QS_LOCKDOWN_USER: str(self.target_user.pk)}
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="You do not have permission to lock down this account.",
+        )
+
     def test_lockdown_revokes_tokens(self):
         """Test lockdown stage revokes tokens"""
         Token.objects.create(
@@ -225,7 +248,7 @@ class TestAccountLockdownStage(FlowTestCase):
         self.assertEqual(Token.objects.filter(user=self.target_user).count(), 1)
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user]
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -285,7 +308,7 @@ class TestAccountLockdownStage(FlowTestCase):
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user]
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -318,7 +341,7 @@ class TestAccountLockdownStage(FlowTestCase):
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user]
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -348,7 +371,7 @@ class TestAccountLockdownStage(FlowTestCase):
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user]
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()

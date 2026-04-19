@@ -1182,6 +1182,7 @@ class TokenIntents(models.TextChoices):
     # App-specific passwords
     INTENT_APP_PASSWORD = "app_password"  # nosec
 
+
 class Token(SerializerModel, ManagedModel, ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 

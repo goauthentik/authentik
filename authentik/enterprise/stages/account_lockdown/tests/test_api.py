@@ -1,12 +1,10 @@
 """Test Users Account Lockdown API"""
 
-from datetime import timedelta
 from json import loads
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs, urlparse
 
 from django.urls import reverse
-from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import (
@@ -15,8 +13,8 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
-from authentik.flows.models import FlowDesignation, FlowToken
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.enterprise.stages.account_lockdown.stage import QS_LOCKDOWN_USER
+from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id
 
 # Patch for enterprise license check
@@ -55,47 +53,8 @@ class TestUsersAccountLockdownAPI(APITestCase):
         body = loads(response.content)
         self.assertIn("flow_url", body)
         self.assertIn(self.lockdown_flow.slug, body["flow_url"])
-        token_key = parse_qs(urlparse(body["flow_url"]).query).get("flow_token", [None])[0]
-        self.assertIsNotNone(token_key)
-        token = FlowToken.objects.get(key=token_key)
-        self.assertEqual(token.user.pk, self.admin.pk)
-        self.assertEqual(token.plan.context[PLAN_CONTEXT_PENDING_USER].pk, self.user.pk)
-
-    def test_account_lockdown_refreshes_expired_flow_token(self):
-        """Test account lockdown refreshes token expiry for reused identifiers."""
-        self.client.force_login(self.admin)
-
-        first_response = self.client.post(
-            reverse("authentik_api:user-account-lockdown"),
-            data={"user": self.user.pk},
-            format="json",
-        )
-        self.assertEqual(first_response.status_code, 200)
-        first_body = loads(first_response.content)
-        first_token_key = parse_qs(urlparse(first_body["flow_url"]).query).get(
-            "flow_token", [None]
-        )[0]
-        self.assertIsNotNone(first_token_key)
-
-        first_token = FlowToken.objects.get(key=first_token_key)
-        first_token.expires = now() - timedelta(minutes=1)
-        first_token.save(update_fields=["expires"])
-
-        second_response = self.client.post(
-            reverse("authentik_api:user-account-lockdown"),
-            data={"user": self.user.pk},
-            format="json",
-        )
-        self.assertEqual(second_response.status_code, 200)
-        second_body = loads(second_response.content)
-        second_token_key = parse_qs(urlparse(second_body["flow_url"]).query).get(
-            "flow_token", [None]
-        )[0]
-        self.assertIsNotNone(second_token_key)
-
-        refreshed_token = FlowToken.objects.get(key=second_token_key)
-        self.assertEqual(refreshed_token.user.pk, self.admin.pk)
-        self.assertGreater(refreshed_token.expires, now())
+        target_uuid = parse_qs(urlparse(body["flow_url"]).query).get(QS_LOCKDOWN_USER, [None])[0]
+        self.assertEqual(target_uuid, str(self.user.pk))
 
     def test_account_lockdown_no_flow_configured(self):
         """Test account lockdown when no flow is configured"""
@@ -165,8 +124,8 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         body = loads(response.content)
         self.assertIn("flow_url", body)
         self.assertIn(self.lockdown_flow.slug, body["flow_url"])
-        token_key = parse_qs(urlparse(body["flow_url"]).query).get("flow_token", [None])[0]
-        self.assertIsNone(token_key)
+        target_uuid = parse_qs(urlparse(body["flow_url"]).query).get(QS_LOCKDOWN_USER, [None])[0]
+        self.assertEqual(target_uuid, str(self.user.pk))
 
     def test_account_lockdown_self_no_flow_configured(self):
         """Test self-service lockdown when no flow is configured"""

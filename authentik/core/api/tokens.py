@@ -3,7 +3,6 @@
 from typing import Any
 
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError

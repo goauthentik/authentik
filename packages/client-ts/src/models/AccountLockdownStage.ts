@@ -92,13 +92,13 @@ export interface AccountLockdownStage {
      * @type {string}
      * @memberof AccountLockdownStage
      */
-    selfServiceMessageTitle?: string;
+    selfServiceMessageTitle: string;
     /**
      * HTML message shown to users after self-service lockdown. Supports HTML formatting.
      * @type {string}
      * @memberof AccountLockdownStage
      */
-    selfServiceMessage?: string;
+    selfServiceMessage: string;
     /**
      * Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
      * @type {string}
@@ -118,6 +118,9 @@ export function instanceOfAccountLockdownStage(value: object): value is AccountL
     if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
     if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
     if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (!("selfServiceMessageTitle" in value) || value["selfServiceMessageTitle"] === undefined)
+        return false;
+    if (!("selfServiceMessage" in value) || value["selfServiceMessage"] === undefined) return false;
     return true;
 }
 
@@ -145,12 +148,8 @@ export function AccountLockdownStageFromJSONTyped(
             json["set_unusable_password"] == null ? undefined : json["set_unusable_password"],
         deleteSessions: json["delete_sessions"] == null ? undefined : json["delete_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
-        selfServiceMessageTitle:
-            json["self_service_message_title"] == null
-                ? undefined
-                : json["self_service_message_title"],
-        selfServiceMessage:
-            json["self_service_message"] == null ? undefined : json["self_service_message"],
+        selfServiceMessageTitle: json["self_service_message_title"],
+        selfServiceMessage: json["self_service_message"],
         selfServiceCompletionFlow:
             json["self_service_completion_flow"] == null
                 ? undefined

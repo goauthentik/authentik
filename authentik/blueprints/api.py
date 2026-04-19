@@ -71,6 +71,13 @@ class MetadataSerializer(PassiveSerializer):
 class BlueprintInstanceSerializer(ModelSerializer):
     """Info about a single blueprint instance file"""
 
+    def _format_validation_logs(self, logs: list) -> list[str]:
+        """Return only actionable blueprint validation messages."""
+        relevant_logs = [log for log in logs if log.log_level in ("warning", "error", "critical")]
+        if not relevant_logs:
+            relevant_logs = logs[-1:] if logs else []
+        return [f"- {log.event}" for log in relevant_logs]
+
     def validate_path(self, path: str) -> str:
         """Ensure the path (if set) specified is retrievable"""
         if path == "" or path.startswith(OCI_PREFIX):
@@ -90,7 +97,7 @@ class BlueprintInstanceSerializer(ModelSerializer):
             raise ValidationError(
                 [
                     _("Failed to validate blueprint"),
-                    *[f"- {x.event}" for x in logs],
+                    *self._format_validation_logs(logs),
                 ]
             )
         return content

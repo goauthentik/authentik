@@ -26,9 +26,11 @@ Account Lockdown cannot be triggered on the anonymous user or internal service a
 2. The flow must contain an [Account Lockdown Stage](../add-secure-apps/flows-stages/stages/account_lockdown/index.md) (Enterprise)
 3. For self-service lockdown, configure a **Completion Flow** on the stage or customize the self-service message
 
-## The default lockdown flow
+## Use the packaged lockdown blueprint
 
-authentik includes a default lockdown flow (`default-account-lockdown`) with:
+authentik includes a packaged lockdown blueprint that creates a default lockdown flow (`default-account-lockdown`) and a self-service completion flow (`default-account-lockdown-complete`).
+
+The blueprint creates:
 
 | Order | Stage                     | Purpose                          |
 | ----- | ------------------------- | -------------------------------- |
@@ -38,12 +40,28 @@ authentik includes a default lockdown flow (`default-account-lockdown`) with:
 
 A separate completion flow (`default-account-lockdown-complete`) displays a message after self-service lockdowns.
 
-### Use the default flow
+### Step 1. Download the blueprint
+
+Download the lockdown blueprint by running:
+
+```shell
+wget https://goauthentik.io/blueprints/default/flow-default-account-lockdown.yaml
+```
+
+Alternatively, use this [link](/blueprints/default/flow-default-account-lockdown.yaml) to view and save the file.
+
+### Step 2. Import the blueprint file
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Flows** and click **Import**.
+3. Click **Choose file**, select `flow-default-account-lockdown.yaml`, and then click **Import**.
+
+### Step 3. Set the lockdown flow on your brand
 
 1. Navigate to **System** > **Brands**.
 2. Edit your brand and set **Lockdown flow** to `default-account-lockdown`.
 
-### Create a custom flow
+## Create a custom flow
 
 1. Navigate to **Flows and Stages** > **Flows** and create a flow with:
     - **Designation**: Stage Configuration

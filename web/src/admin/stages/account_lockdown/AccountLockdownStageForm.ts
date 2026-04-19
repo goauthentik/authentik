@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import { AccountLockdownStage, FlowDesignationEnum, StagesApi } from "@goauthentik/api";
+import { AccountLockdownStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -97,7 +97,6 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                     >
                         <ak-flow-search
                             placeholder=${msg("Select a completion flow...")}
-                            flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.selfServiceCompletionFlow}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
@@ -109,6 +108,7 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                     <ak-text-input
                         label=${msg("Self-service message title")}
                         name="selfServiceMessageTitle"
+                        required
                         value="${ifDefined(this.instance?.selfServiceMessageTitle)}"
                         help=${msg("Title shown to users after self-service lockdown.")}
                     >
@@ -116,6 +116,7 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                     <ak-textarea-input
                         label=${msg("Self-service message")}
                         name="selfServiceMessage"
+                        required
                         value=${ifDefined(this.instance?.selfServiceMessage)}
                         rows="6"
                         help=${msg(

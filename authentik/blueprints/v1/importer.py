@@ -14,7 +14,7 @@ from django.core.exceptions import FieldError
 from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
-from django.db.utils import IntegrityError
+from django.db.utils import DatabaseError, IntegrityError
 from guardian.models import RoleObjectPermission
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
@@ -146,11 +146,14 @@ class Importer:
         try:
             from authentik.enterprise.license import LicenseKey
 
-            context["goauthentik.io/enterprise/licensed"] = (
-                LicenseKey.get_total().status().is_valid,
-            )
+            context["goauthentik.io/enterprise/licensed"] = LicenseKey.get_total().status().is_valid
         except ModuleNotFoundError:
             pass
+        except DatabaseError as exc:
+            self.logger.debug(
+                "failed to determine enterprise license status for blueprint context",
+                exc=exc,
+            )
         return context
 
     @staticmethod

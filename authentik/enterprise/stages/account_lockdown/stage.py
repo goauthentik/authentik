@@ -3,46 +3,76 @@
 from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.utils.html import escape
 
-from authentik.core.models import Session, Token, User
-from authentik.enterprise.stages.account_lockdown.models import (
-    ACCOUNT_LOCKDOWN_FAILED_MESSAGE,
-    PLAN_CONTEXT_LOCKDOWN_REASON,
-    PLAN_CONTEXT_LOCKDOWN_RESULT,
-    PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
-    PLAN_CONTEXT_LOCKDOWN_TARGETS,
-    SELF_SERVICE_FAILURE_MESSAGE,
-    SELF_SERVICE_FAILURE_MESSAGE_TITLE,
-    TARGET_REQUIRED_MESSAGE,
-    AccountLockdownStage,
-    render_lockdown_message_html,
-)
+from authentik.core.models import Session, Token, User, UserTypes
+from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
+from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+
+PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
+PLAN_CONTEXT_LOCKDOWN_RESULT = "lockdown_result"
+QS_LOCKDOWN_USER = "user_uuid"
+
+TARGET_REQUIRED_MESSAGE = "No target user specified for account lockdown"
+PERMISSION_DENIED_MESSAGE = "You do not have permission to lock down this account."
+ACCOUNT_LOCKDOWN_FAILED_MESSAGE = "Account lockdown failed for this account."
+SELF_SERVICE_FAILURE_MESSAGE_TITLE = "Account lockdown failed"
+SELF_SERVICE_FAILURE_MESSAGE = (
+    "<p>We could not lock your account. Please contact your administrator or "
+    "security team for assistance.</p>"
+)
+
+
+def render_lockdown_message_html(title: str, body: str) -> str:
+    """Render simple lockdown message markup."""
+    return f"<h1>{escape(title)}</h1>{body}"
 
 
 class AccountLockdownStageView(StageView):
     """Execute account lockdown actions on the target user."""
 
+    def get_target_user_uuid(self, request: HttpRequest) -> str | None:
+        """Read the requested lockdown target from the flow query parameters."""
+        get_params = request.session.get(SESSION_KEY_GET, request.GET)
+        return get_params.get(QS_LOCKDOWN_USER)
+
     def get_target_user(self, request: HttpRequest) -> User | None:
         """Get the target user from the plan context or the authenticated request.
 
         Priority:
-        1. PLAN_CONTEXT_LOCKDOWN_TARGETS (single-element target list)
-        2. PLAN_CONTEXT_PENDING_USER (user being processed in flow)
+        1. Explicit user_uuid query parameter
+        2. PLAN_CONTEXT_PENDING_USER (compatibility fallback)
         3. request.user (direct self-service execution)
         """
-        if PLAN_CONTEXT_LOCKDOWN_TARGETS in self.executor.plan.context:
-            targets = self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS]
-            if targets:
-                return targets[0]
+        if target_uuid := self.get_target_user_uuid(request):
+            return (
+                User.objects.exclude_anonymous()
+                .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
+                .filter(pk=target_uuid)
+                .first()
+            )
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             return self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         if request.user.is_authenticated:
             return request.user
         return None
+
+    def is_self_service(self, request: HttpRequest, user: User) -> bool:
+        """Check whether the currently authenticated user is locking their own account."""
+        return request.user.is_authenticated and user.pk == request.user.pk
+
+    def can_lock_target(self, request: HttpRequest, user: User) -> bool:
+        """Check whether the requester is allowed to lock the target account."""
+        if self.is_self_service(request, user):
+            return True
+        perm = "authentik_core.change_user"
+        return request.user.is_authenticated and (
+            request.user.has_perm(perm) or request.user.has_perm(perm, user)
+        )
 
     def get_reason(self) -> str:
         """Get the lockdown reason from the plan context.
@@ -113,11 +143,16 @@ class AccountLockdownStageView(StageView):
         if not user:
             self.logger.warning("No target user found for account lockdown")
             return self.executor.stage_invalid(TARGET_REQUIRED_MESSAGE)
+        if not self.can_lock_target(request, user):
+            self.logger.warning(
+                "Permission denied for account lockdown",
+                actor=getattr(request.user, "username", None),
+                target=user.username,
+            )
+            return self.executor.stage_invalid(PERMISSION_DENIED_MESSAGE)
 
         reason = self.get_reason()
-        self_service = self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE, False)
-        if not self_service and request.user.is_authenticated:
-            self_service = user.pk == request.user.pk
+        self_service = self.is_self_service(request, user)
 
         self.logger.info(
             "Executing account lockdown",

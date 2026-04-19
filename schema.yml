@@ -33754,6 +33754,8 @@ components:
       - meta_model_name
       - name
       - pk
+      - self_service_message
+      - self_service_message_title
       - verbose_name
       - verbose_name_plural
     AccountLockdownStageRequest:
@@ -33793,6 +33795,8 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
+      - self_service_message
+      - self_service_message_title
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods

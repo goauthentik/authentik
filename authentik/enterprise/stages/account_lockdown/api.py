@@ -20,15 +20,12 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import (
     User,
     UserTypes,
-    default_token_duration,
 )
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
+from authentik.enterprise.stages.account_lockdown.stage import QS_LOCKDOWN_USER
 from authentik.flows.api.stages import StageSerializer
-from authentik.flows.exceptions import FlowNonApplicableException
-from authentik.flows.models import Flow, FlowAuthenticationRequirement, FlowToken
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
-from authentik.flows.views.executor import QS_KEY_TOKEN
+from authentik.flows.models import Flow, FlowAuthenticationRequirement
 
 LOGGER = get_logger()
 
@@ -88,67 +85,16 @@ class UserAccountLockdownMixin:
             raise ValidationError({"non_field_errors": [_("No lockdown flow configured.")]})
         return flow
 
-    def _build_flow_url(self, request: Request, flow: Flow, token: FlowToken | None = None) -> str:
-        querystring = f"?{urlencode({QS_KEY_TOKEN: token.key})}" if token else ""
+    def _build_flow_url(self, request: Request, flow: Flow, user: User) -> str:
+        querystring = f"?{urlencode({QS_LOCKDOWN_USER: str(user.pk)})}"
         return request.build_absolute_uri(
             reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug}) + querystring
         )
 
-    def _plan_lockdown_flow(self, request: Request, flow: Flow, user: User) -> FlowToken:
-        planner = FlowPlanner(flow)
-        planner.allow_empty_flows = True
-        try:
-            # Plan as the authenticated actor so require_authenticated lockdown flows
-            # remain applicable for admin-triggered runs; the target user is carried in
-            # PLAN_CONTEXT_PENDING_USER.
-            plan = planner.plan(
-                request._request,
-                {
-                    PLAN_CONTEXT_PENDING_USER: user,
-                },
-            )
-        except FlowNonApplicableException as exc:
-            raise ValidationError(
-                {"non_field_errors": [_("Lockdown flow not applicable to user.")]}
-            ) from exc
-
-        token, __ = FlowToken.objects.including_expired().update_or_create(
-            identifier=f"{user.uid}-account-lockdown",
-            defaults={
-                # The actor opens the tokenized URL, so the token must belong to the
-                # authenticated requester while the actual lockdown target stays in the plan.
-                "user": request.user,
-                "flow": flow,
-                "_plan": FlowToken.pickle(plan),
-                "revoke_on_execution": True,
-                "expires": default_token_duration(),
-                "expiring": True,
-            },
-        )
-        return token
-
-    def _create_lockdown_flow_url(self, request: Request, user: User, self_service: bool) -> str:
+    def _create_lockdown_flow_url(self, request: Request, user: User) -> str:
         """Create a flow URL for account lockdown."""
         flow = self._get_lockdown_flow(request)
-
-        if self_service:
-            planner = FlowPlanner(flow)
-            planner.allow_empty_flows = True
-            try:
-                planner.plan(
-                    request._request,
-                    {
-                        PLAN_CONTEXT_PENDING_USER: request.user,
-                    },
-                )
-            except FlowNonApplicableException as exc:
-                raise ValidationError(
-                    {"non_field_errors": [_("Lockdown flow not applicable to user.")]}
-                ) from exc
-            return self._build_flow_url(request, flow)
-
-        token = self._plan_lockdown_flow(request, flow, user)
-        return self._build_flow_url(request, flow, token)
+        return self._build_flow_url(request, flow, user)
 
     @extend_schema(
         request=UserAccountLockdownSerializer,
@@ -195,6 +141,6 @@ class UserAccountLockdownMixin:
                 LOGGER.debug("Permission denied for account lockdown", user=request.user, perm=perm)
                 self.permission_denied(request)
 
-        flow_url = self._create_lockdown_flow_url(request, user, self_service)
+        flow_url = self._create_lockdown_flow_url(request, user)
         LOGGER.debug("Returning lockdown flow URL", flow_url=flow_url, user=user.username)
         return Response({"flow_url": flow_url})
