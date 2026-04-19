@@ -3,6 +3,7 @@
 import json
 from dataclasses import asdict
 from unittest.mock import patch
+from urllib.parse import urlencode
 
 from django.urls import reverse
 from django.utils import timezone
@@ -24,7 +25,7 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
@@ -47,7 +48,11 @@ class TestAccountLockdownStage(FlowTestCase):
         self.user = create_test_admin_user()
         self.target_user = create_test_admin_user()
         self.flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
-        self.stage = AccountLockdownStage.objects.create(name="lockdown")
+        self.stage = AccountLockdownStage.objects.create(
+            name="lockdown",
+            self_service_message_title="Your account has been locked",
+            self_service_message="<p>Your account has been locked.</p>",
+        )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
 
     def test_lockdown_no_target(self):
@@ -105,12 +110,13 @@ class TestAccountLockdownStage(FlowTestCase):
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_LOCKDOWN_REASON] = "Compromised account"
         session = self.client.session
-        session[SESSION_KEY_GET] = {QS_LOCKDOWN_USER: str(self.target_user.pk)}
         session[SESSION_KEY_PLAN] = plan
         session.save()
+        query = urlencode({QS_QUERY: urlencode({QS_LOCKDOWN_USER: str(self.target_user.pk)})})
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            + f"?{query}"
         )
 
         self.assertEqual(response.status_code, 200)
@@ -223,12 +229,13 @@ class TestAccountLockdownStage(FlowTestCase):
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
-        session[SESSION_KEY_GET] = {QS_LOCKDOWN_USER: str(self.target_user.pk)}
         session[SESSION_KEY_PLAN] = plan
         session.save()
+        query = urlencode({QS_QUERY: urlencode({QS_LOCKDOWN_USER: str(self.target_user.pk)})})
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            + f"?{query}"
         )
 
         self.assertStageResponse(
@@ -240,6 +247,7 @@ class TestAccountLockdownStage(FlowTestCase):
 
     def test_lockdown_revokes_tokens(self):
         """Test lockdown stage revokes tokens"""
+        self.client.force_login(self.user)
         Token.objects.create(
             user=self.target_user,
             identifier="test-token",
@@ -261,6 +269,7 @@ class TestAccountLockdownStage(FlowTestCase):
 
     def test_lockdown_revokes_oauth_tokens(self):
         """Test lockdown stage revokes OAuth2 grants."""
+        self.client.force_login(self.user)
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
@@ -324,6 +333,7 @@ class TestAccountLockdownStage(FlowTestCase):
 
     def test_lockdown_selective_actions(self):
         """Test lockdown stage with selective actions"""
+        self.client.force_login(self.user)
         self.stage.deactivate_user = True
         self.stage.set_unusable_password = False
         self.stage.delete_sessions = False
@@ -360,6 +370,7 @@ class TestAccountLockdownStage(FlowTestCase):
 
     def test_lockdown_no_actions(self):
         """Test lockdown stage with all actions disabled"""
+        self.client.force_login(self.user)
         self.stage.deactivate_user = False
         self.stage.set_unusable_password = False
         self.stage.delete_sessions = False
