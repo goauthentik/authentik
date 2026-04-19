@@ -68,11 +68,11 @@ export class PolicyWizard extends CreateWizard {
         if (!bindingForm) return;
 
         if (page.host.state[createSlot]) {
+            bindingForm.allowedTypes = [PolicyBindingCheckTarget.Policy];
+            bindingForm.policyGroupUser = PolicyBindingCheckTarget.Policy;
             bindingForm.instance = {
                 policy: (page.host.state[createSlot] as Policy).pk,
             } as PolicyBinding;
-            bindingForm.allowedTypes = [PolicyBindingCheckTarget.Policy];
-            bindingForm.policyGroupUser = PolicyBindingCheckTarget.Policy;
         }
         if (page.host.state[initialStep]) {
             bindingForm.allowedTypes = [page.host.state[initialStep] as PolicyBindingCheckTarget];
