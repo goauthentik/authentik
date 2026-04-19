@@ -154,6 +154,7 @@ From the authentik Admin Dashboard:
       The minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired.
       :::
     - **Scopes**: select default email, SPopenid and SPprofile
+    - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
     - **Subject mode**: Based on the User's hashed ID
 5. Click **Finish**.
 
