@@ -27,6 +27,7 @@ import {
     CoreApplicationsListRequest,
     Flow,
     FlowDesignationEnum,
+    FlowsApi,
     UsageEnum,
 } from "@goauthentik/api";
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
@@ -49,8 +50,13 @@ export class BrandForm extends ModelForm<Brand, string> {
         const brand = await new CoreApi(DEFAULT_CONFIG).coreBrandsRetrieve({
             brandUuid: pk,
         });
-        this.lockdownFlowAuthentication =
-            brand.flowLockdownAuthentication ?? this.lockdownFlowAuthentication ?? null;
+        this.lockdownFlowAuthentication = null;
+        if (brand.flowLockdown) {
+            const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
+                flowUuid: brand.flowLockdown,
+            });
+            this.lockdownFlowAuthentication = flows.results[0]?.authentication ?? null;
+        }
         return brand;
     }
 
