@@ -108,7 +108,7 @@ else:
 
 ## Error handling
 
-| Error                      | Cause                                     |
-| -------------------------- | ----------------------------------------- |
-| "No target user specified" | No user found in context                  |
-| Failure                    | The stage returns an invalid response     |
+| Error                      | Cause                                 |
+| -------------------------- | ------------------------------------- |
+| "No target user specified" | No user found in context              |
+| Failure                    | The stage returns an invalid response |

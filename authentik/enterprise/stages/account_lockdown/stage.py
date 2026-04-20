@@ -21,11 +21,9 @@ TARGET_REQUIRED_MESSAGE = _("No target user specified for account lockdown")
 PERMISSION_DENIED_MESSAGE = _("You do not have permission to lock down this account.")
 ACCOUNT_LOCKDOWN_FAILED_MESSAGE = _("Account lockdown failed for this account.")
 SELF_SERVICE_FAILURE_MESSAGE_TITLE = _("Account lockdown failed")
-SELF_SERVICE_FAILURE_MESSAGE = (
-    _(
-        "<p>We could not lock your account. Please contact your administrator or "
-        "security team for assistance.</p>"
-    )
+SELF_SERVICE_FAILURE_MESSAGE = _(
+    "<p>We could not lock your account. Please contact your administrator or "
+    "security team for assistance.</p>"
 )
 
 
