@@ -15,7 +15,7 @@ from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Manager, Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
@@ -1212,6 +1212,14 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         if self.expiring:
             description += f" (expires={self.expires})"
         return description
+
+    def save(self, *args, **kwargs):
+        """Serialize user-scoped token creation with other token mutations."""
+        if self._state.adding:
+            with transaction.atomic():
+                User.objects.select_for_update().only("pk").get(pk=self.user_id)
+                return super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     @property
     def serializer(self) -> type[Serializer]:

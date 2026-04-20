@@ -20,7 +20,7 @@ from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite import Config
 from dacite.core import from_dict
 from django.contrib.postgres.indexes import HashIndex
-from django.db import models
+from django.db import models, transaction
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
@@ -483,6 +483,14 @@ class BaseGrantModel(models.Model):
     class Meta:
         abstract = True
 
+    def save(self, *args, **kwargs):
+        """Serialize user-scoped grant creation with user-level token revocation."""
+        if self._state.adding:
+            with transaction.atomic():
+                User.objects.select_for_update().only("pk").get(pk=self.user_id)
+                return super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
+
     @property
     def scope(self) -> list[str]:
         """Return scopes as list of strings"""
@@ -629,6 +637,14 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
     )
+
+    def save(self, *args, **kwargs):
+        """Serialize user-bound device token creation with user-level token revocation."""
+        if self._state.adding and self.user_id:
+            with transaction.atomic():
+                User.objects.select_for_update().only("pk").get(pk=self.user_id)
+                return super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     @property
     def scope(self) -> list[str]:

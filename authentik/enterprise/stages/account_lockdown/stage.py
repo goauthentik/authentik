@@ -98,6 +98,7 @@ class AccountLockdownStageView(StageView):
     ) -> None:
         """Execute lockdown actions on a single user."""
         with atomic():
+            user = User.objects.select_for_update().get(pk=user.pk)
             if stage.deactivate_user:
                 user.is_active = False
             if stage.set_unusable_password:
