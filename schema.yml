@@ -26718,7 +26718,7 @@ paths:
           type: string
           format: uuid
       - in: query
-        name: self_service_message
+        name: self_service_message_body
         schema:
           type: string
       - in: query
@@ -33738,7 +33738,7 @@ components:
         self_service_message_title:
           type: string
           description: Title shown to users after self-service lockdown
-        self_service_message:
+        self_service_message_body:
           type: string
           description: HTML message shown to users after self-service lockdown. Supports
             HTML formatting.
@@ -33754,7 +33754,7 @@ components:
       - meta_model_name
       - name
       - pk
-      - self_service_message
+      - self_service_message_body
       - self_service_message_title
       - verbose_name
       - verbose_name_plural
@@ -33782,7 +33782,7 @@ components:
           type: string
           minLength: 1
           description: Title shown to users after self-service lockdown
-        self_service_message:
+        self_service_message_body:
           type: string
           minLength: 1
           description: HTML message shown to users after self-service lockdown. Supports
@@ -33795,7 +33795,7 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
-      - self_service_message
+      - self_service_message_body
       - self_service_message_title
     AgentAuthenticationResponse:
       type: object
@@ -47459,7 +47459,7 @@ components:
           type: string
           minLength: 1
           description: Title shown to users after self-service lockdown
-        self_service_message:
+        self_service_message_body:
           type: string
           minLength: 1
           description: HTML message shown to users after self-service lockdown. Supports

@@ -71,7 +71,7 @@ class TestAccountLockdownStage(FlowTestCase):
         self.stage = AccountLockdownStage.objects.create(
             name="lockdown",
             self_service_message_title="Your account has been locked",
-            self_service_message="<p>Your account has been locked.</p>",
+            self_service_message_body="<p>Your account has been locked.</p>",
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
         self.request_factory = RequestFactory()

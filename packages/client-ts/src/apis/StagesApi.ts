@@ -299,7 +299,7 @@ export interface StagesAccountLockdownListRequest {
     revokeTokens?: boolean;
     search?: string;
     selfServiceCompletionFlow?: string;
-    selfServiceMessage?: string;
+    selfServiceMessageBody?: string;
     selfServiceMessageTitle?: string;
     setUnusablePassword?: boolean;
     stageUuid?: string;
@@ -1595,8 +1595,9 @@ export class StagesApi extends runtime.BaseAPI {
                 requestParameters["selfServiceCompletionFlow"];
         }
 
-        if (requestParameters["selfServiceMessage"] != null) {
-            queryParameters["self_service_message"] = requestParameters["selfServiceMessage"];
+        if (requestParameters["selfServiceMessageBody"] != null) {
+            queryParameters["self_service_message_body"] =
+                requestParameters["selfServiceMessageBody"];
         }
 
         if (requestParameters["selfServiceMessageTitle"] != null) {

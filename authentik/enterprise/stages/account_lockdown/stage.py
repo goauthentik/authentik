@@ -223,7 +223,7 @@ class AccountLockdownStageView(StageView):
             request.session.flush()
         if success:
             title = stage.self_service_message_title
-            body = stage.self_service_message
+            body = stage.self_service_message_body
         else:
             title = SELF_SERVICE_FAILURE_MESSAGE_TITLE
             body = SELF_SERVICE_FAILURE_MESSAGE

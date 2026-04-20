@@ -177,7 +177,7 @@ entries:
         delete_sessions: true
         revoke_tokens: true
         self_service_message_title: Your account has been locked
-        self_service_message: |
+        self_service_message_body: |
           <p>You have been logged out of all sessions and your password has been invalidated.</p>
           <p>To regain access to your account, please contact your IT administrator or security team.</p>
         self_service_completion_flow: !KeyOf completion-flow

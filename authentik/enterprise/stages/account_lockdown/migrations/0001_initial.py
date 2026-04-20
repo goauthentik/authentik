@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
                     models.TextField(help_text="Title shown to users after self-service lockdown"),
                 ),
                 (
-                    "self_service_message",
+                    "self_service_message_body",
                     models.TextField(
                         help_text="HTML message shown to users after self-service lockdown. Supports HTML formatting."
                     ),

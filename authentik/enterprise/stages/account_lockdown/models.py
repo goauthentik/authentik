@@ -32,7 +32,7 @@ class AccountLockdownStage(Stage):
     self_service_message_title = models.TextField(
         help_text=_("Title shown to users after self-service lockdown"),
     )
-    self_service_message = models.TextField(
+    self_service_message_body = models.TextField(
         help_text=_(
             "HTML message shown to users after self-service lockdown. Supports HTML formatting."
         ),

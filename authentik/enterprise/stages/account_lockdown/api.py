@@ -48,7 +48,7 @@ class AccountLockdownStageSerializer(EnterpriseRequiredMixin, StageSerializer):
             "delete_sessions",
             "revoke_tokens",
             "self_service_message_title",
-            "self_service_message",
+            "self_service_message_body",
             "self_service_completion_flow",
         ]
 

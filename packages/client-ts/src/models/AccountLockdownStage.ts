@@ -98,7 +98,7 @@ export interface AccountLockdownStage {
      * @type {string}
      * @memberof AccountLockdownStage
      */
-    selfServiceMessage: string;
+    selfServiceMessageBody: string;
     /**
      * Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
      * @type {string}
@@ -120,7 +120,8 @@ export function instanceOfAccountLockdownStage(value: object): value is AccountL
     if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
     if (!("selfServiceMessageTitle" in value) || value["selfServiceMessageTitle"] === undefined)
         return false;
-    if (!("selfServiceMessage" in value) || value["selfServiceMessage"] === undefined) return false;
+    if (!("selfServiceMessageBody" in value) || value["selfServiceMessageBody"] === undefined)
+        return false;
     return true;
 }
 
@@ -149,7 +150,7 @@ export function AccountLockdownStageFromJSONTyped(
         deleteSessions: json["delete_sessions"] == null ? undefined : json["delete_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
         selfServiceMessageTitle: json["self_service_message_title"],
-        selfServiceMessage: json["self_service_message"],
+        selfServiceMessageBody: json["self_service_message_body"],
         selfServiceCompletionFlow:
             json["self_service_completion_flow"] == null
                 ? undefined
@@ -179,7 +180,7 @@ export function AccountLockdownStageToJSONTyped(
         delete_sessions: value["deleteSessions"],
         revoke_tokens: value["revokeTokens"],
         self_service_message_title: value["selfServiceMessageTitle"],
-        self_service_message: value["selfServiceMessage"],
+        self_service_message_body: value["selfServiceMessageBody"],
         self_service_completion_flow: value["selfServiceCompletionFlow"],
     };
 }

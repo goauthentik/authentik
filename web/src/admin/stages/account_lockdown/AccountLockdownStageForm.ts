@@ -115,9 +115,9 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                     </ak-text-input>
                     <ak-textarea-input
                         label=${msg("Self-service message")}
-                        name="selfServiceMessage"
+                        name="selfServiceMessageBody"
                         required
-                        value=${ifDefined(this.instance?.selfServiceMessage)}
+                        value=${ifDefined(this.instance?.selfServiceMessageBody)}
                         rows="6"
                         help=${msg(
                             "HTML message shown to users after self-service lockdown. Supports HTML formatting.",

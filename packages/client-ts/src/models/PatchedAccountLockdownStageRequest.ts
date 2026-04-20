@@ -59,7 +59,7 @@ export interface PatchedAccountLockdownStageRequest {
      * @type {string}
      * @memberof PatchedAccountLockdownStageRequest
      */
-    selfServiceMessage?: string;
+    selfServiceMessageBody?: string;
     /**
      * Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
      * @type {string}
@@ -101,8 +101,10 @@ export function PatchedAccountLockdownStageRequestFromJSONTyped(
             json["self_service_message_title"] == null
                 ? undefined
                 : json["self_service_message_title"],
-        selfServiceMessage:
-            json["self_service_message"] == null ? undefined : json["self_service_message"],
+        selfServiceMessageBody:
+            json["self_service_message_body"] == null
+                ? undefined
+                : json["self_service_message_body"],
         selfServiceCompletionFlow:
             json["self_service_completion_flow"] == null
                 ? undefined
@@ -131,7 +133,7 @@ export function PatchedAccountLockdownStageRequestToJSONTyped(
         delete_sessions: value["deleteSessions"],
         revoke_tokens: value["revokeTokens"],
         self_service_message_title: value["selfServiceMessageTitle"],
-        self_service_message: value["selfServiceMessage"],
+        self_service_message_body: value["selfServiceMessageBody"],
         self_service_completion_flow: value["selfServiceCompletionFlow"],
     };
 }
