@@ -71,7 +71,7 @@ entries:
           return (
               "<p><strong>You are about to lock down the following account:</strong></p>"
               f"{user_html}"
-              "<p>This is an emergency action for cutting off access to that account right away. "
+              "<p>This is an emergency action for cutting off access to the account right away. "
               "It does not lock the administrator who opened this page.</p>"
               "<p><strong>This will immediately:</strong></p>"
               "<ul>"
