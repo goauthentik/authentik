@@ -1,6 +1,6 @@
 version: 1
 metadata:
-  name: Default - Account lockdown flow
+  name: Example - Account lockdown flow
   labels:
     blueprints.goauthentik.io/instantiate: "false"
 entries:
