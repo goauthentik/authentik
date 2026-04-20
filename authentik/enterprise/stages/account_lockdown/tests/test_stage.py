@@ -116,7 +116,9 @@ class TestAccountLockdownStage(FlowTestCase):
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_LOCKDOWN_REASON] = "Security incident"
         view = self.make_stage_view(plan)
-        request = self.make_request(user=self.user, query={QS_LOCKDOWN_USER: str(self.target_user.pk)})
+        request = self.make_request(
+            user=self.user, query={QS_LOCKDOWN_USER: str(self.target_user.pk)}
+        )
         target = view.get_target_user(request)
         self.assertEqual(target.pk, self.target_user.pk)
         self.assertTrue(view.can_lock_target(request, target))
