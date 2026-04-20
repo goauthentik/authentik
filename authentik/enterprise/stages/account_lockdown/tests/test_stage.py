@@ -5,6 +5,7 @@ from dataclasses import asdict
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from django.http import HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 
@@ -19,6 +20,7 @@ from authentik.core.tests.utils import (
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.enterprise.stages.account_lockdown.stage import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
+    PLAN_CONTEXT_LOCKDOWN_RESULT,
     QS_LOCKDOWN_USER,
     AccountLockdownStageView,
 )
@@ -73,12 +75,20 @@ class TestAccountLockdownStage(FlowTestCase):
         self.request_factory = RequestFactory()
 
     def make_stage_view(self, plan: FlowPlan):
+        def _stage_ok():
+            return HttpResponse(status=204)
+
+        def _stage_invalid(_error_message=None):
+            return HttpResponse(status=400)
+
         return AccountLockdownStageView(
             SimpleNamespace(
                 plan=plan,
                 current_stage=self.stage,
                 current_binding=self.binding,
                 flow=self.flow,
+                stage_ok=_stage_ok,
+                stage_invalid=_stage_invalid,
             )
         )
 
@@ -200,6 +210,38 @@ class TestAccountLockdownStage(FlowTestCase):
 
         self.target_user.refresh_from_db()
         self.assertFalse(self.target_user.is_active)
+
+    def test_dispatch_records_success_when_event_emission_fails(self):
+        """Test dispatch still records a successful lockdown if event emission fails."""
+        self.stage.delete_sessions = False
+        self.stage.save()
+
+        self.target_user.is_active = True
+        self.target_user.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        view = self.make_stage_view(plan)
+        request = self.make_request(user=self.target_user)
+
+        original_event_new = Event.new
+
+        def _event_new_side_effect(action, *args, **kwargs):
+            if action == EventAction.USER_LOCKDOWN_TRIGGERED:
+                raise RuntimeError("simulated event failure")
+            return original_event_new(action, *args, **kwargs)
+
+        with patch(
+            "authentik.enterprise.stages.account_lockdown.stage.Event.new",
+            side_effect=_event_new_side_effect,
+        ):
+            view.dispatch(request)
+
+        self.target_user.refresh_from_db()
+        self.assertFalse(self.target_user.is_active)
+        self.assertEqual(
+            plan.context[PLAN_CONTEXT_LOCKDOWN_RESULT],
+            {"user": self.target_user, "success": True, "error": None},
+        )
 
     def test_lockdown_self_service_redirects_to_completion_flow(self):
         """Test self-service lockdown redirects to completion flow when sessions are deleted."""

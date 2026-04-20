@@ -119,8 +119,9 @@ class AccountLockdownStageView(StageView):
                 RefreshToken.objects.filter(user=user).delete()
                 DeviceToken.objects.filter(user=user).delete()
 
-        # Create event outside atomic block - lockdown succeeded, now log it
-        # This ensures the lockdown happens even if event creation fails
+        # Emit the audit event after the transaction commits. If event creation
+        # fails here, dispatch() would otherwise treat the whole lockdown as
+        # failed even though the account changes have already been committed.
         try:
             Event.new(
                 EventAction.USER_LOCKDOWN_TRIGGERED,
