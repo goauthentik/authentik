@@ -87,39 +87,37 @@ class AccountLockdownStageView(StageView):
             return prompt_data[PLAN_CONTEXT_LOCKDOWN_REASON]
         return self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_REASON, "")
 
-    def _lockdown_user(
-        self,
-        request: HttpRequest,
-        stage: AccountLockdownStage,
-        user: User,
-        reason: str,
-    ) -> None:
-        """Execute lockdown actions on a single user."""
-        with atomic():
-            user = User.objects.select_for_update().get(pk=user.pk)
-            if stage.deactivate_user:
-                user.is_active = False
-            if stage.set_unusable_password:
-                user.set_unusable_password()
-            user.save()
+    def _lock_target_user(self, user: User) -> User:
+        """Lock and reload the target user row for the lockdown transaction."""
+        return User.objects.select_for_update().get(pk=user.pk)
 
-            if stage.delete_sessions:
-                Session.objects.filter(authenticatedsession__user=user).delete()
+    def _apply_lockdown_actions(self, stage: AccountLockdownStage, user: User) -> None:
+        """Apply the configured lockdown actions to the locked user."""
+        if stage.deactivate_user:
+            user.is_active = False
+        if stage.set_unusable_password:
+            user.set_unusable_password()
+        user.save()
 
-            if stage.revoke_tokens:
-                from authentik.providers.oauth2.models import (
-                    AccessToken,
-                    AuthorizationCode,
-                    DeviceToken,
-                    RefreshToken,
-                )
+        if stage.delete_sessions:
+            Session.objects.filter(authenticatedsession__user=user).delete()
 
-                Token.objects.filter(user=user).delete()
-                AuthorizationCode.objects.filter(user=user).delete()
-                AccessToken.objects.filter(user=user).delete()
-                RefreshToken.objects.filter(user=user).delete()
-                DeviceToken.objects.filter(user=user).delete()
+        if stage.revoke_tokens:
+            from authentik.providers.oauth2.models import (
+                AccessToken,
+                AuthorizationCode,
+                DeviceToken,
+                RefreshToken,
+            )
 
+            Token.objects.filter(user=user).delete()
+            AuthorizationCode.objects.filter(user=user).delete()
+            AccessToken.objects.filter(user=user).delete()
+            RefreshToken.objects.filter(user=user).delete()
+            DeviceToken.objects.filter(user=user).delete()
+
+    def _emit_lockdown_event(self, request: HttpRequest, user: User, reason: str) -> None:
+        """Emit the audit event for a completed lockdown."""
         # Emit the audit event after the transaction commits. If event creation
         # fails here, dispatch() would otherwise treat the whole lockdown as
         # failed even though the account changes have already been committed.
@@ -136,6 +134,20 @@ class AccountLockdownStageView(StageView):
                 user=user.username,
                 exc=exc,
             )
+
+    def _lockdown_user(
+        self,
+        request: HttpRequest,
+        stage: AccountLockdownStage,
+        user: User,
+        reason: str,
+    ) -> None:
+        """Execute lockdown actions on a single user."""
+        with atomic():
+            user = self._lock_target_user(user)
+            self._apply_lockdown_actions(stage, user)
+
+        self._emit_lockdown_event(request, user, reason)
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Execute account lockdown actions."""
