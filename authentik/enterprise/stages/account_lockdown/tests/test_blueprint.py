@@ -10,7 +10,7 @@ from authentik.blueprints.v1.tasks import blueprints_find, check_blueprint_v1_fi
 from authentik.enterprise.license import LicenseKey
 from authentik.flows.models import Flow
 
-BLUEPRINT_PATH = "default/flow-default-account-lockdown.yaml"
+BLUEPRINT_PATH = "example/flow-default-account-lockdown.yaml"
 
 
 class TestAccountLockdownBlueprint(TransactionTestCase):

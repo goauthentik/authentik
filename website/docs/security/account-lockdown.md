@@ -45,10 +45,10 @@ A separate completion flow (`default-account-lockdown-complete`) displays a mess
 Download the lockdown blueprint by running:
 
 ```shell
-wget https://goauthentik.io/blueprints/default/flow-default-account-lockdown.yaml
+wget https://goauthentik.io/blueprints/example/flow-default-account-lockdown.yaml
 ```
 
-Alternatively, use this [link](/blueprints/default/flow-default-account-lockdown.yaml) to view and save the file.
+Alternatively, use this [link](/blueprints/example/flow-default-account-lockdown.yaml) to view and save the file.
 
 ### Step 2. Import the blueprint file
 

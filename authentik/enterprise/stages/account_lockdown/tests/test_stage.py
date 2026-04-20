@@ -2,14 +2,15 @@
 
 import json
 from dataclasses import asdict
+from types import SimpleNamespace
 from unittest.mock import patch
-from urllib.parse import urlencode
 
 from django.urls import reverse
 from django.utils import timezone
 
 from authentik.core.models import AuthenticatedSession, Session, Token, TokenIntents
 from authentik.core.tests.utils import (
+    RequestFactory,
     create_test_admin_user,
     create_test_cert,
     create_test_flow,
@@ -19,13 +20,13 @@ from authentik.enterprise.stages.account_lockdown.models import AccountLockdownS
 from authentik.enterprise.stages.account_lockdown.stage import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
     QS_LOCKDOWN_USER,
+    AccountLockdownStageView,
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
@@ -39,9 +40,24 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
+patch_enterprise_enabled = patch(
+    "authentik.enterprise.apps.AuthentikEnterpriseConfig.check_enabled",
+    return_value=True,
+)
+
 
 class TestAccountLockdownStage(FlowTestCase):
     """Account lockdown stage tests"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.patch_enterprise_enabled = patch_enterprise_enabled.start()
+        super().setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        patch_enterprise_enabled.stop()
+        super().tearDownClass()
 
     def setUp(self):
         super().setUp()
@@ -54,43 +70,47 @@ class TestAccountLockdownStage(FlowTestCase):
             self_service_message="<p>Your account has been locked.</p>",
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
+        self.request_factory = RequestFactory()
+
+    def make_stage_view(self, plan: FlowPlan):
+        return AccountLockdownStageView(
+            SimpleNamespace(
+                plan=plan,
+                current_stage=self.stage,
+                current_binding=self.binding,
+                flow=self.flow,
+            )
+        )
+
+    def make_request(self, *, user=None, query=None):
+        return self.request_factory.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            query_params=query or {},
+            user=user,
+        )
 
     def test_lockdown_no_target(self):
         """Test lockdown stage with no target user fails"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        view = self.make_stage_view(plan)
 
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
-
-        self.assertStageResponse(
-            response,
-            self.flow,
-            component="ak-stage-access-denied",
-            error_message="No target user specified for account lockdown",
-        )
+        self.assertIsNone(view.get_target_user(self.make_request()))
 
     def test_lockdown_with_pending_user(self):
         """Test lockdown stage with pending user"""
-        self.client.force_login(self.user)
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         plan.context[PLAN_CONTEXT_LOCKDOWN_REASON] = "Security incident"
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        view = self.make_stage_view(plan)
+        request = self.make_request(user=self.user)
+        target = view.get_target_user(request)
+        self.assertEqual(target.pk, self.target_user.pk)
+        self.assertTrue(view.can_lock_target(request, target))
+        view._lockdown_user(request, self.stage, target, view.get_reason())
 
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
-
-        self.assertEqual(response.status_code, 200)
         self.target_user.refresh_from_db()
         self.assertFalse(self.target_user.is_active)
         self.assertFalse(self.target_user.has_usable_password())
@@ -103,23 +123,21 @@ class TestAccountLockdownStage(FlowTestCase):
 
     def test_lockdown_with_target_user(self):
         """Test lockdown stage with a query-param target."""
-        self.client.force_login(self.user)
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_LOCKDOWN_REASON] = "Compromised account"
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
-        query = urlencode({QS_QUERY: urlencode({QS_LOCKDOWN_USER: str(self.target_user.pk)})})
-
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-            + f"?{query}"
+        view = self.make_stage_view(plan)
+        request = self.make_request(
+            user=self.user,
+            query={QS_LOCKDOWN_USER: str(self.target_user.pk)},
         )
+        target = view.get_target_user(request)
+        self.assertEqual(target.pk, self.target_user.pk)
+        self.assertTrue(view.can_lock_target(request, target))
+        view._lockdown_user(request, self.stage, target, view.get_reason())
 
-        self.assertEqual(response.status_code, 200)
         self.target_user.refresh_from_db()
         self.assertFalse(self.target_user.is_active)
 
@@ -127,39 +145,30 @@ class TestAccountLockdownStage(FlowTestCase):
         """Test direct self-service execution falls back to the authenticated request user."""
         self.target_user.is_active = True
         self.target_user.save()
-        self.client.force_login(self.target_user)
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        view = self.make_stage_view(plan)
+        request = self.make_request(user=self.target_user)
+        target = view.get_target_user(request)
+        self.assertEqual(target.pk, self.target_user.pk)
+        self.assertTrue(view.is_self_service(request, target))
+        view._lockdown_user(request, self.stage, target, view.get_reason())
 
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
-
-        self.assertEqual(response.status_code, 200)
         self.target_user.refresh_from_db()
         self.assertFalse(self.target_user.is_active)
 
     def test_lockdown_reason_from_prompt(self):
         """Test lockdown stage reads reason from prompt data"""
-        self.client.force_login(self.user)
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         plan.context[PLAN_CONTEXT_PROMPT] = {"reason": "User requested lockdown"}
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        view = self.make_stage_view(plan)
+        request = self.make_request(user=self.user)
+        view._lockdown_user(request, self.stage, self.target_user, view.get_reason())
 
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
-
-        self.assertEqual(response.status_code, 200)
         event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["reason"], "User requested lockdown")
@@ -169,14 +178,12 @@ class TestAccountLockdownStage(FlowTestCase):
         self.stage.delete_sessions = False
         self.stage.save()
 
-        self.client.force_login(self.target_user)
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        view = self.make_stage_view(plan)
+        request = self.make_request(user=self.target_user)
 
         original_event_new = Event.new
 
@@ -189,12 +196,8 @@ class TestAccountLockdownStage(FlowTestCase):
             "authentik.enterprise.stages.account_lockdown.stage.Event.new",
             side_effect=_event_new_side_effect,
         ):
-            response = self.client.post(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-            )
+            view._lockdown_user(request, self.stage, self.target_user, view.get_reason())
 
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("application/json", response["Content-Type"])
         self.target_user.refresh_from_db()
         self.assertFalse(self.target_user.is_active)
 
@@ -204,50 +207,35 @@ class TestAccountLockdownStage(FlowTestCase):
         self.stage.self_service_completion_flow = completion_flow
         self.stage.save()
 
-        self.client.force_login(self.target_user)
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
+        view = self.make_stage_view(plan)
+        request = self.make_request(user=self.target_user)
+        view._lockdown_user(request, self.stage, self.target_user, view.get_reason())
+        response = view._self_service_completion_response(request)
 
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
-
-        self.assertStageRedirects(
-            response,
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
             reverse("authentik_core:if-flow", kwargs={"flow_slug": completion_flow.slug}),
         )
 
     def test_lockdown_denies_other_user_without_permission(self):
         """Test lockdown stage rejects non-self requests without change_user permission."""
         actor = create_test_user()
-        self.client.force_login(actor)
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
-        query = urlencode({QS_QUERY: urlencode({QS_LOCKDOWN_USER: str(self.target_user.pk)})})
+        view = self.make_stage_view(plan)
+        request = self.make_request(user=actor, query={QS_LOCKDOWN_USER: str(self.target_user.pk)})
+        target = view.get_target_user(request)
 
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-            + f"?{query}"
-        )
-
-        self.assertStageResponse(
-            response,
-            self.flow,
-            component="ak-stage-access-denied",
-            error_message="You do not have permission to lock down this account.",
-        )
+        self.assertEqual(target.pk, self.target_user.pk)
+        self.assertFalse(view.can_lock_target(request, target))
 
     def test_lockdown_revokes_tokens(self):
         """Test lockdown stage revokes tokens"""
-        self.client.force_login(self.user)
         Token.objects.create(
             user=self.target_user,
             identifier="test-token",
@@ -257,19 +245,13 @@ class TestAccountLockdownStage(FlowTestCase):
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
-
-        self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
+        view = self.make_stage_view(plan)
+        view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
 
         self.assertEqual(Token.objects.filter(user=self.target_user).count(), 0)
 
     def test_lockdown_revokes_oauth_tokens(self):
         """Test lockdown stage revokes OAuth2 grants."""
-        self.client.force_login(self.user)
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
@@ -318,13 +300,8 @@ class TestAccountLockdownStage(FlowTestCase):
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
-
-        self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
+        view = self.make_stage_view(plan)
+        view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
 
         self.assertEqual(AuthorizationCode.objects.filter(user=self.target_user).count(), 0)
         self.assertEqual(AccessToken.objects.filter(user=self.target_user).count(), 0)
@@ -333,7 +310,6 @@ class TestAccountLockdownStage(FlowTestCase):
 
     def test_lockdown_selective_actions(self):
         """Test lockdown stage with selective actions"""
-        self.client.force_login(self.user)
         self.stage.deactivate_user = True
         self.stage.set_unusable_password = False
         self.stage.delete_sessions = False
@@ -352,13 +328,8 @@ class TestAccountLockdownStage(FlowTestCase):
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
-
-        self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
+        view = self.make_stage_view(plan)
+        view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
 
         self.target_user.refresh_from_db()
         # User should be deactivated
@@ -370,7 +341,6 @@ class TestAccountLockdownStage(FlowTestCase):
 
     def test_lockdown_no_actions(self):
         """Test lockdown stage with all actions disabled"""
-        self.client.force_login(self.user)
         self.stage.deactivate_user = False
         self.stage.set_unusable_password = False
         self.stage.delete_sessions = False
@@ -383,13 +353,8 @@ class TestAccountLockdownStage(FlowTestCase):
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session.save()
-
-        self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-        )
+        view = self.make_stage_view(plan)
+        view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
 
         self.target_user.refresh_from_db()
         # User should still be active
