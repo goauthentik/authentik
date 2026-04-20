@@ -114,7 +114,7 @@ You can find a more detailed configuration guide, with picture guidance, at [htt
 This guide describes the UI configuration method, but you can also configure the integration using YAML.
 :::
 
-1. Install 'OpenID Configuration' from the HACS store.
+1. Install 'OpenID Connect/SSO Authentication' from the HACS store.
 2. Open Home Assistant and go to **Settings -> Devices & Services**.
 3. Click Add Integration and select **OpenID Connect/SSO Authentication**.
 4. Select "Authentik" from the pre-configured providers.
