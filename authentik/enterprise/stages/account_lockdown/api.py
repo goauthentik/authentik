@@ -3,7 +3,7 @@
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
@@ -64,7 +64,7 @@ class AccountLockdownStageViewSet(UsedByMixin, ModelViewSet):
 
 
 class UserAccountLockdownSerializer(PassiveSerializer):
-    """Payload to trigger account lockdown for a user"""
+    """Choose the target account before starting the lockdown flow."""
 
     user = PrimaryKeyRelatedField(
         queryset=User.objects.all()
@@ -92,18 +92,48 @@ class UserAccountLockdownMixin:
         )
 
     def _create_lockdown_flow_url(self, request: Request, user: User) -> str:
-        """Create a flow URL for account lockdown."""
+        """Create a flow URL for account lockdown.
+
+        The request body selects the target before the flow starts. The
+        returned URL carries the same target into the account lockdown stage
+        via the ``user_uuid`` query parameter.
+        """
         flow = self._get_lockdown_flow(request)
         return self._build_flow_url(request, flow, user)
 
     @extend_schema(
+        description=_(
+            "Choose the target account in the request body, then return a flow "
+            "URL that passes that target to the account lockdown stage via the "
+            "user_uuid query parameter."
+        ),
         request=UserAccountLockdownSerializer,
         responses={
-            "200": inline_serializer(
-                "AccountLockdownFlowResponse",
-                {
-                    "flow_url": CharField(help_text=_("URL to redirect to for lockdown flow")),
-                },
+            "200": OpenApiResponse(
+                response=inline_serializer(
+                    "AccountLockdownFlowResponse",
+                    {
+                        "flow_url": CharField(
+                            help_text=_(
+                                "URL to redirect to for lockdown flow, including the "
+                                "user_uuid query parameter consumed by the stage."
+                            )
+                        ),
+                    },
+                ),
+                examples=[
+                    OpenApiExample(
+                        "Lockdown flow URL",
+                        value={
+                            "flow_url": (
+                                "https://example.invalid/if/flow/default-account-lockdown/"
+                                "?user_uuid=00000000-0000-0000-0000-000000000000"
+                            )
+                        },
+                        response_only=True,
+                        status_codes=["200"],
+                    )
+                ],
             ),
             "400": OpenApiResponse(
                 description=_("No lockdown flow configured or the flow is not applicable")
@@ -127,7 +157,9 @@ class UserAccountLockdownMixin:
         If no user is specified, locks the current user (self-service).
         When targeting another user, admin permissions are required.
 
-        Returns a flow URL for the frontend to redirect to.
+        Returns a flow URL for the frontend to redirect to. The returned URL
+        includes the ``user_uuid`` query parameter that the lockdown stage uses
+        once the flow starts running.
         """
         target_user = body.validated_data.get("user")
         self_service = target_user is None or target_user.pk == request.user.pk
