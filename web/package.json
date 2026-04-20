@@ -151,10 +151,10 @@
         "eslint-plugin-lit": "^2.2.1",
         "eslint-plugin-wc": "^3.1.0",
         "fuse.js": "^7.3.0",
-        "globals": "^17.4.0",
+        "globals": "^17.5.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
-        "knip": "^6.3.1",
+        "knip": "^6.4.1",
         "lex": "^2025.11.0",
         "lit": "^3.3.2",
         "lit-analyzer": "^2.0.3",
@@ -187,7 +187,7 @@
         "ts-pattern": "^5.9.0",
         "turnstile-types": "^1.2.3",
         "type-fest": "^5.5.0",
-        "typescript": "^6.0.2",
+        "typescript": "^6.0.3",
         "typescript-eslint": "^8.57.2",
         "unist-util-visit": "^5.1.0",
         "vite": "^8.0.8",
@@ -203,7 +203,7 @@
         "@rollup/rollup-darwin-arm64": "^4.57.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.57.1",
         "@rollup/rollup-linux-x64-gnu": "^4.57.1",
-        "chromedriver": "^147.0.2"
+        "chromedriver": "^147.0.4"
     },
     "workspaces": [
         "./packages/*"
