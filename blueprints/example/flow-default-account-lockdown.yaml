@@ -143,7 +143,7 @@ entries:
         placeholder_expression: true
         required: true
         type: text_area
-        field_key: reason
+        field_key: lockdown_reason
         label: Reason
         sub_text: This explanation will be recorded in the audit log.
       identifiers:

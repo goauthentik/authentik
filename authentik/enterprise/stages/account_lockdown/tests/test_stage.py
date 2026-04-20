@@ -170,13 +170,15 @@ class TestAccountLockdownStage(FlowTestCase):
         self.assertFalse(self.target_user.is_active)
 
     def test_lockdown_reason_from_prompt(self):
-        """Test lockdown stage reads reason from prompt data"""
+        """Test lockdown stage reads the namespaced reason from prompt data."""
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
-        plan.context[PLAN_CONTEXT_PROMPT] = {"reason": "User requested lockdown"}
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            PLAN_CONTEXT_LOCKDOWN_REASON: "User requested lockdown",
+        }
         view = self.make_stage_view(plan)
         request = self.make_request(user=self.user)
         view._lockdown_user(request, self.stage, self.target_user, view.get_reason())

@@ -80,13 +80,13 @@ class AccountLockdownStageView(StageView):
         """Get the lockdown reason from the plan context.
 
         Priority:
-        1. prompt_data['reason'] (from a prompt stage)
+        1. prompt_data[PLAN_CONTEXT_LOCKDOWN_REASON]
         2. PLAN_CONTEXT_LOCKDOWN_REASON (explicitly set)
         3. Empty string as fallback
         """
         prompt_data = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
-        if "reason" in prompt_data:
-            return prompt_data["reason"]
+        if PLAN_CONTEXT_LOCKDOWN_REASON in prompt_data:
+            return prompt_data[PLAN_CONTEXT_LOCKDOWN_REASON]
         return self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_REASON, "")
 
     def _lockdown_user(
