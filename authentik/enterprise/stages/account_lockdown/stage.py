@@ -4,6 +4,7 @@ from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.html import escape
+from django.utils.translation import gettext_lazy as _
 
 from authentik.core.models import Session, Token, User, UserTypes
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
@@ -17,13 +18,15 @@ PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
 PLAN_CONTEXT_LOCKDOWN_RESULT = "lockdown_result"
 QS_LOCKDOWN_USER = "user_uuid"
 
-TARGET_REQUIRED_MESSAGE = "No target user specified for account lockdown"
-PERMISSION_DENIED_MESSAGE = "You do not have permission to lock down this account."
-ACCOUNT_LOCKDOWN_FAILED_MESSAGE = "Account lockdown failed for this account."
-SELF_SERVICE_FAILURE_MESSAGE_TITLE = "Account lockdown failed"
+TARGET_REQUIRED_MESSAGE = _("No target user specified for account lockdown")
+PERMISSION_DENIED_MESSAGE = _("You do not have permission to lock down this account.")
+ACCOUNT_LOCKDOWN_FAILED_MESSAGE = _("Account lockdown failed for this account.")
+SELF_SERVICE_FAILURE_MESSAGE_TITLE = _("Account lockdown failed")
 SELF_SERVICE_FAILURE_MESSAGE = (
-    "<p>We could not lock your account. Please contact your administrator or "
-    "security team for assistance.</p>"
+    _(
+        "<p>We could not lock your account. Please contact your administrator or "
+        "security team for assistance.</p>"
+    )
 )
 
 
