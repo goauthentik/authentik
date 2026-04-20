@@ -25,7 +25,7 @@ from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.enterprise.stages.account_lockdown.stage import QS_LOCKDOWN_USER
 from authentik.flows.api.stages import StageSerializer
-from authentik.flows.models import Flow, FlowAuthenticationRequirement
+from authentik.flows.models import FlowAuthenticationRequirement
 
 LOGGER = get_logger()
 
@@ -79,18 +79,6 @@ class UserAccountLockdownSerializer(PassiveSerializer):
 class UserAccountLockdownMixin:
     """Enterprise account-lockdown API actions for UserViewSet."""
 
-    def _get_lockdown_flow(self, request: Request) -> Flow:
-        flow = request._request.brand.flow_lockdown
-        if not flow:
-            raise ValidationError({"non_field_errors": [_("No lockdown flow configured.")]})
-        return flow
-
-    def _build_flow_url(self, request: Request, flow: Flow, user: User) -> str:
-        querystring = f"?{urlencode({QS_LOCKDOWN_USER: str(user.pk)})}"
-        return request.build_absolute_uri(
-            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug}) + querystring
-        )
-
     def _create_lockdown_flow_url(self, request: Request, user: User) -> str:
         """Create a flow URL for account lockdown.
 
@@ -98,8 +86,13 @@ class UserAccountLockdownMixin:
         returned URL carries the same target into the account lockdown stage
         via the ``user_uuid`` query parameter.
         """
-        flow = self._get_lockdown_flow(request)
-        return self._build_flow_url(request, flow, user)
+        flow = request._request.brand.flow_lockdown
+        if not flow:
+            raise ValidationError({"non_field_errors": [_("No lockdown flow configured.")]})
+        querystring = f"?{urlencode({QS_LOCKDOWN_USER: str(user.pk)})}"
+        return request.build_absolute_uri(
+            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug}) + querystring
+        )
 
     @extend_schema(
         description=_(
