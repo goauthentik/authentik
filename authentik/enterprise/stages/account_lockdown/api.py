@@ -23,7 +23,7 @@ from authentik.core.models import (
 )
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
-from authentik.enterprise.stages.account_lockdown.stage import QS_LOCKDOWN_USER
+from authentik.enterprise.stages.account_lockdown.stage import QS_LOCKDOWN_USER, can_lock_user
 from authentik.flows.api.stages import StageSerializer
 
 LOGGER = get_logger()
@@ -153,9 +153,8 @@ class UserAccountLockdownMixin:
             user = request.user
         else:
             user = target_user
-            perm = "authentik_core.change_user"
-            if not request.user.has_perm(perm) and not request.user.has_perm(perm, user):
-                LOGGER.debug("Permission denied for account lockdown", user=request.user, perm=perm)
+            if not can_lock_user(request.user, user):
+                LOGGER.debug("Permission denied for account lockdown", user=request.user)
                 self.permission_denied(request)
 
         flow_url = self._create_lockdown_flow_url(request, user)

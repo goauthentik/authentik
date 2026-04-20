@@ -32,6 +32,15 @@ def render_lockdown_message_html(title: str, body: str) -> str:
     return f"<h1>{escape(title)}</h1>{body}"
 
 
+def can_lock_user(actor, user: User) -> bool:
+    """Check whether the actor may lock the target user."""
+    if not actor.is_authenticated:
+        return False
+    if user.pk == actor.pk:
+        return True
+    return actor.has_perm("authentik_core.change_user", user)
+
+
 class AccountLockdownStageView(StageView):
     """Execute account lockdown actions on the target user."""
 
@@ -67,12 +76,7 @@ class AccountLockdownStageView(StageView):
 
     def can_lock_target(self, request: HttpRequest, user: User) -> bool:
         """Check whether the requester is allowed to lock the target account."""
-        if self.is_self_service(request, user):
-            return True
-        perm = "authentik_core.change_user"
-        return request.user.is_authenticated and (
-            request.user.has_perm(perm) or request.user.has_perm(perm, user)
-        )
+        return can_lock_user(request.user, user)
 
     def get_reason(self) -> str:
         """Get the lockdown reason from the plan context.
