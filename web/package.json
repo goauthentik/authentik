@@ -203,7 +203,7 @@
         "@rollup/rollup-darwin-arm64": "^4.57.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.57.1",
         "@rollup/rollup-linux-x64-gnu": "^4.57.1",
-        "chromedriver": "^147.0.2"
+        "chromedriver": "^147.0.4"
     },
     "workspaces": [
         "./packages/*"
