@@ -9,7 +9,6 @@ from django.utils.translation import gettext_lazy as _
 from authentik.core.models import Session, Token, User, UserTypes
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.events.models import Event, EventAction
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -50,13 +49,7 @@ class AccountLockdownStageView(StageView):
         return get_params.get(QS_LOCKDOWN_USER)
 
     def get_target_user(self, request: HttpRequest) -> User | None:
-        """Get the target user from the plan context or the authenticated request.
-
-        Priority:
-        1. Explicit user_uuid query parameter
-        2. PLAN_CONTEXT_PENDING_USER (compatibility fallback)
-        3. request.user (direct self-service execution)
-        """
+        """Get the target user from the flow query parameters."""
         if target_uuid := self.get_target_user_uuid(request):
             return (
                 User.objects.exclude_anonymous()
@@ -64,10 +57,6 @@ class AccountLockdownStageView(StageView):
                 .filter(pk=target_uuid)
                 .first()
             )
-        if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
-            return self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-        if request.user.is_authenticated:
-            return request.user
         return None
 
     def is_self_service(self, request: HttpRequest, user: User) -> bool:
