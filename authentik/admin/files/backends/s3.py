@@ -1,7 +1,7 @@
 from collections.abc import Generator, Iterator
 from contextlib import contextmanager
 from tempfile import SpooledTemporaryFile
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlunsplit
 
 import boto3
 from botocore.config import Config
@@ -164,16 +164,19 @@ class S3Backend(ManageableBackend):
         )
 
         def _file_url(name: str, request: HttpRequest | None) -> str:
+            client = self.client
             params = {
                 "Bucket": self.bucket_name,
                 "Key": f"{self.base_path}/{name}",
             }
 
-            url = self.client.generate_presigned_url(
-                "get_object",
-                Params=params,
-                ExpiresIn=expires_in,
-                HttpMethod="GET",
+            operation_name = "GetObject"
+            operation_model = client.meta.service_model.operation_model(operation_name)
+            request_dict = client._convert_to_request_dict(
+                params,
+                operation_model,
+                endpoint_url=client.meta.endpoint_url,
+                context={"is_presign_request": True},
             )
 
             # Support custom domain for S3-compatible storage (so not AWS)
@@ -183,9 +186,8 @@ class S3Backend(ManageableBackend):
                 CONFIG.get(f"storage.{self.name}.custom_domain", None),
             )
             if custom_domain:
-                parsed = urlsplit(url)
                 scheme = "https" if use_https else "http"
-                path = parsed.path
+                path = request_dict["url_path"]
 
                 # When using path-style addressing, the presigned URL contains the bucket
                 # name in the path (e.g., /bucket-name/key). Since custom_domain must
@@ -200,9 +202,22 @@ class S3Backend(ManageableBackend):
                 if not path.startswith("/"):
                     path = f"/{path}"
 
-                url = f"{scheme}://{custom_domain}{path}?{parsed.query}"
+                custom_base = urlsplit(f"{scheme}://{custom_domain}")
 
-            return url
+                # Sign the final public URL instead of signing the internal S3 endpoint and
+                # rewriting it afterwards. Presigned SigV4 URLs include the host header in the
+                # canonical request, so post-sign host changes break strict backends like RustFS.
+                public_path = f"{custom_base.path.rstrip('/')}{path}" if custom_base.path else path
+                request_dict["url_path"] = public_path
+                request_dict["url"] = urlunsplit(
+                    (custom_base.scheme, custom_base.netloc, public_path, "", "")
+                )
+
+            return client._request_signer.generate_presigned_url(
+                request_dict,
+                operation_name,
+                expires_in=expires_in,
+            )
 
         if use_cache:
             return self._cache_get_or_set(name, request, _file_url, expires_in)
