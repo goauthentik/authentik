@@ -29,8 +29,6 @@ entries:
         !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
       flow_user_settings:
         !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
-      flow_lockdown:
-        !Find [authentik_flows.flow, [slug, default-account-lockdown]]
     identifiers:
       domain: authentik-default
       default: true
