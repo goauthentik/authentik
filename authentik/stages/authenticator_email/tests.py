@@ -79,6 +79,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         self.assertFalse(self.device.verify_token("000000"))
 
         # Verify correct token (should clear token after verification)
+        self.device.throttle_reset(commit=False)
         self.assertTrue(self.device.verify_token(token))
         self.assertIsNone(self.device.token)
 

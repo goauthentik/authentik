@@ -78,6 +78,30 @@ export interface AuthenticatorValidateStageRequest {
      * @memberof AuthenticatorValidateStageRequest
      */
     webauthnAllowedDeviceTypes?: Array<string>;
+    /**
+     *
+     * @type {number}
+     * @memberof AuthenticatorValidateStageRequest
+     */
+    emailOtpThrottlingFactor?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof AuthenticatorValidateStageRequest
+     */
+    smsOtpThrottlingFactor?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof AuthenticatorValidateStageRequest
+     */
+    totpOtpThrottlingFactor?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof AuthenticatorValidateStageRequest
+     */
+    staticOtpThrottlingFactor?: number;
 }
 
 /**
@@ -129,6 +153,22 @@ export function AuthenticatorValidateStageRequestFromJSONTyped(
             json["webauthn_allowed_device_types"] == null
                 ? undefined
                 : json["webauthn_allowed_device_types"],
+        emailOtpThrottlingFactor:
+            json["email_otp_throttling_factor"] == null
+                ? undefined
+                : json["email_otp_throttling_factor"],
+        smsOtpThrottlingFactor:
+            json["sms_otp_throttling_factor"] == null
+                ? undefined
+                : json["sms_otp_throttling_factor"],
+        totpOtpThrottlingFactor:
+            json["totp_otp_throttling_factor"] == null
+                ? undefined
+                : json["totp_otp_throttling_factor"],
+        staticOtpThrottlingFactor:
+            json["static_otp_throttling_factor"] == null
+                ? undefined
+                : json["static_otp_throttling_factor"],
     };
 }
 
@@ -161,5 +201,9 @@ export function AuthenticatorValidateStageRequestToJSONTyped(
                 ? undefined
                 : (value["webauthnHints"] as Array<any>).map(WebAuthnHintEnumToJSON),
         webauthn_allowed_device_types: value["webauthnAllowedDeviceTypes"],
+        email_otp_throttling_factor: value["emailOtpThrottlingFactor"],
+        sms_otp_throttling_factor: value["smsOtpThrottlingFactor"],
+        totp_otp_throttling_factor: value["totpOtpThrottlingFactor"],
+        static_otp_throttling_factor: value["staticOtpThrottlingFactor"],
     };
 }
