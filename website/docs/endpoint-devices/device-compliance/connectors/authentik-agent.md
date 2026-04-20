@@ -16,7 +16,7 @@ The agent connector mainly holds configuration for the agent itself, as well as 
 Follow these instructions to configure the authentik Agent connector:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
+2. Navigate to **Endpoint Devices** > **Connectors** and click **New Endpoint Connector**.
 3. Select **Agent Connector** as the connector type, click **Next**, and configure the following required settings:
     - **Connector name**: provide a descriptive name for the connector.
     - **Refresh interval**: select how often the agent will attempt to update its configuration.

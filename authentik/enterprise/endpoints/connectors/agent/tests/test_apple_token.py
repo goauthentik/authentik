@@ -11,6 +11,7 @@ from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
     AgentDeviceUserBinding,
+    AppleIndependentSecureEnclave,
     AppleNonce,
     DeviceToken,
     EnrollmentToken,
@@ -25,7 +26,7 @@ class TestAppleToken(TestCase):
 
     def setUp(self):
         self.apple_sign_key = create_test_cert(PrivateKeyAlg.ECDSA)
-        sign_key_pem = self.apple_sign_key.public_key.public_bytes(
+        self.sign_key_pem = self.apple_sign_key.public_key.public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
         ).decode()
@@ -50,7 +51,7 @@ class TestAppleToken(TestCase):
             device=self.device,
             connector=self.connector,
             apple_sign_key_id=self.apple_sign_key.kid,
-            apple_signing_key=sign_key_pem,
+            apple_signing_key=self.sign_key_pem,
             apple_encryption_key=self.enc_pub,
         )
         self.user = create_test_user()
@@ -59,13 +60,72 @@ class TestAppleToken(TestCase):
             user=self.user,
             order=0,
             apple_enclave_key_id=self.apple_sign_key.kid,
-            apple_secure_enclave_key=sign_key_pem,
+            apple_secure_enclave_key=self.sign_key_pem,
         )
         self.device_token = DeviceToken.objects.create(device=self.connection)
 
     @reconcile_app("authentik_crypto")
     def test_token(self):
         nonce = generate_id()
+        AppleNonce.objects.create(
+            device_token=self.device_token,
+            nonce=nonce,
+        )
+        embedded = encode(
+            {"iss": str(self.connector.pk), "aud": str(self.device.pk), "request_nonce": nonce},
+            self.apple_sign_key.private_key,
+            headers={
+                "kid": self.apple_sign_key.kid,
+            },
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        assertion = encode(
+            {
+                "iss": str(self.connector.pk),
+                "aud": "http://testserver/endpoints/agent/psso/token/",
+                "request_nonce": nonce,
+                "assertion": embedded,
+                "jwe_crypto": {
+                    "apv": (
+                        "AAAABUFwcGxlAAAAQQTFgZOospN6KbkhXhx1lfa-AKYxjEfJhTJrkpdEY_srMmkPzS7VN0Bzt2AtNBEXE"
+                        "aphDONiP2Mq6Oxytv5JKOxHAAAAJDgyOThERkY5LTVFMUUtNEUwMS04OEUwLUI3QkQzOUM4QjA3Qw"
+                    )
+                },
+            },
+            self.apple_sign_key.private_key,
+            headers={
+                "kid": self.apple_sign_key.kid,
+            },
+            algorithm=JWTAlgorithms.from_private_key(self.apple_sign_key.private_key),
+        )
+        res = self.client.post(
+            reverse("authentik_enterprise_endpoints_connectors_agent:psso-token"),
+            data={
+                "assertion": assertion,
+                "platform_sso_version": "1.0",
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            },
+        )
+
+        self.assertEqual(res.status_code, 200)
+        event = Event.objects.filter(
+            action=EventAction.LOGIN,
+            app="authentik.endpoints.connectors.agent",
+        ).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["device"]["name"], self.device.name)
+
+    @reconcile_app("authentik_crypto")
+    def test_token_independent(self):
+        nonce = generate_id()
+
+        AgentDeviceUserBinding.objects.all().delete()
+        AppleIndependentSecureEnclave.objects.create(
+            user=self.user,
+            apple_enclave_key_id=self.apple_sign_key.kid,
+            apple_secure_enclave_key=self.sign_key_pem,
+        )
+
         AppleNonce.objects.create(
             device_token=self.device_token,
             nonce=nonce,

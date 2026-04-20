@@ -14,7 +14,7 @@ Roles are intended to be assigned to groups, not to individual users. However, i
 To create a new role, follow these steps:
 
 1. In the Admin interface, navigate to **Directory > Roles**.
-2. Click **Create**, enter the name of the role, and then click **Create** in the box.
+2. Click **New Role**, enter the name of the role, and then click **Create Role** to save.
 3. Next, [assign permissions for the role](../access-control/manage_permissions.md#assign-or-remove-permissions-for-a-specific-role).
 
 ## Modify a role

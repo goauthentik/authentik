@@ -12,7 +12,7 @@ For an overview of branding and other customization options in authentik refer t
 
 To create or edit a brand, follow these steps:
 
-1. Log in as an administrator, open the authentik Admin interface, and navigate to **System** > **Brands**.
+1. Log in as an administrator, open the authentik Admin interface, and navigate to **System** > **Brands**.
 
 2. Click **Create** to add a new brand, or click the **Edit** icon next to an existing brand to modify it.
 

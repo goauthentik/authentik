@@ -181,3 +181,67 @@
 }
 
 /* #endregion */
+
+.ak-m-scroll-shadows {
+    --ak-m-scroll-shadows--BorderWidth--light: 0.5px;
+    --ak-m-scroll-shadows--BorderWidth--dark: 1px;
+    --ak-m-scroll-shadows--Translucency: 75%;
+    --ak-m-scroll-shadows--BackgroundColor: var(--pf-global--BackgroundColor--100, white);
+    --ak-m-scroll-shadows--ShadowColor: var(--pf-global--Color--400);
+    --ak-m-scroll-shadows--ShadowColorMix: color-mix(
+        var(--ak-m-scroll-shadows--ShadowColor),
+        transparent var(--ak-m-scroll-shadows--Translucency)
+    );
+
+    --ak-m-scroll-shadows--ShadowLength: 2.75rem;
+    --ak-m-scroll-shadow--ShadowDepth: 1rem;
+
+    background-image:
+        linear-gradient(var(--ak-m-scroll-shadows--BackgroundColor) 30%, transparent),
+        linear-gradient(transparent, var(--ak-m-scroll-shadows--BackgroundColor) 70%),
+        radial-gradient(
+            farthest-side at 50% 0px,
+            var(--ak-m-scroll-shadows--ShadowColorMix),
+            transparent
+        ),
+        radial-gradient(
+            farthest-side at 50% 100%,
+            var(--ak-m-scroll-shadows--ShadowColorMix),
+            transparent
+        );
+
+    background-position-x: center;
+    background-position-y: top, bottom;
+
+    background-repeat: no-repeat;
+    background-size:
+        100% var(--ak-m-scroll-shadows--ShadowLength),
+        100% var(--ak-m-scroll-shadows--ShadowLength),
+        100% var(--ak-m-scroll-shadow--ShadowDepth),
+        100% var(--ak-m-scroll-shadow--ShadowDepth);
+    background-attachment: local, local, scroll, scroll;
+
+    border-block-color: var(
+        --ak-m-scroll-shadows--BorderColor,
+        color-mix(
+            var(--ak-m-scroll-shadows--ShadowColor),
+            transparent var(--ak-m-scroll-shadows--Translucency)
+        )
+    );
+    border-block-style: var(--ak-m-scroll-shadows--BorderStyle, solid);
+    border-block-width: var(
+        --ak-m-scroll-shadows--BorderWidth,
+        var(--ak-m-scroll-shadows--BorderWidth--light)
+    );
+}
+
+html[data-theme="dark"],
+:host([theme="dark"]) {
+    .ak-m-scroll-shadows {
+        --ak-m-scroll-shadow--ShadowDepth: 0;
+        border-block-width: var(
+            --ak-m-scroll-shadows--BorderWidth,
+            var(--ak-m-scroll-shadows--BorderWidth--dark)
+        );
+    }
+}

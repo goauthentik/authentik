@@ -33,7 +33,7 @@ The workflow to configure authentik as a single sign-on provider for Fleet invol
 
 ### Create an application and provider
 
-1. From the authentik Admin interface, navigate to **Applications > Applications** and click **Create with Provider** to create an application and provider pair.
+1. From the authentik Admin interface, navigate to **Applications > Applications** and click **New Application** to create an application and provider pair.
 
 2. For the **App name** enter `Fleet` and click **Next**.
 

@@ -1,6 +1,5 @@
 import "#elements/EmptyState";
 
-import { updateURLParams } from "#elements/router/RouteMatch";
 import { Table } from "#elements/table/Table";
 import Styles from "#elements/table/TablePage.css";
 import { SlottedTemplateResult } from "#elements/types";
@@ -84,22 +83,6 @@ export abstract class TablePage<T extends object> extends Table<T> {
 
     //#endregion
 
-    //#region Protected methods
-
-    protected clearSearch = () => {
-        this.search = "";
-
-        this.requestUpdate();
-
-        updateURLParams({
-            search: "",
-        });
-
-        return this.fetch();
-    };
-
-    //#endregion
-
     //#region Render methods
 
     /**
@@ -125,15 +108,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
         if (!this.search) {
             return nothing;
         }
-        return html`<button
-            @click=${() => {
-                this.search = "";
-                this.requestUpdate();
-                this.fetch();
-                this.page = 1;
-            }}
-            class="pf-c-button pf-m-link"
-        >
+        return html`<button @click=${this.clearSearch} class="pf-c-button pf-m-link">
             ${msg("Clear search")}
         </button>`;
     }

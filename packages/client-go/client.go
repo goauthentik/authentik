@@ -433,6 +433,11 @@ func (c *APIClient) prepareRequest(
 
 		// Walk through any authentication.
 
+		// AccessToken Authentication
+		if auth, ok := ctx.Value(ContextAccessToken).(string); ok {
+			localVarRequest.Header.Add("Authorization", "Bearer "+auth)
+		}
+
 	}
 
 	for header, value := range c.cfg.DefaultHeader {

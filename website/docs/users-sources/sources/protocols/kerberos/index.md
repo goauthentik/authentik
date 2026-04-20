@@ -124,7 +124,7 @@ These property mappings are configured with the most common Kerberos setups.
 
 ### Expression data
 
-The following variable is available to Kerberos source property mappings:
+The following variable is available to Kerberos source property mappings:
 
 - `principal`: a Python string containing the Kerberos principal. For example `alice@REALM.COMPANY` or `HTTP/authentik.company@REALM.COMPANY`.
 

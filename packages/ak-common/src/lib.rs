@@ -1,5 +1,6 @@
 //! Various utilities used by other crates
 
+pub mod api;
 pub mod arbiter;
 pub use arbiter::{Arbiter, Event, Tasks};
 pub mod config;
@@ -24,6 +25,10 @@ pub fn authentik_full_version() -> String {
     } else {
         format!("{VERSION}+{build_hash}")
     }
+}
+
+pub fn user_agent_outpost() -> String {
+    format!("goauthentik.io/outpost/{}", authentik_full_version())
 }
 
 pub fn authentik_user_agent() -> String {

@@ -467,10 +467,16 @@ export class Form<T = Record<string, unknown>, D = T>
 
         const assignedElements = this.defaultSlot.assignedElements({ flatten: true });
 
-        const [firstAssignedElement] = assignedElements;
+        const formFields = assignedElements.filter(isFormField);
 
-        if (assignedElements.length === 1 && isFormField(firstAssignedElement)) {
-            return firstAssignedElement.toJSON() as D;
+        if (formFields.length) {
+            if (formFields.length === 1) {
+                return formFields[0].toJSON() as D;
+            }
+
+            throw new TypeError(
+                `Multiple form-associated elements found in the form, but no "ak-form-element-horizontal" elements found. Unable to determine which element(s) to serialize.`,
+            );
         }
 
         const namedElements = assignedElements.filter((element): element is AKElement => {

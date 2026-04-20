@@ -1,0 +1,152 @@
+---
+title: Expression Reference
+tags:
+    - policy
+    - expression
+    - python
+    - reference
+---
+
+import Functions from "../../../../expressions/reference/_functions.mdx";
+import Objects from "../../../../expressions/reference/_objects.md";
+
+This page documents the expression policy execution environment in authentik.
+
+## Return values
+
+An expression policy passes when it returns `True` and fails when it returns `False`.
+
+```python
+return True
+```
+
+```python
+return False
+```
+
+## Available helper functions
+
+### `ak_message(message: str)`
+
+Add a user-visible message to the current policy result.
+
+```python
+ak_message("Access denied")
+return False
+```
+
+<Functions />
+
+## Available variables and objects
+
+<Objects />
+
+## Expression-specific context
+
+The imported object reference above covers the generic expression environment. The values below are the ones that are most specific to expression policies in authentik.
+
+### `request`
+
+`request` is a policy request object with the following properties:
+
+- `request.user`: the current user against which the policy is being evaluated. See [User](../../../../users-sources/user/index.mdx).
+- `request.http_request`: the Django HTTP request, when one exists. See the [Django request documentation](https://docs.djangoproject.com/en/4.1/ref/request-response/#httprequest-objects).
+- `request.obj`: the object the policy is being evaluated against
+- `request.context`: a dictionary with dynamic data for the current execution
+
+:::caution Flow User Context
+When an expression policy runs inside a flow, `request.user` is not always the user who is currently being authenticated. Until a `user_login` stage updates the active user, this may still be `AnonymousUser` or another previously authenticated user.
+
+In authentication and enrollment flows, use `context["pending_user"]` when you want the user currently being identified or enrolled.
+
+If the user is not authenticated, `request.user` will be `AnonymousUser`, which is still an instance of [authentik.core.models.User](https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User).
+:::
+
+### Common flow-related values
+
+The most commonly used values in flow-related expressions are:
+
+- `context["pending_user"]`: the user currently being identified or enrolled in a flow
+- `context["prompt_data"]`: data collected from a prompt stage
+- `context["application"]`: the application involved in the current authorization flow
+- `context["source"]`: the source involved in the current login or enrollment
+- `context["flow_plan"]`: the active flow plan and its mutable context
+- `context["geoip"]` and `context["asn"]`: GeoIP and ASN lookups for the client IP
+- `ak_client_ip`: the parsed client IP address object
+- `ak_is_sso_flow`: whether the current flow was initiated by an external identity provider source
+
+### `geoip`
+
+`context["geoip"]` contains GeoIP information for the client IP.
+
+Available fields include:
+
+- `continent`: a two-character continent code such as `NA` or `EU`
+- `country`: the two-character [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) alpha code
+- `lat`: approximate latitude
+- `long`: approximate longitude
+- `city`: city name, when available
+
+```python
+return context["geoip"]["continent"] == "EU"
+```
+
+:::info Prefer GeoIP Policy
+For simple country matching, prefer a [GeoIP policy](../geoip.md).
+:::
+
+### `asn`
+
+`context["asn"]` contains autonomous system information for the client IP.
+
+Available fields include:
+
+- `asn`: the autonomous system number
+- `as_org`: the organization name for that ASN
+- `network`: the matching network
+
+```python
+return context["asn"]["asn"] == 6939
+```
+
+:::info Prefer GeoIP Policy
+For simple ASN matching, prefer a [GeoIP policy](../geoip.md).
+:::
+
+### `ak_client_ip`
+
+`ak_client_ip` is the parsed client IP address object. You can compare it with [Python's `ipaddress` helpers](https://docs.python.org/3/library/ipaddress.html#ipaddress.ip_address):
+
+```python
+from ipaddress import ip_network
+
+return ak_client_ip in ip_network("10.0.0.0/24")
+```
+
+You can also inspect properties on the parsed IP object, for example:
+
+```python
+return ak_client_ip.is_private
+```
+
+`ak_client_ip.is_private` follows Python's `ipaddress` semantics and returns `True` for addresses that are not globally reachable, not only for RFC1918 private ranges.
+
+### `ak_is_sso_flow`
+
+`ak_is_sso_flow` is `True` when the current flow was initiated by an external identity provider source.
+
+## Flow context keys
+
+When the policy runs inside a flow, authentik exposes the current flow context under `context`.
+
+Common keys include:
+
+- `context["flow_plan"]`: the active flow plan
+- `context["flow_plan"].context`: the mutable flow-plan context
+- `context["flow_plan"].context["redirect"]`: the post-flow redirect URL, when set
+- `context["prompt_data"]`: data collected from prompt stages or external sources
+- `context["application"]`: the application being authorized
+- `context["source"]`: the source being used for authentication or enrollment
+- `context["pending_user"]`: the user currently being identified or enrolled
+- `context["is_restored"]`: the flow token when the flow was restored from a link
+- `context["auth_method"]`: the authentication method recorded by the flow
