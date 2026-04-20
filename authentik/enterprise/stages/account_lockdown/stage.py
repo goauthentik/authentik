@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 
-from authentik.core.models import Session, Token, User, UserTypes
+from authentik.core.models import Session, Token, User, UserTypes, lock_user_for_token_mutation
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
@@ -81,8 +81,9 @@ class AccountLockdownStageView(StageView):
         return self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_REASON, "")
 
     def _lock_target_user(self, user: User) -> User:
-        """Lock and reload the target user row for the lockdown transaction."""
-        return User.objects.select_for_update().get(pk=user.pk)
+        """Lock and reload the user row shared by token issuance and lockdown revocation."""
+        lock_user_for_token_mutation(user.pk)
+        return User.objects.get(pk=user.pk)
 
     def _apply_lockdown_actions(self, stage: AccountLockdownStage, user: User) -> None:
         """Apply the configured lockdown actions to the locked user."""

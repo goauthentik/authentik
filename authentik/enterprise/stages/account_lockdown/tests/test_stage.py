@@ -287,19 +287,23 @@ class TestAccountLockdownStage(FlowTestCase):
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         view = self.make_stage_view(plan)
 
-        with patch(
-            "authentik.enterprise.stages.account_lockdown.stage.User.objects.select_for_update"
-        ) as select_for_update:
-            select_for_update.return_value.get.return_value = self.target_user
+        with (
+            patch(
+                "authentik.enterprise.stages.account_lockdown.stage.lock_user_for_token_mutation"
+            ) as lock_user,
+            patch(
+                "authentik.enterprise.stages.account_lockdown.stage.User.objects.get"
+            ) as get_user,
+        ):
+            get_user.return_value = self.target_user
             view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
 
-        select_for_update.assert_called_once_with()
-        select_for_update.return_value.get.assert_called_once_with(pk=self.target_user.pk)
+        lock_user.assert_called_once_with(self.target_user.pk)
+        get_user.assert_called_once_with(pk=self.target_user.pk)
 
     def test_core_token_creation_locks_user_row(self):
         """Core token creation should lock the owning user row."""
-        with patch("authentik.core.models.User.objects.select_for_update") as select_for_update:
-            select_for_update.return_value.only.return_value.get.return_value = self.target_user
+        with patch("authentik.core.models.lock_user_for_token_mutation") as lock_user:
             Token.objects.create(
                 user=self.target_user,
                 identifier=f"lock-test-{generate_id()}",
@@ -308,11 +312,7 @@ class TestAccountLockdownStage(FlowTestCase):
                 expiring=False,
             )
 
-        select_for_update.assert_called_once_with()
-        select_for_update.return_value.only.assert_called_once_with("pk")
-        select_for_update.return_value.only.return_value.get.assert_called_once_with(
-            pk=self.target_user.pk
-        )
+        lock_user.assert_called_once_with(self.target_user.pk)
 
     def test_oauth_grant_creation_locks_user_row(self):
         """OAuth2 grant creation should lock the owning user row."""
@@ -324,10 +324,7 @@ class TestAccountLockdownStage(FlowTestCase):
             ],
             signing_key=create_test_cert(),
         )
-        with patch(
-            "authentik.providers.oauth2.models.User.objects.select_for_update"
-        ) as select_for_update:
-            select_for_update.return_value.only.return_value.get.return_value = self.target_user
+        with patch("authentik.providers.oauth2.models.lock_user_for_token_mutation") as lock_user:
             AuthorizationCode.objects.create(
                 provider=provider,
                 user=self.target_user,
@@ -337,11 +334,7 @@ class TestAccountLockdownStage(FlowTestCase):
                 _scope="openid profile",
             )
 
-        select_for_update.assert_called_once_with()
-        select_for_update.return_value.only.assert_called_once_with("pk")
-        select_for_update.return_value.only.return_value.get.assert_called_once_with(
-            pk=self.target_user.pk
-        )
+        lock_user.assert_called_once_with(self.target_user.pk)
 
     def test_lockdown_revokes_oauth_tokens(self):
         """Test lockdown stage revokes OAuth2 grants."""
