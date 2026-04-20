@@ -15,8 +15,7 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 1. **Resolves the target account** from context (see [Target user resolution](#target-user-resolution))
 2. **Applies the configured actions** to that account
 3. **Creates an event** for the locked account
-4. **Stores the result** in `lockdown_result`
-5. **For self-service**: if sessions are deleted, redirects to completion flow (if configured) or shows the stage message
+4. **For self-service**: if sessions are deleted, redirects to completion flow (if configured) or shows the stage message
 
 ## Stage settings
 
@@ -52,12 +51,6 @@ The stage determines which account to lock down using this priority:
 | `lockdown_self_service` | bool       | `True` for self-service                           |
 | `pending_user`          | User       | Current target user in the flow                   |
 | `prompt_data.reason`    | str        | Reason from the Prompt stage                      |
-
-### Output
-
-| Key               | Type | Description              |
-| ----------------- | ---- | ------------------------ |
-| `lockdown_result` | dict | `{user, success, error}` |
 
 ## Self-service behavior
 
@@ -113,26 +106,9 @@ else:
     return "<p><strong>Locking down the selected account.</strong></p>"
 ```
 
-### Results display
-
-Prompt field with **Initial value expression** enabled:
-
-```python
-result = prompt_context.get("lockdown_result")
-from django.utils.html import escape
-
-if not result:
-    return "<p>The account has been locked down.</p>"
-
-username = escape(result["user"].username if result.get("user") else "Unknown")
-if result.get("success"):
-    return f"<p><code>{username}</code> has been locked down.</p>"
-return f"<p>Failed to lock down <code>{username}</code>: {escape(str(result.get('error') or 'Unknown error'))}</p>"
-```
-
 ## Error handling
 
 | Error                      | Cause                                     |
 | -------------------------- | ----------------------------------------- |
 | "No target user specified" | No user found in context                  |
-| Failure                    | Check `lockdown_result.error` for details |
+| Failure                    | The stage returns an invalid response     |

@@ -20,7 +20,6 @@ from authentik.core.tests.utils import (
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.enterprise.stages.account_lockdown.stage import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
-    PLAN_CONTEXT_LOCKDOWN_RESULT,
     QS_LOCKDOWN_USER,
     AccountLockdownStageView,
 )
@@ -212,7 +211,7 @@ class TestAccountLockdownStage(FlowTestCase):
         self.assertFalse(self.target_user.is_active)
 
     def test_dispatch_records_success_when_event_emission_fails(self):
-        """Test dispatch still records a successful lockdown if event emission fails."""
+        """Test dispatch still completes if event emission fails."""
         self.stage.delete_sessions = False
         self.stage.save()
 
@@ -234,14 +233,11 @@ class TestAccountLockdownStage(FlowTestCase):
             "authentik.enterprise.stages.account_lockdown.stage.Event.new",
             side_effect=_event_new_side_effect,
         ):
-            view.dispatch(request)
+            response = view.dispatch(request)
 
         self.target_user.refresh_from_db()
         self.assertFalse(self.target_user.is_active)
-        self.assertEqual(
-            plan.context[PLAN_CONTEXT_LOCKDOWN_RESULT],
-            {"user": self.target_user, "success": True, "error": None},
-        )
+        self.assertEqual(response.status_code, 204)
 
     def test_lockdown_self_service_redirects_to_completion_flow(self):
         """Test self-service lockdown redirects to completion flow when sessions are deleted."""

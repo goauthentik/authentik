@@ -15,7 +15,6 @@ from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
-PLAN_CONTEXT_LOCKDOWN_RESULT = "lockdown_result"
 QS_LOCKDOWN_USER = "user_uuid"
 
 TARGET_REQUIRED_MESSAGE = _("No target user specified for account lockdown")
@@ -172,15 +171,12 @@ class AccountLockdownStageView(StageView):
         try:
             self._lockdown_user(request, stage, user, reason)
             self.logger.info("Account lockdown completed", user=user.username)
-            result = {"user": user, "success": True, "error": None}
+            success = True
         except Exception as exc:  # noqa: BLE001
             self.logger.warning("Account lockdown failed", user=user.username, exc=exc)
-            result = {"user": user, "success": False, "error": str(exc)}
+            success = False
 
-        # Store the result in plan context for the completion prompt.
-        self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_RESULT] = result
-
-        failed = not result["success"]
+        failed = not success
         if self_service:
             if failed:
                 return self._self_service_message_response(request, stage, success=False)
