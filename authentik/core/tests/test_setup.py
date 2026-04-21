@@ -43,7 +43,7 @@ class TestSetup(FlowTestCase):
 
     @patch_flag(Setup, False)
     def test_not_setup_no_flow(self):
-        """Test case on initial startup; setup flag is not set and oobe flow doesn
+        """Test case on initial startup; setup flag is not set and oobe flow does
         not exist yet"""
         res = self.client.get(reverse("authentik_core:root-redirect"))
         self.assertEqual(res.status_code, HTTPStatus.FOUND)

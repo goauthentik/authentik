@@ -10,7 +10,7 @@ from authentik.tenants.flags import Flag
 class Setup(Flag[bool], key="setup"):
 
     default = False
-    visibility = "none"
+    visibility = "system"
 
 
 class AppAccessWithoutBindings(Flag[bool], key="core_default_app_access"):

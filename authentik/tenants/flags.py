@@ -13,7 +13,9 @@ if TYPE_CHECKING:
 
 class Flag[T]:
     default: T | None = None
-    visibility: Literal["none"] | Literal["public"] | Literal["authenticated"] = "none"
+    visibility: (
+        Literal["none"] | Literal["public"] | Literal["authenticated"] | Literal["system"]
+    ) = "none"
     description: str | None = None
 
     def __init_subclass__(cls, key: str, **kwargs):
@@ -43,14 +45,15 @@ class Flag[T]:
     @staticmethod
     def available(
         visibility: Literal["none"] | Literal["public"] | Literal["authenticated"] | None = None,
+        exclude_system=True,
     ):
         flags = all_subclasses(Flag)
-        if visibility:
-            for flag in flags:
-                if flag.visibility == visibility:
-                    yield flag
-        else:
-            yield from flags
+        for flag in flags:
+            if visibility and flag.visibility != visibility:
+                continue
+            if exclude_system and flag.visibility == "system":
+                continue
+            yield flag
 
 
 def set_flag[T](flag: Flag[T], value: T):
