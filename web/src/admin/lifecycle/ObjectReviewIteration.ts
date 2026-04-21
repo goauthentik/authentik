@@ -7,9 +7,11 @@ import "#admin/lifecycle/ObjectReviewForm";
 import { createPaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
 
+import { ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { ObjectReviewForm } from "#admin/lifecycle/ObjectReviewForm";
 import { LifecycleIterationStatus } from "#admin/lifecycle/utils";
 
 import { LifecycleIteration, LifecycleIterationStateEnum, Review } from "@goauthentik/api";
@@ -25,8 +27,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import { ModalInvokerButton } from "#elements/dialogs";
-import { ObjectReviewForm } from "#admin/lifecycle/ObjectReviewForm";
 
 @customElement("ak-object-review-iteration")
 export class ObjectReviewIteration extends Table<Review> {
@@ -241,7 +241,7 @@ export class ObjectReviewIteration extends Table<Review> {
         ];
     }
 
-    protected override renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html` <ak-empty-state icon="pf-icon-task"
                 ><span>${this.emptyStateMessage}</span></ak-empty-state

@@ -94,7 +94,6 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
         ];
     }
 
-
     protected override renderObjectCreate(): SlottedTemplateResult {
         return ModalInvokerButton(LifecycleRuleForm);
     }
