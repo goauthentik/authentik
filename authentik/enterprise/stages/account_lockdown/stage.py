@@ -36,6 +36,24 @@ def get_lockdown_target_users():
     return User.objects.exclude_anonymous().exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
 
 
+def get_lockdown_token_models():
+    """Return token and grant models removed by account lockdown."""
+    from authentik.providers.oauth2.models import (
+        AccessToken,
+        AuthorizationCode,
+        DeviceToken,
+        RefreshToken,
+    )
+
+    return (
+        Token,
+        AuthorizationCode,
+        AccessToken,
+        RefreshToken,
+        DeviceToken,
+    )
+
+
 def can_lock_user(actor, user: User) -> bool:
     """Check whether the actor may lock the target user."""
     if not actor.is_authenticated:
@@ -96,18 +114,8 @@ class AccountLockdownStageView(StageView):
         if not stage.revoke_tokens:
             return
 
-        from authentik.providers.oauth2.models import (
-            AccessToken,
-            AuthorizationCode,
-            DeviceToken,
-            RefreshToken,
-        )
-
-        Token.objects.filter(user=user).delete()
-        AuthorizationCode.objects.filter(user=user).delete()
-        AccessToken.objects.filter(user=user).delete()
-        RefreshToken.objects.filter(user=user).delete()
-        DeviceToken.objects.filter(user=user).delete()
+        for model in get_lockdown_token_models():
+            model.objects.filter(user=user).delete()
 
     def _has_lockdown_artifacts(self, stage: AccountLockdownStage, user: User) -> bool:
         """Check whether there are still sessions or tokens to remove."""
@@ -120,21 +128,8 @@ class AccountLockdownStageView(StageView):
         if not stage.revoke_tokens:
             return False
 
-        from authentik.providers.oauth2.models import (
-            AccessToken,
-            AuthorizationCode,
-            DeviceToken,
-            RefreshToken,
-        )
-
         return any(
-            (
-                Token.objects.filter(user=user).exists(),
-                AuthorizationCode.objects.filter(user=user).exists(),
-                AccessToken.objects.filter(user=user).exists(),
-                RefreshToken.objects.filter(user=user).exists(),
-                DeviceToken.objects.filter(user=user).exists(),
-            )
+            model.objects.filter(user=user).exists() for model in get_lockdown_token_models()
         )
 
     def _emit_lockdown_event(self, request: HttpRequest, user: User, reason: str) -> None:
