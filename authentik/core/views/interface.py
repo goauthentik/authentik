@@ -17,7 +17,6 @@ from authentik.brands.api import CurrentBrandSerializer
 from authentik.brands.models import Brand
 from authentik.core.apps import Setup
 from authentik.core.models import UserTypes
-from authentik.core.setup.views import SetupView
 from authentik.lib.config import CONFIG
 from authentik.policies.denied import AccessDeniedResponse
 
@@ -44,7 +43,7 @@ class RootRedirectView(AccessMixin, RedirectView):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if not Setup.get():
-            return SetupView().dispatch(request, *args, **kwargs)
+            return redirect("authentik_core:setup")
         if not request.user.is_authenticated:
             return self.handle_no_permission()
         if redirect_response := RootRedirectView().redirect_to_app(request):

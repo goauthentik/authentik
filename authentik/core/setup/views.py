@@ -1,6 +1,7 @@
 from functools import lru_cache
-from pathlib import Path
 from http import HTTPStatus
+from pathlib import Path
+
 from django.contrib.staticfiles import finders
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
@@ -29,13 +30,23 @@ def read_static(path: str) -> str | None:
 
 
 class SetupView(View):
+
+    setup_flow_slug = "initial-setup"
+
     def dispatch(self, request: HttpRequest, *args, **kwargs):
         if Setup.get():
             return redirect(reverse("authentik_core:root-redirect"))
         return super().dispatch(request, *args, **kwargs)
 
+    def head(self, request: HttpRequest, *args, **kwargs):
+        if Setup.get():
+            return HttpResponse(status=HTTPStatus.OK)
+        if not Flow.objects.filter(slug=self.setup_flow_slug).exists():
+            return HttpResponse(status=HTTPStatus.SERVICE_UNAVAILABLE)
+        return HttpResponse(status=HTTPStatus.OK)
+
     def get(self, request: HttpRequest):
-        flow = Flow.objects.filter(slug="initial-setup").first()
+        flow = Flow.objects.filter(slug=self.setup_flow_slug).first()
         if not flow:
             LOGGER.info("Setup flow does not exist yet, waiting for worker to finish")
             return HttpResponse(
