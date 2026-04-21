@@ -89,31 +89,6 @@ class BlueprintEventHandler(FileSystemEventHandler):
             return None
         return super().dispatch(event)
 
-    @staticmethod
-    def _get_relative_blueprint_path(path_value: str) -> str | None:
-        """Resolve filesystem watcher paths against the configured blueprint root."""
-        root = Path(CONFIG.get("blueprints_dir")).resolve()
-        path = Path(path_value)
-        candidates = (
-            [path.resolve()]
-            if path.is_absolute()
-            else [
-                Path.cwd().joinpath(path).resolve(),
-                root.joinpath(path).resolve(),
-            ]
-        )
-        for candidate in candidates:
-            try:
-                return str(candidate.relative_to(root))
-            except ValueError:
-                continue
-        LOGGER.debug(
-            "modified file outside blueprint directory, ignoring",
-            path=path_value,
-            root=str(root),
-        )
-        return None
-
     def on_created(self, event: FileSystemEvent):
         """Process file creation"""
         LOGGER.debug("new blueprint file created, starting discovery")
@@ -123,9 +98,9 @@ class BlueprintEventHandler(FileSystemEventHandler):
 
     def on_modified(self, event: FileSystemEvent):
         """Process file modification"""
-        rel_path = self._get_relative_blueprint_path(event.src_path)
-        if rel_path is None:
-            return
+        path = Path(event.src_path)
+        root = Path(CONFIG.get("blueprints_dir")).absolute()
+        rel_path = str(path.relative_to(root))
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
                 for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):

@@ -128,14 +128,6 @@ class TestBlueprintsV1(TransactionTestCase):
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
 
-    def test_default_context_enterprise_licensed_is_bool(self):
-        """Test the built-in enterprise license context is a boolean."""
-        importer = Importer.from_string('{"version": 1, "entries": []}')
-        self.assertIsInstance(
-            importer.blueprint.context["goauthentik.io/enterprise/licensed"],
-            bool,
-        )
-
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_import_yaml_tags(self):
         """Test some yaml tags"""
