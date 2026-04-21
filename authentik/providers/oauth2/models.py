@@ -3,7 +3,6 @@
 import base64
 import binascii
 import json
-from dataclasses import asdict, dataclass
 from functools import cached_property
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any
@@ -17,8 +16,6 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
 )
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
-from dacite import Config
-from dacite.core import from_dict
 from django.contrib.postgres.indexes import HashIndex
 from django.db import models
 from django.http import HttpRequest
@@ -29,6 +26,7 @@ from jwcrypto.common import json_encode
 from jwcrypto.jwe import JWE
 from jwcrypto.jwk import JWK
 from jwt import encode
+from pydantic import BaseModel
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -109,8 +107,7 @@ class OAuth2LogoutMethod(models.TextChoices):
     FRONTCHANNEL = "frontchannel", _("Front-channel")
 
 
-@dataclass
-class RedirectURI:
+class RedirectURI(BaseModel):
     """A single redirect URI entry"""
 
     matching_mode: RedirectURIMatchingMode
@@ -345,16 +342,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
         uris = []
         for entry in self._redirect_uris:
             uris.append(
-                from_dict(
-                    RedirectURI,
-                    entry,
-                    config=Config(
-                        type_hooks={
-                            RedirectURIMatchingMode: RedirectURIMatchingMode,
-                            RedirectURIType: RedirectURIType,
-                        }
-                    ),
-                )
+                RedirectURI.model_validate(entry),
             )
         return uris
 
@@ -362,7 +350,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def redirect_uris(self, value: list[RedirectURI]):
         cleansed = []
         for entry in value:
-            cleansed.append(asdict(entry))
+            cleansed.append(entry.model_dump(mode="json"))
         self._redirect_uris = cleansed
 
     @property
@@ -550,12 +538,12 @@ class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGr
         from authentik.providers.oauth2.id_token import IDToken
 
         raw_token = json.loads(self._id_token)
-        return from_dict(IDToken, raw_token)
+        return IDToken.model_validate(raw_token)
 
     @id_token.setter
     def id_token(self, value: IDToken):
         self.token = value.to_access_token(self.provider, self)
-        self._id_token = json.dumps(asdict(value))
+        self._id_token = json.dumps(value.model_dump(mode="json"))
 
     @property
     def at_hash(self):
@@ -603,11 +591,11 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
         from authentik.providers.oauth2.id_token import IDToken
 
         raw_token = json.loads(self._id_token)
-        return from_dict(IDToken, raw_token)
+        return IDToken.model_validate(raw_token)
 
     @id_token.setter
     def id_token(self, value: IDToken):
-        self._id_token = json.dumps(asdict(value))
+        self._id_token = json.dumps(value.model_dump(mode="json"))
 
     @property
     def serializer(self) -> Serializer:

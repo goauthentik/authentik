@@ -35,7 +35,9 @@ class TestTokenPKCE(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="foo://localhost")
+            ],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -93,7 +95,9 @@ class TestTokenPKCE(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="foo://localhost")
+            ],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -149,7 +153,9 @@ class TestTokenPKCE(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="foo://localhost")
+            ],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -194,7 +200,9 @@ class TestTokenPKCE(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="foo://localhost")
+            ],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)

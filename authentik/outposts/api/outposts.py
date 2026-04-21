@@ -1,10 +1,9 @@
 """Outpost API Views"""
 
-from dacite.core import from_dict
-from dacite.exceptions import DaciteError
 from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.utils import extend_schema
+from pydantic import ValidationError as PydanticValidationError
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, DateTimeField, SerializerMethodField
@@ -90,9 +89,9 @@ class OutpostSerializer(ModelSerializer):
     def validate_config(self, config) -> dict:
         """Check that the config has all required fields"""
         try:
-            parsed = from_dict(OutpostConfig, config)
+            parsed = OutpostConfig.model_validate(config)
             timedelta_string_validator(parsed.refresh_interval)
-        except DaciteError as exc:
+        except PydanticValidationError as exc:
             raise ValidationError(f"Failed to validate config: {str(exc)}") from exc
         return config
 

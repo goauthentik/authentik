@@ -201,9 +201,9 @@ class OAuthAuthorizationParams:
             LOGGER.info("Setting redirect for blank redirect_uris", redirect=self.redirect_uri)
             self.provider.redirect_uris = [
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT,
-                    self.redirect_uri,
-                    RedirectURIType.AUTHORIZATION,
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url=self.redirect_uri,
+                    redirect_uri_type=RedirectURIType.AUTHORIZATION,
                 )
             ]
             self.provider.save()

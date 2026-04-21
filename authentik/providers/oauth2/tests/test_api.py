@@ -27,7 +27,9 @@ class TestAPI(APITestCase):
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://testserver")
+            ],
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())
         self.app = Application.objects.create(name="test", slug="test", provider=self.provider)
@@ -58,8 +60,8 @@ class TestAPI(APITestCase):
         """Test launch_url"""
         self.provider.redirect_uris = [
             RedirectURI(
-                RedirectURIMatchingMode.REGEX,
-                "https://[\\d\\w]+.pr.test.goauthentik.io/source/oauth/callback/authentik/",
+                matching_mode=RedirectURIMatchingMode.REGEX,
+                url="https://[\\d\\w]+.pr.test.goauthentik.io/source/oauth/callback/authentik/",
             ),
         ]
         self.provider.save()

@@ -4,9 +4,6 @@ from contextlib import contextmanager
 from copy import deepcopy
 from typing import Any
 
-from dacite.config import Config
-from dacite.core import from_dict
-from dacite.exceptions import DaciteError
 from deepmerge import always_merger
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
@@ -16,6 +13,7 @@ from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from guardian.models import RoleObjectPermission
+from pydantic import ValidationError as PydanticValidationError
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
@@ -158,10 +156,8 @@ class Importer:
         """Parse YAML string and create blueprint importer from it"""
         import_dict = load(yaml_input, BlueprintLoader)
         try:
-            _import = from_dict(
-                Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
-            )
-        except DaciteError as exc:
+            _import = Blueprint.model_validate(import_dict)
+        except PydanticValidationError as exc:
             raise EntryInvalidError from exc
         return Importer(_import, context)
 
@@ -399,7 +395,7 @@ class Importer:
                     self.logger.debug("Updated model", model=instance)
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk
-                entry._state = BlueprintEntryState(instance)
+                entry._state = BlueprintEntryState(instance=instance)
                 self._apply_permissions(instance, entry)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Model | None = serializer.instance

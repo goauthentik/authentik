@@ -1,8 +1,6 @@
 """Test revoke view"""
 
-import json
 from base64 import b64encode
-from dataclasses import asdict
 
 from django.urls import reverse
 from django.utils import timezone
@@ -32,7 +30,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="")],
             signing_key=create_test_cert(),
         )
         self.app = Application.objects.create(
@@ -52,11 +50,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-revoke"),
@@ -75,11 +69,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-revoke"),
@@ -134,11 +124,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         auth_public = b64encode(f"{self.provider.client_id}:{generate_id()}".encode()).decode()
         res = self.client.post(
@@ -160,11 +146,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         self.client.logout()
         self.assertEqual(AccessToken.objects.including_expired().all().count(), 0)
@@ -185,11 +167,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         session.delete()
         self.assertEqual(AccessToken.objects.including_expired().all().count(), 0)
@@ -202,11 +180,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         RefreshToken.objects.create(
             provider=self.provider,
@@ -214,11 +188,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         DeviceToken.objects.create(
             provider=self.provider,
@@ -239,7 +209,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         other_provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="")],
             signing_key=create_test_cert(),
             client_type=ClientTypes.PUBLIC,
         )
@@ -253,11 +223,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-revoke"),
@@ -275,7 +241,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         other_provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="")],
             signing_key=create_test_cert(),
             client_type=ClientTypes.PUBLIC,
         )
@@ -289,11 +255,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         auth_public = b64encode(f"{self.provider.client_id}:{generate_id()}".encode()).decode()
         res = self.client.post(

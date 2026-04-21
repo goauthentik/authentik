@@ -1,6 +1,3 @@
-import json
-from dataclasses import asdict
-
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework.test import APITestCase
@@ -80,11 +77,7 @@ class TestSSFAuth(APITestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
 
         res = self.client.post(

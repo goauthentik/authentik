@@ -1,7 +1,6 @@
 """Proxy and Outpost e2e tests"""
 
 from base64 import b64encode
-from dataclasses import asdict
 from json import dumps
 from time import sleep
 
@@ -244,7 +243,9 @@ class TestProviderProxyConnect(ChannelsE2ETestCase):
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
             type=OutpostType.PROXY,
-            _config=asdict(OutpostConfig(authentik_host=self.live_server_url, log_level="debug")),
+            _config=OutpostConfig(
+                authentik_host=self.live_server_url, log_level="debug"
+            ).model_dump(mode="json"),
         )
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)

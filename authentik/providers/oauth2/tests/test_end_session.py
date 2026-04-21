@@ -30,19 +30,19 @@ class TestEndSessionView(OAuthTestCase):
             invalidation_flow=self.invalidation_flow,
             redirect_uris=[
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT,
-                    "http://testserver/callback",
-                    RedirectURIType.AUTHORIZATION,
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://testserver/callback",
+                    redirect_uri_type=RedirectURIType.AUTHORIZATION,
                 ),
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT,
-                    "http://testserver/logout",
-                    RedirectURIType.LOGOUT,
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://testserver/logout",
+                    redirect_uri_type=RedirectURIType.LOGOUT,
                 ),
                 RedirectURI(
-                    RedirectURIMatchingMode.REGEX,
-                    r"https://.*\.example\.com/logout",
-                    RedirectURIType.LOGOUT,
+                    matching_mode=RedirectURIMatchingMode.REGEX,
+                    url=r"https://.*\.example\.com/logout",
+                    redirect_uri_type=RedirectURIType.LOGOUT,
                 ),
             ],
         )
@@ -229,9 +229,9 @@ class TestEndSessionAPI(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT,
-                    "http://testserver/callback",
-                    RedirectURIType.AUTHORIZATION,
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://testserver/callback",
+                    redirect_uri_type=RedirectURIType.AUTHORIZATION,
                 ),
             ],
         )

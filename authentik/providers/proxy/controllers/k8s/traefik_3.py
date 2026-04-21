@@ -1,10 +1,9 @@
 """Kubernetes Traefik Middleware Reconciler"""
 
-from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING
 
-from dacite.core import from_dict
 from kubernetes.client import ApiextensionsV1Api, CustomObjectsApi
+from pydantic import BaseModel, Field
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
@@ -15,39 +14,35 @@ if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
 
 
-@dataclass(slots=True)
-class TraefikMiddlewareSpecForwardAuth:
+class TraefikMiddlewareSpecForwardAuth(BaseModel):
     """traefik middleware forwardAuth spec"""
 
     address: str
 
-    authResponseHeadersRegex: str = field(default="")
+    authResponseHeadersRegex: str = Field(default="")
 
-    authResponseHeaders: list[str] = field(default_factory=list)
+    authResponseHeaders: list[str] = Field(default_factory=list)
 
-    trustForwardHeader: bool = field(default=True)
+    trustForwardHeader: bool = Field(default=True)
 
-    maxResponseBodySize: int = field(default=1024 * 1024 * 4)
+    maxResponseBodySize: int = Field(default=1024 * 1024 * 4)
 
 
-@dataclass(slots=True)
-class TraefikMiddlewareSpec:
+class TraefikMiddlewareSpec(BaseModel):
     """Traefik middleware spec"""
 
     forwardAuth: TraefikMiddlewareSpecForwardAuth
 
 
-@dataclass(slots=True)
-class TraefikMiddlewareMetadata:
+class TraefikMiddlewareMetadata(BaseModel):
     """Traefik Middleware metadata"""
 
     name: str
     namespace: str
-    labels: dict = field(default_factory=dict)
+    labels: dict = Field(default_factory=dict)
 
 
-@dataclass(slots=True)
-class TraefikMiddleware:
+class TraefikMiddleware(BaseModel):
     """Traefik Middleware"""
 
     apiVersion: str
@@ -153,7 +148,7 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
             version=self.crd_version,
             plural=self.crd_plural,
             namespace=self.namespace,
-            body=asdict(reference),
+            body=reference.model_dump(mode="json"),
             field_manager=FIELD_MANAGER,
         )
 
@@ -167,15 +162,14 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         )
 
     def retrieve(self) -> TraefikMiddleware:
-        return from_dict(
-            TraefikMiddleware,
+        return TraefikMiddleware.model_validate(
             self.api.get_namespaced_custom_object(
                 group=self.crd_group,
                 version=self.crd_version,
                 plural=self.crd_plural,
                 namespace=self.namespace,
                 name=self.name,
-            ),
+            )
         )
 
     def update(self, current: TraefikMiddleware, reference: TraefikMiddleware):
@@ -185,6 +179,6 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
             plural=self.crd_plural,
             namespace=self.namespace,
             name=self.name,
-            body=asdict(reference),
+            body=reference.model_dump(mode="json"),
             field_manager=FIELD_MANAGER,
         )

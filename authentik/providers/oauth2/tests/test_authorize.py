@@ -47,7 +47,11 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://local.invalid/Foo"
+                )
+            ],
         )
         with self.assertRaises(AuthorizeError) as cm:
             request = self.factory.get(
@@ -73,7 +77,11 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://local.invalid/Foo"
+                )
+            ],
         )
         with self.assertRaises(AuthorizeError) as cm:
             request = self.factory.get(
@@ -94,7 +102,11 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://local.invalid"
+                )
+            ],
         )
         with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
@@ -107,7 +119,11 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://local.invalid"
+                )
+            ],
         )
         with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get(
@@ -127,7 +143,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "data:localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="data:localhost")
+            ],
         )
         with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get(
@@ -159,7 +177,10 @@ class TestAuthorize(OAuthTestCase):
         )
         OAuthAuthorizationParams.from_request(request)
         provider.refresh_from_db()
-        self.assertEqual(provider.redirect_uris, [RedirectURI(RedirectURIMatchingMode.STRICT, "+")])
+        self.assertEqual(
+            provider.redirect_uris,
+            [RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="+")],
+        )
 
     def test_invalid_redirect_uri_regex(self):
         """test missing/invalid redirect URI"""
@@ -167,7 +188,11 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, "http://local.invalid?")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.REGEX, url="http://local.invalid?"
+                )
+            ],
         )
         with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get(
@@ -187,7 +212,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, "+")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.REGEX, url="+")],
         )
         with self.assertRaises(RedirectUriError) as cm:
             request = self.factory.get(
@@ -207,7 +232,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, ".+")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.REGEX, url=".+")],
         )
         request = self.factory.get(
             "/",
@@ -226,7 +251,11 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://local.invalid/Foo"
+                )
+            ],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -315,7 +344,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="foo://localhost")
+            ],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -351,7 +382,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost")
+            ],
             signing_key=self.keypair,
         )
         provider.property_mappings.set(
@@ -421,7 +454,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost")
+            ],
             signing_key=self.keypair,
             encryption_key=self.keypair,
         )
@@ -484,7 +519,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost")
+            ],
             signing_key=self.keypair,
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -533,7 +570,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id=generate_id(),
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost")
+            ],
             signing_key=self.keypair,
         )
         provider.property_mappings.set(
@@ -590,7 +629,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id=generate_id(),
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost")
+            ],
             signing_key=self.keypair,
         )
         app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
@@ -632,7 +673,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost")
+            ],
         )
         request = self.factory.get(
             "/",
@@ -654,7 +697,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost")
+            ],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -685,7 +730,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="foo://localhost")
+            ],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -715,7 +762,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="foo://localhost")
+            ],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -754,7 +803,9 @@ class TestAuthorize(OAuthTestCase):
             client_id="test",
             authorization_flow=flow,
             authentication_flow=auth_flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="foo://localhost")
+            ],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -780,7 +831,9 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="foo://localhost")
+            ],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)

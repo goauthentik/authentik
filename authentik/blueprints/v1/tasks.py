@@ -1,12 +1,10 @@
 """v1 blueprints tasks"""
 
-from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
 from sys import platform
 from uuid import UUID
 
-from dacite.core import from_dict
 from django.conf import settings
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.text import slugify
@@ -14,6 +12,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 from dramatiq.middleware import Middleware
+from pydantic import BaseModel, Field
 from structlog.stdlib import get_logger
 from watchdog.events import (
     FileCreatedEvent,
@@ -45,15 +44,14 @@ from authentik.tenants.models import Tenant
 LOGGER = get_logger()
 
 
-@dataclass
-class BlueprintFile:
+class BlueprintFile(BaseModel):
     """Basic info about a blueprint file"""
 
     path: str
     version: int
     hash: str
     last_m: int
-    meta: BlueprintMetadata | None = field(default=None)
+    meta: BlueprintMetadata | None = Field(default=None)
 
 
 class BlueprintWatcherMiddleware(Middleware):
@@ -115,7 +113,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
 def blueprints_find_dict():
     blueprints = []
     for blueprint in blueprints_find():
-        blueprints.append(sanitize_dict(asdict(blueprint)))
+        blueprints.append(sanitize_dict(blueprint.model_dump(mode="json")))
     return blueprints
 
 
@@ -142,8 +140,10 @@ def blueprints_find() -> list[BlueprintFile]:
                 LOGGER.warning("invalid blueprint version", version=version, path=str(rel_path))
                 continue
         file_hash = sha512(path.read_bytes()).hexdigest()
-        blueprint = BlueprintFile(str(rel_path), version, file_hash, int(path.stat().st_mtime))
-        blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
+        blueprint = BlueprintFile(
+            path=str(rel_path), version=version, hash=file_hash, last_m=int(path.stat().st_mtime)
+        )
+        blueprint.meta = BlueprintMetadata.model_validate(metadata) if metadata else None
         blueprints.append(blueprint)
     return blueprints
 
@@ -205,7 +205,7 @@ def apply_blueprint(instance_pk: UUID):
         file_hash = sha512(blueprint_content.encode()).hexdigest()
         importer = Importer.from_string(blueprint_content, instance.context)
         if importer.blueprint.metadata:
-            instance.metadata = asdict(importer.blueprint.metadata)
+            instance.metadata = importer.blueprint.metadata.model_dump(mode="json")
         valid, logs = importer.validate()
         if not valid:
             instance.status = BlueprintInstanceStatus.ERROR

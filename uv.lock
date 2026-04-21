@@ -211,7 +211,6 @@ dependencies = [
     { name = "cachetools" },
     { name = "channels" },
     { name = "cryptography" },
-    { name = "dacite" },
     { name = "deepmerge" },
     { name = "defusedxml" },
     { name = "django" },
@@ -319,7 +318,6 @@ requires-dist = [
     { name = "cachetools", specifier = "==7.0.5" },
     { name = "channels", specifier = "==4.3.2" },
     { name = "cryptography", specifier = "==46.0.7" },
-    { name = "dacite", specifier = "==1.9.2" },
     { name = "deepmerge", specifier = "==2.0" },
     { name = "defusedxml", specifier = "==0.7.1" },
     { name = "django", specifier = "==5.2.13" },
@@ -992,15 +990,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/05/c4/d0ae37f72d7ddff3be5a34abde28270c3eca9a26ddb526b963c21f5af441/cwcwidth-0.1.12-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:c63145a882da594761156123e635b1fc5f8a5b3e1ec83c76392ac829f4733098", size = 127118, upload-time = "2025-11-01T17:48:51.472Z" },
     { url = "https://files.pythonhosted.org/packages/51/5c/72943d70049f9362e95ca7fca8fb485819c2150ff595530cbee92c6e0b2f/cwcwidth-0.1.12-cp314-cp314t-win32.whl", hash = "sha256:dd06c5e63650ec59f92ceb24b02a3f6002fb11aab92fce36d85d0a9c9203a9d8", size = 27350, upload-time = "2025-11-01T17:48:52.308Z" },
     { url = "https://files.pythonhosted.org/packages/a0/eb/e65a1a359063d019913cbcb95503d86fc415e18221023b4ec92e35e3d097/cwcwidth-0.1.12-cp314-cp314t-win_amd64.whl", hash = "sha256:fdcfb9632310d2c5b9cee4e8dfbffcfe07b6ca4968d3123b6ca618603b608deb", size = 29706, upload-time = "2025-11-01T17:48:52.965Z" },
-]
-
-[[package]]
-name = "dacite"
-version = "1.9.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/55/a0/7ca79796e799a3e782045d29bf052b5cde7439a2bbb17f15ff44f7aacc63/dacite-1.9.2.tar.gz", hash = "sha256:6ccc3b299727c7aa17582f0021f6ae14d5de47c7227932c47fec4cdfefd26f09", size = 22420, upload-time = "2025-02-05T09:27:29.757Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/94/35/386550fd60316d1e37eccdda609b074113298f23cef5bddb2049823fe666/dacite-1.9.2-py3-none-any.whl", hash = "sha256:053f7c3f5128ca2e9aceb66892b1a3c8936d02c686e707bee96e19deef4bc4a0", size = 16600, upload-time = "2025-02-05T09:27:24.345Z" },
 ]
 
 [[package]]

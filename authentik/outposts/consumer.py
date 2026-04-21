@@ -1,6 +1,5 @@
 """Outpost websocket handler"""
 
-from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import IntEnum
 from hashlib import sha256
@@ -10,11 +9,10 @@ from uuid import UUID
 from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
-from dacite.core import from_dict
-from dacite.data import Data
 from django.db import connection
 from django.http.request import QueryDict
 from guardian.shortcuts import get_objects_for_user
+from pydantic import BaseModel, Field
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.outposts.apps import GAUGE_OUTPOSTS_CONNECTED, GAUGE_OUTPOSTS_LAST_UPDATE
@@ -50,12 +48,11 @@ class WebsocketMessageInstruction(IntEnum):
     SESSION_END = 4
 
 
-@dataclass(slots=True)
-class WebsocketMessage:
+class WebsocketMessage(BaseModel):
     """Complete Websocket Message that is being sent"""
 
     instruction: int
-    args: dict[str, Any] = field(default_factory=dict)
+    args: dict[str, Any] = Field(default_factory=dict)
 
 
 class OutpostConsumer(JsonWebsocketConsumer):
@@ -118,8 +115,8 @@ class OutpostConsumer(JsonWebsocketConsumer):
                 expected=self.outpost.config.kubernetes_replicas,
             ).dec()
 
-    def receive_json(self, content: Data, **kwargs):
-        msg = from_dict(WebsocketMessage, content)
+    def receive_json(self, content: Any, **kwargs):
+        msg = WebsocketMessage.model_validate(content)
         if not self.outpost:
             raise DenyConnection()
 
@@ -146,29 +143,29 @@ class OutpostConsumer(JsonWebsocketConsumer):
         state.save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
 
         response = WebsocketMessage(instruction=WebsocketMessageInstruction.ACK)
-        self.send_json(asdict(response))
+        self.send_json(response.model_dump(mode="json"))
 
     def event_update(self, event):  # pragma: no cover
         """Event handler which is called by post_save signals, Send update instruction"""
         self.send_json(
-            asdict(WebsocketMessage(instruction=WebsocketMessageInstruction.TRIGGER_UPDATE))
+            WebsocketMessage(instruction=WebsocketMessageInstruction.TRIGGER_UPDATE).model_dump(
+                mode="json"
+            )
         )
 
     def event_session_end(self, event):
         """Event handler which is called when a session is ended"""
         self.send_json(
-            asdict(
-                WebsocketMessage(instruction=WebsocketMessageInstruction.SESSION_END, args=event)
-            )
+            WebsocketMessage(
+                instruction=WebsocketMessageInstruction.SESSION_END, args=event
+            ).model_dump(mode="json")
         )
 
     def event_provider_specific(self, event):
         """Event handler which can be called by provider-specific
         implementations to send specific messages to the outpost"""
         self.send_json(
-            asdict(
-                WebsocketMessage(
-                    instruction=WebsocketMessageInstruction.PROVIDER_SPECIFIC, args=event
-                )
-            )
+            WebsocketMessage(
+                instruction=WebsocketMessageInstruction.PROVIDER_SPECIFIC, args=event
+            ).model_dump(mode="json")
         )

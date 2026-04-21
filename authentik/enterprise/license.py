@@ -2,7 +2,6 @@
 
 from base64 import b64decode
 from binascii import Error
-from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime, timedelta
 from enum import Enum
 from functools import lru_cache
@@ -10,12 +9,13 @@ from time import mktime
 
 from cryptography.exceptions import InvalidSignature
 from cryptography.x509 import Certificate, load_der_x509_certificate, load_pem_x509_certificate
-from dacite import DaciteError, from_dict
 from django.core.cache import cache
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from jwt import PyJWTError, decode, get_unverified_header
 from jwt.algorithms import ECAlgorithm
+from pydantic import BaseModel, Field
+from pydantic import ValidationError as PydanticValidationError
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     ChoiceField,
@@ -60,8 +60,7 @@ class LicenseFlags(Enum):
     NON_PRODUCTION = "non_production"
 
 
-@dataclass
-class LicenseSummary:
+class LicenseSummary(BaseModel):
     """Internal representation of a license summary"""
 
     internal_users: int
@@ -81,8 +80,7 @@ class LicenseSummarySerializer(PassiveSerializer):
     license_flags = ListField(child=ChoiceField(choices=tuple(x.value for x in LicenseFlags)))
 
 
-@dataclass
-class LicenseKey:
+class LicenseKey(BaseModel):
     """License JWT claims"""
 
     aud: str
@@ -91,7 +89,7 @@ class LicenseKey:
     name: str
     internal_users: int = 0
     external_users: int = 0
-    license_flags: list[LicenseFlags] = field(default_factory=list)
+    license_flags: list[LicenseFlags] = Field(default_factory=list)
 
     @staticmethod
     def validate(jwt: str, check_expiry=True) -> LicenseKey:
@@ -118,8 +116,7 @@ class LicenseKey:
             # authentik will change its license generation to `algorithm="ES384"` in 2026.
             # TODO: remove this when the last incompatible license runs out.
             ECAlgorithm._validate_curve = lambda *_: True
-            body = from_dict(
-                LicenseKey,
+            body = LicenseKey.model_validate(
                 decode(
                     jwt,
                     our_cert.public_key(),
@@ -140,7 +137,13 @@ class LicenseKey:
     @staticmethod
     def get_total() -> LicenseKey:
         """Get a summarized version of all (not expired) licenses"""
-        total = LicenseKey(get_license_aud(), 0, "Summarized license", 0, 0)
+        total = LicenseKey(
+            aud=get_license_aud(),
+            exp=0,
+            name="Summarized license",
+            internal_users=0,
+            external_users=0,
+        )
         for lic in License.objects.all():
             if lic.is_valid:
                 total.internal_users += lic.internal_users
@@ -219,7 +222,7 @@ class LicenseKey:
                 external_user_count=self.get_external_user_count(),
                 status=self.status(),
             )
-        summary = asdict(self.summary())
+        summary = self.summary().model_dump(mode="json")
         # Also cache the latest summary for the middleware
         cache.set(CACHE_KEY_ENTERPRISE_LICENSE, summary, timeout=CACHE_EXPIRY_ENTERPRISE_LICENSE)
         return usage
@@ -243,7 +246,7 @@ class LicenseKey:
         if not summary:
             return LicenseKey.get_total().summary()
         try:
-            return from_dict(LicenseSummary, summary)
-        except DaciteError:
+            return LicenseSummary.model_validate(summary)
+        except PydanticValidationError:
             cache.delete(CACHE_KEY_ENTERPRISE_LICENSE)
             return LicenseKey.get_total().summary()

@@ -1,6 +1,5 @@
 """Radius e2e tests"""
 
-from dataclasses import asdict
 from time import sleep
 
 from pyrad.client import Client, Timeout
@@ -46,7 +45,7 @@ class TestProviderRadius(E2ETestCase):
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
             type=OutpostType.RADIUS,
-            _config=asdict(OutpostConfig(log_level="debug")),
+            _config=OutpostConfig(log_level="debug").model_dump(mode="json"),
         )
         outpost.providers.add(radius)
 

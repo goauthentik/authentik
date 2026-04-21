@@ -53,7 +53,9 @@ class TestTokenClientCredentialsJWTProvider(OAuthTestCase):
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name="test",
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://testserver")
+            ],
             signing_key=self.cert,
         )
         self.provider.jwt_federation_providers.add(self.other_provider)

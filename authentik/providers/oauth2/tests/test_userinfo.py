@@ -1,8 +1,5 @@
 """Test userinfo view"""
 
-import json
-from dataclasses import asdict
-
 from django.urls import reverse
 from django.utils import timezone
 
@@ -32,7 +29,7 @@ class TestUserinfo(OAuthTestCase):
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="")],
             signing_key=create_test_cert(),
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())
@@ -46,11 +43,7 @@ class TestUserinfo(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken(iss="foo", sub="bar").model_dump_json(),
         )
 
     def test_userinfo_normal(self):

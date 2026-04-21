@@ -1,8 +1,6 @@
 """Test introspect view"""
 
-import json
 from base64 import b64encode
-from dataclasses import asdict
 
 from django.urls import reverse
 from django.utils import timezone
@@ -31,7 +29,7 @@ class TesOAuth2Introspection(OAuthTestCase):
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="")],
             signing_key=create_test_cert(),
         )
         self.app = Application.objects.create(
@@ -50,11 +48,7 @@ class TesOAuth2Introspection(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken(iss="foo", sub="bar").model_dump_json(),
         )
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-introspection"),
@@ -82,11 +76,7 @@ class TesOAuth2Introspection(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken(iss="foo", sub="bar").model_dump_json(),
         )
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-introspection"),
@@ -126,7 +116,7 @@ class TesOAuth2Introspection(OAuthTestCase):
         provider: OAuth2Provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="")],
             signing_key=create_test_cert(),
         )
         auth = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
@@ -137,11 +127,7 @@ class TesOAuth2Introspection(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-introspection"),
@@ -181,11 +167,7 @@ class TesOAuth2Introspection(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken().model_dump_json(),
         )
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-introspection"),
@@ -206,7 +188,7 @@ class TesOAuth2Introspection(OAuthTestCase):
         other_provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            redirect_uris=[RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="")],
             signing_key=create_test_cert(),
             client_type=ClientTypes.PUBLIC,
         )
@@ -220,11 +202,7 @@ class TesOAuth2Introspection(OAuthTestCase):
             token=generate_id(),
             auth_time=timezone.now(),
             _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
+            _id_token=IDToken(iss="foo", sub="bar").model_dump_json(),
         )
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-introspection"),

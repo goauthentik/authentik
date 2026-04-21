@@ -291,7 +291,9 @@ class TestCrypto(APITestCase):
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost")
+            ],
             signing_key=keypair,
         )
         response = self.client.get(
@@ -323,7 +325,9 @@ class TestCrypto(APITestCase):
             client_id=generate_id(),
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            redirect_uris=[
+                RedirectURI(matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost")
+            ],
             signing_key=keypair,
         )
         response = self.client.get(

@@ -75,7 +75,11 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost:9009/"
+                )
+            ],
             authorization_flow=authorization_flow,
         )
         provider.property_mappings.set(
@@ -125,7 +129,10 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://localhost:9009/implicit/",
+                )
             ],
             authorization_flow=authorization_flow,
         )
@@ -197,7 +204,10 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://localhost:9009/implicit/",
+                )
             ],
         )
         provider.property_mappings.set(
@@ -287,7 +297,10 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://localhost:9009/implicit/",
+                )
             ],
         )
         provider.property_mappings.set(

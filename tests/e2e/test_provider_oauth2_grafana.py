@@ -89,7 +89,11 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/")],
+            redirect_uris=[
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://localhost:3000/"
+                )
+            ],
             authorization_flow=authorization_flow,
         )
         provider.property_mappings.set(
@@ -140,7 +144,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://localhost:3000/login/generic_oauth",
                 )
             ],
             authorization_flow=authorization_flow,
@@ -213,7 +218,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://localhost:3000/login/generic_oauth",
                 )
             ],
             authorization_flow=authorization_flow,
@@ -293,7 +299,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://localhost:3000/login/generic_oauth",
                 )
             ],
         )
@@ -377,7 +384,8 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(
-                    RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://localhost:3000/login/generic_oauth",
                 )
             ],
         )

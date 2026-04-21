@@ -1,7 +1,5 @@
 """Outpost API Views"""
 
-from dataclasses import asdict
-
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from kubernetes.client.configuration import Configuration
@@ -79,8 +77,8 @@ class ServiceConnectionViewSet(
     @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def state(self, request: Request, pk: str) -> Response:
         """Get the service connection's state"""
-        connection = self.get_object()
-        return Response(asdict(connection.state))
+        connection: OutpostServiceConnection = self.get_object()
+        return Response(connection.state.model_dump(mode="json"))
 
 
 class DockerServiceConnectionSerializer(ServiceConnectionSerializer):

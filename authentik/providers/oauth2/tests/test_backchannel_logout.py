@@ -35,7 +35,9 @@ class TestBackChannelLogout(OAuthTestCase):
             name=generate_id(),
             authorization_flow=create_test_flow(),
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver/callback"),
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT, url="http://testserver/callback"
+                ),
             ],
             signing_key=self.keypair,
         )

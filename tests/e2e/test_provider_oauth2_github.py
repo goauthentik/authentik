@@ -80,7 +80,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://localhost:3000/login/github",
+                )
             ],
             authorization_flow=authorization_flow,
         )
@@ -137,7 +140,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://localhost:3000/login/github",
+                )
             ],
             authorization_flow=authorization_flow,
         )
@@ -210,7 +216,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+                RedirectURI(
+                    matching_mode=RedirectURIMatchingMode.STRICT,
+                    url="http://localhost:3000/login/github",
+                )
             ],
             authorization_flow=authorization_flow,
         )
