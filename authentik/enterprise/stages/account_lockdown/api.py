@@ -19,11 +19,14 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import (
     User,
-    UserTypes,
 )
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
-from authentik.enterprise.stages.account_lockdown.stage import QS_LOCKDOWN_USER, can_lock_user
+from authentik.enterprise.stages.account_lockdown.stage import (
+    QS_LOCKDOWN_USER,
+    can_lock_user,
+    get_lockdown_target_users,
+)
 from authentik.flows.api.stages import StageSerializer
 
 LOGGER = get_logger()
@@ -59,9 +62,7 @@ class UserAccountLockdownSerializer(PassiveSerializer):
     """Choose the target account before starting the lockdown flow."""
 
     user = PrimaryKeyRelatedField(
-        queryset=User.objects.all()
-        .exclude_anonymous()
-        .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT),
+        queryset=get_lockdown_target_users(),
         required=False,
         allow_null=True,
         help_text=_("User to lock. If omitted, locks the current user (self-service)."),

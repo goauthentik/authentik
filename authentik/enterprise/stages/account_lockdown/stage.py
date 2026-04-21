@@ -31,6 +31,11 @@ def render_lockdown_message_html(title: str, body: str) -> str:
     return f"<h1>{escape(title)}</h1>{body}"
 
 
+def get_lockdown_target_users():
+    """Return users that can be targeted by account lockdown."""
+    return User.objects.exclude_anonymous().exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
+
+
 def can_lock_user(actor, user: User) -> bool:
     """Check whether the actor may lock the target user."""
     if not actor.is_authenticated:
@@ -51,12 +56,7 @@ class AccountLockdownStageView(StageView):
     def get_target_user(self, request: HttpRequest) -> User | None:
         """Get the target user from the flow query parameters."""
         if target_uuid := self.get_target_user_uuid(request):
-            return (
-                User.objects.exclude_anonymous()
-                .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
-                .filter(pk=target_uuid)
-                .first()
-            )
+            return get_lockdown_target_users().filter(pk=target_uuid).first()
         return None
 
     def is_self_service(self, request: HttpRequest, user: User) -> bool:
