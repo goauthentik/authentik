@@ -17,6 +17,7 @@ from authentik.flows.stage import StageView
 from authentik.tenants.flags import set_flag
 
 LOGGER = get_logger()
+FLOW_CONTEXT_START_BY = "goauthentik.io/core/setup/started-by"
 
 
 @lru_cache
@@ -53,7 +54,7 @@ class SetupView(View):
                 status=HTTPStatus.SERVICE_UNAVAILABLE,
             )
         planner = FlowPlanner(flow)
-        plan = planner.plan(request, {})
+        plan = planner.plan(request, {FLOW_CONTEXT_START_BY: "setup"})
         plan.append_stage(in_memory_stage(PostSetupStageView))
         return plan.to_redirect(request, flow)
 

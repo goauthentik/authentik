@@ -114,3 +114,17 @@ class TestSetup(FlowTestCase):
         self.assertTrue(Setup.get())
         user = User.objects.get(username="akadmin")
         self.assertTrue(user.check_password(pw))
+
+    @patch_flag(Setup, False)
+    @apply_blueprint("default/flow-oobe.yaml")
+    @apply_blueprint("system/bootstrap.yaml")
+    def test_setup_flow_direct(self):
+        """Test setup flow, directly accessing the flow"""
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": "initial-setup"})
+        )
+        self.assertStageResponse(
+            res,
+            component="ak-stage-access-denied",
+            error_message="Access the authentik setup by navigating to http://testserver/",
+        )
