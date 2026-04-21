@@ -483,10 +483,6 @@ class BaseGrantModel(models.Model):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
-        """Persist the grant."""
-        return super().save(*args, **kwargs)
-
     @property
     def scope(self) -> list[str]:
         """Return scopes as list of strings"""
@@ -633,10 +629,6 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
     )
-
-    def save(self, *args, **kwargs):
-        """Persist the device token."""
-        return super().save(*args, **kwargs)
 
     @property
     def scope(self) -> list[str]:
