@@ -207,21 +207,16 @@ class AccountLockdownStageView(StageView):
         try:
             self._lockdown_user(request, stage, user, reason)
             self.logger.info("Account lockdown completed", user=user.username)
-            success = True
         except Exception as exc:  # noqa: BLE001
             self.logger.warning("Account lockdown failed", user=user.username, exc=exc)
-            success = False
-
-        failed = not success
-        if self_service:
-            if failed:
+            if self_service:
                 return self._self_service_message_response(request, stage, success=False)
+            return self.executor.stage_invalid(ACCOUNT_LOCKDOWN_FAILED_MESSAGE)
+
+        if self_service:
             if stage.delete_sessions:
                 return self._self_service_completion_response(request)
             return self.executor.stage_ok()
-
-        if failed:
-            return self.executor.stage_invalid(ACCOUNT_LOCKDOWN_FAILED_MESSAGE)
 
         return self.executor.stage_ok()
 
