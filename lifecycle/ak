@@ -1,6 +1,6 @@
 #!/usr/bin/env -S bash
 set -e -o pipefail
-MODE_FILE="${TMPDIR}/authentik-mode"
+MODE_FILE="${TMPDIR:-/tmp}/authentik-mode"
 
 if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
     export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}/authentik_prometheus_tmp"
@@ -73,6 +73,10 @@ function prepare_debug {
 }
 
 mkdir -p "${PROMETHEUS_MULTIPROC_DIR}"
+if [[ ! -w "$(dirname "$MODE_FILE")" ]]; then
+    log "Cannot write mode file — $(dirname "$MODE_FILE") is not writable; check TMPDIR"
+    exit 1
+fi
 
 if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; then
     prepare_debug
@@ -90,7 +94,7 @@ elif [[ "$1" == "worker" ]]; then
     if [[ -n "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || -n "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
         python -m manage apply_blueprint system/bootstrap.yaml || true
     fi
-    check_if_root "python -m manage worker --pid-file ${TMPDIR}/authentik-worker.pid $@"
+    check_if_root "python -m manage worker --pid-file ${TMPDIR:-/tmp}/authentik-worker.pid $@"
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test-all" ]]; then
