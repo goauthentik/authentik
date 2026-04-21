@@ -169,9 +169,12 @@ class AccountLockdownStageView(StageView):
             self._apply_lockdown_actions(stage, user)
             self._delete_lockdown_artifacts(stage, user)
 
-        # Repeat cleanup outside the initial transaction so any tokens or sessions
-        # recreated concurrently with the first delete pass in this timing attack
-        # window are removed before we finish.
+        # Step 1: the first transaction updates the user and deletes matching
+        # sessions and tokens.
+        # Step 2: another request can create a new token or session for the
+        # same user at the same time.
+        # Step 3: keep deleting outside the first transaction until no matching
+        # artifacts remain.
         while self._has_lockdown_artifacts(stage, user):
             with atomic():
                 self._delete_lockdown_artifacts(stage, user)
