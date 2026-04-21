@@ -52,8 +52,8 @@ patch_enterprise_enabled = patch(
 )
 
 
-class TestAccountLockdownStage(FlowTestCase):
-    """Account lockdown stage tests"""
+class AccountLockdownStageTestMixin:
+    """Shared setup helpers for account lockdown stage tests."""
 
     @classmethod
     def setUpClass(cls):
@@ -105,6 +105,10 @@ class TestAccountLockdownStage(FlowTestCase):
             query_params=query or {},
             user=user,
         )
+
+
+class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
+    """Account lockdown stage tests"""
 
     def test_lockdown_no_target(self):
         """Test lockdown stage with no target user fails"""
@@ -404,59 +408,8 @@ class TestAccountLockdownStage(FlowTestCase):
         self.assertIsNotNone(event)
 
 
-class TestAccountLockdownStageConcurrency(TransactionTestCase):
+class TestAccountLockdownStageConcurrency(AccountLockdownStageTestMixin, TransactionTestCase):
     """Account lockdown concurrency tests."""
-
-    @classmethod
-    def setUpClass(cls):
-        cls.patch_enterprise_enabled = patch_enterprise_enabled.start()
-        cls.patch_event_dispatch = patch("authentik.events.tasks.event_trigger_dispatch.send")
-        cls.patch_event_dispatch.start()
-        super().setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.patch_event_dispatch.stop()
-        patch_enterprise_enabled.stop()
-        super().tearDownClass()
-
-    def setUp(self):
-        super().setUp()
-        self.user = create_test_admin_user()
-        self.target_user = create_test_admin_user()
-        self.flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
-        self.stage = AccountLockdownStage.objects.create(
-            name="lockdown",
-            self_service_message_title="Your account has been locked",
-            self_service_message_body="<p>Your account has been locked.</p>",
-        )
-        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
-        self.request_factory = RequestFactory()
-
-    def make_stage_view(self, plan: FlowPlan):
-        def _stage_ok():
-            return HttpResponse(status=204)
-
-        def _stage_invalid(_error_message=None):
-            return HttpResponse(status=400)
-
-        return AccountLockdownStageView(
-            SimpleNamespace(
-                plan=plan,
-                current_stage=self.stage,
-                current_binding=self.binding,
-                flow=self.flow,
-                stage_ok=_stage_ok,
-                stage_invalid=_stage_invalid,
-            )
-        )
-
-    def make_request(self, *, user=None, query=None):
-        return self.request_factory.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            query_params=query or {},
-            user=user,
-        )
 
     def test_lockdown_retries_when_another_transaction_recreates_a_token(self):
         """Lockdown should remove a token recreated before the retry check runs."""
