@@ -1,16 +1,24 @@
 from http import HTTPStatus
+from os import environ
+from unittest.mock import MagicMock, patch
 
+from django.core.management import call_command
 from django.urls import reverse
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.apps import Setup
-from authentik.core.models import User
+from authentik.core.models import Token, TokenIntents, User
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.tenants.flags import patch_flag, set_flag
 
 
 class TestSetup(FlowTestCase):
+
+    def tearDown(self):
+        environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
+        environ.pop("AUTHENTIK_BOOTSTRAP_TOKEN", None)
+
     @patch_flag(Setup, True)
     def test_setup(self):
         """Test existing instance"""
@@ -128,3 +136,23 @@ class TestSetup(FlowTestCase):
             component="ak-stage-access-denied",
             error_message="Access the authentik setup by navigating to http://testserver/",
         )
+
+    def test_setup_bootstrap_env(self):
+        """Test setup with env vars"""
+        set_flag(Setup, False)
+
+        environ["AUTHENTIK_BOOTSTRAP_PASSWORD"] = generate_id()
+        environ["AUTHENTIK_BOOTSTRAP_TOKEN"] = generate_id()
+        with patch(
+            "django_dramatiq_postgres.management.commands.worker.Command.handle",
+            MagicMock(return_value=None),
+        ):
+            call_command("worker")
+
+        self.assertTrue(Setup.get())
+        user = User.objects.get(username="akadmin")
+        self.assertTrue(user.check_password(environ["AUTHENTIK_BOOTSTRAP_PASSWORD"]))
+
+        token = Token.objects.filter(identifier="authentik-bootstrap-token").first()
+        self.assertEqual(token.intent, TokenIntents.INTENT_API)
+        self.assertEqual(token.key, environ["AUTHENTIK_BOOTSTRAP_TOKEN"])
