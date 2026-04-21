@@ -2,10 +2,14 @@
 
 import json
 from dataclasses import asdict
+from threading import Event as ThreadEvent
+from threading import Thread
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from django.db import connection
 from django.http import HttpResponse
+from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils import timezone
 
@@ -282,61 +286,6 @@ class TestAccountLockdownStage(FlowTestCase):
 
         self.assertEqual(Token.objects.filter(user=self.target_user).count(), 0)
 
-    def test_lockdown_retries_cleanup_until_artifacts_are_gone(self):
-        """Lockdown should retry deleting artifacts until none remain."""
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        view = self.make_stage_view(plan)
-
-        with (
-            patch(
-                "authentik.enterprise.stages.account_lockdown.stage.User.objects.get"
-            ) as get_user,
-            patch.object(view, "_delete_lockdown_artifacts") as delete_artifacts,
-            patch.object(
-                view, "_has_lockdown_artifacts", side_effect=[True, False]
-            ) as has_artifacts,
-        ):
-            get_user.return_value = self.target_user
-            view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
-
-        get_user.assert_called_once_with(pk=self.target_user.pk)
-        self.assertEqual(delete_artifacts.call_count, 2)
-        self.assertEqual(has_artifacts.call_count, 2)
-
-    def test_lockdown_retries_when_token_reappears_after_first_delete(self):
-        """Lockdown should delete a token recreated after the first cleanup pass."""
-        Token.objects.create(
-            user=self.target_user,
-            identifier=f"retry-token-{generate_id()}",
-            intent=TokenIntents.INTENT_API,
-            key=generate_id(),
-            expiring=False,
-        )
-
-        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-        view = self.make_stage_view(plan)
-        original_delete = view._delete_lockdown_artifacts
-        delete_calls = 0
-
-        def delete_and_recreate(stage, user):
-            nonlocal delete_calls
-            delete_calls += 1
-            original_delete(stage, user)
-            if delete_calls == 1:
-                Token.objects.create(
-                    user=user,
-                    identifier=f"recreated-token-{generate_id()}",
-                    intent=TokenIntents.INTENT_API,
-                    key=generate_id(),
-                    expiring=False,
-                )
-
-        with patch.object(view, "_delete_lockdown_artifacts", side_effect=delete_and_recreate):
-            view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
-
-        self.assertEqual(delete_calls, 2)
-        self.assertEqual(Token.objects.filter(user=self.target_user).count(), 0)
-
     def test_lockdown_revokes_oauth_tokens(self):
         """Test lockdown stage revokes OAuth2 grants."""
         provider = OAuth2Provider.objects.create(
@@ -452,3 +401,123 @@ class TestAccountLockdownStage(FlowTestCase):
         # Event should still be created
         event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
         self.assertIsNotNone(event)
+
+
+class TestAccountLockdownStageConcurrency(TransactionTestCase):
+    """Account lockdown concurrency tests."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.patch_enterprise_enabled = patch_enterprise_enabled.start()
+        cls.patch_event_dispatch = patch("authentik.events.tasks.event_trigger_dispatch.send")
+        cls.patch_event_dispatch.start()
+        super().setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.patch_event_dispatch.stop()
+        patch_enterprise_enabled.stop()
+        super().tearDownClass()
+
+    def setUp(self):
+        super().setUp()
+        self.user = create_test_admin_user()
+        self.target_user = create_test_admin_user()
+        self.flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+        self.stage = AccountLockdownStage.objects.create(
+            name="lockdown",
+            self_service_message_title="Your account has been locked",
+            self_service_message_body="<p>Your account has been locked.</p>",
+        )
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
+        self.request_factory = RequestFactory()
+
+    def make_stage_view(self, plan: FlowPlan):
+        def _stage_ok():
+            return HttpResponse(status=204)
+
+        def _stage_invalid(_error_message=None):
+            return HttpResponse(status=400)
+
+        return AccountLockdownStageView(
+            SimpleNamespace(
+                plan=plan,
+                current_stage=self.stage,
+                current_binding=self.binding,
+                flow=self.flow,
+                stage_ok=_stage_ok,
+                stage_invalid=_stage_invalid,
+            )
+        )
+
+    def make_request(self, *, user=None, query=None):
+        return self.request_factory.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            query_params=query or {},
+            user=user,
+        )
+
+    def test_lockdown_retries_when_another_transaction_recreates_a_token(self):
+        """Lockdown should remove a token recreated before the retry check runs."""
+        Token.objects.create(
+            user=self.target_user,
+            identifier=f"initial-token-{generate_id()}",
+            intent=TokenIntents.INTENT_API,
+            key=generate_id(),
+            expiring=False,
+        )
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        view = self.make_stage_view(plan)
+        original_has_artifacts = view._has_lockdown_artifacts
+        target_user = self.target_user
+        thread_ready = ThreadEvent()
+        start_create = ThreadEvent()
+        thread_done = ThreadEvent()
+        thread_errors = []
+
+        class TokenCreatorThread(Thread):
+            __test__ = False
+
+            def run(self):
+                try:
+                    thread_ready.set()
+                    if not start_create.wait(timeout=5):
+                        thread_errors.append("timed out waiting to recreate token")
+                        return
+                    Token.objects.create(
+                        user=target_user,
+                        identifier=f"concurrent-token-{generate_id()}",
+                        intent=TokenIntents.INTENT_API,
+                        key=generate_id(),
+                        expiring=False,
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    thread_errors.append(exc)
+                finally:
+                    thread_done.set()
+                    connection.close()
+
+        def has_artifacts_after_concurrent_create(stage, user):
+            if not start_create.is_set():
+                start_create.set()
+                self.assertTrue(
+                    thread_done.wait(timeout=30),
+                    f"Concurrent token creation did not complete before retry check: {thread_errors}",
+                )
+            return original_has_artifacts(stage, user)
+
+        creator = TokenCreatorThread()
+        with patch.object(
+            view, "_has_lockdown_artifacts", side_effect=has_artifacts_after_concurrent_create
+        ):
+            creator.start()
+            self.assertTrue(
+                thread_ready.wait(timeout=5),
+                "Concurrent token creation thread did not start",
+            )
+            view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
+            creator.join()
+
+        self.assertEqual(thread_errors, [])
+        self.assertEqual(Token.objects.filter(user=self.target_user).count(), 0)
