@@ -125,7 +125,10 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
+rust-install:  ## Install required Cargo tools (cargo-deny, cargo-machete, cargo-llvm-cov, nextest)
+	$(CARGO) install --locked cargo-deny cargo-machete cargo-llvm-cov cargo-nextest
+
+install: node-install docs-install core-install rust-install  ## Install all requires dependencies for `node`, `docs`, `core`, and `rust`
 
 dev-drop-db:
 	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
