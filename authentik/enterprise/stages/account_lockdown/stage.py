@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 
-from authentik.core.models import Session, Token, User, UserTypes, lock_user_for_token_mutation
+from authentik.core.models import Session, Token, User, UserTypes
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
@@ -80,35 +80,62 @@ class AccountLockdownStageView(StageView):
             return prompt_data[PLAN_CONTEXT_LOCKDOWN_REASON]
         return self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_REASON, "")
 
-    def _lock_target_user(self, user: User) -> User:
-        """Lock and reload the user row shared by token issuance and lockdown revocation."""
-        lock_user_for_token_mutation(user.pk)
-        return User.objects.get(pk=user.pk)
-
     def _apply_lockdown_actions(self, stage: AccountLockdownStage, user: User) -> None:
-        """Apply the configured lockdown actions to the locked user."""
+        """Apply the configured account changes to the target user."""
         if stage.deactivate_user:
             user.is_active = False
         if stage.set_unusable_password:
             user.set_unusable_password()
         user.save()
 
+    def _delete_lockdown_artifacts(self, stage: AccountLockdownStage, user: User) -> None:
+        """Delete sessions and tokens selected by the lockdown configuration."""
         if stage.delete_sessions:
             Session.objects.filter(authenticatedsession__user=user).delete()
 
-        if stage.revoke_tokens:
-            from authentik.providers.oauth2.models import (
-                AccessToken,
-                AuthorizationCode,
-                DeviceToken,
-                RefreshToken,
-            )
+        if not stage.revoke_tokens:
+            return
 
-            Token.objects.filter(user=user).delete()
-            AuthorizationCode.objects.filter(user=user).delete()
-            AccessToken.objects.filter(user=user).delete()
-            RefreshToken.objects.filter(user=user).delete()
-            DeviceToken.objects.filter(user=user).delete()
+        from authentik.providers.oauth2.models import (
+            AccessToken,
+            AuthorizationCode,
+            DeviceToken,
+            RefreshToken,
+        )
+
+        Token.objects.filter(user=user).delete()
+        AuthorizationCode.objects.filter(user=user).delete()
+        AccessToken.objects.filter(user=user).delete()
+        RefreshToken.objects.filter(user=user).delete()
+        DeviceToken.objects.filter(user=user).delete()
+
+    def _has_lockdown_artifacts(self, stage: AccountLockdownStage, user: User) -> bool:
+        """Check whether there are still sessions or tokens to remove."""
+        if (
+            stage.delete_sessions
+            and Session.objects.filter(authenticatedsession__user=user).exists()
+        ):
+            return True
+
+        if not stage.revoke_tokens:
+            return False
+
+        from authentik.providers.oauth2.models import (
+            AccessToken,
+            AuthorizationCode,
+            DeviceToken,
+            RefreshToken,
+        )
+
+        return any(
+            (
+                Token.objects.filter(user=user).exists(),
+                AuthorizationCode.objects.filter(user=user).exists(),
+                AccessToken.objects.filter(user=user).exists(),
+                RefreshToken.objects.filter(user=user).exists(),
+                DeviceToken.objects.filter(user=user).exists(),
+            )
+        )
 
     def _emit_lockdown_event(self, request: HttpRequest, user: User, reason: str) -> None:
         """Emit the audit event for a completed lockdown."""
@@ -138,8 +165,15 @@ class AccountLockdownStageView(StageView):
     ) -> None:
         """Execute lockdown actions on a single user."""
         with atomic():
-            user = self._lock_target_user(user)
+            user = User.objects.get(pk=user.pk)
             self._apply_lockdown_actions(stage, user)
+            self._delete_lockdown_artifacts(stage, user)
+
+        # Repeat cleanup outside the initial transaction so any tokens or sessions
+        # recreated after the first delete pass are removed before we finish.
+        while self._has_lockdown_artifacts(stage, user):
+            with atomic():
+                self._delete_lockdown_artifacts(stage, user)
 
         self._emit_lockdown_event(request, user, reason)
 

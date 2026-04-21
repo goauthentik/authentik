@@ -15,7 +15,7 @@ from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
-from django.db import models, transaction
+from django.db import models
 from django.db.models import Manager, Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
@@ -58,13 +58,6 @@ USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 _USER_ATTR_PREFIX = f"{USER_PATH_SYSTEM_PREFIX}/user"
 USER_ATTRIBUTE_DEBUG = f"{_USER_ATTR_PREFIX}/debug"
 USER_ATTRIBUTE_GENERATED = f"{_USER_ATTR_PREFIX}/generated"
-
-
-def lock_user_for_token_mutation(user_id) -> None:
-    """Serialize user-scoped token issuance and revocation on the owning user row."""
-    User.objects.select_for_update().only("pk").get(pk=user_id)
-
-
 USER_ATTRIBUTE_EXPIRES = f"{_USER_ATTR_PREFIX}/expires"
 USER_ATTRIBUTE_DELETE_ON_LOGOUT = f"{_USER_ATTR_PREFIX}/delete-on-logout"
 USER_ATTRIBUTE_SOURCES = f"{_USER_ATTR_PREFIX}/sources"
@@ -1221,11 +1214,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         return description
 
     def save(self, *args, **kwargs):
-        """Serialize user-scoped token creation with other token mutations."""
-        if self._state.adding:
-            with transaction.atomic():
-                lock_user_for_token_mutation(self.user_id)
-                return super().save(*args, **kwargs)
+        """Persist the token."""
         return super().save(*args, **kwargs)
 
     @property

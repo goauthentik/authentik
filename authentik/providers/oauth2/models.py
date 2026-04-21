@@ -20,7 +20,7 @@ from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite import Config
 from dacite.core import from_dict
 from django.contrib.postgres.indexes import HashIndex
-from django.db import models, transaction
+from django.db import models
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
@@ -40,7 +40,6 @@ from authentik.core.models import (
     PropertyMapping,
     Provider,
     User,
-    lock_user_for_token_mutation,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
@@ -485,11 +484,7 @@ class BaseGrantModel(models.Model):
         abstract = True
 
     def save(self, *args, **kwargs):
-        """Serialize user-scoped grant creation with user-level token revocation."""
-        if self._state.adding:
-            with transaction.atomic():
-                lock_user_for_token_mutation(self.user_id)
-                return super().save(*args, **kwargs)
+        """Persist the grant."""
         return super().save(*args, **kwargs)
 
     @property
@@ -640,11 +635,7 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
     )
 
     def save(self, *args, **kwargs):
-        """Serialize user-bound device token creation with user-level token revocation."""
-        if self._state.adding and self.user_id:
-            with transaction.atomic():
-                lock_user_for_token_mutation(self.user_id)
-                return super().save(*args, **kwargs)
+        """Persist the device token."""
         return super().save(*args, **kwargs)
 
     @property
