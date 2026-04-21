@@ -58,8 +58,10 @@ def get_local_ip(override=True) -> str:
     if (local_ip := getenv("LOCAL_IP")) and override:
         return local_ip
     hostname = socket.gethostname()
-    ip_addr = socket.gethostbyname(hostname)
-    return ip_addr
+    try:
+        return socket.gethostbyname(hostname)
+    except socket.gaierror:
+        return "0.0.0.0"
 
 
 class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):

@@ -330,6 +330,7 @@ const items = [
                             "add-secure-apps/flows-stages/stages/authenticator_validate/index",
                             "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
                             "add-secure-apps/flows-stages/stages/captcha/index",
+                            "add-secure-apps/flows-stages/stages/consent/index",
                             "add-secure-apps/flows-stages/stages/deny",
                             "add-secure-apps/flows-stages/stages/email/index",
                             "add-secure-apps/flows-stages/stages/endpoint/index",
@@ -501,6 +502,7 @@ const items = [
                     "users-sources/user/user_ref",
                     "users-sources/user/invitations",
                     "users-sources/user/password_reset_on_login",
+                    "users-sources/user/user-interface",
                 ],
             },
             {

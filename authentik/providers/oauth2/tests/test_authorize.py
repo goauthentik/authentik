@@ -394,7 +394,7 @@ class TestAuthorize(OAuthTestCase):
                     "nonce": generate_id(),
                 },
             )
-            token: AccessToken = AccessToken.objects.filter(user=user).first()
+            token = AccessToken.objects.filter(user=user).first()
             expires = timedelta_from_string(provider.access_token_validity).total_seconds()
             self.assertEqual(
                 response.url,
@@ -466,7 +466,7 @@ class TestAuthorize(OAuthTestCase):
                 },
             )
             self.assertEqual(response.status_code, 302)
-            token: AccessToken = AccessToken.objects.filter(user=user).first()
+            token = AccessToken.objects.filter(user=user).first()
             expires = timedelta_from_string(provider.access_token_validity).total_seconds()
             jwt = self.validate_jwe(token, provider)
             self.assertEqual(jwt["amr"], ["pwd"])
@@ -565,7 +565,7 @@ class TestAuthorize(OAuthTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        token: AccessToken = AccessToken.objects.filter(user=user).first()
+        token = AccessToken.objects.filter(user=user).first()
         self.assertIsNotNone(token)
         self.assertJSONEqual(
             response.content.decode(),
