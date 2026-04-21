@@ -1,4 +1,7 @@
 metadata:
+  labels:
+    blueprints.goauthentik.io/system-oobe: "true"
+    blueprints.goauthentik.io/system: "true"
   name: Default - Out-of-box-experience flow
 version: 1
 entries:
@@ -82,16 +85,7 @@ entries:
   identifiers:
     name: default-oobe-password-usable
   model: authentik_policies_expression.expressionpolicy
-- attrs:
-    expression: |
-      # This policy ensures that the setup flow can only be
-      # used one time
-      from authentik.flows.models import Flow, FlowAuthenticationRequirement
-      Flow.objects.filter(slug="initial-setup").update(
-          authentication=FlowAuthenticationRequirement.REQUIRE_SUPERUSER,
-      )
-      return True
-  id: policy-default-oobe-flow-set-authentication
+- state: absent
   identifiers:
     name: default-oobe-flow-set-authentication
   model: authentik_policies_expression.expressionpolicy
@@ -153,9 +147,4 @@ entries:
     order: 0
     policy: !KeyOf policy-default-oobe-prefill-user
     target: !KeyOf binding-password-write
-  model: authentik_policies.policybinding
-- identifiers:
-    order: 0
-    policy: !KeyOf policy-default-oobe-flow-set-authentication
-    target: !KeyOf binding-login
   model: authentik_policies.policybinding

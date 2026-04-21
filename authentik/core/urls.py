@@ -1,7 +1,6 @@
 """authentik URL Configuration"""
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from authentik.core.api.application_entitlements import ApplicationEntitlementViewSet
@@ -35,7 +34,7 @@ from authentik.tenants.channels import TenantsAwareMiddleware
 urlpatterns = [
     path(
         "",
-        login_required(RootRedirectView.as_view()),
+        RootRedirectView.as_view(),
         name="root-redirect",
     ),
     path(
