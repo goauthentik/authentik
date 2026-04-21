@@ -353,7 +353,7 @@ class IdentificationStageView(ChallengeStageView):
                 PLAN_CONTEXT_APPLICATION, Application()
             )
             challenge.initial_data["application_pre"] = app.name
-            if launch_url := app.get_launch_url():
+            if not app.meta_hide and (launch_url := app.get_launch_url()):
                 challenge.initial_data["application_pre_launch"] = launch_url
         if (
             PLAN_CONTEXT_DEVICE in self.executor.plan.context
