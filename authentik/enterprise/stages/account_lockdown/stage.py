@@ -74,8 +74,7 @@ class AccountLockdownStageView(StageView):
 
     def get_target_user(self, request: HttpRequest) -> User | None:
         """Get the target user from the flow query parameters."""
-        target_uuid = self.get_target_user_uuid(request)
-        if target_uuid is None:
+        if not (target_uuid := self.get_target_user_uuid(request)):
             return None
         return get_lockdown_target_users().filter(pk=target_uuid).first()
 
