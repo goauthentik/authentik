@@ -8,7 +8,6 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import (
-    create_test_admin_user,
     create_test_brand,
     create_test_flow,
     create_test_user,
@@ -63,12 +62,13 @@ class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.admin = create_test_admin_user()
+        self.actor = create_test_user()
         self.user = self.create_user_with_email()
 
-    def test_account_lockdown_returns_flow_url(self):
-        """Test that account lockdown returns a flow URL"""
-        self.client.force_login(self.admin)
+    def test_account_lockdown_with_change_user_returns_flow_url(self):
+        """Test that account lockdown allows users with change_user permission."""
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.user)
+        self.client.force_login(self.actor)
 
         response = self.client.post(
             reverse("authentik_api:user-account-lockdown"),
@@ -82,7 +82,8 @@ class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
         """Test account lockdown when no flow is configured"""
         self.brand.flow_lockdown = None
         self.brand.save()
-        self.client.force_login(self.admin)
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.user)
+        self.client.force_login(self.actor)
 
         response = self.client.post(
             reverse("authentik_api:user-account-lockdown"),
@@ -102,10 +103,9 @@ class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_account_lockdown_non_admin(self):
-        """Test account lockdown requires admin permissions"""
-        regular_user = create_test_user()
-        self.client.force_login(regular_user)
+    def test_account_lockdown_without_change_user_denied(self):
+        """Test account lockdown denies users without change_user permission."""
+        self.client.force_login(self.actor)
 
         response = self.client.post(
             reverse("authentik_api:user-account-lockdown"),
@@ -131,6 +131,18 @@ class TestUsersAccountLockdownSelfServiceAPI(AccountLockdownAPITestCase):
         response = self.client.post(
             reverse("authentik_api:user-account-lockdown"),
             data={},
+            format="json",
+        )
+
+        self.assert_flow_url_targets(response, self.user)
+
+    def test_account_lockdown_self_target_without_change_user_returns_flow_url(self):
+        """Test self-service does not require change_user permission."""
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk},
             format="json",
         )
 
