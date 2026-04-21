@@ -19,7 +19,7 @@
  */
 export interface AccountLockdownFlowResponse {
     /**
-     * URL to redirect to for lockdown flow
+     * URL to redirect to for lockdown flow, including the user_uuid query parameter consumed by the stage.
      * @type {string}
      * @memberof AccountLockdownFlowResponse
      */

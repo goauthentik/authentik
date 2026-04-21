@@ -4228,7 +4228,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Trigger account lockdown for a user.  If no user is specified, locks the current user (self-service). When targeting another user, admin permissions are required.  Returns a flow URL for the frontend to redirect to.
+     * Choose the target account in the request body, then return a flow URL that passes that target to the account lockdown stage via the user_uuid query parameter.
      */
     async coreUsersAccountLockdownCreateRaw(
         requestParameters: CoreUsersAccountLockdownCreateRequest,
@@ -4244,7 +4244,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Trigger account lockdown for a user.  If no user is specified, locks the current user (self-service). When targeting another user, admin permissions are required.  Returns a flow URL for the frontend to redirect to.
+     * Choose the target account in the request body, then return a flow URL that passes that target to the account lockdown stage via the user_uuid query parameter.
      */
     async coreUsersAccountLockdownCreate(
         requestParameters: CoreUsersAccountLockdownCreateRequest = {},

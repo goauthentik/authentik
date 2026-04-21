@@ -13,7 +13,7 @@
  */
 
 /**
- * Payload to trigger account lockdown for a user
+ * Choose the target account before starting the lockdown flow.
  * @export
  * @interface UserAccountLockdownRequest
  */
