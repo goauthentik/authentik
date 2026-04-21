@@ -121,7 +121,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 bindingTarget: this.target,
             })}
         >
-            ${msg("New Stage")}
+            ${msg("Bind...")}
         </button>`;
     }
 
