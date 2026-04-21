@@ -50,6 +50,12 @@ class AccountLockdownAPITestCase(APITestCase):
         target_uuid = parse_qs(urlparse(body["flow_url"]).query).get(QS_LOCKDOWN_USER, [None])[0]
         self.assertEqual(target_uuid, str(user.pk))
 
+    def assert_no_flow_configured(self, response):
+        """Assert that the API reports a missing lockdown flow."""
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content)
+        self.assertIn("No lockdown flow configured", body["non_field_errors"][0])
+
 
 @patch_license
 class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
@@ -84,9 +90,7 @@ class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
             format="json",
         )
 
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content)
-        self.assertIn("No lockdown flow configured", body["non_field_errors"][0])
+        self.assert_no_flow_configured(response)
 
     def test_account_lockdown_unauthenticated(self):
         """Test account lockdown requires authentication"""
@@ -144,9 +148,7 @@ class TestUsersAccountLockdownSelfServiceAPI(AccountLockdownAPITestCase):
             format="json",
         )
 
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content)
-        self.assertIn("No lockdown flow configured", body["non_field_errors"][0])
+        self.assert_no_flow_configured(response)
 
     def test_account_lockdown_self_unauthenticated(self):
         """Test self-service lockdown requires authentication"""
