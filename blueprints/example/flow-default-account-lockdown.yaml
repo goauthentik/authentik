@@ -180,7 +180,7 @@ entries:
         self_service_message_body: |
           <p>You have been logged out of all sessions and your password has been invalidated.</p>
           <p>To regain access to your account, please contact your IT administrator or security team.</p>
-        self_service_completion_flow: !KeyOf completion-flow
+        self_service_completion_flow: !Find [authentik_flows.flow, [slug, default-account-lockdown-complete]]
   completion_prompt:
     # Completion message field - confirmation shown after an admin-triggered lockdown
     - conditions:
@@ -306,5 +306,5 @@ entries:
       identifiers:
         order: 0
         stage: !KeyOf default-account-lockdown-self-complete-prompt
-        target: !KeyOf completion-flow
+        target: !Find [authentik_flows.flow, [slug, default-account-lockdown-complete]]
       model: authentik_flows.flowstagebinding
