@@ -147,8 +147,7 @@ class UserAccountLockdownMixin:
         includes the ``user_uuid`` query parameter that the lockdown stage uses
         once the flow starts running.
         """
-        target_user = body.validated_data.get("user")
-        user = target_user if target_user is not None else request.user
+        user = body.validated_data.get("user") or request.user
 
         if not can_lock_user(request.user, user):
             LOGGER.debug("Permission denied for account lockdown", user=request.user)
