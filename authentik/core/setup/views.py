@@ -1,9 +1,11 @@
+from functools import lru_cache
+from pathlib import Path
+from http import HTTPStatus
+from django.contrib.staticfiles import finders
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
-from django.template.response import TemplateResponse
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 from structlog.stdlib import get_logger
 
@@ -17,6 +19,15 @@ from authentik.tenants.utils import get_current_tenant
 LOGGER = get_logger()
 
 
+@lru_cache
+def read_static(path: str) -> str | None:
+    result = Path(finders.find(path))
+    if not result:
+        return None
+    with open(result, encoding="utf8") as _file:
+        return _file.read()
+
+
 class SetupView(View):
     def dispatch(self, request: HttpRequest, *args, **kwargs):
         if Setup.get():
@@ -27,16 +38,9 @@ class SetupView(View):
         flow = Flow.objects.filter(slug="initial-setup").first()
         if not flow:
             LOGGER.info("Setup flow does not exist yet, waiting for worker to finish")
-            return TemplateResponse(
-                request,
-                "if/error.html",
-                {
-                    "message": _("Please wait while authentik finishes setting up."),
-                    "title": _("Starting up..."),
-                    "no_button": True,
-                },
-                status=400,
-                headers={"Refresh": "2"},
+            return HttpResponse(
+                read_static("dist/standalone/loading/startup.html"),
+                status=HTTPStatus.SERVICE_UNAVAILABLE,
             )
         planner = FlowPlanner(flow)
         plan = planner.plan(request, {})
