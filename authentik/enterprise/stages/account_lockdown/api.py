@@ -149,13 +149,11 @@ class UserAccountLockdownMixin:
         target_user = body.validated_data.get("user")
         self_service = target_user is None or target_user.pk == request.user.pk
 
-        if self_service:
-            user = request.user
-        else:
-            user = target_user
-            if not can_lock_user(request.user, user):
-                LOGGER.debug("Permission denied for account lockdown", user=request.user)
-                self.permission_denied(request)
+        user = request.user if self_service else target_user
+
+        if not can_lock_user(request.user, user):
+            LOGGER.debug("Permission denied for account lockdown", user=request.user)
+            self.permission_denied(request)
 
         flow_url = self._create_lockdown_flow_url(request, user)
         LOGGER.debug("Returning lockdown flow URL", flow_url=flow_url, user=user.username)
