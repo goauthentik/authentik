@@ -95,6 +95,10 @@ To verify the integration with Home Assistant, log out and attempt to log back i
 
 <TabItem value="chr_auth_oidc">
 ## authentik configuration
+    
+To support the integration of Home Assistant with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
