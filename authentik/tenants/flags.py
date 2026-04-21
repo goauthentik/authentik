@@ -53,6 +53,14 @@ class Flag[T]:
             yield from flags
 
 
+def set_flag[T](flag: Flag[T], value: T):
+    from authentik.tenants.utils import get_current_tenant
+
+    tenant = get_current_tenant()
+    tenant.flags[flag().key] = value
+    tenant.save()
+
+
 def patch_flag[T](flag: Flag[T], value: T):
     """Decorator for tests to set a flag to a value"""
 

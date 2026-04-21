@@ -80,7 +80,7 @@ entries:
       # This policy ensures that the setup flow can only be
       # executed when the admin user doesn''t have a password set
       akadmin = ak_user_by(username="akadmin")
-      return not akadmin.has_usable_password()
+      return akadmin is None or not akadmin.has_usable_password()
   id: policy-default-oobe-password-usable
   identifiers:
     name: default-oobe-password-usable

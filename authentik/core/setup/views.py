@@ -1,6 +1,5 @@
 from functools import lru_cache
-from http import HTTPStatus
-from pathlib import Path
+from http import HTTPMethod, HTTPStatus
 
 from django.contrib.staticfiles import finders
 from django.db import transaction
@@ -15,14 +14,14 @@ from authentik.core.apps import Setup
 from authentik.flows.models import Flow, FlowAuthenticationRequirement, in_memory_stage
 from authentik.flows.planner import FlowPlanner
 from authentik.flows.stage import StageView
-from authentik.tenants.utils import get_current_tenant
+from authentik.tenants.flags import set_flag
 
 LOGGER = get_logger()
 
 
 @lru_cache
 def read_static(path: str) -> str | None:
-    result = Path(finders.find(path))
+    result = finders.find(path)
     if not result:
         return None
     with open(result, encoding="utf8") as _file:
@@ -34,13 +33,13 @@ class SetupView(View):
     setup_flow_slug = "initial-setup"
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
-        if Setup.get():
+        if request.method != HTTPMethod.HEAD and Setup.get():
             return redirect(reverse("authentik_core:root-redirect"))
         return super().dispatch(request, *args, **kwargs)
 
     def head(self, request: HttpRequest, *args, **kwargs):
         if Setup.get():
-            return HttpResponse(status=HTTPStatus.OK)
+            return HttpResponse(status=HTTPStatus.SERVICE_UNAVAILABLE)
         if not Flow.objects.filter(slug=self.setup_flow_slug).exists():
             return HttpResponse(status=HTTPStatus.SERVICE_UNAVAILABLE)
         return HttpResponse(status=HTTPStatus.OK)
@@ -69,9 +68,7 @@ class PostSetupStageView(StageView):
     def get(self, requeset: HttpRequest, *args, **kwargs):
         with transaction.atomic():
             # Remember we're setup
-            tenant = get_current_tenant()
-            tenant.flags[Setup().key] = True
-            tenant.save()
+            set_flag(Setup, True)
             # Disable OOBE Blueprints
             BlueprintInstance.objects.filter(
                 **{"metadata__labels__blueprints.goauthentik.io/system-oobe": "true"}

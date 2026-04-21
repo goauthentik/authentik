@@ -9,6 +9,7 @@ from django.db import migrations
 def update_setup_flag(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from authentik.core.apps import Setup
     from authentik.tenants.utils import get_current_tenant
+    from django.conf import settings
 
     VersionHistory = apps.get_model("authentik_admin", "VersionHistory")
 
@@ -17,7 +18,7 @@ def update_setup_flag(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     # TODO: Check if any non-akadmin users exist
     # TODO: Check if oobe flow has been marked as require_superuser
 
-    if VersionHistory.objects.using(db_alias).count() > 1:
+    if not settings.TEST and VersionHistory.objects.using(db_alias).count() > 1:
         tenant = get_current_tenant()
         tenant.flags[Setup().key] = True
         tenant.save()
