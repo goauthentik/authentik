@@ -54,8 +54,8 @@ entries:
                   "and cannot be recovered</li>"
                   "<li><strong>Deactivate your account</strong> - Your account will be disabled</li>"
                   "<li><strong>Terminate all your sessions</strong> - You will be logged out everywhere</li>"
-                  "<li><strong>Revoke all your tokens</strong> - All your API, app password, recovery, and "
-                  "verification tokens will be revoked</li>"
+                  "<li><strong>Revoke all your tokens</strong> - All your API, app password, recovery, "
+                  "verification, and OAuth2 tokens and grants will be revoked</li>"
                   "</ul>"
                   "<p><strong>This action cannot be easily undone.</strong></p>"
               )
@@ -78,8 +78,8 @@ entries:
               "<li>Invalidate the user's password</li>"
               "<li>Deactivate the user</li>"
               "<li>Terminate all sessions - All active sessions will be ended</li>"
-              "<li>Revoke all tokens - All API, app password, recovery, and verification tokens "
-              "will be revoked</li>"
+              "<li>Revoke all tokens - All API, app password, recovery, verification, and OAuth2 "
+              "tokens and grants will be revoked</li>"
               "</ul>"
               "<p><strong>This action cannot be easily undone.</strong></p>"
           )
@@ -182,25 +182,22 @@ entries:
           <p>To regain access to your account, please contact your IT administrator or security team.</p>
         self_service_completion_flow: !KeyOf completion-flow
   completion_prompt:
-    # Completion message field - dynamic content for admin lockdown results
+    # Completion message field - confirmation shown after an admin-triggered lockdown
     - conditions:
       - !Context goauthentik.io/enterprise/licensed
       attrs:
         order: 300
         initial_value: |
-          result = prompt_context.get("lockdown_result")
-          if not result:
-              return "<p>The account has been locked down.</p>"
-
+          target_uuid = (http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
           from django.utils.html import escape
+          from authentik.core.models import User
 
-          user = result.get("user")
-          username = f"<code>{escape(user.username if user else 'Unknown')}</code>"
-          if result.get("success"):
-              return f"<p>{username} has been locked down.</p>"
+          if target_uuid:
+              target = User.objects.filter(pk=target_uuid).first()
+              if target:
+                  return f"<p><code>{escape(target.username)}</code> has been locked down.</p>"
 
-          error = escape(result.get("error", "Unknown error"))
-          return f"<p>Failed to lock down {username}: {error}</p>"
+          return "<p>The selected account has been locked down.</p>"
         initial_value_expression: true
         required: false
         type: alert_info

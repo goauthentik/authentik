@@ -12,7 +12,7 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 
 ## Stage behavior
 
-1. **Resolves the target account** from context (see [Target user resolution](#target-user-resolution))
+1. **Resolves the target account** from the flow query parameters (see [Target user resolution](#target-user-resolution))
 2. **Applies the configured actions** to that account
 3. **Creates an event** for the locked account
 4. **For self-service**: if sessions are deleted, redirects to completion flow (if configured) or shows the stage message
@@ -24,7 +24,7 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 | **Deactivate user**            | Set `is_active` to False                                      | Enabled                        |
 | **Set unusable password**      | Invalidate the password                                       | Enabled                        |
 | **Delete sessions**            | Terminate all active sessions                                 | Enabled                        |
-| **Revoke tokens**              | Delete all tokens (API, app password, recovery, verification) | Enabled                        |
+| **Revoke tokens**              | Delete all tokens and grants (API, app password, recovery, verification, OAuth2) | Enabled                        |
 | **Completion flow**            | Flow for self-service completion (must not require auth)      | None                           |
 | **Self-service message title** | Title shown after self-service lockdown                       | "Your account has been locked" |
 | **Self-service message**       | HTML message shown after self-service lockdown                | Default HTML                   |
@@ -35,26 +35,29 @@ Disabling **Delete sessions** is not recommended as it would allow an attacker w
 
 ## Target user resolution
 
-The stage determines which account to lock down using this priority:
+The stage reads the `user_uuid` query parameter that was attached to the lockdown flow URL when the flow was started.
 
-1. `lockdown_target_users` - Explicit single target supplied as a one-item list in flow context
-2. `pending_user` - Current target user in the flow
-3. The authenticated request user for direct self-service execution
+When the flow is already running, authentik stores the flow query parameters in the session. The stage resolves the target user from that stored value first, then falls back to the current request query string.
 
-## Flow context
+The resolved target must be:
 
-### Input
+- a real user account
+- not the anonymous user
+- not an internal service account
 
-| Key                     | Type       | Description                                       |
-| ----------------------- | ---------- | ------------------------------------------------- |
-| `lockdown_target_users` | List[User] | Explicit single target encoded as a one-item list |
-| `lockdown_self_service` | bool       | `True` for self-service                           |
-| `pending_user`          | User       | Current target user in the flow                   |
-| `prompt_data.reason`    | str        | Reason from the Prompt stage                      |
+If no valid target user can be resolved, the stage returns an invalid response.
+
+## Reason input
+
+The stage reads the lockdown reason from:
+
+1. `prompt_data.lockdown_reason`
+2. `lockdown_reason` in the flow plan context
+3. an empty string if neither is set
 
 ## Self-service behavior
 
-When `lockdown_self_service` is `True` and **Delete sessions** is enabled, the user's session is deleted during lockdown. The stage cannot continue to the next stage, so it redirects to the **Completion flow** if configured, otherwise it displays the **Self-service message** configured on the stage.
+When the resolved target user is the same user who is currently authenticated and **Delete sessions** is enabled, the user's session is deleted during lockdown. The stage cannot continue to the next stage, so it redirects to the **Completion flow** if configured, otherwise it displays the **Self-service message** configured on the stage.
 
 If **Delete sessions** is disabled, the flow continues normally and can show its own completion stages.
 
@@ -76,10 +79,13 @@ Creates a **User Lockdown Triggered** event. Use [Notification Rules](../../../.
 
 ## Usage examples
 
-### Policy to hide results stage for self-service
+### Policy to show a completion stage only for administrator-triggered lockdowns
 
 ```python
-return not request.context.get("lockdown_self_service", False)
+target_uuid = (request.http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
+current_user_uuid = str(getattr(request.user, "pk", "") or getattr(request.http_request.user, "pk", ""))
+
+return bool(target_uuid) and target_uuid != current_user_uuid
 ```
 
 ### Dynamic warning message
@@ -87,7 +93,9 @@ return not request.context.get("lockdown_self_service", False)
 Prompt field with **Initial value expression** enabled:
 
 ```python
-is_self_service = prompt_context.get("lockdown_self_service", False)
+target_uuid = (http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
+current_user_uuid = str(getattr(user, "pk", "") or getattr(http_request.user, "pk", ""))
+is_self_service = not target_uuid or target_uuid == current_user_uuid
 from django.utils.html import escape
 
 if is_self_service:
@@ -99,8 +107,9 @@ if is_self_service:
         <li>Revoke all tokens</li>
     </ul>"""
 else:
-    targets = prompt_context.get("lockdown_target_users", [])
-    target = targets[0] if targets else user
+    from authentik.core.models import User
+
+    target = User.objects.filter(pk=target_uuid).first()
     if target:
         return f"<p><strong>Locking down:</strong></p><p><code>{escape(target.username)}</code></p>"
     return "<p><strong>Locking down the selected account.</strong></p>"
@@ -110,5 +119,5 @@ else:
 
 | Error                      | Cause                                 |
 | -------------------------- | ------------------------------------- |
-| "No target user specified" | No user found in context              |
+| "No target user specified" | No valid target user found in the flow URL |
 | Failure                    | The stage returns an invalid response |

@@ -13,7 +13,7 @@ When triggered, Account Lockdown performs the following actions (all configurabl
 - **Deactivates the user account**: The user can no longer log in
 - **Sets an unusable password**: Invalidates the user's password
 - **Terminates all active sessions**: Immediately logs the user out of all devices and applications
-- **Revokes all tokens**: Invalidates API, app password, recovery, and verification tokens
+- **Revokes all tokens**: Invalidates API, app password, recovery, verification, and OAuth2 tokens and grants
 - **Creates an audit event**: Records the lockdown with the provided reason (can trigger [notifications](#configure-notifications))
 
 :::note Protected accounts
@@ -36,7 +36,7 @@ The blueprint creates:
 | ----- | ------------------------- | -------------------------------- |
 | 0     | Prompt Stage              | Warning message and reason input |
 | 10    | Account Lockdown Stage    | Executes lockdown actions        |
-| 20    | Prompt Stage (admin only) | Shows results                    |
+| 20    | Prompt Stage (admin only) | Shows a confirmation message     |
 
 A separate completion flow (`default-account-lockdown-complete`) displays a message after self-service lockdowns.
 
@@ -68,7 +68,7 @@ Alternatively, use this [link](/blueprints/example/flow-default-account-lockdown
     - **Authentication**: Require authenticated user
 2. Add a Prompt Stage for warnings and reason collection
 3. Add an Account Lockdown Stage
-4. Optionally add a results Prompt Stage (with policy to hide for self-service)
+4. Optionally add an administrator-only completion Prompt Stage
 5. Set this flow as **Lockdown flow** on your Brand
 
 For stage configuration details, see the [Account Lockdown Stage documentation](../add-secure-apps/flows-stages/stages/account_lockdown/index.md).
@@ -80,7 +80,7 @@ For stage configuration details, see the [Account Lockdown Stage documentation](
 1. Navigate to **Directory** > **Users** and click on a user.
 2. Click **Account Lockdown**.
 3. Review the warning, enter a reason (recorded in the audit log), and click **Continue**.
-4. The results screen shows the lockdown status.
+4. If your flow includes an administrator-only completion stage, it is shown after the lockdown completes.
 
 ## Self-service Account Lockdown
 
