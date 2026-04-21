@@ -80,7 +80,7 @@ class UserAccountLockdownMixin:
         via the ``user_uuid`` query parameter.
         """
         flow = request._request.brand.flow_lockdown
-        if not flow:
+        if flow is None:
             raise ValidationError({"non_field_errors": [_("No lockdown flow configured.")]})
         querystring = f"?{urlencode({QS_LOCKDOWN_USER: str(user.pk)})}"
         return request.build_absolute_uri(
