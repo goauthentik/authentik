@@ -503,7 +503,10 @@ class TestAccountLockdownStageConcurrency(TransactionTestCase):
                 start_create.set()
                 self.assertTrue(
                     thread_done.wait(timeout=30),
-                    f"Concurrent token creation did not complete before retry check: {thread_errors}",
+                    (
+                        "Concurrent token creation did not complete "
+                        f"before retry check: {thread_errors}"
+                    ),
                 )
             return original_has_artifacts(stage, user)
 
