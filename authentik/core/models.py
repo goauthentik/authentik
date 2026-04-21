@@ -1214,7 +1214,6 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         return description
 
     def save(self, *args, **kwargs):
-        """Persist the token."""
         return super().save(*args, **kwargs)
 
     @property
