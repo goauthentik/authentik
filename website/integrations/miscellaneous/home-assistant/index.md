@@ -27,12 +27,12 @@ This documentation lists only the settings that you need to change from their de
 
 ## Configuration methods
 
-The community has developed multiple custom integrations to link authentik to Home Assistant:
+The community has developed multiple custom OIDC integrations for Home Assistant:
 
 - https://github.com/cavefire/hass-openid
 - https://github.com/christiaangoossens/hass-oidc-auth
 
-Both are explained in their own tabs below. You should evaluate which integration is the best fit for you carefully before continuing with this guide. Both use the **OpenID Connect** standard to link authentik to Home Assistant securely, but each have their own values and features.
+Both are explained in their own tabs below. You should evaluate which integration is the best fit for you before continuing with this guide. Both use the **OpenID Connect** standard to link authentik to Home Assistant securely, but each have their own values and features.
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -44,6 +44,7 @@ values={[
 { label: "OIDC (cavefire/hass-openid)", value: "cav_openid" }
 ]}>
 <TabItem value="cav_openid">
+
 ## authentik configuration
 
 To support the integration of Home Assistant with authentik, you need to create an application/provider pair in authentik.
@@ -51,15 +52,15 @@ To support the integration of Home Assistant with authentik, you need to create 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - **Choose a Provider type**: select **OAuth2/OpenID** as the provider type.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - **Signing Key**: Select any available signing key.
-        - **Redirect URIs**:
-            - Strict: `http://hass.company:8123/auth/openid/callback`
 
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - Choose a **Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Set a `Strict` redirect URI to `http://hass.company:8123/auth/openid/callback`.
+        - Select any available signing key (to use the RS256 `id_token_signing_alg`)
+    - Configure Bindings (optional): you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -95,17 +96,19 @@ To verify the integration with Home Assistant, log out and attempt to log back i
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-2. Navigate to **Applications > Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
- -   **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
- -   Choose a **Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
- -   **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - Choose a **Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://hass.company/auth/oidc/callback`.
         - Select any available signing key (to use the RS256 `id_token_signing_alg`)
-  -  Configure Bindings (optional): you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - Configure Bindings (optional): you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## Home Assistant configuration
+
 :::tip
 You can find a more detailed configuration guide, with picture guidance, at [https://github.com/christiaangoossens/hass-oidc-auth/blob/main/docs/provider-configurations/authentik.md](https://github.com/christiaangoossens/hass-oidc-auth/blob/main/docs/provider-configurations/authentik.md).
 :::
@@ -115,7 +118,7 @@ This guide describes the UI configuration method, but you can also configure the
 :::
 
 1. Install 'OpenID Connect/SSO Authentication' from the HACS store.
-2. Open Home Assistant and go to **Settings -> Devices & Services**.
+2. Open Home Assistant and go to **Settings** > **Devices & Services**.
 3. Click Add Integration and select **OpenID Connect/SSO Authentication**.
 4. Select "Authentik" from the pre-configured providers.
 5. Type in your discovery URL: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
@@ -125,6 +128,13 @@ This guide describes the UI configuration method, but you can also configure the
 
 Finally, restart Home Assistant. You should now see a button to login with authentik. There is no need to create users manually, but you may want to temporarily enable 'User linking' to onboard existing Home Assistant users.
 
-
 </TabItem>
 </Tabs>
+
+## Configuration verification
+
+TODO
+
+## Resources
+
+TODO
