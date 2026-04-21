@@ -1,6 +1,7 @@
 """Account lockdown stage logic"""
 
 from django.db.transaction import atomic
+from django.db.models import Model, QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.html import escape
@@ -31,12 +32,12 @@ def render_lockdown_message_html(title: str, body: str) -> str:
     return f"<h1>{escape(title)}</h1>{body}"
 
 
-def get_lockdown_target_users():
+def get_lockdown_target_users() -> QuerySet[User]:
     """Return users that can be targeted by account lockdown."""
     return User.objects.exclude_anonymous().exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
 
 
-def get_lockdown_token_models():
+def get_lockdown_token_models() -> tuple[type[Model], ...]:
     """Return token and grant models removed by account lockdown."""
     from authentik.providers.oauth2.models import (
         AccessToken,
