@@ -303,6 +303,40 @@ class TestAccountLockdownStage(FlowTestCase):
         self.assertEqual(delete_artifacts.call_count, 2)
         self.assertEqual(has_artifacts.call_count, 2)
 
+    def test_lockdown_retries_when_token_reappears_after_first_delete(self):
+        """Lockdown should delete a token recreated after the first cleanup pass."""
+        Token.objects.create(
+            user=self.target_user,
+            identifier=f"retry-token-{generate_id()}",
+            intent=TokenIntents.INTENT_API,
+            key=generate_id(),
+            expiring=False,
+        )
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        view = self.make_stage_view(plan)
+        original_delete = view._delete_lockdown_artifacts
+        delete_calls = 0
+
+        def delete_and_recreate(stage, user):
+            nonlocal delete_calls
+            delete_calls += 1
+            original_delete(stage, user)
+            if delete_calls == 1:
+                Token.objects.create(
+                    user=user,
+                    identifier=f"recreated-token-{generate_id()}",
+                    intent=TokenIntents.INTENT_API,
+                    key=generate_id(),
+                    expiring=False,
+                )
+
+        with patch.object(view, "_delete_lockdown_artifacts", side_effect=delete_and_recreate):
+            view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
+
+        self.assertEqual(delete_calls, 2)
+        self.assertEqual(Token.objects.filter(user=self.target_user).count(), 0)
+
     def test_lockdown_revokes_oauth_tokens(self):
         """Test lockdown stage revokes OAuth2 grants."""
         provider = OAuth2Provider.objects.create(
