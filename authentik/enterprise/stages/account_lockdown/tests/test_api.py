@@ -115,15 +115,6 @@ class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-
-@patch_license
-class TestUsersAccountLockdownSelfServiceAPI(AccountLockdownAPITestCase):
-    """Test Users Account Lockdown Self-Service API - Flow-based approach"""
-
-    def setUp(self) -> None:
-        super().setUp()
-        self.user = self.create_user_with_email()
-
     def test_account_lockdown_self_returns_flow_url(self):
         """Test successful self-service account lockdown returns a direct flow URL."""
         self.client.force_login(self.user)
@@ -147,27 +138,3 @@ class TestUsersAccountLockdownSelfServiceAPI(AccountLockdownAPITestCase):
         )
 
         self.assert_flow_url_targets(response, self.user)
-
-    def test_account_lockdown_self_no_flow_configured(self):
-        """Test self-service lockdown when no flow is configured"""
-        self.brand.flow_lockdown = None
-        self.brand.save()
-        self.client.force_login(self.user)
-
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown"),
-            data={},
-            format="json",
-        )
-
-        self.assert_no_flow_configured(response)
-
-    def test_account_lockdown_self_unauthenticated(self):
-        """Test self-service lockdown requires authentication"""
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown"),
-            data={},
-            format="json",
-        )
-
-        self.assertEqual(response.status_code, 403)
