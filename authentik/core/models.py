@@ -1213,9 +1213,6 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             description += f" (expires={self.expires})"
         return description
 
-    def save(self, *args, **kwargs):
-        return super().save(*args, **kwargs)
-
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.core.api.tokens import TokenSerializer
