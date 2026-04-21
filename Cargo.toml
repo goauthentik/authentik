@@ -104,7 +104,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
+uuid = { version = "= 1.23.1", features = ["serde", "v4"] }
 
 ak-client = { package = "authentik-client", version = "2026.5.0-rc1", path = "./packages/client-rust" }
 ak-common = { package = "authentik-common", version = "2026.5.0-rc1", path = "./packages/ak-common", default-features = false }
