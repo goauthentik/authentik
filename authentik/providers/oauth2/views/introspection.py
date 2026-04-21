@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass, field
 
+from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -10,7 +11,7 @@ from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenIntrospectionError
 from authentik.providers.oauth2.id_token import IDToken
-from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, ClientTypes, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import TokenResponse, authenticate_provider
 
 LOGGER = get_logger()
@@ -33,10 +34,7 @@ class TokenIntrospectionParams:
         self.id_token = self.token.id_token
 
         if not self.token.id_token:
-            LOGGER.debug(
-                "token not an authentication token",
-                token=self.token,
-            )
+            LOGGER.debug("token not an authentication token", token=self.token)
             raise TokenIntrospectionError()
 
     @staticmethod
@@ -45,14 +43,23 @@ class TokenIntrospectionParams:
         raw_token = request.POST.get("token")
         provider = authenticate_provider(request)
         if not provider:
+            LOGGER.info("Failed to authenticate introspection request")
+            raise TokenIntrospectionError
+        if provider.client_type != ClientTypes.CONFIDENTIAL:
+            LOGGER.info("Introspection request from public provider, denying.")
             raise TokenIntrospectionError
 
-        access_token = AccessToken.objects.filter(token=raw_token, provider=provider).first()
+        query = Q(
+            Q(provider=provider) | Q(provider__jwt_federation_providers__in=[provider]),
+            token=raw_token,
+        )
+
+        access_token = AccessToken.objects.filter(query).first()
         if access_token:
-            return TokenIntrospectionParams(access_token, provider)
-        refresh_token = RefreshToken.objects.filter(token=raw_token, provider=provider).first()
+            return TokenIntrospectionParams(access_token, access_token.provider)
+        refresh_token = RefreshToken.objects.filter(query).first()
         if refresh_token:
-            return TokenIntrospectionParams(refresh_token, provider)
+            return TokenIntrospectionParams(refresh_token, refresh_token.provider)
         LOGGER.debug("Token does not exist", token=raw_token)
         raise TokenIntrospectionError()
 
