@@ -1,7 +1,7 @@
 """Account lockdown stage logic"""
 
-from django.db.transaction import atomic
 from django.db.models import Model, QuerySet
+from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.html import escape
@@ -81,10 +81,6 @@ class AccountLockdownStageView(StageView):
     def is_self_service(self, request: HttpRequest, user: User) -> bool:
         """Check whether the currently authenticated user is locking their own account."""
         return request.user.is_authenticated and user.pk == request.user.pk
-
-    def can_lock_target(self, request: HttpRequest, user: User) -> bool:
-        """Check whether the requester is allowed to lock the target account."""
-        return can_lock_user(request.user, user)
 
     def get_reason(self) -> str:
         """Get the lockdown reason from the plan context.
@@ -185,7 +181,7 @@ class AccountLockdownStageView(StageView):
         if not user:
             self.logger.warning("No target user found for account lockdown")
             return self.executor.stage_invalid(TARGET_REQUIRED_MESSAGE)
-        if not self.can_lock_target(request, user):
+        if not can_lock_user(request.user, user):
             self.logger.warning(
                 "Permission denied for account lockdown",
                 actor=getattr(request.user, "username", None),

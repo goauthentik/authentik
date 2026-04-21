@@ -26,6 +26,7 @@ from authentik.enterprise.stages.account_lockdown.stage import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
     QS_LOCKDOWN_USER,
     AccountLockdownStageView,
+    can_lock_user,
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
@@ -125,7 +126,7 @@ class TestAccountLockdownStage(FlowTestCase):
         )
         target = view.get_target_user(request)
         self.assertEqual(target.pk, self.target_user.pk)
-        self.assertTrue(view.can_lock_target(request, target))
+        self.assertTrue(can_lock_user(request.user, target))
         view._lockdown_user(request, self.stage, target, view.get_reason())
 
         self.target_user.refresh_from_db()
@@ -152,7 +153,7 @@ class TestAccountLockdownStage(FlowTestCase):
         )
         target = view.get_target_user(request)
         self.assertEqual(target.pk, self.target_user.pk)
-        self.assertTrue(view.can_lock_target(request, target))
+        self.assertTrue(can_lock_user(request.user, target))
         view._lockdown_user(request, self.stage, target, view.get_reason())
 
         self.target_user.refresh_from_db()
@@ -267,7 +268,7 @@ class TestAccountLockdownStage(FlowTestCase):
         target = view.get_target_user(request)
 
         self.assertEqual(target.pk, self.target_user.pk)
-        self.assertFalse(view.can_lock_target(request, target))
+        self.assertFalse(can_lock_user(request.user, target))
 
     def test_lockdown_revokes_tokens(self):
         """Test lockdown stage revokes tokens"""
