@@ -78,7 +78,7 @@ To support the integration of AWS with authentik via the Classic IAM method, you
         ```
 
         :::tip
-        With the entitlement-based approach, create application entitlements with names like `authentik-admin` and `authentik-read-only`, then bind the appropriate users or groups to those entitlements. Create these entitlements after you create the application, as described later in this guide. Users receive the corresponding AWS roles when they access the AWS application.
+        With the entitlement-based approach, create application entitlements with names like `AWS:authentik-admin` and `AWS:authentik-read-only`, then bind the appropriate users or groups to those entitlements. Create these entitlements after you create the application, as described later in this guide. Users receive the corresponding AWS roles when they access the AWS application.
         :::
 
         **For multiple static roles:**
