@@ -104,30 +104,28 @@ class AccountLockdownStageView(StageView):
             user.set_unusable_password()
         user.save()
 
+    def _get_lockdown_artifact_querysets(
+        self, stage: AccountLockdownStage, user: User
+    ) -> tuple[QuerySet, ...]:
+        """Return the configured sessions and tokens targeted by lockdown."""
+        querysets: list[QuerySet] = []
+        if stage.delete_sessions:
+            querysets.append(Session.objects.filter(authenticatedsession__user=user))
+        if stage.revoke_tokens:
+            querysets.extend(
+                model.objects.filter(user=user) for model in get_lockdown_token_models()
+            )
+        return tuple(querysets)
+
     def _delete_lockdown_artifacts(self, stage: AccountLockdownStage, user: User) -> None:
         """Delete sessions and tokens selected by the lockdown configuration."""
-        if stage.delete_sessions:
-            Session.objects.filter(authenticatedsession__user=user).delete()
-
-        if not stage.revoke_tokens:
-            return
-
-        for model in get_lockdown_token_models():
-            model.objects.filter(user=user).delete()
+        for queryset in self._get_lockdown_artifact_querysets(stage, user):
+            queryset.delete()
 
     def _has_lockdown_artifacts(self, stage: AccountLockdownStage, user: User) -> bool:
         """Check whether there are still sessions or tokens to remove."""
-        if (
-            stage.delete_sessions
-            and Session.objects.filter(authenticatedsession__user=user).exists()
-        ):
-            return True
-
-        if not stage.revoke_tokens:
-            return False
-
         return any(
-            model.objects.filter(user=user).exists() for model in get_lockdown_token_models()
+            queryset.exists() for queryset in self._get_lockdown_artifact_querysets(stage, user)
         )
 
     def _emit_lockdown_event(self, request: HttpRequest, user: User, reason: str) -> None:
