@@ -4558,13 +4558,9 @@ paths:
   /core/users/account_lockdown/:
     post:
       operationId: core_users_account_lockdown_create
-      description: |-
-        Trigger account lockdown for a user.
-
-        If no user is specified, locks the current user (self-service).
-        When targeting another user, admin permissions are required.
-
-        Returns a flow URL for the frontend to redirect to.
+      description: Choose the target account in the request body, then return a flow
+        URL that passes that target to the account lockdown stage via the user_uuid
+        query parameter.
       tags:
       - core
       requestBody:
@@ -4580,6 +4576,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccountLockdownFlowResponse'
+              examples:
+                LockdownFlowURL:
+                  value:
+                    flow_url: https://example.invalid/if/flow/default-account-lockdown/?user_uuid=00000000-0000-0000-0000-000000000000
+                  summary: Lockdown flow URL
           description: ''
         '400':
           description: No lockdown flow configured or the flow is not applicable
@@ -33890,7 +33891,8 @@ components:
       properties:
         flow_url:
           type: string
-          description: URL to redirect to for lockdown flow
+          description: URL to redirect to for lockdown flow, including the user_uuid
+            query parameter consumed by the stage.
       required:
       - flow_url
     AccountLockdownStage:
@@ -57525,7 +57527,7 @@ components:
       - uuid
     UserAccountLockdownRequest:
       type: object
-      description: Payload to trigger account lockdown for a user
+      description: Choose the target account before starting the lockdown flow.
       properties:
         user:
           type: integer
