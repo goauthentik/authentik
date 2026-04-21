@@ -74,9 +74,10 @@ class AccountLockdownStageView(StageView):
 
     def get_target_user(self, request: HttpRequest) -> User | None:
         """Get the target user from the flow query parameters."""
-        if target_uuid := self.get_target_user_uuid(request):
-            return get_lockdown_target_users().filter(pk=target_uuid).first()
-        return None
+        target_uuid = self.get_target_user_uuid(request)
+        if target_uuid is None:
+            return None
+        return get_lockdown_target_users().filter(pk=target_uuid).first()
 
     def is_self_service(self, request: HttpRequest, user: User) -> bool:
         """Check whether the currently authenticated user is locking their own account."""
@@ -178,7 +179,7 @@ class AccountLockdownStageView(StageView):
         stage: AccountLockdownStage = self.executor.current_stage
 
         user = self.get_target_user(request)
-        if not user:
+        if user is None:
             self.logger.warning("No target user found for account lockdown")
             return self.executor.stage_invalid(TARGET_REQUIRED_MESSAGE)
         if not can_lock_user(request.user, user):
