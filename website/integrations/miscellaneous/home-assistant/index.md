@@ -10,10 +10,6 @@ support_level: community
 >
 > -- https://www.home-assistant.io/
 
-:::info
-To integrate Home Assistant with authentik, a custom integration needs to be installed in Home Assistant.
-:::
-
 ## Preparation
 
 The following placeholders are used in this guide:
@@ -27,12 +23,14 @@ This documentation lists only the settings that you need to change from their de
 
 ## Configuration methods
 
-The community has developed multiple custom OIDC integrations for Home Assistant:
+Home Assistant does not have support for any SSO protocols out of the box. Therefore, it is necessary to install a custom integration first. The community has developed multiple custom integrations for OIDC support in Home Assistant:
 
-- https://github.com/cavefire/hass-openid
-- https://github.com/christiaangoossens/hass-oidc-auth
+- [cavefire/hass-openid](https://github.com/cavefire/hass-openid)
+- [christiaangoossens/hass-oidc-auth](https://github.com/christiaangoossens/hass-oidc-auth)
 
-Both are explained in their own tabs below. You should evaluate which integration is the best fit for you before continuing with this guide. Both use the **OpenID Connect** standard to link authentik to Home Assistant securely, but each have their own values and features.
+Both use the **OpenID Connect** standard to link authentik to Home Assistant securely, but each have their own values, security standards and features.
+
+You should evaluate which integration is the best fit for you before continuing with this guide.
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -40,8 +38,8 @@ import Tabs from "@theme/Tabs";
 <Tabs
 defaultValue="chr_auth_oidc"
 values={[
-{ label: "OIDC (christiaangoossens/hass-oidc-auth)", value: "chr_auth_oidc" },
-{ label: "OIDC (cavefire/hass-openid)", value: "cav_openid" }
+{ label: "christiaangoossens/hass-oidc-auth", value: "chr_auth_oidc" },
+{ label: "cavefire/hass-openid", value: "cav_openid" }
 ]}>
 <TabItem value="cav_openid">
 
@@ -89,6 +87,10 @@ You must create OIDC users in Home Assistant before they can log in using OIDC.
 
 To verify the integration with Home Assistant, log out and attempt to log back in using the **OpenID/OAuth2 authentication** button. You should be redirected to the authentik login page. Once authenticated, you should be redirected to the Home Assistant dashboard.
 
+## Resources
+
+- [Integration repository](https://github.com/cavefire/hass-openid)
+
 </TabItem>
 
 <TabItem value="chr_auth_oidc">
@@ -128,13 +130,17 @@ This guide describes the UI configuration method, but you can also configure the
 
 Finally, restart Home Assistant. You should now see a button to login with authentik. There is no need to create users manually, but you may want to temporarily enable 'User linking' to onboard existing Home Assistant users.
 
-</TabItem>
-</Tabs>
-
 ## Configuration verification
 
-TODO
+After configuration you will be taken to the integration settings screen where an entry named "Authentik" will be visible.
+
+You should now automatically see the welcome screen upon opening your Home Assistant URL. On the welcome screen you can choose to either start login through SSO or to use an alternative login method, which will bring you back to the normal Home Assistant username/password login screen.
 
 ## Resources
 
-TODO
+- [Authentik Configuration Guide in the integration repository](https://github.com/christiaangoossens/hass-oidc-auth/blob/main/docs/provider-configurations/authentik.md)
+- [YAML Configuration Guide (advanced users/features)](https://github.com/christiaangoossens/hass-oidc-auth/blob/main/docs/configuration.md)
+- [Integration repository](https://github.com/christiaangoossens/hass-oidc-auth)
+
+</TabItem>
+</Tabs>
