@@ -26,7 +26,7 @@ To integrate Mailcow with authentik you will need to create an OAuth application
 ## authentik configuration
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **OAuth Source** as the source type.
     - **Create OAuth Source**: provide a name, a slug which must match the slug used in the Mailcow `Redirect URI` field (e.g. `mailcow`), and set the following required configurations:
         - **Protocol settings**

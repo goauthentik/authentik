@@ -28,13 +28,14 @@ To support the integration of Forgejo with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://<forgejo.company>/user/oauth2/authentik/callback`.
         - Select any available signing key.
+        - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -56,27 +57,27 @@ To support the integration of Forgejo with authentik, you need to create an appl
 
 ### Configure permissions _(optional)_
 
-Optionally, groups and property mappings can be created to manage user permissions in Forgejo.
+Optionally, application entitlements and property mappings can be created to manage user permissions in Forgejo.
 
-#### Create groups
+#### Create application entitlements
 
-The following groups will be created:
+The following application entitlements will be created:
 
 - `gituser`: normal Forgejo users.
 - `gitadmin`: Forgejo users with administrative permissions.
 - `gitrestricted`: restricted Forgejo users.
 
-:::info Group membership is required
-Users who are not part of any defined group will be denied login access. In contrast, members of the `gitadmin` group will have full administrative privileges, while those in the `gitrestricted` group will have limited access.
+:::info Entitlement assignment is required
+Users who are not assigned any of these entitlements will be denied login access. In contrast, users assigned the `gitadmin` entitlement will have full administrative privileges, while users assigned the `gitrestricted` entitlement will have limited access.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Groups** and click **Create**.
-3. Set the group name to `gituser` and click **Create**.
-4. Repeat steps 2 and 3 to create two additional groups named `gitadmin` and `gitrestricted`.
-5. Click the name of a newly created group and navigate to the **Users** tab.
-6. Click **Add existing user**, select the users that need Forgejo access, and click **Add**.
-7. Repeat steps 5 and 6 for the two additional groups.
+2. Navigate to **Applications** > **Applications** and open the Forgejo application.
+3. Click the **Application entitlements** tab.
+4. Click **New Entitlement**, set the name to `gituser`, and then click **Create**.
+5. Repeat step 4 to create two additional entitlements named `gitadmin` and `gitrestricted`.
+6. Open an entitlement and bind the users or groups that need Forgejo access to it.
+7. Repeat step 6 for the two additional entitlements.
 
 #### Create custom property mapping
 
@@ -87,14 +88,18 @@ Users who are not part of any defined group will be denied login access. In cont
     - **Expression**:
 
     ```python showLineNumbers
+    entitlement_names = {
+        entitlement.name
+        for entitlement in request.user.app_entitlements(provider.application)
+    }
     forgejo_claims = {}
 
-    if request.user.groups.filter(name="gituser").exists():
-        forgejo_claims["forgejo"]= "user"
-    if request.user.groups.filter(name="gitadmin").exists():
-        forgejo_claims["forgejo"]= "admin"
-    if request.user.groups.filter(name="gitrestricted").exists():
-        forgejo_claims["forgejo"]= "restricted"
+    if "gituser" in entitlement_names:
+        forgejo_claims["forgejo"] = "user"
+    if "gitadmin" in entitlement_names:
+        forgejo_claims["forgejo"] = "admin"
+    if "gitrestricted" in entitlement_names:
+        forgejo_claims["forgejo"] = "restricted"
 
     return forgejo_claims
     ```

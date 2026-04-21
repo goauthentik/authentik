@@ -43,7 +43,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an admin and navigate to the Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
 
 - **Application**: provide a descriptive name (e.g. "FortiGate SSLVPN"), an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **SAML Provider from metadata** as the provider type.

@@ -28,7 +28,7 @@ To integrate Discord with authentik you will need to create an OAuth application
 ## authentik configuration
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **Discord OAuth Source** as the source type.
     - **Create Discord OAuth Source**: provide a name, a slug which must match the slug used in the Discord `Redirect URI` (e.g. `discord`), and the following required configurations:
         - Under **Protocol Settings**:
@@ -179,7 +179,7 @@ return user_matched
 5. Click **Finish**. You can now bind this policy to the chosen enrollment and/or authentication flow of the Discord OAuth source.
 6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
 7. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
-8. Select the policy that you previously created and click **Create**.
+8. Select the policy that you previously created and click **Create Policy Binding**.
 9. Optionally, repeat the process for any other flows that you want the policy applied to.
 
 ### Checking Discord Guild role membership
@@ -249,7 +249,7 @@ return user_matched
 5. Click **Finish**. You can now bind this policy to the chosen enrollment and/or authentication flow of the Discord OAuth source.
 6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
 7. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
-8. Select the policy that you previously created and click **Create**.
+8. Select the policy that you previously created and click **Create Policy Binding**.
 9. Optionally, repeat the process for any other flows that you want the policy applied to.
 
 ## Resources

@@ -53,7 +53,7 @@ See the [LDAP Source documentation](../../protocols/ldap) for more information o
 To create a new LDAP Source in authentik:
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social Login**, click **Create**, select **LDAP Source**, and click **Next**.
+2. Navigate to **Directory** > **Federation and Social Login**, click **New Source**, select **LDAP Source**, and click **Next**.
 3. Configure the following settings:
     - **Name**: Provide a descriptive name for the LDAP source.
     - **Slug**: Provide a slug for the LDAP source.

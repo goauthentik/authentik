@@ -12,9 +12,9 @@ To create a Google Workspace provider in authentik, you must have already [confi
 ## Create a Google Workspace provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click **Create**.
+2. Navigate to **Applications** > **Providers** and click **New Provider**.
 3. Select **Google Workspace Provider** as the provider type, then click **Next**.
-4. On the **Create Google Workspace Provider** page, set the following configurations:
+4. On the **New Google Workspace Provider** page, set the following configurations:
     - **Name**: provide a descriptive name (e.g. `GWS provider`)
     - Under **Protocol settings**:
         - **Credentials**: paste the contents of the JSON file that you downloaded when [configuring Google Workspace](./configure-gws.md)
@@ -42,7 +42,7 @@ If you have configured the [Google Workspace SAML integration](/integrations/ser
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications**, click **Create**, and set the following configurations:
+2. Navigate to **Applications** > **Applications**, click **New Application**, and set the following configurations:
     - **Name**: provide a name for the application (e.g. `GWS`)
     - **Slug**: enter the name that you want to appear in the URL
     - **Provider**: when _not_ used in conjunction with the [Google SAML configuration](/integrations/cloud-providers/google), this should be left empty.

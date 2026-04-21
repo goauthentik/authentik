@@ -115,7 +115,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     internals?: ElementInternals;
     doneFirstUpdate = false;
 
-    json() {
+    toJSON() {
         return this.values;
     }
 

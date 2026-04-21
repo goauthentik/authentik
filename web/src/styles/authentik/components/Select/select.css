@@ -1,4 +1,5 @@
 .pf-c-select {
+    --pf-c-select__toggle--BackgroundColor: transparent;
     --pf-c-select__toggle--before--BorderTopColor: transparent;
     --pf-c-select__toggle--before--BorderRightColor: transparent;
     --pf-c-select__toggle--before--BorderLeftColor: transparent;

@@ -335,7 +335,7 @@ export abstract class WizardStep extends AKElement {
                     </aside>
                     <main
                         part="wizard-main"
-                        class="pf-c-wizard__main ak-m-thin-scrollbar"
+                        class="pf-c-wizard__main ak-m-thin-scrollbar ak-m-scroll-shadows"
                         aria-label=${msg("Wizard content")}
                     >
                         <div id="main-content" class="pf-c-wizard__main-body">

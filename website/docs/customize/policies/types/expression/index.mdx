@@ -1,0 +1,143 @@
+---
+title: Expression Policies
+tags:
+    - policy
+    - expression
+    - python
+---
+
+Expression policies let you write custom Python for cases where the built-in policy types are not enough.
+
+They are commonly used to:
+
+- branch or redirect inside authentication flows
+- validate prompt data
+- enforce organization-specific access rules
+- make decisions based on request metadata, GeoIP, ASN, or flow context
+
+For general policy concepts such as bindings, ordering, `Any` vs `All`, and where policies are attached, see [Policy bindings and evaluation](../../bindings.md).
+
+:::warning Privileged Feature
+Expression policies execute server-side Python inside authentik. Treat the ability to create or edit them as a highly privileged permission.
+:::
+
+## Start here
+
+- [Expression reference](./reference.mdx) covers return values, helper functions, variables, and flow context.
+- [Managing flow context keys](./managing_flow_context_keys.md) shows how to change flow behavior.
+- [Switch which source is used based on email address](./source_switch.md) shows a common routing pattern.
+- [Ensure unique email addresses](./unique_email.md) and [Allow only specific email domains](./whitelist_email.md) cover prompt-data validation.
+
+## A simple example
+
+The following expression causes an MFA validation stage to run only for one specific user:
+
+```python
+if request.context["pending_user"].username == "marie":
+    return True
+return False
+```
+
+When the policy is bound to the stage binding, the stage runs only when the expression passes.
+
+To understand what values are available in the expression environment, see [Expression reference](./reference.mdx).
+
+## Common pitfalls
+
+### Use `context['pending_user']` inside flows
+
+When a policy runs during a flow, `request.user` is not always the user who is currently being authenticated. Until a login or user-writing stage updates the active user, `request.user` may still be `AnonymousUser` or the previously authenticated user.
+
+Inside authentication and enrollment flows, prefer:
+
+```python
+pending_user = request.context.get("pending_user")
+```
+
+instead of relying on `request.user`.
+
+### Prompt data lives in `context['prompt_data']`
+
+If you are validating values entered in a [Prompt stage](../../../../add-secure-apps/flows-stages/stages/prompt/index.md), read them from `context["prompt_data"]`:
+
+```python
+email = context["prompt_data"]["email"]
+```
+
+### Flow state can be changed through `flow_plan`
+
+When an expression runs inside a flow, you can inspect and update flow state through `context["flow_plan"]` and `context["flow_plan"].context`. This is powerful, but it also means your expression can change how the rest of the flow behaves.
+
+For examples, see [Managing flow context keys](./managing_flow_context_keys.md) and [Switch which source is used based on email address](./source_switch.md).
+
+## Sample expression policies
+
+The following examples document common uses:
+
+- [Switch which source is used based on email address](./source_switch.md)
+- [Managing flow context keys](./managing_flow_context_keys.md)
+- [Ensure unique email addresses](./unique_email.md)
+- [Allow only specific email domains](./whitelist_email.md)
+
+### `auth_method` and `auth_method_args`
+
+Depending on the flow, `context["auth_method_args"]` may also be populated.
+
+Some fields from the flow-plan context are mirrored into the root policy context and updated from it, such as `prompt_data`, but not every flow-plan key is copied that way.
+
+Common `auth_method` values include:
+
+- `password`: standard password login
+- `auth_mfa`: MFA login without a password step
+- `auth_webauthn_pwl`: passwordless WebAuthn or passkey login
+- `token`: token-based authentication, such as an app password
+- `jwt`: machine-to-machine login through an external JWT
+- `ldap`: LDAP bind authentication
+
+For some authentication methods, `context["auth_method_args"]` contains additional structured data.
+
+For `auth_mfa`, `context["auth_method_args"]` is shaped like:
+
+```json
+{
+    "mfa_devices": [
+        {
+            "pk": 1,
+            "app": "otp_static",
+            "name": "Static Token",
+            "model_name": "staticdevice"
+        }
+    ]
+}
+```
+
+For `token`, `context["auth_method_args"]` depends on the code path. It may contain a token object:
+
+```json
+{
+    "token": {
+        "pk": "f6d639aac81940f38dcfdc6e0fe2a786",
+        "app": "authentik_core",
+        "name": "test (expires=2021-08-23 15:45:54.725880+00:00)",
+        "model_name": "token"
+    }
+}
+```
+
+or a token identifier:
+
+```json
+{
+    "identifier": "service-account-token"
+}
+```
+
+For `ldap`, `context["auth_method_args"]` contains information about the source used:
+
+```json
+{
+    "source": {}
+}
+```
+
+For simple country or ASN checks, a [GeoIP policy](../geoip.md) is usually easier to manage than a custom expression. For flow manipulation, see the example pages above.

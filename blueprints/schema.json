@@ -5644,6 +5644,7 @@
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
@@ -5651,6 +5652,7 @@
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
@@ -5658,6 +5660,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
@@ -5665,6 +5668,7 @@
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
@@ -9072,6 +9076,14 @@
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
+                },
+                "query": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Query"
                 }
             },
             "required": []
@@ -11328,6 +11340,7 @@
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
@@ -11335,6 +11348,7 @@
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
@@ -11342,6 +11356,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
@@ -11349,6 +11364,7 @@
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",

@@ -5,20 +5,20 @@ import "#admin/endpoints/devices/facts/DeviceProcessTable";
 import "#admin/endpoints/devices/facts/DeviceUserTable";
 import "#admin/endpoints/devices/facts/DeviceSoftwareTable";
 import "#admin/endpoints/devices/facts/DeviceGroupTable";
-import "#admin/endpoints/devices/DeviceForm";
 import "#admin/endpoints/devices/DeviceEvents";
-import "#elements/forms/ModalForm";
 import "#elements/Tabs";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { Timestamp } from "#elements/table/shared";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList, { DescriptionPair } from "#components/DescriptionList";
 
+import { EndpointDeviceForm } from "#admin/endpoints/devices/DeviceForm";
 import { getSize, osFamilyToLabel, trySortNumerical } from "#admin/endpoints/devices/utils";
 
 import { DeviceConnection, Disk, EndpointDeviceDetails, EndpointsApi } from "@goauthentik/api";
@@ -124,18 +124,14 @@ export class DeviceViewPage extends AKElement {
                             [msg("Device access group"), this.device?.accessGroupObj?.name ?? "-"],
                             [
                                 msg("Actions"),
-                                html`<ak-forms-modal>
-                                    <span slot="submit">${msg("Save Changes")}</span>
-                                    <span slot="header">${msg("Update Device")}</span>
-                                    <ak-endpoints-device-form
-                                        slot="form"
-                                        .instancePk=${this.device?.deviceUuid}
-                                    >
-                                    </ak-endpoints-device-form>
-                                    <button slot="trigger" class="pf-c-button pf-m-primary">
-                                        ${msg("Edit")}
-                                    </button>
-                                </ak-forms-modal>`,
+                                html`<button
+                                    class="pf-c-button pf-m-primary"
+                                    ${modalInvoker(EndpointDeviceForm, {
+                                        instancePk: this.device?.deviceUuid,
+                                    })}
+                                >
+                                    ${msg("Edit")}
+                                </button>`,
                             ],
                         ],
                         { horizontal: true },

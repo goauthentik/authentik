@@ -312,8 +312,15 @@ export class AKModal extends AKElement implements TransclusionParentElement {
         this.beforeBodySlot.name = "before-body";
 
         this.dialogBody = this.ownerDocument.createElement("div");
-        this.dialogBody.classList.add("ak-c-dialog__body", "ak-m-thin-scrollbar");
+        this.dialogBody.classList.add(
+            "ak-c-dialog__body",
+            "ak-m-thin-scrollbar",
+            "ak-m-scroll-shadows",
+        );
         this.dialogBody.setAttribute("part", "body");
+
+        this.dialogBody.role = "region";
+        this.dialogBody.ariaLabel = msg("Dialog content");
 
         this.dialogBody.appendChild(this.defaultSlot);
 
@@ -379,6 +386,9 @@ export class AKModal extends AKElement implements TransclusionParentElement {
                 nextSlottedElement.visible = true;
             }
 
+            nextSlottedElement.classList.add("ak-c-dialog__slotted-content");
+
+            this.slottedElement?.classList.remove("ak-c-dialog__slotted-content");
             this.slottedElement = nextSlottedElement;
         }
 
