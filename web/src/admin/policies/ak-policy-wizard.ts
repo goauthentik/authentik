@@ -87,14 +87,19 @@ export class PolicyWizard extends CreateWizard {
                       <ak-radio
                           .options=${[
                               {
-                                  label: "Bind a user",
+                                  label: msg("Bind a user"),
                                   description: html`${msg("Statically bind an existing user.")}`,
                                   value: PolicyBindingCheckTarget.User,
                               },
                               {
-                                  label: "Bind a group",
+                                  label: msg("Bind a group"),
                                   description: html`${msg("Statically bind an existing group.")}`,
                                   value: PolicyBindingCheckTarget.Group,
+                              },
+                              {
+                                  label: msg("Bind an existing policy"),
+                                  description: html`${msg("Bind an existing policy.")}`,
+                                  value: PolicyBindingCheckTarget.Policy,
                               },
                           ]}
                           @change=${(
