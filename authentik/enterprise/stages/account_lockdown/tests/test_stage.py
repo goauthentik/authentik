@@ -164,7 +164,7 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.assertFalse(self.target_user.is_active)
 
     def test_lockdown_reason_from_prompt(self):
-        """Test lockdown stage reads the namespaced reason from prompt data."""
+        """Test lockdown stage reads the reason from prompt data."""
         self.target_user.is_active = True
         self.target_user.save()
 
