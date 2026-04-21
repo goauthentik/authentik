@@ -184,7 +184,7 @@ From the authentik Admin Dashboard:
 4. Create the entitlements that SharePoint should receive in the `roles` claim.
 5. Open each entitlement and bind the users or groups that should receive it.
 
-:::tip
+:::tip Entitlement role names
 For this integration, entitlement names should exactly match the role values that your SharePoint configuration expects in the incoming `roles` claim. This keeps SharePoint-specific authorization scoped to the SharePoint application instead of relying on global authentik group names.
 :::
 
