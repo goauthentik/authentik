@@ -62,5 +62,3 @@ If you're focusing solely on frontend development, you can create a minimal deve
     ```
 
 You can now access authentik on http://localhost:9000 (or https://localhost:9443).
-
-You might also want to complete the initial setup under `/if/flow/initial-setup/`.

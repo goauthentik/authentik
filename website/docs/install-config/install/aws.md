@@ -32,11 +32,7 @@ The stack will output the endpoint of the ALB to which you can point your DNS re
 
 To launch authentik, in your browser go to:
 
-`http://<domain_you_configured>/if/flow/initial-setup/`
-
-:::info Initial setup in browser
-You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
-:::
+`http://<domain_you_configured>`
 
 ### Further customization
 
