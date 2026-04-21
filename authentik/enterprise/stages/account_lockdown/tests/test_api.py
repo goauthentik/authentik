@@ -25,19 +25,40 @@ patch_license = patch(
 
 
 @patch_license
-class TestUsersAccountLockdownAPI(APITestCase):
-    """Test Users Account Lockdown API"""
+class AccountLockdownAPITestCase(APITestCase):
+    """Shared helpers for account lockdown API tests."""
 
     def setUp(self) -> None:
-        self.admin = create_test_admin_user()
-        self.user = create_test_user()
-        self.user.email = f"{generate_id()}@test.com"
-        self.user.save()
-        # Create and configure lockdown flow on brand
         self.lockdown_flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
         self.brand = create_test_brand()
         self.brand.flow_lockdown = self.lockdown_flow
         self.brand.save()
+
+    def create_user_with_email(self):
+        """Create a regular user with a unique email address."""
+        user = create_test_user()
+        user.email = f"{generate_id()}@test.com"
+        user.save()
+        return user
+
+    def assert_flow_url_targets(self, response, user):
+        """Assert that a response contains the lockdown flow URL for a user."""
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertIn("flow_url", body)
+        self.assertIn(self.lockdown_flow.slug, body["flow_url"])
+        target_uuid = parse_qs(urlparse(body["flow_url"]).query).get(QS_LOCKDOWN_USER, [None])[0]
+        self.assertEqual(target_uuid, str(user.pk))
+
+
+@patch_license
+class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
+    """Test Users Account Lockdown API"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.admin = create_test_admin_user()
+        self.user = self.create_user_with_email()
 
     def test_account_lockdown_returns_flow_url(self):
         """Test that account lockdown returns a flow URL"""
@@ -49,12 +70,7 @@ class TestUsersAccountLockdownAPI(APITestCase):
             format="json",
         )
 
-        self.assertEqual(response.status_code, 200)
-        body = loads(response.content)
-        self.assertIn("flow_url", body)
-        self.assertIn(self.lockdown_flow.slug, body["flow_url"])
-        target_uuid = parse_qs(urlparse(body["flow_url"]).query).get(QS_LOCKDOWN_USER, [None])[0]
-        self.assertEqual(target_uuid, str(self.user.pk))
+        self.assert_flow_url_targets(response, self.user)
 
     def test_account_lockdown_no_flow_configured(self):
         """Test account lockdown when no flow is configured"""
@@ -97,18 +113,12 @@ class TestUsersAccountLockdownAPI(APITestCase):
 
 
 @patch_license
-class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
+class TestUsersAccountLockdownSelfServiceAPI(AccountLockdownAPITestCase):
     """Test Users Account Lockdown Self-Service API - Flow-based approach"""
 
     def setUp(self) -> None:
-        self.user = create_test_user()
-        self.user.email = f"{generate_id()}@test.com"
-        self.user.save()
-        # Create and configure lockdown flow on brand
-        self.lockdown_flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
-        self.brand = create_test_brand()
-        self.brand.flow_lockdown = self.lockdown_flow
-        self.brand.save()
+        super().setUp()
+        self.user = self.create_user_with_email()
 
     def test_account_lockdown_self_returns_flow_url(self):
         """Test successful self-service account lockdown returns a direct flow URL."""
@@ -120,12 +130,7 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
             format="json",
         )
 
-        self.assertEqual(response.status_code, 200)
-        body = loads(response.content)
-        self.assertIn("flow_url", body)
-        self.assertIn(self.lockdown_flow.slug, body["flow_url"])
-        target_uuid = parse_qs(urlparse(body["flow_url"]).query).get(QS_LOCKDOWN_USER, [None])[0]
-        self.assertEqual(target_uuid, str(self.user.pk))
+        self.assert_flow_url_targets(response, self.user)
 
     def test_account_lockdown_self_no_flow_configured(self):
         """Test self-service lockdown when no flow is configured"""
