@@ -4558,9 +4558,7 @@ paths:
   /core/users/account_lockdown/:
     post:
       operationId: core_users_account_lockdown_create
-      description: Choose the target account in the request body, then return a flow
-        URL that passes that target to the account lockdown stage via the user_uuid
-        query parameter.
+      description: Choose the target account, then return a redirect challenge.
       tags:
       - core
       requestBody:
@@ -4575,11 +4573,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountLockdownFlowResponse'
+                $ref: '#/components/schemas/RedirectChallenge'
               examples:
                 LockdownFlowURL:
                   value:
-                    flow_url: https://example.invalid/if/flow/default-account-lockdown/?user_uuid=00000000-0000-0000-0000-000000000000
+                    component: xak-flow-redirect
+                    to: https://example.invalid/if/flow/default-account-lockdown/
                   summary: Lockdown flow URL
           description: ''
         '400':
@@ -33886,15 +33885,6 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-    AccountLockdownFlowResponse:
-      type: object
-      properties:
-        flow_url:
-          type: string
-          description: URL to redirect to for lockdown flow, including the user_uuid
-            query parameter consumed by the stage.
-      required:
-      - flow_url
     AccountLockdownStage:
       type: object
       description: AccountLockdownStage Serializer
@@ -33939,7 +33929,7 @@ components:
         revoke_tokens:
           type: boolean
           description: Revoke all tokens for the user (API, app password, recovery,
-            verification, OAuth2)
+            verification, OAuth)
         self_service_message_title:
           type: string
           description: Title shown to users after self-service lockdown
@@ -33982,7 +33972,7 @@ components:
         revoke_tokens:
           type: boolean
           description: Revoke all tokens for the user (API, app password, recovery,
-            verification, OAuth2)
+            verification, OAuth)
         self_service_message_title:
           type: string
           minLength: 1
@@ -47718,7 +47708,7 @@ components:
         revoke_tokens:
           type: boolean
           description: Revoke all tokens for the user (API, app password, recovery,
-            verification, OAuth2)
+            verification, OAuth)
         self_service_message_title:
           type: string
           minLength: 1

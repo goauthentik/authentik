@@ -82,7 +82,7 @@ export interface AccountLockdownStage {
      */
     deleteSessions?: boolean;
     /**
-     * Revoke all tokens for the user (API, app password, recovery, verification, OAuth2)
+     * Revoke all tokens for the user (API, app password, recovery, verification, OAuth)
      * @type {boolean}
      * @memberof AccountLockdownStage
      */

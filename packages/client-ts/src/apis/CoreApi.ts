@@ -13,7 +13,6 @@
  */
 
 import type {
-    AccountLockdownFlowResponse,
     Application,
     ApplicationEntitlement,
     ApplicationEntitlementRequest,
@@ -44,6 +43,7 @@ import type {
     PatchedTokenRequest,
     PatchedUserRequest,
     PolicyTestResult,
+    RedirectChallenge,
     SessionUser,
     Token,
     TokenRequest,
@@ -66,7 +66,6 @@ import type {
     UserTypeEnum,
 } from "../models/index";
 import {
-    AccountLockdownFlowResponseFromJSON,
     ApplicationEntitlementFromJSON,
     ApplicationEntitlementRequestToJSON,
     ApplicationFromJSON,
@@ -96,6 +95,7 @@ import {
     PatchedTokenRequestToJSON,
     PatchedUserRequestToJSON,
     PolicyTestResultFromJSON,
+    RedirectChallengeFromJSON,
     SessionUserFromJSON,
     TokenFromJSON,
     TokenRequestToJSON,
@@ -4228,28 +4228,28 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Choose the target account in the request body, then return a flow URL that passes that target to the account lockdown stage via the user_uuid query parameter.
+     * Choose the target account, then return a redirect challenge.
      */
     async coreUsersAccountLockdownCreateRaw(
         requestParameters: CoreUsersAccountLockdownCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<AccountLockdownFlowResponse>> {
+    ): Promise<runtime.ApiResponse<RedirectChallenge>> {
         const requestOptions =
             await this.coreUsersAccountLockdownCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) =>
-            AccountLockdownFlowResponseFromJSON(jsonValue),
+            RedirectChallengeFromJSON(jsonValue),
         );
     }
 
     /**
-     * Choose the target account in the request body, then return a flow URL that passes that target to the account lockdown stage via the user_uuid query parameter.
+     * Choose the target account, then return a redirect challenge.
      */
     async coreUsersAccountLockdownCreate(
         requestParameters: CoreUsersAccountLockdownCreateRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<AccountLockdownFlowResponse> {
+    ): Promise<RedirectChallenge> {
         const response = await this.coreUsersAccountLockdownCreateRaw(
             requestParameters,
             initOverrides,

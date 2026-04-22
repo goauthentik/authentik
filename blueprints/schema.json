@@ -7819,7 +7819,7 @@
                 "revoke_tokens": {
                     "type": "boolean",
                     "title": "Revoke tokens",
-                    "description": "Revoke all tokens for the user (API, app password, recovery, verification, OAuth2)"
+                    "description": "Revoke all tokens for the user (API, app password, recovery, verification, OAuth)"
                 },
                 "self_service_message_title": {
                     "type": "string",
