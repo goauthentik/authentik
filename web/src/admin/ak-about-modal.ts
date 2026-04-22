@@ -8,7 +8,7 @@ import { AKModal } from "#elements/dialogs/ak-modal";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { SlottedTemplateResult } from "#elements/types";
-import { ThemedImage } from "#elements/utils/images";
+import { DefaultFlowBackground, ThemedImage } from "#elements/utils/images";
 
 import {
     AdminApi,
@@ -26,8 +26,6 @@ import { until } from "lit-html/directives/until.js";
 import { customElement, state } from "lit/decorators.js";
 
 import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal-box.css";
-
-const DEFAULT_BRAND_IMAGE = "/static/dist/assets/images/flow_background.jpg";
 
 type AboutEntry = [label: string, content?: SlottedTemplateResult];
 
@@ -191,7 +189,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
             ${ref(this.scrollContainerRef)}
             class="pf-c-about-modal-box"
             style=${styleMap({
-                "--pf-c-about-modal-box__hero--sm--BackgroundImage": `url(${DEFAULT_BRAND_IMAGE})`,
+                "--pf-c-about-modal-box__hero--sm--BackgroundImage": `url(${DefaultFlowBackground})`,
             })}
             part="box"
         >

@@ -14,6 +14,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { DefaultBrand } from "#common/ui/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { DefaultFlowBackground } from "#elements/utils/images";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -65,7 +66,17 @@ export class BrandForm extends ModelForm<Brand, string> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-text-input
+        const {
+            brandingTitle = "",
+            brandingLogo = "",
+            brandingFavicon = "",
+            brandingCustomCss = "",
+        } = this.instance ?? DefaultBrand;
+
+        const defaultFlowBackground =
+            this.instance?.brandingDefaultFlowBackground ?? DefaultFlowBackground;
+
+        return html`<ak-text-input
                 required
                 name="domain"
                 input-hint="code"
@@ -75,6 +86,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                 help=${msg(
                     "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match.",
                 )}
+                ?autofocus=${!this.instance}
             ></ak-text-input>
 
             <ak-switch-input
@@ -91,7 +103,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         required
                         name="brandingTitle"
                         placeholder="authentik"
-                        value="${this.instance?.brandingTitle ?? DefaultBrand.brandingTitle}"
+                        value=${brandingTitle}
                         label=${msg("Title")}
                         autocomplete="off"
                         spellcheck="false"
@@ -102,7 +114,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         required
                         name="brandingLogo"
                         label=${msg("Logo")}
-                        value="${this.instance?.brandingLogo ?? DefaultBrand.brandingLogo}"
+                        value=${brandingLogo}
                         .usage=${UsageEnum.Media}
                         help=${msg("Logo shown in sidebar/header and flow executor.")}
                     ></ak-file-search-input>
@@ -111,7 +123,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         required
                         name="brandingFavicon"
                         label=${msg("Favicon")}
-                        value="${this.instance?.brandingFavicon ?? DefaultBrand.brandingFavicon}"
+                        value=${brandingFavicon}
                         .usage=${UsageEnum.Media}
                         help=${msg("Icon shown in the browser tab.")}
                     ></ak-file-search-input>
@@ -120,8 +132,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         required
                         name="brandingDefaultFlowBackground"
                         label=${msg("Default flow background")}
-                        value="${this.instance?.brandingDefaultFlowBackground ??
-                        "/static/dist/assets/images/flow_background.jpg"}"
+                        value=${defaultFlowBackground}
                         .usage=${UsageEnum.Media}
                         help=${msg(
                             "Default background used during flow execution. Can be overridden per flow.",
@@ -141,8 +152,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         <ak-codemirror
                             id="branding-custom-css"
                             mode="css"
-                            value="${this.instance?.brandingCustomCss ??
-                            DefaultBrand.brandingCustomCss}"
+                            value=${brandingCustomCss}
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">
