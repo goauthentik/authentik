@@ -26,7 +26,7 @@ class TestLocalSettingsAPI(APITestCase):
         self.tenant.flags = {}
         self.tenant.save()
 
-        class TestFlag(Flag[bool], key="tenants_test_flag_bool"):
+        class _TestFlag(Flag[bool], key="tenants_test_flag_bool"):
 
             default = False
             visibility = "public"
@@ -47,7 +47,7 @@ class TestLocalSettingsAPI(APITestCase):
         self.tenant.flags = {}
         self.tenant.save()
 
-        class TestFlag(Flag[bool], key="tenants_test_flag_incorrect"):
+        class _TestFlag(Flag[bool], key="tenants_test_flag_incorrect"):
 
             default = False
             visibility = "public"
@@ -72,7 +72,7 @@ class TestLocalSettingsAPI(APITestCase):
         self.tenant.flags = {}
         self.tenant.save()
 
-        class TestFlag(Flag[bool], key="tenants_test_flag_sys"):
+        class _TestFlag(Flag[bool], key="tenants_test_flag_sys"):
 
             default = False
             visibility = "system"
