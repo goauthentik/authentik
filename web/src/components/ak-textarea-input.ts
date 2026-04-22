@@ -1,8 +1,9 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
-import { html } from "lit";
+import { ifPresent } from "#elements/utils/attributes";
+
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-textarea-input")
 export class AkTextareaInput extends HorizontalLightComponent<string> {
@@ -13,12 +14,12 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
     public rows?: number;
 
     @property({ type: Number })
-    public maxLength?: number;
+    public maxLength: number = -1;
 
     @property({ type: String })
-    public placeholder?: string;
+    public placeholder: string = "";
 
-    connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         // Listen for form reset events to clear the value
         this.closest("form")?.addEventListener("reset", this.handleReset);
@@ -41,16 +42,16 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
         // Prevent the leading spaces added by Prettier's whitespace algo
         // prettier-ignore
         return html`<textarea
-            id=${ifDefined(this.fieldID)}
+            id=${ifPresent(this.fieldID)}
             @input=${setValue}
             class="pf-c-form-control"
             ?required=${this.required}
             name=${this.name}
-            rows=${ifDefined(this.rows)}
-            maxlength=${ifDefined(this.maxLength)}
-            placeholder=${ifDefined(this.placeholder)}
-            autocomplete=${ifDefined(code ? "off" : undefined)}
-            spellcheck=${ifDefined(code ? "false" : undefined)}
+            rows=${ifPresent(this.rows)}
+            maxlength=${(this.maxLength >= 0) ? this.maxLength : nothing}
+            placeholder=${ifPresent(this.placeholder)}
+            autocomplete=${ifPresent(code, "off")}
+            spellcheck=${ifPresent(code, "false")}
         >${this.value !== undefined ? this.value : ""}</textarea
         > `;
     }
