@@ -23,6 +23,23 @@
     }
 }
 
+.pf-c-table thead .pf-c-table__check {
+    text-align: center;
+    min-width: 3rem;
+}
+
+.pf-c-table tbody .pf-c-table__check {
+    text-align: center;
+
+    input {
+        margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+    }
+}
+
+td:has(ak-timestamp) {
+    --pf-c-table--cell--MinWidth: 16ch;
+}
+
 /* #region Dark Theme */
 
 :host([theme="dark"]) .pf-c-toolbar {
