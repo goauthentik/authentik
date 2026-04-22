@@ -8,6 +8,7 @@ from django.urls import reverse
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.apps import Setup
 from authentik.core.models import Token, TokenIntents, User
+from authentik.flows.models import Flow
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.tenants.flags import patch_flag, set_flag
@@ -45,6 +46,7 @@ class TestSetup(FlowTestCase):
     def test_not_setup_no_flow(self):
         """Test case on initial startup; setup flag is not set and oobe flow does
         not exist yet"""
+        Flow.objects.filter(slug="initial-setup").delete()
         res = self.client.get(reverse("authentik_core:root-redirect"))
         self.assertEqual(res.status_code, HTTPStatus.FOUND)
         self.assertRedirects(res, reverse("authentik_core:setup"), fetch_redirect_response=False)
@@ -139,6 +141,7 @@ class TestSetup(FlowTestCase):
 
     def test_setup_bootstrap_env(self):
         """Test setup with env vars"""
+        User.objects.filter(username="akadmin").delete()
         set_flag(Setup, False)
 
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD"] = generate_id()
