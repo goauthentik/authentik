@@ -19,7 +19,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -203,7 +203,7 @@ ${prompt.initialValue}</textarea
                     </div>
                     ${prompt.label
                         ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
-                        : nothing}
+                        : null}
                     <div class="pf-c-alert__description pf-c-content">
                         ${unsafeHTML(prompt.initialValue)}
                     </div>
@@ -215,7 +215,7 @@ ${prompt.initialValue}</textarea
                     </div>
                     ${prompt.label
                         ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
-                        : nothing}
+                        : null}
                     <div class="pf-c-alert__description pf-c-content">
                         ${unsafeHTML(prompt.initialValue)}
                     </div>
@@ -227,7 +227,7 @@ ${prompt.initialValue}</textarea
                     </div>
                     ${prompt.label
                         ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
-                        : nothing}
+                        : null}
                     <div class="pf-c-alert__description pf-c-content">
                         ${unsafeHTML(prompt.initialValue)}
                     </div>
@@ -272,9 +272,9 @@ ${prompt.initialValue}</textarea
         }
     }
 
-    protected renderPromptHelpText(prompt: StagePrompt) {
+    protected renderPromptHelpText(prompt: StagePrompt): SlottedTemplateResult {
         if (!prompt.subText) {
-            return nothing;
+            return null;
         }
 
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
@@ -307,7 +307,7 @@ ${prompt.initialValue}</textarea
                 <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
                 ${prompt.required
                     ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
-                    : nothing}
+                    : null}
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }
