@@ -114,6 +114,7 @@ In earlier versions, hiding an application was done by setting the _Launch URL_ 
 :::info Hiding application before 2026.5
 Before authentik 2026.5, an application was hidden by setting its **Launch URL** to `blank://blank`. Existing applications using that value are automatically migrated to using the **Hide from user dashboard** option upon upgrading.
 :::
+
 ## Launch URLs
 
 To give users direct links to applications, you can now use a URL like `https://authentik.company/application/launch/<slug>/`. If the user is already logged in, they will be redirected to the application automatically. Otherwise, they'll be sent to the authentication flow and, if successful, forwarded to the application.
