@@ -1,5 +1,6 @@
 """Test Settings API"""
 
+from django.core.management import call_command
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -88,3 +89,12 @@ class TestLocalSettingsAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.tenant.refresh_from_db()
         self.assertEqual(self.tenant.flags, {})
+
+    def test_command(self):
+        self.tenant.flags = {}
+        self.tenant.save()
+
+        call_command("set_flag", "foo", "true")
+
+        self.tenant.refresh_from_db()
+        self.assertTrue(self.tenant.flags["foo"])
