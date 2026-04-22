@@ -14,6 +14,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { IconEditButton, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
@@ -22,7 +23,6 @@ import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
-import { UserOption } from "#elements/user/utils";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -153,7 +153,7 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
                                     this.requestUpdate();
                                 }}
                             >
-                                ${UserOption(user)}
+                                ${formatDisambiguatedUserDisplayName(user)}
                             </ak-chip>`;
                         })}</ak-chip-group
                     >
