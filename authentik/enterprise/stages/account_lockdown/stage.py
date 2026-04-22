@@ -19,11 +19,9 @@ from authentik.core.models import (
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
-from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
-QS_LOCKDOWN_USER = "user_uuid"
 
 TARGET_REQUIRED_MESSAGE = _("No target user specified for account lockdown")
 PERMISSION_DENIED_MESSAGE = _("You do not have permission to lock down this account.")
@@ -102,17 +100,6 @@ def can_lock_user(actor, user: User) -> bool:
 
 class AccountLockdownStageView(StageView):
     """Execute account lockdown actions on the target user."""
-
-    def get_target_user_uuid(self, request: HttpRequest) -> str | None:
-        """Read the requested lockdown target from the flow query parameters."""
-        get_params = request.session.get(SESSION_KEY_GET, request.GET)
-        return get_params.get(QS_LOCKDOWN_USER)
-
-    def get_target_user(self, request: HttpRequest) -> User | None:
-        """Get the target user from the flow query parameters."""
-        if not (target_uuid := self.get_target_user_uuid(request)):
-            return None
-        return get_lockdown_target_users().filter(pk=target_uuid).first()
 
     def is_self_service(self, request: HttpRequest, user: User) -> bool:
         """Check whether the currently authenticated user is locking their own account."""
@@ -205,11 +192,16 @@ class AccountLockdownStageView(StageView):
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Execute account lockdown actions."""
+        self.request = request
         stage: AccountLockdownStage = self.executor.current_stage
 
-        user = self.get_target_user(request)
-        if user is None:
+        pending_user = self.get_pending_user()
+        if not pending_user.is_authenticated:
             self.logger.warning("No target user found for account lockdown")
+            return self.executor.stage_invalid(TARGET_REQUIRED_MESSAGE)
+        user = get_lockdown_target_users().filter(pk=pending_user.pk).first()
+        if user is None:
+            self.logger.warning("Target user is not eligible for account lockdown")
             return self.executor.stage_invalid(TARGET_REQUIRED_MESSAGE)
         if not can_lock_user(request.user, user):
             self.logger.warning(

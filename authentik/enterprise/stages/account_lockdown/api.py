@@ -1,7 +1,6 @@
 """Account Lockdown Stage API Views"""
 
 from django.urls import reverse_lazy
-from django.utils.http import urlencode
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema, inline_serializer
 from rest_framework.decorators import action
@@ -23,11 +22,13 @@ from authentik.core.models import (
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.enterprise.stages.account_lockdown.stage import (
-    QS_LOCKDOWN_USER,
     can_lock_user,
     get_lockdown_target_users,
 )
 from authentik.flows.api.stages import StageSerializer
+from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
+from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
 
 LOGGER = get_logger()
 
@@ -75,23 +76,31 @@ class UserAccountLockdownMixin:
     def _create_lockdown_flow_url(self, request: Request, user: User) -> str:
         """Create a flow URL for account lockdown.
 
-        The request body selects the target before the flow starts. The
-        returned URL carries the same target into the account lockdown stage
-        via the ``user_uuid`` query parameter.
+        The request body selects the target before the flow starts. The API
+        pre-plans the lockdown flow with the target as the pending user, so the
+        account lockdown stage can use the normal flow context.
         """
         flow = request._request.brand.flow_lockdown
         if flow is None:
             raise ValidationError({"non_field_errors": [_("No lockdown flow configured.")]})
-        querystring = f"?{urlencode({QS_LOCKDOWN_USER: str(user.pk)})}"
+        planner = FlowPlanner(flow)
+        planner.use_cache = False
+        try:
+            plan = planner.plan(request._request, {PLAN_CONTEXT_PENDING_USER: user})
+        except (EmptyFlowException, FlowNonApplicableException):
+            raise ValidationError(
+                {"non_field_errors": [_("Lockdown flow is not applicable.")]}
+            ) from None
+        request.session[SESSION_KEY_HISTORY] = []
+        request.session[SESSION_KEY_PLAN] = plan
         return request.build_absolute_uri(
-            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug}) + querystring
+            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         )
 
     @extend_schema(
         description=_(
             "Choose the target account in the request body, then return a flow "
-            "URL that passes that target to the account lockdown stage via the "
-            "user_uuid query parameter."
+            "URL for a pre-planned account lockdown flow."
         ),
         request=UserAccountLockdownSerializer,
         responses={
@@ -100,10 +109,7 @@ class UserAccountLockdownMixin:
                     "AccountLockdownFlowResponse",
                     {
                         "flow_url": CharField(
-                            help_text=_(
-                                "URL to redirect to for lockdown flow, including the "
-                                "user_uuid query parameter consumed by the stage."
-                            )
+                            help_text=_("URL to redirect to for the lockdown flow.")
                         ),
                     },
                 ),
@@ -113,7 +119,6 @@ class UserAccountLockdownMixin:
                         value={
                             "flow_url": (
                                 "https://example.invalid/if/flow/default-account-lockdown/"
-                                "?user_uuid=00000000-0000-0000-0000-000000000000"
                             )
                         },
                         response_only=True,
@@ -143,9 +148,8 @@ class UserAccountLockdownMixin:
         If no user is specified, locks the current user (self-service).
         When targeting another user, admin permissions are required.
 
-        Returns a flow URL for the frontend to redirect to. The returned URL
-        includes the ``user_uuid`` query parameter that the lockdown stage uses
-        once the flow starts running.
+        Returns a flow URL for the frontend to redirect to. The flow is
+        pre-planned with the target user as pending user for the lockdown stage.
         """
         user = body.validated_data.get("user") or request.user
 

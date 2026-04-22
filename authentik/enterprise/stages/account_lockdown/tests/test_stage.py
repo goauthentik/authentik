@@ -24,14 +24,13 @@ from authentik.core.tests.utils import (
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.enterprise.stages.account_lockdown.stage import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
-    QS_LOCKDOWN_USER,
     AccountLockdownStageView,
     can_lock_user,
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
-from authentik.flows.planner import FlowPlan
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import IDToken
@@ -112,31 +111,32 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
     """Account lockdown stage tests"""
 
     def test_lockdown_no_target(self):
-        """Test lockdown stage with no target user fails"""
+        """Test lockdown stage with no pending user fails"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         view = self.make_stage_view(plan)
 
-        self.assertIsNone(view.get_target_user(self.make_request()))
+        response = view.dispatch(self.make_request())
 
-    def test_lockdown_with_query_target(self):
-        """Test lockdown stage with a query-param target."""
+        self.assertEqual(response.status_code, 400)
+
+    def test_lockdown_with_pending_user(self):
+        """Test lockdown stage with a pending target user."""
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_LOCKDOWN_REASON] = "Security incident"
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         view = self.make_stage_view(plan)
-        request = self.make_request(
-            user=self.user, query={QS_LOCKDOWN_USER: str(self.target_user.pk)}
-        )
-        target = view.get_target_user(request)
-        self.assertEqual(target.pk, self.target_user.pk)
-        self.assertTrue(can_lock_user(request.user, target))
-        view._lockdown_user(request, self.stage, target, view.get_reason())
+        request = self.make_request(user=self.user)
+
+        self.assertTrue(can_lock_user(request.user, self.target_user))
+        response = view.dispatch(request)
 
         self.target_user.refresh_from_db()
         self.assertFalse(self.target_user.is_active)
         self.assertFalse(self.target_user.has_usable_password())
+        self.assertEqual(response.status_code, 204)
 
         # Check event was created
         event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
@@ -144,25 +144,23 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.assertEqual(event.context["reason"], "Security incident")
         self.assertEqual(event.context["affected_user"], self.target_user.username)
 
-    def test_lockdown_with_query_target_reason(self):
-        """Test lockdown stage with a query-param target and explicit reason."""
+    def test_lockdown_with_pending_user_reason(self):
+        """Test lockdown stage with a pending target and explicit reason."""
         self.target_user.is_active = True
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_LOCKDOWN_REASON] = "Compromised account"
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         view = self.make_stage_view(plan)
-        request = self.make_request(
-            user=self.user,
-            query={QS_LOCKDOWN_USER: str(self.target_user.pk)},
-        )
-        target = view.get_target_user(request)
-        self.assertEqual(target.pk, self.target_user.pk)
-        self.assertTrue(can_lock_user(request.user, target))
-        view._lockdown_user(request, self.stage, target, view.get_reason())
+        request = self.make_request(user=self.user)
+
+        self.assertTrue(can_lock_user(request.user, self.target_user))
+        response = view.dispatch(request)
 
         self.target_user.refresh_from_db()
         self.assertFalse(self.target_user.is_active)
+        self.assertEqual(response.status_code, 204)
 
     def test_lockdown_reason_from_prompt(self):
         """Test lockdown stage reads the reason from prompt data."""
@@ -190,10 +188,9 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         view = self.make_stage_view(plan)
-        request = self.make_request(
-            user=self.target_user, query={QS_LOCKDOWN_USER: str(self.target_user.pk)}
-        )
+        request = self.make_request(user=self.target_user)
 
         original_event_new = Event.new
 
@@ -220,9 +217,10 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         view = self.make_stage_view(plan)
         request = self.make_request(
-            user=self.target_user, query={QS_LOCKDOWN_USER: str(self.target_user.pk)}
+            user=self.target_user,
         )
 
         original_event_new = Event.new
@@ -272,10 +270,9 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.target_user.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         view = self.make_stage_view(plan)
-        request = self.make_request(
-            user=self.target_user, query={QS_LOCKDOWN_USER: str(self.target_user.pk)}
-        )
+        request = self.make_request(user=self.target_user)
 
         response = view.dispatch(request)
 
@@ -288,12 +285,13 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         actor = create_test_user()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.target_user
         view = self.make_stage_view(plan)
-        request = self.make_request(user=actor, query={QS_LOCKDOWN_USER: str(self.target_user.pk)})
-        target = view.get_target_user(request)
+        request = self.make_request(user=actor)
 
-        self.assertEqual(target.pk, self.target_user.pk)
-        self.assertFalse(can_lock_user(request.user, target))
+        self.assertFalse(can_lock_user(request.user, self.target_user))
+        response = view.dispatch(request)
+        self.assertEqual(response.status_code, 400)
 
     def test_lockdown_revokes_tokens(self):
         """Test lockdown stage revokes tokens"""

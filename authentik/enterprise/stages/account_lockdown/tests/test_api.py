@@ -2,7 +2,7 @@
 
 from json import loads
 from unittest.mock import MagicMock, patch
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import urlparse
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -12,8 +12,10 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
-from authentik.enterprise.stages.account_lockdown.stage import QS_LOCKDOWN_USER
-from authentik.flows.models import FlowDesignation
+from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
+from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 
 # Patch for enterprise license check
@@ -29,6 +31,12 @@ class AccountLockdownAPITestCase(APITestCase):
 
     def setUp(self) -> None:
         self.lockdown_flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+        self.lockdown_stage = AccountLockdownStage.objects.create(name=generate_id())
+        FlowStageBinding.objects.create(
+            target=self.lockdown_flow,
+            stage=self.lockdown_stage,
+            order=0,
+        )
         self.brand = create_test_brand()
         self.brand.flow_lockdown = self.lockdown_flow
         self.brand.save()
@@ -41,13 +49,14 @@ class AccountLockdownAPITestCase(APITestCase):
         return user
 
     def assert_flow_url_targets(self, response, user):
-        """Assert that a response contains the lockdown flow URL for a user."""
+        """Assert that a response contains a pre-planned lockdown flow URL for a user."""
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
         self.assertIn("flow_url", body)
         self.assertIn(self.lockdown_flow.slug, body["flow_url"])
-        target_uuid = parse_qs(urlparse(body["flow_url"]).query).get(QS_LOCKDOWN_USER, [None])[0]
-        self.assertEqual(target_uuid, str(user.pk))
+        self.assertEqual(urlparse(body["flow_url"]).query, "")
+        plan = self.client.session[SESSION_KEY_PLAN]
+        self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER].pk, user.pk)
 
     def assert_no_flow_configured(self, response):
         """Assert that the API reports a missing lockdown flow."""
