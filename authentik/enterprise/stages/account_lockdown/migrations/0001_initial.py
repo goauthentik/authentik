@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                     "revoke_tokens",
                     models.BooleanField(
                         default=True,
-                        help_text="Revoke all tokens for the user (API, app password, recovery, verification, OAuth2)",
+                        help_text="Revoke all tokens for the user (API, app password, recovery, verification, OAuth)",
                     ),
                 ),
                 (
