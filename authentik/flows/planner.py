@@ -60,6 +60,26 @@ def cache_key(flow: Flow, user: User | None = None) -> str:
     return prefix
 
 
+def plan_flow_for_executor(
+    request: HttpRequest,
+    flow: Flow,
+    default_context: dict[str, Any] | None = None,
+    *,
+    use_cache: bool = True,
+    allow_empty_flows: bool = False,
+) -> FlowPlan:
+    """Plan a flow and store it in the executor session."""
+    from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
+
+    request.session[SESSION_KEY_HISTORY] = []
+    planner = FlowPlanner(flow)
+    planner.use_cache = use_cache
+    planner.allow_empty_flows = allow_empty_flows
+    plan = planner.plan(request, default_context)
+    request.session[SESSION_KEY_PLAN] = plan
+    return plan
+
+
 @dataclass(slots=True)
 class FlowPlan:
     """This data-class is the output of a FlowPlanner. It holds a flat list

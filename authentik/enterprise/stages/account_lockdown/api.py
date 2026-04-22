@@ -27,8 +27,7 @@ from authentik.enterprise.stages.account_lockdown.stage import (
 from authentik.flows.api.stages import StageSerializer
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
-from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, plan_flow_for_executor
 
 LOGGER = get_logger()
 
@@ -81,16 +80,17 @@ class UserAccountLockdownMixin:
         flow = request._request.brand.flow_lockdown
         if flow is None:
             raise ValidationError({"non_field_errors": [_("No lockdown flow configured.")]})
-        planner = FlowPlanner(flow)
-        planner.use_cache = False
         try:
-            plan = planner.plan(request._request, {PLAN_CONTEXT_PENDING_USER: user})
-        except (EmptyFlowException, FlowNonApplicableException):
+            plan_flow_for_executor(
+                request._request,
+                flow,
+                {PLAN_CONTEXT_PENDING_USER: user},
+                use_cache=False,
+            )
+        except EmptyFlowException, FlowNonApplicableException:
             raise ValidationError(
                 {"non_field_errors": [_("Lockdown flow is not applicable.")]}
             ) from None
-        request.session[SESSION_KEY_HISTORY] = []
-        request.session[SESSION_KEY_PLAN] = plan
         return request.build_absolute_uri(
             reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         )
