@@ -64,6 +64,30 @@ export class PromptStage extends WithCapabilitiesConfig(
         `,
     ];
 
+    protected isAlertPromptType(prompt: StagePrompt): boolean {
+        return (
+            prompt.type === PromptTypeEnum.AlertInfo ||
+            prompt.type === PromptTypeEnum.AlertWarning ||
+            prompt.type === PromptTypeEnum.AlertDanger
+        );
+    }
+
+    protected renderPromptAlert(
+        prompt: StagePrompt,
+        level: "info" | "warning" | "danger",
+        icon: string,
+    ): SlottedTemplateResult {
+        return html`<div class="pf-c-alert pf-m-${level} pf-m-inline">
+            <div class="pf-c-alert__icon">
+                <i class="fas fa-fw ${icon}" aria-hidden="true"></i>
+            </div>
+            ${prompt.label ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>` : null}
+            <div class="pf-c-alert__description pf-c-content">
+                ${unsafeHTML(prompt.initialValue)}
+            </div>
+        </div>`;
+    }
+
     protected renderPromptInner(prompt: StagePrompt): SlottedTemplateResult {
         const fieldId = `field-${prompt.fieldKey}`;
 
@@ -197,41 +221,11 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Static:
                 return html`<p>${unsafeHTML(prompt.initialValue)}</p>`;
             case PromptTypeEnum.AlertInfo:
-                return html`<div class="pf-c-alert pf-m-info pf-m-inline">
-                    <div class="pf-c-alert__icon">
-                        <i class="fas fa-fw fa-info-circle" aria-hidden="true"></i>
-                    </div>
-                    ${prompt.label
-                        ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
-                        : null}
-                    <div class="pf-c-alert__description pf-c-content">
-                        ${unsafeHTML(prompt.initialValue)}
-                    </div>
-                </div>`;
+                return this.renderPromptAlert(prompt, "info", "fa-info-circle");
             case PromptTypeEnum.AlertWarning:
-                return html`<div class="pf-c-alert pf-m-warning pf-m-inline">
-                    <div class="pf-c-alert__icon">
-                        <i class="fas fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
-                    </div>
-                    ${prompt.label
-                        ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
-                        : null}
-                    <div class="pf-c-alert__description pf-c-content">
-                        ${unsafeHTML(prompt.initialValue)}
-                    </div>
-                </div>`;
+                return this.renderPromptAlert(prompt, "warning", "fa-exclamation-triangle");
             case PromptTypeEnum.AlertDanger:
-                return html`<div class="pf-c-alert pf-m-danger pf-m-inline">
-                    <div class="pf-c-alert__icon">
-                        <i class="fas fa-fw fa-exclamation-circle" aria-hidden="true"></i>
-                    </div>
-                    ${prompt.label
-                        ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
-                        : null}
-                    <div class="pf-c-alert__description pf-c-content">
-                        ${unsafeHTML(prompt.initialValue)}
-                    </div>
-                </div>`;
+                return this.renderPromptAlert(prompt, "danger", "fa-exclamation-circle");
             case PromptTypeEnum.Dropdown:
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
@@ -286,9 +280,7 @@ ${prompt.initialValue}</textarea
             prompt.type === PromptTypeEnum.Static ||
             prompt.type === PromptTypeEnum.Hidden ||
             prompt.type === PromptTypeEnum.Separator ||
-            prompt.type === PromptTypeEnum.AlertInfo ||
-            prompt.type === PromptTypeEnum.AlertWarning ||
-            prompt.type === PromptTypeEnum.AlertDanger
+            this.isAlertPromptType(prompt)
         );
     }
 
