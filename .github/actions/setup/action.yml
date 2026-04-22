@@ -104,7 +104,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
-        docker compose -f .github/actions/setup/compose.yml up -d
+        docker compose -f .github/actions/setup/compose.yml up -d --wait
         cd web && npm ci
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
