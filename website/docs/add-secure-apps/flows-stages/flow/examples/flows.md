@@ -46,6 +46,8 @@ Flow: right-click [here](/blueprints/example/flows-recovery-email-mfa-verificati
 
 With this recovery flow, the user is sent an email after they've identified themselves. After they click on the link in the email, they will have to verify their configured MFA device, and are prompted for a new password and immediately logged on.
 
+If the emailed reset token has expired, the user will receive an error: "This link is invalid or has expired. Please request a new one."
+
 There's also [a version](/blueprints/example/flows-recovery-email-verification.yaml) of this flow available without MFA validation, which is not recommended.
 
 ## User deletion
