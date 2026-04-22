@@ -304,7 +304,12 @@ class Prompt(SerializerModel):
                 field_class = HiddenField
                 kwargs["required"] = False
                 kwargs["default"] = self.placeholder
-            case FieldTypes.STATIC:
+            case (
+                FieldTypes.STATIC
+                | FieldTypes.ALERT_INFO
+                | FieldTypes.ALERT_WARNING
+                | FieldTypes.ALERT_DANGER
+            ):
                 kwargs["default"] = self.placeholder
                 kwargs["required"] = False
                 kwargs["label"] = ""
