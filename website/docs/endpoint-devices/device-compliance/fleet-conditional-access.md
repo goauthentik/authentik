@@ -14,6 +14,7 @@ authentik automatically retrieves the Conditional Access Root CA certificate fro
 - You must have [configured compliance](./configuration.md) in authentik
 - The [Fleet connector](./connectors/fleetdm.md) must be configured in authentik
 - Conditional access Root CA Certificate must be pulled from Fleet via the Fleet connector. This is an automatic process
+- A Fleet Enterprise license is required
 
 ## Configuring your flow
 
