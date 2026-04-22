@@ -4,53 +4,51 @@ import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#components/ak-textarea-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import { AccountLockdownStage, StagesApi } from "@goauthentik/api";
+import { AccountLockdownStage } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-account-lockdown-form")
 export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage> {
-    loadInstance(pk: string): Promise<AccountLockdownStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAccountLockdownRetrieve({
-            stageUuid: pk,
-        });
+    protected override loadInstance(pk: string): Promise<AccountLockdownStage> {
+        return this.stagesAPI.stagesAccountLockdownRetrieve({ stageUuid: pk });
     }
 
-    async send(data: AccountLockdownStage): Promise<AccountLockdownStage> {
+    protected override async send(data: AccountLockdownStage): Promise<AccountLockdownStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAccountLockdownUpdate({
+            return this.stagesAPI.stagesAccountLockdownUpdate({
                 stageUuid: this.instance.pk || "",
                 accountLockdownStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAccountLockdownCreate({
+
+        return this.stagesAPI.stagesAccountLockdownCreate({
             accountLockdownStageRequest: data,
         });
     }
 
-    protected override renderForm(): TemplateResult {
-        return html`
-            <span>
+    protected override renderForm(): SlottedTemplateResult {
+        return html`<span>
                 ${msg(
                     "This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-group open label="${msg("Stage-specific settings")}">
+            <ak-text-input
+                label=${msg("Stage Name")}
+                placeholder=${msg("Type a name for this stage...")}
+                required
+                name="name"
+                value=${ifPresent(this.instance?.name || "")}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
+            <ak-form-group open label=${msg("Stage-specific settings")}>
                 <div class="pf-c-form">
                     <ak-switch-input
                         name="deactivateUser"
@@ -84,12 +82,13 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                     </ak-switch-input>
                 </div>
             </ak-form-group>
-            <ak-form-group label="${msg("Self-service completion")}">
-                <span class="pf-c-form__helper-text">
-                    ${msg(
-                        "Configure what happens after a user locks their own account. Since all sessions are deleted, the user cannot continue in the current flow and will be redirected to a separate completion flow.",
-                    )}
-                </span>
+            <ak-form-group
+                label=${msg("Self-service completion")}
+                open
+                description=${msg(
+                    "Configure what happens after a user locks their own account. Since all sessions are deleted, the user cannot continue in the current flow and will be redirected to a separate completion flow.",
+                )}
+            >
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Completion flow")}
@@ -109,24 +108,25 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                         label=${msg("Self-service message title")}
                         name="selfServiceMessageTitle"
                         required
-                        value="${ifDefined(this.instance?.selfServiceMessageTitle)}"
+                        value=${ifPresent(this.instance?.selfServiceMessageTitle)}
                         help=${msg("Title shown to users after self-service lockdown.")}
-                    >
-                    </ak-text-input>
+                        placeholder=${msg("e.g. Account Locked")}
+                    ></ak-text-input>
                     <ak-textarea-input
                         label=${msg("Self-service message")}
                         name="selfServiceMessageBody"
                         required
-                        value=${ifDefined(this.instance?.selfServiceMessageBody)}
+                        value=${ifPresent(this.instance?.selfServiceMessageBody)}
                         rows="6"
                         help=${msg(
                             "HTML message shown to users after self-service lockdown. Supports HTML formatting.",
                         )}
-                    >
-                    </ak-textarea-input>
+                        placeholder=${msg(
+                            "e.g. Your account has been locked due to too many failed login attempts. Please contact support to regain access.",
+                        )}
+                    ></ak-textarea-input>
                 </div>
-            </ak-form-group>
-        `;
+            </ak-form-group>`;
     }
 }
 
