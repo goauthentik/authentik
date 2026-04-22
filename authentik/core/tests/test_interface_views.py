@@ -4,14 +4,17 @@ from django.test import TestCase
 from django.urls import reverse
 
 from authentik.brands.models import Brand
+from authentik.core.apps import Setup
 from authentik.core.models import Application, UserTypes
 from authentik.core.tests.utils import create_test_brand, create_test_user
+from authentik.tenants.flags import set_flag
 
 
 class TestInterfaceRedirects(TestCase):
     """Test RootRedirectView and BrandDefaultRedirectView redirect logic by user type"""
 
     def setUp(self):
+        set_flag(Setup, True)
         self.app = Application.objects.create(name="test-app", slug="test-app")
         self.brand: Brand = create_test_brand(default_application=self.app)
 
