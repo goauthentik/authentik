@@ -11,13 +11,13 @@ import "#user/user-settings/tokens/UserTokenList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { parseAPIResponseError } from "#common/errors/network";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
+import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import Styles from "#user/user-settings/styles.css";
@@ -25,7 +25,7 @@ import Styles from "#user/user-settings/styles.css";
 import { CoreApi, StagesApi, UserSetting } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -58,21 +58,79 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
         Styles,
     ];
 
+    protected coreAPI = new CoreApi(DEFAULT_CONFIG);
+    protected stagesAPI = new StagesApi(DEFAULT_CONFIG);
+
     @state()
-    userSettings?: UserSetting[];
+    protected userSettings: UserSetting[] | null = null;
+
+    protected refresh = () => {
+        return this.stagesAPI
+            .stagesAllUserSettingsList()
+            .then((nextUserSettings) => {
+                this.userSettings = nextUserSettings;
+            })
+            .catch(showAPIErrorMessage);
+    };
 
     constructor() {
         super();
-        this.addEventListener(EVENT_REFRESH, () => {
-            this.firstUpdated();
-        });
+        this.addEventListener(EVENT_REFRESH, this.refresh);
     }
 
-    async firstUpdated(): Promise<void> {
-        this.userSettings = await new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
+    public async firstUpdated(): Promise<void> {
+        this.refresh();
     }
 
-    render(): TemplateResult {
+    protected lockAccount = () => {
+        return this.coreAPI
+            .coreUsersAccountLockdownCreate({
+                userAccountLockdownRequest: {},
+            })
+            .then((response) => {
+                if (response.flowUrl) {
+                    window.location.assign(response.flowUrl);
+                }
+            })
+            .catch(showAPIErrorMessage);
+    };
+
+    protected renderSecuritySettings(): SlottedTemplateResult {
+        if (!this.hasEnterpriseLicense) {
+            return null;
+        }
+
+        return html`<div
+            id="page-security"
+            role="tabpanel"
+            tabindex="0"
+            slot="page-security"
+            aria-label=${msg("Security")}
+            class="pf-c-page__main-section pf-m-no-padding-mobile"
+        >
+            <div class="pf-l-stack pf-m-gutter">
+                <div class="pf-l-stack__item">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__title">${msg("Account Lockdown")}</div>
+                        <div class="pf-c-card__body">
+                            <p>
+                                ${msg(
+                                    "If you suspect your account has been compromised, you can immediately lock it to prevent unauthorized access.",
+                                )}
+                            </p>
+                        </div>
+                        <div class="pf-c-card__footer">
+                            <button class="pf-c-button pf-m-danger" @click=${this.lockAccount}>
+                                ${msg("Lock my account")}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    protected override render(): SlottedTemplateResult {
         const pwStage =
             this.userSettings?.filter((stage) => stage.component === "ak-user-settings-password") ||
             [];
@@ -182,60 +240,7 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                             <ak-user-token-list></ak-user-token-list>
                         </div>
                     </div>
-                    ${this.hasEnterpriseLicense
-                        ? html`
-                              <div
-                                  id="page-security"
-                                  role="tabpanel"
-                                  tabindex="0"
-                                  slot="page-security"
-                                  aria-label=${msg("Security")}
-                                  class="pf-c-page__main-section pf-m-no-padding-mobile"
-                              >
-                                  <div class="pf-l-stack pf-m-gutter">
-                                      <div class="pf-l-stack__item">
-                                          <div class="pf-c-card">
-                                              <div class="pf-c-card__title">
-                                                  ${msg("Account Lockdown")}
-                                              </div>
-                                              <div class="pf-c-card__body">
-                                                  <p>
-                                                      ${msg(
-                                                          "If you suspect your account has been compromised, you can immediately lock it to prevent unauthorized access.",
-                                                      )}
-                                                  </p>
-                                              </div>
-                                              <div class="pf-c-card__footer">
-                                                  <button
-                                                      class="pf-c-button pf-m-danger"
-                                                      @click=${async () => {
-                                                          try {
-                                                              const response = await new CoreApi(
-                                                                  DEFAULT_CONFIG,
-                                                              ).coreUsersAccountLockdownCreate({
-                                                                  userAccountLockdownRequest: {},
-                                                              });
-                                                              if (response.flowUrl) {
-                                                                  window.location.assign(
-                                                                      response.flowUrl,
-                                                                  );
-                                                              }
-                                                          } catch (error) {
-                                                              parseAPIResponseError(error).then(
-                                                                  showAPIErrorMessage,
-                                                              );
-                                                          }
-                                                      }}
-                                                  >
-                                                      ${msg("Lock my account")}
-                                                  </button>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          `
-                        : nothing}
+                    ${this.renderSecuritySettings()}
                 </ak-tabs>
             </div>
         </div>`;

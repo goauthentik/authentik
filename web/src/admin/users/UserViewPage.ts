@@ -172,9 +172,32 @@ export class UserViewPage extends WithLicenseSummary(
         `;
     }
 
+    /**
+     * Initiates the account lockdown flow for this user, if any.
+     */
+    protected lockdownUser = async () => {
+        if (!this.user) {
+            return;
+        }
+
+        return this.#api
+            .coreUsersAccountLockdownCreate({
+                userAccountLockdownRequest: {
+                    user: this.user.pk,
+                },
+            })
+            .then((response) => {
+                if (response.flowUrl) {
+                    window.location.assign(response.flowUrl);
+                }
+            })
+            .catch(showAPIErrorMessage);
+    };
+
+    protected renderActionButtons(user: User) {
         const showImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
-        const canTriggerLockdown = this.hasEnterpriseLicense && user.pk !== this.currentUser?.pk;
+        const showLockdown = this.hasEnterpriseLicense && user.pk !== this.currentUser?.pk;
 
         const displayName = formatUserDisplayName(user);
 
