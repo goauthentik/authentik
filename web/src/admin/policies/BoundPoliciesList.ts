@@ -184,7 +184,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                 bindingTarget: this.target,
             })}
         >
-            ${msg("Create and bind Policy")}
+            ${msg("Bind...")}
         </button>`;
     }
 
@@ -223,44 +223,16 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No Policies bound.")}</span>
                 <div slot="body">${msg("No policies are currently bound to this object.")}</div>
-                <fieldset class="pf-c-form__group pf-m-action" slot="primary">
+                <div class="pf-c-form__group pf-m-action" slot="primary">
                     <legend class="sr-only">${msg("Policy actions")}</legend>
                     ${this.renderNewPolicyButton()}
-                    <button
-                        type="button"
-                        class="pf-c-button pf-m-secondary"
-                        ${modalInvoker(() => {
-                            return StrictUnsafe<PolicyBindingForm>(this.bindingEditForm, {
-                                allowedTypes: this.allowedTypes,
-                                typeNotices: this.typeNotices,
-                                targetPk: this.target || "",
-                            });
-                        })}
-                    >
-                        ${msg("Bind existing policy/group/user")}
-                    </button>
-                </fieldset>
+                </div>
             </ak-empty-state>`,
         );
     }
 
     renderToolbar(): SlottedTemplateResult {
-        return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.Policy)
-                ? this.renderNewPolicyButton()
-                : null}
-            <button
-                type="button"
-                class="pf-c-button pf-m-secondary"
-                ${modalInvoker(() => {
-                    return StrictUnsafe<PolicyBindingForm>(this.bindingEditForm, {
-                        allowedTypes: this.allowedTypes,
-                        typeNotices: this.typeNotices,
-                        targetPk: this.target || "",
-                    });
-                })}
-            >
-                ${msg(str`Bind existing ${this.allowedTypesLabel}`)}
-            </button>`;
+        return this.renderNewPolicyButton();
     }
 
     renderPolicyEngineMode() {
@@ -270,10 +242,15 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         if (policyEngineMode === undefined) {
             return nothing;
         }
-        return html`<p class="policy-desc">
-            ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
-            ${policyEngineMode.description}
-        </p>`;
+        return html`${this.findSlotted("description")
+                ? html`<p class="policy-desc">
+                      <slot name="description"></slot>
+                  </p>`
+                : nothing}
+            <p class="policy-desc">
+                ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
+                ${policyEngineMode.description}
+            </p>`;
     }
 
     renderToolbarContainer(): SlottedTemplateResult {

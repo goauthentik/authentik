@@ -20,22 +20,24 @@ import { AKStageWizard } from "#admin/stages/ak-stage-wizard";
 import { FlowsApi, FlowStageBinding, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    protected flowsAPI = new FlowsApi(DEFAULT_CONFIG);
 
-    order = "order";
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    @property()
-    target?: string;
+    public override order = "order";
 
-    async apiEndpoint(): Promise<PaginatedResponse<FlowStageBinding>> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsList({
+    @property({ type: String, useDefault: true })
+    public target: string | null = null;
+
+    protected override async apiEndpoint(): Promise<PaginatedResponse<FlowStageBinding>> {
+        return this.flowsAPI.flowsBindingsList({
             ...(await this.defaultEndpointConfig()),
             target: this.target || "",
         });
@@ -52,7 +54,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Stage binding(s)")}
@@ -64,12 +66,12 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 ];
             }}
             .usedBy=${(item: FlowStageBinding) => {
-                return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUsedByList({
+                return this.flowsAPI.flowsBindingsUsedByList({
                     fsbUuid: item.pk,
                 });
             }}
             .delete=${(item: FlowStageBinding) => {
-                return new FlowsApi(DEFAULT_CONFIG).flowsBindingsDestroy({
+                return this.flowsAPI.flowsBindingsDestroy({
                     fsbUuid: item.pk,
                 });
             }}
@@ -80,7 +82,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: FlowStageBinding): SlottedTemplateResult[] {
+    protected override row(item: FlowStageBinding): SlottedTemplateResult[] {
         return [
             html`<pre>${item.order}</pre>`,
             item.stageObj?.name,
@@ -115,30 +117,27 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     protected renderActions(): SlottedTemplateResult {
         return html`<button
-                class="pf-c-button pf-m-primary"
-                ${modalInvoker(AKStageWizard, {
-                    showBindingPage: true,
-                    bindingTarget: this.target,
-                })}
-            >
-                ${msg("New Stage")}
-            </button>
-            <button
-                slot="trigger"
-                class="pf-c-button pf-m-primary"
-                ${modalInvoker(StageBindingForm, { targetPk: this.target })}
-            >
-                ${msg("Bind Existing Stage")}
-            </button>`;
+            class="pf-c-button pf-m-primary"
+            ${modalInvoker(AKStageWizard, {
+                showBindingPage: true,
+                bindingTarget: this.target,
+            })}
+        >
+            ${msg("Bind...")}
+        </button>`;
     }
 
-    protected override renderExpanded(item: FlowStageBinding): TemplateResult {
+    protected override renderExpanded(item: FlowStageBinding): SlottedTemplateResult {
         return html`<div class="pf-c-content">
-            <p>${msg("These bindings control if this stage will be applied to the flow.")}</p>
             <ak-bound-policies-list
                 .target=${item.policybindingmodelPtrId}
                 .policyEngineMode=${item.policyEngineMode}
             >
+                <span slot="description"
+                    >${msg(
+                        "These bindings control if this stage will be applied to the flow.",
+                    )}</span
+                >
             </ak-bound-policies-list>
         </div>`;
     }

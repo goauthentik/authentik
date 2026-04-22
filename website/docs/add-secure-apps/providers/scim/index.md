@@ -8,57 +8,58 @@ A SCIM provider requires a SCIM base URL for the endpoint and an authentication 
 
 SCIM providers in authentik always serve as [backchannel providers](../../applications/manage_apps.mdx#backchannel-providers), which are used in addition to the main provider that supplies SSO authentication. A backchannel provider is used for an application that requires backend authentication, directory synchronization, or other additional authentication needs.
 
-For example, you can create an application and provider pair for Slack, creating Slack as the application and SAML as the provider. Say you then want to use SCIM for further authentication using a token. For this scenario use the following workflow:
+## Set up a SCIM provider
+
+Many applications use SCIM together with another SSO protocol such as OAuth/OIDC or SAML. For example, you can create an application and provider pair for Slack by using SAML for authentication and SCIM for provisioning. For this setup, use the following workflow:
 
 1. [Create](../../applications/manage_apps.mdx#create-an-application-and-provider-pair) the application and provider pair.
 2. [Create](../../applications/manage_apps.mdx#backchannel-providers) the SCIM backchannel provider.
-3. Edit the application and in the **Backchannel Providers** field add the backchannel provider that you just created.
+3. Edit the application, and in the **Backchannel Providers** field add the SCIM provider that you created.
 
-## Authentication mode options
+## Authentication modes
 
-In authentik, there are two options for how to configure authentication for a SCIM provider:
+In authentik, there are two ways to authenticate SCIM requests:
 
-- **Static token** provided by the application (default)
-- **OAuth token** authentik will retrieve an OAuth token from a specified source and use that token for authentication
+- **Static token** provided by the application. This is the default authentication mode.
+- **OAuth token** that authentik retrieves from a specified source and uses for authentication.
 
-When you create a new SCIM provider, select which **Authentication Mode** the application supports.
+When you create a new SCIM provider, select the **Authentication Mode** that the application supports.
 
 ![Creating a SCIM provider](./scim_oauth.png)
 
-Whichever mode you select, you'll need to enter a SCIM base **URL** for the endpoint.
+For either mode, enter the SCIM base **URL** for the endpoint.
 
-### Default authentication method for a SCIM provider
+### Static token
 
-With authentik's default mode, the token that you enter (provided by the application) is sent with all outgoing SCIM requests to authenticate each request.
+When the authentication mode is set to **Static token**, authentik sends the token provided by the application with outgoing SCIM requests to authenticate each request.
 
-### OAuth authentication for a SCIM provider :ak-enterprise :ak-version[2025.10]
+### OAuth token :ak-enterprise
 
-Configuring your SCIM provider to use OAuth for authentication means that short-lived tokens are dynamically generated through an OAuth flow and sent to the SCIM endpoint. This offers improved security and control versus a static token.
+When you configure a SCIM provider to use OAuth for authentication, authentik generates short-lived tokens through an OAuth flow and sends them to the SCIM endpoint. This offers improved security and control compared with a static token.
 
-You can also add additional token request parameters to the OAuth token, such as `grant_type`, `subject_token`, or `client_assertion`.
+You can also add additional token request parameters such as `grant_type`, `subject_token`, or `client_assertion`.
 
-Some examples are:
+**Example**:
 
 - `grant_type: client_credentials`
-
 - `grant_type: password`
 
 :::info OAuth source required
-To use OAuth authentication for your application, you will need to create and connect to an [OAuth source](../../../users-sources/sources/protocols/oauth/).
+To use OAuth authentication for your application, create and connect an [OAuth source](../../../users-sources/sources/protocols/oauth/).
 :::
 
-### Syncing
+## Sync behavior
 
-Data is synchronized in multiple ways:
+SCIM data is synchronized in two ways:
 
-- When a user/group is created/modified/deleted, that action is sent to all SCIM providers
-- Periodically (once an hour), all SCIM providers are fully synchronized
+- When a user or group is created, modified, or deleted, that change is sent to all SCIM providers.
+- Once an hour, all SCIM providers are fully synchronized.
 
-The actual synchronization process is run in the authentik worker. To allow this process to scale better, a task is started for each 100 users and groups, so when multiple workers are available the workload will be distributed.
+The synchronization process runs in the authentik worker. To improve scalability, authentik starts a task for each batch of 100 users or groups, so the workload can be distributed across multiple workers.
 
 ### Attribute mapping
 
-Attribute mapping from authentik to SCIM users is done via property mappings as with other providers. The default mappings for users and groups make some assumptions that should work for most setups, but it is also possible to define custom mappings to add fields.
+Attribute mapping from authentik to SCIM users is done through property mappings, as with other providers. The default mappings for users and groups work for many setups, but you can define custom mappings to add fields.
 
 All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
 
@@ -68,41 +69,43 @@ To exclude specific users or groups from SCIM synchronization, you can create a 
 
 For more information, refer to [Skip objects during synchronization](../property-mappings/#skip-objects-during-synchronization).
 
-### Compatibility modes
+## Filter the sync scope
 
-By default, service accounts are excluded from being synchronized. This can be configured in the SCIM provider.
+You can limit which users and groups a SCIM provider synchronizes. User filtering and group filtering are configured separately.
 
-#### User Filtering
+### User filtering
 
-Users can be filtered using application policies.
+Use **Exclude service accounts** in the SCIM provider settings when you do not want service accounts to be synchronized.
 
-Only users who can view the SCIM provider's application are synced by the SCIM provider.
+Users can also be filtered through application access policies. If the SCIM provider is attached to a backchannel application, only users who can view that application are synchronized.
 
-#### Group Filters
+### Group filters
 
-Group Filters allow you to define the group syncing scope of a SCIM provider.
+Group filters define the synchronization scope for groups.
 
-In its default configuration, with no group filters selected, the SCIM provider will sync all groups.
+If no group filters are selected, the SCIM provider synchronizes all groups.
 
-If group filters are selected, only selected groups will be synced.
+If group filters are selected, only the selected groups are synchronized.
 
-Currently, changes to filter groups do _not_ remove previously synchronized groups and members.
+Group filters apply only to groups. They do not limit which users are synchronized.
 
-Available compatibility modes:
+Changing the selected group filters does _not_ remove groups or memberships that were synchronized previously.
+
+## Compatibility modes
+
+Compatibility modes adjust authentik behavior for vendor-specific SCIM implementations.
+
+Available compatibility modes are:
 
 - **Default**: Standard SCIM 2.0 implementation
 - **AWS**: Disables PATCH operations for AWS Identity Center compatibility
 - **Slack**: Enables filtering support for Slack's SCIM implementation
 - **Salesforce**: Uses the non-standard `/ServiceProviderConfigs` endpoint
-- **vCenter**: Skips the `ServiceProviderConfig` endpoint which is not implemented in VMware vCenter
+- **Webex**: Uses the vendor-specific behavior required for Webex SCIM
 
 To configure a compatibility mode, select the appropriate option in the **SCIM Compatibility Mode** field when creating or editing a SCIM provider.
 
-### Filtering users
-
-By default, service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
-
-### Supported options
+## Remote service capabilities
 
 SCIM defines several optional settings that allow clients to discover a service provider's supported features. In authentik, the [`ServiceProviderConfig`](https://datatracker.ietf.org/doc/html/rfc7644#section-4) endpoint provides support for the following options (if the option is supported by the service provider).
 
@@ -112,7 +115,7 @@ The `ServiceProviderConfig` is cached for 1 hour after it is fetched. The cache 
 
 - Filtering
 
-    When the remote system supports [filtering](https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.2.2), authentik uses this operation to filter users and groups in the remote system to match them to existing authentik users and groups.
+    When the remote system supports [filtering](https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.2.2), authentik uses that operation to match remote users and groups to existing authentik users and groups.
 
 - Bulk
 
@@ -124,7 +127,7 @@ The `ServiceProviderConfig` is cached for 1 hour after it is fetched. The cache 
 
 ### Using in conjunction with other providers
 
-A lot of applications support SCIM in conjunction with another SSO protocol like OAuth/OIDC or SAML. With default settings, the unique user IDs in SCIM and other protocols are identical, which should easily allow applications to link users that are provisioned with users that are logging in.
+Many applications support SCIM together with another SSO protocol such as OAuth/OIDC or SAML. With default settings, the unique user IDs in SCIM and other protocols are identical, which makes it easier for applications to link provisioned users with users who log in through SSO.
 
 Applications can either match users on a unique ID sent by authentik called `externalId`, by their email or username.
 

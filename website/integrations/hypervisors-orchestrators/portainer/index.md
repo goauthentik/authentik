@@ -40,6 +40,7 @@ To support the integration of Portainer with authentik, you need to create an ap
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://portainer.company/`.
     - Select any available signing key.
+    - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -69,11 +70,19 @@ By default, Portainer shows commas between each item in the Scopes field. Do **N
 
 ## Configure automatic team membership in Portainer BE _(optional)_
 
-If you are using [Portainer Business Edition (BE)](https://www.portainer.io/take-3), it is possible to configure automatic team membership. This allows you to grant access to teams and environments, and automatically grant admin access to certain users based on authentik group membership. It is only possible to configure automatic group membership in Portainer BE - this cannot be configured in the Community Edition.
+If you are using [Portainer Business Edition (BE)](https://www.portainer.io/take-3), it is possible to configure automatic team membership. This allows you to grant access to teams and environments, and automatically grant admin access to certain users based on authentik application entitlements. It is only possible to configure automatic group membership in Portainer BE - this cannot be configured in the Community Edition.
 
 For this section, we will presume that you already have two teams configured in Portainer: `engineering` and `sysadmins`. Please reference [Portainer's documentation](https://docs.portainer.io/admin/user/teams) for information on managing teams and access to environments based on team membership.
 
-We will also presume that two groups have been created in authentik: `Portainer Admins` and `Portainer Users`. See [Manage groups](https://docs.goauthentik.io/users-sources/groups/manage_groups/). You can choose any group names - replace `Portainer Admins` and `Portainer Users` later in this guide with your chosen names.
+We will also presume that two application entitlements have been created in authentik: `Portainer Admins` and `Portainer Users`. You can choose any entitlement names and replace `Portainer Admins` and `Portainer Users` later in this guide with your chosen names.
+
+### Create application entitlements and a property mapping
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and open the Portainer application.
+3. Click the **Application entitlements** tab.
+4. Create two entitlements named `Portainer Admins` and `Portainer Users`.
+5. Open each entitlement and bind the users or groups that should receive it.
 
 ### Create a property mapping
 
@@ -85,12 +94,16 @@ We will also presume that two groups have been created in authentik: `Portainer 
         - **Expression**:
 
         ```python showLineNumbers
+        entitlement_names = {
+            entitlement.name
+            for entitlement in request.user.app_entitlements(provider.application)
+        }
         groups = []
 
-        if request.user.groups.filter(name="Portainer Admins").exists():
+        if "Portainer Admins" in entitlement_names:
             groups.append("admin")
 
-        if request.user.groups.filter(name="Portainer Users").exists():
+        if "Portainer Users" in entitlement_names:
             groups.append("user")
 
         return {
@@ -98,19 +111,16 @@ We will also presume that two groups have been created in authentik: `Portainer 
         }
         ```
 
-        In the expression above, we filter on the group names `Portainer Admins` and `Portainer Users`. You can use any groups that exist in authentik - just ensure that the group names entered here exactly match those setup in authentik (they are case-sensitive).
+        In the expression above, we filter on the entitlement names `Portainer Admins` and `Portainer Users`. You can use any entitlements that exist on the Portainer application. Ensure that the names entered here exactly match those setup in authentik, as they are case-sensitive.
 
 3. Click **Finish**.
 4. Navigate to **Applications** > **Providers**.
 5. Select your provider for Portainer, and click **Edit**.
 6. Under **Advanced protocol settings**, add the property mapping created in the previous step to **selected scopes**.
 7. Click **Update** to save your changes to the provider.
-8. Navigate to **Directory** > **Groups**.
-9. Add users to each of the groups that you have defined in your expression, as desired.
-
-:::info Application binding
-Since we are configuring access to Portainer based on group membership, it is recommended that you configure a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) for the application in authentik such that access is restricted to these groups.
-:::
+   :::info Application binding
+   Since we are configuring access to Portainer based on application entitlements, it is recommended that you configure a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) for the application in authentik such that access is restricted to the same users or groups that should be able to sign in to Portainer.
+   :::
 
 ### Update your configuration in Portainer
 

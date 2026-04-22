@@ -1,4 +1,5 @@
 import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/FormGroup";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { formatDisambiguatedUserDisplayName } from "#common/users";

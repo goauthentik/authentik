@@ -150,7 +150,6 @@ export class UserViewPage extends WithLicenseSummary(
 
         const user = this.user;
 
-        // prettier-ignore
         const userInfo: DescriptionPair[] = [
             [msg("Username"), user.username],
             [msg("Name"), user.name],
@@ -159,7 +158,10 @@ export class UserViewPage extends WithLicenseSummary(
             [msg("Last password change"), Timestamp(user.passwordChangeDate)],
             [msg("Active"), html`<ak-status-label ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
-            [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
+            [
+                msg("Superuser"),
+                html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`,
+            ],
             [msg("Actions"), this.renderActionButtons(user)],
             [msg("Recovery"), this.renderRecoveryButtons(user)],
         ];
