@@ -88,8 +88,8 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                 userAccountLockdownRequest: {},
             })
             .then((response) => {
-                if (response.flowUrl) {
-                    window.location.assign(response.flowUrl);
+                if (response.to) {
+                    window.location.assign(response.to);
                 }
             })
             .catch(showAPIErrorMessage);

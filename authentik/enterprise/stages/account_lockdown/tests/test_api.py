@@ -48,13 +48,13 @@ class AccountLockdownAPITestCase(APITestCase):
         user.save()
         return user
 
-    def assert_flow_url_targets(self, response, user):
-        """Assert that a response contains a pre-planned lockdown flow URL for a user."""
+    def assert_redirect_targets(self, response, user):
+        """Assert that a response contains a pre-planned lockdown redirect for a user."""
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
-        self.assertIn("flow_url", body)
-        self.assertIn(self.lockdown_flow.slug, body["flow_url"])
-        self.assertEqual(urlparse(body["flow_url"]).query, "")
+        self.assertEqual(body["component"], "xak-flow-redirect")
+        self.assertIn(self.lockdown_flow.slug, body["to"])
+        self.assertEqual(urlparse(body["to"]).query, "")
         plan = self.client.session[SESSION_KEY_PLAN]
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER].pk, user.pk)
 
@@ -74,7 +74,7 @@ class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
         self.actor = create_test_user()
         self.user = self.create_user_with_email()
 
-    def test_account_lockdown_with_change_user_returns_flow_url(self):
+    def test_account_lockdown_with_change_user_returns_redirect(self):
         """Test that account lockdown allows users with change_user permission."""
         self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.user)
         self.client.force_login(self.actor)
@@ -85,7 +85,7 @@ class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
             format="json",
         )
 
-        self.assert_flow_url_targets(response, self.user)
+        self.assert_redirect_targets(response, self.user)
 
     def test_account_lockdown_no_flow_configured(self):
         """Test account lockdown when no flow is configured"""
@@ -124,8 +124,8 @@ class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_account_lockdown_self_returns_flow_url(self):
-        """Test successful self-service account lockdown returns a direct flow URL."""
+    def test_account_lockdown_self_returns_redirect(self):
+        """Test successful self-service account lockdown returns a direct redirect."""
         self.client.force_login(self.user)
 
         response = self.client.post(
@@ -134,9 +134,9 @@ class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
             format="json",
         )
 
-        self.assert_flow_url_targets(response, self.user)
+        self.assert_redirect_targets(response, self.user)
 
-    def test_account_lockdown_self_target_without_change_user_returns_flow_url(self):
+    def test_account_lockdown_self_target_without_change_user_returns_redirect(self):
         """Test self-service does not require change_user permission."""
         self.client.force_login(self.user)
 
@@ -146,4 +146,4 @@ class TestUsersAccountLockdownAPI(AccountLockdownAPITestCase):
             format="json",
         )
 
-        self.assert_flow_url_targets(response, self.user)
+        self.assert_redirect_targets(response, self.user)

@@ -189,8 +189,8 @@ export class UserViewPage extends WithLicenseSummary(
                 },
             })
             .then((response) => {
-                if (response.flowUrl) {
-                    window.location.assign(response.flowUrl);
+                if (response.to) {
+                    window.location.assign(response.to);
                 }
             })
             .catch(showAPIErrorMessage);
