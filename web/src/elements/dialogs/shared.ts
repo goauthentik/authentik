@@ -50,9 +50,21 @@ export interface DialogInit {
     onDispose?: (event?: Event) => void;
 }
 
-export interface TransclusionElementConstructor extends CustomElementConstructor {
+export interface EntityDescriptor {
+    /**
+     * Singular label for the type of entity this form creates/edits.
+     */
     verboseName?: string | null;
+    /**
+     * Plural label for the type of entity this form creates/edits.
+     */
     verboseNamePlural?: string | null;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+export interface EntityDescriptorElement extends Function, EntityDescriptor {}
+
+export interface TransclusionElementConstructor extends EntityDescriptor, CustomElementConstructor {
     createLabel?: string | null;
 }
 
