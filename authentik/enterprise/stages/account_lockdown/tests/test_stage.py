@@ -5,7 +5,7 @@ from dataclasses import asdict
 from threading import Event as ThreadEvent
 from threading import Thread
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from django.db import connection
 from django.http import HttpResponse
@@ -33,6 +33,7 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
+from authentik.lib.utils.reflection import class_to_path
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -439,6 +440,75 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         # Password should still be usable
         self.assertTrue(self.target_user.has_usable_password())
         # Event should still be created
+        event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
+        self.assertIsNotNone(event)
+
+    def test_lockdown_deactivation_inhibits_signal_dispatch_until_after_commit(self):
+        """Test lockdown queues explicit outgoing syncs after the deactivation transaction."""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        view = self.make_stage_view(plan)
+
+        with (
+            patch(
+                "authentik.enterprise.stages.account_lockdown.stage.sync_outgoing_inhibit_dispatch"
+            ) as inhibit,
+            patch.object(view, "_sync_deactivated_user_to_outgoing_providers") as sync_outgoing,
+        ):
+            view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
+
+        inhibit.assert_called_once()
+        sync_outgoing.assert_called_once()
+        synced_user = sync_outgoing.call_args.args[0]
+        self.assertEqual(synced_user.pk, self.target_user.pk)
+        self.assertFalse(synced_user.is_active)
+
+    def test_lockdown_waits_for_direct_outgoing_provider_syncs(self):
+        """Test direct outgoing sync tasks are enqueued and waited on."""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        view = self.make_stage_view(plan)
+        provider = SimpleNamespace(name="outgoing", pk=1, sync_page_timeout="seconds=5")
+        task_sync_direct = MagicMock()
+        task_sync_direct.message_with_options.return_value = "direct-message"
+        provider_model = SimpleNamespace(
+            objects=SimpleNamespace(filter=MagicMock(return_value=[provider]))
+        )
+        task_group = MagicMock()
+
+        with (
+            patch(
+                "authentik.enterprise.stages.account_lockdown.stage.get_outgoing_sync_tasks",
+                return_value=((provider_model, task_sync_direct),),
+            ),
+            patch(
+                "authentik.enterprise.stages.account_lockdown.stage.group",
+                return_value=task_group,
+            ) as task_group_cls,
+        ):
+            view._sync_deactivated_user_to_outgoing_providers(self.target_user)
+
+        task_sync_direct.message_with_options.assert_called_once_with(
+            args=(class_to_path(type(self.target_user)), self.target_user.pk, provider.pk),
+            rel_obj=provider,
+            time_limit=5000,
+            uid=f"{provider.name}:user:{self.target_user.pk}:direct",
+        )
+        task_group_cls.assert_called_once_with(["direct-message"])
+        task_group.run.return_value.wait.assert_called_once_with(timeout=5000)
+
+    def test_lockdown_outgoing_provider_sync_failure_does_not_fail_lockdown(self):
+        """Test completed local lockdown still emits an event if outgoing sync fails."""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        view = self.make_stage_view(plan)
+
+        with patch.object(
+            view,
+            "_sync_deactivated_user_to_outgoing_providers",
+            side_effect=ValueError("sync failed"),
+        ):
+            view._lockdown_user(self.make_request(user=self.user), self.stage, self.target_user, "")
+
+        self.target_user.refresh_from_db()
+        self.assertFalse(self.target_user.is_active)
         event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
         self.assertIsNotNone(event)
 

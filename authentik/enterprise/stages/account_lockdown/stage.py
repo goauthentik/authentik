@@ -3,10 +3,13 @@
 from django.apps import apps
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Model, QuerySet
+from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
+from dramatiq.composition import group
 
 from authentik.core.models import (
     AuthenticatedSession,
@@ -19,6 +22,10 @@ from authentik.core.models import (
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
+from authentik.lib.utils.reflection import class_to_path
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
@@ -98,6 +105,22 @@ def can_lock_user(actor, user: User) -> bool:
     return actor.has_perm("authentik_core.change_user", user)
 
 
+def get_outgoing_sync_tasks() -> tuple[tuple[type[OutgoingSyncProvider], Actor], ...]:
+    """Return outgoing sync provider types and their direct sync tasks."""
+    from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
+    from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync_direct
+    from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProvider
+    from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra_sync_direct
+    from authentik.providers.scim.models import SCIMProvider
+    from authentik.providers.scim.tasks import scim_sync_direct
+
+    return (
+        (SCIMProvider, scim_sync_direct),
+        (GoogleWorkspaceProvider, google_workspace_sync_direct),
+        (MicrosoftEntraProvider, microsoft_entra_sync_direct),
+    )
+
+
 class AccountLockdownStageView(StageView):
     """Execute account lockdown actions on the target user."""
 
@@ -124,7 +147,37 @@ class AccountLockdownStageView(StageView):
             user.is_active = False
         if stage.set_unusable_password:
             user.set_unusable_password()
+        if stage.deactivate_user:
+            with sync_outgoing_inhibit_dispatch():
+                user.save()
+            return
         user.save()
+
+    def _sync_deactivated_user_to_outgoing_providers(self, user: User) -> None:
+        """Synchronize a deactivated user to outgoing sync providers."""
+        messages = []
+        wait_timeout = 0
+        model = class_to_path(User)
+        provider_filter = Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+
+        for provider_model, task_sync_direct in get_outgoing_sync_tasks():
+            for provider in provider_model.objects.filter(provider_filter):
+                time_limit = int(
+                    timedelta_from_string(provider.sync_page_timeout).total_seconds() * 1000
+                )
+                messages.append(
+                    task_sync_direct.message_with_options(
+                        args=(model, user.pk, provider.pk),
+                        rel_obj=provider,
+                        time_limit=time_limit,
+                        uid=f"{provider.name}:user:{user.pk}:direct",
+                    )
+                )
+                wait_timeout += time_limit
+
+        if not messages:
+            return
+        group(messages).run().wait(timeout=wait_timeout)
 
     def _get_lockdown_artifact_querysets(
         self, stage: AccountLockdownStage, user: User
@@ -188,6 +241,15 @@ class AccountLockdownStageView(StageView):
             with atomic():
                 self._delete_lockdown_artifacts(stage, user)
 
+        if stage.deactivate_user:
+            try:
+                self._sync_deactivated_user_to_outgoing_providers(user)
+            except Exception as exc:  # noqa: BLE001
+                self.logger.warning(
+                    "Failed to sync account lockdown deactivation to outgoing providers",
+                    user=user.username,
+                    exc=exc,
+                )
         self._emit_lockdown_event(request, user, reason)
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
