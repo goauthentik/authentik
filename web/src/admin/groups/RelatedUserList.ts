@@ -27,6 +27,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { AKLabel } from "#components/ak-label";
 
 import { RecoveryButtons } from "#admin/users/recovery";
+import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
@@ -317,22 +318,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <ak-user-active-form
-                            .obj=${item}
-                            object-label=${msg("User")}
-                            .delete=${() => {
-                                return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
-                                    id: item.pk || 0,
-                                    patchedUserRequest: {
-                                        isActive: !item.isActive,
-                                    },
-                                });
-                            }}
-                        >
-                            <button slot="trigger" class="pf-c-button pf-m-warning">
-                                ${item.isActive ? msg("Deactivate") : msg("Activate")}
-                            </button>
-                        </ak-user-active-form>
+                        ${ToggleUserActivationButton(item)}
                     </div>
                 </dd>
             </div>
