@@ -1469,11 +1469,11 @@ msgstr "Évènement utilisateur"
 
 #: authentik/events/models.py
 msgid "Notification Transport"
-msgstr "Transport de notification"
+msgstr "Transport de Notification"
 
 #: authentik/events/models.py
 msgid "Notification Transports"
-msgstr "Transports de notifications"
+msgstr "Transports de notification"
 
 #: authentik/events/models.py
 msgid "Notice"
@@ -4455,11 +4455,11 @@ msgstr "Activer les utilisateurs à la complétion de l'étape."
 
 #: authentik/stages/email/models.py
 msgid "Email Stage"
-msgstr "Étape de Courriel"
+msgstr "Étape Courriel"
 
 #: authentik/stages/email/models.py
 msgid "Email Stages"
-msgstr "Étapes de Courriel"
+msgstr "Étapes Courriel"
 
 #: authentik/stages/email/stage.py
 msgid "Successfully verified Email."
