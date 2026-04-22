@@ -143,7 +143,7 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     protected override renderObjectCreate(): SlottedTemplateResult {
         return html`${this.renderNewInvitationDropdown()}
-            ${ModalInvokerButton(InvitationForm, null, { kind: "secondary" })}`;
+        ${ModalInvokerButton(InvitationForm, null, { kind: "secondary" })}`;
     }
 
     protected renderNewInvitationDropdown(): TemplateResult {
@@ -176,7 +176,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                 tabindex="-1"
             >
                 <li role="presentation">
-                <button
+                    <button
                         type="button"
                         role="menuitem"
                         class="pf-c-dropdown__menu-item"
@@ -187,10 +187,9 @@ export class InvitationListPage extends TablePage<Invitation> {
                     >
                         ${msg("with Existing Enrollment Flow...")}
                     </button>
-
                 </li>
                 <li role="presentation">
-                 <button
+                    <button
                         type="button"
                         role="menuitem"
                         class="pf-c-dropdown__menu-item"
@@ -201,7 +200,6 @@ export class InvitationListPage extends TablePage<Invitation> {
                     >
                         ${msg("with New Enrollment Flow and Invitation Stage...")}
                     </button>
-
                 </li>
             </menu>
         </ak-dropdown>`;

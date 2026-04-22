@@ -176,7 +176,7 @@ export class InvitationWizardFlowStep extends WizardPage {
                     <div class="pf-c-alert__description">
                         <p>
                             ${msg(
-                                "Cancel this wizard and start again with 'with New Flow' to create an enrollment flow and invitation stage.",
+                                "Cancel this wizard and select 'with New Enrollment Flow and Invitation Stage' from the dropdown. Alternatively, you can manually create an enrollment flow and bind an invitation stage to it.",
                             )}
                         </p>
                     </div>
