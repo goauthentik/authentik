@@ -44,6 +44,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     RefreshToken,
 )
+from authentik.providers.saml.models import SAMLProvider, SAMLSession
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 patch_enterprise_enabled = patch(
@@ -311,15 +312,21 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
 
         self.assertEqual(Token.objects.filter(user=self.target_user).count(), 0)
 
-    def test_lockdown_revokes_oauth_tokens(self):
-        """Test lockdown stage revokes OAuth2 grants."""
-        provider = OAuth2Provider.objects.create(
+    def test_lockdown_revokes_provider_tokens(self):
+        """Test lockdown stage revokes provider tokens and sessions."""
+        oauth_provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver/callback")
             ],
             signing_key=create_test_cert(),
+        )
+        saml_provider = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            acs_url="https://sp.example.com/acs",
+            issuer="https://idp.example.com",
         )
         session = Session.objects.create(
             session_key=generate_id(),
@@ -331,7 +338,7 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
             user=self.target_user,
         )
         grant_kwargs = {
-            "provider": provider,
+            "provider": oauth_provider,
             "user": self.target_user,
             "auth_time": timezone.now(),
             "_scope": "openid profile",
@@ -354,11 +361,20 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
             **token_kwargs,
         )
         DeviceToken.objects.create(
-            provider=provider,
+            provider=oauth_provider,
             user=self.target_user,
             session=auth_session,
             _scope="openid profile",
             expiring=False,
+        )
+        SAMLSession.objects.create(
+            provider=saml_provider,
+            user=self.target_user,
+            session=auth_session,
+            session_index=generate_id(),
+            name_id=self.target_user.email,
+            expires=timezone.now() + timezone.timedelta(hours=1),
+            expiring=True,
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -369,6 +385,7 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.assertEqual(AccessToken.objects.filter(user=self.target_user).count(), 0)
         self.assertEqual(RefreshToken.objects.filter(user=self.target_user).count(), 0)
         self.assertEqual(DeviceToken.objects.filter(user=self.target_user).count(), 0)
+        self.assertEqual(SAMLSession.objects.filter(user=self.target_user).count(), 0)
 
     def test_lockdown_selective_actions(self):
         """Test lockdown stage with selective actions"""

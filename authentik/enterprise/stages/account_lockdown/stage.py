@@ -1,12 +1,21 @@
 """Account lockdown stage logic"""
 
+from django.apps import apps
+from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Model, QuerySet
 from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from authentik.core.models import Session, Token, User, UserTypes
+from authentik.core.models import (
+    AuthenticatedSession,
+    ExpiringModel,
+    Session,
+    Token,
+    User,
+    UserTypes,
+)
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
@@ -29,22 +38,57 @@ def get_lockdown_target_users() -> QuerySet[User]:
     return User.objects.exclude_anonymous().exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT)
 
 
-def get_lockdown_token_models() -> tuple[type[Model], ...]:
-    """Return token and grant models removed by account lockdown."""
-    from authentik.providers.oauth2.models import (
-        AccessToken,
-        AuthorizationCode,
-        DeviceToken,
-        RefreshToken,
+def _get_model_field(model: type[Model], field_name: str):
+    """Get a model field by name, if present."""
+    try:
+        return model._meta.get_field(field_name)
+    except FieldDoesNotExist:
+        return None
+
+
+def _has_user_field(model: type[Model]) -> bool:
+    """Check if a model has a direct user foreign key."""
+    field = _get_model_field(model, "user")
+    return bool(field and getattr(field, "remote_field", None) and field.remote_field.model is User)
+
+
+def _has_authenticated_session_field(model: type[Model]) -> bool:
+    """Check if a model is linked to an authenticated session."""
+    field = _get_model_field(model, "session")
+    return bool(
+        field
+        and getattr(field, "remote_field", None)
+        and field.remote_field.model is AuthenticatedSession
     )
 
-    return (
-        Token,
-        AuthorizationCode,
-        AccessToken,
-        RefreshToken,
-        DeviceToken,
-    )
+
+def _has_provider_field(model: type[Model]) -> bool:
+    """Check if a model is linked to a provider."""
+    return _get_model_field(model, "provider") is not None
+
+
+def get_lockdown_token_models() -> tuple[type[Model], ...]:
+    """Return token, grant, and provider session models removed by account lockdown."""
+    token_models: list[type[Model]] = []
+    for model in apps.get_models():
+        if model._meta.abstract or not issubclass(model, ExpiringModel):
+            continue
+        if model is Token:
+            token_models.append(model)
+        elif _has_user_field(model) and (
+            _has_provider_field(model) or _has_authenticated_session_field(model)
+        ):
+            token_models.append(model)
+        elif _has_authenticated_session_field(model):
+            token_models.append(model)
+    return tuple(token_models)
+
+
+def get_lockdown_token_queryset(model: type[Model], user: User) -> QuerySet:
+    """Return account lockdown artifacts for a model and user."""
+    if _has_user_field(model):
+        return model.objects.filter(user=user)
+    return model.objects.filter(session__user=user)
 
 
 def can_lock_user(actor, user: User) -> bool:
@@ -104,7 +148,7 @@ class AccountLockdownStageView(StageView):
             querysets.append(Session.objects.filter(authenticatedsession__user=user))
         if stage.revoke_tokens:
             querysets.extend(
-                model.objects.filter(user=user) for model in get_lockdown_token_models()
+                get_lockdown_token_queryset(model, user) for model in get_lockdown_token_models()
             )
         return tuple(querysets)
 
