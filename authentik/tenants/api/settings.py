@@ -30,11 +30,11 @@ class FlagJSONField(JSONDictField):
 
     def run_validators(self, value: dict):
         super().run_validators(value)
-        for flag in Flag.available():
+        for flag in Flag.available(exclude_system=False):
             _flag = flag()
             if _flag.key not in value:
                 continue
-            if _flag.system:
+            if _flag.visibility == "system":
                 value.pop(_flag.key, None)
                 continue
             flag_value = value.get(_flag.key)

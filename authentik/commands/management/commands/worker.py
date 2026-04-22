@@ -1,4 +1,5 @@
 from os import getenv
+from typing import Any
 
 from django_dramatiq_postgres.management.commands.worker import Command as BaseCommand
 
@@ -11,8 +12,7 @@ BOOTSTRAP_BLUEPRINT = "system/bootstrap.yaml"
 
 
 class Command(BaseCommand):
-
-    def apply_bootstrap_blueprint(self):
+    def apply_bootstrap_blueprint(self) -> None:
         # If we have bootstrap credentials set, run bootstrap tasks outside of main server
         # sync, so that we can sure the first start actually has working bootstrap
         # credentials
@@ -27,9 +27,9 @@ class Command(BaseCommand):
                         self.stderr.write(f"\t{log.logger}: {log.event}: {log.attributes}")
                 importer.apply()
                 tenant.flags[Setup().key] = True
-                tenant.save()
+                tenant.save()  # type: ignore[no-untyped-call]
 
-    def handle(self, pid_file, watch, verbosity, **options):
+    def handle(self, pid_file: str, watch: bool, verbosity: int, **options: Any) -> None:
         if getenv("AUTHENTIK_BOOTSTRAP_PASSWORD") or getenv("AUTHENTIK_BOOTSTRAP_TOKEN"):
             self.apply_bootstrap_blueprint()
         return super().handle(pid_file, watch, verbosity, **options)
