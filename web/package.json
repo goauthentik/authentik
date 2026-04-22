@@ -316,6 +316,7 @@
         },
         "rapidoc": {
             "@apitools/openapi-parser": "0.0.37"
-        }
+        },
+        "tree-sitter": false
     }
 }
