@@ -3,21 +3,22 @@ import "#elements/LicenseNotice";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
+import "#elements/forms/FormGroup";
+import "#admin/flows/StageBindingForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { FormWizardPage } from "#elements/wizard/FormWizardPage";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 
-import { StageBindingForm } from "#admin/flows/StageBindingForm";
-
 import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { html, nothing, PropertyValues } from "lit";
+import { html, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 @customElement("ak-stage-wizard")
@@ -27,8 +28,8 @@ export class AKStageWizard extends CreateWizard {
     @property({ type: Boolean })
     public showBindingPage = false;
 
-    @property()
-    public bindingTarget?: string;
+    @property({ type: String, useDefault: true })
+    public bindingTarget: string | null = null;
 
     public override initialSteps = this.showBindingPage
         ? ["initial", "create-binding"]
@@ -39,11 +40,14 @@ export class AKStageWizard extends CreateWizard {
 
     public override layout = TypeCreateWizardPageLayouts.list;
 
+    public override groupLabel = msg("Bind New Stage");
+    public override groupDescription = msg("Select the type of stage you want to create.");
+
     protected apiEndpoint = async (requestInit?: RequestInit): Promise<TypeCreate[]> => {
         return this.#api.stagesAllTypesList(requestInit);
     };
 
-    protected updated(changedProperties: PropertyValues<this>): void {
+    protected override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
         if (changedProperties.has("showBindingPage")) {
@@ -51,9 +55,11 @@ export class AKStageWizard extends CreateWizard {
         }
     }
 
-    protected createBindingActivate = async (context: FormWizardPage) => {
-        const createSlot = context.host.steps[1];
-        const bindingForm = context.querySelector<StageBindingForm>("ak-stage-binding-form");
+    protected createBindingActivate = async (
+        context: FormWizardPage<{ "create-binding": Stage }>,
+    ) => {
+        const createSlot = context.host.steps[1] as "create-binding";
+        const bindingForm = context.querySelector("ak-stage-binding-form");
 
         if (!bindingForm) return;
 
@@ -64,30 +70,35 @@ export class AKStageWizard extends CreateWizard {
         }
     };
 
-    renderCreateBefore() {
-        return this.showBindingPage
-            ? html`
-                  <div slot="pre-items">
-                      <ak-radio
-                          .options=${[
-                              {
-                                  label: "Bind existing stage",
-                                  description: html`${msg("Bind an existing stage to this flow.")}`,
-                                  value: true,
-                              },
-                          ]}
-                          @change=${() => {
-                              if (!this.wizard) {
-                                  return;
-                              }
-                              this.wizard.navigateNext();
-                          }}
-                      >
-                      </ak-radio>
-                      <hr style="margin: 1rem 0;" />
-                  </div>
-              `
-            : nothing;
+    protected override renderCreateBefore(): SlottedTemplateResult {
+        if (!this.showBindingPage) {
+            return null;
+        }
+
+        return html`<ak-form-group
+            slot="pre-items"
+            label=${msg("Existing Stage")}
+            description=${msg("Bind an existing stage to this flow.")}
+            open
+        >
+            <ak-radio
+                .options=${[
+                    {
+                        label: "Bind existing stage",
+                        description: msg("Bind an existing stage to this flow."),
+                        value: true,
+                    },
+                ] satisfies RadioOption<boolean>[]}
+                @change=${() => {
+                    if (!this.wizard) {
+                        return;
+                    }
+
+                    this.wizard.navigateNext();
+                }}
+            >
+            </ak-radio>
+        </ak-form-group>`;
     }
 
     protected renderForms(): SlottedTemplateResult {
