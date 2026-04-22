@@ -34,6 +34,8 @@ _session_engine = import_module(settings.SESSION_ENGINE)
 @receiver(user_logged_in)
 def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
     """Log successful login"""
+    if not user.pk:
+        return
     kwargs = {}
     if SESSION_KEY_PLAN in request.session:
         flow_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
