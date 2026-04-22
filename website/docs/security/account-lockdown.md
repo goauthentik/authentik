@@ -1,6 +1,6 @@
 ---
 title: Account Lockdown
-authentik_version: "2026.2"
+authentik_version: "2025.5.0"
 authentik_enterprise: true
 ---
 
@@ -24,7 +24,7 @@ Account Lockdown cannot be triggered on the anonymous user or internal service a
 
 1. A **Lockdown Flow** must be configured on your Brand (**System** > **Brands**)
 2. The flow must contain an [Account Lockdown Stage](../add-secure-apps/flows-stages/stages/account_lockdown/index.md) (Enterprise)
-3. For self-service lockdown, configure a **Completion Flow** on the stage or customize the self-service message
+3. For self-service lockdown, configure a **Completion Flow** on the stage
 
 ## Use the packaged lockdown blueprint
 
@@ -90,15 +90,15 @@ Users can lock their own account from the User interface:
 2. In the **Account Lockdown** section, click **Lock my account**.
 3. Enter a reason and click **Continue**.
 
-After lockdown, the user can be redirected to a completion page (if configured) or see the stage's self-service message. They cannot log back in until an administrator restores access.
+After lockdown, the user is redirected to the configured completion page. They cannot log back in until an administrator restores access.
 
 ### Configure the completion message
 
-Since the user's session is deleted, the stage can either show a built-in message or redirect to a separate unauthenticated flow:
+Since the user's session is deleted, the stage redirects to a separate unauthenticated flow:
 
 1. Create a flow with **Authentication** set to **No authentication required**
 2. Add a Prompt Stage with an alert field containing your message
-3. On your Account Lockdown Stage, set **Completion flow** to this flow (optional if using the stage message)
+3. On your Account Lockdown Stage, set **Completion flow** to this flow
 
 ## Configure notifications
 

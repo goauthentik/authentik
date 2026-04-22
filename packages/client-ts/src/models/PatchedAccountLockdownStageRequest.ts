@@ -49,18 +49,6 @@ export interface PatchedAccountLockdownStageRequest {
      */
     revokeTokens?: boolean;
     /**
-     * Title shown to users after self-service lockdown
-     * @type {string}
-     * @memberof PatchedAccountLockdownStageRequest
-     */
-    selfServiceMessageTitle?: string;
-    /**
-     * HTML message shown to users after self-service lockdown. Supports HTML formatting.
-     * @type {string}
-     * @memberof PatchedAccountLockdownStageRequest
-     */
-    selfServiceMessageBody?: string;
-    /**
      * Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
      * @type {string}
      * @memberof PatchedAccountLockdownStageRequest
@@ -97,14 +85,6 @@ export function PatchedAccountLockdownStageRequestFromJSONTyped(
             json["set_unusable_password"] == null ? undefined : json["set_unusable_password"],
         deleteSessions: json["delete_sessions"] == null ? undefined : json["delete_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
-        selfServiceMessageTitle:
-            json["self_service_message_title"] == null
-                ? undefined
-                : json["self_service_message_title"],
-        selfServiceMessageBody:
-            json["self_service_message_body"] == null
-                ? undefined
-                : json["self_service_message_body"],
         selfServiceCompletionFlow:
             json["self_service_completion_flow"] == null
                 ? undefined
@@ -132,8 +112,6 @@ export function PatchedAccountLockdownStageRequestToJSONTyped(
         set_unusable_password: value["setUnusablePassword"],
         delete_sessions: value["deleteSessions"],
         revoke_tokens: value["revokeTokens"],
-        self_service_message_title: value["selfServiceMessageTitle"],
-        self_service_message_body: value["selfServiceMessageBody"],
         self_service_completion_flow: value["selfServiceCompletionFlow"],
     };
 }

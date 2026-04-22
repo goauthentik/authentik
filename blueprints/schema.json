@@ -7821,18 +7821,6 @@
                     "title": "Revoke tokens",
                     "description": "Revoke all tokens for the user (API, app password, recovery, verification, OAuth)"
                 },
-                "self_service_message_title": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Self service message title",
-                    "description": "Title shown to users after self-service lockdown"
-                },
-                "self_service_message_body": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Self service message body",
-                    "description": "HTML message shown to users after self-service lockdown. Supports HTML formatting."
-                },
                 "self_service_completion_flow": {
                     "type": "string",
                     "format": "uuid",

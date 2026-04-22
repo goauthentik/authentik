@@ -49,18 +49,6 @@ export interface AccountLockdownStageRequest {
      */
     revokeTokens?: boolean;
     /**
-     * Title shown to users after self-service lockdown
-     * @type {string}
-     * @memberof AccountLockdownStageRequest
-     */
-    selfServiceMessageTitle: string;
-    /**
-     * HTML message shown to users after self-service lockdown. Supports HTML formatting.
-     * @type {string}
-     * @memberof AccountLockdownStageRequest
-     */
-    selfServiceMessageBody: string;
-    /**
      * Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
      * @type {string}
      * @memberof AccountLockdownStageRequest
@@ -75,10 +63,6 @@ export function instanceOfAccountLockdownStageRequest(
     value: object,
 ): value is AccountLockdownStageRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("selfServiceMessageTitle" in value) || value["selfServiceMessageTitle"] === undefined)
-        return false;
-    if (!("selfServiceMessageBody" in value) || value["selfServiceMessageBody"] === undefined)
-        return false;
     return true;
 }
 
@@ -100,8 +84,6 @@ export function AccountLockdownStageRequestFromJSONTyped(
             json["set_unusable_password"] == null ? undefined : json["set_unusable_password"],
         deleteSessions: json["delete_sessions"] == null ? undefined : json["delete_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
-        selfServiceMessageTitle: json["self_service_message_title"],
-        selfServiceMessageBody: json["self_service_message_body"],
         selfServiceCompletionFlow:
             json["self_service_completion_flow"] == null
                 ? undefined
@@ -127,8 +109,6 @@ export function AccountLockdownStageRequestToJSONTyped(
         set_unusable_password: value["setUnusablePassword"],
         delete_sessions: value["deleteSessions"],
         revoke_tokens: value["revokeTokens"],
-        self_service_message_title: value["selfServiceMessageTitle"],
-        self_service_message_body: value["selfServiceMessageBody"],
         self_service_completion_flow: value["selfServiceCompletionFlow"],
     };
 }

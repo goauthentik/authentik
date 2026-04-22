@@ -1,6 +1,6 @@
 """Account Lockdown Stage API Views"""
 
-from django.urls import reverse_lazy
+from django.urls import reverse
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
@@ -43,8 +43,6 @@ class AccountLockdownStageSerializer(EnterpriseRequiredMixin, StageSerializer):
             "set_unusable_password",
             "delete_sessions",
             "revoke_tokens",
-            "self_service_message_title",
-            "self_service_message_body",
             "self_service_completion_flow",
         ]
 
@@ -94,7 +92,7 @@ class UserAccountLockdownMixin:
         request.session[SESSION_KEY_HISTORY] = []
         request.session[SESSION_KEY_PLAN] = plan
         return request.build_absolute_uri(
-            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
         )
 
     @extend_schema(

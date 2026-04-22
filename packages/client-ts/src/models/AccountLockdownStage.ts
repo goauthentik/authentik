@@ -88,18 +88,6 @@ export interface AccountLockdownStage {
      */
     revokeTokens?: boolean;
     /**
-     * Title shown to users after self-service lockdown
-     * @type {string}
-     * @memberof AccountLockdownStage
-     */
-    selfServiceMessageTitle: string;
-    /**
-     * HTML message shown to users after self-service lockdown. Supports HTML formatting.
-     * @type {string}
-     * @memberof AccountLockdownStage
-     */
-    selfServiceMessageBody: string;
-    /**
      * Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
      * @type {string}
      * @memberof AccountLockdownStage
@@ -118,10 +106,6 @@ export function instanceOfAccountLockdownStage(value: object): value is AccountL
     if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
     if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
     if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
-    if (!("selfServiceMessageTitle" in value) || value["selfServiceMessageTitle"] === undefined)
-        return false;
-    if (!("selfServiceMessageBody" in value) || value["selfServiceMessageBody"] === undefined)
-        return false;
     return true;
 }
 
@@ -149,8 +133,6 @@ export function AccountLockdownStageFromJSONTyped(
             json["set_unusable_password"] == null ? undefined : json["set_unusable_password"],
         deleteSessions: json["delete_sessions"] == null ? undefined : json["delete_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
-        selfServiceMessageTitle: json["self_service_message_title"],
-        selfServiceMessageBody: json["self_service_message_body"],
         selfServiceCompletionFlow:
             json["self_service_completion_flow"] == null
                 ? undefined
@@ -179,8 +161,6 @@ export function AccountLockdownStageToJSONTyped(
         set_unusable_password: value["setUnusablePassword"],
         delete_sessions: value["deleteSessions"],
         revoke_tokens: value["revokeTokens"],
-        self_service_message_title: value["selfServiceMessageTitle"],
-        self_service_message_body: value["selfServiceMessageBody"],
         self_service_completion_flow: value["selfServiceCompletionFlow"],
     };
 }

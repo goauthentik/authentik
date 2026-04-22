@@ -2,14 +2,15 @@ import "#elements/forms/HorizontalFormElement";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-import "#components/ak-textarea-input";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import { AccountLockdownStage } from "@goauthentik/api";
+import { AccountLockdownStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -17,19 +18,21 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-account-lockdown-form")
 export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage> {
+    #api = new StagesApi(DEFAULT_CONFIG);
+
     protected override loadInstance(pk: string): Promise<AccountLockdownStage> {
-        return this.stagesAPI.stagesAccountLockdownRetrieve({ stageUuid: pk });
+        return this.#api.stagesAccountLockdownRetrieve({ stageUuid: pk });
     }
 
     protected override async send(data: AccountLockdownStage): Promise<AccountLockdownStage> {
         if (this.instance) {
-            return this.stagesAPI.stagesAccountLockdownUpdate({
+            return this.#api.stagesAccountLockdownUpdate({
                 stageUuid: this.instance.pk || "",
                 accountLockdownStageRequest: data,
             });
         }
 
-        return this.stagesAPI.stagesAccountLockdownCreate({
+        return this.#api.stagesAccountLockdownCreate({
             accountLockdownStageRequest: data,
         });
     }
@@ -100,31 +103,10 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted. If not set, the user will be shown the message below.",
+                                "Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-text-input
-                        label=${msg("Self-service message title")}
-                        name="selfServiceMessageTitle"
-                        required
-                        value=${ifPresent(this.instance?.selfServiceMessageTitle)}
-                        help=${msg("Title shown to users after self-service lockdown.")}
-                        placeholder=${msg("e.g. Account Locked")}
-                    ></ak-text-input>
-                    <ak-textarea-input
-                        label=${msg("Self-service message")}
-                        name="selfServiceMessageBody"
-                        required
-                        value=${ifPresent(this.instance?.selfServiceMessageBody)}
-                        rows="6"
-                        help=${msg(
-                            "HTML message shown to users after self-service lockdown. Supports HTML formatting.",
-                        )}
-                        placeholder=${msg(
-                            "e.g. Your account has been locked due to too many failed login attempts. Please contact support to regain access.",
-                        )}
-                    ></ak-textarea-input>
                 </div>
             </ak-form-group>`;
     }

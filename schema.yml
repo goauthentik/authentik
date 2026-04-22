@@ -26921,14 +26921,6 @@ paths:
           type: string
           format: uuid
       - in: query
-        name: self_service_message_body
-        schema:
-          type: string
-      - in: query
-        name: self_service_message_title
-        schema:
-          type: string
-      - in: query
         name: set_unusable_password
         schema:
           type: boolean
@@ -33930,13 +33922,6 @@ components:
           type: boolean
           description: Revoke all tokens for the user (API, app password, recovery,
             verification, OAuth)
-        self_service_message_title:
-          type: string
-          description: Title shown to users after self-service lockdown
-        self_service_message_body:
-          type: string
-          description: HTML message shown to users after self-service lockdown. Supports
-            HTML formatting.
         self_service_completion_flow:
           type: string
           format: uuid
@@ -33949,8 +33934,6 @@ components:
       - meta_model_name
       - name
       - pk
-      - self_service_message_body
-      - self_service_message_title
       - verbose_name
       - verbose_name_plural
     AccountLockdownStageRequest:
@@ -33973,15 +33956,6 @@ components:
           type: boolean
           description: Revoke all tokens for the user (API, app password, recovery,
             verification, OAuth)
-        self_service_message_title:
-          type: string
-          minLength: 1
-          description: Title shown to users after self-service lockdown
-        self_service_message_body:
-          type: string
-          minLength: 1
-          description: HTML message shown to users after self-service lockdown. Supports
-            HTML formatting.
         self_service_completion_flow:
           type: string
           format: uuid
@@ -33990,8 +33964,6 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
-      - self_service_message_body
-      - self_service_message_title
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -47709,15 +47681,6 @@ components:
           type: boolean
           description: Revoke all tokens for the user (API, app password, recovery,
             verification, OAuth)
-        self_service_message_title:
-          type: string
-          minLength: 1
-          description: Title shown to users after self-service lockdown
-        self_service_message_body:
-          type: string
-          minLength: 1
-          description: HTML message shown to users after self-service lockdown. Supports
-            HTML formatting.
         self_service_completion_flow:
           type: string
           format: uuid

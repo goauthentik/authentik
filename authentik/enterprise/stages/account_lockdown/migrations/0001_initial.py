@@ -54,16 +54,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "self_service_message_title",
-                    models.TextField(help_text="Title shown to users after self-service lockdown"),
-                ),
-                (
-                    "self_service_message_body",
-                    models.TextField(
-                        help_text="HTML message shown to users after self-service lockdown. Supports HTML formatting."
-                    ),
-                ),
-                (
                     "self_service_completion_flow",
                     models.ForeignKey(
                         blank=True,

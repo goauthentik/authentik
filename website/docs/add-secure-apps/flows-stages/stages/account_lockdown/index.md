@@ -1,6 +1,6 @@
 ---
 title: Account Lockdown stage
-authentik_version: "2026.2"
+authentik_version: "2025.5.0"
 authentik_enterprise: true
 ---
 
@@ -15,19 +15,17 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 1. **Resolves the target account** from the flow query parameters (see [Target user resolution](#target-user-resolution))
 2. **Applies the configured actions** to that account
 3. **Creates an event** for the locked account
-4. **For self-service**: if sessions are deleted, redirects to completion flow (if configured) or shows the stage message
+4. **For self-service**: if sessions are deleted, redirects to the completion flow
 
 ## Stage settings
 
-| Setting                        | Description                                                                          | Default                        |
-| ------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------ |
-| **Deactivate user**            | Set `is_active` to False                                                             | Enabled                        |
-| **Set unusable password**      | Invalidate the local authentik password. External source passwords are not changed.   | Enabled                        |
-| **Delete sessions**            | Terminate all active sessions                                                        | Enabled                        |
-| **Revoke tokens**              | Delete all tokens and grants (API, app password, recovery, verification, OAuth)       | Enabled                        |
-| **Completion flow**            | Flow for self-service completion (must not require auth)                             | None                           |
-| **Self-service message title** | Title shown after self-service lockdown                                              | "Your account has been locked" |
-| **Self-service message**       | HTML message shown after self-service lockdown                                       | Default HTML                   |
+| Setting                   | Description                                                                        | Default |
+| ------------------------- | ---------------------------------------------------------------------------------- | ------- |
+| **Deactivate user**       | Set `is_active` to False                                                           | Enabled |
+| **Set unusable password** | Invalidate the local authentik password. External source passwords are not changed. | Enabled |
+| **Delete sessions**       | Terminate all active sessions                                                      | Enabled |
+| **Revoke tokens**         | Delete all tokens and grants (API, app password, recovery, verification, OAuth)     | Enabled |
+| **Completion flow**       | Flow for self-service completion (must not require auth)                           | None    |
 
 :::warning
 Disabling **Delete sessions** is not recommended as it would allow an attacker with an active session to continue using the account.
@@ -55,7 +53,7 @@ The stage reads the lockdown reason from:
 
 ## Self-service behavior
 
-When the resolved target user is the same user who is currently authenticated and **Delete sessions** is enabled, the user's session is deleted during lockdown. The stage cannot continue to the next stage, so it redirects to the **Completion flow** if configured, otherwise it displays the **Self-service message** configured on the stage.
+When the resolved target user is the same user who is currently authenticated and **Delete sessions** is enabled, the user's session is deleted during lockdown. The stage cannot continue to the next stage, so it redirects to the **Completion flow**.
 
 If **Delete sessions** is disabled, the flow continues normally and can show its own completion stages.
 
