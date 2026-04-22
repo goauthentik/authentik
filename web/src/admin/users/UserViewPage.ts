@@ -30,7 +30,11 @@ import "#elements/ak-mdx/ak-mdx";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { AKRefreshEvent } from "#common/events";
 import { userTypeToLabel } from "#common/labels";
-import { formatDisambiguatedUserDisplayName, formatUserDisplayName } from "#common/users";
+import {
+    formatDisambiguatedUserDisplayName,
+    formatUserDisplayName,
+    startAccountLockdown,
+} from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
@@ -182,18 +186,7 @@ export class UserViewPage extends WithLicenseSummary(
             return;
         }
 
-        return this.#api
-            .coreUsersAccountLockdownCreate({
-                userAccountLockdownRequest: {
-                    user: this.user.pk,
-                },
-            })
-            .then((response) => {
-                if (response.to) {
-                    window.location.assign(response.to);
-                }
-            })
-            .catch(showAPIErrorMessage);
+        return startAccountLockdown(this.user.pk).catch(showAPIErrorMessage);
     };
 
     protected renderActionButtons(user: User) {

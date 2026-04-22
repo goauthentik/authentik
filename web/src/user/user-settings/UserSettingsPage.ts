@@ -1,6 +1,4 @@
 import "#elements/Tabs";
-import "#elements/forms/ModalForm";
-import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/user/SessionList";
 import "#elements/user/UserConsentList";
 import "#elements/user/sources/SourceSettings";
@@ -11,6 +9,7 @@ import "#user/user-settings/tokens/UserTokenList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { startAccountLockdown } from "#common/users";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
@@ -22,7 +21,7 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import Styles from "#user/user-settings/styles.css";
 
-import { CoreApi, StagesApi, UserSetting } from "@goauthentik/api";
+import { StagesApi, UserSetting } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -58,7 +57,6 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
         Styles,
     ];
 
-    protected coreAPI = new CoreApi(DEFAULT_CONFIG);
     protected stagesAPI = new StagesApi(DEFAULT_CONFIG);
 
     @state()
@@ -83,16 +81,7 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
     }
 
     protected lockAccount = () => {
-        return this.coreAPI
-            .coreUsersAccountLockdownCreate({
-                userAccountLockdownRequest: {},
-            })
-            .then((response) => {
-                if (response.to) {
-                    window.location.assign(response.to);
-                }
-            })
-            .catch(showAPIErrorMessage);
+        return startAccountLockdown().catch(showAPIErrorMessage);
     };
 
     protected renderSecuritySettings(): SlottedTemplateResult {
