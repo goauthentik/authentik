@@ -10,15 +10,37 @@ def update_setup_flag(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from authentik.core.apps import Setup
     from authentik.tenants.utils import get_current_tenant
     from django.conf import settings
+    from authentik.flows.models import FlowAuthenticationRequirement
 
     VersionHistory = apps.get_model("authentik_admin", "VersionHistory")
+    Flow = apps.get_model("authentik_flows", "Flow")
+    User = apps.get_model("authentik_core", "User")
 
     db_alias = schema_editor.connection.alias
 
-    # TODO: Check if any non-akadmin users exist
-    # TODO: Check if oobe flow has been marked as require_superuser
-
+    is_already_setup = False
+    # Upgrading from a previous version
     if not settings.TEST and VersionHistory.objects.using(db_alias).count() > 1:
+        is_already_setup = True
+    # OOBE flow sets itself to this authentication requirement once finished
+    if (
+        Flow.objects.using(db_alias)
+        .filter(
+            slug="initial-setup", authentication=FlowAuthenticationRequirement.REQUIRE_SUPERUSER
+        )
+        .exists()
+    ):
+        is_already_setup = True
+    # non-akadmin and non-guardian anonymous user exist
+    if (
+        User.objects.using(db_alias)
+        .exclude(username="akadmin")
+        .exclude(username="AnonymousUser")
+        .exists()
+    ):
+        is_already_setup = True
+
+    if is_already_setup:
         tenant = get_current_tenant()
         tenant.flags[Setup().key] = True
         tenant.save()
@@ -28,6 +50,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_core", "0057_remove_user_groups_remove_user_user_permissions_and_more"),
+        # 0024_flow_authentication adds the `authentication` field.
+        ("authentik_flows", "0024_flow_authentication"),
     ]
 
     operations = [migrations.RunPython(update_setup_flag, migrations.RunPython.noop)]
