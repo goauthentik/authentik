@@ -2990,10 +2990,6 @@
   <source>Warning: Provider is not used by an Application.</source>
   <target>Upozornění: Poskytovatel není používán žádnou aplikací.</target>
 </trans-unit>
-<trans-unit id="sdbc08adee233f180">
-  <source>Update OAuth2 Provider</source>
-  <target>Aktualizovat OAuth2 poskytovatele</target>
-</trans-unit>
 <trans-unit id="s9d96eb5ca93e6473">
   <source>OpenID Configuration URL</source>
   <target>Konfigurace OpenID URL</target>
@@ -3598,10 +3594,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Edit Policy</source>
   <target>Upravit zásadu</target>
 </trans-unit>
-<trans-unit id="s0b55a57f473ab8af">
-  <source>Update Group</source>
-  <target>Aktualizovat Skupinu</target>
-</trans-unit>
 <trans-unit id="s494e1ed913d9351a">
   <source>Edit Group</source>
   <target>Upravit skupinu</target>
@@ -3741,10 +3733,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>No assigned application</source>
   <target>Žádná přiřazená aplikace</target>
 </trans-unit>
-<trans-unit id="s78302d097a608b99">
-  <source>Update SSF Provider</source>
-  <target>Aktualizovat poskytovatele SSF</target>
-</trans-unit>
 <trans-unit id="sa412f34efd88e962">
   <source>Streams</source>
   <target>Streamy</target>
@@ -3868,10 +3856,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s42cbd8dca939a9c7">
   <source>Check</source>
   <target>Zkontrolovat</target>
-</trans-unit>
-<trans-unit id="sf22f7f8a9309b4ed">
-  <source>Check Application access</source>
-  <target>Zkontrolovat přístup aplikace</target>
 </trans-unit>
 <trans-unit id="s2474e7fb1aec9f05">
   <source>Test</source>
@@ -4750,10 +4734,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Vendor</source>
   <target>Výrobce</target>
 </trans-unit>
-<trans-unit id="s52b500138a2d2b8a">
-  <source>Update LDAP Source</source>
-  <target>Aktualizovat zdroj LDAP</target>
-</trans-unit>
 <trans-unit id="sf3fec8353106ac2f">
   <source>OAuth Source <x id="0" equiv-text="${this.source.name}"/></source>
   <target>OAuth zdroj
@@ -4782,10 +4762,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="sb6d5146d5efb3058">
   <source>Access Key</source>
   <target>Přístupový klíč</target>
-</trans-unit>
-<trans-unit id="s065604a41e9d1584">
-  <source>Update OAuth Source</source>
-  <target>Aktualizovat OAuth zdroj</target>
 </trans-unit>
 <trans-unit id="s7b576aa71acb36a6">
   <source>Diagram</source>
@@ -5238,10 +5214,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s79683026e49e4866">
   <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
 </trans-unit>
-<trans-unit id="s416a540b16275f2e">
-  <source>Create Group</source>
-  <target>Vytvořit skupinu</target>
-</trans-unit>
 <trans-unit id="s7c5774fad9d050ce">
   <source>Create group</source>
   <target>Vytvořit skupinu</target>
@@ -5489,10 +5461,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <target>Jste si jisti že chcete odebrat uživatele
 <x id="0" equiv-text="${this.targetUser?.username}"/>z následujících skupin?</target>
 </trans-unit>
-<trans-unit id="s964f6725aeb7662f">
-  <source>Add Group</source>
-  <target>Přidat skupinu</target>
-</trans-unit>
 <trans-unit id="s65ca2f256ea09c11">
   <source>Add to existing group</source>
   <target>Přidat do existující skupiny</target>
@@ -5686,10 +5654,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s259de999919316db">
   <source>Role(s)</source>
   <target>Role</target>
-</trans-unit>
-<trans-unit id="s2ffad156e8332f04">
-  <source>Update Role</source>
-  <target>Aktualizovat roli</target>
 </trans-unit>
 <trans-unit id="s6ea6a64acb45dfdf">
   <source>Successfully updated initial permissions.</source>
@@ -7166,10 +7130,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s6f857299d5db1ecf">
   <source>Flow(s)</source>
   <target>Tok(y)</target>
-</trans-unit>
-<trans-unit id="s9e830cbc0b42a514">
-  <source>Update Flow</source>
-  <target>Aktualizovat tok</target>
 </trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
   <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
@@ -10018,14 +9978,8 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s41d4dd186ab1e7bc">
   <source>Opens the new application wizard, which will guide you through creating a new application with an existing provider.</source>
 </trans-unit>
-<trans-unit id="sd62d3a468befc24e">
-  <source>With New Provider...</source>
-</trans-unit>
 <trans-unit id="sf9c86f02a5609e71">
   <source>Opens the new application form, which will guide you through creating a new application with an existing provider.</source>
-</trans-unit>
-<trans-unit id="sfc08a865dd89ccbb">
-  <source>With Existing Provider...</source>
 </trans-unit>
 <trans-unit id="s7f1579146577efc4">
   <source>Clear Cache</source>
@@ -10904,6 +10858,45 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s4970e93737e5a3de">
   <source>See documentation for examples.</source>
+</trans-unit>
+<trans-unit id="s13c123f97668a70b">
+  <source>Access</source>
+</trans-unit>
+<trans-unit id="s29d3b9fb142caed1">
+  <source>Checking</source>
+</trans-unit>
+<trans-unit id="s7716f6051e0040ee">
+  <source>with New Provider...</source>
+</trans-unit>
+<trans-unit id="s389abd73a230985b">
+  <source>with Existing Provider...</source>
+</trans-unit>
+<trans-unit id="sf57dea661d832af7">
+  <source>Select one or more backchannel providers...</source>
+</trans-unit>
+<trans-unit id="s0b0a02a4470de153">
+  <source>Device</source>
+</trans-unit>
+<trans-unit id="s6b2172efc35f9fc5">
+  <source>Select one or more groups...</source>
+</trans-unit>
+<trans-unit id="s58649ae52329bd18">
+  <source>Select one or more roles...</source>
+</trans-unit>
+<trans-unit id="se1f93749f9f86133">
+  <source>Select one or more permissions...</source>
+</trans-unit>
+<trans-unit id="s4607a8246d0d6265">
+  <source>Avatar for <x id="0" equiv-text="${displayName}"/></source>
+</trans-unit>
+<trans-unit id="sae2df5261700b49f">
+  <source>Username: <x id="0" equiv-text="${item.username}"/></source>
+</trans-unit>
+<trans-unit id="s889d1719c28a4328">
+  <source>Display name: <x id="0" equiv-text="${displayName || msg(&quot;No name set&quot;)}"/></source>
+</trans-unit>
+<trans-unit id="s3c12d23036471dfc">
+  <source>Dialog content</source>
 </trans-unit>
 </body>
 </file>

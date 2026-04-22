@@ -79,6 +79,7 @@ class TestOAuthSource(APITestCase):
             "token_endpoint": "http://mock/oauth/token",
             "userinfo_endpoint": "http://mock/oauth/userinfo",
             "jwks_uri": "http://mock/oauth/discovery/keys",
+            "code_challenge_methods_supported": ["S256"],
         }
         jwks_config = {"keys": []}
         with Mocker() as mocker:
@@ -109,6 +110,7 @@ class TestOAuthSource(APITestCase):
                 serializer.validated_data["oidc_jwks_url"], "http://mock/oauth/discovery/keys"
             )
             self.assertEqual(serializer.validated_data["oidc_jwks"], jwks_config)
+            self.assertEqual(serializer.validated_data["pkce"], PKCEMethod.S256)
 
     def test_api_validate_openid_connect_invalid(self):
         """Test API validation (with OIDC endpoints)"""

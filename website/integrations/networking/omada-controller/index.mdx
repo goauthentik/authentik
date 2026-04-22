@@ -25,7 +25,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Omada Controller with authentik, you need to create property mappings, a group, and an application/provider pair in authentik.
+To support the integration of Omada Controller with authentik, you need to create property mappings, an application entitlement, and an application/provider pair in authentik.
 
 ### Create property mappings in authentik
 
@@ -51,16 +51,20 @@ To support the integration of Omada Controller with authentik, you need to creat
     return request.user.name.split(" ", 1)[-1]
     ```
 
-5. Click **Finish** to save. Then, repeat the process to create a mapping for the user's _group memberships_:
+5. Click **Finish** to save. Then, repeat the process to create a mapping for the user's Omada role entitlement:
     - **Name**: `omada_usergroup_name`
     - **SAML Attribute Name**: `usergroup_name`
     - **Friendly Name**: Leave blank
     - **Expression**:
 
     ```python
-    omada_groups = [g.name for g in user.groups.all() if g.name.startswith("Omada-")]
+    omada_entitlements = [
+        entitlement.name
+        for entitlement in request.user.app_entitlements(provider.application)
+        if entitlement.name.startswith("Omada-")
+    ]
 
-    yield omada_groups[0] if omada_groups else None
+    yield omada_entitlements[0] if omada_entitlements else None
     ```
 
 6. Click **Finish** to save. Finally, repeat the process to create a mapping for the user's _username_:
@@ -75,16 +79,16 @@ To support the integration of Omada Controller with authentik, you need to creat
 
 7. Click **Finish**.
 
-### Create a group in authentik
+### Create an application entitlement in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Groups** and click **Create**.
-3. Set a name for the group (e.g. `Omada-admins`) and click **Create**. The group name must start with `Omada-` for the `omada_usergroup_name` property mapping to function correctly.
-4. Click the name of the newly created group, then switch to the **Users** tab.
-5. Click **Add existing user**, select the user who needs Omada Controller administrator access, and click **Add**.
+2. Navigate to **Applications** > **Applications** and open the Omada Controller application after you create it.
+3. Click the **Application entitlements** tab.
+4. Create an entitlement such as `Omada-admins`. The entitlement name must start with `Omada-` for the `omada_usergroup_name` property mapping to function correctly.
+5. Open the entitlement and bind the user or group that needs Omada Controller administrator access to it.
 
 :::warning
-Omada can't handle a user being in multiple groups/roles. Therefore, ensure that you only add a user to a single `Omada-` group.
+Omada can't handle a user being in multiple roles. Therefore, ensure that a user receives only a single `Omada-` entitlement.
 :::
 
 ### Create an application and provider in authentik
@@ -134,7 +138,7 @@ Omada can't handle a user being in multiple groups/roles. Therefore, ensure that
 6. In the **Actions** column, click on the **Details** button next to the newly created authentik SAML connection.
 7. Take note of the **Entity ID**, **Omada ID**, **Resource ID**, and then click **OK**. These values will be required in the next section.
 8. At the top right of the page, click **Go To SAML Role**, and then **Add New SAML Role**.
-9. Set the desired **SAML Role Name**, **Role**, **User Type**, and **Privileges** for the new SAML role. The **SAML Role Name** must exactly match the name of the previously created authentik group. It is case sensitive.
+9. Set the desired **SAML Role Name**, **Role**, **User Type**, and **Privileges** for the new SAML role. The **SAML Role Name** must exactly match the name of the previously created authentik entitlement. It is case sensitive.
 10. Click **Create**.
 
 ## Encoding default relay state
