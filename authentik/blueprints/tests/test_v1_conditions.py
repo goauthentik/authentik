@@ -51,8 +51,7 @@ class TestBlueprintsV1Conditions(TransactionTestCase):
         license_key = LicenseKey("test", 0, "Test license", 0, 0)
 
         with patch("authentik.enterprise.license.LicenseKey.get_total", return_value=license_key):
-            importer = Importer.from_string(
-                """
+            importer = Importer.from_string("""
 version: 1
 entries:
     - identifiers:
@@ -64,8 +63,7 @@ entries:
       attrs:
           designation: stage_configuration
           title: foo
-"""
-            )
+""")
 
         self.assertIs(importer.blueprint.context["goauthentik.io/enterprise/licensed"], False)
 
@@ -74,8 +72,7 @@ entries:
         license_key = LicenseKey("test", 253402300799, "Test license", 1000, 1000)
 
         with patch("authentik.enterprise.license.LicenseKey.get_total", return_value=license_key):
-            importer = Importer.from_string(
-                """
+            importer = Importer.from_string("""
 version: 1
 entries:
     - identifiers:
@@ -87,7 +84,6 @@ entries:
       attrs:
           designation: stage_configuration
           title: foo
-"""
-            )
+""")
 
         self.assertIs(importer.blueprint.context["goauthentik.io/enterprise/licensed"], True)
