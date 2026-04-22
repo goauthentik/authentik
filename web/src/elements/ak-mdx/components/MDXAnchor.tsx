@@ -34,6 +34,7 @@ export const MDXAnchor = ({
         const nextURL = new URL(nextPathname, import.meta.env.AK_DOCS_URL);
         // Remove trailing .md and .mdx, and trailing "index".
         nextURL.pathname = nextURL.pathname.replace(/(index)?\.mdx?$/, "");
+        // eslint-disable-next-line react-hooks/immutability
         href = nextURL.toString();
     }
 
