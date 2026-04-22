@@ -1,6 +1,6 @@
 import "#elements/messages/Message";
 
-import { APIError, pluckErrorDetail } from "#common/errors/network";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
@@ -64,8 +64,13 @@ export function showMessage(message: APIMessage | null, unique: boolean = false)
  * @param unique Whether to only display the message if the title is unique.
  * @see {@link parseAPIResponseError} for more information on how to handle API errors.
  */
-export function showAPIErrorMessage(error: APIError, unique = false): void {
+export function showAPIErrorMessage(error: unknown, unique = false): Promise<void> {
+    if (!error) {
+        return Promise.resolve();
+    }
+
     if (
+        typeof error === "object" &&
         instanceOfValidationError(error) &&
         Array.isArray(error.nonFieldErrors) &&
         error.nonFieldErrors.length
@@ -80,16 +85,21 @@ export function showAPIErrorMessage(error: APIError, unique = false): void {
             );
         }
 
-        return;
+        return Promise.resolve();
     }
 
-    showMessage(
-        {
-            level: MessageLevel.error,
-            message: pluckErrorDetail(error),
-        },
-        unique,
-    );
+    return parseAPIResponseError(error)
+        .then((parsedError) => pluckErrorDetail(parsedError))
+        .catch(() => pluckErrorDetail(error, msg("An unknown error occurred")))
+        .then((message) => {
+            showMessage(
+                {
+                    level: MessageLevel.error,
+                    message: message,
+                },
+                unique,
+            );
+        });
 }
 
 export type MessageContainerAlignment = "top-left" | "top-right" | "bottom-left" | "bottom-right";

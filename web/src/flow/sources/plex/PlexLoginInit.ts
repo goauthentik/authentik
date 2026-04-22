@@ -2,7 +2,6 @@ import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { parseAPIResponseError } from "#common/errors/network";
 import { PlexAPIClient, popupCenterScreen } from "#common/helpers/plex";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
@@ -53,13 +52,11 @@ export class PlexLoginInit extends BaseStage<
                     window.location.assign(redirectChallenge.to);
                 })
                 .catch(async (error: unknown) => {
-                    return parseAPIResponseError(error)
-                        .then(showAPIErrorMessage)
-                        .then(() => {
-                            setTimeout(() => {
-                                window.location.assign("/");
-                            }, 5000);
-                        });
+                    return showAPIErrorMessage(error).then(() => {
+                        setTimeout(() => {
+                            window.location.assign("/");
+                        }, 5000);
+                    });
                 });
         });
     }
