@@ -36,7 +36,7 @@ import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationE
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-brand-form")
@@ -44,53 +44,61 @@ export class BrandForm extends ModelForm<Brand, string> {
     public static override verboseName = msg("Brand");
     public static override verboseNamePlural = msg("Brands");
 
+    #coreAPI = new CoreApi(DEFAULT_CONFIG);
+    #flowsAPI = new FlowsApi(DEFAULT_CONFIG);
+
     @state()
-    protected lockdownFlowAuthentication?: string | null;
+    protected lockdownFlowAuthentication: AuthenticationEnum | null = null;
 
     async loadInstance(pk: string): Promise<Brand> {
-        const brand = await new CoreApi(DEFAULT_CONFIG).coreBrandsRetrieve({
-            brandUuid: pk,
+        return this.#coreAPI.coreBrandsRetrieve({ brandUuid: pk }).then(async (brand) => {
+            if (!brand.flowLockdown) {
+                this.lockdownFlowAuthentication = null;
+
+                return brand;
+            }
+
+            return this.#flowsAPI
+                .flowsInstancesList({ flowUuid: brand.flowLockdown })
+                .then((flows) => {
+                    this.lockdownFlowAuthentication = flows.results[0]?.authentication ?? null;
+
+                    return brand;
+                });
         });
-        this.lockdownFlowAuthentication = null;
-        if (brand.flowLockdown) {
-            const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
-                flowUuid: brand.flowLockdown,
-            });
-            this.lockdownFlowAuthentication = flows.results[0]?.authentication ?? null;
-        }
-        return brand;
     }
 
-    protected onLockdownFlowInput(event: Event): void {
+    protected lockdownFlowInputListener = (event: Event): void => {
         const target = event.currentTarget as HTMLElement & {
             selectedFlow?: Flow | null;
         };
         this.lockdownFlowAuthentication = target.selectedFlow?.authentication ?? null;
-    }
+    };
 
-    protected get showLockdownFlowWarning(): boolean {
-        return (
-            this.lockdownFlowAuthentication !== null &&
-            this.lockdownFlowAuthentication !== undefined &&
+    protected get lockdownWarningVisible(): boolean {
+        return !!(
+            this.lockdownFlowAuthentication &&
             this.lockdownFlowAuthentication !== AuthenticationEnum.RequireAuthenticated
         );
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated brand.")
             : msg("Successfully created brand.");
     }
 
-    async send(data: Brand): Promise<Brand> {
+    protected override async send(data: Brand): Promise<Brand> {
         data.attributes ??= {};
+
         if (this.instance?.brandUuid) {
-            return new CoreApi(DEFAULT_CONFIG).coreBrandsPartialUpdate({
+            return this.#coreAPI.coreBrandsPartialUpdate({
                 brandUuid: this.instance.brandUuid,
                 patchedBrandRequest: data,
             });
         }
-        return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
+
+        return this.#coreAPI.coreBrandsCreate({
             brandRequest: data,
         });
     }
@@ -323,20 +331,20 @@ export class BrandForm extends ModelForm<Brand, string> {
                             placeholder=${msg("Select an account lockdown flow...")}
                             flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowLockdown}
-                            @input=${this.onLockdownFlowInput}
+                            @input=${this.lockdownFlowInputListener}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.",
                             )}
                         </p>
-                        ${this.showLockdownFlowWarning
+                        ${this.lockdownWarningVisible
                             ? html`<ak-alert inline>
                                   ${msg(
                                       "Recommended: set Flow Authentication to 'Require authentication' for lockdown flows. Other brand edits can become confusing later if this flow is changed away from that setting.",
                                   )}
                               </ak-alert>`
-                            : nothing}
+                            : null}
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
