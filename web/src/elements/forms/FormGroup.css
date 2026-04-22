@@ -32,7 +32,7 @@ details::details-content {
         var(--pf-global--spacer--lg) + var(--pf-global--spacer--form-element)
     );
     padding-inline-end: var(--pf-global--spacer--md);
-    padding-block-end: var(--pf-global--spacer--sm);
+    padding-block: var(--pf-global--spacer--sm);
 }
 
 details > summary:hover {
@@ -93,4 +93,7 @@ details summary::marker {
 
 .pf-c-form__field-group-header-description {
     text-wrap: balance;
+    text-wrap: pretty;
+    font-size: var(--pf-c-form__helper-text--FontSize);
+    color: var(--pf-c-form__helper-text--Color);
 }
