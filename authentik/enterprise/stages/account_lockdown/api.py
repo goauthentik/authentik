@@ -85,7 +85,7 @@ class UserAccountLockdownMixin:
         planner.use_cache = False
         try:
             plan = planner.plan(request._request, {PLAN_CONTEXT_PENDING_USER: user})
-        except EmptyFlowException, FlowNonApplicableException:
+        except (EmptyFlowException, FlowNonApplicableException):
             raise ValidationError(
                 {"non_field_errors": [_("Lockdown flow is not applicable.")]}
             ) from None
