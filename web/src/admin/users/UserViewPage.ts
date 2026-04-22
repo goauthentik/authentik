@@ -46,6 +46,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
 import { RecoveryButtons } from "#admin/users/recovery";
+import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
@@ -184,54 +185,17 @@ export class UserViewPage extends WithLicenseSummary(
             >
                 ${msg("Edit User")}
             </button>
-            <ak-user-active-form
-                .obj=${user}
-                object-label=${msg("User")}
-                .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
-                        id: user.pk,
-                        patchedUserRequest: {
-                            isActive: !user.isActive,
-                        },
-                    });
-                }}
-            >
-                <button slot="trigger" class="pf-c-button pf-m-warning pf-m-block">
-                    <pf-tooltip
-                        position="top"
-                        content=${user.isActive
-                            ? msg("Lock the user out of this system")
-                            : msg("Allow the user to log in and use this system")}
-                    >
-                        ${user.isActive ? msg("Deactivate") : msg("Activate")}
-                    </pf-tooltip>
-                </button>
-            </ak-user-active-form>
-            ${canTriggerLockdown
-                ? html`
-                      <button
-                          class="pf-c-button pf-m-danger pf-m-block"
-                          @click=${async () => {
-                              try {
-                                  const response = await new CoreApi(
-                                      DEFAULT_CONFIG,
-                                  ).coreUsersAccountLockdownCreate({
-                                      userAccountLockdownRequest: {
-                                          user: user.pk,
-                                      },
-                                  });
-                                  if (response.flowUrl) {
-                                      window.location.assign(response.flowUrl);
-                                  }
-                              } catch (error) {
-                                  parseAPIResponseError(error).then(showAPIErrorMessage);
-                              }
-                          }}
-                      >
-                          ${msg("Account Lockdown")}
-                      </button>
-                  `
-                : nothing}
+
+            ${ToggleUserActivationButton(user, { className: "pf-m-block" })}
+            ${showLockdown
+                ? html`<button
+                      class="pf-c-button pf-m-danger pf-m-block"
+                      @click=${this.lockdownUser}
+                      type="button"
+                  >
+                      ${msg("Account Lockdown")}
+                  </button>`
+                : null}
             ${showImpersonate
                 ? html`<button
                       class="pf-c-button pf-m-tertiary pf-m-block"
