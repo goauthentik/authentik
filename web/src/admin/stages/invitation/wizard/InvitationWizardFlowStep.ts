@@ -17,13 +17,12 @@ import {
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 interface EnrollmentFlow {
@@ -34,7 +33,10 @@ interface EnrollmentFlow {
 
 @customElement("ak-invitation-wizard-flow-step")
 export class InvitationWizardFlowStep extends WizardPage {
-    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFButton, PFRadio, PFAlert];
+    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFButton, PFAlert];
+
+    @property({ type: String })
+    public mode: "existing" | "create" = "existing";
 
     @state()
     enrollmentFlows: EnrollmentFlow[] = [];
@@ -43,28 +45,32 @@ export class InvitationWizardFlowStep extends WizardPage {
     loading = true;
 
     @state()
-    flowMode: "existing" | "create" = "existing";
-
-    @state()
     selectedFlowSlug?: string;
 
     @state()
     selectedFlowPk?: string;
 
     @state()
-    newFlowName = "";
+    newFlowName = "Enrollment with invitation";
 
     @state()
-    newFlowSlug = "";
+    newFlowSlug = "enrollment-with-invitation";
 
     @state()
-    newStageName = "";
+    newStageName = "invitation-stage";
 
     @state()
     continueFlowWithoutInvitation = true;
 
     activeCallback = async (): Promise<void> => {
         this.host.valid = false;
+
+        if (this.mode === "create") {
+            this.loading = false;
+            this.validate();
+            return;
+        }
+
         this.loading = true;
 
         try {
@@ -90,28 +96,20 @@ export class InvitationWizardFlowStep extends WizardPage {
 
             this.enrollmentFlows = Array.from(flowMap.values());
 
-            if (this.enrollmentFlows.length === 0) {
-                this.flowMode = "create";
-                this.newFlowName = "Enrollment with invitation";
-                this.newFlowSlug = "enrollment-with-invitation";
-                this.newStageName = "invitation-stage";
-                this.validate();
-            } else {
-                this.flowMode = "existing";
+            if (this.enrollmentFlows.length > 0) {
                 this.selectedFlowSlug = this.enrollmentFlows[0].slug;
                 this.selectedFlowPk = this.enrollmentFlows[0].pk;
                 this.host.valid = true;
             }
         } catch {
             this.enrollmentFlows = [];
-            this.flowMode = "create";
         }
 
         this.loading = false;
     };
 
     validate(): void {
-        if (this.flowMode === "existing") {
+        if (this.mode === "existing") {
             this.host.valid = !!this.selectedFlowSlug;
         } else {
             this.host.valid =
@@ -124,9 +122,9 @@ export class InvitationWizardFlowStep extends WizardPage {
     nextCallback = async (): Promise<boolean> => {
         const state = this.host.state as unknown as InvitationWizardState;
 
-        state.flowMode = this.flowMode;
+        state.flowMode = this.mode;
 
-        if (this.flowMode === "existing") {
+        if (this.mode === "existing") {
             if (!this.selectedFlowSlug) return false;
             state.selectedFlowSlug = this.selectedFlowSlug;
             state.selectedFlowPk = this.selectedFlowPk;
@@ -150,12 +148,11 @@ export class InvitationWizardFlowStep extends WizardPage {
     override reset(): void {
         this.enrollmentFlows = [];
         this.loading = true;
-        this.flowMode = "existing";
         this.selectedFlowSlug = undefined;
         this.selectedFlowPk = undefined;
-        this.newFlowName = "";
-        this.newFlowSlug = "";
-        this.newStageName = "";
+        this.newFlowName = "Enrollment with invitation";
+        this.newFlowSlug = "enrollment-with-invitation";
+        this.newStageName = "invitation-stage";
         this.continueFlowWithoutInvitation = true;
     }
 
@@ -167,6 +164,26 @@ export class InvitationWizardFlowStep extends WizardPage {
     }
 
     renderExistingFlowSelector(): TemplateResult {
+        if (this.enrollmentFlows.length === 0) {
+            return html`
+                <div class="pf-c-alert pf-m-warning pf-m-inline">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                    </div>
+                    <h4 class="pf-c-alert__title">
+                        ${msg("No enrollment flows with invitation stages found")}
+                    </h4>
+                    <div class="pf-c-alert__description">
+                        <p>
+                            ${msg(
+                                "Cancel this wizard and start again with 'with New Flow' to create an enrollment flow and invitation stage.",
+                            )}
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
         return html`
             <ak-form-element-horizontal label=${msg("Enrollment flow")} required>
                 <ak-search-select
@@ -266,72 +283,9 @@ export class InvitationWizardFlowStep extends WizardPage {
         }
 
         return html`<form class="pf-c-form pf-m-horizontal">
-            ${this.enrollmentFlows.length === 0
-                ? html`
-                      <div class="pf-c-alert pf-m-info pf-m-inline">
-                          <div class="pf-c-alert__icon">
-                              <i class="fas fa-info-circle" aria-hidden="true"></i>
-                          </div>
-                          <h4 class="pf-c-alert__title">
-                              ${msg("No enrollment flows with invitation stages found")}
-                          </h4>
-                          <div class="pf-c-alert__description">
-                              <p>
-                                  ${msg(
-                                      "A new enrollment flow and invitation stage will be created for you.",
-                                  )}
-                              </p>
-                          </div>
-                      </div>
-                      ${this.renderCreateForm()}
-                  `
-                : html`
-                      <ak-form-element-horizontal label=${msg("Flow source")} required>
-                          <div class="pf-c-radio">
-                              <input
-                                  class="pf-c-radio__input"
-                                  type="radio"
-                                  name="flow-mode"
-                                  id="flow-mode-existing"
-                                  ?checked=${this.flowMode === "existing"}
-                                  @change=${() => {
-                                      this.flowMode = "existing";
-                                      if (this.enrollmentFlows.length > 0) {
-                                          this.selectedFlowSlug = this.enrollmentFlows[0].slug;
-                                          this.selectedFlowPk = this.enrollmentFlows[0].pk;
-                                      }
-                                      this.validate();
-                                  }}
-                              />
-                              <label class="pf-c-radio__label" for="flow-mode-existing">
-                                  ${msg("Use existing enrollment flow")}
-                              </label>
-                          </div>
-                          <div class="pf-c-radio">
-                              <input
-                                  class="pf-c-radio__input"
-                                  type="radio"
-                                  name="flow-mode"
-                                  id="flow-mode-create"
-                                  ?checked=${this.flowMode === "create"}
-                                  @change=${() => {
-                                      this.flowMode = "create";
-                                      this.newFlowName = "Enrollment with invitation";
-                                      this.newFlowSlug = "enrollment-with-invitation";
-                                      this.newStageName = "invitation-stage";
-                                      this.validate();
-                                  }}
-                              />
-                              <label class="pf-c-radio__label" for="flow-mode-create">
-                                  ${msg("Create new enrollment flow and invitation stage")}
-                              </label>
-                          </div>
-                      </ak-form-element-horizontal>
-
-                      ${this.flowMode === "existing"
-                          ? this.renderExistingFlowSelector()
-                          : this.renderCreateForm()}
-                  `}
+            ${this.mode === "existing"
+                ? this.renderExistingFlowSelector()
+                : this.renderCreateForm()}
         </form>`;
     }
 }

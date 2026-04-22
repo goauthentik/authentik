@@ -9,13 +9,19 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
+import { property } from "@lit/reactive-element/decorators/property.js";
 import { html } from "lit";
+
+export type InvitationWizardFlowMode = "existing" | "create";
 
 @customElement("ak-invitation-wizard")
 export class InvitationWizard extends AKElement implements TransclusionChildElement {
-    public static verboseName = msg("Invitation Wizard");
+    public static verboseName = msg("Invitation");
 
     public [TransclusionChildSymbol] = true;
+
+    @property({ type: String })
+    public mode: InvitationWizardFlowMode = "existing";
 
     protected override createRenderRoot(): HTMLElement | DocumentFragment {
         return this;
@@ -30,6 +36,7 @@ export class InvitationWizard extends AKElement implements TransclusionChildElem
             <ak-invitation-wizard-flow-step
                 slot="flow-step"
                 headline=${msg("Enrollment Flow")}
+                .mode=${this.mode}
             ></ak-invitation-wizard-flow-step>
             <ak-invitation-wizard-details-step
                 slot="details-step"
