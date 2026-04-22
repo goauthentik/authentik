@@ -91,7 +91,7 @@ To configure NetBird to use authentik, add the following environment variables t
 NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
 NETBIRD_USE_AUTH0=false
 NETBIRD_AUTH_CLIENT_ID="<Your Client ID>"
-NETBIRD_AUTH_SUPPORTED_SCOPES="openid profile email offline_access api"
+NETBIRD_AUTH_SUPPORTED_SCOPES="openid profile email offline_access goauthentik.io/api"
 NETBIRD_AUTH_AUDIENCE="<Your Client ID>"
 NETBIRD_AUTH_DEVICE_AUTH_CLIENT_ID="<Your Client ID>"
 NETBIRD_AUTH_DEVICE_AUTH_AUDIENCE="<Your Client ID>"
