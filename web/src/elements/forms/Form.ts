@@ -21,6 +21,7 @@ import {
     renderModal,
 } from "#elements/dialogs";
 import {
+    EntityDescriptorElement,
     isTransclusionParentElement,
     TransclusionChildElement,
     TransclusionChildSymbol,
@@ -102,6 +103,8 @@ export class Form<T = Record<string, unknown>, D = T>
     extends AKElement
     implements TransclusionChildElement
 {
+    declare ["constructor"]: EntityDescriptorElement;
+
     public static styles: CSSResult[] = [
         PFCard,
         PFButton,
