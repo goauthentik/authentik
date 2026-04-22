@@ -30,9 +30,13 @@ The stack will output the endpoint of the ALB to which you can point your DNS re
 
 ## Access authentik from AWS CloudFormation
 
-To launch authentik, in your browser go to:
+To start the initial setup, navigate to `http://<domain_you_configured>`.
 
-`http://<domain_you_configured>`
+You are then prompted to set a password for the `akadmin` user (the default user).
+
+:::info Issues with initial setup
+If you run into issues, refer to our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
+:::
 
 ### Further customization
 
