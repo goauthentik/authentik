@@ -66,6 +66,8 @@ updates:
       default-days: 7
       semver-major-days: 14
       semver-patch-days: 3
+      exclude:
+        - rustls-webpki
 
   - package-ecosystem: rust-toolchain
     directory: "/"
