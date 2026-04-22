@@ -3,10 +3,10 @@ import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
