@@ -34732,6 +34732,7 @@ components:
       - require_superuser
       - require_redirect
       - require_outpost
+      - require_token
       type: string
     AuthenticatorAttachmentEnum:
       enum:

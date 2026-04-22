@@ -40,6 +40,7 @@ class FlowAuthenticationRequirement(models.TextChoices):
     REQUIRE_SUPERUSER = "require_superuser"
     REQUIRE_REDIRECT = "require_redirect"
     REQUIRE_OUTPOST = "require_outpost"
+    REQUIRE_TOKEN = "require_token"
 
 
 class NotConfiguredAction(models.TextChoices):
