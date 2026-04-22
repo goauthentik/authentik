@@ -91,9 +91,10 @@ def get_lockdown_token_models() -> tuple[type[Model], ...]:
 
 def get_lockdown_token_queryset(model: type[Model], user: User) -> QuerySet:
     """Return account lockdown artifacts for a model and user."""
+    manager = model.objects.including_expired()
     if _has_user_field(model):
-        return model.objects.filter(user=user)
-    return model.objects.filter(session__user=user)
+        return manager.filter(user=user)
+    return manager.filter(session__user=user)
 
 
 def can_lock_user(actor, user: User) -> bool:
