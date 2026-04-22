@@ -73,6 +73,33 @@ return {
 }
 ```
 
+The same LDAP source property mapping type is used for both users and groups. A mapping only applies to groups when you assign it under **Group Property Mappings** on the LDAP source. If you only use the built-in group property mappings, synced groups will keep the automatically populated LDAP attributes, such as `distinguishedName`, but custom LDAP attributes won't be copied unless you add your own group mapping.
+
+### Copy a custom LDAP group attribute
+
+To store a custom LDAP group attribute in authentik's group `attributes`, create an **LDAP Source Property Mapping** and assign it to **Group Property Mappings** on the source:
+
+```python
+return {
+    "attributes": {
+        "acl": list_flatten(ldap.get("acl")),
+    },
+}
+```
+
+If your LDAP server stores the value as JSON text and you want authentik to keep it as structured data instead of a string, decode it in the mapping:
+
+```python
+import json
+
+raw_acl = list_flatten(ldap.get("acl"))
+return {
+    "attributes": {
+        "acl": json.loads(raw_acl) if raw_acl else None,
+    },
+}
+```
+
 ### Built-in property mappings
 
 LDAP property mappings are used when you define an LDAP source. These mappings define which LDAP property maps to which authentik property. By default, the following mappings are created:

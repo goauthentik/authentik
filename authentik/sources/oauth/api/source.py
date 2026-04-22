@@ -17,7 +17,7 @@ from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.http import get_http_session
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import OAuthSource, PKCEMethod
 from authentik.sources.oauth.types.registry import SourceType, registry
 
 
@@ -83,13 +83,24 @@ class OAuthSourceSerializer(SourceSerializer):
                 "authorization_url": "authorization_endpoint",
                 "access_token_url": "token_endpoint",
                 "profile_url": "userinfo_endpoint",
-                "pkce": "code_challenge_methods_supported",
             }
             for ak_key, oidc_key in field_map.items():
                 # Don't overwrite user-set values
                 if ak_key in attrs and attrs[ak_key]:
                     continue
                 attrs[ak_key] = config.get(oidc_key, "")
+            # code_challenge_methods_supported is a list per RFC 8414, not a
+            # single method. Pick one (prefer S256, the RFC-recommended method)
+            # rather than letting the list round-trip into the pkce TextField
+            # and later str() into the authorize URL as "['plain', 'S256']".
+            if not attrs.get("pkce"):
+                supported_methods = config.get("code_challenge_methods_supported") or []
+                attrs["pkce"] = PKCEMethod.NONE
+                if isinstance(supported_methods, list):
+                    if PKCEMethod.S256 in supported_methods:
+                        attrs["pkce"] = PKCEMethod.S256
+                    elif PKCEMethod.PLAIN in supported_methods:
+                        attrs["pkce"] = PKCEMethod.PLAIN
             inferred_oidc_jwks_url = config.get("jwks_uri", "")
 
         # Prefer user-entered URL to inferred URL to default URL
