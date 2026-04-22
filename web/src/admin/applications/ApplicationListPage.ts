@@ -127,6 +127,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         return [
             html`<ak-app-icon
                 aria-label=${msg(str`Application icon for "${item.name}"`)}
+                role="img"
                 name=${item.name}
                 icon=${ifPresent(item.metaIconUrl)}
                 .iconThemedUrls=${item.metaIconThemedUrls}

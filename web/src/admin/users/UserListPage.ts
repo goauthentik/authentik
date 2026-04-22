@@ -70,7 +70,7 @@ export class UserListPage extends WithLicenseSummary(
             .pf-c-avatar {
                 max-height: var(--pf-c-avatar--Height);
                 max-width: var(--pf-c-avatar--Width);
-                margin-bottom: calc(var(--pf-c-avatar--Width) * -0.6);
+                vertical-align: middle;
             }
         `,
     ];

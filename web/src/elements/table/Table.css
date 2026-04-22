@@ -110,14 +110,6 @@ td:has(ak-rbac-object-permission-modal) {
     margin-inline: 0;
 }
 
-.pf-c-table thead .pf-c-table__check {
-    min-width: 3rem;
-}
-
-.pf-c-table tbody .pf-c-table__check input {
-    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
-}
-
 .selected-chips::part(chip-group) {
     margin-block-end: var(--pf-global--spacer--sm);
 }
@@ -184,6 +176,14 @@ time {
         &::part(elapsed) {
             display: inline-block;
         }
+    }
+}
+
+/* Fix alignment issues with images in tables */
+.pf-c-table:has(td > img),
+.pf-c-table:has(td > [role="img"]) {
+    tbody > tr > * {
+        vertical-align: middle;
     }
 }
 
