@@ -19,15 +19,15 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 
 ## Stage settings
 
-| Setting                        | Description                                                                      | Default                        |
-| ------------------------------ | -------------------------------------------------------------------------------- | ------------------------------ |
-| **Deactivate user**            | Set `is_active` to False                                                         | Enabled                        |
-| **Set unusable password**      | Invalidate the password                                                          | Enabled                        |
-| **Delete sessions**            | Terminate all active sessions                                                    | Enabled                        |
-| **Revoke tokens**              | Delete all tokens and grants (API, app password, recovery, verification, OAuth2) | Enabled                        |
-| **Completion flow**            | Flow for self-service completion (must not require auth)                         | None                           |
-| **Self-service message title** | Title shown after self-service lockdown                                          | "Your account has been locked" |
-| **Self-service message**       | HTML message shown after self-service lockdown                                   | Default HTML                   |
+| Setting                        | Description                                                                          | Default                        |
+| ------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------ |
+| **Deactivate user**            | Set `is_active` to False                                                             | Enabled                        |
+| **Set unusable password**      | Invalidate the local authentik password. External source passwords are not changed.   | Enabled                        |
+| **Delete sessions**            | Terminate all active sessions                                                        | Enabled                        |
+| **Revoke tokens**              | Delete all tokens and grants (API, app password, recovery, verification, OAuth)       | Enabled                        |
+| **Completion flow**            | Flow for self-service completion (must not require auth)                             | None                           |
+| **Self-service message title** | Title shown after self-service lockdown                                              | "Your account has been locked" |
+| **Self-service message**       | HTML message shown after self-service lockdown                                       | Default HTML                   |
 
 :::warning
 Disabling **Delete sessions** is not recommended as it would allow an attacker with an active session to continue using the account.
@@ -35,9 +35,7 @@ Disabling **Delete sessions** is not recommended as it would allow an attacker w
 
 ## Target user resolution
 
-The stage reads the `user_uuid` query parameter that was attached to the lockdown flow URL when the flow was started.
-
-When the flow is already running, authentik stores the flow query parameters in the session. The stage resolves the target user from that stored value first, then falls back to the current request query string.
+The account lockdown API pre-plans the flow with the selected user as the flow's `pending_user`. The stage uses that `pending_user` as the account to lock.
 
 The resolved target must be:
 
@@ -82,10 +80,10 @@ Creates a **User Lockdown Triggered** event. Use [Notification Rules](../../../.
 ### Policy to show a completion stage only for administrator-triggered lockdowns
 
 ```python
-target_uuid = (request.http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
-current_user_uuid = str(getattr(request.user, "pk", "") or getattr(request.http_request.user, "pk", ""))
+target_user = request.context.get("pending_user")
+current_user = request.http_request.user
 
-return bool(target_uuid) and target_uuid != current_user_uuid
+return bool(target_user and current_user and target_user.pk != current_user.pk)
 ```
 
 ### Dynamic warning message
@@ -93,23 +91,20 @@ return bool(target_uuid) and target_uuid != current_user_uuid
 Prompt field with **Initial value expression** enabled:
 
 ```python
-target_uuid = (http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
-current_user_uuid = str(getattr(user, "pk", "") or getattr(http_request.user, "pk", ""))
-is_self_service = not target_uuid or target_uuid == current_user_uuid
+target = user
+current_user = http_request.user
+is_self_service = bool(target and current_user and target.pk == current_user.pk)
 from django.utils.html import escape
 
 if is_self_service:
     return """<p><strong>This will immediately:</strong></p>
     <ul>
-        <li>Invalidate your password</li>
+        <li>Invalidate your local authentik password</li>
         <li>Deactivate your account</li>
         <li>Terminate all sessions</li>
         <li>Revoke all tokens</li>
     </ul>"""
 else:
-    from authentik.core.models import User
-
-    target = User.objects.filter(pk=target_uuid).first()
     if target:
         return f"<p><strong>Locking down:</strong></p><p><code>{escape(target.username)}</code></p>"
     return "<p><strong>Locking down the selected account.</strong></p>"
@@ -119,5 +114,5 @@ else:
 
 | Error                      | Cause                                      |
 | -------------------------- | ------------------------------------------ |
-| "No target user specified" | No valid target user found in the flow URL |
+| "No target user specified" | No valid pending user found in the flow    |
 | Failure                    | The stage returns an invalid response      |
