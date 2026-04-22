@@ -4,7 +4,6 @@ from django.db.models import Model, QuerySet
 from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 
 from authentik.core.models import Session, Token, User, UserTypes
@@ -20,16 +19,9 @@ QS_LOCKDOWN_USER = "user_uuid"
 TARGET_REQUIRED_MESSAGE = _("No target user specified for account lockdown")
 PERMISSION_DENIED_MESSAGE = _("You do not have permission to lock down this account.")
 ACCOUNT_LOCKDOWN_FAILED_MESSAGE = _("Account lockdown failed for this account.")
-SELF_SERVICE_FAILURE_MESSAGE_TITLE = _("Account lockdown failed")
-SELF_SERVICE_FAILURE_MESSAGE = _(
-    "<p>We could not lock your account. Please contact your administrator or "
-    "security team for assistance.</p>"
+SELF_SERVICE_COMPLETION_FLOW_REQUIRED_MESSAGE = _(
+    "Self-service account lockdown requires a completion flow."
 )
-
-
-def render_lockdown_message_html(title: str, body: str) -> str:
-    """Render simple lockdown message markup."""
-    return f"<h1>{escape(title)}</h1>{body}"
 
 
 def get_lockdown_target_users() -> QuerySet[User]:
@@ -185,6 +177,9 @@ class AccountLockdownStageView(StageView):
 
         reason = self.get_reason()
         self_service = self.is_self_service(request, user)
+        if self_service and stage.delete_sessions and not stage.self_service_completion_flow:
+            self.logger.warning("No completion flow configured for self-service account lockdown")
+            return self.executor.stage_invalid(SELF_SERVICE_COMPLETION_FLOW_REQUIRED_MESSAGE)
 
         self.logger.info(
             "Executing account lockdown",
@@ -202,8 +197,6 @@ class AccountLockdownStageView(StageView):
             self.logger.info("Account lockdown completed", user=user.username)
         except Exception as exc:  # noqa: BLE001
             self.logger.warning("Account lockdown failed", user=user.username, exc=exc)
-            if self_service:
-                return self._self_service_message_response(request, stage, success=False)
             return self.executor.stage_invalid(ACCOUNT_LOCKDOWN_FAILED_MESSAGE)
 
         if self_service:
@@ -236,18 +229,4 @@ class AccountLockdownStageView(StageView):
                 kwargs={"flow_slug": completion_flow.slug},
             )
             return HttpResponseRedirect(redirect_to)
-        return self._self_service_message_response(request, stage, success=True)
-
-    def _self_service_message_response(
-        self, request: HttpRequest, stage: AccountLockdownStage, *, success: bool
-    ) -> HttpResponse:
-        """Return a message response for self-service lockdowns."""
-        if stage.delete_sessions and hasattr(request, "session"):
-            request.session.flush()
-        if success:
-            title = stage.self_service_message_title
-            body = stage.self_service_message_body
-        else:
-            title = SELF_SERVICE_FAILURE_MESSAGE_TITLE
-            body = SELF_SERVICE_FAILURE_MESSAGE
-        return HttpResponse(render_lockdown_message_html(title, body))
+        return self.executor.stage_invalid(SELF_SERVICE_COMPLETION_FLOW_REQUIRED_MESSAGE)

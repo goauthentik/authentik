@@ -262,6 +262,26 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
             reverse("authentik_core:if-flow", kwargs={"flow_slug": completion_flow.slug}),
         )
 
+    def test_lockdown_self_service_requires_completion_flow(self):
+        """Test self-service lockdown fails before deleting sessions without a completion flow."""
+        self.stage.self_service_completion_flow = None
+        self.stage.save()
+
+        self.target_user.is_active = True
+        self.target_user.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        view = self.make_stage_view(plan)
+        request = self.make_request(
+            user=self.target_user, query={QS_LOCKDOWN_USER: str(self.target_user.pk)}
+        )
+
+        response = view.dispatch(request)
+
+        self.assertEqual(response.status_code, 400)
+        self.target_user.refresh_from_db()
+        self.assertTrue(self.target_user.is_active)
+
     def test_lockdown_denies_other_user_without_permission(self):
         """Test lockdown stage rejects non-self requests without change_user permission."""
         actor = create_test_user()
