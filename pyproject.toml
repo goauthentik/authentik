@@ -33,7 +33,7 @@ dependencies = [
   "drf-spectacular==0.29.0",
   "dumb-init==1.2.5.post1",
   "duo-client==5.6.1",
-  "fido2==2.1.1",
+  "fido2==2.2.0",
   "geoip2==5.2.0",
   "geopy==2.4.1",
   "google-api-python-client==2.194.0",
