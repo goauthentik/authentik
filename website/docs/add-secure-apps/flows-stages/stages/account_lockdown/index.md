@@ -19,13 +19,13 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 
 ## Stage settings
 
-| Setting                   | Description                                                                        | Default |
-| ------------------------- | ---------------------------------------------------------------------------------- | ------- |
-| **Deactivate user**       | Set `is_active` to False                                                           | Enabled |
+| Setting                   | Description                                                                         | Default |
+| ------------------------- | ----------------------------------------------------------------------------------- | ------- |
+| **Deactivate user**       | Set `is_active` to False                                                            | Enabled |
 | **Set unusable password** | Invalidate the local authentik password. External source passwords are not changed. | Enabled |
-| **Delete sessions**       | Terminate all active sessions                                                      | Enabled |
+| **Delete sessions**       | Terminate all active sessions                                                       | Enabled |
 | **Revoke tokens**         | Delete all tokens and grants (API, app password, recovery, verification, OAuth)     | Enabled |
-| **Completion flow**       | Flow for self-service completion (must not require auth)                           | None    |
+| **Completion flow**       | Flow for self-service completion (must not require auth)                            | None    |
 
 :::warning
 Disabling **Delete sessions** is not recommended as it would allow an attacker with an active session to continue using the account.
@@ -110,7 +110,7 @@ else:
 
 ## Error handling
 
-| Error                      | Cause                                      |
-| -------------------------- | ------------------------------------------ |
-| "No target user specified" | No valid pending user found in the flow    |
-| Failure                    | The stage returns an invalid response      |
+| Error                      | Cause                                   |
+| -------------------------- | --------------------------------------- |
+| "No target user specified" | No valid pending user found in the flow |
+| Failure                    | The stage returns an invalid response   |
