@@ -889,24 +889,8 @@
   <source>Not used by any other object.</source>
   <target>Başka bir nesne tarafından kullanılmaz.</target>
 </trans-unit>
-<trans-unit id="s10922bd0ac765562">
-  <source>object will be DELETED</source>
-  <target>nesne SILİNECEK</target>
-</trans-unit>
-<trans-unit id="sf3981f36525b0dbd">
-  <source>connection will be deleted</source>
-  <target>bağlantı silinecek</target>
-</trans-unit>
-<trans-unit id="s93cf77a59db53395">
-  <source>reference will be reset to default value</source>
-  <target>referans varsayılan değere sıfırlanır</target>
-</trans-unit>
-<trans-unit id="s3e211d29fa10f843">
-  <source>reference will be set to an empty value</source>
-  <target>referans boş bir değere ayarlanacaktır</target>
-</trans-unit>
 <trans-unit id="s55fa598b754cc3cc">
-  <source><x id="0" equiv-text="${ub.name}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
+  <source><x id="0" equiv-text="${item.username}"/> (<x id="1" equiv-text="${item.name}"/>)</source>
   <target><x id="0" equiv-text="${ub.name}"/> (<x id="1" equiv-text="${consequence}"/>)</target>
 </trans-unit>
 <trans-unit id="sdc673e73b5c13aea">
@@ -924,10 +908,6 @@
 <trans-unit id="se33b158a1ec02a09">
   <source>Successfully deleted <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/></source>
   <target><x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/> Başarıyla silindi</target>
-</trans-unit>
-<trans-unit id="sf6eb148db23d19de">
-  <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
-  <target><x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/> Silinemedi</target>
 </trans-unit>
 <trans-unit id="s039b6434e8a75560">
   <source>Delete <x id="0" equiv-text="${this.objectLabel}"/></source>
@@ -1285,15 +1265,15 @@
   <source>Configure Bindings</source>
 </trans-unit>
 <trans-unit id="s030ac0829bb50a49">
-  <source>Policy <x id="0" equiv-text="${v.policyObj?.name}"/></source>
+  <source>Policy <x id="0" equiv-text="${item.policyObj?.name}"/></source>
   <target>İlke <x id="0" equiv-text="${item.policyObj?.name}"/></target>
 </trans-unit>
 <trans-unit id="s2a64d2dca3da9b0e">
-  <source>Group <x id="0" equiv-text="${v.groupObj?.name}"/></source>
+  <source>Group <x id="0" equiv-text="${item.groupObj?.name}"/></source>
   <target>Grup <x id="0" equiv-text="${item.groupObj?.name}"/></target>
 </trans-unit>
 <trans-unit id="se5dc026819a32ff8">
-  <source>User <x id="0" equiv-text="${v.userObj?.name}"/></source>
+  <source>User <x id="0" equiv-text="${item.userObj?.name || item.userObj?.username}"/></source>
   <target>Kullanıcı <x id="0" equiv-text="${item.userObj?.name}"/></target>
 </trans-unit>
 <trans-unit id="sc387b20e6d629087">
@@ -2478,17 +2458,6 @@
   <source>Don't show this message again.</source>
   <target>Bu mesajı bir daha göstermeyin.</target>
 </trans-unit>
-<trans-unit id="s070fdfb03034ca9b">
-  <source>One hint, 'New Application Wizard', is currently hidden</source>
-  <target>Bir ipucu, 'Yeni Uygulama Sihirbazı' şu anda gizli</target>
-</trans-unit>
-<trans-unit id="sf2da0e95c78f2cb7">
-  <source>Restore Application Wizard Hint</source>
-  <target>Uygulama Geri Yükleme Sihirbazı İpucu</target>
-</trans-unit>
-<trans-unit id="s8aac845c63f45ca2">
-  <source>Create with wizard</source>
-</trans-unit>
 <trans-unit id="sd1a5560fde6f2271">
   <source>Successfully imported provider.</source>
   <target>Sağlayıcı başarıyla içe aktarıldı.</target>
@@ -2637,10 +2606,6 @@
 </trans-unit>
 <trans-unit id="s0fb31bb136cc353a">
   <source>Provider not assigned to any application.</source>
-</trans-unit>
-<trans-unit id="sc9175cb129fdc306">
-  <source>Update <x id="0" equiv-text="${this.objectLabel}"/></source>
-  <target><x id="0" equiv-text="${item.verboseName}"/> Güncelleştir</target>
 </trans-unit>
 <trans-unit id="s3b579c4bb6b447ae">
   <source>Successfully triggered sync.</source>
@@ -3446,13 +3411,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
 </trans-unit>
 <trans-unit id="s775f81ca91aa2d0c">
   <source>Policy actions</source>
-</trans-unit>
-<trans-unit id="s911a27022aba349f">
-  <source>Create and bind Policy</source>
-  <target>İlke oluşturma ve bağlama</target>
-</trans-unit>
-<trans-unit id="s080af72866b69b3d">
-  <source>Bind existing <x id="0" equiv-text="${this.allowedTypesLabel}"/></source>
 </trans-unit>
 <trans-unit id="sb7af25ce6e30d61a">
   <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
@@ -5013,28 +4971,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
 <trans-unit id="sbb57cd8a3ed12915">
   <source>Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.</source>
   <target>360 gün boyunca geçerlidir, bundan sonra parola otomatik olarak dönecektir. Parolayı Token Listesi'nden kopyalayabilirsiniz.</target>
-</trans-unit>
-<trans-unit id="s648ba5092c27baa3">
-  <source>Are you sure you want to delete <x id="0" equiv-text="${this.objectLabel}${objName}"/>?</source>
-</trans-unit>
-<trans-unit id="s4414164d120de61a">
-  <source>The following objects use <x id="0" equiv-text="${objName}"/></source>
-  <target>Aşağıdaki nesneler <x id="0" equiv-text="${objName}"/> kullanır</target>
-</trans-unit>
-<trans-unit id="s92e241c9f3c101a2">
-  <source>connecting object will be deleted</source>
-  <target>bağlantılı nesne silinecek</target>
-</trans-unit>
-<trans-unit id="se6a13beff646557b">
-  <source>Successfully updated <x id="0" equiv-text="${this.objectLabel} ${this.getObjectDisplayName()}"/></source>
-  <target><x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"/> Başarıyla güncellendi</target>
-</trans-unit>
-<trans-unit id="s14401ff4a0cba208">
-  <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
-  <target><x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/> Güncellemesi başarısız oldu</target>
-</trans-unit>
-<trans-unit id="sa8e65d6274f9e2b9">
-  <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}${objName}"/>?</source>
 </trans-unit>
 <trans-unit id="s1fd02f07e4fa3312">
   <source>Impersonating user...</source>
@@ -8440,9 +8376,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s6cd96061d397f7b5">
   <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
 </trans-unit>
-<trans-unit id="sb7ff80582ccd9348">
-  <source>reference will be left dangling</source>
-</trans-unit>
 <trans-unit id="s0b7ddc0168e79ea2">
   <source>Failed to fetch files</source>
 </trans-unit>
@@ -10092,12 +10025,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s56723699a26ba7a9">
   <source>Search for a file by name...</source>
 </trans-unit>
-<trans-unit id="sc1fc93e04011152f">
-  <source>New Stage</source>
-</trans-unit>
-<trans-unit id="s0f2367a322aa1549">
-  <source>Bind Existing Stage</source>
-</trans-unit>
 <trans-unit id="s8262b0e4fe70ebcc">
   <source>Flow Name</source>
 </trans-unit>
@@ -10546,6 +10473,156 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s3c12d23036471dfc">
   <source>Dialog content</source>
+</trans-unit>
+<trans-unit id="s83fc3142af4bc45f">
+  <source>Require Flow token (flow can only be executed from a generated recovery link)</source>
+</trans-unit>
+<trans-unit id="s5ca66a541124edd6">
+  <source>Bind New Policy</source>
+</trans-unit>
+<trans-unit id="sb41bc87dec355a91">
+  <source>Select the type of policy you want to create.</source>
+</trans-unit>
+<trans-unit id="sea431948ed259f17">
+  <source>Bind Existing...</source>
+</trans-unit>
+<trans-unit id="s6cd8c9a536fe9778">
+  <source>Select a type to bind an existing object instead of creating a new one.</source>
+</trans-unit>
+<trans-unit id="s7ca1155850af5440">
+  <source>Bind a user</source>
+</trans-unit>
+<trans-unit id="s5d4ac457eb786153">
+  <source>Statically bind an existing user.</source>
+</trans-unit>
+<trans-unit id="s55a97843ee3327da">
+  <source>Bind a group</source>
+</trans-unit>
+<trans-unit id="s9759d2c08dac5743">
+  <source>Statically bind an existing group.</source>
+</trans-unit>
+<trans-unit id="sca7f18bb58977958">
+  <source>Bind an existing policy</source>
+</trans-unit>
+<trans-unit id="sad707c5789636382">
+  <source>Bind an existing policy.</source>
+</trans-unit>
+<trans-unit id="s2b9ad6a5bc47ea5d">
+  <source>Create or bind...</source>
+</trans-unit>
+<trans-unit id="s9ec971c7789af83a">
+  <source>Bind New Stage</source>
+</trans-unit>
+<trans-unit id="s0bc6ba00a01970db">
+  <source>Select the type of stage you want to create.</source>
+</trans-unit>
+<trans-unit id="s17740986a2eb4322">
+  <source>Existing Stage</source>
+</trans-unit>
+<trans-unit id="saf2e473d40ad27c5">
+  <source>Bind an existing stage to this flow.</source>
+</trans-unit>
+<trans-unit id="s2483be7a0f8aa9aa">
+  <source>Deactivating...</source>
+</trans-unit>
+<trans-unit id="s29c097ef085ee657">
+  <source>Activating...</source>
+</trans-unit>
+<trans-unit id="s88e4a2cee2cad378">
+  <source>Unknown user</source>
+</trans-unit>
+<trans-unit id="form.headline.deactivation">
+  <source>Review <x id="0" equiv-text="${this.verboseName}"/> Deactivation</source>
+</trans-unit>
+<trans-unit id="form.headline.activation">
+  <source>Review <x id="0" equiv-text="${this.verboseName}"/> Activation</source>
+</trans-unit>
+<trans-unit id="usedBy.associated-objects.label">
+  <source>Objects associated with this user</source>
+</trans-unit>
+<trans-unit id="sa2ddb53b55f7432b">
+  <source>Objects</source>
+</trans-unit>
+<trans-unit id="s35fc18677970b01f">
+  <source>Related object</source>
+</trans-unit>
+<trans-unit id="used-by.consequence.cascade-many">
+  <source>Connection will be deleted</source>
+</trans-unit>
+<trans-unit id="used-by.consequence.set-default">
+  <source>Reference will be reset to default value</source>
+</trans-unit>
+<trans-unit id="used-by.consequence.set-null">
+  <source>Reference will be set to an empty value</source>
+</trans-unit>
+<trans-unit id="used-by.consequence.left-dangling">
+  <source><x id="0" equiv-text="${verboseName}"/> will be left dangling (may cause errors)</source>
+</trans-unit>
+<trans-unit id="used-by.consequence.unknown-default-open-api">
+  <source><x id="0" equiv-text="${verboseName}"/> has an unknown relationship (check logs)</source>
+</trans-unit>
+<trans-unit id="used-by.consequence.unrecognized">
+  <source><x id="0" equiv-text="${verboseName}"/> has an unrecognized relationship (check logs)</source>
+</trans-unit>
+<trans-unit id="s539942ab7cc7210e">
+  <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/></source>
+</trans-unit>
+<trans-unit id="sc420894701de5ea3">
+  <source>Modify</source>
+</trans-unit>
+<trans-unit id="s002c306b920f1e95">
+  <source>Modifying</source>
+</trans-unit>
+<trans-unit id="s37293a6cacedffe2">
+  <source>Unnamed object</source>
+</trans-unit>
+<trans-unit id="usedBy.description">
+  <source>List of objects that are associated with this <x id="0" equiv-text="${verboseName}"/>.</source>
+</trans-unit>
+<trans-unit id="s2f93abbfddb3830d">
+  <source>Object Name</source>
+</trans-unit>
+<trans-unit id="scdb4a00d50beb88a">
+  <source>Consequence</source>
+</trans-unit>
+<trans-unit id="form-group.default-label">
+  <source>Details</source>
+</trans-unit>
+<trans-unit id="used-by.consequence.cascade">
+  <source><x id="0" equiv-text="${relationName}"/> will be deleted</source>
+  <note from="lit-localize">Consequence of deletion, when the related object will also be deleted. The name of the related object will be included, in the format 'Related object will be deleted'.</note>
+</trans-unit>
+<trans-unit id="user.display.unknownUser">
+  <source>Unknown user</source>
+  <note from="lit-localize">Placeholder for an unknown user, in the format 'Unknown user'.</note>
+</trans-unit>
+<trans-unit id="usedBy.count.other">
+  <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${usedByList.length}"/> objects.</source>
+  <note from="lit-localize">Plural: N objects use this entity.</note>
+</trans-unit>
+<trans-unit id="usedBy.count.one">
+  <source><x id="0" equiv-text="${verboseName}"/> is associated with one object.</source>
+  <note from="lit-localize">Singular: exactly one object uses this entity.</note>
+</trans-unit>
+<trans-unit id="table.empty">
+  <source>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</source>
+  <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
+</trans-unit>
+<trans-unit id="user.display.emailInAngleBrackets">
+  <source>&lt;<x id="0" equiv-text="${email}"/>&gt;</source>
+  <note from="lit-localize">The user's email in angle brackets, used when the email is different from the username</note>
+</trans-unit>
+<trans-unit id="user.display.nameInParens">
+  <source>(<x id="0" equiv-text="${name}"/>)</source>
+  <note from="lit-localize">The user's name in parentheses, used when the name is different from the username</note>
+</trans-unit>
+<trans-unit id="used-by-list-item">
+  <source><x id="0" equiv-text="${formattedName}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
+  <note from="lit-localize">Used in list item, showing the name of the object and the consequence of deletion.</note>
+</trans-unit>
+<trans-unit id="usedBy.count.zero">
+  <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
+  <note from="lit-localize">Zero: no objects use this entity.</note>
 </trans-unit>
 </body>
 </file>
