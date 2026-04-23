@@ -34,7 +34,7 @@ use tokio::{
     sync::Mutex,
     time::{Duration, interval},
 };
-use tracing::{info, trace, warn};
+use tracing::{info, instrument, trace, warn};
 
 use crate::server::socket_path;
 
@@ -108,6 +108,7 @@ impl Worker {
         self.shutdown(Signal::SIGINT).await
     }
 
+    #[instrument(skip_all)]
     fn is_alive(&mut self) -> bool {
         let try_wait = self.worker.try_wait();
         match try_wait {
@@ -132,6 +133,7 @@ impl Worker {
         result.is_ok()
     }
 
+    #[instrument(skip_all)]
     async fn health_live(&self) -> Result<bool> {
         let req = Request::builder()
             .method("GET")
@@ -141,6 +143,7 @@ impl Worker {
         Ok(self.client.request(req).await?.status().is_success())
     }
 
+    #[instrument(skip_all)]
     async fn health_ready(&self) -> Result<bool> {
         let req = Request::builder()
             .method("GET")
@@ -150,6 +153,7 @@ impl Worker {
         Ok(self.client.request(req).await?.status().is_success())
     }
 
+    #[instrument(skip_all)]
     async fn notify_metrics(&self) -> Result<()> {
         let req = Request::builder()
             .method("GET")
@@ -212,6 +216,7 @@ impl Workers {
         results.into_iter().find(Result::is_err).unwrap_or(Ok(()))
     }
 
+    #[instrument(skip_all)]
     async fn are_alive(&self) -> bool {
         for worker in self.0.lock().await.iter_mut() {
             if !worker.is_alive() {
@@ -228,6 +233,7 @@ impl Workers {
         false
     }
 
+    #[instrument(skip_all)]
     async fn health_live(&self) -> Result<bool> {
         for worker in self.0.lock().await.iter() {
             if !worker.health_live().await? {
@@ -237,6 +243,7 @@ impl Workers {
         Ok(true)
     }
 
+    #[instrument(skip_all)]
     async fn health_ready(&self) -> Result<bool> {
         for worker in self.0.lock().await.iter() {
             if !worker.health_ready().await? {
@@ -246,6 +253,7 @@ impl Workers {
         Ok(true)
     }
 
+    #[instrument(skip_all)]
     pub(crate) async fn notify_metrics(&self) -> Result<()> {
         if let Some(worker) = self.0.lock().await.iter().next() {
             worker.notify_metrics().await?;

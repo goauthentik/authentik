@@ -4,9 +4,11 @@ use ak_axum::error::Result;
 use ak_common::mode::Mode;
 use axum::{body::Body, extract::State, http::StatusCode, response::Response};
 use tokio::task::spawn_blocking;
+use tracing::instrument;
 
 use super::Metrics;
 
+#[instrument(skip_all)]
 pub(super) async fn metrics_handler(State(state): State<Arc<Metrics>>) -> Result<Response> {
     let mut metrics = Vec::new();
     state.prometheus.render_to_write(&mut metrics)?;
