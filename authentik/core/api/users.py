@@ -820,6 +820,8 @@ class UserViewSet(
     ) -> Response:
         """Set a user's password from a pre-hashed Django password value.
 
+        Submit the Django password hash in the shared ``password`` request field.
+
         This updates authentik's local password verifier only. It does not attempt
         to propagate the password change to LDAP or Kerberos because no raw password
         is available from the request payload.
