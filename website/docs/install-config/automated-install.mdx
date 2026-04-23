@@ -12,7 +12,7 @@ These can't be defined using the file-based syntax (`file://`), so you can't pas
 
 Configure the default password for the `akadmin` user using a pre-hashed Django password value. Only read on the first startup.
 
-This stores the hash directly as authentik's local password verifier. Because authentik never sees the raw password, this does not propagate the password to LDAP or Kerberos integrations, even when password writeback is enabled.
+This stores the hash directly as authentik's local password verifier. Because authentik never sees the raw password, hashed-password imports do not propagate the password to LDAP or Kerberos integrations, even when password writeback is enabled.
 
 To generate a hash, run this command before your initial deployment:
 
@@ -57,7 +57,7 @@ Setting both `AUTHENTIK_BOOTSTRAP_PASSWORD` and `AUTHENTIK_BOOTSTRAP_PASSWORD_HA
 
 For post-install automation, hashed passwords can also be set via blueprints with the `password_hash` user attribute, or via the `/api/v3/core/users/<id>/set_password_hash/` API endpoint with the hash provided in the `password` field. The API endpoint requires the `authentik_core.set_user_password_hash` permission and can target regular users or service accounts.
 
-These paths also only update authentik's local password verifier and do not propagate to LDAP or Kerberos integrations.
+These paths share the same local-verifier-only behavior as `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`.
 
 ### `AUTHENTIK_BOOTSTRAP_TOKEN`
 

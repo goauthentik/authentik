@@ -70,7 +70,7 @@ For example:
 
 `password` and `password_hash` are mutually exclusive; setting both on the same user causes blueprint validation to fail.
 
-Because no raw password is available when `password_hash` is used, authentik only updates the local password verifier. This does not propagate the password to LDAP or Kerberos integrations, even when password writeback is enabled.
+`password_hash` follows the [hashed-password import behavior](../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash): it updates only authentik's local password verifier and does not propagate to LDAP or Kerberos integrations.
 
 ### `permissions`
 
