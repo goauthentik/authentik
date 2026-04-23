@@ -1,8 +1,6 @@
 from http import HTTPStatus
 from os import environ
-from unittest.mock import MagicMock, patch
 
-from django.core.management import call_command
 from django.urls import reverse
 
 from authentik.blueprints.tests import apply_blueprint
@@ -11,11 +9,11 @@ from authentik.core.models import Token, TokenIntents, User
 from authentik.flows.models import Flow
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
-from authentik.tenants.flags import patch_flag, set_flag
+from authentik.root.signals import post_startup, pre_startup
+from authentik.tenants.flags import patch_flag
 
 
 class TestSetup(FlowTestCase):
-
     def tearDown(self):
         environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
         environ.pop("AUTHENTIK_BOOTSTRAP_TOKEN", None)
@@ -78,7 +76,7 @@ class TestSetup(FlowTestCase):
     @apply_blueprint("system/bootstrap.yaml")
     def test_setup_flow_full(self):
         """Test full setup flow"""
-        set_flag(Setup, False)
+        Setup.set(False)
 
         res = self.client.get(reverse("authentik_core:setup"))
         self.assertEqual(res.status_code, HTTPStatus.FOUND)
@@ -142,15 +140,12 @@ class TestSetup(FlowTestCase):
     def test_setup_bootstrap_env(self):
         """Test setup with env vars"""
         User.objects.filter(username="akadmin").delete()
-        set_flag(Setup, False)
+        Setup.set(False)
 
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD"] = generate_id()
         environ["AUTHENTIK_BOOTSTRAP_TOKEN"] = generate_id()
-        with patch(
-            "django_dramatiq_postgres.management.commands.worker.Command.handle",
-            MagicMock(return_value=None),
-        ):
-            call_command("worker")
+        pre_startup.send(sender=self)
+        post_startup.send(sender=self)
 
         self.assertTrue(Setup.get())
         user = User.objects.get(username="akadmin")

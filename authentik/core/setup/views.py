@@ -14,7 +14,6 @@ from authentik.core.apps import Setup
 from authentik.flows.models import Flow, FlowAuthenticationRequirement, in_memory_stage
 from authentik.flows.planner import FlowPlanner
 from authentik.flows.stage import StageView
-from authentik.tenants.flags import set_flag
 
 LOGGER = get_logger()
 FLOW_CONTEXT_START_BY = "goauthentik.io/core/setup/started-by"
@@ -69,7 +68,7 @@ class PostSetupStageView(StageView):
     def get(self, requeset: HttpRequest, *args, **kwargs):
         with transaction.atomic():
             # Remember we're setup
-            set_flag(Setup, True)
+            Setup.set(True)
             # Disable OOBE Blueprints
             BlueprintInstance.objects.filter(
                 **{"metadata__labels__blueprints.goauthentik.io/system-oobe": "true"}

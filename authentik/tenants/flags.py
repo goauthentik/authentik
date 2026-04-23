@@ -4,6 +4,7 @@ from functools import wraps
 from typing import TYPE_CHECKING, Any, Literal
 
 from django.db import DatabaseError, InternalError, ProgrammingError
+from django.db.models import F, Func, JSONField, Value
 
 from authentik.lib.utils.reflection import all_subclasses
 
@@ -26,18 +27,38 @@ class Flag[T]:
         return self.__key
 
     @classmethod
-    def get(cls) -> T | None:
+    def get(cls, tenant: Tenant | None = None) -> T | None:
         from authentik.tenants.utils import get_current_tenant
+
+        if not tenant:
+            tenant = get_current_tenant(["flags"])
 
         flags = {}
         try:
-            flags: dict[str, Any] = get_current_tenant(["flags"]).flags
+            flags: dict[str, Any] = tenant.flags
         except DatabaseError, ProgrammingError, InternalError:
             pass
         value = flags.get(cls.__key, None)
         if value is None:
             return cls().get_default()
         return value
+
+    @classmethod
+    def set(cls, value: T, tenant: Tenant | None = None) -> T | None:
+        from authentik.tenants.models import Tenant
+        from authentik.tenants.utils import get_current_tenant
+
+        if not tenant:
+            tenant = get_current_tenant()
+
+        Tenant.objects.filter(pk=tenant.pk).update(
+            flags=Func(
+                F("flags"),
+                Value([cls.__key]),
+                Value(value, JSONField()),
+                function="jsonb_set",
+            )
+        )
 
     def get_default(self) -> T | None:
         return self.default
@@ -54,14 +75,6 @@ class Flag[T]:
             if exclude_system and flag.visibility == "system":
                 continue
             yield flag
-
-
-def set_flag[T](flag: Flag[T], value: T):
-    from authentik.tenants.utils import get_current_tenant
-
-    tenant = get_current_tenant()
-    tenant.flags[flag().key] = value
-    tenant.save()
 
 
 def patch_flag[T](flag: Flag[T], value: T):

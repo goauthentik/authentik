@@ -10,7 +10,6 @@ from authentik.core.apps import Setup
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.tasks.test import use_test_broker
-from authentik.tenants.flags import set_flag
 from tests._process import TestDatabaseProcess
 from tests.decorators import IS_CI, get_local_ip
 from tests.docker import DockerTestCase
@@ -29,7 +28,7 @@ class E2ETestMixin(DockerTestCase):
         self.wait_timeout = 60
         self.logger = get_logger()
         self.user = create_test_admin_user()
-        set_flag(Setup, True)
+        Setup.set(True)
         super().setUp()
 
     @classmethod
