@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 from json import loads
 
+from django.contrib.auth.hashers import make_password
 from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
@@ -112,6 +113,39 @@ class TestUsersAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"password": ["This field may not be blank."]})
+
+    def test_set_password_hash(self):
+        """Test setting a user's password from a hash."""
+        self.client.force_login(self.admin)
+        password = generate_key()
+        password_hash = make_password(password)
+        response = self.client.post(
+            reverse("authentik_api:user-set-password-hash", kwargs={"pk": self.user.pk}),
+            data={"password_hash": password_hash},
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.password, password_hash)
+        self.assertTrue(self.user.check_password(password))
+
+    def test_set_password_hash_invalid(self):
+        """Test invalid password hashes are rejected."""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-set-password-hash", kwargs={"pk": self.user.pk}),
+            data={"password_hash": "not-a-valid-hash"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "password_hash": [
+                    "Invalid password hash format. Must be a valid Django password hash."
+                ]
+            },
+        )
 
     def test_recovery(self):
         """Test user recovery link"""
