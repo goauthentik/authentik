@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any
 
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse
+from django.utils.translation import gettext as _
 from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
@@ -26,6 +27,7 @@ from authentik.lib.config import CONFIG
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine
+from authentik.policies.types import PolicyResult
 from authentik.root.middleware import ClientIPMiddleware
 
 if TYPE_CHECKING:
@@ -226,6 +228,15 @@ class FlowPlanner:
             and context.get(PLAN_CONTEXT_IS_REDIRECTED) is None
         ):
             raise FlowNonApplicableException()
+        if (
+            self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_TOKEN
+            and context.get(PLAN_CONTEXT_IS_RESTORED) is None
+        ):
+            raise FlowNonApplicableException(
+                PolicyResult(
+                    False, _("This link is invalid or has expired. Please request a new one.")
+                )
+            )
         outpost_user = ClientIPMiddleware.get_outpost_user(request)
         if self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_OUTPOST:
             if not outpost_user:
@@ -273,9 +284,7 @@ class FlowPlanner:
             engine.build()
             result = engine.result
             if not result.passing:
-                exc = FlowNonApplicableException()
-                exc.policy_result = result
-                raise exc
+                raise FlowNonApplicableException(result)
             # User is passing so far, check if we have a cached plan
             cached_plan_key = cache_key(self.flow, user)
             cached_plan = cache.get(cached_plan_key, None)

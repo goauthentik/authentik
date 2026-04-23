@@ -21,6 +21,8 @@ import type {
     AgentPSSODeviceRegistrationResponse,
     AgentPSSOUserRegistrationRequest,
     AgentTokenResponse,
+    AppleIndependentSecureEnclave,
+    AppleIndependentSecureEnclaveRequest,
     Connector,
     DeviceAccessGroup,
     DeviceAccessGroupRequest,
@@ -41,6 +43,7 @@ import type {
     MDMConfigRequest,
     MDMConfigResponse,
     PaginatedAgentConnectorList,
+    PaginatedAppleIndependentSecureEnclaveList,
     PaginatedConnectorList,
     PaginatedDeviceAccessGroupList,
     PaginatedDeviceUserBindingList,
@@ -49,6 +52,7 @@ import type {
     PaginatedFleetConnectorList,
     PaginatedGoogleChromeConnectorList,
     PatchedAgentConnectorRequest,
+    PatchedAppleIndependentSecureEnclaveRequest,
     PatchedDeviceAccessGroupRequest,
     PatchedDeviceUserBindingRequest,
     PatchedEndpointDeviceRequest,
@@ -69,6 +73,8 @@ import {
     AgentPSSODeviceRegistrationResponseFromJSON,
     AgentPSSOUserRegistrationRequestToJSON,
     AgentTokenResponseFromJSON,
+    AppleIndependentSecureEnclaveFromJSON,
+    AppleIndependentSecureEnclaveRequestToJSON,
     ConnectorFromJSON,
     DeviceAccessGroupFromJSON,
     DeviceAccessGroupRequestToJSON,
@@ -89,6 +95,7 @@ import {
     MDMConfigRequestToJSON,
     MDMConfigResponseFromJSON,
     PaginatedAgentConnectorListFromJSON,
+    PaginatedAppleIndependentSecureEnclaveListFromJSON,
     PaginatedConnectorListFromJSON,
     PaginatedDeviceAccessGroupListFromJSON,
     PaginatedDeviceUserBindingListFromJSON,
@@ -97,6 +104,7 @@ import {
     PaginatedFleetConnectorListFromJSON,
     PaginatedGoogleChromeConnectorListFromJSON,
     PatchedAgentConnectorRequestToJSON,
+    PatchedAppleIndependentSecureEnclaveRequestToJSON,
     PatchedDeviceAccessGroupRequestToJSON,
     PatchedDeviceUserBindingRequestToJSON,
     PatchedEndpointDeviceRequestToJSON,
@@ -199,6 +207,41 @@ export interface EndpointsAgentsEnrollmentTokensUsedByListRequest {
 
 export interface EndpointsAgentsEnrollmentTokensViewKeyRetrieveRequest {
     tokenUuid: string;
+}
+
+export interface EndpointsAgentsPssoIseCreateRequest {
+    appleIndependentSecureEnclaveRequest: AppleIndependentSecureEnclaveRequest;
+}
+
+export interface EndpointsAgentsPssoIseDestroyRequest {
+    uuid: string;
+}
+
+export interface EndpointsAgentsPssoIseListRequest {
+    appleEnclaveKeyId?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    user?: number;
+}
+
+export interface EndpointsAgentsPssoIsePartialUpdateRequest {
+    uuid: string;
+    patchedAppleIndependentSecureEnclaveRequest?: PatchedAppleIndependentSecureEnclaveRequest;
+}
+
+export interface EndpointsAgentsPssoIseRetrieveRequest {
+    uuid: string;
+}
+
+export interface EndpointsAgentsPssoIseUpdateRequest {
+    uuid: string;
+    appleIndependentSecureEnclaveRequest: AppleIndependentSecureEnclaveRequest;
+}
+
+export interface EndpointsAgentsPssoIseUsedByListRequest {
+    uuid: string;
 }
 
 export interface EndpointsAgentsPssoRegisterDeviceCreateRequest {
@@ -1816,6 +1859,515 @@ export class EndpointsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<TokenView> {
         const response = await this.endpointsAgentsEnrollmentTokensViewKeyRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsAgentsPssoIseCreate without sending the request
+     */
+    async endpointsAgentsPssoIseCreateRequestOpts(
+        requestParameters: EndpointsAgentsPssoIseCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["appleIndependentSecureEnclaveRequest"] == null) {
+            throw new runtime.RequiredError(
+                "appleIndependentSecureEnclaveRequest",
+                'Required parameter "appleIndependentSecureEnclaveRequest" was null or undefined when calling endpointsAgentsPssoIseCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/agents/psso/ise/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AppleIndependentSecureEnclaveRequestToJSON(
+                requestParameters["appleIndependentSecureEnclaveRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIseCreateRaw(
+        requestParameters: EndpointsAgentsPssoIseCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AppleIndependentSecureEnclave>> {
+        const requestOptions =
+            await this.endpointsAgentsPssoIseCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AppleIndependentSecureEnclaveFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIseCreate(
+        requestParameters: EndpointsAgentsPssoIseCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AppleIndependentSecureEnclave> {
+        const response = await this.endpointsAgentsPssoIseCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsAgentsPssoIseDestroy without sending the request
+     */
+    async endpointsAgentsPssoIseDestroyRequestOpts(
+        requestParameters: EndpointsAgentsPssoIseDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling endpointsAgentsPssoIseDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/agents/psso/ise/{uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIseDestroyRaw(
+        requestParameters: EndpointsAgentsPssoIseDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.endpointsAgentsPssoIseDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIseDestroy(
+        requestParameters: EndpointsAgentsPssoIseDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.endpointsAgentsPssoIseDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for endpointsAgentsPssoIseList without sending the request
+     */
+    async endpointsAgentsPssoIseListRequestOpts(
+        requestParameters: EndpointsAgentsPssoIseListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["appleEnclaveKeyId"] != null) {
+            queryParameters["apple_enclave_key_id"] = requestParameters["appleEnclaveKeyId"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/agents/psso/ise/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIseListRaw(
+        requestParameters: EndpointsAgentsPssoIseListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAppleIndependentSecureEnclaveList>> {
+        const requestOptions = await this.endpointsAgentsPssoIseListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAppleIndependentSecureEnclaveListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIseList(
+        requestParameters: EndpointsAgentsPssoIseListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAppleIndependentSecureEnclaveList> {
+        const response = await this.endpointsAgentsPssoIseListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsAgentsPssoIsePartialUpdate without sending the request
+     */
+    async endpointsAgentsPssoIsePartialUpdateRequestOpts(
+        requestParameters: EndpointsAgentsPssoIsePartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling endpointsAgentsPssoIsePartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/agents/psso/ise/{uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedAppleIndependentSecureEnclaveRequestToJSON(
+                requestParameters["patchedAppleIndependentSecureEnclaveRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIsePartialUpdateRaw(
+        requestParameters: EndpointsAgentsPssoIsePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AppleIndependentSecureEnclave>> {
+        const requestOptions =
+            await this.endpointsAgentsPssoIsePartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AppleIndependentSecureEnclaveFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIsePartialUpdate(
+        requestParameters: EndpointsAgentsPssoIsePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AppleIndependentSecureEnclave> {
+        const response = await this.endpointsAgentsPssoIsePartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsAgentsPssoIseRetrieve without sending the request
+     */
+    async endpointsAgentsPssoIseRetrieveRequestOpts(
+        requestParameters: EndpointsAgentsPssoIseRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling endpointsAgentsPssoIseRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/agents/psso/ise/{uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIseRetrieveRaw(
+        requestParameters: EndpointsAgentsPssoIseRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AppleIndependentSecureEnclave>> {
+        const requestOptions =
+            await this.endpointsAgentsPssoIseRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AppleIndependentSecureEnclaveFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIseRetrieve(
+        requestParameters: EndpointsAgentsPssoIseRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AppleIndependentSecureEnclave> {
+        const response = await this.endpointsAgentsPssoIseRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsAgentsPssoIseUpdate without sending the request
+     */
+    async endpointsAgentsPssoIseUpdateRequestOpts(
+        requestParameters: EndpointsAgentsPssoIseUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling endpointsAgentsPssoIseUpdate().',
+            );
+        }
+
+        if (requestParameters["appleIndependentSecureEnclaveRequest"] == null) {
+            throw new runtime.RequiredError(
+                "appleIndependentSecureEnclaveRequest",
+                'Required parameter "appleIndependentSecureEnclaveRequest" was null or undefined when calling endpointsAgentsPssoIseUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/agents/psso/ise/{uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AppleIndependentSecureEnclaveRequestToJSON(
+                requestParameters["appleIndependentSecureEnclaveRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIseUpdateRaw(
+        requestParameters: EndpointsAgentsPssoIseUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AppleIndependentSecureEnclave>> {
+        const requestOptions =
+            await this.endpointsAgentsPssoIseUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AppleIndependentSecureEnclaveFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async endpointsAgentsPssoIseUpdate(
+        requestParameters: EndpointsAgentsPssoIseUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AppleIndependentSecureEnclave> {
+        const response = await this.endpointsAgentsPssoIseUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for endpointsAgentsPssoIseUsedByList without sending the request
+     */
+    async endpointsAgentsPssoIseUsedByListRequestOpts(
+        requestParameters: EndpointsAgentsPssoIseUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling endpointsAgentsPssoIseUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/endpoints/agents/psso/ise/{uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            `{${"uuid"}}`,
+            encodeURIComponent(String(requestParameters["uuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async endpointsAgentsPssoIseUsedByListRaw(
+        requestParameters: EndpointsAgentsPssoIseUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.endpointsAgentsPssoIseUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async endpointsAgentsPssoIseUsedByList(
+        requestParameters: EndpointsAgentsPssoIseUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.endpointsAgentsPssoIseUsedByListRaw(
             requestParameters,
             initOverrides,
         );

@@ -109,9 +109,39 @@ Alternatively, you can set the `client_secret` parameter to `<inputJWT>`, for ap
 
 Input JWTs are checked to verify that they are signed by any of the selected **Federated OIDC Sources**, and that their `exp` attribute is not set to the current time or a past time.
 
-To dynamically limit access based on the claims of the tokens, you can use [Expression policies](../../../customize/policies/types/expression/index.mdx).
+#### Kubernetes service account tokens
 
-**Example**:
+[Projected Kubernetes service account tokens](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) work with this flow. The cluster or an auxiliary service must expose the service account issuer through OpenID Connect discovery or a JWKS endpoint. In practice, this means you can:
+
+1. Create a generic **OAuth Source** in authentik.
+2. Configure the source with either the issuer's `.well-known/openid-configuration` URL or the issuer's JWKS URL.
+3. Add that source to the OAuth2 provider under **Federated OIDC Sources**.
+4. Send the projected service account token as the `client_assertion` in the `client_credentials` request.
+
+When the token validates, authentik creates or updates a generated service account and then issues a new access token from the selected OAuth2 provider. The generated account is derived from the provider name and the incoming JWT subject claim.
+
+To propagate claims from the Kubernetes token into the token issued by authentik, create an **OAuth Source Property Mapping** to transfer the incoming JWT values to the generated service account, then use an **OAuth2 Scope Mapping** to include them as claims for the relying party.
+
+Example OAuth source property mapping:
+
+```python
+return {
+    "attributes": {
+        "kubernetes_subject": info.get("sub"),
+        "kubernetes_namespace": info.get("kubernetes.io", {}).get("namespace"),
+    },
+}
+```
+
+Example OAuth2 scope mapping:
+
+```python
+return {
+    "kubernetes_namespace": request.user.attributes.get("kubernetes_namespace"),
+}
+```
+
+To dynamically limit access based on the claims of the tokens, you can use [Expression policies](../../../customize/policies/types/expression/index.mdx), for example:
 
 ```python
 return request.context["oauth_jwt"]["iss"] == "https://my.issuer"

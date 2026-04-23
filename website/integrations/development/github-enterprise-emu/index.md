@@ -22,8 +22,8 @@ The following placeholders are used in this guide:
 
 - `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
 - `authentik.company` is the FQDN of the authentik installation.
-- `GitHub Users` is an authentik group used for holding GitHub users.
-- `GitHub Admins` is an authentik group used for indicating GitHub administrators.
+- `GitHub Users` is an application entitlement used for standard GitHub Enterprise Cloud EMU users.
+- `GitHub Admins` is an application entitlement used for GitHub enterprise administrators.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -55,15 +55,15 @@ GitHub will create usernames for your EMU users based on the SAML `NameID` prope
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
     - Under **NameID Property Mapping**, set **NameID Property Mapping** to be based on the `Email` field.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page. If you add the SCIM provider as a backchannel provider later, only users who can view this application will be synchronized.
 
 3. Click **Submit** to save the new application and provider.
 
-**Create the users and administrator groups**
+**Create the user and administrator entitlements**
 
-In the authentik Admin Interface, navigate to **Directory** > **Groups** and click **Create**. Set the group's name, any other desired settings, and click **Create**. Repeat this step twice: Once for the users group and once for the administrator group.
+In the authentik Admin interface, open the GitHub EMU application that you just created, click the **Application entitlements** tab, and create two entitlements named `GitHub Users` and `GitHub Admins`.
 
-After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed.
+After creating the entitlements, open each entitlement and bind the users or groups that should receive it.
 
 ## GitHub SAML Configuration
 
@@ -96,26 +96,30 @@ You will now be prompted to save your SAML recovery codes. These will be necessa
 Before we create a SCIM provider, we also have to create a new Property Mapping. In authentik, go to _Customization_, then _Property Mappings_. Here, click _Create_, select _SCIM Provider Mapping_. Name the mapping something memorable and paste the following code in the _Expression_ field:
 
 ```python
+entitlement_names = {
+    entitlement.name
+    for entitlement in request.user.app_entitlements(provider.application)
+}
+
 roles = []
 # Edit this if statement if you need to add more GitHub roles.
 # Valid roles include:
 # user, guest_collaborator, enterprise_owner, billing_manager
-if ak_is_group_member(request.user, name='GitHub Admins'):
+if "GitHub Admins" in entitlement_names:
     roles.append({'value': 'enterprise_owner', 'primary': True})
-else:
+elif "GitHub Users" in entitlement_names:
     roles.append({'value': 'user', 'primary': True})
 return {
     "roles": roles,
 }
 ```
 
-If you named your group anything other than `GitHub Admins`, please ensure you change it in the code above.
+If you renamed either entitlement, make sure that you update the code above to match.
 
 Create a new SCIM provider with the following parameters:
 
 - URL: `https://api.github.com/scim/v2/enterprises/foo/` (Replacing `foo` with your Enterprise slug.)
 - Token: Paste the token provided from GitHub here.
-- In the _User filtering_ section, you can select your `GitHub Users` group.
 - In the _Attribute mapping_ section, de-select the `authentik default SCIM Mapping: User` mapping by selecting it on the right-hand side and clicking the left-facing single chevron.
 - Select the property mapping you created in the previous step and add it by clicking the right-facing single chevron.
 - You can leave the _Group Property Mappings_ as is.
@@ -123,4 +127,4 @@ Create a new SCIM provider with the following parameters:
 
 Go back to your GitHub EMU Application created in the first step and add your new SCIM provider in the _Backchannel Providers_ field, then click the _Update_ button.
 
-You should now be ready to assign users to your _GitHub Users_ and _GitHub Admins_ groups, which will be provisioned by the SCIM provisioner. If you do not see your users being provisioned, go to your SCIM provider and click the _Run sync again_ option. A few seconds later, you should see results of the SCIM sync.
+You should now be ready to assign users or groups to your _GitHub Users_ and _GitHub Admins_ application entitlements. Use application bindings or policies to limit which users can view the application and are synchronized by SCIM, and use the entitlements to assign the corresponding GitHub SCIM role values. If you do not see your users being provisioned, go to your SCIM provider and click the _Run sync again_ option. A few seconds later, you should see results of the SCIM sync.

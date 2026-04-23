@@ -21,9 +21,9 @@ publish = false
 [workspace.dependencies]
 arc-swap = "= 1.9.1"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
-aws-lc-rs = { version = "= 1.16.2", features = ["fips"] }
-axum = { version = "= 0.8.8", features = ["http2", "macros", "ws"] }
-clap = { version = "= 4.6.0", features = ["derive", "env"] }
+aws-lc-rs = { version = "= 1.16.3", features = ["fips"] }
+axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
+clap = { version = "= 4.6.1", features = ["derive", "env"] }
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 colored = "= 3.1.1"
 config-rs = { package = "config", version = "= 0.15.22", default-features = false, features = [
@@ -58,7 +58,7 @@ reqwest-middleware = { version = "= 0.5.1", features = [
   "query",
   "rustls",
 ] }
-rustls = { version = "= 0.23.37", features = ["fips"] }
+rustls = { version = "= 0.23.38", features = ["fips"] }
 sentry = { version = "= 0.47.0", default-features = false, features = [
   "backtrace",
   "contexts",
@@ -89,7 +89,7 @@ sqlx = { version = "= 0.8.6", default-features = false, features = [
 tempfile = "= 3.27.0"
 thiserror = "= 2.0.18"
 time = { version = "= 0.3.47", features = ["macros"] }
-tokio = { version = "= 1.51.1", features = ["full", "tracing"] }
+tokio = { version = "= 1.52.1", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
 tokio-util = { version = "= 0.7.18", features = ["full"] }
@@ -104,7 +104,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.0", features = ["serde", "v4"] }
+uuid = { version = "= 1.23.1", features = ["serde", "v4"] }
 
 ak-client = { package = "authentik-client", version = "2026.5.0-rc1", path = "./packages/client-rust" }
 ak-common = { package = "authentik-common", version = "2026.5.0-rc1", path = "./packages/ak-common", default-features = false }
