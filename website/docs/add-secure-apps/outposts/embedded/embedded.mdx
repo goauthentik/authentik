@@ -4,44 +4,51 @@ title: Embedded Outpost
 
 authentik includes an embedded outpost to simplify deployments that use the Proxy provider.
 
-The embedded outpost runs in the main `server` container, and is managed by authentik itself. The embedded outpost authenticates itself via the secret key.
+The embedded outpost runs as part of the main authentik server deployment and is managed by authentik itself. It authenticates to the authentik API by using the secret key.
 
-You can access the embedded outpost on the same ports as authentik itself, 9000 and 9443.
+You can access the embedded outpost on the same ports as authentik itself, `9000` and `9443`.
 
-If the embedded outpost doesn't make sense for your deployment, you can simply ignore it.
+## When to use the embedded outpost
 
-### Configuration
+Use the embedded outpost when you are using the proxy provider and want the simplest deployment model. It is a good fit when authentik is already behind a reverse proxy and you want proxy provider traffic to be handled by the same authentik deployment, without a separate outpost deployment.
 
-Since authentik doesn't know its own "primary" URL, there might be some configuration required.
+Use a [managed outpost](../index.mdx) instead when you want authentik to deploy and update a separate outpost through the [Docker](../integrations/docker.md) or [Kubernetes](../integrations/kubernetes.md) integrations, or when you want the outpost lifecycle to be separate from the core server.
 
-By default, when opening the admin dashboard on a fresh install, authentik will automatically configure the outpost to use the same URL as was used to access authentik.
+If the embedded outpost does not fit your deployment, you can ignore it and use a [managed outpost](../index.mdx) instead.
 
-If this isn't correct, or needs to be changed, click the edit button on the right of the outpost, and set the value of `authentik_host` to the URL you want to log in with.
-Make sure to set it to a full URL; only configuring a hostname or FQDN will not work.
+## Configuration
 
-Additionally, most of the other configuration options can be used as with any other outpost, except for items that are marked as "non-embedded".
+Because authentik does not know its own primary URL, you might need to configure the embedded outpost after installation.
+
+By default, when you open the Admin interface on a fresh install, authentik automatically configures the outpost to use the same URL that was used to access authentik.
+
+If this is not correct, navigate to **Applications** > **Outposts**, edit **authentik Embedded Outpost**, and set `authentik_host` to the correct URL.
+
+Make sure that you set a full URL. A hostname or FQDN by itself does not work.
+
+Most other outpost configuration options also apply to the embedded outpost, except for items that are marked as `non-embedded`.
 
 import Configuration from "../_config.md";
 
 <Configuration />
 
-### Routing
+## Routing
 
-Routing is handled like this:
+Requests are routed as follows:
 
-1. Paths starting with `/static`, `/media` and `/help` return packaged CSS/JS files, and user-uploaded media files.
+1. Paths starting with `/static`, `/media`, and `/help` return packaged CSS and JavaScript files, and user-uploaded media files.
 2. Paths starting with `/outpost.goauthentik.io` are sent to the embedded outpost.
 3. Any hosts configured in the providers assigned to the embedded outpost are sent to the outpost.
 4. Everything remaining is sent to the authentik backend server.
 
-### Differences
+## How the embedded outpost differs from managed outposts
 
-There are a few more differences between managed outposts and the embedded outpost, mainly due to the fact that authentik can't fully manage the containers.
+There are a few differences between managed outposts and the embedded outpost because authentik cannot fully manage the main authentik server deployment in the same way that it manages a separate outpost deployment.
 
-1. (Docker-only) No automatic traefik labels are added to the server container.
+1. Docker only: no automatic Traefik labels are added to the server container.
 
-    When you deploy a managed outpost on docker, the container has several labels to automatically configure traefik. This is not done for the embedded outpost.
+    When you deploy a managed outpost on Docker, the container includes labels that can configure Traefik automatically. The embedded outpost does not add those labels to the server container.
 
-2. (Kubernetes-only) An additional service is created.
+2. Kubernetes only: an additional Service is created.
 
-    Since authentik does not know what the normal authentik Service is called, another one is created with a common set of labels that is always set.
+    Because authentik does not know the name of the primary authentik Service, it creates another Service with a common set of labels that is always present.
