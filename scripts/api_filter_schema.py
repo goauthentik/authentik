@@ -55,6 +55,9 @@ def filter_components(schema: dict[str, Any], refs: set[str]) -> dict[str, Any]:
     filtered = {}
 
     for section, entries in components.items():
+        if section in ("securitySchemes",):
+            filtered[section] = entries
+            continue
         if not isinstance(entries, dict):
             continue
         kept = {}

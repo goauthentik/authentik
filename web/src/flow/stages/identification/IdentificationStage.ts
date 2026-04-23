@@ -122,6 +122,15 @@ export class IdentificationStage extends BaseStage<
         }
     }
 
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+    }
+
+    public override firstUpdated(): void {
+        this.focus();
+    }
+
     //#endregion
 
     //#region Helper Form
@@ -242,6 +251,7 @@ export class IdentificationStage extends BaseStage<
         autocomplete: string,
     ) {
         return html`<input
+            ${this.autofocusTarget.toRef()}
             id=${id}
             type=${type}
             name="uidField"

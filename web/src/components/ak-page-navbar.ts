@@ -7,13 +7,14 @@ import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
+import { SlottedTemplateResult } from "#elements/types";
 import { ThemedImage } from "#elements/utils/images";
 
 import Styles from "#components/ak-page-navbar.css";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -38,7 +39,7 @@ export function setPageDetails(header: PageHeaderInit) {
 
 export interface PageHeaderInit {
     header?: string | null;
-    description?: string | null;
+    description?: SlottedTemplateResult;
     icon?: string | null;
     iconImage?: boolean;
 }
@@ -73,20 +74,20 @@ export class AKPageNavbar
 
     //#region Properties
 
-    @state()
-    icon?: string | null = null;
+    @property({ attribute: false })
+    public icon?: string | null = null;
 
-    @state()
-    iconImage = false;
+    @property({ attribute: false })
+    public iconImage = false;
 
-    @state()
-    header?: string | null = null;
+    @property({ attribute: false })
+    public header?: string | null = null;
 
-    @state()
-    description?: string | null = null;
+    @property({ attribute: false })
+    public description?: SlottedTemplateResult = null;
 
-    @state()
-    hasIcon = true;
+    @property({ attribute: false })
+    public hasIcon = true;
 
     //#endregion
 

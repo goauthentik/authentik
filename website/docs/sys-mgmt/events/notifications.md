@@ -27,7 +27,7 @@ You will need to create a policy (either the **Event Matcher** policy or a custo
 
 ### Event Matcher policy
 
-For simple event matching you can [create and configure](../../customize/policies/working_with_policies.md) an **Event Matcher policy** to define which events (known as _Actions_ in the policy) will trigger a notification. For example, whenever a user deletes a model object, or whenever any user fails to successfully log in.
+For simple event matching you can create and configure an [Event Matcher Policy](../../customize/policies/types/event-matcher.md) to define which events (known as _Actions_ in the policy) will trigger a notification. For example, whenever a user deletes a model object, or whenever any user fails to successfully log in.
 
 Be aware that an event has to match all configured fields in the policy, otherwise the notification rule will not trigger.
 
@@ -48,11 +48,11 @@ For more code examples, see [notification rule expression policies](./notificati
 
 After you've created the policies to match the events you want, create a notification rule.
 
-1. Log in as an administrator, open the authentik Admin interface, and navigate to **Event > Notification Rules**.
+1. Log in as an administrator, open the authentik Admin interface, and navigate to **Event > Notification Rules**.
 
-2. Click **Create** to add a new notification rule or click the **Edit** icon next to an existing rule to modify it.
+2. Click **New Notification Rule** to add a new notification rule or click the **Edit** icon next to an existing rule to modify it.
 
-3. Define the policy configurations, and then click **Create** or **Update** to save the settings.
+3. Define the policy configurations, and then click **Create Notification Rule** or **Update** to save the settings.
 
 - Note that policies are executed regardless of whether a group is selected. However, notifications are only triggered when a group is selected.
 - You also have to select which [notification transport](./transports.md) should be used to send the notification. Two notification transports are created by default:
@@ -61,7 +61,7 @@ After you've created the policies to match the events you want, create a notific
 
 4. In the list of notification rules, click the arrow in the row of the notification rule to expand the details of the rule.
 
-5. Click **Bind existing Policy/Group/User** and in the **Create Binding** modal, select the policy that you created for this notification rule and then click **Create** to finalize the binding.
+5. Click **Bind existing Policy/Group/User** and in the **Create Binding** modal, select the policy that you created for this notification rule and then click **Create Policy Binding** to finalize the binding.
 
 :::info
 Be aware that policies are executed even when no group is selected.

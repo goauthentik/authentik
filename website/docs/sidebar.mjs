@@ -419,21 +419,38 @@ const items = [
                 },
                 items: [
                     "customize/policies/working_with_policies",
+                    "customize/policies/bindings",
                     {
                         type: "category",
-                        label: "Expression Policies",
+                        label: "Policy Types",
                         link: {
                             type: "doc",
-                            id: "customize/policies/expression",
+                            id: "customize/policies/types/index",
                         },
                         items: [
-                            "customize/policies/expression/unique_email",
-                            "customize/policies/expression/managing_flow_context_keys",
-                            "customize/policies/expression/source_switch",
-                            "customize/policies/expression/whitelist_email",
+                            "customize/policies/types/event-matcher",
+                            {
+                                type: "category",
+                                label: "Expression Policies",
+                                link: {
+                                    type: "doc",
+                                    id: "customize/policies/types/expression/index",
+                                },
+                                items: [
+                                    "customize/policies/types/expression/reference",
+                                    "customize/policies/types/expression/unique_email",
+                                    "customize/policies/types/expression/managing_flow_context_keys",
+                                    "customize/policies/types/expression/source_switch",
+                                    "customize/policies/types/expression/whitelist_email",
+                                ],
+                            },
+                            "customize/policies/types/geoip",
+                            "customize/policies/types/password",
+                            "customize/policies/types/password-expiry",
+                            "customize/policies/types/password-uniqueness",
+                            "customize/policies/types/reputation",
                         ],
                     },
-                    "customize/policies/unique_password",
                 ],
             },
             {

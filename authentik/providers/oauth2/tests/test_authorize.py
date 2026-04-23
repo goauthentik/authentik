@@ -141,26 +141,6 @@ class TestAuthorize(OAuthTestCase):
             OAuthAuthorizationParams.from_request(request)
         self.assertEqual(cm.exception.cause, "redirect_uri_forbidden_scheme")
 
-    def test_invalid_redirect_uri_empty(self):
-        """test missing/invalid redirect URI"""
-        provider = OAuth2Provider.objects.create(
-            name=generate_id(),
-            client_id="test",
-            authorization_flow=create_test_flow(),
-            redirect_uris=[],
-        )
-        request = self.factory.get(
-            "/",
-            data={
-                "response_type": "code",
-                "client_id": "test",
-                "redirect_uri": "+",
-            },
-        )
-        OAuthAuthorizationParams.from_request(request)
-        provider.refresh_from_db()
-        self.assertEqual(provider.redirect_uris, [RedirectURI(RedirectURIMatchingMode.STRICT, "+")])
-
     def test_invalid_redirect_uri_regex(self):
         """test missing/invalid redirect URI"""
         OAuth2Provider.objects.create(

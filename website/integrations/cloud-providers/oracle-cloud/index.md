@@ -28,7 +28,7 @@ To support the integration of Oracle Cloud with authentik, you need to create an
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - Optionally set the **Launch URL** to `https://cloud.oracle.com?tenant=friendly-tenant-name` where `friendly-tenant-name` is the name of the tenant used when logging in via the [Oracle Cloud website](https://cloud.oracle.com).

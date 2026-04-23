@@ -33,6 +33,7 @@ import { html, PropertyValues } from "lit";
 import { guard } from "lit-html/directives/guard.js";
 import { createRef, ref } from "lit-html/directives/ref.js";
 import { property } from "lit/decorators.js";
+import { keyed } from "lit/directives/keyed.js";
 
 export class CreateWizard extends AKElement implements TransclusionChildElement {
     /**
@@ -84,6 +85,12 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
 
     @property({ type: String, useDefault: true })
     public layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
+
+    @property({ type: String, attribute: "group-label", useDefault: true })
+    public groupLabel: string | null = null;
+
+    @property({ type: String, attribute: "group-description", useDefault: true })
+    public groupDescription: string | null = null;
 
     @property({ attribute: false, useDefault: true })
     public finalHandler?: () => Promise<void>;
@@ -266,6 +273,14 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
      */
     protected renderInitialPageContent?(): SlottedTemplateResult;
 
+    /**
+     * Optional method to render content before the type selection on the initial page,
+     * for example to offer a choice between creation and binding an existing entity.
+     */
+    protected renderCreateBefore(): SlottedTemplateResult {
+        return null;
+    }
+
     protected renderHeading(): SlottedTemplateResult {
         const { selectedType, wizard } = this;
 
@@ -292,26 +307,32 @@ export class CreateWizard extends AKElement implements TransclusionChildElement 
             .finalHandler=${this.finalHandler}
         >
             ${this.renderHeading()}
-            <ak-wizard-page-type-create
-                ${ref(this.pageTypeCreateRef)}
-                slot="initial"
-                .types=${this.creationTypes}
-                layout=${this.layout}
-                headline=${this.verboseName
-                    ? msg(str`Choose ${this.verboseName} Type`)
-                    : msg("Choose type")}
-                @ak-type-create-select=${this.typeSelectListener}
-            >
-                ${guard([initialPageContent], () => {
-                    if (!initialPageContent) {
-                        return null;
-                    }
+            ${keyed(
+                this.wizard?.activeStep,
+                html`<ak-wizard-page-type-create
+                    ${ref(this.pageTypeCreateRef)}
+                    slot="initial"
+                    .types=${this.creationTypes}
+                    layout=${this.layout}
+                    group-label=${ifPresent(this.groupLabel)}
+                    group-description=${ifPresent(this.groupDescription)}
+                    headline=${this.verboseName
+                        ? msg(str`Choose ${this.verboseName} Type`)
+                        : msg("Choose type")}
+                    @ak-type-create-select=${this.typeSelectListener}
+                >
+                    ${this.renderCreateBefore()}
+                    ${guard([initialPageContent], () => {
+                        if (!initialPageContent) {
+                            return null;
+                        }
 
-                    return html`<div>
-                        <p>${initialPageContent}</p>
-                    </div>`;
-                })}
-            </ak-wizard-page-type-create>
+                        return html`<div>
+                            <p>${initialPageContent}</p>
+                        </div>`;
+                    })}
+                </ak-wizard-page-type-create>`,
+            )}
             ${this.renderForms()}
         </ak-wizard>`;
     }
