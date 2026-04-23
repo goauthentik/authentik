@@ -1,6 +1,5 @@
 from json import loads
 from ssl import PEM_FOOTER, PEM_HEADER
-from urllib.parse import quote_plus
 
 from django.urls import reverse
 from requests_mock import Mocker
@@ -54,7 +53,7 @@ class FleetConnectorStageTests(FlowTestCase):
 
     def _format_traefik(self, cert: str | None = None):
         cert = cert if cert else self.host_cert
-        return quote_plus(cert.replace(PEM_HEADER, "").replace(PEM_FOOTER, "").replace("\n", ""))
+        return cert.replace(PEM_HEADER, "").replace(PEM_FOOTER, "").replace("\n", "")
 
     def test_assoc(self):
         dev = Device.objects.get(identifier="ZV35VFDD50")
