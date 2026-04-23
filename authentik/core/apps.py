@@ -32,6 +32,10 @@ class AuthentikCoreConfig(ManagedAppConfig):
     mountpoint = ""
     default = True
 
+    def import_related(self):
+        super().import_related()
+        self.import_module("authentik.core.setup.signals")
+
     @ManagedAppConfig.reconcile_tenant
     def source_inbuilt(self):
         """Reconcile inbuilt source"""
