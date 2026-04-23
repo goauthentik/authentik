@@ -252,18 +252,20 @@ class UserSerializer(ModelSerializer):
         """Set password of user if we're in a blueprint context, and if it's an empty
         string then use an unusable password. Supports both plaintext password and
         pre-hashed password via password_hash parameter."""
+        should_save = False
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             if password_hash is not None:
                 instance.set_password_from_hash(password_hash)
-                instance.save()
-                return
+                should_save = True
             elif password:
                 instance.set_password(password)
-                instance.save()
-                return
+                should_save = True
 
-        if not instance.password:
+        if not should_save and not instance.password:
             instance.set_unusable_password()
+            should_save = True
+
+        if should_save:
             instance.save()
 
     def get_avatar(self, user: User) -> str:
