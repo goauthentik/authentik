@@ -551,18 +551,32 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         )
         return self.groups
 
-    def set_password(self, raw_password, signal=True, sender=None, request=None):
-        if self.pk and signal:
-            from authentik.core.signals import password_changed
+    def _send_password_changed_signal(
+        self,
+        password: str | None,
+        signal=True,
+        sender=None,
+        request: HttpRequest | None = None,
+        password_source: str | None = None,
+    ):
+        if not self.pk or not signal:
+            return
+        from authentik.core.signals import password_changed
 
-            if not sender:
-                sender = self
-            password_changed.send(
-                sender=sender,
-                user=self,
-                password=raw_password,
-                request=request,
-            )
+        if not sender:
+            sender = self
+        signal_kwargs = {
+            "sender": sender,
+            "user": self,
+            "password": password,
+            "request": request,
+        }
+        if password_source:
+            signal_kwargs["password_source"] = password_source
+        password_changed.send(**signal_kwargs)
+
+    def set_password(self, raw_password, signal=True, sender=None, request=None):
+        self._send_password_changed_signal(raw_password, signal, sender, request)
         self.password_change_date = now()
         return super().set_password(raw_password)
 
@@ -579,18 +593,13 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         Raises ValueError if the hash format is not recognized.
         """
         identify_hasher(password_hash)  # Raises ValueError if invalid
-        if self.pk and signal:
-            from authentik.core.signals import password_changed
-
-            if not sender:
-                sender = self
-            password_changed.send(
-                sender=sender,
-                user=self,
-                password=None,
-                password_source="hash",
-                request=request,
-            )
+        self._send_password_changed_signal(
+            None,
+            signal,
+            sender,
+            request,
+            password_source="hash",
+        )
         self.password = password_hash
         self.password_change_date = now()
 
