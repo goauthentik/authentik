@@ -6,9 +6,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from django.db import migrations
 
 
-def update_setup_flag(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    from authentik.core.apps import Setup
-    from authentik.tenants.utils import get_current_tenant
+def check_is_already_setup(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from django.conf import settings
     from authentik.flows.models import FlowAuthenticationRequirement
 
@@ -18,10 +16,9 @@ def update_setup_flag(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     db_alias = schema_editor.connection.alias
 
-    is_already_setup = False
     # Upgrading from a previous version
     if not settings.TEST and VersionHistory.objects.using(db_alias).count() > 1:
-        is_already_setup = True
+        return True
     # OOBE flow sets itself to this authentication requirement once finished
     if (
         Flow.objects.using(db_alias)
@@ -30,7 +27,7 @@ def update_setup_flag(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         )
         .exists()
     ):
-        is_already_setup = True
+        return True
     # non-akadmin and non-guardian anonymous user exist
     if (
         User.objects.using(db_alias)
@@ -38,8 +35,15 @@ def update_setup_flag(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         .exclude(username="AnonymousUser")
         .exists()
     ):
-        is_already_setup = True
+        return True
+    return False
 
+
+def update_setup_flag(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    from authentik.core.apps import Setup
+    from authentik.tenants.utils import get_current_tenant
+
+    is_already_setup = check_is_already_setup(apps, schema_editor)
     if is_already_setup:
         tenant = get_current_tenant()
         tenant.flags[Setup().key] = True
