@@ -107,6 +107,10 @@ from authentik.stages.email.utils import TemplateEmailMessage
 LOGGER = get_logger()
 
 
+def _invalid_password_hash_message() -> str:
+    return _("Invalid password hash format. Must be a valid Django password hash.")
+
+
 class ParamUserSerializer(PassiveSerializer):
     """Partial serializer for query parameters to select a user"""
 
@@ -195,13 +199,7 @@ class UserSerializer(ModelSerializer):
         """If this serializer is used in the blueprint context, we allow for
         directly setting a password. However should be done via the `set_password`
         method instead of directly setting it like rest_framework."""
-        password = validated_data.pop("password", None)
-        password_hash = validated_data.pop("password_hash", None)
-        self._validate_password_inputs(password, password_hash)
-        perms_qs = Permission.objects.filter(
-            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        ).values_list("content_type__app_label", "codename")
-        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
+        password, password_hash, perms_list = self._pop_blueprint_write_fields(validated_data)
         instance: User = super().create(validated_data)
         self._set_password(instance, password, password_hash)
         instance.assign_perms_to_managed_role(perms_list)
@@ -210,17 +208,31 @@ class UserSerializer(ModelSerializer):
     def update(self, instance: User, validated_data: dict) -> User:
         """Same as `create` above, set the password directly if we're in a blueprint
         context"""
-        password = validated_data.pop("password", None)
-        password_hash = validated_data.pop("password_hash", None)
-        self._validate_password_inputs(password, password_hash)
-        perms_qs = Permission.objects.filter(
-            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        ).values_list("content_type__app_label", "codename")
-        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
+        password, password_hash, perms_list = self._pop_blueprint_write_fields(validated_data)
         instance = super().update(instance, validated_data)
         self._set_password(instance, password, password_hash)
         instance.assign_perms_to_managed_role(perms_list)
         return instance
+
+    def _pop_blueprint_write_fields(
+        self, validated_data: dict
+    ) -> tuple[str | None, str | None, list[str]]:
+        password = validated_data.pop("password", None)
+        password_hash = validated_data.pop("password_hash", None)
+        self._validate_password_inputs(password, password_hash)
+        return (
+            password,
+            password_hash,
+            self._get_permission_list(validated_data.pop("permissions", [])),
+        )
+
+    def _get_permission_list(self, permissions: list[str]) -> list[str]:
+        if not permissions:
+            return []
+        perms_qs = Permission.objects.filter(
+            codename__in=[permission.split(".")[1] for permission in permissions]
+        ).values_list("content_type__app_label", "codename")
+        return [f"{ct}.{name}" for ct, name in perms_qs]
 
     def _validate_password_inputs(self, password: str | None, password_hash: str | None):
         """Validate mutually-exclusive password inputs before any model mutation."""
@@ -234,9 +246,7 @@ class UserSerializer(ModelSerializer):
             identify_hasher(password_hash)
         except ValueError as exc:
             LOGGER.warning("Failed to identify password hash format", exc_info=exc)
-            raise ValidationError(
-                _("Invalid password hash format. Must be a valid Django password hash.")
-            ) from exc
+            raise ValidationError(_invalid_password_hash_message()) from exc
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password of user if we're in a blueprint context, and if it's an empty
