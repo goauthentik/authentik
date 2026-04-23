@@ -1,5 +1,6 @@
 """User API Views"""
 
+from collections.abc import Callable
 from datetime import timedelta
 from json import loads
 from typing import Any
@@ -753,6 +754,28 @@ class UserViewSet(
         self.request.session.modified = True
         return Response(serializer.initial_data)
 
+    def _password_update_response(
+        self,
+        request: Request,
+        user: User,
+        update_password: Callable[[], None],
+        failure_log: str,
+        value_error_data: dict[str, list[str]] | None = None,
+    ) -> Response:
+        try:
+            update_password()
+            user.save()
+        except ValueError as exc:
+            LOGGER.debug(failure_log, exc=exc)
+            return Response(data=value_error_data, status=400)
+        except (ValidationError, IntegrityError) as exc:
+            LOGGER.debug(failure_log, exc=exc)
+            return Response(status=400)
+        if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
+            LOGGER.debug("Updating session hash after password change")
+            update_session_auth_hash(self.request, user)
+        return Response(status=204)
+
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
         request=UserPasswordSetSerializer,
@@ -770,16 +793,12 @@ class UserViewSet(
     def set_password(self, request: Request, pk: int, body: UserPasswordSetSerializer) -> Response:
         """Set password for user"""
         user: User = self.get_object()
-        try:
-            user.set_password(body.validated_data["password"], request=request)
-            user.save()
-        except (ValidationError, IntegrityError) as exc:
-            LOGGER.debug("Failed to set password", exc=exc)
-            return Response(status=400)
-        if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
-            LOGGER.debug("Updating session hash after password change")
-            update_session_auth_hash(self.request, user)
-        return Response(status=204)
+        return self._password_update_response(
+            request,
+            user,
+            lambda: user.set_password(body.validated_data["password"], request=request),
+            "Failed to set password",
+        )
 
     @permission_required("authentik_core.set_user_password_hash")
     @extend_schema(
@@ -805,26 +824,13 @@ class UserViewSet(
         is available from the request payload.
         """
         user: User = self.get_object()
-        try:
-            user.set_password_from_hash(body.validated_data["password"], request=request)
-            user.save()
-        except ValueError as exc:
-            LOGGER.debug("Failed to set password hash", exc=exc)
-            return Response(
-                data={
-                    "password": [
-                        _("Invalid password hash format. Must be a valid Django password hash.")
-                    ]
-                },
-                status=400,
-            )
-        except (ValidationError, IntegrityError) as exc:
-            LOGGER.debug("Failed to set password hash", exc=exc)
-            return Response(status=400)
-        if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
-            LOGGER.debug("Updating session hash after password change")
-            update_session_auth_hash(self.request, user)
-        return Response(status=204)
+        return self._password_update_response(
+            request,
+            user,
+            lambda: user.set_password_from_hash(body.validated_data["password"], request=request),
+            "Failed to set password hash",
+            {"password": [_invalid_password_hash_message()]},
+        )
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
