@@ -16,10 +16,14 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
+
+import { ApplicationCheckAccessForm } from "#admin/applications/ApplicationCheckAccessForm";
+import { ApplicationForm } from "#admin/applications/ApplicationForm";
 
 import {
     Application,
@@ -181,36 +185,28 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                         ],
                         [
                             msg("Related actions"),
-                            html`<ak-forms-modal>
-                                    <span slot="submit">${msg("Save Changes")}</span>
-                                    <span slot="header"> ${msg("Update Application")} </span>
-                                    <ak-application-form
-                                        slot="form"
-                                        .instancePk=${this.application.slug}
-                                    >
-                                    </ak-application-form>
-                                    <button
-                                        slot="trigger"
-                                        class="pf-c-button pf-m-secondary pf-m-block"
-                                    >
-                                        ${msg("Edit")}
-                                    </button>
-                                </ak-forms-modal>
-                                <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                                    <span slot="submit">${msg("Check")}</span>
-                                    <span slot="header"> ${msg("Check Application access")} </span>
-                                    <ak-application-check-access-form
-                                        slot="form"
-                                        .application=${this.application}
-                                    >
-                                    </ak-application-check-access-form>
-                                    <button
-                                        slot="trigger"
-                                        class="pf-c-button pf-m-secondary pf-m-block"
-                                    >
-                                        ${msg("Check access")}
-                                    </button>
-                                </ak-forms-modal>
+                            html`<button
+                                    class="pf-c-button pf-m-secondary pf-m-block"
+                                    ${modalInvoker(ApplicationForm, {
+                                        instancePk: this.application.slug,
+                                    })}
+                                >
+                                    ${msg("Edit")}
+                                </button>
+                                <button
+                                    class="pf-c-button pf-m-secondary pf-m-block"
+                                    ${modalInvoker(
+                                        ApplicationCheckAccessForm,
+                                        {
+                                            application: this.application,
+                                        },
+                                        {
+                                            closedBy: "closerequest",
+                                        },
+                                    )}
+                                >
+                                    ${msg("Check access")}
+                                </button>
                                 ${this.application.launchUrl
                                     ? html`<a
                                           target="_blank"
@@ -220,7 +216,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                                       >
                                           ${msg("Launch")}
                                       </a>`
-                                    : nothing}`,
+                                    : null}`,
                         ],
                     ])}
                 </div>

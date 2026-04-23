@@ -1,6 +1,5 @@
 import "#admin/flows/BoundStagesList";
 import "#admin/flows/FlowDiagram";
-import "#admin/flows/FlowForm";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/events/ObjectChangelog";
@@ -11,11 +10,13 @@ import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
 import { isResponseErrorLike } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
 
+import { FlowForm } from "#admin/flows/FlowForm";
 import { DesignationToLabel } from "#admin/flows/utils";
 
 import { Flow, FlowsApi, ModelEnum } from "@goauthentik/api";
@@ -97,21 +98,14 @@ export class FlowViewPage extends AKElement {
                                     ],
                                     [
                                         msg("Related actions"),
-                                        html`<ak-forms-modal>
-                                                <span slot="submit">${msg("Save Changes")}</span>
-                                                <span slot="header"> ${msg("Update Flow")} </span>
-                                                <ak-flow-form
-                                                    slot="form"
-                                                    .instancePk=${this.flow.slug}
-                                                >
-                                                </ak-flow-form>
-                                                <button
-                                                    slot="trigger"
-                                                    class="pf-c-button pf-m-block pf-m-secondary"
-                                                >
-                                                    ${msg("Edit")}
-                                                </button>
-                                            </ak-forms-modal>
+                                        html`<button
+                                                class="pf-c-button pf-m-block pf-m-secondary"
+                                                ${modalInvoker(FlowForm, {
+                                                    instancePk: this.flow.slug,
+                                                })}
+                                            >
+                                                ${msg("Edit")}
+                                            </button>
                                             <a
                                                 class="pf-c-button pf-m-block pf-m-secondary"
                                                 href=${this.flow.exportUrl}

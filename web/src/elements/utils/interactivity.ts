@@ -4,7 +4,9 @@ export const InteractiveElementsQuery =
 export function isInteractiveElement(
     target: EventTarget | Element | null | undefined,
 ): target is HTMLElement {
-    if (!target || !(target instanceof HTMLElement)) {
+    if (!target) return false;
+
+    if (!(target instanceof HTMLElement)) {
         return false;
     }
 
@@ -16,5 +18,9 @@ export function isInteractiveElement(
     // so we fallback to assuming the element is visible.
     const visible = target.checkVisibility?.() ?? true;
 
-    return visible && target.matches(InteractiveElementsQuery);
+    const { tabIndex } = target;
+
+    return (
+        visible && (tabIndex === 0 || tabIndex === -1 || target.matches(InteractiveElementsQuery))
+    );
 }

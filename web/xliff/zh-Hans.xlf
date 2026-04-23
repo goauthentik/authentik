@@ -3068,10 +3068,6 @@
   <source>Warning: Provider is not used by an Application.</source>
   <target>警告：提供程序未被任何应用程序使用。</target>
 </trans-unit>
-<trans-unit id="sdbc08adee233f180">
-  <source>Update OAuth2 Provider</source>
-  <target>更新 OAuth2 提供程序</target>
-</trans-unit>
 <trans-unit id="s9d96eb5ca93e6473">
   <source>OpenID Configuration URL</source>
   <target>OpenID 配置 URL</target>
@@ -3699,10 +3695,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Edit Policy</source>
   <target>编辑策略</target>
 </trans-unit>
-<trans-unit id="s0b55a57f473ab8af">
-  <source>Update Group</source>
-  <target>更新组</target>
-</trans-unit>
 <trans-unit id="s494e1ed913d9351a">
   <source>Edit Group</source>
   <target>编辑组</target>
@@ -3843,10 +3835,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>No assigned application</source>
   <target>无分配应用</target>
 </trans-unit>
-<trans-unit id="s78302d097a608b99">
-  <source>Update SSF Provider</source>
-  <target>更新 SSF 提供程序</target>
-</trans-unit>
 <trans-unit id="sa412f34efd88e962">
   <source>Streams</source>
   <target>流</target>
@@ -3974,10 +3962,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s42cbd8dca939a9c7">
   <source>Check</source>
   <target>检查</target>
-</trans-unit>
-<trans-unit id="sf22f7f8a9309b4ed">
-  <source>Check Application access</source>
-  <target>检查应用程序访问权限</target>
 </trans-unit>
 <trans-unit id="s2474e7fb1aec9f05">
   <source>Test</source>
@@ -4926,10 +4910,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Vendor</source>
   <target>供应商</target>
 </trans-unit>
-<trans-unit id="s52b500138a2d2b8a">
-  <source>Update LDAP Source</source>
-  <target>更新 LDAP 源</target>
-</trans-unit>
 <trans-unit id="sf3fec8353106ac2f">
   <source>OAuth Source <x id="0" equiv-text="${this.source.name}"/></source>
   <target>OAuth 源
@@ -4958,10 +4938,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sb6d5146d5efb3058">
   <source>Access Key</source>
   <target>访问密钥</target>
-</trans-unit>
-<trans-unit id="s065604a41e9d1584">
-  <source>Update OAuth Source</source>
-  <target>更新 OAuth 源</target>
 </trans-unit>
 <trans-unit id="s7b576aa71acb36a6">
   <source>Diagram</source>
@@ -5426,10 +5402,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>查看“<x id="0" equiv-text="${item.name}"/>”组的详情</target>
 </trans-unit>
-<trans-unit id="s416a540b16275f2e">
-  <source>Create Group</source>
-  <target>创建组</target>
-</trans-unit>
 <trans-unit id="s7c5774fad9d050ce">
   <source>Create group</source>
   <target>创建组</target>
@@ -5695,10 +5667,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>您确定要从以下组中删除用户
         <x id="0" equiv-text="${this.targetUser?.username}"/> 吗？</target>
 </trans-unit>
-<trans-unit id="s964f6725aeb7662f">
-  <source>Add Group</source>
-  <target>添加组</target>
-</trans-unit>
 <trans-unit id="s65ca2f256ea09c11">
   <source>Add to existing group</source>
   <target>添加到已有组</target>
@@ -5896,10 +5864,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s259de999919316db">
   <source>Role(s)</source>
   <target>角色</target>
-</trans-unit>
-<trans-unit id="s2ffad156e8332f04">
-  <source>Update Role</source>
-  <target>更新角色</target>
 </trans-unit>
 <trans-unit id="s6ea6a64acb45dfdf">
   <source>Successfully updated initial permissions.</source>
@@ -7379,10 +7343,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s6f857299d5db1ecf">
   <source>Flow(s)</source>
   <target>流程</target>
-</trans-unit>
-<trans-unit id="s9e830cbc0b42a514">
-  <source>Update Flow</source>
-  <target>更新流程</target>
 </trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
   <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
@@ -10482,14 +10442,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s41d4dd186ab1e7bc">
   <source>Opens the new application wizard, which will guide you through creating a new application with an existing provider.</source>
 </trans-unit>
-<trans-unit id="sd62d3a468befc24e">
-  <source>With New Provider...</source>
-</trans-unit>
 <trans-unit id="sf9c86f02a5609e71">
   <source>Opens the new application form, which will guide you through creating a new application with an existing provider.</source>
-</trans-unit>
-<trans-unit id="sfc08a865dd89ccbb">
-  <source>With Existing Provider...</source>
 </trans-unit>
 <trans-unit id="s7f1579146577efc4">
   <source>Clear Cache</source>
@@ -11368,6 +11322,45 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4970e93737e5a3de">
   <source>See documentation for examples.</source>
+</trans-unit>
+<trans-unit id="s13c123f97668a70b">
+  <source>Access</source>
+</trans-unit>
+<trans-unit id="s29d3b9fb142caed1">
+  <source>Checking</source>
+</trans-unit>
+<trans-unit id="s7716f6051e0040ee">
+  <source>with New Provider...</source>
+</trans-unit>
+<trans-unit id="s389abd73a230985b">
+  <source>with Existing Provider...</source>
+</trans-unit>
+<trans-unit id="sf57dea661d832af7">
+  <source>Select one or more backchannel providers...</source>
+</trans-unit>
+<trans-unit id="s0b0a02a4470de153">
+  <source>Device</source>
+</trans-unit>
+<trans-unit id="s6b2172efc35f9fc5">
+  <source>Select one or more groups...</source>
+</trans-unit>
+<trans-unit id="s58649ae52329bd18">
+  <source>Select one or more roles...</source>
+</trans-unit>
+<trans-unit id="se1f93749f9f86133">
+  <source>Select one or more permissions...</source>
+</trans-unit>
+<trans-unit id="s4607a8246d0d6265">
+  <source>Avatar for <x id="0" equiv-text="${displayName}"/></source>
+</trans-unit>
+<trans-unit id="sae2df5261700b49f">
+  <source>Username: <x id="0" equiv-text="${item.username}"/></source>
+</trans-unit>
+<trans-unit id="s889d1719c28a4328">
+  <source>Display name: <x id="0" equiv-text="${displayName || msg(&quot;No name set&quot;)}"/></source>
+</trans-unit>
+<trans-unit id="s3c12d23036471dfc">
+  <source>Dialog content</source>
 </trans-unit>
 </body>
 </file>

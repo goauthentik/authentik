@@ -23,6 +23,11 @@ pub struct Config {
     pub web: WebConfig,
 
     pub worker: WorkerConfig,
+
+    // Outpost specific fields
+    pub host: Option<String>,
+    pub token: Option<String>,
+    pub insecure: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

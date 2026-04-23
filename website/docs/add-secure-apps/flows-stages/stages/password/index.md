@@ -7,7 +7,7 @@ This is a generic password prompt that authenticates the current `pending_user`.
 ## Create a Password stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages > Stages** and click **Create**.
+2. Navigate to **Flows and Stages > Stages** and click **New Stage**.
 3. In the **New Stage** dialog select **Password stage**, and then click **Next**.
 4. Provide the following settings:
 
