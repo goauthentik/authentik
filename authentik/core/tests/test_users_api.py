@@ -121,7 +121,7 @@ class TestUsersAPI(APITestCase):
         password_hash = make_password(password)
         response = self.client.post(
             reverse("authentik_api:user-set-password-hash", kwargs={"pk": self.user.pk}),
-            data={"password_hash": password_hash},
+            data={"password": password_hash},
         )
 
         self.assertEqual(response.status_code, 204)
@@ -134,17 +134,13 @@ class TestUsersAPI(APITestCase):
         self.client.force_login(self.admin)
         response = self.client.post(
             reverse("authentik_api:user-set-password-hash", kwargs={"pk": self.user.pk}),
-            data={"password_hash": "not-a-valid-hash"},
+            data={"password": "not-a-valid-hash"},
         )
 
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content,
-            {
-                "password_hash": [
-                    "Invalid password hash format. Must be a valid Django password hash."
-                ]
-            },
+            {"password": ["Invalid password hash format. Must be a valid Django password hash."]},
         )
 
     def test_set_password_hash_requires_separate_permission(self):
@@ -153,7 +149,7 @@ class TestUsersAPI(APITestCase):
         self.client.force_login(self.user)
         response = self.client.post(
             reverse("authentik_api:user-set-password-hash", kwargs={"pk": self.user.pk}),
-            data={"password_hash": make_password("new-password")},  # nosec
+            data={"password": make_password("new-password")},  # nosec
         )
         self.assertEqual(response.status_code, 403)
 
@@ -173,7 +169,7 @@ class TestUsersAPI(APITestCase):
         password_hash = make_password(password)
         response = client.post(
             reverse("authentik_api:user-set-password-hash", kwargs={"pk": self.user.pk}),
-            data={"password_hash": password_hash},
+            data={"password": password_hash},
         )
         self.assertEqual(response.status_code, 204, response.data)
         self.user.refresh_from_db()
@@ -349,7 +345,7 @@ class TestUsersAPI(APITestCase):
         password_hash = make_password(password)
         response = self.client.post(
             reverse("authentik_api:user-set-password-hash", kwargs={"pk": user.pk}),
-            data={"password_hash": password_hash},
+            data={"password": password_hash},
         )
 
         self.assertEqual(response.status_code, 204, response.data)

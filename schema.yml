@@ -4544,7 +4544,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserPasswordHashSetRequest'
+              $ref: '#/components/schemas/UserPasswordSetRequest'
         required: true
       security:
       - authentik: []
@@ -57303,19 +57303,6 @@ components:
       - identifier
       - source
       - user
-    UserPasswordHashSetRequest:
-      type: object
-      description: |-
-        Payload to set a user's password from a pre-hashed Django password value.
-
-        This only updates authentik's stored password verifier and does not propagate
-        the change to LDAP or Kerberos password-sync integrations.
-      properties:
-        password_hash:
-          type: string
-          minLength: 1
-      required:
-      - password_hash
     UserPasswordSetRequest:
       type: object
       description: Payload to set a users' password directly

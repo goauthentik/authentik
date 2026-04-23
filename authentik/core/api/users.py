@@ -420,16 +420,6 @@ class UserPasswordSetSerializer(PassiveSerializer):
     password = CharField(required=True)
 
 
-class UserPasswordHashSetSerializer(PassiveSerializer):
-    """Payload to set a user's password from a pre-hashed Django password value.
-
-    This only updates authentik's stored password verifier and does not propagate
-    the change to LDAP or Kerberos password-sync integrations.
-    """
-
-    password_hash = CharField(required=True)
-
-
 class UserServiceAccountSerializer(PassiveSerializer):
     """Payload to create a service account"""
 
@@ -783,7 +773,7 @@ class UserViewSet(
 
     @permission_required("authentik_core.set_user_password_hash")
     @extend_schema(
-        request=UserPasswordHashSetSerializer,
+        request=UserPasswordSetSerializer,
         responses={
             204: OpenApiResponse(description="Successfully changed password"),
             400: OpenApiResponse(description="Bad request"),
@@ -794,9 +784,9 @@ class UserViewSet(
         methods=["POST"],
         permission_classes=[IsAuthenticated],
     )
-    @validate(UserPasswordHashSetSerializer)
+    @validate(UserPasswordSetSerializer)
     def set_password_hash(
-        self, request: Request, pk: int, body: UserPasswordHashSetSerializer
+        self, request: Request, pk: int, body: UserPasswordSetSerializer
     ) -> Response:
         """Set a user's password from a pre-hashed Django password value.
 
@@ -806,13 +796,13 @@ class UserViewSet(
         """
         user: User = self.get_object()
         try:
-            user.set_password_from_hash(body.validated_data["password_hash"], request=request)
+            user.set_password_from_hash(body.validated_data["password"], request=request)
             user.save()
         except ValueError as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(
                 data={
-                    "password_hash": [
+                    "password": [
                         _("Invalid password hash format. Must be a valid Django password hash.")
                     ]
                 },
