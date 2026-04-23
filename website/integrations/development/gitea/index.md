@@ -60,9 +60,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 
 ### Claims for authorization management (optional)
 
-:::info
-This step is _optional_ and shows how to set claims to control the permissions of users in Gitea by assigning them application entitlements.
-:::
+This optional section shows how to set claims to control the permissions of users in Gitea by assigning them application entitlements.
 
 #### Create application entitlements
 
