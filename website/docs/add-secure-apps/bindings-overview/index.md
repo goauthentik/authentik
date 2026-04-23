@@ -165,7 +165,7 @@ By default, applications are accessible to all users. Bind a group or policy to 
 
 ### Run a stage only for some users
 
-Bind a policy, user, or group to the flow-stage binding when a stage should appear only for certain users in that flow.
+Bind a policy, user, or group to the flow-stage binding when a stage should appear only for certain users in that flow. For example, only require an MFA stage for certain users.
 
 ### Scope access inside an application
 
