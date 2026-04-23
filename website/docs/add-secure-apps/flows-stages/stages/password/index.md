@@ -40,9 +40,9 @@ If you want users to be able to pick a passkey from the browser's passkey/autofi
 
 ### Dynamically skip a Password stage
 
-This pattern keeps a normal identification flow, but skips the Password stage for users who already have a supported authenticator configured.
+This setup keeps a normal identification flow, but skips the Password stage for users who already have a supported authenticator configured.
 
-To configure this pattern:
+To configure this setup:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies** and create an [Expression Policy](../../../../customize/policies/types/expression/index.mdx).
