@@ -169,4 +169,4 @@ Bind a policy, user, or group to the flow-stage binding when a stage should appe
 
 ### Scope access inside an application
 
-Use [application entitlements](../applications/manage_apps.mdx#application-entitlements) when you need to control access to parts of an application after the user already has access to the application itself.
+Use [application entitlements](../applications/manage_apps.mdx#application-entitlements) when you need to control access to parts of an application after the user already has access to the application itself. For example, control which users have access to certain administrator functions within an application.
