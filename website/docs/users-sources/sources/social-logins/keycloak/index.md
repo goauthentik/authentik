@@ -88,7 +88,7 @@ Before configuring either service, you need to export the signing certificates f
 
 ### Create a SAML source in authentik
 
-1. Navigate to **Directory** > **Federation and Social login** and click **Create**.
+1. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
 2. Select **SAML Source** and configure the following settings:
     - Set **Name** to `Keycloak`.
     - Set **Slug** to `keycloak`.

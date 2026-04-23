@@ -27,7 +27,7 @@ Now that the bot is configured you can proceed to creating a source in authentik
 ## authentik configuration
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **Telegram** as the source type.
     - **Create Telegram Source**: provide a name, a slug, and the following required configurations:
         - **Bot username**: The username of your Telegram bot (e.g., `authentik_bot`).

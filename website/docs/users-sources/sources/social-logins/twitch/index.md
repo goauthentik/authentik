@@ -34,7 +34,7 @@ To integrate Twitch with authentik you will need to create an OAuth application 
 To support the integration of Twitch with authentik, you need to create an Twitch OAuth source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **Twitch OAuth Source** as the source type.
     - **Create OAuth Source**: provide a name, a slug which must match the slug used in the Twitch `OAuth Redirect URLs` field (e.g. `twitch`), and set the following required configurations:
         - **Protocol settings**

@@ -28,27 +28,34 @@ import "./UserDevicesTable.js";
 import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { AKRefreshEvent } from "#common/events";
 import { userTypeToLabel } from "#common/labels";
-import { formatUserDisplayName } from "#common/users";
+import { formatDisambiguatedUserDisplayName, formatUserDisplayName } from "#common/users";
 
 import { AKElement } from "#elements/Base";
+import { listen } from "#elements/decorators/listen";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { WithLocale } from "#elements/mixins/locale";
 import { WithSession } from "#elements/mixins/session";
 import { Timestamp } from "#elements/table/shared";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
 import { RecoveryButtons } from "#admin/users/recovery";
+import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
 import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { css, html, PropertyValues, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -62,20 +69,16 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-view")
-export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))) {
-    @property({ type: Number })
-    set userId(id: number) {
-        new CoreApi(DEFAULT_CONFIG)
-            .coreUsersRetrieve({
-                id: id,
-            })
-            .then((user) => {
-                this.user = user;
-            });
-    }
+export class UserViewPage extends WithLicenseSummary(
+    WithLocale(WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement)))),
+) {
+    #api = new CoreApi(DEFAULT_CONFIG);
 
-    @state()
-    protected user: User | null = null;
+    @property({ type: Number, useDefault: true })
+    public userId: number | null = null;
+
+    @property({ attribute: false, useDefault: true })
+    public user: User | null = null;
 
     static styles = [
         PFPage,
@@ -103,26 +106,64 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
         `,
     ];
 
-    renderUserCard() {
+    @listen(AKRefreshEvent)
+    public refresh = () => {
+        if (!this.userId) {
+            return;
+        }
+
+        return this.#api
+            .coreUsersRetrieve({
+                id: this.userId!,
+            })
+            .then((user) => {
+                this.user = user;
+            })
+            .catch(showAPIErrorMessage);
+    };
+
+    protected override updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+
+        if (changed.has("userId") && this.userId !== null) {
+            this.refresh();
+        }
+
+        if (changed.has("user") && this.user) {
+            const { username, avatar, name, email } = this.user;
+            const icon = avatar ?? "pf-icon pf-icon-user";
+
+            setPageDetails({
+                icon,
+                iconImage: !!avatar,
+                header: username ? msg(str`User ${username}`) : msg("User"),
+                description: this.user
+                    ? formatDisambiguatedUserDisplayName({ name, email }, this.activeLanguageTag)
+                    : null,
+            });
+        }
+    }
+
+    protected renderUserCard() {
         if (!this.user) {
-            return nothing;
+            return null;
         }
 
         const user = this.user;
 
         // prettier-ignore
         const userInfo: DescriptionPair[] = [
-            [msg("Username"), user.username],
-            [msg("Name"), user.name],
-            [msg("Email"), user.email || "-"],
-            [msg("Last login"), Timestamp(user.lastLogin)],
-            [msg("Last password change"), Timestamp(user.passwordChangeDate)],
-            [msg("Active"), html`<ak-status-label ?good=${user.isActive}></ak-status-label>`],
-            [msg("Type"), userTypeToLabel(user.type)],
-            [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
-            [msg("Actions"), this.renderActionButtons(user)],
-            [msg("Recovery"), this.renderRecoveryButtons(user)],
-        ];
+            [ msg("Username"), user.username ],
+            [ msg("Name"), user.name ],
+            [ msg("Email"), user.email || "-" ],
+            [ msg("Last login"), Timestamp(user.lastLogin) ],
+            [ msg("Last password change"), Timestamp(user.passwordChangeDate) ],
+            [ msg("Active"), html`<ak-status-label ?good=${user.isActive}></ak-status-label>` ],
+            [ msg("Type"), userTypeToLabel(user.type) ],
+            [ msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>` ],
+            [ msg("Actions"), this.renderActionButtons(user) ],
+            [ msg("Recovery"), this.renderRecoveryButtons(user) ],
+        ]
 
         return html`
             <div class="pf-c-card__title">${msg("User Info")}</div>
@@ -132,7 +173,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
         `;
     }
 
-    renderActionButtons(user: User) {
+    protected renderActionButtons(user: User): SlottedTemplateResult {
         const showImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
 
@@ -145,29 +186,8 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
             >
                 ${msg("Edit User")}
             </button>
-            <ak-user-active-form
-                .obj=${user}
-                object-label=${msg("User")}
-                .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
-                        id: user.pk,
-                        patchedUserRequest: {
-                            isActive: !user.isActive,
-                        },
-                    });
-                }}
-            >
-                <button slot="trigger" class="pf-c-button pf-m-warning pf-m-block">
-                    <pf-tooltip
-                        position="top"
-                        content=${user.isActive
-                            ? msg("Lock the user out of this system")
-                            : msg("Allow the user to log in and use this system")}
-                    >
-                        ${user.isActive ? msg("Deactivate") : msg("Activate")}
-                    </pf-tooltip>
-                </button>
-            </ak-user-active-form>
+
+            ${ToggleUserActivationButton(user, { className: "pf-m-block" })}
             ${showImpersonate
                 ? html`<button
                       class="pf-c-button pf-m-tertiary pf-m-block"
@@ -185,7 +205,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
         </div> `;
     }
 
-    renderRecoveryButtons(user: User) {
+    protected renderRecoveryButtons(user: User) {
         return html`<div class="ak-button-collection">
             ${RecoveryButtons({
                 user,
@@ -195,7 +215,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
         </div>`;
     }
 
-    renderTabCredentialsToken(user: User): TemplateResult {
+    protected renderTabCredentialsToken(user: User): TemplateResult {
         return html`
             <ak-tabs pageIdentifier="userCredentialsTokens" vertical>
                 <div
@@ -308,7 +328,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
         `;
     }
 
-    renderTabApplications(user: User): TemplateResult {
+    protected renderTabApplications(user: User): TemplateResult {
         return html`<div class="pf-c-card">
             <ak-user-application-table .user=${user}></ak-user-application-table>
         </div>`;
@@ -348,10 +368,11 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
         `;
     }
 
-    render() {
+    protected override render() {
         if (!this.user) {
-            return nothing;
+            return null;
         }
+
         return html`<main>
             <ak-tabs>
                 <div
@@ -475,16 +496,6 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                 </ak-rbac-object-permission-page>
             </ak-tabs>
         </main>`;
-    }
-
-    updated(changed: PropertyValues<this>) {
-        super.updated(changed);
-        setPageDetails({
-            icon: this.user?.avatar ?? "pf-icon pf-icon-user",
-            iconImage: !!this.user?.avatar,
-            header: this.user?.username ? msg(str`User ${this.user.username}`) : msg("User"),
-            description: this.user?.name || "",
-        });
     }
 }
 

@@ -22,4 +22,5 @@
 
 .pf-c-radio__description {
     text-wrap: balance;
+    text-wrap: pretty;
 }

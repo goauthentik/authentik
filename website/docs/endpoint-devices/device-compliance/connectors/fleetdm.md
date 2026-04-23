@@ -24,7 +24,7 @@ Do not use an API key from a normal user because these keys expire.
 Follow these instructions to configure the Fleet connector in authentik:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
+2. Navigate to **Endpoint Devices** > **Connectors** and click **New Endpoint Connector**.
 3. Select **Fleet Connector** as the connector type, click **Next**, and configure the following settings:
     - **Connector name**: provide a descriptive name for the connector.
     - **Fleet Server URL**: enter your **Fleet web address** URL.

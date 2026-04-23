@@ -32,7 +32,7 @@ This integration uses the WeChat "Website Application" login flow (QR Code login
 To support the integration of WeChat with authentik, you need to create a WeChat OAuth source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **WeChat OAuth Source** as the source type.
     - **Create OAuth Source**: provide a name, a slug (e.g. `wechat`), and set the following required configurations:
         - **Protocol settings**
