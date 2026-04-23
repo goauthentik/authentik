@@ -10,15 +10,17 @@ These can't be defined using the file-based syntax (`file://`), so you can't pas
 
 ### `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`
 
-Configure the default password for the `akadmin` user using a pre-hashed password. Only read on the first startup.
+Configure the default password for the `akadmin` user using a pre-hashed Django password value. Only read on the first startup.
 
-This updates authentik's stored password hash directly. It does not propagate the password to LDAP or Kerberos integrations.
+This stores the hash directly as authentik's local password verifier. Because authentik never sees the raw password, this does not propagate the password to LDAP or Kerberos integrations, even when password writeback is enabled.
 
 To generate a hash, run this command before your initial deployment:
 
 ```bash
 docker compose run --rm server hash_password 'your-password'
 ```
+
+The generated hash includes a random salt, so running the command multiple times for the same password produces different output. Use the complete output as the value of `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`.
 
 :::warning Escaping `$` in Docker Compose
 Password hashes contain `$` characters which Docker Compose interprets as variable references.
@@ -51,6 +53,12 @@ Configure the default password for the `akadmin` user. Only read on the first st
 
 Setting both `AUTHENTIK_BOOTSTRAP_PASSWORD` and `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH` will result in an error.
 
+### Other hashed-password import paths
+
+For post-install automation, hashed passwords can also be set via blueprints with the `password_hash` user attribute, or via the `/api/v3/core/users/<id>/set_password_hash/` API endpoint with the hash provided in the `password` field. The API endpoint requires the `authentik_core.set_user_password_hash` permission and can target regular users or service accounts.
+
+These paths also only update authentik's local password verifier and do not propagate to LDAP or Kerberos integrations.
+
 ### `AUTHENTIK_BOOTSTRAP_TOKEN`
 
 Create a token for the default `akadmin` user. Only read on the first startup. The string you specify for this variable is the token key you can use to authenticate yourself to the API.
@@ -75,7 +83,8 @@ When using password hashes in quoted YAML strings as shown above, no escaping of
 
 - Using Helm templating syntax (e.g., `{{ .Values.something }}`) where `$` has special meaning
 - Referencing values from environment variable substitution in your values file
-  :::
+
+:::
 
 Or store the password hash in a secret and reference it via `envFrom`:
 
