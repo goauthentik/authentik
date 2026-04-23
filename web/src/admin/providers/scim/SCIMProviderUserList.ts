@@ -4,10 +4,10 @@ import "#elements/sync/SyncObjectForm";
 import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatUserDisplayName } from "#common/users";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
-import { getUserDisplayName } from "#elements/user/utils";
 
 import {
     ProvidersApi,
@@ -74,7 +74,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     }
 
     protected override rowLabel(item: SCIMProviderUser): string {
-        return getUserDisplayName(item.userObj);
+        return formatUserDisplayName(item.userObj);
     }
 
     protected columns: TableColumn[] = [

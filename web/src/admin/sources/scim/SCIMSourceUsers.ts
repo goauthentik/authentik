@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatUserDisplayName } from "#common/users";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
-import { getUserDisplayName } from "#elements/user/utils";
 
 import { SCIMSourceUser, SourcesApi } from "@goauthentik/api";
 
@@ -26,7 +26,7 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
     }
 
     protected override rowLabel(item: SCIMSourceUser): string {
-        return getUserDisplayName(item.userObj);
+        return formatUserDisplayName(item.userObj);
     }
 
     protected columns: TableColumn[] = [
