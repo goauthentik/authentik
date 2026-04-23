@@ -80,10 +80,6 @@ Users who are assigned none of these entitlements will not be able to log in to 
 6. Open an entitlement and bind the users or groups that need Gitea access to it.
 7. Repeat step 6 for the two additional entitlements.
 
-:::info
-You can add users or groups to the entitlements at any point.
-:::
-
 #### Create custom property mapping
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
