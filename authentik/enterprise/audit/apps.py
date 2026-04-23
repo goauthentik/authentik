@@ -1,6 +1,7 @@
 """Enterprise app config"""
 
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 from authentik.enterprise.apps import EnterpriseConfig
 from authentik.tenants.flags import Flag
@@ -9,6 +10,9 @@ from authentik.tenants.flags import Flag
 class AuditIncludeExpandedDiff(Flag[bool], key="enterprise_audit_include_expanded_diff"):
     default = False
     visibility = "none"
+    description = _(
+        "Include additional information in audit logs, may incur a performance penalty."
+    )
 
 
 class AuthentikEnterpriseAuditConfig(EnterpriseConfig):

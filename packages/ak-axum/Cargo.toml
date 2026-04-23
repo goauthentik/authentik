@@ -1,0 +1,28 @@
+[package]
+name = "authentik-axum"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+readme.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license-file.workspace = true
+publish.workspace = true
+
+[dependencies]
+ak-common.workspace = true
+axum-server.workspace = true
+axum.workspace = true
+client-ip.workspace = true
+durstr.workspace = true
+eyre.workspace = true
+forwarded-header-value.workspace = true
+futures.workspace = true
+tokio-rustls.workspace = true
+tokio.workspace = true
+tower-http.workspace = true
+tower.workspace = true
+tracing.workspace = true
+
+[lints]
+workspace = true

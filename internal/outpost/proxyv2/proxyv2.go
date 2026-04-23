@@ -13,7 +13,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
@@ -21,6 +20,7 @@ import (
 	"goauthentik.io/internal/utils"
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
 )
 
 type ProxyServer struct {

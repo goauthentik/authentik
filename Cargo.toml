@@ -1,9 +1,16 @@
 [workspace]
-members = ["website/scripts/docsmg"]
+members = [
+  "packages/ak-axum",
+  "packages/ak-common",
+  "packages/client-rust",
+  "website/scripts/docsmg",
+]
 resolver = "3"
 
 [workspace.package]
+version = "2026.5.0-rc1"
 authors = ["authentik Team <hello@goauthentik.io>"]
+description = "Making authentication simple."
 edition = "2024"
 readme = "README.md"
 homepage = "https://goauthentik.io"
@@ -12,11 +19,95 @@ license-file = "LICENSE"
 publish = false
 
 [workspace.dependencies]
-clap = { version = "4.5.59", features = ["derive", "env"] }
-colored = "3.1.1"
-dotenvy = "0.15.7"
-eyre = "0.6.12"
-regex = "1.12.3"
+arc-swap = "= 1.9.1"
+axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
+aws-lc-rs = { version = "= 1.16.3", features = ["fips"] }
+axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
+clap = { version = "= 4.6.1", features = ["derive", "env"] }
+client-ip = { version = "0.2.1", features = ["forwarded-header"] }
+colored = "= 3.1.1"
+config-rs = { package = "config", version = "= 0.15.22", default-features = false, features = [
+  "json",
+  "yaml",
+] }
+console-subscriber = "= 0.5.0"
+dotenvy = "= 0.15.7"
+durstr = "= 0.5.1"
+eyre = "= 0.6.12"
+forwarded-header-value = "= 0.1.1"
+futures = "= 0.3.32"
+glob = "= 0.3.3"
+ipnet = { version = "= 2.12.0", features = ["serde"] }
+json-subscriber = "= 0.2.8"
+nix = { version = "= 0.31.2", features = ["signal"] }
+notify = "= 8.2.0"
+pin-project-lite = "= 0.2.17"
+regex = "= 1.12.3"
+reqwest = { version = "= 0.13.2", features = [
+  "form",
+  "json",
+  "multipart",
+  "query",
+  "rustls",
+  "stream",
+] }
+reqwest-middleware = { version = "= 0.5.1", features = [
+  "form",
+  "json",
+  "multipart",
+  "query",
+  "rustls",
+] }
+rustls = { version = "= 0.23.38", features = ["fips"] }
+sentry = { version = "= 0.47.0", default-features = false, features = [
+  "backtrace",
+  "contexts",
+  "debug-images",
+  "panic",
+  "rustls",
+  "reqwest",
+  "tower",
+  "tracing",
+] }
+serde = { version = "= 1.0.228", features = ["derive"] }
+serde_json = "= 1.0.149"
+serde_repr = "= 0.1.20"
+serde_with = { version = "= 3.18.0", default-features = false, features = [
+  "base64",
+] }
+sqlx = { version = "= 0.8.6", default-features = false, features = [
+  "runtime-tokio",
+  "tls-rustls-aws-lc-rs",
+  "postgres",
+  "derive",
+  "macros",
+  "uuid",
+  "chrono",
+  "ipnet",
+  "json",
+] }
+tempfile = "= 3.27.0"
+thiserror = "= 2.0.18"
+time = { version = "= 0.3.47", features = ["macros"] }
+tokio = { version = "= 1.52.1", features = ["full", "tracing"] }
+tokio-retry2 = "= 0.9.1"
+tokio-rustls = "= 0.26.4"
+tokio-util = { version = "= 0.7.18", features = ["full"] }
+tower = "= 0.5.3"
+tower-http = { version = "= 0.6.8", features = ["timeout"] }
+tracing = "= 0.1.44"
+tracing-error = "= 0.2.1"
+tracing-subscriber = { version = "= 0.3.23", features = [
+  "env-filter",
+  "json",
+  "local-time",
+  "tracing-log",
+] }
+url = "= 2.5.8"
+uuid = { version = "= 1.23.1", features = ["serde", "v4"] }
+
+ak-client = { package = "authentik-client", version = "2026.5.0-rc1", path = "./packages/client-rust" }
+ak-common = { package = "authentik-common", version = "2026.5.0-rc1", path = "./packages/ak-common", default-features = false }
 
 [profile.dev.package.backtrace]
 opt-level = 3
@@ -60,12 +151,20 @@ perf = { priority = -1, level = "warn" }
 style = { priority = -1, level = "warn" }
 suspicious = { priority = -1, level = "warn" }
 ### and disable the ones we don't want
+### cargo group
+multiple_crate_versions = "allow"
 ### pedantic group
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+must_use_candidate = "allow"
 redundant_closure_for_method_calls = "allow"
+struct_field_names = "allow"
 too_many_lines = "allow"
 ### nursery
-redundant_pub_crate = "allow"
+missing_const_for_fn = "allow"
 option_if_let_else = "allow"
+redundant_pub_crate = "allow"
+significant_drop_tightening = "allow"
 ### restriction group
 allow_attributes = "warn"
 allow_attributes_without_reason = "warn"
@@ -78,7 +177,6 @@ create_dir = "warn"
 dbg_macro = "warn"
 default_numeric_fallback = "warn"
 disallowed_script_idents = "warn"
-doc_paragraphs_missing_punctuation = "warn"
 empty_drop = "warn"
 empty_enum_variants_with_brackets = "warn"
 empty_structs_with_brackets = "warn"

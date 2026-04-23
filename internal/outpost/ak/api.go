@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
+	"sync"
 	"syscall"
 	"time"
 
@@ -21,16 +22,17 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 	cryptobackend "goauthentik.io/internal/crypto/backend"
 	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
 )
 
 const ConfigLogLevel = "log_level"
 
 // APIController main controller which connects to the authentik api via http and ws
 type APIController struct {
+	akURL        url.URL
 	Client       *api.APIClient
 	Outpost      api.Outpost
 	GlobalConfig *api.Config
@@ -44,6 +46,7 @@ type APIController struct {
 	reloadOffset time.Duration
 
 	eventConn        *websocket.Conn
+	eventConnMu      sync.Mutex
 	lastWsReconnect  time.Time
 	wsIsReconnecting bool
 	eventHandlers    []EventHandler
@@ -134,6 +137,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// doGlobalSetup(outpost, akConfig)
 
 	ac := &APIController{
+		akURL:        originalAkURL,
 		Client:       apiClient,
 		GlobalConfig: akConfig,
 
@@ -148,7 +152,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	}
 	ac.logger.WithField("embedded", ac.IsEmbedded()).Info("Outpost mode")
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
-	err = ac.initEvent(originalAkURL, outpost.Pk)
+	err = ac.initEvent(outpost.Pk, 0)
 	if err != nil {
 		go ac.recentEvents()
 	}

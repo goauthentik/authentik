@@ -207,3 +207,9 @@ class TestEvents(TestCase):
                 "username": user.username,
             },
         )
+
+    def test_invalid_string(self):
+        """Test creating an event with invalid unicode string data"""
+        event = Event.new("unittest", foo="foo bar \u0000 baz")
+        event.save()
+        self.assertEqual(event.context["foo"], "foo bar  baz")

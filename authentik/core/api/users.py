@@ -22,6 +22,7 @@ from django_filters.filters import (
     UUIDFilter,
 )
 from django_filters.filterset import FilterSet
+from djangoql.schema import BoolField, StrField
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     OpenApiParameter,
@@ -55,6 +56,10 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.authentication import TokenAuthentication
+from authentik.api.search.fields import (
+    ChoiceSearchField,
+    JSONSearchField,
+)
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
@@ -524,13 +529,6 @@ class UserViewSet(
     ]
 
     def get_ql_fields(self):
-        from djangoql.schema import BoolField, StrField
-
-        from authentik.enterprise.search.fields import (
-            ChoiceSearchField,
-            JSONSearchField,
-        )
-
         return [
             StrField(User, "username"),
             StrField(User, "name"),

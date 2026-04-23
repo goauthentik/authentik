@@ -6,6 +6,10 @@ FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
 ENV NODE_ENV=production
 WORKDIR /static
 
+# These files need to be copied and cannot be mounted as `npm ci` will build the client's typescript
+COPY ./packages /packages
+COPY ./web/packages /static/packages
+
 COPY package.json /
 RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
     --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
@@ -17,7 +21,7 @@ COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.1-trixie@sha256:96b28783b99bcd265fbfe0b36a3ac6462416ce6bf1feac85d4c4ff533cbaa473 AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.2-trixie@sha256:cd8540d626ab35272a8f5ef829c5e5f189ce1dfbf467c123320c191c69c23245 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -35,7 +39,6 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
-    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
     --mount=type=cache,target=/go/pkg/mod \
     go mod download
 
@@ -59,7 +62,6 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.documentation="https://docs.goauthentik.io" \
     org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
     org.opencontainers.image.revision=${GIT_BUILD_HASH} \
-    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.title="authentik proxy outpost image" \
     org.opencontainers.image.url="https://goauthentik.io" \
     org.opencontainers.image.vendor="Authentik Security Inc." \

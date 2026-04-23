@@ -27,7 +27,7 @@ Similar to [other outposts](../add-secure-apps/outposts/index.mdx), this outpost
 
 #### Persistence
 
-- `/data` is used to store uploaded files (icons, flow backgrounds, etc.) and CSV reports. If not mounted, authentik will allow you to set a URL to icons in place of a file upload. See [Files](../customize/files.md) for more information.
+- `/data` is used to store uploaded files (icons, flow backgrounds, etc.) and CSV reports. If not mounted, authentik will allow you to use external URLs for icons and other media fields instead of uploading files. See [Files](../customize/files.md) and [File picker values](../customize/file-picker.md) for more information.
 
 ### Worker
 

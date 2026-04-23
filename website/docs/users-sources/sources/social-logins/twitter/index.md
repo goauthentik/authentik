@@ -36,7 +36,7 @@ To integrate X with authentik you will need to create an OAuth application in th
 To support the integration of X with authentik, you need to create a Twitter OAuth source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **Twitter OAuth Source** as the source type.
     - **Create OAuth Source**: provide a name, a slug which must match the slug used in the X `Callback URI / Redirect URL` field (e.g. `x`), and set the following required configurations:
         - **Protocol settings**

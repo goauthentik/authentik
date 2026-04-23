@@ -4,13 +4,12 @@ from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
-from django.http import Http404, HttpRequest, HttpResponse, QueryDict
-from django.urls import reverse
-from django.utils.http import urlencode
+from django.http import Http404, HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
-from django.views.generic.base import TemplateView, View
+from django.views.generic.base import View
 from structlog.stdlib import get_logger
 
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, Provider, User
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation
@@ -30,9 +29,6 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
-QS_BUFFER_ID = "af_bf_id"
-QS_SKIP_BUFFER = "skip_buffer"
-SESSION_KEY_BUFFER = "authentik/policies/pav_buffer/%s"
 
 
 class RequestValidationError(SentryIgnoredException):
@@ -44,12 +40,6 @@ class RequestValidationError(SentryIgnoredException):
         super().__init__()
         if response:
             self.response = response
-
-
-class BaseMixin:
-    """Base Mixin class, used to annotate View Member variables"""
-
-    request: HttpRequest
 
 
 class PolicyAccessView(AccessMixin, View):
@@ -146,6 +136,7 @@ class PolicyAccessView(AccessMixin, View):
         policy_engine = PolicyEngine(
             pbm or self.application, user or self.request.user, self.request
         )
+        policy_engine.empty_result = AppAccessWithoutBindings.get()
         policy_engine.use_cache = False
         policy_engine.request = self.modify_policy_request(policy_engine.request)
         policy_engine.build()
@@ -162,30 +153,3 @@ class PolicyAccessView(AccessMixin, View):
             for message in result.messages:
                 messages.error(self.request, _(message))
         return result
-
-
-def url_with_qs(url: str, **kwargs):
-    """Update/set querystring of `url` with the parameters in `kwargs`. Original query string
-    parameters are retained"""
-    if "?" not in url:
-        return url + f"?{urlencode(kwargs)}"
-    url, _, qs = url.partition("?")
-    qs = QueryDict(qs, mutable=True)
-    qs.update(kwargs)
-    return url + f"?{urlencode(qs.items())}"
-
-
-class BufferView(TemplateView):
-    """Buffer view"""
-
-    template_name = "policies/buffer.html"
-
-    def get_context_data(self, **kwargs):
-        buf_id = self.request.GET.get(QS_BUFFER_ID)
-        buffer: dict = self.request.session.get(SESSION_KEY_BUFFER % buf_id)
-        kwargs["auth_req_method"] = buffer["method"]
-        kwargs["auth_req_body"] = buffer["body"]
-        kwargs["auth_req_url"] = url_with_qs(buffer["url"], **{QS_SKIP_BUFFER: True})
-        kwargs["check_auth_url"] = reverse("authentik_api:user-me")
-        kwargs["continue_url"] = url_with_qs(buffer["url"], **{QS_BUFFER_ID: buf_id})
-        return super().get_context_data(**kwargs)

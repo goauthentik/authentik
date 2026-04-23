@@ -13,13 +13,13 @@ export interface NavigationEventInit {
 export class WizardNavigationEvent<D extends string = string> extends Event {
     static readonly eventName = "ak-wizard-navigation";
 
-    public readonly destination?: D;
+    public readonly destination: D | null;
     public readonly details?: NavigationEventInit;
 
-    constructor(destination?: D, init?: NavigationEventInit) {
+    constructor(init?: NavigationEventInit | null, destination: D | null = null) {
         super(WizardNavigationEvent.eventName, { bubbles: true, composed: true });
         this.destination = destination;
-        this.details = init;
+        this.details = init ?? {};
     }
 
     /**
@@ -33,7 +33,7 @@ export class WizardNavigationEvent<D extends string = string> extends Event {
         const wizardNavigationListener = (event?: Event) => {
             event?.preventDefault?.();
 
-            return target.dispatchEvent(new this(destination, init));
+            return target.dispatchEvent(new this(init, destination));
         };
 
         return wizardNavigationListener;

@@ -2,7 +2,7 @@
 title: LDAP Source
 ---
 
-Sources allow you to connect authentik to an existing user directory. This source allows you to import users and groups from an LDAP Server.
+Sources allow you to connect authentik to an existing user directory. This source allows you to import users and groups from an LDAP server.
 
 :::info
 For Active Directory, follow the [Active Directory Integration](../../directory-sync/active-directory/index.md)
@@ -49,7 +49,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 - **Additional Group DN**: Prepended to the base DN for group queries.
 - **User object filter**: Consider objects matching this filter to be users.
 - **Group object filter**: Consider objects matching this filter to be groups.
-- **Lookup using a user attribute**: Acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories with nested groups memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
+- **Lookup using a user attribute**: Acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories with nested group memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
 - **Group membership field**: The user object attribute or the group object attribute that determines the group membership for a user. If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
 - **User membership attribute**: Attribute name on authentik user objects which is checked against the **Group membership field**. Two common cases are:
     - If your groups have `member` attributes containing DNs, set this to `distinguishedName`. (The `distinguishedName` attribute for User objects in authentik is set automatically.)
@@ -62,7 +62,7 @@ See the [overview](../../property-mappings/index.md) for information on how prop
 
 By default, authentik ships with [pre-configured mappings](#built-in-property-mappings) for the most common LDAP setups. These mappings can be found on the LDAP Source Configuration page in the Admin interface.
 
-You can assign the value of a mapping to any user attribute. Keep in mind though, data types from the LDAP server will be carried over. This means that with some implementations, where fields are stored as array in LDAP, they will be saved as array in authentik. To prevent this, use the built-in `list_flatten` function. Here is an example mapping for the user's username and a custom attribute for a phone number:
+You can assign the value of a mapping to any user attribute. Keep in mind, though, data types from the LDAP server will be carried over. This means that with some implementations, where fields are stored as an array in LDAP, they will be saved as an array in authentik. To prevent this, use the built-in `list_flatten` function. Here is an example mapping for the user's username and a custom attribute for a phone number:
 
 ```python
 return {
@@ -73,9 +73,36 @@ return {
 }
 ```
 
+The same LDAP source property mapping type is used for both users and groups. A mapping only applies to groups when you assign it under **Group Property Mappings** on the LDAP source. If you only use the built-in group property mappings, synced groups will keep the automatically populated LDAP attributes, such as `distinguishedName`, but custom LDAP attributes won't be copied unless you add your own group mapping.
+
+### Copy a custom LDAP group attribute
+
+To store a custom LDAP group attribute in authentik's group `attributes`, create an **LDAP Source Property Mapping** and assign it to **Group Property Mappings** on the source:
+
+```python
+return {
+    "attributes": {
+        "acl": list_flatten(ldap.get("acl")),
+    },
+}
+```
+
+If your LDAP server stores the value as JSON text and you want authentik to keep it as structured data instead of a string, decode it in the mapping:
+
+```python
+import json
+
+raw_acl = list_flatten(ldap.get("acl"))
+return {
+    "attributes": {
+        "acl": json.loads(raw_acl) if raw_acl else None,
+    },
+}
+```
+
 ### Built-in property mappings
 
-LDAP property mappings are used when you define a LDAP source. These mappings define which LDAP property maps to which authentik property. By default, the following mappings are created:
+LDAP property mappings are used when you define an LDAP source. These mappings define which LDAP property maps to which authentik property. By default, the following mappings are created:
 
 - `authentik default Active Directory Mapping: givenName`
 - `authentik default Active Directory Mapping: sAMAccountName`
@@ -90,14 +117,14 @@ These are configured with most common LDAP setups.
 
 ### Expression data
 
-The following variables are available to LDAP source property mappings:
+The following variables are available to LDAP source property mappings:
 
 - `ldap`: A Python dictionary containing data from LDAP.
 - `dn`: The object DN.
 
 ### Additional expression semantics
 
-If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception. To do so, create or modify a LDAP property mapping to use an expression to define the object to skip.
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception. To do so, create or modify an LDAP property mapping to use an expression to define the object to skip.
 
 **Example:**
 

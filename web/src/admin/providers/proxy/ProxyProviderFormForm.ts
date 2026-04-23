@@ -21,12 +21,7 @@ import {
     oauth2SourcesSelector,
 } from "#admin/providers/oauth2/OAuth2Sources";
 
-import {
-    FlowsInstancesListDesignationEnum,
-    ProxyMode,
-    ProxyProvider,
-    ValidationError,
-} from "@goauthentik/api";
+import { FlowDesignationEnum, ProxyMode, ProxyProvider, ValidationError } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
 
@@ -225,12 +220,12 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
         ></ak-text-input>
 
         <ak-form-element-horizontal
-            label=${msg("Authorization flow")}
+            label=${msg("Authorization Flow")}
             required
             name="authorizationFlow"
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
                 required
             ></ak-flow-search>
@@ -339,7 +334,7 @@ ${provider.skipPathRegex}</textarea
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Federated OIDC Providers")}
+                    label=${msg("Federated OAuth2/OpenID Providers")}
                     name="jwtFederationProviders"
                 >
                     <ak-dual-select-dynamic-selected
@@ -360,11 +355,11 @@ ${provider.skipPathRegex}</textarea
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Authentication flow")}
+                    label=${msg("Authentication Flow")}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
@@ -374,12 +369,12 @@ ${provider.skipPathRegex}</textarea
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
+                    label=${msg("Invalidation Flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
                         required

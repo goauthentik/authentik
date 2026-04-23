@@ -20,6 +20,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-endpoints-device-form")
 export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
+    public static override verboseName = msg("Device");
+    public static override verboseNamePlural = msg("Devices");
     loadInstance(pk: string): Promise<EndpointDevice> {
         return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesRetrieve({
             deviceUuid: pk,

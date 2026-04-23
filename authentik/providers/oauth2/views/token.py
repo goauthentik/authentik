@@ -33,6 +33,7 @@ from authentik.common.oauth.constants import (
     SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
 )
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
@@ -147,6 +148,7 @@ class TokenParams:
         ):
             user = self.user if self.user else get_anonymous_user()
             engine = PolicyEngine(app, user, request)
+            engine.empty_result = AppAccessWithoutBindings.get()
             # Don't cache as for client_credentials flows the user will not be set
             # so we'll get generic cache results
             engine.use_cache = False
@@ -239,7 +241,7 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
     def __check_redirect_uri(self, request: HttpRequest):
-        allowed_redirect_urls = self.provider.redirect_uris
+        allowed_redirect_urls = self.provider.authorization_redirect_uris
         # At this point, no provider should have a blank redirect_uri, in case they do
         # this will check an empty array and raise an error
 
@@ -341,7 +343,7 @@ class TokenParams:
         user = User.objects.filter(username=username, is_active=True).first()
         if not user:
             raise TokenError("invalid_grant")
-        token: Token = Token.filter_not_expired(
+        token: Token = Token.objects.filter(
             key=password, intent=TokenIntents.INTENT_APP_PASSWORD, user=user
         ).first()
         if not token or token.user.uid != user.uid:
@@ -717,7 +719,7 @@ class TokenView(View):
         refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
         if (
             refresh_token_threshold.total_seconds() == 0
-            or (now - self.params.refresh_token.expires) > refresh_token_threshold
+            or (self.params.refresh_token.expires - now) < refresh_token_threshold
         ):
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(

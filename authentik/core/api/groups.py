@@ -7,6 +7,7 @@ from django.http import Http404
 from django.utils.translation import gettext as _
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
+from djangoql.schema import BoolField, StrField
 from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiResponse,
@@ -25,6 +26,9 @@ from rest_framework.serializers import ListSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authentication import TokenAuthentication
+from authentik.api.search.fields import (
+    JSONSearchField,
+)
 from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
@@ -265,12 +269,6 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     ]
 
     def get_ql_fields(self):
-        from djangoql.schema import BoolField, StrField
-
-        from authentik.enterprise.search.fields import (
-            JSONSearchField,
-        )
-
         return [
             StrField(Group, "name"),
             BoolField(Group, "is_superuser", nullable=True),

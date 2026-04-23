@@ -62,7 +62,7 @@ const items = [
 
         //#region Installation and Configuration
         type: "category",
-        label: "Installation and Configuration ",
+        label: "Installation and Configuration",
         collapsed: true,
         link: {
             type: "doc",
@@ -330,6 +330,7 @@ const items = [
                             "add-secure-apps/flows-stages/stages/authenticator_validate/index",
                             "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
                             "add-secure-apps/flows-stages/stages/captcha/index",
+                            "add-secure-apps/flows-stages/stages/consent/index",
                             "add-secure-apps/flows-stages/stages/deny",
                             "add-secure-apps/flows-stages/stages/email/index",
                             "add-secure-apps/flows-stages/stages/endpoint/index",
@@ -418,21 +419,38 @@ const items = [
                 },
                 items: [
                     "customize/policies/working_with_policies",
+                    "customize/policies/bindings",
                     {
                         type: "category",
-                        label: "Expression Policies",
+                        label: "Policy Types",
                         link: {
                             type: "doc",
-                            id: "customize/policies/expression",
+                            id: "customize/policies/types/index",
                         },
                         items: [
-                            "customize/policies/expression/unique_email",
-                            "customize/policies/expression/managing_flow_context_keys",
-                            "customize/policies/expression/source_switch",
-                            "customize/policies/expression/whitelist_email",
+                            "customize/policies/types/event-matcher",
+                            {
+                                type: "category",
+                                label: "Expression Policies",
+                                link: {
+                                    type: "doc",
+                                    id: "customize/policies/types/expression/index",
+                                },
+                                items: [
+                                    "customize/policies/types/expression/reference",
+                                    "customize/policies/types/expression/unique_email",
+                                    "customize/policies/types/expression/managing_flow_context_keys",
+                                    "customize/policies/types/expression/source_switch",
+                                    "customize/policies/types/expression/whitelist_email",
+                                ],
+                            },
+                            "customize/policies/types/geoip",
+                            "customize/policies/types/password",
+                            "customize/policies/types/password-expiry",
+                            "customize/policies/types/password-uniqueness",
+                            "customize/policies/types/reputation",
                         ],
                     },
-                    "customize/policies/unique_password",
                 ],
             },
             {
@@ -476,6 +494,7 @@ const items = [
             },
             "customize/branding",
             "customize/files",
+            "customize/file-picker",
         ],
     },
     {
@@ -501,6 +520,7 @@ const items = [
                     "users-sources/user/user_ref",
                     "users-sources/user/invitations",
                     "users-sources/user/password_reset_on_login",
+                    "users-sources/user/user-interface",
                 ],
             },
             {

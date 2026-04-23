@@ -1,18 +1,20 @@
-import "#admin/applications/wizard/ak-wizard-title";
-
-import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
-import { isApplicationTransactionValidationError, OneOfProvider } from "../types.js";
-import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
-
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError } from "#common/errors/network";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { WizardNavigationEvent } from "#components/ak-wizard/events";
-import { type WizardButton } from "#components/ak-wizard/types";
+import { type WizardButton } from "#components/ak-wizard/shared";
+
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import {
+    isApplicationTransactionValidationError,
+    OneOfProvider,
+} from "#admin/applications/wizard/steps/providers/shared";
+import { providerRenderers } from "#admin/applications/wizard/steps/SubmitStepOverviewRenderers";
 
 import {
     type ApplicationRequest,
@@ -26,7 +28,6 @@ import {
     type ProvidersSamlImportMetadataCreateRequest,
     ProxyMode,
     type ProxyProviderRequest,
-    type SAMLProvider,
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
     type TransactionPolicyBindingRequest,
@@ -35,11 +36,10 @@ import {
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing, TemplateResult } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
-// import { map } from "lit/directives/map.js";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
@@ -51,19 +51,22 @@ type SubmitStates = (typeof _submitStates)[number];
 
 type StrictProviderModelEnum = Exclude<ProviderModelEnum, "11184809">;
 
-const providerMap: Map<string, string> = Object.values(ProviderModelEnum)
-    .filter((value) => /^authentik_providers_/.test(value) && /provider$/.test(value))
-    .reduce((acc: Map<string, string>, value) => {
-        acc.set(value.split(".")[1], value);
+const providerMap: Map<string, StrictProviderModelEnum> = Object.values(ProviderModelEnum)
+    .filter((value): value is StrictProviderModelEnum => {
+        return /^authentik_providers_/.test(value) && /provider$/.test(value);
+    })
+    .reduce((acc: Map<string, StrictProviderModelEnum>, value) => {
+        const key = value.split(".")[1];
+        acc.set(key, value);
+
         return acc;
     }, new Map());
 
 type NonEmptyArray<T> = [T, ...T[]];
 
-type MaybeTemplateResult = TemplateResult | typeof nothing;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isNotEmpty = (arr: any): arr is NonEmptyArray<any> => Array.isArray(arr) && arr.length > 0;
+function isNotEmpty<T>(arr: T[] | undefined): arr is NonEmptyArray<T> {
+    return Array.isArray(arr) && arr.length > 0;
+}
 
 const cleanApplication = (app: Partial<ApplicationRequest>): ApplicationRequest => ({
     name: "",
@@ -99,10 +102,10 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         `,
     ];
 
-    label = msg("Review and Submit Application");
+    public override label = msg("Review and Submit Application");
 
     @state()
-    state: SubmitStates = "reviewing";
+    protected state: SubmitStates = "reviewing";
 
     async sendSAMLMetadataImport() {
         const providerData = this.wizard.provider as ProvidersSamlImportMetadataCreateRequest;
@@ -112,12 +115,12 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         try {
             // Step 1: Import SAML metadata to create the provider
-            const createdProvider = (await providersApi.providersSamlImportMetadataCreate({
+            const createdProvider = await providersApi.providersSamlImportMetadataCreate({
                 file: providerData.file,
                 name: providerData.name,
                 authorizationFlow: providerData.authorizationFlow || "",
                 invalidationFlow: providerData.invalidationFlow || "",
-            })) as unknown as SAMLProvider;
+            });
 
             // Step 2: Create the application linked to the provider
             const appData = cleanApplication(this.wizard.app);
@@ -149,7 +152,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 return;
             }
 
-            this.handleUpdate({ errors: parsedError });
+            this.dispatchEvents({ update: { errors: parsedError } });
             this.state = "reviewing";
         }
     }
@@ -158,12 +161,12 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         const app = this.wizard.app;
         const provider = this.wizard.provider as ModelRequest;
 
-        if (app === undefined) {
-            throw new Error("Reached the submit state with the app undefined");
+        if (!app) {
+            throw new Error("Reached the submit state without the application initialized");
         }
 
-        if (provider === undefined) {
-            throw new Error("Reached the submit state with the provider undefined");
+        if (!provider) {
+            throw new Error("Reached the submit state without the provider initialized");
         }
 
         this.state = "running";
@@ -176,14 +179,21 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         // Stringly-based API. Not the best, but it works. Just be aware that it is
         // stringly-based.
 
-        const providerModel = providerMap.get(this.wizard.providerModel) as StrictProviderModelEnum;
+        const providerModel = providerMap.get(this.wizard.providerModel);
+
+        if (!providerModel) {
+            throw new TypeError("Unrecognized provider model: " + this.wizard.providerModel);
+        }
+
         provider.providerModel = providerModel;
 
         // Special case for the Proxy provider.
         if (this.wizard.providerModel === "proxyprovider") {
-            (provider as ProxyProviderRequest).mode = this.wizard.proxyMode;
-            if ((provider as ProxyProviderRequest).mode !== ProxyMode.ForwardDomain) {
-                (provider as ProxyProviderRequest).cookieDomain = "";
+            const proxyProviderRequest = provider as ProxyProviderRequest;
+            proxyProviderRequest.mode = this.wizard.proxyMode;
+
+            if (proxyProviderRequest.mode !== ProxyMode.ForwardDomain) {
+                proxyProviderRequest.cookieDomain = "";
             }
         }
 
@@ -231,12 +241,12 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                     }
                 }
 
-                this.handleUpdate({ errors: parsedError });
+                this.dispatchEvents({ update: { errors: parsedError } });
                 this.state = "reviewing";
             });
     }
 
-    override handleButton(button: WizardButton) {
+    public override handleButton(button: WizardButton) {
         match([button.kind, this.state])
             .with([P.union("back", "cancel"), P._], () => {
                 super.handleButton(button);
@@ -257,19 +267,22 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             });
     }
 
-    get buttons(): WizardButton[] {
-        const forReview: WizardButton[] = [
-            { kind: "next", label: msg("Submit"), destination: "here" },
-            { kind: "back", destination: "bindings" },
-            { kind: "cancel" },
-        ];
-
-        const forSubmit: WizardButton[] = [{ kind: "close" }];
-
+    protected get buttons(): WizardButton[] {
         return match(this.state)
-            .with("submitted", () => forSubmit)
+            .with("submitted", () => {
+                return [
+                    { kind: "close" },
+                    { kind: "finish", destination: "close" },
+                ] satisfies WizardButton[];
+            })
+            .with("reviewing", () => {
+                return [
+                    { kind: "cancel" },
+                    { kind: "back", destination: "bindings" },
+                    { kind: "next", label: msg("Create Application"), destination: "here" },
+                ] satisfies WizardButton[];
+            })
             .with("running", () => [])
-            .with("reviewing", () => forReview)
             .exhaustive();
     }
 
@@ -277,7 +290,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         state: string,
         label: string,
         icons: string[],
-        extraInfo: MaybeTemplateResult = nothing,
+        extraInfo: SlottedTemplateResult = nothing,
     ) {
         const icon = classMap(icons.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}));
 
@@ -365,36 +378,53 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         const metaLaunchUrl = app.metaLaunchUrl?.trim();
 
-        return html`
-            <div class="ak-wizard-main-content">
-                <ak-wizard-title>${msg("Review the Application and Provider")}</ak-wizard-title>
-                <h2 class="pf-c-title pf-m-xl">${msg("Application")}</h2>
-                <dl class="pf-c-description-list">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">${msg("Name")}</dt>
-                        <dt class="pf-c-description-list__description">${app.name}</dt>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">${msg("Group")}</dt>
-                        <dt class="pf-c-description-list__description">${app.group || msg("-")}</dt>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">${msg("Policy engine mode")}</dt>
-                        <dt class="pf-c-description-list__description">
-                            ${app.policyEngineMode?.toUpperCase()}
-                        </dt>
-                    </div>
-                    ${metaLaunchUrl
-                        ? html` <div class="pf-c-description-list__group">
-                              <dt class="pf-c-description-list__term">${msg("Launch URL")}</dt>
-                              <dt class="pf-c-description-list__description">${metaLaunchUrl}</dt>
-                          </div>`
-                        : nothing}
-                </dl>
-                ${renderer
-                    ? html` <h2 class="pf-c-title pf-m-xl pf-u-pt-xl">${msg("Provider")}</h2>
-                          ${renderer(provider)}`
-                    : nothing}
+        return html`<h2 class="pf-c-wizard__main-title">
+                    ${msg("Review the Application and Provider")}
+                </h2>
+                <fieldset>
+                    <legend>${msg("Application Details")}</legend>
+                    <dl class="pf-c-description-list">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">${msg("Application Name")}</dt>
+                            <dt class="pf-c-description-list__description">${app.name}</dt>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">${msg("Group")}</dt>
+                            <dt class="pf-c-description-list__description">
+                                ${app.group || msg("-")}
+                            </dt>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                ${msg("Policy engine mode")}
+                            </dt>
+                            <dt class="pf-c-description-list__description">
+                                ${app.policyEngineMode?.toUpperCase()}
+                            </dt>
+                        </div>
+                        ${
+                            metaLaunchUrl
+                                ? html`<div class="pf-c-description-list__group">
+                                      <dt class="pf-c-description-list__term">
+                                          ${msg("Launch URL")}
+                                      </dt>
+                                      <dt class="pf-c-description-list__description">
+                                          ${metaLaunchUrl}
+                                      </dt>
+                                  </div>`
+                                : nothing
+                        }
+                    </dl>
+                </fieldset>
+
+                ${
+                    renderer
+                        ? html`<fieldset>
+                              <legend>${msg("Provider Details")}</legend>
+                              ${renderer(provider)}
+                          </fieldset>`
+                        : null
+                }
             </div>
         `;
     }

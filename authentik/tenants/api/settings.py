@@ -44,6 +44,8 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
         for flag in Flag.available():
             _flag = flag()
             props[_flag.key] = build_basic_type(get_args(_flag.__orig_bases__[0])[0])
+            if _flag.description:
+                props[_flag.key]["description"] = _flag.description
         return build_object_type(props, required=props.keys())
 
 

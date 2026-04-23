@@ -46,7 +46,7 @@ import Tabs from "@theme/Tabs";
 
 ## Generate PostgreSQL password and secret key
 
-If this is a fresh authentik installation, you need to generate a PostgreSQL password and a secret key. Use a secure password generator of your choice such as `pwgen`, or you can use `openssl` as below.
+If this is a fresh authentik installation, generate a PostgreSQL password and an authentik secret key. Use a secure password generator of your choice such as `pwgen`, or use `openssl` as shown below.
 
 Run the following commands to generate a PostgreSQL password and secret key and write them to your `.env` file:
 
@@ -57,7 +57,7 @@ echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')" >> .env
 ```
 
 :::info
-Because of a PostgreSQL limitation, only passwords up to 99 chars are supported. See: https://www.postgresql.org/message-id/09512C4F-8CB9-4021-B455-EF4C4F0D55A0@amazon.com
+Because of a PostgreSQL limitation, passwords longer than 99 characters are not supported. See the [PostgreSQL mailing list discussion](https://www.postgresql.org/message-id/09512C4F-8CB9-4021-B455-EF4C4F0D55A0@amazon.com).
 :::
 
 To enable error reporting, run the following command:
@@ -89,7 +89,7 @@ By default, the authentik Docker Compose file mounts the Docker socket to the au
 
 This is used for [automatic deployment and management of authentik Outposts](../../add-secure-apps/outposts/integrations/docker.md).
 
-Mounting the Docker socket to a container comes with some inherent security risks. To reduce these risks, you can utilize a [Docker Socket Proxy](../../add-secure-apps/outposts/integrations/docker.md#docker-socket-proxy) as an additional layer of protection.
+Mounting the Docker socket to a container comes with some inherent security risks. To reduce these risks, you can use a [Docker Socket Proxy](../../add-secure-apps/outposts/integrations/docker.md#docker-socket-proxy) as an additional layer of protection.
 
 Alternatively, you can remove this mount and instead [manually deploy and manage outposts](../../add-secure-apps/outposts/manual-deploy-docker-compose.md).
 
@@ -122,7 +122,7 @@ To start the initial setup, navigate to `http://<your server's IP or hostname>:9
 You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
 :::
 
-There you are prompted to set a password for the `akadmin` user (the default user).
+You are then prompted to set a password for the `akadmin` user (the default user).
 
 ## First steps in authentik
 

@@ -32,10 +32,6 @@ test.describe("Groups", () => {
 
     //#region Tests
 
-    // TODO: The use of `force: true` is a temporary workaround for
-    // buttons with slotted content, which are not considered visible by
-    // Playwright. This should be removed after native dialog modals are implemented.
-
     test("Creating a user within the admin group", async ({
         navigator,
         form,
@@ -66,29 +62,35 @@ test.describe("Groups", () => {
         await test.step("User creation", async () => {
             await click("Users", "tab");
 
-            const wizard = page.getByRole("dialog", { name: "New User" });
+            const dialog = page.getByRole("dialog", { name: "New Group User" });
 
-            await expect(wizard, "Wizard is initially closed").toBeHidden();
+            await expect(dialog, "Dialog is initially closed").toBeHidden();
 
-            await click("Add new user", "button");
+            await click("Add New User", "button");
 
-            await click("New user...", "menuitem");
+            await click("New Group User...", "menuitem");
 
-            await expect(wizard, "Wizard opens").toBeVisible();
+            await expect(dialog, "Dialog opens").toBeVisible();
 
             await series(
-                [fill, /^Username/, username],
-                [fill, /^Display Name/, displayName],
-                [fill, /^Email Address/, `${username}@example.com`],
+                [fill, /^Username/, username, dialog],
+                [fill, /^Display Name/, displayName, dialog],
+                [fill, /^Email Address/, `${username}@example.com`, dialog],
             );
 
-            await page.getByRole("button", { name: "Create User" }).click({ force: true });
+            await dialog.getByRole("button", { name: "Create User" }).click();
 
-            await expect(wizard, "Wizard closes after creating user").toBeHidden();
+            await dialog.waitFor({ state: "hidden" });
+
+            await expect(dialog, "Dialog closes after creating user").toBeHidden();
         });
 
         await test.step("Verify user creation", async () => {
-            const $user = await test.step("Find user via search", () => search(username));
+            const $user = await test.step("Find user via search", () => {
+                const context = page.getByRole("tabpanel", { name: "Users" });
+
+                return search(username, context);
+            });
 
             await expect($user, "User is visible").toBeVisible();
         });
@@ -100,28 +102,28 @@ test.describe("Groups", () => {
         const { fill, search } = form;
         const { click } = pointer;
 
-        const newGroupModal = page.getByRole("dialog", { name: "New Group" });
+        const dialog = page.getByRole("dialog", { name: "New Group" });
 
         await test.step("Group Creation", async () => {
-            await expect(newGroupModal, "Wizard is initially closed").toBeHidden();
+            await expect(dialog, "Dialog is initially closed").toBeHidden();
 
             await click("New Group", "button");
 
-            await expect(newGroupModal, "Wizard opens").toBeVisible();
+            await expect(dialog, "Dialog opens").toBeVisible();
 
             await series(
                 // ---
-                [fill, /^Group Name/, groupName],
+                [fill, /^Group Name/, groupName, dialog],
             );
 
-            const createButton = page
-                .getByRole("group", { name: "Form actions" })
-                .getByRole("button", { name: "Create Group" });
+            const createButton = dialog.getByRole("button", { name: "Create Group" });
 
             await expect(createButton, "Create button is visible").toBeVisible();
-            await createButton.evaluate((element: HTMLButtonElement) => element.click());
+            await createButton.click();
 
-            await expect(newGroupModal, "Wizard closes after creating group").toBeHidden();
+            await expect(dialog, "Dialog closes after creating group").toBeHidden({
+                timeout: 10_000,
+            });
         });
 
         await test.step("Verify group creation", async () => {
@@ -153,22 +155,145 @@ test.describe("Groups", () => {
             const confirmButton = selectUsersModal.getByRole("button", { name: "Confirm" });
 
             await expect(confirmButton, "Confirm button is visible").toBeVisible();
-            await confirmButton.evaluate((element: HTMLButtonElement) => element.click());
+            await confirmButton.click();
 
             const assignButton = assignUsersModal.getByRole("button", { name: "Assign" });
 
             await expect(assignButton, "Assign button is visible").toBeVisible();
-            await assignButton.evaluate((element: HTMLButtonElement) => element.click());
+            await assignButton.click();
 
-            await expect(assignUsersModal, "Assign users modal closes").toBeHidden();
+            await expect(assignUsersModal, "Assign users modal closes").toBeHidden({
+                timeout: 10_000,
+            });
 
             await test.step("Verify admin user assignment", async () => {
                 // eslint-disable-next-line max-nested-callbacks
-                const groupRow = await test.step("Find group via search", () =>
-                    search(adminUsername));
+                const groupRow = await test.step("Find group via search", () => {
+                    const context = page.getByRole("tabpanel", { name: "Users" });
+
+                    return search(adminUsername, context);
+                });
 
                 await expect(groupRow, "Group is visible").toBeVisible();
             });
+        });
+    });
+
+    test("Edit group from view page", async ({ navigator, form, pointer, page }, testInfo) => {
+        const groupName = groupNames.get(testInfo.testId)!;
+
+        const { fill, search } = form;
+        const { click } = pointer;
+
+        const newGroupDialog = page.getByRole("dialog", { name: "New Group" });
+        const editGroupDialog = page.getByRole("dialog", { name: "Edit Group" });
+
+        await test.step("Create group", async () => {
+            await click("New Group", "button");
+
+            await expect(newGroupDialog, "Dialog opens").toBeVisible();
+
+            await fill(/^Group Name/, groupName, newGroupDialog);
+
+            await newGroupDialog.getByRole("button", { name: "Create Group" }).click();
+
+            await expect(newGroupDialog, "Dialog closes after creating group").toBeHidden({
+                timeout: 10_000,
+            });
+        });
+
+        await test.step("Navigate to group view page", async () => {
+            const $group = await search(groupName);
+
+            await expect($group, "Group is visible").toBeVisible();
+
+            const viewLink = $group.getByRole("link", { name: "view details" });
+            await expect(viewLink, "View details link is visible").toBeVisible();
+
+            await viewLink.click();
+        });
+
+        const updatedName = `${groupName} Edited`;
+
+        await test.step("Edit group from view page", async () => {
+            await expect(editGroupDialog, "Edit dialog is initially closed").toBeHidden();
+
+            await click("Edit", "button");
+
+            await expect(editGroupDialog, "Edit dialog opens").toBeVisible();
+
+            const nameInput = editGroupDialog.getByRole("textbox", { name: /Group Name/ });
+
+            await expect(nameInput, "Name input is visible").toBeVisible();
+            await expect(nameInput, "Name is pre-filled").toHaveValue(groupName);
+
+            await nameInput.fill(updatedName);
+
+            await editGroupDialog.getByRole("button", { name: "Save Changes" }).click();
+
+            await expect(editGroupDialog, "Edit dialog closes after saving").toBeHidden();
+        });
+
+        await test.step("Verify group name updated on view page", async () => {
+            await expect(
+                page.getByRole("heading", { name: updatedName }).first(),
+                "Updated group name is visible on view page",
+            ).toBeVisible();
+        });
+    });
+
+    test("Edit group from related group list", async ({
+        navigator,
+        form,
+        pointer,
+        page,
+    }, testInfo) => {
+        const groupName = groupNames.get(testInfo.testId)!;
+
+        const { fill, search } = form;
+        const { click } = pointer;
+
+        const newGroupDialog = page.getByRole("dialog", { name: "New Group" });
+
+        await test.step("Create group with admin user", async () => {
+            await click("New Group", "button");
+
+            await expect(newGroupDialog, "Dialog opens").toBeVisible();
+
+            await fill(/^Group Name/, groupName, newGroupDialog);
+
+            await newGroupDialog.getByRole("button", { name: "Create Group" }).click();
+
+            await expect(newGroupDialog, "Dialog closes").toBeHidden({ timeout: 10_000 });
+        });
+
+        await test.step("Navigate to admin user", async () => {
+            await navigator.navigate("/if/admin/#/identity/users");
+
+            const $adminUser = await search(adminUsername);
+
+            await expect($adminUser, "Admin user is visible").toBeVisible();
+
+            const viewLink = $adminUser.getByRole("link", {
+                name: "View details for authentik Default Admin",
+            });
+            await expect(viewLink, "View details link is visible").toBeVisible();
+
+            await viewLink.click();
+        });
+
+        await test.step("Add user to group via related group list", async () => {
+            await click("Groups", "tab");
+
+            const groupsPanel = page.getByRole("tabpanel", { name: "Groups" });
+
+            const addGroupDialog = page.getByRole("dialog", { name: "Add Group" });
+
+            await expect(addGroupDialog, "Add dialog is initially closed").toBeHidden();
+
+            await groupsPanel.getByRole("button", { name: "Add to existing group" }).click();
+
+            await expect(addGroupDialog, "Add dialog opens").toBeVisible();
         });
     });
 

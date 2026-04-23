@@ -1,18 +1,14 @@
 /**
  * @file Shared utilities for the live reload plugin.
  *
- * @import { BaseLogger } from "pino";
- */
-
-/**
- * @typedef {Pick<BaseLogger, "info" | "warn" | "error" | "debug">} Logger
+ * @import { BaseLogger } from "@goauthentik/logger-js";
  */
 
 /**
  * Creates a logger with the given prefix.
  *
  * @param {string} [prefix]
- * @returns {Logger}
+ * @returns {BaseLogger}
  */
 export function createLogger(prefix = "[Build Observer]") {
     return {
@@ -20,5 +16,6 @@ export function createLogger(prefix = "[Build Observer]") {
         warn: console.warn.bind(console, prefix),
         error: console.error.bind(console, prefix),
         debug: console.debug.bind(console, prefix),
+        trace: console.trace.bind(console, prefix),
     };
 }

@@ -4,8 +4,8 @@ import (
 	"net/url"
 
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
+	api "goauthentik.io/packages/client-go"
 	"golang.org/x/oauth2"
 )
 

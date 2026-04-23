@@ -7,9 +7,15 @@ from ldap3 import DEREF_ALWAYS, SUBTREE, Connection
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.sources.mapper import SourceMapper
+from authentik.core.sources.matcher import SourceMatcher
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.sources.ldap.models import LDAPSource, flatten
+from authentik.sources.ldap.models import (
+    GroupLDAPSourceConnection,
+    LDAPSource,
+    UserLDAPSourceConnection,
+    flatten,
+)
 from authentik.tasks.models import Task
 
 
@@ -28,6 +34,9 @@ class BaseLDAPSynchronizer:
         self._task = task
         self._connection = source.connection()
         self._logger = get_logger().bind(source=source, syncer=self.__class__.__name__)
+        self.matcher = SourceMatcher(
+            self._source, UserLDAPSourceConnection, GroupLDAPSourceConnection
+        )
 
     @staticmethod
     def name() -> str:
