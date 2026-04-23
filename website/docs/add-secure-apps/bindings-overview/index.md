@@ -161,7 +161,7 @@ In other words:
 
 ### Restrict an application
 
-Bind a group or policy to an application when you want to control who can see or launch it.
+By default, applications are accessible to all users. Bind a group or policy to an application when you want to limit access to specific users.
 
 ### Run a stage only for some users
 
