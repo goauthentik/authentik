@@ -147,6 +147,39 @@ class TestUsersAPI(APITestCase):
             },
         )
 
+    def test_set_password_hash_requires_separate_permission(self):
+        """Test password hash updates use their own permission."""
+        self.user.assign_perms_to_managed_role("authentik_core.reset_user_password")
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("authentik_api:user-set-password-hash", kwargs={"pk": self.user.pk}),
+            data={"password_hash": make_password("new-password")},  # nosec
+        )
+        self.assertEqual(response.status_code, 403)
+
+        user_with_hash_perm = create_test_user()
+        user_with_hash_perm.assign_perms_to_managed_role("authentik_core.view_user", self.user)
+        user_with_hash_perm.assign_perms_to_managed_role(
+            "authentik_core.set_user_password_hash", self.user
+        )
+        self.assertTrue(
+            User.objects.get(pk=user_with_hash_perm.pk).has_perm(
+                "authentik_core.set_user_password_hash", self.user
+            )
+        )
+        client = self.client_class()
+        client.force_login(user_with_hash_perm)
+        password = generate_key()
+        password_hash = make_password(password)
+        response = client.post(
+            reverse("authentik_api:user-set-password-hash", kwargs={"pk": self.user.pk}),
+            data={"password_hash": password_hash},
+        )
+        self.assertEqual(response.status_code, 204, response.data)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.password, password_hash)
+        self.assertTrue(self.user.check_password(password))
+
     def test_recovery(self):
         """Test user recovery link"""
         flow = create_test_flow(

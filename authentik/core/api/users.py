@@ -781,7 +781,7 @@ class UserViewSet(
             update_session_auth_hash(self.request, user)
         return Response(status=204)
 
-    @permission_required("authentik_core.reset_user_password")
+    @permission_required("authentik_core.set_user_password_hash")
     @extend_schema(
         request=UserPasswordHashSetSerializer,
         responses={
