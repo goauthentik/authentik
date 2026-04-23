@@ -790,9 +790,13 @@ class Application(SerializerModel, PolicyBindingModel):
 
     def get_provider(self) -> Provider | None:
         """Get casted provider instance. Needs Application queryset with_provider"""
+        if hasattr(self, "_cached_provider"):
+            return self._cached_provider
         if not self.provider:
+            self._cached_provider = None
             return None
-        return get_deepest_child(self.provider)
+        self._cached_provider = get_deepest_child(self.provider)
+        return self._cached_provider
 
     def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
         """Get Backchannel provider for a specific type"""
