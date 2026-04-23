@@ -70,7 +70,7 @@ impl Worker {
         cmd.arg(&socket_path);
 
         let client = Client::builder(TokioExecutor::new())
-            .pool_idle_timeout(Duration::from_secs(60))
+            .pool_idle_timeout(Duration::from_mins(1))
             .set_host(false)
             .build(UnixSocketConnector::new(socket_path.clone()));
 

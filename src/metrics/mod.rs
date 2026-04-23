@@ -74,7 +74,7 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
 
     tasks
         .build_task()
-        .name(&format!("{}::run_upkeep", module_path!(),))
+        .name(&format!("{}::run_upkeep", module_path!()))
         .spawn(run_upkeep(arbiter, Arc::clone(&metrics)))?;
 
     for addr in config::get().listen.metrics.iter().copied() {
