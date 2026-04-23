@@ -27,6 +27,9 @@ from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignatio
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.email.models import EmailStage
 
+INVALID_PASSWORD_HASH = "not-a-valid-hash"
+INVALID_PASSWORD_HASH_ERROR = "Invalid password hash format. Must be a valid Django password hash."
+
 
 class TestUsersAPI(APITestCase):
     """Test Users API"""
@@ -40,6 +43,14 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-set-password-hash", kwargs={"pk": user.pk}),
             data={"password": password_hash},
         )
+
+    def _assert_password_hash_set(
+        self, user: User, password: str, password_hash: str, response
+    ) -> None:
+        self.assertEqual(response.status_code, 204, response.data)
+        user.refresh_from_db()
+        self.assertEqual(user.password, password_hash)
+        self.assertTrue(user.check_password(password))
 
     def test_filter_type(self):
         """Test API filtering by type"""
@@ -127,20 +138,17 @@ class TestUsersAPI(APITestCase):
         password_hash = make_password(password)
         response = self._set_password_hash(self.user, password_hash)
 
-        self.assertEqual(response.status_code, 204)
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.password, password_hash)
-        self.assertTrue(self.user.check_password(password))
+        self._assert_password_hash_set(self.user, password, password_hash, response)
 
     def test_set_password_hash_invalid(self):
         """Test invalid password hashes are rejected."""
         self.client.force_login(self.admin)
-        response = self._set_password_hash(self.user, "not-a-valid-hash")
+        response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH)
 
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content,
-            {"password": ["Invalid password hash format. Must be a valid Django password hash."]},
+            {"password": [INVALID_PASSWORD_HASH_ERROR]},
         )
 
     def test_set_password_hash_requires_separate_permission(self):
@@ -165,10 +173,7 @@ class TestUsersAPI(APITestCase):
         password = generate_key()
         password_hash = make_password(password)
         response = self._set_password_hash(self.user, password_hash, client)
-        self.assertEqual(response.status_code, 204, response.data)
-        self.user.refresh_from_db()
-        self.assertEqual(self.user.password, password_hash)
-        self.assertTrue(self.user.check_password(password))
+        self._assert_password_hash_set(self.user, password, password_hash, response)
 
     def test_recovery(self):
         """Test user recovery link"""
@@ -339,10 +344,7 @@ class TestUsersAPI(APITestCase):
         password_hash = make_password(password)
         response = self._set_password_hash(user, password_hash)
 
-        self.assertEqual(response.status_code, 204, response.data)
-        user.refresh_from_db()
-        self.assertEqual(user.password, password_hash)
-        self.assertTrue(user.check_password(password))
+        self._assert_password_hash_set(user, password, password_hash, response)
 
     def test_service_account_no_expire(self):
         """Service account creation without token expiration"""
