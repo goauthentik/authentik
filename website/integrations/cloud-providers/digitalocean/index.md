@@ -90,11 +90,11 @@ Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#a
 3. Create one entitlement for each DigitalOcean role that users should be able to receive.
 4. Bind the appropriate users or groups to each entitlement.
 
-:::tip
+:::tip Entitlement role names
 For this integration, each entitlement name must exactly match a valid DigitalOcean team role name. This can be one of the predefined team roles, such as `Owner`, `Biller`, `Billing Viewer`, `Modifier`, `Member`, or `Resource Viewer`, or the exact name of a custom role that you created for the same DigitalOcean team. This keeps the role assignment scoped to the DigitalOcean application instead of relying on global group names such as `do:Owner`.
 :::
 
-:::info
+:::info Single role mapping
 The sample scope mapping returns a single `team_role` value. In most deployments, each user should receive only one DigitalOcean role entitlement at a time. If multiple matching entitlements are assigned, the example prefers predefined roles in the priority order shown above and otherwise falls back to the first custom role name alphabetically.
 :::
 
