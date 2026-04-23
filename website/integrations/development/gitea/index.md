@@ -70,9 +70,7 @@ The following application entitlements will be created:
 - `gitadmin`: Gitea users with administrative permissions.
 - `gitrestricted`: restricted Gitea users.
 
-:::info
 Users who are assigned none of these entitlements will not be able to log in to Gitea.
-:::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and open the Gitea application.
