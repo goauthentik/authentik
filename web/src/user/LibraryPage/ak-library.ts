@@ -69,7 +69,7 @@ export class LibraryPage extends AKElement {
             onlyWithLaunchUrl: true,
         });
 
-        const applicationListFetch = await coreApi().coreApplicationsList(applicationListParams(1));
+        const applicationListFetch = await coreApi().coreApplicationsAccessibleList(applicationListParams(1));
         const pageCount = applicationListFetch.pagination.totalPages;
         if (pageCount === 1) {
             return applicationListFetch.results;
@@ -77,7 +77,7 @@ export class LibraryPage extends AKElement {
 
         const applicationLaterPages = await Promise.allSettled(
             Array.from({ length: pageCount - 1 }).map((_a, idx) =>
-                coreApi().coreApplicationsList(applicationListParams(idx + 2)),
+                coreApi().coreApplicationsAccessibleList(applicationListParams(idx + 2)),
             ),
         );
 

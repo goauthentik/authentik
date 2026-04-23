@@ -80,10 +80,10 @@ class TestApplicationsAPI(APITestCase):
         self.assertEqual(body["passing"], False)
         self.assertEqual(body["messages"], ["dummy"])
 
-    def test_list(self):
-        """Test list operation without superuser_full_list"""
+    def test_list_accessible(self):
+        """Test list operation without"""
         self.client.force_login(self.user)
-        response = self.client.get(reverse("authentik_api:application-list"))
+        response = self.client.get(reverse("authentik_api:application-accessible"))
         self.assertJSONEqual(
             response.content.decode(),
             {
@@ -136,12 +136,10 @@ class TestApplicationsAPI(APITestCase):
             },
         )
 
-    def test_list_superuser_full_list(self):
-        """Test list operation with superuser_full_list"""
+    def test_list_rbac(self):
+        """Test list operation"""
         self.client.force_login(self.user)
-        response = self.client.get(
-            reverse("authentik_api:application-list") + "?superuser_full_list=true"
-        )
+        response = self.client.get(reverse("authentik_api:application-list"))
         self.assertJSONEqual(
             response.content.decode(),
             {

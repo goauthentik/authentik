@@ -23,7 +23,7 @@ export class UserApplicationTable extends Table<Application> {
     static styles: CSSResult[] = [...super.styles, applicationListStyle];
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
+        return new CoreApi(DEFAULT_CONFIG).coreApplicationsAccessibleList({
             ...(await this.defaultEndpointConfig()),
             forUser: this.user?.pk,
         });
