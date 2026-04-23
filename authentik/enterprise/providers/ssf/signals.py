@@ -12,7 +12,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.core.signals import password_changed
+from authentik.core.signals import PASSWORD_SOURCE_HASH, password_changed
 from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
@@ -90,7 +90,7 @@ def ssf_password_changed_cred_change(
 ):
     """Credential change trigger (password changed)"""
     # set_password_from_hash() has no raw password but still represents an update.
-    if password_source == "hash":
+    if password_source == PASSWORD_SOURCE_HASH:
         change_type = "update"
     else:
         change_type = "revoke" if password is None else "update"

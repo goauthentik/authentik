@@ -24,6 +24,7 @@ from authentik.root.ws.consumer import build_device_group
 
 # Arguments: user: User, password: str | None, password_source: str | None
 # request: HttpRequest | None
+PASSWORD_SOURCE_HASH = "hash"
 password_changed = Signal()
 # Arguments: credentials: dict[str, any], request: HttpRequest,
 #            stage: Stage, context: dict[str, any]

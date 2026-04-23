@@ -592,13 +592,15 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
         Raises ValueError if the hash format is not recognized.
         """
+        from authentik.core.signals import PASSWORD_SOURCE_HASH
+
         identify_hasher(password_hash)  # Raises ValueError if invalid
         self._send_password_changed_signal(
             None,
             signal,
             sender,
             request,
-            password_source="hash",
+            password_source=PASSWORD_SOURCE_HASH,
         )
         self.password = password_hash
         self.password_change_date = now()

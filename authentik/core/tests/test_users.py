@@ -9,7 +9,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
-from authentik.core.signals import password_changed
+from authentik.core.signals import PASSWORD_SOURCE_HASH, password_changed
 from authentik.events.models import Event
 from authentik.lib.generators import generate_id
 
@@ -71,7 +71,7 @@ class TestUsers(TestCase):
 
         self.assertEqual(len(captured), 1)
         self.assertIsNone(captured[0]["password"])
-        self.assertEqual(captured[0]["password_source"], "hash")
+        self.assertEqual(captured[0]["password_source"], PASSWORD_SOURCE_HASH)
         ldap_sources_filter.assert_not_called()
         kerberos_connections_select.assert_not_called()
 
