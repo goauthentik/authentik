@@ -141,7 +141,7 @@ This matters because stages are reusable objects. The same stage can appear in m
 Flow-stage bindings have two evaluation settings:
 
 - **Evaluate when flow is planned**: authentik evaluates the binding while it is building the flow plan. If the binding does not pass at planning time, the stage is not added to the plan.
-- **Evaluate when the stage is run**: authentik adds the stage to the flow plan, then evaluates the binding again immediately before the stage is shown. If the binding no longer passes, authentik removes that stage from the plan.
+- **Evaluate when the stage is run**: authentik adds the stage to the flow plan, then evaluates the binding again immediately before the stage is shown. If the binding no longer passes, authentik removes that stage from the flow plan.
 
 At least one of these settings must be enabled.
 
