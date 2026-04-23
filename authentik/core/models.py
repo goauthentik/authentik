@@ -580,6 +580,11 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         self.password_change_date = now()
         return super().set_password(raw_password)
 
+    @staticmethod
+    def validate_password_hash(password_hash: str):
+        """Validate that the value is a recognized Django password hash."""
+        identify_hasher(password_hash)  # Raises ValueError if invalid
+
     def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
         """Set password directly from a pre-hashed value.
 
@@ -594,7 +599,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         """
         from authentik.core.signals import PASSWORD_SOURCE_HASH
 
-        identify_hasher(password_hash)  # Raises ValueError if invalid
+        self.validate_password_hash(password_hash)
         self._send_password_changed_signal(
             None,
             signal,

@@ -6,7 +6,6 @@ from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.hashers import identify_hasher
 from django.contrib.auth.models import AnonymousUser, Permission
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
@@ -244,7 +243,7 @@ class UserSerializer(ModelSerializer):
         if password_hash is None:
             return
         try:
-            identify_hasher(password_hash)
+            User.validate_password_hash(password_hash)
         except ValueError as exc:
             LOGGER.warning("Failed to identify password hash format", exc_info=exc)
             raise ValidationError(_invalid_password_hash_message()) from exc
