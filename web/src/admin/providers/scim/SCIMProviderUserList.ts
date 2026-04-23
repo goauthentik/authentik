@@ -7,6 +7,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+import { getUserDisplayName } from "#elements/user/utils";
 
 import {
     ProvidersApi,
@@ -73,7 +74,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     }
 
     protected override rowLabel(item: SCIMProviderUser): string {
-        return item.userObj.name || item.userObj.username;
+        return getUserDisplayName(item.userObj);
     }
 
     protected columns: TableColumn[] = [
