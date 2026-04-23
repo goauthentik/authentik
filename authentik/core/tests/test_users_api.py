@@ -328,6 +328,35 @@ class TestUsersAPI(APITestCase):
         self.assertTrue(token_filter.exists())
         self.assertTrue(token_filter.first().expiring)
 
+    def test_service_account_set_password_hash(self):
+        """Service account password hash can be set through the API."""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "create_group": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        body = loads(response.content)
+
+        user = User.objects.get(pk=body["user_pk"])
+        self.assertEqual(user.type, UserTypes.SERVICE_ACCOUNT)
+        self.assertFalse(user.has_usable_password())
+
+        password = generate_key()
+        password_hash = make_password(password)
+        response = self.client.post(
+            reverse("authentik_api:user-set-password-hash", kwargs={"pk": user.pk}),
+            data={"password_hash": password_hash},
+        )
+
+        self.assertEqual(response.status_code, 204, response.data)
+        user.refresh_from_db()
+        self.assertEqual(user.password, password_hash)
+        self.assertTrue(user.check_password(password))
+
     def test_service_account_no_expire(self):
         """Service account creation without token expiration"""
         self.client.force_login(self.admin)
