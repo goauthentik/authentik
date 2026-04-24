@@ -1,5 +1,6 @@
 ---
-title: Keycloak
+title: Log in with Keycloak
+sidebar_label: Keycloak
 tags:
     - source
     - keycloak

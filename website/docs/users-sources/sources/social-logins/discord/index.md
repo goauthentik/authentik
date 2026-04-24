@@ -1,5 +1,6 @@
 ---
-title: Discord
+title: Log in with Discord
+sidebar_label: Discord
 tags:
     - source
     - discord

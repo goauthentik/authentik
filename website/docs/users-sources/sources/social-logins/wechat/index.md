@@ -1,5 +1,6 @@
 ---
-title: WeChat
+title: Log in with WeChat
+sidebar_label: WeChat
 tags:
     - source
     - wechat

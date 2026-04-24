@@ -1,5 +1,6 @@
 ---
-title: Facebook
+title: Log in with Facebook
+sidebar_label: Facebook
 tags:
     - source
     - facebook
