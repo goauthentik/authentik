@@ -66,6 +66,14 @@ updates:
       default-days: 7
       semver-major-days: 14
       semver-patch-days: 3
+      exclude:
+        - aws-lc-fips-sys
+        - aws-lc-rs
+        - aws-lc-sys
+        - rustls
+        - rustls-pki-types
+        - rustls-platform-verifier
+        - rustls-webpki
 
   - package-ecosystem: rust-toolchain
     directory: "/"

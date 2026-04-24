@@ -11,6 +11,10 @@ class FlowNonApplicableException(SentryIgnoredException):
 
     policy_result: PolicyResult | None = None
 
+    def __init__(self, policy_result: PolicyResult | None = None, *args):
+        super().__init__(*args)
+        self.policy_result = policy_result
+
     @property
     def messages(self) -> str:
         """Get messages from policy result, fallback to generic reason"""

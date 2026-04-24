@@ -8430,7 +8430,8 @@
                         "require_unauthenticated",
                         "require_superuser",
                         "require_redirect",
-                        "require_outpost"
+                        "require_outpost",
+                        "require_token"
                     ],
                     "title": "Authentication",
                     "description": "Required level of authentication and authorization to access a flow."

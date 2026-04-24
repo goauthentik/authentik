@@ -127,7 +127,10 @@ jobs:
         with:
           postgresql_version: ${{ matrix.psql }}
       - name: run migrations to stable
-        run: uv run python -m lifecycle.migrate
+        run: |
+          docker ps
+          docker logs setup-postgresql-1
+          uv run python -m lifecycle.migrate
       - name: checkout current code
         run: |
           set -x

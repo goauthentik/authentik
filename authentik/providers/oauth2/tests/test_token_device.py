@@ -50,6 +50,7 @@ class TestTokenDeviceCode(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
             },
         )
@@ -68,6 +69,7 @@ class TestTokenDeviceCode(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
                 "device_code": device_token.device_code,
             },
@@ -75,6 +77,26 @@ class TestTokenDeviceCode(OAuthTestCase):
         self.assertEqual(res.status_code, 400)
         body = loads(res.content.decode())
         self.assertEqual(body["error"], "authorization_pending")
+
+    def test_code_no_auth(self):
+        """Test code with user"""
+        device_token = DeviceToken.objects.create(
+            provider=self.provider,
+            user_code=generate_code_fixed_length(),
+            device_code=generate_id(),
+            user=self.user,
+        )
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            data={
+                "client_id": self.provider.client_id,
+                "grant_type": GRANT_TYPE_DEVICE_CODE,
+                "device_code": device_token.device_code,
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        body = loads(res.content.decode())
+        self.assertEqual(body["error"], "invalid_client")
 
     def test_code(self):
         """Test code with user"""
@@ -88,6 +110,7 @@ class TestTokenDeviceCode(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
                 "device_code": device_token.device_code,
             },
@@ -107,6 +130,7 @@ class TestTokenDeviceCode(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
                 "device_code": device_token.device_code,
                 "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} invalid",

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:28fd420825d8e922eab0fd91740c7cf88ddbdc8116a2b20a82049f0c946feb03 AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:735dd688da64d22ebd9dd374b3e7e5a874635668fd2a6ec20ca1f99264294086 AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -29,7 +29,7 @@ RUN npm run build && \
     npm run build:sfe
 
 # Stage 2: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.2-trixie@sha256:c0074c718b473f3827043f86532c4c0ff537e3fe7a81b8219b0d1ccfcc2c9a09 AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.2-trixie@sha256:982ae929f9a74083a242c6e25d19d7d9ed78c6e97fab639a119e90707ba819e2 AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -42,8 +42,9 @@ WORKDIR /go/src/goauthentik.io
 
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     dpkg --add-architecture arm64 && \
+    dpkg --add-architecture amd64 && \
     apt-get update && \
-    apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu
+    apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu crossbuild-essential-amd64 gcc-x86-64-linux-gnu
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
@@ -62,7 +63,8 @@ COPY ./packages/client-go /go/src/goauthentik.io/packages/client-go
 
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
+    if [ "$TARGETARCH" = "arm64" ] && [ "$(uname -m)" != "aarch64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
+    if [ "$TARGETARCH" = "amd64" ] && [ "$(uname -m)" != "x86_64" ]; then export CC=x86_64-linux-gnu-gcc; fi && \
     CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
     go build -o /go/authentik ./cmd/server
 
