@@ -1,6 +1,6 @@
 ---
-title: Log in with X (Twitter)
-sidebar_label: X (Twitter)
+title: Log in with X (formerly Twitter)
+sidebar_label: X (formerly Twitter)
 tags:
     - source
     - x
