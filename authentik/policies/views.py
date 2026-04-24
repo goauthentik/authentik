@@ -62,12 +62,11 @@ class PolicyAccessView(AccessMixin, View):
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         try:
             self.pre_permission_check()
+            self.resolve_provider_application()
         except RequestValidationError as exc:
             if exc.response:
                 return exc.response
             return self.handle_no_permission()
-        try:
-            self.resolve_provider_application()
         except (Application.DoesNotExist, Provider.DoesNotExist) as exc:
             LOGGER.warning("failed to resolve application", exc=exc)
             return self.handle_no_permission_authenticated(
