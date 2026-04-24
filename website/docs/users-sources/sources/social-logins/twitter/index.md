@@ -1,5 +1,6 @@
 ---
-title: X (Twitter)
+title: Log in with X (Twitter)
+sidebar_label: X (Twitter)
 tags:
     - source
     - x
