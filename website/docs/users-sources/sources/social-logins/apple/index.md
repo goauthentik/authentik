@@ -1,5 +1,6 @@
 ---
-title: Apple
+title: Log in with Apple
+sidebar_label: Apple
 tags:
     - source
     - apple

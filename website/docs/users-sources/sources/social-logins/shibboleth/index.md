@@ -1,5 +1,6 @@
 ---
-title: Shibboleth
+title: Log in with Shibboleth
+sidebar_label: Shibboleth
 tags:
     - source
     - shibboleth

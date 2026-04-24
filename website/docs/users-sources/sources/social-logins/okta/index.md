@@ -1,5 +1,6 @@
 ---
-title: Okta
+title: Log in with Okta
+sidebar_label: Okta
 description: "Integrate Okta as a source in authentik"
 tags: [source, okta]
 ---
