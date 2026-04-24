@@ -8,6 +8,7 @@ export interface InvitationWizardState {
     newFlowName?: string;
     newFlowSlug?: string;
     newStageName?: string;
+    newUserType?: "external" | "internal";
     continueFlowWithoutInvitation: boolean;
 
     // Flags for which API calls to make

@@ -80,9 +80,19 @@ export class InvitationWizardSuccessStep extends WizardPage {
         return html`
             <ak-stage-invitation-list-link
                 .invitation=${invitation}
+                ?inline-send-email=${true}
+                @ak-invitation-send-email-inline=${this.onSendViaEmail}
             ></ak-stage-invitation-list-link>
         `;
     }
+
+    onSendViaEmail = async (): Promise<void> => {
+        const steps = this.host.steps;
+        if (!steps.includes("email-step")) {
+            this.host.steps = [...steps, "email-step"];
+        }
+        await this.host.navigateNext();
+    };
 }
 
 declare global {

@@ -16,7 +16,7 @@ import { dateTimeLocal } from "#common/temporal";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { WizardPage } from "#elements/wizard/WizardPage";
 
-import { FlowDesignationEnum, FlowsApi, StagesApi } from "@goauthentik/api";
+import { FlowsApi, ManagedApi, StagesApi } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -27,6 +27,13 @@ import { customElement, state } from "lit/decorators.js";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+// Slug used by blueprints/example/flows-invitation-enrollment-minimal.yaml when
+// no context is supplied. Once the /managed/blueprints/import/ endpoint accepts
+// a context parameter, the slug the user typed will take effect and this
+// fallback can be removed.
+const MINIMAL_BLUEPRINT_PATH = "example/flows-invitation-enrollment-minimal.yaml";
+const MINIMAL_BLUEPRINT_DEFAULT_SLUG = "invitation-enrollment-flow";
 
 @customElement("ak-invitation-wizard-details-step")
 export class InvitationWizardDetailsStep extends WizardPage {
@@ -93,51 +100,47 @@ export class InvitationWizardDetailsStep extends WizardPage {
         wizardState.invitationFixedData = fixedData;
         wizardState.invitationSingleUse = this.singleUse;
 
-        if (wizardState.needsStage) {
-            try {
-                const stage = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
-                    invitationStageRequest: {
-                        name: wizardState.newStageName!,
-                        continueFlowWithoutInvitation: wizardState.continueFlowWithoutInvitation,
-                    },
-                });
-                wizardState.createdStagePk = stage.pk;
-                wizardState.needsStage = false;
-            } catch (err) {
-                return this.#fail(msg("Creating invitation stage"), err);
-            }
-        }
-
         if (wizardState.needsFlow) {
             try {
-                const flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
-                    flowRequest: {
-                        name: wizardState.newFlowName!,
-                        slug: wizardState.newFlowSlug!,
-                        title: wizardState.newFlowName!,
-                        designation: FlowDesignationEnum.Enrollment,
-                    },
+                // TODO(@BeryJu context): once /managed/blueprints/import/ accepts a
+                // context parameter, pass { flow_name, flow_slug, stage_name,
+                // continue_flow_without_invitation, user_type } so the user's inputs
+                // drive the generated flow. Until then the blueprint's !Context
+                // defaults apply and the generated flow uses the fixed slug below.
+                const result = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsImportCreate({
+                    path: MINIMAL_BLUEPRINT_PATH,
                 });
-                wizardState.createdFlowPk = flow.pk;
-                wizardState.createdFlowSlug = flow.slug;
-                wizardState.needsFlow = false;
-            } catch (err) {
-                return this.#fail(msg("Creating enrollment flow"), err);
-            }
-        }
+                if (!result.success) {
+                    const logs = (result.logs || [])
+                        .map((l) => l.event)
+                        .filter((m) => !!m)
+                        .join("\n");
+                    return this.#fail(
+                        msg("Importing enrollment flow blueprint"),
+                        new Error(logs || msg("Blueprint validation failed")),
+                    );
+                }
 
-        if (wizardState.needsBinding) {
-            try {
-                await new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
-                    flowStageBindingRequest: {
-                        target: wizardState.createdFlowPk!,
-                        stage: wizardState.createdStagePk!,
-                        order: 0,
-                    },
+                const slugToLookup = MINIMAL_BLUEPRINT_DEFAULT_SLUG;
+                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
+                    slug: slugToLookup,
                 });
+                const createdFlow = flows.results[0];
+                if (!createdFlow) {
+                    return this.#fail(
+                        msg("Importing enrollment flow blueprint"),
+                        new Error(
+                            msg(str`Flow with slug "${slugToLookup}" not found after import`),
+                        ),
+                    );
+                }
+                wizardState.createdFlowPk = createdFlow.pk;
+                wizardState.createdFlowSlug = createdFlow.slug;
+                wizardState.needsFlow = false;
+                wizardState.needsStage = false;
                 wizardState.needsBinding = false;
             } catch (err) {
-                return this.#fail(msg("Binding stage to flow"), err);
+                return this.#fail(msg("Importing enrollment flow blueprint"), err);
             }
         }
 

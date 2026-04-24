@@ -1,4 +1,5 @@
 import "#admin/stages/invitation/wizard/InvitationWizardDetailsStep";
+import "#admin/stages/invitation/wizard/InvitationWizardEmailStep";
 import "#admin/stages/invitation/wizard/InvitationWizardFlowStep";
 import "#admin/stages/invitation/wizard/InvitationWizardSuccessStep";
 import "#elements/wizard/Wizard";
@@ -46,6 +47,10 @@ export class InvitationWizard extends AKElement implements TransclusionChildElem
                 slot="success-step"
                 headline=${msg("Invitation Link")}
             ></ak-invitation-wizard-success-step>
+            <ak-invitation-wizard-email-step
+                slot="email-step"
+                headline=${msg("Send via Email")}
+            ></ak-invitation-wizard-email-step>
         </ak-wizard>`;
     }
 }

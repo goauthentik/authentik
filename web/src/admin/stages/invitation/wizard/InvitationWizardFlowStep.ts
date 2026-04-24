@@ -1,3 +1,4 @@
+import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
@@ -60,6 +61,9 @@ export class InvitationWizardFlowStep extends WizardPage {
     newStageName = "invitation-stage";
 
     @state()
+    newUserType: "external" | "internal" = "external";
+
+    @state()
     continueFlowWithoutInvitation = true;
 
     activeCallback = async (): Promise<void> => {
@@ -106,6 +110,17 @@ export class InvitationWizardFlowStep extends WizardPage {
         }
 
         this.loading = false;
+
+        // If there's exactly one eligible flow, skip this step so the user goes
+        // straight to the invitation details. Drop ourselves from the step list
+        // so the back button from the next step doesn't bounce back here.
+        if (this.mode === "existing" && this.enrollmentFlows.length === 1) {
+            const currentSlot = this.slot;
+            const advanced = await this.host.navigateNext();
+            if (advanced) {
+                this.host.steps = this.host.steps.filter((s) => s !== currentSlot);
+            }
+        }
     };
 
     validate(): void {
@@ -136,6 +151,7 @@ export class InvitationWizardFlowStep extends WizardPage {
             state.newFlowName = this.newFlowName;
             state.newFlowSlug = this.newFlowSlug;
             state.newStageName = this.newStageName;
+            state.newUserType = this.newUserType;
             state.continueFlowWithoutInvitation = this.continueFlowWithoutInvitation;
             state.needsFlow = true;
             state.needsStage = true;
@@ -153,6 +169,7 @@ export class InvitationWizardFlowStep extends WizardPage {
         this.newFlowName = "Enrollment with invitation";
         this.newFlowSlug = "enrollment-with-invitation";
         this.newStageName = "invitation-stage";
+        this.newUserType = "external";
         this.continueFlowWithoutInvitation = true;
     }
 
@@ -176,9 +193,19 @@ export class InvitationWizardFlowStep extends WizardPage {
                     <div class="pf-c-alert__description">
                         <p>
                             ${msg(
-                                "Cancel this wizard and select 'with New Enrollment Flow and Invitation Stage' from the dropdown. Alternatively, you can manually create an enrollment flow and bind an invitation stage to it.",
+                                "You can create a new enrollment flow and invitation stage right here, or cancel and bind an invitation stage to an existing flow manually.",
                             )}
                         </p>
+                        <button
+                            type="button"
+                            class="pf-c-button pf-m-primary"
+                            @click=${() => {
+                                this.mode = "create";
+                                this.validate();
+                            }}
+                        >
+                            ${msg("Create a new enrollment flow")}
+                        </button>
                     </div>
                 </div>
             `;
@@ -262,6 +289,29 @@ export class InvitationWizardFlowStep extends WizardPage {
                 />
                 <p class="pf-c-form__helper-text">${msg("Name for the new invitation stage.")}</p>
             </ak-form-element-horizontal>
+            <ak-radio-input
+                label=${msg("User type")}
+                .value=${this.newUserType}
+                .options=${[
+                    {
+                        label: msg("External"),
+                        value: "external",
+                        description: html`${msg(
+                            "Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.",
+                        )}`,
+                    },
+                    {
+                        label: msg("Internal"),
+                        value: "internal",
+                        description: html`${msg(
+                            "Enrolled users are created as internal (e.g. employees). New users will be placed under users/internal.",
+                        )}`,
+                    },
+                ]}
+                @input=${(ev: CustomEvent<{ value: "external" | "internal" }>) => {
+                    this.newUserType = ev.detail.value;
+                }}
+            ></ak-radio-input>
             <ak-switch-input
                 label=${msg("Continue flow without invitation")}
                 ?checked=${this.continueFlowWithoutInvitation}
