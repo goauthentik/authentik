@@ -1,4 +1,7 @@
 metadata:
+  labels:
+    blueprints.goauthentik.io/system-oobe: "true"
+    blueprints.goauthentik.io/system: "true"
   name: Default - Out-of-box-experience flow
 version: 1
 entries:
@@ -75,23 +78,20 @@ entries:
 - attrs:
     expression: |
       # This policy ensures that the setup flow can only be
-      # executed when the admin user doesn''t have a password set
+      # executed when the admin user doesn't have a password set
       akadmin = ak_user_by(username="akadmin")
-      return not akadmin.has_usable_password()
+      # Ensure flow was started correctly
+      started_by = context.get("goauthentik.io/core/setup/started-by")
+      if started_by != "setup":
+          setup_url = request.http_request.build_absolute_uri("/")
+          ak_message(f"Access the authentik setup by navigating to {setup_url}")
+          return False
+      return akadmin is None or not akadmin.has_usable_password()
   id: policy-default-oobe-password-usable
   identifiers:
     name: default-oobe-password-usable
   model: authentik_policies_expression.expressionpolicy
-- attrs:
-    expression: |
-      # This policy ensures that the setup flow can only be
-      # used one time
-      from authentik.flows.models import Flow, FlowAuthenticationRequirement
-      Flow.objects.filter(slug="initial-setup").update(
-          authentication=FlowAuthenticationRequirement.REQUIRE_SUPERUSER,
-      )
-      return True
-  id: policy-default-oobe-flow-set-authentication
+- state: absent
   identifiers:
     name: default-oobe-flow-set-authentication
   model: authentik_policies_expression.expressionpolicy
@@ -153,9 +153,4 @@ entries:
     order: 0
     policy: !KeyOf policy-default-oobe-prefill-user
     target: !KeyOf binding-password-write
-  model: authentik_policies.policybinding
-- identifiers:
-    order: 0
-    policy: !KeyOf policy-default-oobe-flow-set-authentication
-    target: !KeyOf binding-login
   model: authentik_policies.policybinding
