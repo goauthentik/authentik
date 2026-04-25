@@ -199,7 +199,9 @@ class UserSerializer(ModelSerializer):
     def create(self, validated_data: dict) -> User:
         """Create a user, with blueprint-only password and permission writes."""
         if SERIALIZER_CONTEXT_BLUEPRINT not in self.context:
-            return super().create(validated_data)
+            instance: User = super().create(validated_data)
+            self._ensure_password_not_empty(instance)
+            return instance
 
         password, password_hash, perms_list = self._pop_blueprint_write_fields(validated_data)
         instance: User = super().create(validated_data)
@@ -211,7 +213,9 @@ class UserSerializer(ModelSerializer):
     def update(self, instance: User, validated_data: dict) -> User:
         """Update a user, with blueprint-only password and permission writes."""
         if SERIALIZER_CONTEXT_BLUEPRINT not in self.context:
-            return super().update(instance, validated_data)
+            instance = super().update(instance, validated_data)
+            self._ensure_password_not_empty(instance)
+            return instance
 
         password, password_hash, perms_list = self._pop_blueprint_write_fields(validated_data)
         instance = super().update(instance, validated_data)
