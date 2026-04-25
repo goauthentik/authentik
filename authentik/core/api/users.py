@@ -203,7 +203,11 @@ class UserSerializer(ModelSerializer):
             self._ensure_password_not_empty(instance)
             return instance
 
-        password, password_hash, perms_list = self._pop_blueprint_write_fields(validated_data)
+        password = validated_data.pop("password", None)
+        password_hash = validated_data.pop("password_hash", None)
+        self._validate_password_inputs(password, password_hash)
+        perms_list = self._get_permission_list(validated_data.pop("permissions", []))
+
         instance: User = super().create(validated_data)
         self._set_password(instance, password, password_hash)
         instance.assign_perms_to_managed_role(perms_list)
@@ -217,24 +221,16 @@ class UserSerializer(ModelSerializer):
             self._ensure_password_not_empty(instance)
             return instance
 
-        password, password_hash, perms_list = self._pop_blueprint_write_fields(validated_data)
+        password = validated_data.pop("password", None)
+        password_hash = validated_data.pop("password_hash", None)
+        self._validate_password_inputs(password, password_hash)
+        perms_list = self._get_permission_list(validated_data.pop("permissions", []))
+
         instance = super().update(instance, validated_data)
         self._set_password(instance, password, password_hash)
         instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
-
-    def _pop_blueprint_write_fields(
-        self, validated_data: dict
-    ) -> tuple[str | None, str | None, list[str]]:
-        password = validated_data.pop("password", None)
-        password_hash = validated_data.pop("password_hash", None)
-        self._validate_password_inputs(password, password_hash)
-        return (
-            password,
-            password_hash,
-            self._get_permission_list(validated_data.pop("permissions", [])),
-        )
 
     def _get_permission_list(self, permissions: list[str]) -> list[str]:
         if not permissions:
