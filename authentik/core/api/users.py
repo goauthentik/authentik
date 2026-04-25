@@ -432,6 +432,12 @@ class UserPasswordSetSerializer(PassiveSerializer):
     password = CharField(required=True)
 
 
+class UserPasswordHashSetSerializer(PassiveSerializer):
+    """Payload to set a users' password hash directly"""
+
+    password = CharField(required=True)
+
+
 class UserServiceAccountSerializer(PassiveSerializer):
     """Payload to create a service account"""
 
@@ -803,7 +809,7 @@ class UserViewSet(
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
-        request=UserPasswordSetSerializer,
+        request=UserPasswordHashSetSerializer,
         responses={
             204: OpenApiResponse(description="Successfully changed password"),
             400: OpenApiResponse(description="Bad request"),
@@ -814,9 +820,9 @@ class UserViewSet(
         methods=["POST"],
         permission_classes=[IsAuthenticated],
     )
-    @validate(UserPasswordSetSerializer)
+    @validate(UserPasswordHashSetSerializer)
     def set_password_hash(
-        self, request: Request, pk: int, body: UserPasswordSetSerializer
+        self, request: Request, pk: int, body: UserPasswordHashSetSerializer
     ) -> Response:
         """Set a user's password from a pre-hashed Django password value.
 

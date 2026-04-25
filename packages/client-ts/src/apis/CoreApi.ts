@@ -54,6 +54,7 @@ import type {
     User,
     UserAccountRequest,
     UserConsent,
+    UserPasswordHashSetRequest,
     UserPasswordSetRequest,
     UserPath,
     UserRecoveryEmailRequest,
@@ -104,6 +105,7 @@ import {
     UserAccountRequestToJSON,
     UserConsentFromJSON,
     UserFromJSON,
+    UserPasswordHashSetRequestToJSON,
     UserPasswordSetRequestToJSON,
     UserPathFromJSON,
     UserRecoveryEmailRequestToJSON,
@@ -510,7 +512,7 @@ export interface CoreUsersSetPasswordCreateRequest {
 
 export interface CoreUsersSetPasswordHashCreateRequest {
     id: number;
-    userPasswordSetRequest: UserPasswordSetRequest;
+    userPasswordHashSetRequest: UserPasswordHashSetRequest;
 }
 
 export interface CoreUsersUpdateRequest {
@@ -5306,10 +5308,10 @@ export class CoreApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters["userPasswordSetRequest"] == null) {
+        if (requestParameters["userPasswordHashSetRequest"] == null) {
             throw new runtime.RequiredError(
-                "userPasswordSetRequest",
-                'Required parameter "userPasswordSetRequest" was null or undefined when calling coreUsersSetPasswordHashCreate().',
+                "userPasswordHashSetRequest",
+                'Required parameter "userPasswordHashSetRequest" was null or undefined when calling coreUsersSetPasswordHashCreate().',
             );
         }
 
@@ -5336,7 +5338,7 @@ export class CoreApi extends runtime.BaseAPI {
             method: "POST",
             headers: headerParameters,
             query: queryParameters,
-            body: UserPasswordSetRequestToJSON(requestParameters["userPasswordSetRequest"]),
+            body: UserPasswordHashSetRequestToJSON(requestParameters["userPasswordHashSetRequest"]),
         };
     }
 

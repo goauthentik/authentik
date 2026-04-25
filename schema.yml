@@ -4546,7 +4546,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserPasswordSetRequest'
+              $ref: '#/components/schemas/UserPasswordHashSetRequest'
         required: true
       security:
       - authentik: []
@@ -57585,6 +57585,15 @@ components:
       - identifier
       - source
       - user
+    UserPasswordHashSetRequest:
+      type: object
+      description: Payload to set a users' password hash directly
+      properties:
+        password:
+          type: string
+          minLength: 1
+      required:
+      - password
     UserPasswordSetRequest:
       type: object
       description: Payload to set a users' password directly
