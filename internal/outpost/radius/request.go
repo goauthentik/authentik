@@ -42,7 +42,7 @@ func (r *RadiusRequest) validateMessageAuthenticator() error {
 	// Per RFC 2869 §5.14, the Message-Authenticator field must be treated as
 	// 16 zero bytes when computing the HMAC-MD5 for verification.
 	_ = rfc2869.MessageAuthenticator_Set(r.Packet, make([]byte, 16))
-	hash := hmac.New(md5.New, r.pi.SharedSecret)
+	hash := hmac.New(md5.New, r.Secret)
 	encode, err := r.MarshalBinary()
 	// Restore the original value regardless of whether marshaling succeeded.
 	_ = rfc2869.MessageAuthenticator_Set(r.Packet, mauth)
