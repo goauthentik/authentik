@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Technitium DNS
 
-> Technitium DNS Server is an open source authoritative as well as recursive DNS server that can be used for self hosting a DNS server for privacy & security. It works out-of-the-box with no or minimal configuration and provides a user friendly web console accessible using any modern web browser.
+> Technitium DNS Server is a free, open source, cross-platform, authoritative and recursive DNS server that can be self-hosted for privacy and security, software development, and testing on small to medium-sized networks.
 >
 > -- https://technitium.com/dns/
 
@@ -16,6 +16,8 @@ The following placeholders are used in this guide:
 
 - `technitium.company` is the FQDN of the Technitium DNS installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+This guide requires Technitium DNS Server version 15.0 or later.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -29,44 +31,45 @@ To support the integration of Technitium DNS with authentik, you need to create 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name (e.g. `Technitium DNS`), an optional group, the policy engine mode, and optional UI settings.
-        - **Start URL**: `https://technitium.company/`
-    - **Choose a Provider type**: Select **OAuth2/OpenID Connect**.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - **Client Type**: `Confidential`
-        - **Redirect URIs**: `https://technitium.company/sso/callback`
-        - **Scopes**: Ensure `openid`, `email`, and `profile` are included. Remove `email` if you prefer usernames to be based on the preferred username instead of email address.
-        - Note the **Client ID** and **Client Secret** for use in the Technitium configuration below.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Set **Client type** to `Confidential`.
+        - Set a `Strict` redirect URI to `https://technitium.company/sso/callback`.
+        - Select any available signing key.
+        - Ensure that the `openid`, `email`, and `profile` scopes are selected. Remove the `email` scope if you prefer usernames to use the preferred username claim instead of the email address.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Technitium configuration
 
-1. Log in to the Technitium web console using a local administrator account. The default credentials are username `admin` and password `admin`.
+1. Log in to the Technitium web console using a local administrator account.
 2. Navigate to **Administration** > **Single Sign-On (SSO)**.
-3. Check **Enable Single Sign-On (SSO)**.
-4. Fill in the following fields:
-    - **Authority (Issuer)**: `https://authentik.company/application/o/<your-app-slug>/`
-    - **Client ID**: the Client ID noted from the authentik provider.
-    - **Client Secret**: the Client Secret noted from the authentik provider.
-    - **Metadata Address** _(optional)_: `https://authentik.company/application/o/<your-app-slug>/.well-known/openid-configuration`
+3. Select **Enable Single Sign-On (SSO)**.
+4. Configure the following settings:
+    - **Authority (Issuer)**: `https://authentik.company/application/o/<application_slug>/`
+    - **Client ID**: enter the client ID from authentik.
+    - **Client Secret**: enter the client secret from authentik.
+    - **Metadata Address (Optional)**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
 5. Configure **SSO User Sign Up** as appropriate:
     - **Allow New User Sign Up**: enable this to allow automatic provisioning of user accounts for new SSO users.
-    - **Allow Sign Up Only For Mapped Users**: enable this to restrict sign-up to users who belong to a mapped remote group. If enabled, you must configure at least one entry in the **Group Map** below, otherwise no SSO users will be able to log in.
+    - **Allow Sign Up Only For Mapped Users**: enable this to restrict sign-up to users that belong to a mapped remote group. If enabled, you must configure at least one entry in the **Group Map** section, otherwise new SSO users cannot sign up.
 6. _(Optional)_ Configure the **Group Map** to map authentik groups to local Technitium groups:
     - **Remote Group**: the name of the authentik group (e.g. `authentik Admins`).
     - **Local Group**: the corresponding Technitium local group (e.g. `Administrators`).
 
-:::warning
+:::warning Local administrator fallback
 It is strongly recommended to keep a local administrator account as a fallback. Any DNS failure could cause SSO to stop working, making it impossible for SSO-only users to log in.
 :::
 
-7. Click **Save Config** at the bottom of the page to apply. The web service will restart automatically.
+7. Click **Save Config** to apply the changes. The web service restarts automatically.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Technitium DNS, log out of Technitium and log back in by clicking the SSO login option. You should be redirected to authentik and returned to the Technitium dashboard upon successful authentication.
+To confirm that authentik is properly configured with Technitium DNS, log out of Technitium. Then, navigate to the Technitium login page and click **OpenID Connect**. You should be redirected to authentik to log in, and if successful, redirected to the Technitium dashboard.
 
 ## Resources
-- [Technitium DNS Server official website](https://technitium.com/dns/)
+
+- [Technitium DNS Server v15 release announcement](https://blog.technitium.com/2026/04/technitium-dns-server-v15-released.html)

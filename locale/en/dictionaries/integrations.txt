@@ -52,6 +52,7 @@ Relatedly
 Sidero
 snipeit
 sonarqube
+Technitium
 Terrakube
 Ueberauth
 Veeam
