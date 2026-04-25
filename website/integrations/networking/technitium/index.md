@@ -25,7 +25,30 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Technitium DNS with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Technitium DNS with authentik, you need to create a scope mapping, an application/provider pair, and application entitlements in authentik.
+
+### Create a scope mapping in authentik
+
+Technitium DNS uses the `roles` claim to map SSO users to local groups. Create a scope mapping to pass authentik application entitlements as role values.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+    - **Select type**: select **Scope Mapping**.
+    - **Configure the Scope Mapping**: configure the following settings:
+        - **Name**: provide a descriptive name, such as `Technitium DNS roles`.
+        - **Scope name**: `profile`
+        - **Expression**:
+
+        ```python
+        return {
+            "roles": [
+                entitlement.name
+                for entitlement in request.user.app_entitlements(provider.application)
+            ],
+        }
+        ```
+
+3. Click **Finish** to save the scope mapping.
 
 ### Create an application and provider in authentik
 
@@ -39,9 +62,22 @@ To support the integration of Technitium DNS with authentik, you need to create 
         - Set a `Strict` redirect URI to `https://technitium.company/sso/callback`.
         - Select any available signing key.
         - Ensure that the `openid`, `email`, and `profile` scopes are selected. Remove the `email` scope if you prefer usernames to use the preferred username claim instead of the email address.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+        - Under **Advanced protocol settings** > **Selected Scopes**, add the scope mapping that you created in the previous section.
 
 3. Click **Submit** to save the new application and provider.
+
+### Create application entitlements in authentik
+
+Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to represent the Technitium DNS groups that this application should assign.
+
+1. Open the Technitium DNS application that you just created in the authentik Admin interface.
+2. Click the **Application entitlements** tab.
+3. Create one entitlement for each Technitium DNS group that users should be able to receive, such as `Technitium Admins`.
+4. Open each entitlement and bind the users or groups that should receive it.
+
+:::tip Entitlement group names
+The entitlement names must exactly match the **Remote Group** values that you configure in the Technitium **Group Map**.
+:::
 
 ## Technitium configuration
 
@@ -52,12 +88,12 @@ To support the integration of Technitium DNS with authentik, you need to create 
     - **Authority (Issuer)**: `https://authentik.company/application/o/<application_slug>/`
     - **Client ID**: enter the client ID from authentik.
     - **Client Secret**: enter the client secret from authentik.
-    - **Metadata Address (Optional)**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+    - **Metadata Address**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
 5. Configure **SSO User Sign Up** as appropriate:
     - **Allow New User Sign Up**: enable this to allow automatic provisioning of user accounts for new SSO users.
     - **Allow Sign Up Only For Mapped Users**: enable this to restrict sign-up to users that belong to a mapped remote group. If enabled, you must configure at least one entry in the **Group Map** section, otherwise new SSO users cannot sign up.
-6. _(Optional)_ Configure the **Group Map** to map authentik groups to local Technitium groups:
-    - **Remote Group**: the name of the authentik group (e.g. `authentik Admins`).
+6. Configure the **Group Map** to map authentik application entitlements to local Technitium groups:
+    - **Remote Group**: the name of the authentik application entitlement (e.g. `Technitium Admins`).
     - **Local Group**: the corresponding Technitium local group (e.g. `Administrators`).
 
 :::warning Local administrator fallback
