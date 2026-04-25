@@ -15,7 +15,7 @@ from authentik.core.models import Application
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import DeviceCodeError
-from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
+from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider, ScopeMapping
 from authentik.providers.oauth2.utils import TokenResponse, extract_client_auth
 from authentik.providers.oauth2.views.device_init import QS_KEY_CODE
 
@@ -28,7 +28,7 @@ class DeviceView(View):
 
     client_id: str
     provider: OAuth2Provider
-    scopes: list[str] = []
+    scopes: set[str] = []
 
     def parse_request(self):
         """Parse incoming request"""
@@ -44,7 +44,21 @@ class DeviceView(View):
             raise DeviceCodeError("invalid_client") from None
         self.provider = provider
         self.client_id = client_id
-        self.scopes = self.request.POST.get("scope", "").split(" ")
+
+        scopes_to_check = set(self.request.POST.get("scope", "").split())
+        default_scope_names = set(
+            ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
+                "scope_name", flat=True
+            )
+        )
+        self.scopes = scopes_to_check
+        if not scopes_to_check.issubset(default_scope_names):
+            LOGGER.info(
+                "Application requested scopes not configured, setting to overlap",
+                scope_allowed=default_scope_names,
+                scope_given=self.scopes,
+            )
+            self.scopes = self.scopes.intersection(default_scope_names)
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         throttle = AnonRateThrottle()

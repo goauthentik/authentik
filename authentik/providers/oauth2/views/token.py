@@ -165,7 +165,15 @@ class TokenParams:
                 raise TokenError("invalid_grant")
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
-        if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
+        # Confidential clients MUST authenticate to the token endpoint per
+        # RFC 6749 §2.3.1. The device code grant (RFC 8628 §3.4) inherits
+        # that requirement - the device_code alone is not a substitute for
+        # client credentials.
+        if self.grant_type in [
+            GRANT_TYPE_AUTHORIZATION_CODE,
+            GRANT_TYPE_REFRESH_TOKEN,
+            GRANT_TYPE_DEVICE_CODE,
+        ]:
             if self.provider.client_type == ClientTypes.CONFIDENTIAL and not compare_digest(
                 self.provider.client_secret, self.client_secret
             ):

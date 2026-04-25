@@ -19,19 +19,32 @@ from authentik.tenants.models import Tenant
 
 class FlagJSONField(JSONDictField):
 
+    def to_representation(self, value: dict) -> dict:
+        """Exclude any system flags that aren't modifiable"""
+        new_value = value.copy()
+        for flag in Flag.available(exclude_system=False):
+            _flag = flag()
+            if _flag.visibility == "system":
+                new_value.pop(_flag.key, None)
+        return super().to_representation(new_value)
+
     def run_validators(self, value: dict):
         super().run_validators(value)
-        for flag in Flag.available():
+        for flag in Flag.available(exclude_system=False):
             _flag = flag()
-            if _flag.key in value:
-                flag_value = value.get(_flag.key)
-                flag_type = get_args(_flag.__orig_bases__[0])[0]
-                if flag_value and not isinstance(flag_value, flag_type):
-                    raise ValidationError(
-                        _("Value for flag {flag_key} needs to be of type {type}.").format(
-                            flag_key=_flag.key, type=flag_type.__name__
-                        )
+            if _flag.key not in value:
+                continue
+            if _flag.visibility == "system":
+                value.pop(_flag.key, None)
+                continue
+            flag_value = value.get(_flag.key)
+            flag_type = get_args(_flag.__orig_bases__[0])[0]
+            if flag_value and not isinstance(flag_value, flag_type):
+                raise ValidationError(
+                    _("Value for flag {flag_key} needs to be of type {type}.").format(
+                        flag_key=_flag.key, type=flag_type.__name__
                     )
+                )
 
 
 class FlagsJSONExtension(OpenApiSerializerFieldExtension):

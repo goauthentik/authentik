@@ -315,6 +315,34 @@ class TestUserWriteStage(FlowTestCase):
             component="ak-stage-access-denied",
         )
 
+    def test_user_update_ignores_id_from_idp(self):
+        """IdP-supplied `id`/`pk` attributes must not land on the model
+        primary key and crash user save (#21580)."""
+        existing = User.objects.create(username="unittest", email="test@goauthentik.io")
+        original_pk = existing.pk
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = existing
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": "idp-user",
+            # Hex string from a SAML IdP; would previously crash with
+            # ValueError: Field 'id' expected a number but got '<hex>'.
+            "id": "1dda9fb491dc01bd24d2423ba2f22ae561f56ddf2376b29a11c80281d21201f9",
+            "pk": "also-not-an-int",
+        }
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        user = User.objects.get(username="idp-user")
+        self.assertEqual(user.pk, original_pk)
+
     def test_write_attribute(self):
         """Test write_attribute"""
         user = create_test_admin_user()
