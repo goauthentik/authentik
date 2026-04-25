@@ -151,25 +151,24 @@ class TestUsersAPI(APITestCase):
             {"password": [INVALID_PASSWORD_HASH_ERROR]},
         )
 
-    def test_set_password_hash_requires_separate_permission(self):
-        """Test password hash updates use their own permission."""
-        self.user.assign_perms_to_managed_role("authentik_core.reset_user_password")
+    def test_set_password_hash_requires_reset_permission(self):
+        """Test password hash updates use the reset password permission."""
         self.client.force_login(self.user)
         response = self._set_password_hash(self.user, make_password("new-password"))  # nosec
         self.assertEqual(response.status_code, 403)
 
-        user_with_hash_perm = create_test_user()
-        user_with_hash_perm.assign_perms_to_managed_role("authentik_core.view_user", self.user)
-        user_with_hash_perm.assign_perms_to_managed_role(
-            "authentik_core.set_user_password_hash", self.user
+        user_with_reset_perm = create_test_user()
+        user_with_reset_perm.assign_perms_to_managed_role("authentik_core.view_user", self.user)
+        user_with_reset_perm.assign_perms_to_managed_role(
+            "authentik_core.reset_user_password", self.user
         )
         self.assertTrue(
-            User.objects.get(pk=user_with_hash_perm.pk).has_perm(
-                "authentik_core.set_user_password_hash", self.user
+            User.objects.get(pk=user_with_reset_perm.pk).has_perm(
+                "authentik_core.reset_user_password", self.user
             )
         )
         client = self.client_class()
-        client.force_login(user_with_hash_perm)
+        client.force_login(user_with_reset_perm)
         password = generate_key()
         password_hash = make_password(password)
         response = self._set_password_hash(self.user, password_hash, client)

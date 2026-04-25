@@ -5600,7 +5600,6 @@
                             "authentik_core.remove_user_from_group",
                             "authentik_core.reset_user_password",
                             "authentik_core.set_token_key",
-                            "authentik_core.set_user_password_hash",
                             "authentik_core.view_application",
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
@@ -6276,7 +6275,6 @@
                             "impersonate",
                             "preview_user",
                             "reset_user_password",
-                            "set_user_password_hash",
                             "view_user",
                             "view_user_applications"
                         ]
@@ -11282,7 +11280,6 @@
                             "authentik_core.remove_user_from_group",
                             "authentik_core.reset_user_password",
                             "authentik_core.set_token_key",
-                            "authentik_core.set_user_password_hash",
                             "authentik_core.view_application",
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",

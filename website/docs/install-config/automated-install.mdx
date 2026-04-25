@@ -55,7 +55,7 @@ Setting both `AUTHENTIK_BOOTSTRAP_PASSWORD` and `AUTHENTIK_BOOTSTRAP_PASSWORD_HA
 
 ### Other hashed-password import paths
 
-For post-install automation, hashed passwords can also be set via blueprints with the `password_hash` user attribute, or via the `/api/v3/core/users/<id>/set_password_hash/` API endpoint with the hash provided in the `password` field. The API endpoint requires the `authentik_core.set_user_password_hash` permission and can target regular users or service accounts.
+For post-install automation, hashed passwords can also be set via blueprints with the `password_hash` user attribute, or via the `/api/v3/core/users/<id>/set_password_hash/` API endpoint with the hash provided in the `password` field. The API endpoint requires the `authentik_core.reset_user_password` permission and can target regular users or service accounts.
 
 These paths share the same local-verifier-only behavior as `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`.
 

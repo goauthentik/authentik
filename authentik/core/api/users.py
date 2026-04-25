@@ -801,7 +801,7 @@ class UserViewSet(
             "Failed to set password",
         )
 
-    @permission_required("authentik_core.set_user_password_hash")
+    @permission_required("authentik_core.reset_user_password")
     @extend_schema(
         request=UserPasswordSetSerializer,
         responses={
