@@ -11082,7 +11082,8 @@
                         "aws",
                         "slack",
                         "sfdc",
-                        "webex"
+                        "webex",
+                        "vcenter"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."

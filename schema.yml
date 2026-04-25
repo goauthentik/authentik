@@ -36180,6 +36180,7 @@ components:
       - slack
       - sfdc
       - webex
+      - vcenter
       type: string
     Config:
       type: object
