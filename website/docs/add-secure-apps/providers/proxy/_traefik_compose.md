@@ -33,6 +33,8 @@ services:
             traefik.http.middlewares.authentik.forwardauth.address: http://authentik-proxy:9000/outpost.goauthentik.io/auth/traefik
             traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
             traefik.http.middlewares.authentik.forwardauth.authResponseHeaders: X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version
+            # Add the 'authorization' header to authResponseHeaders if you need proxy providers which
+            # send a custom HTTP-Basic Authentication header based on values from authentik
         restart: unless-stopped
 
     whoami:
