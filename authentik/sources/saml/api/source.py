@@ -224,7 +224,10 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
                     target,
                     create_missing_rings=create_missing_rings,
                 )
-                return Response(SAMLSourceSerializer(target, context={"request": request}).data, status=200)
+                return Response(
+                    SAMLSourceSerializer(target, context={"request": request}).data,
+                    status=200,
+                )
             source = metadata.to_source(
                 name=name,
                 pre_authentication_flow=body.validated_data["pre_authentication_flow"],

@@ -159,7 +159,9 @@ class ResponseProcessor:
                 last_exc = exc
                 continue
 
-        raise InvalidSignature("The signature of the SAML object is either missing or invalid.") from last_exc
+        raise InvalidSignature(
+            "The signature of the SAML object is either missing or invalid."
+        ) from last_exc
 
     def _verify_response_signature(self, verifier_pems: list[str]):
         """Verify SAML Response's Signature (before decryption)"""

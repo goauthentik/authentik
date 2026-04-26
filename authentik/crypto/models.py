@@ -335,7 +335,6 @@ class CertificateKeyPairRingBinding(models.Model):
     class Meta:
         unique_together = [("ring", "keypair")]
         indexes = [models.Index(fields=["ring", "order"])]
-        indexes = [models.Index(fields=["ring", "order"])]
 
     def __str__(self) -> str:
         return f"KeyPairRingBinding({self.ring_id} -> {self.keypair_id}, order:{self.order})"

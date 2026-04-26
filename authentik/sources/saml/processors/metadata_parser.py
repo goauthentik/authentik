@@ -43,8 +43,9 @@ def build_idp_snapshot(entity: etree._Element) -> dict[str, Any]:
     slo_list = mx.extract_all_slo(idp_desc)
     name_id_list = mx.extract_nameid_formats(idp_desc)
 
-    verification_b64 = mx.extract_x509_b64_list(idp_desc, use="signing") or mx.extract_x509_b64_list(
-        idp_desc, use=None
+    verification_b64 = (
+        mx.extract_x509_b64_list(idp_desc, use="signing")
+        or mx.extract_x509_b64_list(idp_desc, use=None)
     )
     encryption_b64 = mx.extract_x509_b64_list(idp_desc, use="encryption")
 
