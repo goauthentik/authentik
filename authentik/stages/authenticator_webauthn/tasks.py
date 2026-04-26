@@ -3,18 +3,22 @@
 from functools import lru_cache
 from json import loads
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from django.core.cache import cache
 from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
-from fido2.mds3 import filter_revoked, parse_blob
 
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     WebAuthnDeviceType,
 )
+from authentik.tasks import TASK_WORKER
 from authentik.tasks.middleware import CurrentTask
+
+if TYPE_CHECKING or TASK_WORKER:
+    from fido2.mds3 import filter_revoked, parse_blob
 
 CACHE_KEY_MDS_NO = "goauthentik.io/stages/authenticator_webauthn/mds_no"
 AAGUID_BLOB_PATH = Path(__file__).parent / "mds" / "aaguid.json"

@@ -133,7 +133,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
     def test_device_challenge_webauthn_restricted(self):
         """Test webauthn (getting device challenges with a webauthn
         device that is not allowed due to aaguid restrictions)"""
-        webauthn_mds_import.send(force=True).get_result()
+        webauthn_mds_import(force=True)
         request = self.request_factory.get("/")
         request.user = self.user
 
@@ -358,7 +358,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_validate_challenge_unrestricted(self):
         """Test webauthn authentication (unrestricted webauthn device)"""
-        webauthn_mds_import.send(force=True).get_result()
+        webauthn_mds_import(force=True)
         device = WebAuthnDevice.objects.create(
             user=self.user,
             public_key=(
@@ -432,7 +432,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_validate_challenge_restricted(self):
         """Test webauthn authentication (restricted device type, failure)"""
-        webauthn_mds_import.send(force=True).get_result()
+        webauthn_mds_import(force=True)
         device = WebAuthnDevice.objects.create(
             user=self.user,
             public_key=(
