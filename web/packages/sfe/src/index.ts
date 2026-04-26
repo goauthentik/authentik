@@ -20,7 +20,7 @@ import {
 import { fromByteArray } from "base64-js";
 import $ from "jquery";
 
-import { html, render, TemplateResult } from "lit-html";
+import { html, nothing, render, TemplateResult } from "lit-html";
 
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
@@ -136,7 +136,7 @@ export interface FlowInfoChallenge {
     };
 }
 
-class Stage<T extends FlowInfoChallenge> {
+abstract class Stage<T extends FlowInfoChallenge> {
     constructor(
         public executor: SimpleFlowExecutor,
         public challenge: T,
@@ -149,44 +149,32 @@ class Stage<T extends FlowInfoChallenge> {
         return this.challenge.responseErrors[fieldName] || [];
     }
 
-    renderInputError(fieldName: string) {
-        return `${this.error(fieldName)
-            .map((error) => {
-                return `<div class="invalid-feedback">
-                    ${error.string}
-                </div>`;
-            })
-            .join("")}`;
+    renderInputError(fieldName: string): TemplateResult {
+        return html`${this.error(fieldName).map((error) => {
+            return html`<div class="invalid-feedback">${error.string}</div>`;
+        })}`;
     }
 
-    renderNonFieldErrors() {
-        return `${this.error("non_field_errors")
-            .map((error) => {
-                return `<div class="alert alert-danger" role="alert">
-                    ${error.string}
-                </div>`;
-            })
-            .join("")}`;
+    renderNonFieldErrors(): TemplateResult {
+        return html`${this.error("non_field_errors").map((error) => {
+            return html`<div class="alert alert-danger" role="alert">${error.string}</div>`;
+        })}`;
     }
 
     html(html: TemplateResult) {
         render(html, this.executor.container);
     }
 
-    render() {
-        throw new Error("Abstract method");
-    }
+    abstract render(): void;
 }
 
 class LoadingStage extends Stage<FlowInfoChallenge> {
     render() {
-        this.html(
-            html`<div class="d-flex justify-content-center">
-                <div class="spinner-border spinner-border-md" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            </div>`,
-        );
+        return html`<div class="d-flex justify-content-center">
+            <div class="spinner-border spinner-border-md" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>`;
     }
 }
 
@@ -195,14 +183,19 @@ const IS_INVALID = "is-invalid";
 class IdentificationStage extends Stage<IdentificationChallenge> {
     render() {
         this.html(
-            html` <form id="ident-form">
+            html`<form
+                id="ident-form"
+                @submit=${(ev: SubmitEvent) => {
+                    ev.preventDefault();
+                    const data = new FormData(ev.target as HTMLFormElement);
+                    this.executor.submit(data);
+                }}
+            >
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 ${this.challenge.applicationPre
-                    ? `<p>
-                              Log in to continue to ${this.challenge.applicationPre}.
-                          </p>`
-                    : ""}
+                    ? html`<p>Log in to continue to ${this.challenge.applicationPre}.</p>`
+                    : nothing}
                 <div class="form-label-group my-3 has-validation">
                     <input
                         type="text"
@@ -213,11 +206,18 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
                     />
                 </div>
                 ${this.challenge.passwordFields
-                    ? `<div class="form-label-group my-3 has-validation">
-                                <input type="password" class="form-control ${this.error("password").length > 0 ? IS_INVALID : ""}" name="password" placeholder="Password">
-                                ${this.renderInputError("password")}
-                        </div>`
-                    : ""}
+                    ? html`<div class="form-label-group my-3 has-validation">
+                          <input
+                              type="password"
+                              class="form-control ${this.error("password").length > 0
+                                  ? IS_INVALID
+                                  : ""}"
+                              name="password"
+                              placeholder="Password"
+                          />
+                          ${this.renderInputError("password")}
+                      </div>`
+                    : nothing}
                 ${this.renderNonFieldErrors()}
                 <button class="btn btn-primary w-100 py-2" type="submit">
                     ${this.challenge.primaryAction}
@@ -225,18 +225,20 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
             </form>`,
         );
         $("#ident-form input[name=uid_field]").trigger("focus");
-        $("#ident-form").on("submit", (ev) => {
-            ev.preventDefault();
-            const data = new FormData(ev.target as HTMLFormElement);
-            this.executor.submit(data);
-        });
     }
 }
 
 class PasswordStage extends Stage<PasswordChallenge> {
     render() {
         this.html(
-            html` <form id="password-form">
+            html`<form
+                id="password-form"
+                @submit=${(ev: SubmitEvent) => {
+                    ev.preventDefault();
+                    const data = new FormData(ev.target as HTMLFormElement);
+                    this.executor.submit(data);
+                }}
+            >
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3">
@@ -261,11 +263,6 @@ class PasswordStage extends Stage<PasswordChallenge> {
             </form>`,
         );
         $("#password-form input").trigger("focus");
-        $("#password-form").on("submit", (ev) => {
-            ev.preventDefault();
-            const data = new FormData(ev.target as HTMLFormElement);
-            this.executor.submit(data);
-        });
     }
 }
 
@@ -278,15 +275,11 @@ class RedirectStage extends Stage<RedirectChallenge> {
 class AutosubmitStage extends Stage<AutosubmitChallenge> {
     render() {
         this.html(
-            html` <form id="autosubmit-form" action="${this.challenge.url}" method="post">
+            html`<form id="autosubmit-form" action="${this.challenge.url}" method="post">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 ${Object.entries(this.challenge.attrs).map(([key, value]) => {
-                    return `<input
-                            type="hidden"
-                            name="${key}"
-                            value="${value}"
-                        />`;
+                    return html`<input type="hidden" name="${key}" value="${value}" />`;
                 })}
                 <div class="d-flex justify-content-center">
                     <div class="spinner-border" role="status">
@@ -428,48 +421,51 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 ${challenges.length > 0
-                    ? "<p>Select an authentication method.</p>"
-                    : `<p>No compatible authentication method available</p>`}
-                ${challenges
-                    .map((challenge) => {
-                        let label = undefined;
-                        switch (challenge.deviceClass) {
-                            case "static":
-                                label = "Recovery keys";
-                                break;
-                            case "totp":
-                                label = "Traditional authenticator";
-                                break;
-                            case "webauthn":
-                                label = "Security key";
-                                break;
-                        }
-                        if (!label) {
-                            return "";
-                        }
-                        return `<div class="form-label-group my-3 has-validation">
-                            <button id="${challenge.deviceClass}-${challenge.deviceUid}" class="btn btn-secondary w-100 py-2" type="button">
-                                ${label}
-                            </button>
-                        </div>`;
-                    })
-                    .join("")}
+                    ? html`<p>Select an authentication method.</p>`
+                    : html`<p>No compatible authentication method available</p>`}
+                ${challenges.map((challenge) => {
+                    let label = undefined;
+                    switch (challenge.deviceClass) {
+                        case "static":
+                            label = "Recovery keys";
+                            break;
+                        case "totp":
+                            label = "Traditional authenticator";
+                            break;
+                        case "webauthn":
+                            label = "Security key";
+                            break;
+                    }
+                    if (!label) {
+                        return "";
+                    }
+                    return html`<div class="form-label-group my-3 has-validation">
+                        <button
+                            class="btn btn-secondary w-100 py-2"
+                            type="button"
+                            @click=${() => {
+                                this.deviceChallenge = challenge;
+                                this.render();
+                            }}
+                        >
+                            ${label}
+                        </button>
+                    </div>`;
+                })}
             </form>`,
         );
-        this.challenge.deviceChallenges.forEach((challenge) => {
-            $(`#picker-form button#${challenge.deviceClass}-${challenge.deviceUid}`).on(
-                "click",
-                () => {
-                    this.deviceChallenge = challenge;
-                    this.render();
-                },
-            );
-        });
     }
 
     renderCodeInput() {
         this.html(
-            html` <form id="totp-form">
+            html`<form
+                id="totp-form"
+                @submit=${(ev: SubmitEvent) => {
+                    ev.preventDefault();
+                    const data = new FormData(ev.target as HTMLFormElement);
+                    this.executor.submit(data);
+                }}
+            >
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3 has-validation">
@@ -487,11 +483,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
             </form>`,
         );
         $("#totp-form input").trigger("focus");
-        $("#totp-form").on("submit", (ev) => {
-            ev.preventDefault();
-            const data = new FormData(ev.target as HTMLFormElement);
-            this.executor.submit(data);
-        });
     }
 
     renderWebauthn() {
