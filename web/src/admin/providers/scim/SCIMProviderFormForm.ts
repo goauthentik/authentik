@@ -209,7 +209,9 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                         {
                             label: msg("vCenter"),
                             value: CompatibilityModeEnum.Vcenter,
-                            description: html`${msg("Altered behavior for usage with VMware vCenter.")}`,
+                            description: html`${msg(
+                                "Altered behavior for usage with VMware vCenter.",
+                            )}`,
                         },
                     ]}
                     help=${msg(
