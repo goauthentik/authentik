@@ -4894,7 +4894,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <source>These bindings control which users can access this source.
             You can only use policies here as access is checked before the user is authenticated.</source>
   <target>Disse bindingene kontrollerer hvilke brukere som får tilgang til denne kilden.
-            Du kan bare bruke policyer her ettersom tilgang sjekkes før brukeren er autentisert.</target>
+            Du kan bare bruke policyer her ettersom tilgang sjekkes før brukeren er autentisert.</target>
 </trans-unit>
 <trans-unit id="se17fcb1f159ee382">
   <source>Update Plex Source</source>
