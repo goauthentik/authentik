@@ -58,6 +58,7 @@ class BrandSerializer(ModelSerializer):
             "branding_favicon",
             "branding_custom_css",
             "branding_default_flow_background",
+            "branding_map_tiles",
             "flow_authentication",
             "flow_invalidation",
             "flow_recovery",
@@ -99,6 +100,7 @@ class CurrentBrandSerializer(PassiveSerializer):
     branding_favicon = CharField(source="branding_favicon_url")
     branding_favicon_themed_urls = ThemedUrlsSerializer(read_only=True, allow_null=True)
     branding_custom_css = CharField()
+    branding_map_tiles = CharField()
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,
