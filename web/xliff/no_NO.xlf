@@ -9559,7 +9559,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="table-loading-bar-label">
   <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
-  <target>Laster <x id="0" equiv-text="${this.label ?? &quot;tabell&quot;}"/>-data</target>
+  <target>Laster <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/>-data</target>
   <note from="lit-localize">Label for progress bar shown when table data is loading</note>
 </trans-unit>
 <trans-unit id="sb6650552aaaf5da0">
