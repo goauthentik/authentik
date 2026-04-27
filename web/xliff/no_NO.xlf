@@ -10387,7 +10387,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="s090f2d07b5a6aee3">
   <source>CC</source>
-  <target>Kopi (CC)</target>
+  <target>CC</target>
 </trans-unit>
 <trans-unit id="s7f39ec207409ff19">
   <source>A comma-separated list of addresses to receive copies of the invitation. Recipients will receive the full list of other addresses in this list.</source>
@@ -10395,7 +10395,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="s15db6d19b09a16c3">
   <source>BCC</source>
-  <target>Blindkopi (BCC)</target>
+  <target>BCC</target>
 </trans-unit>
 <trans-unit id="sf4021c7b40b6f54e">
   <source>A comma-separated list of addresses to receive copies of the invitation. Recipients will not receive the addresses of other recipients.</source>
