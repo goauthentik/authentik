@@ -10957,7 +10957,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="s399592d27c549c96">
   <source>Valid redirect URIs after a successful authorization or invalidation flow. Also specify any origins here for Implicit flows. Use the type dropdown to designate URIs for authorization or post-logout redirection.</source>
-  <target>Gyldige omdirigerings-URI-er etter en vellykket autorisasjons- eller ugyldiggjøringsflyt. Angi også eventuelle opprinnelser (origins) her for Implicit-flyter. Bruk rullegardinmenyen for type for å angi URI-er for autorisasjon eller omdirigering etter utlogging.</target>
+  <target>Gyldige omdirigerings-URI-er etter en vellykket autorisasjons- eller ugyldiggjøringsflyt. Angi også eventuelle opprinnelser her for Implicit-flyter. Bruk rullegardinmenyen for type for å angi URI-er for autorisasjon eller omdirigering etter utlogging.</target>
 </trans-unit>
 <trans-unit id="s272aa39ee16e3fe7">
   <source>If no explicit authorization redirect URIs are specified, the first successfully used authorization redirect URI will be saved.</source>
