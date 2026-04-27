@@ -6049,8 +6049,8 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
             When creating a fixed choice field, enable interpreting as expression and
         return a list to return multiple default choices.</source>
   <target>Forhåndsutfyll eventuelt inndataene med en startverdi.
-            Når du oppretter et fast valgfelt, aktiver tolkning som uttrykk og
-        returner en liste for å returnere flere standardvalg.</target>
+            Når du oppretter et fast valgfelt, aktiver tolkning som uttrykk og
+        returner en liste for å returnere flere standardvalg.</target>
 </trans-unit>
 <trans-unit id="s72c1c17a9bdc76ad">
   <source>Help text</source>
