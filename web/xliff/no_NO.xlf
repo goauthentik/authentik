@@ -6972,7 +6972,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <source>Write any data from the flow&apos;s context&apos;s &apos;prompt_data&apos; to the currently pending user. If no user
         is pending, a new user is created, and data is written to them.</source>
   <target>Skriv alle data fra flytkontekstens &amp;apos;prompt_data&amp;apos; til den nåværende ventende brukeren. Hvis ingen bruker
-        venter, opprettes en ny bruker, og data skrives til dem.</target>
+        venter, opprettes en ny bruker, og data skrives til dem.</target>
 </trans-unit>
 <trans-unit id="sb379d861cbed0b47">
   <source>Never create users</source>
