@@ -199,37 +199,39 @@ class UserSerializer(ModelSerializer):
 
     def create(self, validated_data: dict) -> User:
         """Create a user, with blueprint-only password and permission writes."""
-        if SERIALIZER_CONTEXT_BLUEPRINT not in self.context:
-            instance: User = super().create(validated_data)
-            self._ensure_password_not_empty(instance)
-            return instance
+        password = None
+        password_hash = None
+        perms_list = []
 
-        password = validated_data.pop("password", None)
-        password_hash = validated_data.pop("password_hash", None)
-        self._validate_password_inputs(password, password_hash)
-        perms_list = self._get_permission_list(validated_data.pop("permissions", []))
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            password = validated_data.pop("password", None)
+            password_hash = validated_data.pop("password_hash", None)
+            self._validate_password_inputs(password, password_hash)
+            perms_list = self._get_permission_list(validated_data.pop("permissions", []))
 
         instance: User = super().create(validated_data)
-        self._set_password(instance, password, password_hash)
-        instance.assign_perms_to_managed_role(perms_list)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self._set_password(instance, password, password_hash)
+            instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
         """Update a user, with blueprint-only password and permission writes."""
-        if SERIALIZER_CONTEXT_BLUEPRINT not in self.context:
-            instance = super().update(instance, validated_data)
-            self._ensure_password_not_empty(instance)
-            return instance
+        password = None
+        password_hash = None
+        perms_list = []
 
-        password = validated_data.pop("password", None)
-        password_hash = validated_data.pop("password_hash", None)
-        self._validate_password_inputs(password, password_hash)
-        perms_list = self._get_permission_list(validated_data.pop("permissions", []))
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            password = validated_data.pop("password", None)
+            password_hash = validated_data.pop("password_hash", None)
+            self._validate_password_inputs(password, password_hash)
+            perms_list = self._get_permission_list(validated_data.pop("permissions", []))
 
         instance = super().update(instance, validated_data)
-        self._set_password(instance, password, password_hash)
-        instance.assign_perms_to_managed_role(perms_list)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self._set_password(instance, password, password_hash)
+            instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
 
