@@ -94,7 +94,12 @@ Available compatibility modes:
 - **AWS**: Disables PATCH operations for AWS Identity Center compatibility
 - **Slack**: Enables filtering support for Slack's SCIM implementation
 - **Salesforce**: Uses the non-standard `/ServiceProviderConfigs` endpoint
+<<<<<<< HEAD
 - **vCenter**: Skips the `ServiceProviderConfig` endpoint which is not implemented in VMware vCenter
+=======
+- **Webex**: Uses the vendor-specific behavior required for Webex SCIM
+- **vCenter**: Skips the `ServiceProviderConfig` endpoint, which is not implemented in VMware vCenter
+>>>>>>> 620387f294 (providers/scim: fix vCenter compatibility mode (#21830))
 
 To configure a compatibility mode, select the appropriate option in the **SCIM Compatibility Mode** field when creating or editing a SCIM provider.
 

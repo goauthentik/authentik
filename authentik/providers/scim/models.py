@@ -81,6 +81,11 @@ class SCIMCompatibilityMode(models.TextChoices):
     AWS = "aws", _("AWS")
     SLACK = "slack", _("Slack")
     SALESFORCE = "sfdc", _("Salesforce")
+<<<<<<< HEAD
+=======
+    WEBEX = "webex", _("Webex")
+    VCENTER = "vcenter", _("vCenter")
+>>>>>>> 620387f294 (providers/scim: fix vCenter compatibility mode (#21830))
 
 
 class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):

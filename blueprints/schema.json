@@ -10950,7 +10950,13 @@
                         "default",
                         "aws",
                         "slack",
+<<<<<<< HEAD
                         "sfdc"
+=======
+                        "sfdc",
+                        "webex",
+                        "vcenter"
+>>>>>>> 620387f294 (providers/scim: fix vCenter compatibility mode (#21830))
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."

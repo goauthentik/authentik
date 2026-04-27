@@ -84,4 +84,25 @@ class Migration(migrations.Migration):
                 to="authentik_core.group",
             ),
         ),
+<<<<<<< HEAD
+=======
+        migrations.AlterField(
+            model_name="scimprovider",
+            name="compatibility_mode",
+            field=models.CharField(
+                choices=[
+                    ("default", "Default"),
+                    ("aws", "AWS"),
+                    ("slack", "Slack"),
+                    ("sfdc", "Salesforce"),
+                    ("webex", "Webex"),
+                    ("vcenter", "vCenter"),
+                ],
+                default="default",
+                help_text="Alter authentik behavior for vendor-specific SCIM implementations.",
+                max_length=30,
+                verbose_name="SCIM Compatibility Mode",
+            ),
+        ),
+>>>>>>> 620387f294 (providers/scim: fix vCenter compatibility mode (#21830))
     ]

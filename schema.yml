@@ -36175,6 +36175,11 @@ components:
       - aws
       - slack
       - sfdc
+<<<<<<< HEAD
+=======
+      - webex
+      - vcenter
+>>>>>>> 620387f294 (providers/scim: fix vCenter compatibility mode (#21830))
       type: string
     Config:
       type: object
