@@ -276,6 +276,19 @@ web-i18n-extract:
 	pnpm --dir web run extract-locales
 
 #########################
+## Tiles (vector basemap, dev only)
+#########################
+
+tiles-pull:  ## Extract a Protomaps PMTiles archive into packages/geo/tiles (requires AUTHENTIK_TILES_SOURCE_URL)
+	npm run --prefix packages/geo tiles:pull
+
+tiles-serve:  ## Run a local pmtiles server on http://localhost:8484 against packages/geo/tiles
+	npm run --prefix packages/geo tiles:serve
+
+tiles-clean:  ## Remove cached tile archives
+	rm -f packages/geo/tiles/*.pmtiles packages/geo/tiles/*.mbtiles
+
+#########################
 ## Docs
 #########################
 

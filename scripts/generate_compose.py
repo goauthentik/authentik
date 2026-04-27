@@ -80,6 +80,13 @@ base = {
                 "./custom-templates:/templates",
             ],
         },
+        "tiles": {
+            "profiles": ["tiles"],
+            "image": "${AUTHENTIK_TILES_IMAGE:-ghcr.io/goauthentik/authentik-tiles:latest}",
+            "restart": "unless-stopped",
+            "ports": ["${COMPOSE_PORT_TILES:-8484}:8484"],
+            "volumes": ["./tiles:/tiles:ro"],
+        },
     },
     "volumes": {
         "database": {
