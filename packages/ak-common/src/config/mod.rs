@@ -80,7 +80,11 @@ impl Config {
                 .prefix_separator("_")
                 .separator("__")
                 .try_parsing(true)
-                .list_separator(","),
+                .list_separator(",")
+                .with_list_parse_key("listen.http")
+                .with_list_parse_key("listen.metrics")
+                .with_list_parse_key("listen.trusted_proxy_cidrs")
+                .with_list_parse_key("log.http_headers"),
         );
         if let Some(overrides) = overrides {
             builder = builder.add_source(config_rs::File::from_str(
@@ -531,5 +535,18 @@ mod tests {
                 "[::1]:9001".parse().expect("infallible")
             ]
         );
+    }
+
+    #[test]
+    fn env_string() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_SECRET_KEY", "my_secret_key");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert_eq!(config.secret_key, "my_secret_key",);
     }
 }
