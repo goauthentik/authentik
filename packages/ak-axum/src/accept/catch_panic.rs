@@ -74,7 +74,7 @@ where
                         "acceptor panicked, shutting down immediately"
                     );
                     arbiter.do_fast_shutdown().await;
-                    Err(io::Error::other("acceptor panicked"))
+                    resume_unwind(panic);
                 }
             }
         })
@@ -113,7 +113,7 @@ impl<S: AsyncRead> AsyncRead for CatchPanicStream<S> {
                 );
                 let arbiter = this.arbiter.clone();
                 tokio::spawn(async move { arbiter.do_fast_shutdown().await });
-                Poll::Ready(Err(io::Error::other("stream panicked")))
+                resume_unwind(panic);
             }
         }
     }
@@ -136,7 +136,7 @@ impl<S: AsyncWrite> AsyncWrite for CatchPanicStream<S> {
                 );
                 let arbiter = this.arbiter.clone();
                 tokio::spawn(async move { arbiter.do_fast_shutdown().await });
-                Poll::Ready(Err(io::Error::other("stream panicked")))
+                resume_unwind(panic);
             }
         }
     }
@@ -159,7 +159,7 @@ impl<S: AsyncWrite> AsyncWrite for CatchPanicStream<S> {
                 );
                 let arbiter = this.arbiter.clone();
                 tokio::spawn(async move { arbiter.do_fast_shutdown().await });
-                Poll::Ready(Err(io::Error::other("stream panicked")))
+                resume_unwind(panic)
             }
         }
     }
@@ -174,7 +174,7 @@ impl<S: AsyncWrite> AsyncWrite for CatchPanicStream<S> {
                 );
                 let arbiter = self.arbiter.clone();
                 tokio::spawn(async move { arbiter.do_fast_shutdown().await });
-                false
+                resume_unwind(panic);
             }
         }
     }
@@ -191,7 +191,7 @@ impl<S: AsyncWrite> AsyncWrite for CatchPanicStream<S> {
                 );
                 let arbiter = this.arbiter.clone();
                 tokio::spawn(async move { arbiter.do_fast_shutdown().await });
-                Poll::Ready(Err(io::Error::other("stream panicked")))
+                resume_unwind(panic);
             }
         }
     }
@@ -208,7 +208,7 @@ impl<S: AsyncWrite> AsyncWrite for CatchPanicStream<S> {
                 );
                 let arbiter = this.arbiter.clone();
                 tokio::spawn(async move { arbiter.do_fast_shutdown().await });
-                Poll::Ready(Err(io::Error::other("stream panicked")))
+                resume_unwind(panic);
             }
         }
     }
@@ -554,10 +554,11 @@ mod tests {
         let arbiter = tasks.arbiter();
         let acceptor = CatchPanicAcceptor::new(PanicStrAcceptor, arbiter.clone());
 
-        let result = acceptor.accept(duplex_stream(), OkService).await;
+        let result = AssertUnwindSafe(acceptor.accept(duplex_stream(), OkService))
+            .catch_unwind()
+            .await;
 
         assert!(result.is_err());
-        assert_eq!(result.err().unwrap().to_string(), "acceptor panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -567,10 +568,11 @@ mod tests {
         let arbiter = tasks.arbiter();
         let acceptor = CatchPanicAcceptor::new(PanicStringAcceptor, arbiter.clone());
 
-        let result = acceptor.accept(duplex_stream(), OkService).await;
+        let result = AssertUnwindSafe(acceptor.accept(duplex_stream(), OkService))
+            .catch_unwind()
+            .await;
 
         assert!(result.is_err());
-        assert_eq!(result.err().unwrap().to_string(), "acceptor panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -580,10 +582,11 @@ mod tests {
         let arbiter = tasks.arbiter();
         let acceptor = CatchPanicAcceptor::new(PanicUnknownAcceptor, arbiter.clone());
 
-        let result = acceptor.accept(duplex_stream(), OkService).await;
+        let result = AssertUnwindSafe(acceptor.accept(duplex_stream(), OkService))
+            .catch_unwind()
+            .await;
 
         assert!(result.is_err());
-        assert_eq!(result.err().unwrap().to_string(), "acceptor panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -609,10 +612,11 @@ mod tests {
         let arbiter = tasks.arbiter();
         let mut stream = CatchPanicStream::new(PanicStream, arbiter.clone());
 
-        let result = stream.read(&mut [0u8; 10]).await;
+        let result = AssertUnwindSafe(stream.read(&mut [0u8; 10]))
+            .catch_unwind()
+            .await;
 
         assert!(result.is_err());
-        assert_eq!(result.err().unwrap().to_string(), "stream panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -635,10 +639,11 @@ mod tests {
         let arbiter = tasks.arbiter();
         let mut stream = CatchPanicStream::new(PanicStream, arbiter.clone());
 
-        let result = stream.write(b"hello").await;
+        let result = AssertUnwindSafe(stream.write(b"hello"))
+            .catch_unwind()
+            .await;
 
         assert!(result.is_err());
-        assert_eq!(result.err().unwrap().to_string(), "stream panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -648,10 +653,9 @@ mod tests {
         let arbiter = tasks.arbiter();
         let mut stream = CatchPanicStream::new(PanicStream, arbiter.clone());
 
-        let result = stream.flush().await;
+        let result = AssertUnwindSafe(stream.flush()).catch_unwind().await;
 
         assert!(result.is_err());
-        assert_eq!(result.err().unwrap().to_string(), "stream panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
@@ -661,10 +665,9 @@ mod tests {
         let arbiter = tasks.arbiter();
         let mut stream = CatchPanicStream::new(PanicStream, arbiter.clone());
 
-        let result = stream.shutdown().await;
+        let result = AssertUnwindSafe(stream.shutdown()).catch_unwind().await;
 
         assert!(result.is_err());
-        assert_eq!(result.err().unwrap().to_string(), "stream panicked");
         assert!(fast_shutdown_triggered(&arbiter).await);
     }
 
