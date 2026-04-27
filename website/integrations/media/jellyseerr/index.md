@@ -37,6 +37,10 @@ To support the integration of Jellyseerr with authentik, you need to create an a
 Jellyseerr OAuth support is currently in preview, please make sure to use the `preview-OIDC` Docker tag.
 :::
 
+:::warn
+If your access Jellyseerr via a `https://` URL, you need to enable proxy support in **Settings** > **Network**. This allows Jellyseer to trust redirect parameters; otherwise, jellyseerr would forward a `http://` url to Authentik.
+:::
+
 1. Log in to Jellyseerr with an administrator account.
 2. Navigate to **Settings** > **Users**.
 3. Toggle on **Enable OpenID Connect Sign-In** and click on the cogwheel icon next to it.
