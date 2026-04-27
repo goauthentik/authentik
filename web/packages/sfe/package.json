@@ -19,15 +19,26 @@
         "@rollup/plugin-commonjs": "^29.0.0",
         "@rollup/plugin-node-resolve": "^16.0.3",
         "@rollup/plugin-swc": "^0.4.0",
+<<<<<<< HEAD
         "@swc/cli": "^0.7.9",
         "@swc/core": "^1.15.3",
+=======
+        "@swc/cli": "^0.8.1",
+        "@swc/core": "^1.15.30",
+        "@webcomponents/template": "^1.5.1",
+>>>>>>> b66024f26f (web/packages: Rework SFE rendering (#21833))
         "base64-js": "^1.5.1",
         "bootstrap": "^4.6.2",
         "core-js": "^3.48.0",
         "formdata-polyfill": "^2025.11.0",
         "globby": "16.0.0",
         "jquery": "^3.7.1",
+<<<<<<< HEAD
         "rollup": "^4.53.3",
+=======
+        "lit-html": "^1.4.1",
+        "rollup": "^4.57.1",
+>>>>>>> b66024f26f (web/packages: Rework SFE rendering (#21833))
         "weakmap-polyfill": "^2.0.4"
     },
     "optionalDependencies": {
