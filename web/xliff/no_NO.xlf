@@ -6016,7 +6016,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <source>When checked, the placeholder will be evaluated in the same way a property mapping is.
             If the evaluation fails, the placeholder itself is returned.</source>
   <target>Når avkrysset, vil plassholderen bli evaluert på samme måte som en egenskapsmappering.
-            Hvis evalueringen feiler, returneres selve plassholderen.</target>
+            Hvis evalueringen feiler, returneres selve plassholderen.</target>
 </trans-unit>
 <trans-unit id="sf90be97cb08f3d5a">
   <source>Placeholder</source>
