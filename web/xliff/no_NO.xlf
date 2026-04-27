@@ -6038,7 +6038,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <source>When checked, the initial value will be evaluated in the same way a property mapping is.
             If the evaluation fails, the initial value itself is returned.</source>
   <target>Når avkrysset, vil startverdien bli evaluert på samme måte som en egenskapsmappering.
-            Hvis evalueringen feiler, returneres selve startverdien.</target>
+            Hvis evalueringen feiler, returneres selve startverdien.</target>
 </trans-unit>
 <trans-unit id="sa9c7044d9fd1f3e6">
   <source>Initial value</source>
