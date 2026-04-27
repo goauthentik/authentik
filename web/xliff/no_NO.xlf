@@ -7286,7 +7286,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <source>Are you sure you want to clear the flow cache?
             This will cause all flows to be re-evaluated on their next usage.</source>
   <target>Er du sikker på at du vil tømme flythurtigbufferen?
-            Dette vil føre til at alle flyter reevalueres ved neste bruk.</target>
+            Dette vil føre til at alle flyter reevalueres ved neste bruk.</target>
 </trans-unit>
 <trans-unit id="sbe47a5bdeec19ab0">
   <source>Stage binding(s)</source>
