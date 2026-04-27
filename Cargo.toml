@@ -49,6 +49,7 @@ nix = { version = "= 0.31.2", features = ["hostname", "signal"] }
 notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.28.3"
+pyo3-build-config = "= 0.28.3"
 regex = "= 1.12.3"
 reqwest = { version = "= 0.13.2", features = [
   "form",
@@ -259,6 +260,9 @@ publish.workspace = true
 default = ["core", "proxy"]
 core = ["ak-common/core", "dep:pyo3", "dep:sqlx"]
 proxy = ["ak-common/proxy"]
+
+[build-dependencies]
+pyo3-build-config.workspace = true
 
 [dependencies]
 ak-axum.workspace = true
