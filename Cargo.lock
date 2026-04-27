@@ -176,10 +176,12 @@ dependencies = [
  "arc-swap",
  "argh",
  "authentik-axum",
+ "authentik-client",
  "authentik-common",
  "axum",
  "color-eyre",
  "eyre",
+ "futures",
  "hyper-unix-socket",
  "hyper-util",
  "metrics",
@@ -187,9 +189,17 @@ dependencies = [
  "nix 0.31.3",
  "pyo3",
  "pyo3-build-config",
+ "rand 0.10.1",
+ "serde",
+ "serde_json",
+ "serde_repr",
  "sqlx",
+ "time",
  "tokio",
+ "tokio-retry2",
+ "tokio-tungstenite",
  "tracing",
+ "url",
  "uuid",
  "which",
 ]
@@ -3484,7 +3494,7 @@ dependencies = [
  "tracing",
  "url",
  "uuid",
- "webpki-roots",
+ "webpki-roots 1.0.6",
 ]
 
 [[package]]
@@ -3892,8 +3902,12 @@ checksum = "8f72a05e828585856dacd553fba484c242c46e391fb0e58917c942ee9202915c"
 dependencies = [
  "futures-util",
  "log",
+ "rustls",
+ "rustls-pki-types",
  "tokio",
+ "tokio-rustls",
  "tungstenite",
+ "webpki-roots 0.26.11",
 ]
 
 [[package]]
@@ -4107,8 +4121,11 @@ dependencies = [
  "httparse",
  "log",
  "rand 0.9.4",
+ "rustls",
+ "rustls-pki-types",
  "sha1 0.10.6",
  "thiserror 2.0.18",
+ "url",
 ]
 
 [[package]]
@@ -4190,7 +4207,7 @@ dependencies = [
  "rustls-pki-types",
  "ureq-proto",
  "utf8-zero",
- "webpki-roots",
+ "webpki-roots 1.0.6",
 ]
 
 [[package]]
@@ -4442,6 +4459,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "804f18a4ac2676ffb4e8b5b5fa9ae38af06df08162314f96a68d2a363e21a8ca"
 dependencies = [
  "rustls-pki-types",
+]
+
+[[package]]
+name = "webpki-roots"
+version = "0.26.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "521bc38abb08001b01866da9f51eb7c5d647a19260e00054a8c7fd5f9e57f7a9"
+dependencies = [
+ "webpki-roots 1.0.6",
 ]
 
 [[package]]
