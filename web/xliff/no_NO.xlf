@@ -568,7 +568,7 @@
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
   <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
-  <target>Velg &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; rad</target>
+  <target>Velg &amp;quot;<x id="0" equiv-text="${rowLabel}"/>&amp;quot; rad</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
