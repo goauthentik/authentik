@@ -77,6 +77,7 @@ impl Config {
         }
         builder = builder.add_source(
             config_rs::Environment::with_prefix("AUTHENTIK")
+                .try_parsing(true)
                 .prefix_separator("_")
                 .separator("__"),
         );
@@ -454,5 +455,31 @@ mod tests {
         assert_eq!(super::get().secret_key, String::new());
         super::set(json!({"secret_key": "my_new_secret_key"})).expect("failed to set config");
         assert_eq!(super::get().secret_key, "my_new_secret_key");
+    }
+
+    #[test]
+    fn env_bool_true() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_DEBUG", "true");
+        }
+
+        let (config, config_paths) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert_eq!(config.debug, true);
+    }
+
+    #[test]
+    fn env_bool_false() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_DEBUG", "false");
+        }
+
+        let (config, config_paths) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert_eq!(config.debug, false);
     }
 }
