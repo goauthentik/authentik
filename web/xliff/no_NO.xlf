@@ -7639,7 +7639,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
                             docker daemon, using <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> to connect via SSH, or
                             <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> when connecting to a remote system.</source>
   <target>Kan være i formatet <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> når du kobler til en lokal
-                            Docker-nisse, bruker <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> for å koble til via SSH, eller
+                            Docker daemon, bruker <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> for å koble til via SSH, eller
                             <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> når du kobler til et eksternt system.</target>
 </trans-unit>
 <trans-unit id="saf1d289e3137c2ea">
