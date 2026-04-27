@@ -186,7 +186,7 @@ class UserSerializer(ModelSerializer):
         return RoleSerializer(instance.roles, many=True).data
 
     def __init__(self, *args, **kwargs):
-        """Setting password and permissions directly is only allowed in blueprints."""
+        """Setting password and permissions directly is allowed only in blueprints."""
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
@@ -198,49 +198,41 @@ class UserSerializer(ModelSerializer):
 
     def create(self, validated_data: dict) -> User:
         """Create a user, with blueprint-only password and permission writes."""
-        password = None
-        password_hash = None
-        perms_list = []
-
+        password = validated_data.pop("password", None)
+        password_hash = validated_data.pop("password_hash", None)
+        permissions = validated_data.pop("permissions", [])
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            password = validated_data.pop("password", None)
-            password_hash = validated_data.pop("password_hash", None)
             self._validate_password_inputs(password, password_hash)
-            perms_list = self._get_permission_list(validated_data.pop("permissions", []))
 
         instance: User = super().create(validated_data)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self._set_password(instance, password, password_hash)
+            perms_qs = Permission.objects.filter(
+                codename__in=[permission.split(".")[1] for permission in permissions]
+            ).values_list("content_type__app_label", "codename")
+            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
             instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
         """Update a user, with blueprint-only password and permission writes."""
-        password = None
-        password_hash = None
-        perms_list = []
-
+        password = validated_data.pop("password", None)
+        password_hash = validated_data.pop("password_hash", None)
+        permissions = validated_data.pop("permissions", [])
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            password = validated_data.pop("password", None)
-            password_hash = validated_data.pop("password_hash", None)
             self._validate_password_inputs(password, password_hash)
-            perms_list = self._get_permission_list(validated_data.pop("permissions", []))
 
         instance = super().update(instance, validated_data)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self._set_password(instance, password, password_hash)
+            perms_qs = Permission.objects.filter(
+                codename__in=[permission.split(".")[1] for permission in permissions]
+            ).values_list("content_type__app_label", "codename")
+            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
             instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
-
-    def _get_permission_list(self, permissions: list[str]) -> list[str]:
-        if not permissions:
-            return []
-        perms_qs = Permission.objects.filter(
-            codename__in=[permission.split(".")[1] for permission in permissions]
-        ).values_list("content_type__app_label", "codename")
-        return [f"{ct}.{name}" for ct, name in perms_qs]
 
     def _validate_password_inputs(self, password: str | None, password_hash: str | None):
         """Validate mutually-exclusive password inputs before any model mutation."""
@@ -255,17 +247,19 @@ class UserSerializer(ModelSerializer):
             raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
-        """Set a blueprint-provided password from plain text or hash."""
+        """Set password from plain text or hash."""
         if password_hash is not None:
             instance.set_password_from_hash(password_hash)
             instance.save()
+            return
         elif password:
             instance.set_password(password)
             instance.save()
+            return
 
     def _ensure_password_not_empty(self, instance: User):
         """Store an explicit unusable password instead of an empty password field."""
-        if not instance.password:
+        if len(instance.password) == 0:
             instance.set_unusable_password()
             instance.save()
 
