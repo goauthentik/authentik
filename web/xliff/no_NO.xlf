@@ -7836,9 +7836,9 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
                                     combination with the file field to allow users to upload custom
                                     avatars for themselves.</source>
   <target>En attributtbane som
-                                    <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/>, som kan brukes i
-                                    kombinasjon med filfeltet for å la brukere laste opp tilpassede
-                                    avatarer for seg selv.</target>
+                                    <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/>, som kan brukes i
+                                     kombinasjon med filfeltet for å la brukere laste opp tilpassede
+                                     avatarer for seg selv.</target>
 </trans-unit>
 <trans-unit id="s4c80c34a67a6f1c9">
   <source>Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.</source>
