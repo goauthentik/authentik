@@ -1,8 +1,8 @@
-import { PMTiles, type RangeResponse, ResolvedValueCache, type TileType } from "pmtiles";
-
 import { decompressPMTileBuffer } from "./compression.js";
 import { TileTypeContentType, TileTypeFileExtensionMap } from "./files.js";
 import { R2Source, type R2SourceConfig } from "./r2-source.js";
+
+import { PMTiles, type RangeResponse, ResolvedValueCache, type TileType } from "pmtiles";
 
 export interface ReadTileParams {
     tileType: TileType;

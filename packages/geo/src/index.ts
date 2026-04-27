@@ -1,8 +1,8 @@
 export { AkMap, type MapMarker, type MarkerSelectDetail } from "./components/ak-map.js";
 export {
+    type BasemapTheme,
     buildBasemapStyle,
+    type BuildStyleOptions,
     flavorForTheme,
     resolveTileUrl,
-    type BasemapTheme,
-    type BuildStyleOptions,
 } from "./style.js";

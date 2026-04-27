@@ -1,9 +1,11 @@
-import { LitElement, type PropertyValues, css, html, unsafeCSS } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
-import maplibregl, { type LngLatBoundsLike, type Map as MapLibreMap } from "maplibre-gl";
-import maplibreCss from "maplibre-gl/dist/maplibre-gl.css";
-
 import { type BasemapTheme, buildBasemapStyle } from "../style.js";
+
+import maplibregl, { type LngLatBoundsLike, type Map as MapLibreMap } from "maplibre-gl";
+
+import { css, html, LitElement, type PropertyValues, unsafeCSS } from "lit";
+import { customElement, property, query } from "lit/decorators.js";
+
+import maplibreCss from "maplibre-gl/dist/maplibre-gl.css";
 
 export interface MapMarker {
     id: string;

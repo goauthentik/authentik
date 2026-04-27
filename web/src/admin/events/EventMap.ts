@@ -7,8 +7,8 @@ import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { PaginatedResponse } from "#elements/table/Table";
 
-import type { MapMarker, MarkerSelectDetail } from "@goauthentik/geo";
 import { Event } from "@goauthentik/api";
+import type { MapMarker, MarkerSelectDetail } from "@goauthentik/geo";
 
 import { css, CSSResult, html, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";

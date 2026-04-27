@@ -1,9 +1,9 @@
-import { TileType } from "pmtiles";
-
 import { applyCors, type CorsOptions, preflightResponse } from "./cors.js";
 import { TileFileExtensionMap } from "./files.js";
 import { CloudflareWorkerPMTiles } from "./pmtiles.js";
 import { TileSetNotFoundError } from "./r2-source.js";
+
+import { TileType } from "pmtiles";
 
 export interface Env {
     TILES_BUCKET: R2Bucket;
@@ -25,7 +25,11 @@ const handler: ExportedHandler<Env> = {
             return preflightResponse(request, corsOptions);
         }
         if (request.method !== "GET" && request.method !== "HEAD") {
-            return finish(new Response("Method Not Allowed", { status: 405 }), request, corsOptions);
+            return finish(
+                new Response("Method Not Allowed", { status: 405 }),
+                request,
+                corsOptions,
+            );
         }
 
         const url = new URL(request.url);
