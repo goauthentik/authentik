@@ -216,6 +216,7 @@ dependencies = [
  "eyre",
  "forwarded-header-value",
  "futures",
+ "pin-project-lite",
  "tokio",
  "tokio-rustls",
  "tower",
