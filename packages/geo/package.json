@@ -1,0 +1,65 @@
+{
+    "name": "@goauthentik/geo",
+    "version": "1.0.0",
+    "description": "MapLibre-based map component and Protomaps tooling for authentik",
+    "license": "MIT",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/geo"
+    },
+    "type": "module",
+    "main": "./out/index.js",
+    "types": "./out/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./out/index.d.ts",
+            "import": "./out/index.js"
+        },
+        "./style": {
+            "types": "./out/style.d.ts",
+            "import": "./out/style.js"
+        },
+        "./components/ak-map": {
+            "types": "./out/components/ak-map.d.ts",
+            "import": "./out/components/ak-map.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "watch": "tsc -p . --watch",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "tiles:pull": "node scripts/pull.mjs",
+        "tiles:serve": "node scripts/serve.mjs"
+    },
+    "dependencies": {
+        "@protomaps/basemaps": "^5.7.2",
+        "lit": "^3.3.2",
+        "maplibre-gl": "^5.10.0"
+    },
+    "devDependencies": {
+        "@goauthentik/prettier-config": "../prettier-config",
+        "@goauthentik/tsconfig": "../tsconfig",
+        "@types/node": "^25.5.0",
+        "typescript": "^6.0.2"
+    },
+    "peerDependencies": {
+        "lit": "^3.3.2",
+        "maplibre-gl": "^5.10.0"
+    },
+    "files": [
+        "out/**/*",
+        "src/**/*",
+        "scripts/**/*",
+        "Dockerfile"
+    ],
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.10.1"
+    }
+}

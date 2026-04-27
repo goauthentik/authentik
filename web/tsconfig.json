@@ -71,6 +71,7 @@
         // Remove when we upgrade past that.
         "scripts/pseudolocalize.mjs",
         "scripts/build-locales.mjs",
+        "packages/geo/scripts/**/*",
 
         // TODO: Remove after monorepo cleanup.
         "src/**/*.comp.ts"

@@ -1,0 +1,5 @@
+/tiles/*.pmtiles
+/tiles/*.mbtiles
+/out/
+/node_modules/
+*.tsbuildinfo
