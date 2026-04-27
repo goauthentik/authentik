@@ -70,7 +70,9 @@ export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
                 ${flowInfo?.cancelUrl
                     ? html`
                           <div slot="link">
-                              <a href=${flowInfo.cancelUrl} @click=${RememberMeStorage.reset}>
+                              <a
+                                  href=${flowInfo.cancelUrl}
+                                  @click=${RememberMeStorage.reset}
                                   >${msg("Not you?")}</a
                               >
                           </div>
