@@ -4,6 +4,18 @@ set -e -o pipefail
 
 MODE_FILE="$TMPDIR/authentik-mode"
 
+# Ensure the libpython that the Rust binary is dynamically linked against is on
+# the runtime linker path. uv-managed cpython (installed via `uv python install`)
+# lives under a prefix that ldconfig does not index, so the binary fails with
+# "error while loading shared libraries: libpython3.X.so.1.0: cannot open
+# shared object file" the first time it execs. Distro-installed python is
+# unaffected because /usr/lib is already on the linker's default path.
+_ak_pylibdir=$(python -c 'import sysconfig; print(sysconfig.get_config_var("LIBDIR") or "")' 2>/dev/null || true)
+if [[ -n "$_ak_pylibdir" && -d "$_ak_pylibdir" ]]; then
+    export LD_LIBRARY_PATH="${_ak_pylibdir}${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+fi
+unset _ak_pylibdir
+
 function log {
     printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" >&2
 }
