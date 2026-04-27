@@ -556,7 +556,7 @@
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
   <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
-  <target>Sorter etter &quot;<x id="0" equiv-text="${label}"/>&quot;</target>
+  <target>Sorter etter &amp;quot;<x id="0" equiv-text="${label}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s7bc8c327f1f7c82c">
   <source>No objects found.</source>
