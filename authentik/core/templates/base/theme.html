@@ -9,7 +9,7 @@
   <meta name="color-scheme" content="light" />
   <meta name="theme-color" content="#ffffff">
   {% else %}
-  <script data-id="theme-script">
+  <script data-id="theme-script" nonce="{{ csp_nonce }}">
     "use strict";
 
     (function () {
@@ -22,7 +22,7 @@
             if (!(["auto", "light", "dark"].includes(locallyStoredTheme))) {
                 locallyStoredTheme = null;
             }
-            
+
             const initialThemeChoice =
                 new URLSearchParams(window.location.search).get("theme") || locallyStoredTheme;
 

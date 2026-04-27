@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block head %}
-<style data-id="static-styles">
+<style data-id="static-styles" nonce="{{ csp_nonce }}">
     :root {
         --ak-global--background-image: url("{{ request.brand.branding_default_flow_background_url }}");
     }

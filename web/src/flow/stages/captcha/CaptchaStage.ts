@@ -308,6 +308,7 @@ export class CaptchaStage
         const scriptElement = document.createElement("script");
 
         scriptElement.src = challengeURL.toString();
+        scriptElement.nonce = window.litNonce || "";
         scriptElement.async = true;
         scriptElement.defer = true;
         scriptElement.onload = this.#scriptLoadListener;
