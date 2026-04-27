@@ -16,7 +16,10 @@ use url::Url;
 pub mod schema;
 pub use schema::Config;
 
-use crate::arbiter::{Arbiter, Event, Tasks};
+use crate::{
+    arbiter::{Arbiter, Event, Tasks},
+    config::schema::KEYS_TO_PARSE_AS_LIST,
+};
 
 static DEFAULT_CONFIG: &str = include_str!("../../../../authentik/lib/default.yml");
 static CONFIG_MANAGER: OnceLock<ConfigManager> = OnceLock::new();
@@ -75,17 +78,15 @@ impl Config {
                 config_rs::File::from(path.as_path()).format(config_rs::FileFormat::Yaml),
             );
         }
-        builder = builder.add_source(
-            config_rs::Environment::with_prefix("AUTHENTIK")
-                .prefix_separator("_")
-                .separator("__")
-                .try_parsing(true)
-                .list_separator(",")
-                .with_list_parse_key("listen.http")
-                .with_list_parse_key("listen.metrics")
-                .with_list_parse_key("listen.trusted_proxy_cidrs")
-                .with_list_parse_key("log.http_headers"),
-        );
+        let mut env_source = config_rs::Environment::with_prefix("AUTHENTIK")
+            .prefix_separator("_")
+            .separator("__")
+            .try_parsing(true)
+            .list_separator(",");
+        for key in KEYS_TO_PARSE_AS_LIST {
+            env_source = env_source.with_list_parse_key(key);
+        }
+        builder = builder.add_source(env_source);
         if let Some(overrides) = overrides {
             builder = builder.add_source(config_rs::File::from_str(
                 &overrides.to_string(),
