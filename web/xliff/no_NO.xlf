@@ -6027,8 +6027,8 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
             When creating a fixed choice field, enable interpreting as expression and return a
         list to return multiple choices.</source>
   <target>Gi eventuelt et kort hint som beskriver den forventede inngangsverdien.
-            Når du oppretter et fast valgfelt, aktiver tolkning som uttrykk og returner en
-        liste for å returnere flere valg.</target>
+            Når du oppretter et fast valgfelt, aktiver tolkning som uttrykk og returner en
+        liste for å returnere flere valg.</target>
 </trans-unit>
 <trans-unit id="saa7ba2057bd524a1">
   <source>Interpret initial value as expression</source>
