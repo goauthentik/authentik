@@ -14,6 +14,7 @@ from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,
@@ -106,9 +107,9 @@ from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
 
-
-def _invalid_password_hash_message() -> str:
-    return _("Invalid password hash format. Must be a valid Django password hash.")
+INVALID_PASSWORD_HASH_MESSAGE = gettext_lazy(
+    "Invalid password hash format. Must be a valid Django password hash."
+)
 
 
 class ParamUserSerializer(PassiveSerializer):
@@ -250,7 +251,7 @@ class UserSerializer(ModelSerializer):
             User.validate_password_hash(password_hash)
         except ValueError as exc:
             LOGGER.warning("Failed to identify password hash format", exc_info=exc)
-            raise ValidationError(_invalid_password_hash_message()) from exc
+            raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set a blueprint-provided password from plain text or hash."""
@@ -837,7 +838,7 @@ class UserViewSet(
             user,
             lambda: user.set_password_from_hash(body.validated_data["password"], request=request),
             "Failed to set password hash",
-            {"password": [_invalid_password_hash_message()]},
+            {"password": [INVALID_PASSWORD_HASH_MESSAGE]},
         )
 
     @permission_required("authentik_core.reset_user_password")
