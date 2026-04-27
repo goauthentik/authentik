@@ -1,17 +1,9 @@
 import "@patternfly/patternfly/components/Login/login.css";
-import "../../../stories/flow-interface.js";
 import "./AuthenticatorValidateStage.js";
 
-import {
-    AuthenticatorValidationChallenge,
-    ContextualFlowInfoLayoutEnum,
-    DeviceClassesEnum,
-    UiThemeEnum,
-} from "@goauthentik/api";
+import { flowFactory } from "#stories/flow-interface";
 
-import type { StoryObj } from "@storybook/web-components";
-
-import { html } from "lit";
+import { DeviceClassesEnum } from "@goauthentik/api";
 
 export default {
     title: "Flow / Stages / <ak-stage-authenticator-validate>",
@@ -29,38 +21,7 @@ const webAuthNChallenge = {
     lastUsed: null,
 };
 
-function authenticatorValidateFactory(challenge: AuthenticatorValidationChallenge): StoryObj {
-    return {
-        render: ({ theme, challenge }) => {
-            return html`<ak-storybook-interface-flow theme=${theme}>
-                <ak-stage-authenticator-validate
-                    .challenge=${challenge}
-                ></ak-stage-authenticator-validate>
-            </ak-storybook-interface-flow>`;
-        },
-        args: {
-            theme: "automatic",
-            challenge: challenge,
-        },
-        argTypes: {
-            theme: {
-                options: [UiThemeEnum.Automatic, UiThemeEnum.Light, UiThemeEnum.Dark],
-                control: {
-                    type: "select",
-                },
-            },
-        },
-    };
-}
-
-export const MultipleDeviceChallenge = authenticatorValidateFactory({
-    pendingUser: "foo",
-    pendingUserAvatar: "https://picsum.photos/64",
-    flowInfo: {
-        title: "<ak-stage-authenticator-validate>",
-        layout: ContextualFlowInfoLayoutEnum.Stacked,
-        cancelUrl: "",
-    },
+export const MultipleDeviceChallenge = flowFactory("ak-stage-authenticator-validate", {
     deviceChallenges: [
         {
             deviceClass: DeviceClassesEnum.Duo,
@@ -98,32 +59,28 @@ export const MultipleDeviceChallenge = authenticatorValidateFactory({
         },
     ],
     configurationStages: [],
-});
-
-export const WebAuthnDeviceChallenge = authenticatorValidateFactory({
-    pendingUser: "foo",
-    pendingUserAvatar: "https://picsum.photos/64",
     flowInfo: {
         title: "<ak-stage-authenticator-validate>",
-        layout: ContextualFlowInfoLayoutEnum.Stacked,
-        cancelUrl: "",
     },
+});
+
+export const WebAuthnDeviceChallenge = flowFactory("ak-stage-authenticator-validate", {
     deviceChallenges: [
         {
             deviceClass: DeviceClassesEnum.Webauthn,
             ...webAuthNChallenge,
         },
     ],
-    configurationStages: [],
-});
 
-export const DuoDeviceChallenge = authenticatorValidateFactory({
-    pendingUser: "foo",
-    pendingUserAvatar: "https://picsum.photos/64",
+    configurationStages: [],
     flowInfo: {
         title: "<ak-stage-authenticator-validate>",
-        layout: ContextualFlowInfoLayoutEnum.Stacked,
-        cancelUrl: "",
+    },
+});
+
+export const DuoDeviceChallenge = flowFactory("ak-stage-authenticator-validate", {
+    flowInfo: {
+        title: "<ak-stage-authenticator-validate>",
     },
     deviceChallenges: [
         {
