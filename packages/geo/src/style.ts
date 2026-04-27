@@ -1,4 +1,4 @@
-import { DARK, type Flavor, LIGHT, layers, namedFlavor } from "@protomaps/basemaps";
+import { DARK, type Flavor, layers, LIGHT, namedFlavor } from "@protomaps/basemaps";
 import type { StyleSpecification } from "maplibre-gl";
 
 export type BasemapTheme = "light" | "dark";
@@ -14,8 +14,7 @@ export interface BuildStyleOptions {
     sourceName?: string;
 }
 
-const DEFAULT_GLYPHS =
-    "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf";
+const DEFAULT_GLYPHS = "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf";
 
 const DEFAULT_ATTRIBUTION =
     '<a href="https://protomaps.com" target="_blank" rel="noopener">Protomaps</a> | ' +
@@ -61,4 +60,4 @@ export function buildBasemapStyle(options: BuildStyleOptions): StyleSpecificatio
     return style;
 }
 
-export { DARK, LIGHT, layers, namedFlavor, type Flavor };
+export { DARK, type Flavor, layers, LIGHT, namedFlavor };
