@@ -9679,11 +9679,11 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="user.library.application-count-singular-with-query">
   <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
-  <target><x id="0" equiv-text="${count}"/> applikasjon funnet for &quot;<x id="1" equiv-text="${query}"/>&quot;</target>
+  <target><x id="0" equiv-text="${count}"/> applikasjon funnet for &amp;quot;<x id="1" equiv-text="${query}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="user.library.application-count-plural-with-query">
   <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
-  <target><x id="0" equiv-text="${count}"/> applikasjoner funnet for &quot;<x id="1" equiv-text="${query}"/>&quot;</target>
+  <target><x id="0" equiv-text="${count}"/> applikasjoner funnet for &amp;quot;<x id="1" equiv-text="${query}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="user.library.application-count-singular">
   <source><x id="0" equiv-text="${count}"/> application available</source>
