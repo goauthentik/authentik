@@ -20,7 +20,7 @@ pub(crate) trait Outpost: Send + Sync + Sized {
 
     async fn new(controller: Arc<OutpostController>) -> Result<Self>;
 
-    fn start(&self, tasks: &mut Tasks) -> Result<()>;
+    fn start(self: Arc<Self>, tasks: &mut Tasks) -> Result<()>;
     fn refresh(&self) -> impl Future<Output = Result<()>> + Send;
 
     fn end_session(&self, event: event::EventSessionEnd)

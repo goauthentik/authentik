@@ -1,10 +1,5 @@
-use ak_axum::extract::host::Host;
-use axum::extract::State;
-use axum::http::Method;
-use axum::routing::any;
-use metrics::{Histogram, histogram};
+use ak_common::config;
 use std::{collections::HashMap, sync::Arc};
-use tokio::time::Instant;
 
 use ak_axum::router::wrap_router;
 use ak_client::apis::outposts_api::outposts_proxy_list;
@@ -12,8 +7,6 @@ use ak_common::{Tasks, api::fetch_all};
 use arc_swap::ArcSwap;
 use argh::FromArgs;
 use axum::Router;
-use axum::http::StatusCode;
-use axum::response::IntoResponse;
 use eyre::Result;
 use tracing::{debug, error, info, instrument, warn};
 
@@ -21,6 +14,7 @@ use crate::outpost::proxy::application::Application;
 use crate::outpost::{Outpost, OutpostController};
 
 mod application;
+mod handlers;
 
 #[derive(Debug, Default, FromArgs, PartialEq, Eq)]
 /// Run the authentik proxy outpost.
@@ -49,7 +43,13 @@ impl Outpost for ProxyOutpost {
         })
     }
 
-    fn start(&self, _tasks: &mut Tasks) -> Result<()> {
+    fn start(self: Arc<Self>, tasks: &mut Tasks) -> Result<()> {
+        let router = build_router(self);
+
+        for addr in config::get().listen.http.iter().copied() {
+            ak_axum::server::start_plain(tasks, "proxy-outpost", router.clone(), addr, false)?;
+        }
+
         Ok(())
     }
 
@@ -123,28 +123,21 @@ impl Outpost for ProxyOutpost {
     }
 }
 
-async fn handle_ping(
-    method: Method,
-    Host(host): Host,
-    State(outpost): State<Arc<ProxyOutpost>>,
-) -> impl IntoResponse {
-    let start = Instant::now();
-    histogram!(
-        "authentik_outpost_proxy_request_duration_seconds",
-        "outpost_name" => outpost.controller.outpost.load().name.clone(),
-        "method" => method.to_string(),
-        "host" => host,
-        "type" => "ping",
-    )
-    .record(start.elapsed().as_secs_f64());
-    StatusCode::NO_CONTENT
+// TODO: actually write this
+fn build_static_router() -> Router {
+    Router::new()
 }
 
 fn build_router(outpost: Arc<ProxyOutpost>) -> Router {
     // TODO: static files
     wrap_router(
         Router::new()
-            .route("outpost.goauthentik.io/ping", any(handle_ping))
+            .nest(
+                "/outpost.goauthentik.io/ping",
+                Router::new().fallback(handlers::handle_ping),
+            )
+            // .nest("/outpost.goauthentik.io/static", build_static_router())
+            .fallback(handlers::default)
             .with_state(outpost),
         true,
     )
