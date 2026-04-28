@@ -3816,11 +3816,11 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
   <source>Edit &quot;<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>&quot;</source>
-  <target>Rediger &quot;<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>&quot;</target>
+  <target>Rediger &amp;quot;<x id="0" equiv-text="${this.outpost?.name || &quot;outpost&quot;}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sdb3b903354fbfb17">
   <source>Open &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Åpne &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <target>Åpne &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s1f7698c061c208c9">
   <source>Open</source>
