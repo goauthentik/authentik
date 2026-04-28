@@ -3722,9 +3722,8 @@ msgid ""
 "With a Verification Certificate selected, at least one of 'Verify Assertion "
 "Signature' or 'Verify Response Signature' must be selected."
 msgstr ""
-"Når et verifikasjonssertifikat er valgt, må minst ett av valgene 'Verifiser "
-"signatur for påstand' (Verify Assertion Signature) eller 'Verifiser signatur"
-" for svar' (Verify Response Signature) velges."
+"Når et verifikasjonssertifikat er valgt, må minst ett av valgene 'Verify "
+"Assertion Signature' eller 'Verify Response Signature' velges."
 
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
