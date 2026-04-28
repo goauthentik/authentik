@@ -253,11 +253,9 @@ class UserSerializer(ModelSerializer):
         if password_hash is not None:
             instance.set_password_from_hash(password_hash)
             instance.save()
-            return
         elif password:
             instance.set_password(password)
             instance.save()
-            return
 
     def _ensure_password_not_empty(self, instance: User):
         """Store an explicit unusable password instead of an empty password field."""
