@@ -3808,7 +3808,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
   <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Applikasjonsikon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <target>Applikasjonsikon for &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sa347e31efbb60be2">
   <source>Update Application</source>
