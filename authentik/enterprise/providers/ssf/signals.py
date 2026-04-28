@@ -102,16 +102,14 @@ def _send_password_credential_change(user: User, change_type: str):
     )
 
 
-@receiver(password_changed)
-def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
-    """Credential change trigger (password changed)"""
-    _send_password_credential_change(user, "revoke" if password is None else "update")
-
-
 @receiver(password_hash_changed)
-def ssf_password_hash_changed_cred_change(sender, user: User, **_):
-    """Credential change trigger (password hash changed)"""
-    _send_password_credential_change(user, "update")
+@receiver(password_changed)
+def ssf_password_changed_cred_change(signal, sender, user: User, password: str | None = None, **_):
+    """Credential change trigger (password changed)"""
+    if signal is password_hash_changed:
+        _send_password_credential_change(user, "update")
+        return
+    _send_password_credential_change(user, "revoke" if password is None else "update")
 
 
 device_type_map = {

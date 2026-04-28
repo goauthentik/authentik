@@ -112,21 +112,16 @@ def on_invitation_used(sender, request: HttpRequest, invitation: Invitation, **_
     )
 
 
+@receiver(password_hash_changed)
 @receiver(password_changed)
 def on_password_changed(
     sender,
     user: User,
-    password: str | None,
-    request: HttpRequest | None,
+    password: str | None = None,
+    request: HttpRequest | None = None,
     **_,
 ):
     """Log password change"""
-    Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
-
-
-@receiver(password_hash_changed)
-def on_password_hash_changed(sender, user: User, request: HttpRequest | None = None, **_):
-    """Log password hash change"""
     Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
 
 
