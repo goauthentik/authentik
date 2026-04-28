@@ -5218,7 +5218,7 @@
                 "meta_hide": {
                     "type": "boolean",
                     "title": "Meta hide",
-                    "description": "Hide this application from the user dashboard."
+                    "description": "Hide this application from the user's My applications page."
                 },
                 "icon": {
                     "type": "string",
