@@ -18,7 +18,7 @@ GitHub Enterprise Cloud EMU (Enterprise Managed Users) are not compatible with a
 
 The following placeholders are used in this guide:
 
-- `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
+- `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -32,7 +32,7 @@ To support the integration of GitHub Enterprise Cloud with authentik, you need t
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
@@ -48,9 +48,9 @@ To support the integration of GitHub Enterprise Cloud with authentik, you need t
 
 ## GitHub Configuration
 
-Navigate to your enterprise settings by clicking your GitHub user portrait in the top right of GitHub.com, select `Your enterprises` and click `Settings` for the enterprise you wish to configure.
+Navigate to your enterprise settings by clicking your GitHub user portrait in the top right of GitHub.com, then select `Your enterprises` and click `Settings` for the enterprise you wish to configure.
 
-In the left-hand navigation, within the `Settings` section, click `Authentication security`
+In the left-hand navigation, within the `Settings` section, click `Authentication security`.
 
 On this page:
 

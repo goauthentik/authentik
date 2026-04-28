@@ -2,7 +2,7 @@
 title: Kubernetes installation
 ---
 
-You can install authentik to run on Kubernetes using a Helm Chart.
+You can install authentik to run on Kubernetes using a Helm chart.
 
 :::info
 You can also [view a video walk-through](https://www.youtube.com/watch?v=O1qUbrk4Yc8) of the installation process on Kubernetes (with bonus details about email configuration and other important options).
@@ -78,10 +78,16 @@ See all configurable values on [ArtifactHub](https://artifacthub.io/packages/hel
 
 ## PostgreSQL production setup
 
-The PostgreSQL database that is created by default during installation is only intended for demonstration and testing purposes. For production instances, you should use another installation method using one of the following operators:
+The PostgreSQL database installed by default with the Helm chart is intended for demonstration and test environments.
+
+For production deployments, use a separately managed PostgreSQL installation instead of relying on the chart's bundled database.
+
+Common options include:
 
 - [CloudNativePG](https://github.com/cloudnative-pg/cloudnative-pg)
 - [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
+
+After you provision PostgreSQL externally, configure authentik to use it with the settings in the [PostgreSQL configuration reference](../configuration/configuration.mdx#postgresql-settings).
 
 ## Email configuration (optional but recommended)
 
@@ -103,10 +109,12 @@ During the installation process, the database migrations will be applied automat
 
 ## Access authentik
 
-After the installation is complete, access authentik at `https://<authentik-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
+To start the initial setup, navigate to `http://<your server's IP or hostname>:9000`.
 
-:::info Initial setup in browser
-You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
+You are then prompted to set a password for the `akadmin` user (the default user).
+
+:::info Issues with initial setup
+If you run into issues, refer to our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
 :::
 
 ## First steps in authentik

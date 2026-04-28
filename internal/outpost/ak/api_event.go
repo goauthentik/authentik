@@ -32,9 +32,11 @@ func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string, quer
 	return wsUrl
 }
 
-func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
+func (ac *APIController) initEvent(outpostUUID string, attempt int) error {
+	akURL := ac.akURL
 	query := akURL.Query()
 	query.Set("instance_uuid", ac.instanceUUID.String())
+	query.Set("attempt", strconv.Itoa(attempt))
 
 	authHeader := fmt.Sprintf("Bearer %s", ac.token)
 
@@ -75,7 +77,12 @@ func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
 		Instruction: EventKindHello,
 		Args:        ac.getEventPingArgs(),
 	}
+	// Serialize this write against concurrent SendEventHello callers (health
+	// ticker, RAC handlers) sharing the same *websocket.Conn. Gorilla's Conn
+	// does not permit concurrent writes.
+	ac.eventConnMu.Lock()
 	err = ws.WriteJSON(msg)
+	ac.eventConnMu.Unlock()
 	if err != nil {
 		ac.logger.WithField("logger", "authentik.outpost.events").WithError(err).Warning("Failed to hello to authentik")
 		return err
@@ -89,7 +96,9 @@ func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
 func (ac *APIController) Shutdown() {
 	// Cleanly close the connection by sending a close message and then
 	// waiting (with timeout) for the server to close the connection.
+	ac.eventConnMu.Lock()
 	err := ac.eventConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+	ac.eventConnMu.Unlock()
 	if err != nil {
 		ac.logger.WithError(err).Warning("failed to write close message")
 		return
@@ -106,18 +115,10 @@ func (ac *APIController) recentEvents() {
 		return
 	}
 	ac.wsIsReconnecting = true
-	u := url.URL{
-		Host:   ac.Client.GetConfig().Host,
-		Scheme: ac.Client.GetConfig().Scheme,
-		Path:   strings.ReplaceAll(ac.Client.GetConfig().Servers[0].URL, "api/v3", ""),
-	}
 	attempt := 1
 	_ = retry.Do(
 		func() error {
-			q := u.Query()
-			q.Set("attempt", strconv.Itoa(attempt))
-			u.RawQuery = q.Encode()
-			err := ac.initEvent(u, ac.Outpost.Pk)
+			err := ac.initEvent(ac.Outpost.Pk, attempt)
 			attempt += 1
 			if err != nil {
 				return err
@@ -258,6 +259,10 @@ func (a *APIController) SendEventHello(args map[string]any) error {
 		Instruction: EventKindHello,
 		Args:        allArgs,
 	}
+	// Gorilla *websocket.Conn does not permit concurrent writes. This method
+	// is invoked from the health ticker and from RAC session handlers.
+	a.eventConnMu.Lock()
 	err := a.eventConn.WriteJSON(aliveMsg)
+	a.eventConnMu.Unlock()
 	return err
 }

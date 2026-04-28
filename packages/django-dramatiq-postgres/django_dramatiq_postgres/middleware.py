@@ -27,7 +27,7 @@ class HTTPServerThread(Thread):
     """Base class for a thread which runs an HTTP Server. Mainly used for typing
     the `server` instance variable."""
 
-    server: HTTPServer | None
+    server: HTTPServer | None = None
 
 
 class HTTPServer(BaseHTTPServer):

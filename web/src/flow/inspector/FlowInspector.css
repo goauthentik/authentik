@@ -5,6 +5,7 @@
 
 :host,
 ak-flow-inspector.style-scope {
+    width: 100%;
     background-color: var(--pf-c-notification-drawer--BackgroundColor);
     --pf-c-drawer__panel--BackgroundColor: var(--pf-global--BackgroundColor--150) !important;
 }

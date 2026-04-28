@@ -1,15 +1,20 @@
-import { NavigationEventInit, WizardCloseEvent, WizardNavigationEvent } from "./events.js";
+import { NavigationEventInit, WizardNavigationEvent } from "./events.js";
 import {
-    type ButtonKind,
-    type NavigableButton,
+    ButtonKindClassnameRecord,
+    ButtonKindLabelRecord,
+    DialogDismissalKinds,
+    isNavigable,
     type WizardButton,
     WizardStepLabel,
     WizardStepState,
-} from "./types.js";
+} from "./shared.js";
 import { wizardStepContext } from "./WizardContexts.js";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
+import { SlottedTemplateResult } from "#elements/types";
+import { findNearestDialog } from "#elements/utils/render-roots";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import { match, P } from "ts-pattern";
 
@@ -23,23 +28,6 @@ import { map } from "lit/directives/map.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
-
-const isNavigable = (b: WizardButton): b is NavigableButton =>
-    "destination" in b && typeof b.destination === "string" && b.destination.length > 0;
-
-const BUTTON_KIND_TO_CLASS: Record<ButtonKind, string> = {
-    next: "pf-m-primary",
-    back: "pf-m-secondary",
-    close: "pf-m-link",
-    cancel: "pf-m-link",
-};
-
-const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
-    next: msg("Next"),
-    back: msg("Back"),
-    cancel: msg("Cancel"),
-    close: msg("Close"),
-};
 
 /**
  * @class WizardStep
@@ -57,39 +45,47 @@ const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
  * Events
  *
  * @fires WizardNavigationEvent - request ak-wizard-steps to move to another step
- * @fires WizardCloseEvent - request parent container (Wizard) to close the wizard
  */
-
 export abstract class WizardStep extends AKElement {
-    // These additions are necessary because we don't want to inherit *all* of the modal box
-    // modifiers, just the ones related to managing the height of the display box.
-    static styles = [
+    public static styles = [
         PFWizard,
         PFContent,
         PFTitle,
         css`
-            .ak-wizard-box {
-                height: 75%;
-                height: 75vh;
+            :host {
+                display: contents;
+            }
+
+            .pf-c-wizard__main-body {
                 display: flex;
-                flex-direction: column;
-                position: relative;
-                z-index: 500;
+                flex-flow: row wrap;
+
+                & > * {
+                    flex: 1 1 auto;
+                }
             }
         `,
     ];
 
+    /**
+     * A prefixed logger for this component.
+     */
+    protected logger = ConsoleLogger.prefix(this.localName);
+
     @property({ type: Boolean, attribute: true, reflect: true })
-    enabled = false;
+    public enabled = false;
+
+    @property({ attribute: false })
+    public dialog: HTMLDialogElement | null = null;
 
     /**
      * The name. Should match the slot. Reflected if not present.
      */
     @property({ type: String, attribute: true, reflect: true })
-    name?: string;
+    public name?: string;
 
     @consume({ context: wizardStepContext, subscribe: true })
-    wizardStepState: WizardStepState = { currentStep: undefined, stepLabels: [] };
+    protected wizardStepState: WizardStepState = { currentStep: null, stepLabels: [] };
 
     /**
      * What appears in the titlebar of the Wizard. Usually, but not necessarily, the same for all
@@ -125,17 +121,17 @@ export abstract class WizardStep extends AKElement {
     /**
      * The ID of the current step.
      */
-    id = "";
+    declare public id: string;
 
     /**
      *The label of the current step.  Displayed in the navigation bar.
      */
-    label: string = "--unset--";
+    public label: string = "--unset--";
 
     /**
      * If true, this step's label will not be shown in the navigation bar
      */
-    hide = false;
+    public hide = false;
 
     //  ___      _    _ _        _   ___ ___
     // | _ \_  _| |__| (_)__    /_\ | _ \_ _|
@@ -143,147 +139,162 @@ export abstract class WizardStep extends AKElement {
     // |_|  \_,_|_.__/_|_\__| /_/ \_\_| |___|
     //
 
+    //#region Public API
+
     // Override this and provide the buttons for this step. The button type is documented in the
     // [types](./types.ts) file, but in short, there are four "kinds": "next", "back", "cancel", and
     // "close."
-    public get buttons(): WizardButton[] {
-        return [];
-    }
+    protected abstract buttons: WizardButton[];
 
-    // Override this to provide the form.
-    public renderMain() {
-        throw new Error("This must be overridden in client classes");
-    }
+    /**
+     * Render the main content of the step. This is where the form or other content for the step should be rendered.
+     *
+     * @abstract
+     */
+    protected abstract renderMain(): SlottedTemplateResult;
 
     // Override this to intercept 'next' and 'back' events, perform validation, and include enabling
     // before allowing navigation to continue.
     public handleButton(button: WizardButton, details?: NavigationEventInit) {
-        if (["close", "cancel"].includes(button.kind)) {
-            this.dispatchEvent(new WizardCloseEvent());
-            return;
+        if (DialogDismissalKinds.has(button.kind)) {
+            return this.requestClose(button.kind);
         }
 
         if (isNavigable(button)) {
-            this.dispatchEvent(new WizardNavigationEvent(button.destination, details));
-            return;
+            return this.dispatchEvent(new WizardNavigationEvent(details, button.destination));
         }
 
         throw new Error(`Incoherent button passed: ${JSON.stringify(button, null, 2)}`);
     }
 
-    public handleEnabling(details: NavigationEventInit) {
-        this.dispatchEvent(new WizardNavigationEvent(undefined, details));
+    public dispatchNavigationEvent(details: NavigationEventInit) {
+        this.dispatchEvent(new WizardNavigationEvent(details));
     }
 
-    // END Public API
+    //#endregion
 
-    connectedCallback() {
+    //#region Lifecycle
+
+    public override connectedCallback() {
         super.connectedCallback();
+
+        this.dialog ??= findNearestDialog(this);
+
         if (!this.name) {
             const name = this.getAttribute("slot");
+
             if (!name) {
                 throw new Error("Steps must have a unique slot attribute.");
             }
+
             this.name = name;
         }
     }
 
-    @bound
-    onWizardNavigationEvent(ev: Event, button: WizardButton) {
-        ev.stopPropagation();
+    //#endregion
+
+    protected navigateWizardStep(button: WizardButton, event?: Event) {
+        event?.stopPropagation();
 
         if (!isNavigable(button)) {
             throw new Error("Non-navigable button sent to handleNavigationEvent");
         }
 
-        if (button.kind === "next" && !this.reportValidity()) {
+        if (button.kind === "next" || button.kind === "finish") {
+            // Check and report form validation to the user before allowing navigation to proceed.
+            if (!this.reportValidity()) {
+                return;
+            }
+        }
+
+        if (button.kind === "finish") {
+            this.requestClose("finish");
             return;
         }
 
-        this.handleButton(button);
+        return this.handleButton(button);
     }
 
-    @bound
-    onWizardCloseEvent(ev: Event) {
-        ev.stopPropagation();
-        this.dispatchEvent(new WizardCloseEvent());
+    public requestClose = (returnValue?: string) => {
+        if (!this.dialog) {
+            this.logger.warn("Skipping close request: No dialog found for wizard.");
+            return;
+        }
+
+        this.dialog.requestClose(returnValue);
+    };
+
+    protected getButtonLabel(button: WizardButton): SlottedTemplateResult {
+        return button.label ?? ButtonKindLabelRecord[button.kind]();
     }
 
-    getButtonLabel(button: WizardButton) {
-        return button.label ?? BUTTON_KIND_TO_LABEL[button.kind];
-    }
-
-    getButtonClasses(button: WizardButton) {
+    protected getButtonClasses(button: WizardButton) {
         return {
             "pf-c-button": true,
-            [BUTTON_KIND_TO_CLASS[button.kind]]: true,
+            [ButtonKindClassnameRecord[button.kind]]: true,
         };
     }
 
-    @bound
-    renderCloseButton(button: WizardButton) {
+    //#region Rendering
+
+    protected renderCloseButton(button: WizardButton) {
         return html`<div class="pf-c-wizard__footer-cancel">
             <button
                 data-test-id="wizard-navigation-abort"
                 class=${classMap(this.getButtonClasses(button))}
                 type="button"
-                @click=${this.onWizardCloseEvent}
+                @click=${() => this.requestClose("cancel")}
             >
                 ${this.getButtonLabel(button)}
             </button>
         </div>`;
     }
 
-    @bound
-    renderDisabledButton(button: WizardButton) {
+    protected renderDisabledButton(button: WizardButton) {
         return html`<button class=${classMap(this.getButtonClasses(button))} type="button" disabled>
             ${this.getButtonLabel(button)}
         </button>`;
     }
 
-    @bound
-    renderNavigableButton(button: WizardButton) {
+    protected renderNavigableButton(button: WizardButton) {
         return html`<button
             class=${classMap(this.getButtonClasses(button))}
             type="button"
-            @click=${(ev: Event) => this.onWizardNavigationEvent(ev, button)}
+            @click=${this.navigateWizardStep.bind(this, button)}
             data-ouid-button-kind="wizard-${button.kind}"
         >
             ${this.getButtonLabel(button)}
         </button>`;
     }
 
-    @bound
-    renderButton(button: WizardButton) {
+    protected renderButton = (button: WizardButton) => {
         return match(button)
             .with({ kind: P.union("close", "cancel") }, () => this.renderCloseButton(button))
             .with({ destination: P.string }, () => this.renderNavigableButton(button))
             .otherwise(() => {
                 throw new Error("Button type is not close, disabled, or navigable?");
             });
-    }
+    };
 
-    renderHeaderCancelIcon() {
+    protected renderHeaderCancelIcon() {
         return html`<button
             class="pf-c-button pf-m-plain pf-c-wizard__close"
             type="button"
             aria-label="${msg("Close")}"
-            @click=${this.onWizardCloseEvent}
+            @click=${() => this.requestClose("cancel")}
         >
             <i class="fas fa-times" aria-hidden="true"></i>
         </button>`;
     }
 
-    @bound
-    renderSidebarStep(step: WizardStepLabel) {
+    protected renderSidebarStep = (step: WizardStepLabel) => {
         const buttonClasses = {
             "pf-c-wizard__nav-link": true,
             "pf-m-disabled": !step.enabled,
             "pf-m-current": step.id === this.wizardStepState.currentStep,
         };
 
-        return html`
-                <li class="pf-c-wizard__nav-item">
+        return html`<li class="pf-c-wizard__nav-item">
                     <button
                         class=${classMap(buttonClasses)}
                         ?disabled=${!step.enabled}
@@ -295,51 +306,51 @@ export abstract class WizardStep extends AKElement {
                 </li>
             </div>
         `;
+    };
+
+    protected override render() {
+        if (this.wizardStepState.currentStep !== this.getAttribute("slot")) {
+            return nothing;
+        }
+
+        return html`<div class="pf-c-wizard">
+            <header class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
+                ${this.canCancel ? this.renderHeaderCancelIcon() : nothing}
+                <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title" data-test-id="wizard-title">
+                    ${this.wizardTitle}
+                </h1>
+                <p class="pf-c-wizard__description">${this.wizardDescription}</p>
+            </header>
+
+            <div class="pf-c-wizard__outer-wrap">
+                <div class="pf-c-wizard__inner-wrap">
+                    <aside
+                        class="pf-c-wizard__nav"
+                        role="group"
+                        aria-label="${msg("Wizard steps")}"
+                    >
+                        <ol class="pf-c-wizard__nav-list">
+                            ${map(this.wizardStepState.stepLabels, this.renderSidebarStep)}
+                        </ol>
+                    </aside>
+                    <main
+                        part="wizard-main"
+                        class="pf-c-wizard__main ak-m-thin-scrollbar ak-m-scroll-shadows"
+                        aria-label=${msg("Wizard content")}
+                    >
+                        <div id="main-content" class="pf-c-wizard__main-body">
+                            ${this.renderMain()}
+                        </div>
+                    </main>
+                </div>
+                <nav class="pf-c-wizard__footer" aria-label="${msg("Wizard navigation")}">
+                    ${this.buttons.map(this.renderButton)}
+                </nav>
+            </div>
+        </div>`;
     }
 
-    render() {
-        return this.wizardStepState.currentStep === this.getAttribute("slot")
-            ? html` <div class="pf-c-modal-box ak-wizard-box">
-                  <div class="pf-c-wizard">
-                      <header class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
-                          ${this.canCancel ? this.renderHeaderCancelIcon() : nothing}
-                          <h1
-                              class="pf-c-title pf-m-3xl pf-c-wizard__title"
-                              data-test-id="wizard-title"
-                          >
-                              ${this.wizardTitle}
-                          </h1>
-                          <p class="pf-c-wizard__description">${this.wizardDescription}</p>
-                      </header>
-
-                      <div class="pf-c-wizard__outer-wrap">
-                          <div class="pf-c-wizard__inner-wrap">
-                              <aside
-                                  class="pf-c-wizard__nav"
-                                  role="group"
-                                  aria-label="${msg("Wizard steps")}"
-                              >
-                                  <ol class="pf-c-wizard__nav-list">
-                                      ${map(
-                                          this.wizardStepState.stepLabels,
-                                          this.renderSidebarStep,
-                                      )}
-                                  </ol>
-                              </aside>
-                              <main class="pf-c-wizard__main">
-                                  <div id="main-content" class="pf-c-wizard__main-body">
-                                      ${this.renderMain()}
-                                  </div>
-                              </main>
-                          </div>
-                          <nav class="pf-c-wizard__footer" aria-label="${msg("Wizard navigation")}">
-                              ${this.buttons.map(this.renderButton)}
-                          </nav>
-                      </div>
-                  </div>
-              </div>`
-            : nothing;
-    }
+    //#endregion
 }
 
 declare global {

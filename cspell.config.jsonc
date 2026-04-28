@@ -90,10 +90,7 @@
         {
             "name": "ConfSuffix",
             "description": "Variables with `conf` or `config` suffix",
-            "pattern": [
-                "\\w+(conf|config)\\b",
-                "\\b(conf|config)\\w+"
-            ]
+            "pattern": ["\\w+(conf|config)\\b", "\\b(conf|config)\\w+"]
         }
     ],
     "ignoreRegExpList": [
@@ -141,7 +138,8 @@
         "SshRsa",
         "UnicodeRef",
         "Email",
-        "HashStrings"
+        "HashStrings",
+        "AKQL"
     ],
     "languageSettings": [
         {
@@ -180,24 +178,16 @@
         },
         {
             "languageId": "python",
-            "dictionaries": [
-                "en-x-authentik-python"
-            ],
-            "includeRegExpList": [
-                "comments"
-            ]
+            "dictionaries": ["en-x-authentik-python"],
+            "includeRegExpList": ["comments"]
         },
         {
             "languageId": "rust",
-            "dictionaries": [
-                "en-x-authentik-rust"
-            ]
+            "dictionaries": ["en-x-authentik-rust"]
         },
         {
             "languageId": "go",
-            "dictionaries": [
-                "en-x-authentik-golang"
-            ]
+            "dictionaries": ["en-x-authentik-golang"]
         },
         {
             "languageId": "makefile,toml,yaml",
@@ -241,7 +231,9 @@
         "schema.yml", // OpenAPI schema
         "./blueprints/schema.json", // Generated blueprint schema
         "custom-elements.json", // TypeScript custom element definitions
-        "./gen-*-api", // Generated API Client
+        "./packages/client-go", // Generated API Client
+        "./packages/client-rust/src", // Generated API Client
+        "./packages/client-ts/src", // Generated API Client
         "./schemas/**", // XML Schemas
         "./authentik/sources/**/schemas", // Source schemas
         "**vendored**", // Vendored files
@@ -284,15 +276,16 @@
         "htmlcov", // Coverage HTML output
         "coverage.txt", // Coverage text output
         //#endregion
-        //#region Media
+        //#region Media/Static
         "./data", // Media files
         "./media", // Legacy media files
-        "*.{png,jpg,pdf,svg}" // Binary files
+        "*.{png,jpg,pdf,svg}", // Binary files
+        "*dashboard.json" // Dashboards
         //#endregion
     ],
     "useGitignore": true,
     "features": {
         "weighted-suggestions": true
-    }
-    // "failFast": true,
+    },
+    "failFast": true
 }

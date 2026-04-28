@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 00:18+0000\n"
+"POT-Creation-Date: 2026-04-23 00:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,6 +107,11 @@ msgstr ""
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
+msgstr ""
+
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
 msgstr ""
 
 #: authentik/blueprints/models.py
@@ -219,11 +224,6 @@ msgid ""
 "providers are returned. When set to false, backchannel providers are excluded"
 msgstr ""
 
-#: authentik/core/api/transactional_applications.py
-#, python-brace-format
-msgid "User lacks permission to create {model}"
-msgstr ""
-
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
 msgstr ""
@@ -282,6 +282,12 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "This field is required."
+msgstr ""
+
+#: authentik/core/apps.py
+msgid ""
+"Configure if applications without any policy/group/user bindings should be "
+"accessible to any user."
 msgstr ""
 
 #: authentik/core/models.py
@@ -726,6 +732,14 @@ msgstr ""
 msgid "Apple Nonces"
 msgstr ""
 
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclave"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclaves"
+msgstr ""
+
 #: authentik/endpoints/facts.py
 msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
 msgstr ""
@@ -794,6 +808,12 @@ msgstr ""
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to use this endpoint."
+msgstr ""
+
+#: authentik/enterprise/audit/apps.py
+msgid ""
+"Include additional information in audit logs, may incur a performance "
+"penalty."
 msgstr ""
 
 #: authentik/enterprise/endpoints/connectors/fleet/models.py
@@ -1106,6 +1126,14 @@ msgstr ""
 
 #: authentik/enterprise/providers/scim/api.py
 msgid "Enterprise is required to use the OAuth mode."
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Push"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Pull"
 msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
@@ -1443,6 +1471,15 @@ msgstr ""
 msgid "Flow"
 msgstr ""
 
+#: authentik/flows/apps.py
+msgid "Refresh other tabs after successful authentication."
+msgstr ""
+
+#: authentik/flows/apps.py
+msgid ""
+"Upon successful authentication, re-start authentication in other open tabs."
+msgstr ""
+
 #: authentik/flows/exceptions.py
 msgid "Flow does not apply to current user."
 msgstr ""
@@ -1540,6 +1577,10 @@ msgstr ""
 
 #: authentik/flows/models.py
 msgid "Flow Tokens"
+msgstr ""
+
+#: authentik/flows/planner.py
+msgid "This link is invalid or has expired. Please request a new one."
 msgstr ""
 
 #: authentik/flows/views/executor.py
@@ -1894,20 +1935,6 @@ msgstr ""
 msgid "Reputation Scores"
 msgstr ""
 
-#: authentik/policies/templates/policies/buffer.html
-msgid "Waiting for authentication..."
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid ""
-"You're already authenticating in another tab. This page will refresh once "
-"authentication is completed."
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Authenticate in this tab"
-msgstr ""
-
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
 msgstr ""
@@ -2015,6 +2042,14 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Regular Expression URL matching"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -2679,6 +2714,10 @@ msgid "Salesforce"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "Webex"
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Group filters used to define sync-scope for groups."
 msgstr ""
 
@@ -2936,7 +2975,7 @@ msgid ""
 "                "
 msgstr ""
 
-#: authentik/sources/ldap/api.py
+#: authentik/sources/ldap/api/sources.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr ""
 
@@ -3444,6 +3483,11 @@ msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid ""
+"When enabled, the IdP will re-authenticate the user even if a session exists."
+msgstr ""
+
+#: authentik/sources/saml/models.py
+msgid ""
 "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
 msgstr ""
 
@@ -3827,6 +3871,10 @@ msgstr ""
 
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "When enabled, a given device can only be registered once."
 msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py

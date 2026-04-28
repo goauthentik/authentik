@@ -22,6 +22,7 @@ import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const require = createRequire(import.meta.url);
+const production = process.env.NODE_ENV === "production";
 const releaseEnvironment = prepareReleaseEnvironment();
 
 const rootStaticDirectory = resolve(__dirname, "..", "static");
@@ -72,10 +73,15 @@ export default createDocusaurusConfig({
             "@docusaurus/preset-classic",
 
             /** @type {PresetOptions} */ ({
-                gtag: {
-                    trackingID: "G-9MVR9WZFZH",
-                    anonymizeIP: true,
-                },
+                ...(production
+                    ? {
+                          gtag: {
+                              trackingID: "G-9MVR9WZFZH",
+                              anonymizeIP: true,
+                          },
+                      }
+                    : {}),
+
                 theme: {
                     customCss: [require.resolve("@goauthentik/docusaurus-config/css/index.css")],
                 },

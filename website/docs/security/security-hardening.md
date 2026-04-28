@@ -13,11 +13,11 @@ However, for further hardening compliant to the NIST Guidelines, consider
 - setting the length of the password to a minimum of 15 characters, and
 - enabling the "Check haveibeenpwned.com" blocklist comparison (note that this cannot be used on Air-gapped instances)
 
-For further options, see [Password policy](../customize/policies/index.md#password-policy).
+For further options, see [Password Policy](../customize/policies/types/password.md).
 
 ### Expressions
 
-[Expressions](../customize/policies/expression.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
+[Expressions](../customize/policies/types/expression/index.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
 
 However, for further hardening, it is possible to prevent any user (even super-users) from using expressions to create or edit any objects. To do so, configure your deployment to block API requests to these endpoints:
 
@@ -39,7 +39,7 @@ With these restrictions in place, Blueprints can only be edited via [the file sy
 
 ### CAPTCHA Stage
 
-The CAPTCHA stage allows for additional verification of a user while authenticating or authorising an application. Because the CAPTCHA stage supports multiple different CAPTCHA providers, such as Google’s reCAPTCHA and Cloudflare’s Turnstile, the URL for the JavaScript snippet can be modified. Depending on the threat model, this could be exploited by a malicious internal actor.
+The CAPTCHA stage allows for additional verification of a user while authenticating or authorizing an application. Because the CAPTCHA stage supports multiple different CAPTCHA providers, such as Google’s reCAPTCHA and Cloudflare’s Turnstile, the URL for the JavaScript snippet can be modified. Depending on the threat model, this could be exploited by a malicious internal actor.
 
 To prevent any user from creating/editing CAPTCHA stages block API requests to these endpoints:
 

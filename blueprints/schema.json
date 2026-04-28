@@ -5644,6 +5644,7 @@
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
@@ -5651,6 +5652,7 @@
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
@@ -5658,6 +5660,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
@@ -5665,6 +5668,7 @@
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
@@ -7507,6 +7511,10 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Event retention"
+                },
+                "push_verify_certificates": {
+                    "type": "boolean",
+                    "title": "Push verify certificates"
                 }
             },
             "required": []
@@ -8422,7 +8430,8 @@
                         "require_unauthenticated",
                         "require_superuser",
                         "require_redirect",
-                        "require_outpost"
+                        "require_outpost",
+                        "require_token"
                     ],
                     "title": "Authentication",
                     "description": "Required level of authentication and authorization to access a flow."
@@ -8930,7 +8939,6 @@
                         "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.providers.ws_federation",
                         "authentik.enterprise.reports",
-                        "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
                         "authentik.enterprise.stages.source"
@@ -9069,6 +9077,14 @@
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
+                },
+                "query": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Query"
                 }
             },
             "required": []
@@ -9946,6 +9962,23 @@
                     "title": "Client Type",
                     "description": "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable"
                 },
+                "grant_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "authorization_code",
+                            "implicit",
+                            "hybrid",
+                            "refresh_token",
+                            "client_credentials",
+                            "password",
+                            "urn:ietf:params:oauth:grant-type:device_code"
+                        ],
+                        "title": "Grant types"
+                    },
+                    "title": "Grant types"
+                },
                 "client_id": {
                     "type": "string",
                     "maxLength": 255,
@@ -10015,6 +10048,14 @@
                                 "type": "string",
                                 "minLength": 1,
                                 "title": "Url"
+                            },
+                            "redirect_uri_type": {
+                                "type": "string",
+                                "enum": [
+                                    "authorization",
+                                    "logout"
+                                ],
+                                "title": "Redirect uri type"
                             }
                         },
                         "required": [
@@ -11057,7 +11098,9 @@
                         "default",
                         "aws",
                         "slack",
-                        "sfdc"
+                        "sfdc",
+                        "webex",
+                        "vcenter"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
@@ -11299,6 +11342,7 @@
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
@@ -11306,6 +11350,7 @@
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
@@ -11313,6 +11358,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
@@ -11320,6 +11366,7 @@
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
@@ -13492,6 +13539,11 @@
                     "title": "Allow idp initiated",
                     "description": "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
                 },
+                "force_authn": {
+                    "type": "boolean",
+                    "title": "Force authn",
+                    "description": "When enabled, the IdP will re-authenticate the user even if a session exists."
+                },
                 "name_id_policy": {
                     "type": "string",
                     "enum": [
@@ -14852,6 +14904,11 @@
                         "format": "uuid"
                     },
                     "title": "Device type restrictions"
+                },
+                "prevent_duplicate_devices": {
+                    "type": "boolean",
+                    "title": "Prevent duplicate devices",
+                    "description": "When enabled, a given device can only be registered once."
                 },
                 "max_attempts": {
                     "type": "integer",

@@ -20,13 +20,15 @@ from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
-    ClientTypes,
+    ClientType,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
     ScopeMapping,
 )
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
@@ -70,12 +72,13 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/")],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.IMPLICIT],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -119,7 +122,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -127,6 +130,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
             ],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.IMPLICIT],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -191,13 +195,14 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
             authorization_flow=authorization_flow,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
             ],
+            grant_types=[GrantType.IMPLICIT],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -281,13 +286,14 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=self.application_slug,
             authorization_flow=authorization_flow,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
             ],
+            grant_types=[GrantType.IMPLICIT],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(

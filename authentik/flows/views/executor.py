@@ -62,6 +62,7 @@ from authentik.policies.engine import PolicyEngine
 LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
+
 SESSION_KEY_PLAN = "authentik/flows/plan"
 SESSION_KEY_GET = "authentik/flows/get"
 SESSION_KEY_POST = "authentik/flows/post"
@@ -134,7 +135,7 @@ class FlowExecutorView(APIView):
 
     def _check_flow_token(self, key: str) -> FlowPlan | None:
         """Check if the user is using a flow token to restore a plan"""
-        token: FlowToken | None = FlowToken.filter_not_expired(key=key).first()
+        token: FlowToken | None = FlowToken.objects.filter(key=key).first()
         if not token:
             return None
         plan = None

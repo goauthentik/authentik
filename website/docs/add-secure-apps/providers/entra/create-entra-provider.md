@@ -12,9 +12,9 @@ To create an Entra ID provider in authentik, you must have already [configured E
 ## Create an Entra ID provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click **Create**.
+2. Navigate to **Applications** > **Providers** and click **New Provider**.
 3. Select **Microsoft Entra Provider** as the provider type, then click **Next**.
-4. On the **Create Microsoft Entra Provider** page, set the following configurations:
+4. On the **New Microsoft Entra Provider** page, set the following configurations:
     - **Name**: provide a descriptive name (e.g. `Entra ID provider`)
     - Under **Protocol settings**:
         - **Client ID**: the Client ID that you copied when [configuring Entra ID](./configure-entra.md)
@@ -38,7 +38,7 @@ To create an Entra ID provider in authentik, you must have already [configured E
 ## Create an Entra ID application in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications**, click **Create**, and set the following configurations:
+2. Navigate to **Applications** > **Applications**, click **New Application**, and set the following configurations:
     - **Name**: provide a name for the application (e.g. `Entra ID`)
     - **Slug**: enter the name that you want to appear in the URL
     - **Provider**: this field should be left empty
@@ -62,7 +62,7 @@ These are limited access accounts that must use email for verification when logg
 This is possible via a modified property mapping:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+2. Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
 3. Select **Microsoft Entra Provider Mapping** as the property mapping type and click **Next**.
 4. Provide a **Name** for the property mapping and set the following **Expression**:
 

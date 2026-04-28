@@ -8,7 +8,7 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
-import "#admin/common/ak-license-notice";
+import "#elements/LicenseNotice";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 
@@ -18,7 +18,7 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import {
     CurrentBrand,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     RadiusProvider,
     ValidationError,
 } from "@goauthentik/api";
@@ -36,9 +36,9 @@ const clientNetworksHelp = msg(
 );
 
 export interface RADIUSProviderFormProps {
-    provider?: Partial<RadiusProvider>;
-    errors?: ValidationError;
-    brand?: CurrentBrand;
+    provider?: Partial<RadiusProvider> | null;
+    errors?: ValidationError | null;
+    brand?: CurrentBrand | null;
 }
 
 // All Provider objects have an Authorization flow, but not all providers have an Authentication
@@ -48,7 +48,10 @@ export interface RADIUSProviderFormProps {
 // weird-- we're looking up Authentication flows, but we're storing them in the Authorization
 // field of the target Provider.
 
-export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProviderFormProps) {
+export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
     return html`
         <ak-text-input
             name="name"
@@ -62,15 +65,15 @@ export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProvider
         </ak-text-input>
 
         <ak-form-element-horizontal
-            label=${msg("Authentication flow")}
+            label=${msg("Authentication Flow")}
             required
             name="authorizationFlow"
             .errorMessages=${errors.authorizationFlow}
         >
             <ak-branded-flow-search
-                label=${msg("Authentication flow")}
+                label=${msg("Authentication Flow")}
                 placeholder=${msg("Select an authentication flow...")}
-                flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                flowType=${FlowDesignationEnum.Authentication}
                 .currentFlow=${provider.authorizationFlow}
                 .brandFlow=${brand?.flowAuthentication}
                 required
@@ -132,14 +135,14 @@ export function renderForm({ provider = {}, errors = {}, brand }: RADIUSProvider
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
+                    label=${msg("Invalidation Flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
-                        label=${msg("Invalidation flow")}
+                        label=${msg("Invalidation Flow")}
                         placeholder=${msg("Select an invalidation flow...")}
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         .errorMessages=${errors.invalidationFlow}
                         defaultFlowSlug="default-invalidation-flow"
