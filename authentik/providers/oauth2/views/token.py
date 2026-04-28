@@ -41,12 +41,14 @@ from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
     USERNAME_MAX_LENGTH,
     Application,
+    Group,
     Token,
     TokenIntents,
     User,
     UserTypes,
 )
 from authentik.core.sources.mapper import SourceMapper
+from authentik.core.sources.matcher import Action, SourceMatcher
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
@@ -72,7 +74,7 @@ from authentik.providers.oauth2.utils import (
     pkce_s256_challenge,
 )
 from authentik.providers.oauth2.views.authorize import FORBIDDEN_URI_SCHEMES
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import GroupOAuthSourceConnection, OAuthSource
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
@@ -550,10 +552,14 @@ class TokenParams:
     ):
         """Create user from JWT"""
         with audit_ignore():
+            mapper = SourceMapper(source)
             # Run the JWT payload through the core mapping engine
-            mapped = SourceMapper(source).build_object_properties(
+            mapped = mapper.build_object_properties(
                 User, request=request, info=token, oauth_userinfo=token
             )
+            # Extract groups before they are used in user creation - groups require
+            # separate handling via SourceMatcher to correctly link to the source
+            group_ids = mapped.pop("groups", [])
 
             self.user, created = User.objects.update_or_create(
                 username=mapped.get("username", f"{self.provider.name}-{token.get('sub')}")[
@@ -577,6 +583,52 @@ class TokenParams:
             if created and exp:
                 self.user.attributes[USER_ATTRIBUTE_EXPIRES] = exp
                 self.user.save()
+
+            # Sync group membership from property mappings
+            self.__sync_groups_from_jwt(mapper, token, source, request, group_ids)
+
+    def __sync_groups_from_jwt(
+        self,
+        mapper: SourceMapper,
+        token: dict[str, Any],
+        source: OAuthSource,
+        request: HttpRequest,
+        group_ids: list[str],
+    ):
+        """Sync user group membership based on group identifiers returned by property mappings."""
+        matcher = SourceMatcher(source, None, GroupOAuthSourceConnection)
+        synced_groups: list[Group] = []
+
+        for group_id in group_ids:
+            group_properties = mapper.build_object_properties(
+                Group, request=request, group_id=group_id, info=token, oauth_userinfo=token
+            )
+            group_properties.setdefault("name", group_id)
+
+            action, connection = matcher.get_group_action(group_id, group_properties)
+            if action == Action.ENROLL:
+                group = Group.objects.create(**group_properties)
+                connection.group = group
+                connection.save()
+                synced_groups.append(group)
+            elif action in (Action.LINK, Action.AUTH):
+                group = connection.group
+                group.update_attributes(group_properties)
+                connection.save()
+                synced_groups.append(group)
+            else:
+                LOGGER.warning(
+                    "Denied group sync for JWT-federated user",
+                    group_id=group_id,
+                    action=action,
+                )
+
+        # Replace source-linked groups with the current mapping result,
+        # leaving groups from other sources untouched.
+        self.user.groups.remove(
+            *self.user.groups.filter(groupsourceconnection__source=source)
+        )
+        self.user.groups.add(*synced_groups)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
