@@ -9710,7 +9710,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="library.application.card.aria-label">
   <source>Open &quot;<x id="0" equiv-text="${application.name}"/>&quot;</source>
-  <target>Åpne &quot;<x id="0" equiv-text="${application.name}"/>&quot;</target>
+  <target>Åpne &amp;quot;<x id="0" equiv-text="${application.name}"/>&amp;quot;</target>
   <note from="lit-localize">Screen reader label for the application card</note>
 </trans-unit>
 <trans-unit id="sc1e9c9bab6765c74">
