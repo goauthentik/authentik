@@ -550,29 +550,13 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         )
         return self.groups
 
-    def _send_password_changed_signal(
-        self,
-        password: str | None,
-        signal=True,
-        sender=None,
-        request: HttpRequest | None = None,
-    ):
-        if not self.pk or not signal:
-            return
-        from authentik.core.signals import password_changed
-
-        if not sender:
-            sender = self
-        signal_kwargs = {
-            "sender": sender,
-            "user": self,
-            "password": password,
-            "request": request,
-        }
-        password_changed.send(**signal_kwargs)
-
     def set_password(self, raw_password, signal=True, sender=None, request=None):
-        self._send_password_changed_signal(raw_password, signal, sender, request)
+        if self.pk and signal:
+            from authentik.core.signals import password_changed
+
+            if not sender:
+                sender = self
+            password_changed.send(sender=sender, user=self, password=raw_password, request=request)
         self.password_change_date = now()
         return super().set_password(raw_password)
 
