@@ -44,7 +44,7 @@ function isNamedInstance(instance: unknown): instance is NamedInstance {
  * @prop {PKT} instancePk - The primary key of the instance to load.
  */
 export abstract class ModelForm<
-    T extends object = object,
+    T extends object | null = object,
     PKT extends string | number = string | number,
     D = T,
 > extends Form<T, D> {
@@ -96,17 +96,17 @@ export abstract class ModelForm<
      * @param pk The primary key of the instance to load.
      * @returns A promise that resolves to the loaded instance.
      */
-    protected abstract loadInstance(pk: PKT): Promise<T>;
+    protected abstract loadInstance(pk: PKT): Promise<T | null>;
 
     /**
      * An overridable method for assigning the loaded instance to the form's state.
      *
      * This can be used to intercept the loaded instance before it's set on the form.
      */
-    protected assignInstance(instance: T): void {
+    protected assignInstance(instance: T | null): void {
         this.instance = instance;
 
-        if (isNamedInstance(instance)) {
+        if (instance && isNamedInstance(instance)) {
             this.verboseName = instance.verboseName ?? this.verboseName;
             this.verboseNamePlural = instance.verboseNamePlural ?? this.verboseNamePlural;
         }
@@ -162,30 +162,29 @@ export abstract class ModelForm<
 
     //#endregion
 
-    protected override formatSubmitLabel(): string {
+    protected override formatSubmitLabel(submitLabel?: string): string {
         const { saveLabel } = this.constructor as typeof ModelForm;
 
         if (this.instancePk && saveLabel) {
             return saveLabel;
         }
 
-        return super.formatSubmitLabel();
+        return super.formatSubmitLabel(submitLabel);
     }
 
-    protected override formatSubmittingLabel(): string {
+    protected override formatSubmittingLabel(submittingLabel?: string): string {
         const { savingLabel } = this.constructor as typeof ModelForm;
 
         if (this.instancePk && savingLabel) {
             return savingLabel;
         }
 
-        return super.formatSubmittingLabel();
+        return super.formatSubmittingLabel(submittingLabel);
     }
 
-    protected override formatHeadline(): string {
-        const modifier = this.instancePk
-            ? (this.constructor as typeof ModelForm).modifierLabel
-            : null;
+    protected override formatHeadline(modifier?: string | null): string {
+        modifier ||= this.instancePk ? (this.constructor as typeof ModelForm).modifierLabel : null;
+
         return super.formatHeadline(this.headline, modifier);
     }
 

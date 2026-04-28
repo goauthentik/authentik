@@ -1,8 +1,9 @@
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/forms/FormGroup.css";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -28,7 +29,7 @@ export class AKFormGroup extends AKElement {
     public open = false;
 
     @property({ type: String, reflect: true })
-    public label = msg("Details");
+    public label = "";
 
     @property({ type: String, reflect: true })
     public description: string | null = null;
@@ -60,6 +61,20 @@ export class AKFormGroup extends AKElement {
             }
         }
     };
+
+    protected defaultSlot: HTMLSlotElement;
+    protected headerSlot: HTMLSlotElement;
+    protected descriptionSlot: HTMLSlotElement;
+
+    constructor() {
+        super();
+
+        this.defaultSlot = this.ownerDocument.createElement("slot");
+        this.headerSlot = this.ownerDocument.createElement("slot");
+        this.headerSlot.name = "header";
+        this.descriptionSlot = this.ownerDocument.createElement("slot");
+        this.descriptionSlot.name = "description";
+    }
 
     public connectedCallback(): void {
         super.connectedCallback();
@@ -115,46 +130,54 @@ export class AKFormGroup extends AKElement {
 
     //#region Render
 
-    public render(): TemplateResult {
-        return html`
-            <details
-                ${ref(this.#detailsRef)}
-                ?open=${this.open}
-                aria-expanded=${this.open ? "true" : "false"}
-                role="group"
-                aria-labelledby="form-group-header-title"
-                aria-describedby="form-group-expandable-content-description"
-            >
-                <summary @click=${this.toggle}>
-                    <div class="pf-c-form__field-group-header-main" part="group-header">
-                        <header
-                            class="pf-c-form__field-group-header-title"
-                            part="group-header-title"
-                        >
-                            <div
-                                class="pf-c-form__field-group-header-title-text"
-                                part="form-group-header-title"
-                                id="form-group-header-title"
-                                role="heading"
-                                aria-level="3"
-                            >
-                                <div part="label">${this.label}</div>
-                                <slot name="header"></slot>
-                            </div>
-                        </header>
+    protected render(): SlottedTemplateResult {
+        const headerSlotted = !!this.findSlotted("header");
+        const descriptionSlotted = !!this.findSlotted("description");
+
+        return html`<details
+            ${ref(this.#detailsRef)}
+            ?open=${this.open}
+            aria-expanded=${this.open ? "true" : "false"}
+            role="group"
+            aria-labelledby="form-group-header-title"
+            aria-describedby="form-group-expandable-content-description"
+        >
+            <summary @click=${this.toggle}>
+                <div class="pf-c-form__field-group-header-main" part="group-header">
+                    <header class="pf-c-form__field-group-header-title" part="group-header-title">
                         <div
-                            class="pf-c-form__field-group-header-description"
-                            data-test-id="form-group-header-description"
-                            id="form-group-expandable-content-description"
+                            class="pf-c-form__field-group-header-title-text"
+                            part="form-group-header-title"
+                            id="form-group-header-title"
+                            role="heading"
+                            aria-level="3"
                         >
-                            ${this.description}
-                            <slot name="description"></slot>
+                            ${this.label || !headerSlotted
+                                ? html`<div part="label">
+                                      ${this.label ||
+                                      (!headerSlotted
+                                          ? msg("Details", {
+                                                id: "form-group.default-label",
+                                            })
+                                          : null)}
+                                  </div>`
+                                : null}
+                            ${headerSlotted ? this.headerSlot : null}
                         </div>
-                    </div>
-                </summary>
-                <slot></slot>
-            </details>
-        `;
+                    </header>
+                    ${this.description || descriptionSlotted
+                        ? html`<div
+                              class="pf-c-form__field-group-header-description"
+                              data-test-id="form-group-header-description"
+                              id="form-group-expandable-content-description"
+                          >
+                              ${this.description} ${this.descriptionSlot}
+                          </div>`
+                        : null}
+                </div>
+            </summary>
+            ${this.defaultSlot}
+        </details> `;
     }
 
     //#endregion

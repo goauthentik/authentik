@@ -1,73 +1,145 @@
 import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/FormGroup";
 
-import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
-import { MessageLevel } from "#common/messages";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatDisambiguatedUserDisplayName } from "#common/users";
 
-import { showMessage } from "#elements/messages/MessageContainer";
-import { UserDeleteForm } from "#elements/user/utils";
+import { RawContent } from "#elements/ak-table/ak-simple-table";
+import { modalInvoker } from "#elements/dialogs";
+import { pluckEntityName } from "#elements/entities/names";
+import { DestructiveModelForm } from "#elements/forms/DestructiveModelForm";
+import { WithLocale } from "#elements/mixins/locale";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { CoreApi, UsedBy, User } from "@goauthentik/api";
+
+import { str } from "@lit/localize";
+import { msg } from "@lit/localize/init/install";
+import { html } from "lit-html";
 import { customElement } from "lit/decorators.js";
 
-@customElement("ak-user-active-form")
-export class UserActiveForm extends UserDeleteForm {
-    onSuccess(): void {
-        showMessage({
-            message: msg(
-                str`Successfully updated ${this.objectLabel} ${this.getObjectDisplayName()}`,
-            ),
-            level: MessageLevel.success,
+/**
+ * A form for activating/deactivating a user.
+ */
+@customElement("ak-user-activation-toggle-form")
+export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<User>) {
+    public static override verboseName = msg("User");
+    public static override verboseNamePlural = msg("Users");
+
+    protected coreAPI = new CoreApi(DEFAULT_CONFIG);
+
+    protected override send(): Promise<unknown> {
+        if (!this.instance) {
+            return Promise.reject(new Error("No user instance provided"));
+        }
+        const nextActiveState = !this.instance.isActive;
+
+        return this.coreAPI.coreUsersPartialUpdate({
+            id: this.instance.pk,
+            patchedUserRequest: {
+                isActive: nextActiveState,
+            },
         });
     }
 
-    onError(error: unknown): Promise<void> {
-        return parseAPIResponseError(error).then((parsedError) => {
-            showMessage({
-                message: msg(
-                    str`Failed to update ${this.objectLabel}: ${pluckErrorDetail(parsedError)}`,
-                ),
-                level: MessageLevel.error,
-            });
-        });
+    public override formatSubmitLabel(): string {
+        return super.formatSubmitLabel(
+            this.instance?.isActive ? msg("Deactivate") : msg("Activate"),
+        );
     }
 
-    override renderModalInner(): TemplateResult {
-        const objName = this.getFormattedObjectName();
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${msg(str`Update ${this.objectLabel}`)}</h1>
-                </div>
-            </section>
-            <section class="pf-c-modal-box__body pf-m-light">
-                <form class="pf-c-form pf-m-horizontal">
-                    <p>
-                        ${msg(str`Are you sure you want to update ${this.objectLabel}${objName}?`)}
-                    </p>
-                </form>
-            </section>
-            <fieldset class="pf-c-modal-box__footer">
-                <legend class="sr-only">${msg("Form actions")}</legend>
-                <ak-spinner-button
-                    .callAction=${async () => {
-                        this.open = false;
-                    }}
-                    class="pf-m-secondary"
-                    >${msg("Cancel")}</ak-spinner-button
-                >
-                <ak-spinner-button
-                    .callAction=${() => {
-                        return this.confirm();
-                    }}
-                    class="pf-m-warning"
-                    >${msg("Save Changes")}</ak-spinner-button
-                >
-            </fieldset>`;
+    public override formatSubmittingLabel(): string {
+        return super.formatSubmittingLabel(
+            this.instance?.isActive ? msg("Deactivating...") : msg("Activating..."),
+        );
+    }
+
+    protected override formatDisplayName(): string {
+        if (!this.instance) {
+            return msg("Unknown user");
+        }
+
+        return formatDisambiguatedUserDisplayName(this.instance, this.activeLanguageTag);
+    }
+
+    protected override formatHeadline(): string {
+        return this.instance?.isActive
+            ? msg(str`Review ${this.verboseName} Deactivation`, {
+                  id: "form.headline.deactivation",
+              })
+            : msg(str`Review ${this.verboseName} Activation`, { id: "form.headline.activation" });
+    }
+
+    public override usedBy = (): Promise<UsedBy[]> => {
+        if (!this.instance) {
+            return Promise.resolve([]);
+        }
+
+        return this.coreAPI.coreUsersUsedByList({ id: this.instance.pk });
+    };
+
+    protected override renderUsedBySection(): SlottedTemplateResult {
+        if (this.instance?.isActive) {
+            return super.renderUsedBySection();
+        }
+
+        const displayName = this.formatDisplayName();
+        const { usedByList, verboseName } = this;
+
+        return html`<ak-form-group
+            open
+            label=${msg("Objects associated with this user", {
+                id: "usedBy.associated-objects.label",
+            })}
+        >
+            <div
+                class="pf-m-monospace"
+                aria-description=${msg(
+                    str`List of objects that are associated with this ${verboseName}.`,
+                    {
+                        id: "usedBy.description",
+                    },
+                )}
+                slot="description"
+            >
+                ${displayName}
+            </div>
+            <ak-simple-table
+                .columns=${[msg("Object Name"), msg("ID")]}
+                .content=${usedByList.map((ub): RawContent[] => {
+                    return [pluckEntityName(ub) || msg("Unnamed"), html`<code>${ub.pk}</code>`];
+                })}
+            ></ak-simple-table>
+        </ak-form-group>`;
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-user-active-form": UserActiveForm;
+        "ak-user-activation-toggle-form": UserActivationToggleForm;
     }
+}
+
+export interface ToggleUserActivationButtonProps {
+    className?: string;
+}
+
+export function ToggleUserActivationButton(
+    user: User,
+    { className = "" }: ToggleUserActivationButtonProps = {},
+): SlottedTemplateResult {
+    const label = user.isActive ? msg("Deactivate") : msg("Activate");
+    const tooltip = user.isActive
+        ? msg("Lock the user out of this system")
+        : msg("Allow the user to log in and use this system");
+
+    return html`<button
+        class="pf-c-button pf-m-warning ${className}"
+        type="button"
+        ${modalInvoker(UserActivationToggleForm, {
+            instance: user,
+        })}
+    >
+        <pf-tooltip position="top" content=${tooltip}>${label}</pf-tooltip>
+    </button>`;
 }

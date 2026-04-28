@@ -12,7 +12,9 @@ use axum_server::{
 use eyre::Result;
 use tracing::{info, trace};
 
-use crate::accept::{proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor};
+use crate::accept::{
+    catch_panic::CatchPanicAcceptor, proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor,
+};
 
 async fn run_plain(
     arbiter: Arbiter,
@@ -27,7 +29,10 @@ async fn run_plain(
     arbiter.add_net_handle(handle.clone()).await;
 
     let res = axum_server::Server::bind(addr)
-        .acceptor(ProxyProtocolAcceptor::new().acceptor(DefaultAcceptor::new()))
+        .acceptor(CatchPanicAcceptor::new(
+            ProxyProtocolAcceptor::new().acceptor(DefaultAcceptor::new()),
+            arbiter.clone(),
+        ))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<net::SocketAddr>())
         .await;
@@ -80,7 +85,10 @@ pub(crate) async fn run_unix(
         }
     }
     let res = axum_server::Server::bind(addr.clone())
-        .acceptor(DefaultAcceptor::new())
+        .acceptor(CatchPanicAcceptor::new(
+            DefaultAcceptor::new(),
+            arbiter.clone(),
+        ))
         .handle(handle)
         .serve(router.into_make_service())
         .await;
@@ -133,9 +141,12 @@ async fn run_tls(
     arbiter.add_net_handle(handle.clone()).await;
 
     axum_server::Server::bind(addr)
-        .acceptor(ProxyProtocolAcceptor::new().acceptor(TlsAcceptor::new(
-            RustlsAcceptor::new(config).acceptor(DefaultAcceptor::new()),
-        )))
+        .acceptor(CatchPanicAcceptor::new(
+            ProxyProtocolAcceptor::new().acceptor(TlsAcceptor::new(
+                RustlsAcceptor::new(config).acceptor(DefaultAcceptor::new()),
+            )),
+            arbiter.clone(),
+        ))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<net::SocketAddr>())
         .await?;

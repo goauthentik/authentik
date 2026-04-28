@@ -130,17 +130,30 @@ export class UserSettingsPage extends WithSession(AKElement) {
                         </div>
                     </div>
                     <div
-                        id="page-mfa"
+                        id="page-credentials"
                         role="tabpanel"
                         tabindex="0"
-                        slot="page-mfa"
-                        aria-label=${msg("MFA Devices")}
+                        slot="page-credentials"
+                        aria-label=${msg("Credentials")}
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        <div class="pf-c-card">
-                            <ak-user-settings-mfa
-                                .userSettings=${this.userSettings}
-                            ></ak-user-settings-mfa>
+                        <div class="pf-l-stack pf-m-gutter">
+                            <div class="pf-l-stack__item">
+                                <div class="pf-c-card">
+                                    <div class="pf-c-card__title">${msg("MFA Devices")}</div>
+                                    <ak-user-settings-mfa
+                                        .userSettings=${this.userSettings}
+                                    ></ak-user-settings-mfa>
+                                </div>
+                            </div>
+                            <div class="pf-l-stack__item">
+                                <div class="pf-c-card">
+                                    <div class="pf-c-card__title">
+                                        ${msg("Tokens and App passwords")}
+                                    </div>
+                                    <ak-user-token-list></ak-user-token-list>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div
@@ -161,18 +174,6 @@ export class UserSettingsPage extends WithSession(AKElement) {
                                 allow-configuration
                                 user-id=${ifPresent(currentUser?.pk)}
                             ></ak-user-settings-source>
-                        </div>
-                    </div>
-                    <div
-                        id="page-tokens"
-                        role="tabpanel"
-                        tabindex="0"
-                        slot="page-tokens"
-                        aria-label=${msg("Tokens and App passwords")}
-                        class="pf-c-page__main-section pf-m-no-padding-mobile"
-                    >
-                        <div class="pf-c-card">
-                            <ak-user-token-list></ak-user-token-list>
                         </div>
                     </div>
                 </ak-tabs>

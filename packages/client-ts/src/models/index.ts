@@ -221,6 +221,7 @@ export * from "./GoogleWorkspaceProviderMappingRequest";
 export * from "./GoogleWorkspaceProviderRequest";
 export * from "./GoogleWorkspaceProviderUser";
 export * from "./GoogleWorkspaceProviderUserRequest";
+export * from "./GrantTypesEnum";
 export * from "./Group";
 export * from "./GroupKerberosSourceConnection";
 export * from "./GroupKerberosSourceConnectionRequest";

@@ -9,32 +9,45 @@ import "#admin/policies/unique_password/UniquePasswordPolicyForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
+import "#elements/forms/FormGroup";
+import "#admin/policies/PolicyBindingForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
+import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { FormWizardPage } from "#elements/wizard/FormWizardPage";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 
-import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
-
-import { PoliciesApi, Policy, PolicyBinding, TypeCreate } from "@goauthentik/api";
+import {
+    PoliciesApi,
+    Policy,
+    PolicyBinding,
+    PolicyBindingRequest,
+    TypeCreate,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { html, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
+const initialStep = "initial";
+
 @customElement("ak-policy-wizard")
 export class PolicyWizard extends CreateWizard {
-    #api = new PoliciesApi(DEFAULT_CONFIG);
+    protected policiesAPI = new PoliciesApi(DEFAULT_CONFIG);
 
     @property({ type: Boolean })
     public showBindingPage = false;
 
     @property()
     public bindingTarget: string | null = null;
+
+    public override groupLabel = msg("Bind New Policy");
+    public override groupDescription = msg("Select the type of policy you want to create.");
 
     public override initialSteps = this.showBindingPage
         ? ["initial", "create-binding"]
@@ -45,11 +58,11 @@ export class PolicyWizard extends CreateWizard {
 
     public override layout = TypeCreateWizardPageLayouts.list;
 
-    protected apiEndpoint = async (requestInit?: RequestInit): Promise<TypeCreate[]> => {
-        return this.#api.policiesAllTypesList(requestInit);
+    protected override apiEndpoint = async (requestInit?: RequestInit): Promise<TypeCreate[]> => {
+        return this.policiesAPI.policiesAllTypesList(requestInit);
     };
 
-    protected updated(changedProperties: PropertyValues<this>): void {
+    protected override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
 
         if (changedProperties.has("showBindingPage")) {
@@ -57,16 +70,73 @@ export class PolicyWizard extends CreateWizard {
         }
     }
 
-    protected createBindingActivate = async (page: FormWizardPage) => {
-        const createSlot = page.host.steps[1];
-        const bindingForm = page.querySelector<PolicyBindingForm>("ak-policy-binding-form");
+    protected createBindingActivate = async (
+        page: FormWizardPage<{ "initial": PolicyBindingCheckTarget; "create-binding": Policy }>,
+    ) => {
+        const createSlot = page.host.steps[1] as "create-binding";
+        const bindingForm = page.querySelector("ak-policy-binding-form");
 
         if (!bindingForm) return;
 
-        bindingForm.instance = {
-            policy: (page.host.state[createSlot] as Policy).pk,
-        } as PolicyBinding;
+        if (page.host.state[createSlot]) {
+            bindingForm.allowedTypes = [PolicyBindingCheckTarget.Policy];
+            bindingForm.policyGroupUser = PolicyBindingCheckTarget.Policy;
+
+            const policyBindingRequest: Partial<PolicyBindingRequest> = {
+                policy: (page.host.state[createSlot] as Policy).pk,
+            };
+
+            bindingForm.instance = policyBindingRequest as unknown as PolicyBinding;
+        }
+        if (page.host.state[initialStep]) {
+            bindingForm.allowedTypes = [page.host.state[initialStep]];
+            bindingForm.policyGroupUser = page.host.state[initialStep];
+        }
     };
+
+    protected override renderCreateBefore(): SlottedTemplateResult {
+        if (!this.showBindingPage) {
+            return null;
+        }
+
+        return html`<ak-form-group
+            slot="pre-items"
+            label=${msg("Bind Existing...")}
+            description=${msg(
+                "Select a type to bind an existing object instead of creating a new one.",
+            )}
+            open
+        >
+            <ak-radio
+                .options=${[
+                    {
+                        label: msg("Bind a user"),
+                        description: html`${msg("Statically bind an existing user.")}`,
+                        value: PolicyBindingCheckTarget.User,
+                    },
+                    {
+                        label: msg("Bind a group"),
+                        description: html`${msg("Statically bind an existing group.")}`,
+                        value: PolicyBindingCheckTarget.Group,
+                    },
+                    {
+                        label: msg("Bind an existing policy"),
+                        description: html`${msg("Bind an existing policy.")}`,
+                        value: PolicyBindingCheckTarget.Policy,
+                    },
+                ] satisfies RadioOption<PolicyBindingCheckTarget>[]}
+                @change=${(ev: CustomEvent<RadioChangeEventDetail<PolicyBindingCheckTarget>>) => {
+                    if (!this.wizard) {
+                        return;
+                    }
+
+                    this.wizard.state[initialStep] = ev.detail.value;
+                    this.wizard.navigateNext();
+                }}
+            >
+            </ak-radio>
+        </ak-form-group>`;
+    }
 
     protected renderForms(): SlottedTemplateResult {
         const bindingPage = this.showBindingPage
@@ -74,8 +144,7 @@ export class PolicyWizard extends CreateWizard {
                   slot="create-binding"
                   headline=${msg("Create Binding")}
                   .activePageCallback=${this.createBindingActivate}
-              >
-                  <ak-policy-binding-form .targetPk=${this.bindingTarget}></ak-policy-binding-form>
+                  ><ak-policy-binding-form .targetPk=${this.bindingTarget}></ak-policy-binding-form>
               </ak-wizard-page-form>`
             : null;
 
