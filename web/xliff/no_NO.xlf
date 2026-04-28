@@ -8038,7 +8038,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
   <source>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
-  <target>Bruk &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</target>
+  <target>Bruk &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot; blueprint</target>
 </trans-unit>
 <trans-unit id="sb8f855b49234b81b">
   <source>Apply</source>
