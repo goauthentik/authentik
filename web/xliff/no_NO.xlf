@@ -6798,7 +6798,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
   <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
-  <target><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, av type <x id="2" equiv-text="${p.type}"/>)</target>
+  <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, av type <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s5170f9ef331949c0">
   <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the &apos;prompt_data&apos; variable.</source>
