@@ -11,7 +11,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { IconEditButton, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
