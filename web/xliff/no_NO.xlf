@@ -10651,7 +10651,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="sd29ddaadcc30d22c">
   <source>User &quot;<x id="0" equiv-text="${query}"/>&quot;</source>
-  <target>Bruker &quot;<x id="0" equiv-text="${query}"/>&quot;</target>
+  <target>Bruker &amp;quot;<x id="0" equiv-text="${query}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s220bcce27242e1e9">
   <source>search</source>
