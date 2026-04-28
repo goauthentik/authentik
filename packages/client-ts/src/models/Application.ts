@@ -128,7 +128,7 @@ export interface Application {
      */
     group?: string;
     /**
-     * Hide this application from the user dashboard.
+     * Hide this application from the user's My applications page.
      * @type {boolean}
      * @memberof Application
      */
