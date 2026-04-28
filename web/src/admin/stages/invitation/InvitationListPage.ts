@@ -142,8 +142,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return html`${this.renderNewInvitationDropdown()}
-        ${ModalInvokerButton(InvitationForm, null, { kind: "secondary" })}`;
+        return html`${this.renderNewInvitationDropdown()}`;
     }
 
     protected renderNewInvitationDropdown(): TemplateResult {
