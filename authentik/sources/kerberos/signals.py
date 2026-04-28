@@ -17,10 +17,8 @@ LOGGER = get_logger()
 
 
 @receiver(password_changed)
-def kerberos_sync_password(sender, user: User, password: str | None, **_):
+def kerberos_sync_password(sender, user: User, password: str, **_):
     """Connect to kerberos and update password."""
-    if password is None:  # No raw password available (e.g. set via hash)
-        return
     user_source_connections = UserKerberosSourceConnection.objects.select_related(
         "source__kerberossource"
     ).filter(

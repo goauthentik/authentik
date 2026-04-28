@@ -37,10 +37,8 @@ def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], 
 
 
 @receiver(password_changed)
-def ldap_sync_password(sender, user: User, password: str | None, **_):
+def ldap_sync_password(sender, user: User, password: str, **_):
     """Connect to ldap and update password."""
-    if password is None:  # No raw password available (e.g. set via hash)
-        return
     sources = LDAPSource.objects.filter(sync_users_password=True, enabled=True)
     if not sources.exists():
         return
