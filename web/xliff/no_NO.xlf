@@ -11601,7 +11601,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="permissions.modal-invoker.named">
   <source>Open &quot;<x id="0" equiv-text="${itemName}"/>&quot; permissions</source>
-  <target>Åpne tillatelser for &quot;<x id="0" equiv-text="${itemName}"/>&quot;</target>
+  <target>Åpne tillatelser for &amp;quot;<x id="0" equiv-text="${itemName}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="permissions.modal-invoker">
   <source>Open permissions</source>
