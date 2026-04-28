@@ -2666,8 +2666,8 @@ msgid ""
 "With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
 "Response' must be selected."
 msgstr ""
-"Når et signeringsnøkkelpar er valgt, må minst ett av valgene 'Signer "
-"påstand' (Sign assertion) og 'Signer svar' (Sign Response) velges."
+"Når et signeringsnøkkelpar er valgt, må minst ett av valgene 'Sign "
+"assertion' eller 'Sign Response' velges."
 
 #: authentik/providers/saml/api/providers.py
 msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
