@@ -8,6 +8,7 @@ from lxml import etree  # nosec
 from lxml.etree import Element, _Element
 
 from authentik.common.saml.constants import (
+    DEFAULT_ISSUER,
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
@@ -67,7 +68,7 @@ class LogoutRequestProcessor:
             return self.issuer
         if self.provider.issuer_override:
             return self.provider.issuer_override
-        return "authentik"
+        return DEFAULT_ISSUER
 
     def get_issuer(self) -> Element:
         """Get Issuer element"""

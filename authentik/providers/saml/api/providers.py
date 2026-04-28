@@ -24,7 +24,11 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.validation import validate
-from authentik.common.saml.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
+from authentik.common.saml.constants import (
+    DEFAULT_ISSUER,
+    SAML_BINDING_POST,
+    SAML_BINDING_REDIRECT,
+)
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
@@ -91,7 +95,7 @@ class SAMLProviderSerializer(ProviderSerializer):
         if instance.issuer_override:
             return instance.issuer_override
         if "request" not in self._context:
-            return "authentik"
+            return DEFAULT_ISSUER
         request: HttpRequest = self._context["request"]._request
         try:
             return request.build_absolute_uri(
@@ -101,7 +105,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                 )
             )
         except Provider.application.RelatedObjectDoesNotExist:
-            return "authentik"
+            return DEFAULT_ISSUER
 
     def get_url_sso_post(self, instance: SAMLProvider) -> str:
         """Get SSO Post URL"""
