@@ -11593,7 +11593,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="entity.edit.named">
   <source>Edit &quot;<x id="0" equiv-text="${itemName}"/>&quot; <x id="1" equiv-text="${noun}"/></source>
-  <target>Rediger &quot;<x id="0" equiv-text="${itemName}"/>&quot; <x id="1" equiv-text="${noun}"/></target>
+  <target>Rediger &amp;quot;<x id="0" equiv-text="${itemName}"/>&amp;quot; <x id="1" equiv-text="${noun}"/></target>
 </trans-unit>
 <trans-unit id="entity.edit">
   <source>Edit <x id="0" equiv-text="${noun}"/></source>
