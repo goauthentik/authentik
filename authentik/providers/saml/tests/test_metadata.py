@@ -1,6 +1,11 @@
 """Test Service-Provider Metadata Parser"""
 
+from base64 import b64encode
+
 import xmlsec
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.x509 import load_pem_x509_certificate
 from defusedxml.lxml import fromstring
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
@@ -15,7 +20,60 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
+from authentik.providers.saml.utils.keyring import pick_cert_pem
 from authentik.sources.saml.models import SAMLNameIDPolicy
+
+
+def _pem_to_der_b64(pem: str) -> str:
+    """Convert PEM cert to base64(DER) string suitable for <ds:X509Certificate>."""
+    cert = load_pem_x509_certificate(pem.encode("utf-8"), default_backend())
+    der = cert.public_bytes(serialization.Encoding.DER)
+    return b64encode(der).decode("ascii")
+
+
+def _build_multi_cert_sp_metadata_xml(
+    *, entity_id: str, acs_url: str, sls_url: str, cert_b64s: list[str], cert_b64e: list[str]
+) -> str:
+    """Build minimal EntityDescriptor XML with multiple signing/encryption certs."""
+
+    def kd(use: str, b64: str) -> str:
+        return f"""
+        <md:KeyDescriptor use="{use}">
+          <ds:KeyInfo><ds:X509Data><ds:X509Certificate>{b64}</ds:X509Certificate></ds:X509Data></ds:KeyInfo>
+        </md:KeyDescriptor>
+        """
+
+    signing = "\n".join(kd("signing", b) for b in cert_b64s)
+    encryption = "\n".join(kd("encryption", b) for b in cert_b64e)
+
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<md:EntityDescriptor
+  xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+  xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+  entityID="{entity_id}"
+>
+  <md:SPSSODescriptor
+    protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"
+    AuthnRequestsSigned="true"
+    WantAssertionsSigned="false"
+  >
+    <md:AssertionConsumerService
+      index="0" isDefault="true"
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+      Location="{acs_url}"
+    />
+    <md:SingleLogoutService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+      Location="{sls_url}"
+    />
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>
+
+    {signing}
+    {encryption}
+  </md:SPSSODescriptor>
+</md:EntityDescriptor>
+"""
 
 
 class TestServiceProviderMetadataParser(TestCase):
@@ -102,9 +160,11 @@ class TestServiceProviderMetadataParser(TestCase):
         self.assertEqual(provider.issuer, "http://localhost:8080/apps/user_saml/saml/metadata")
         self.assertEqual(provider.sp_binding, SAMLBindings.POST)
         self.assertEqual(
-            provider.verification_kp.certificate_data, load_fixture("fixtures/cert.pem")
+            pick_cert_pem(kp=provider.verification_kp, ring=provider.verification_kp_ring),
+            load_fixture("fixtures/cert.pem"),
         )
-        self.assertIsNotNone(provider.signing_kp)
+        self.assertIsNone(provider.verification_kp)
+        self.assertIsNotNone(provider.verification_kp_ring)
         self.assertEqual(provider.audience, "")
 
     def test_with_signing_cert_invalid_signature(self):
@@ -170,3 +230,95 @@ class TestServiceProviderMetadataParser(TestCase):
         )
         ctx.key = key
         ctx.verify(signature_node)
+
+    def test_multi_bindings(self):
+        """Test metadata including more than one bindings."""
+        metadata = ServiceProviderMetadataParser().parse(
+            load_fixture("fixtures/multi-bindings.xml")
+        )
+        provider = metadata.to_provider("test", self.flow, self.flow)
+        self.assertEqual(
+            provider.acs_url, "https://sp-b.example.org:10446/Shibboleth.sso/SAML2/POST"
+        )
+        self.assertEqual(provider.issuer, "https://sp-b.example.org/shibboleth")
+        self.assertEqual(provider.sp_binding, SAMLBindings.POST)
+        self.assertEqual(provider.default_name_id_policy, SAMLNameIDPolicy.UNSPECIFIED)
+        self.assertEqual(
+            len(provider.property_mappings.all()),
+            len(SAMLPropertyMapping.objects.exclude(managed__isnull=True)),
+        )
+
+
+class TestServiceProviderMetadataParserMultiCert(TestCase):
+    def setUp(self) -> None:
+        self.flow = create_test_flow()
+        self.kp1 = create_test_cert()
+        self.kp2 = create_test_cert()
+
+        self.cert_b64s = [
+            _pem_to_der_b64(self.kp1.certificate_data),
+            _pem_to_der_b64(self.kp2.certificate_data),
+        ]
+
+        self.xml = _build_multi_cert_sp_metadata_xml(
+            entity_id="https://sp-multi.example.org/shibboleth",
+            acs_url="https://sp-multi.example.org/Shibboleth.sso/SAML2/POST",
+            sls_url="https://sp-multi.example.org/Shibboleth.sso/Logout",
+            cert_b64s=self.cert_b64s,
+            cert_b64e=self.cert_b64s,
+        )
+
+    def test_multi_certs_metadata_creates_rings(self):
+        meta = ServiceProviderMetadataParser().parse(self.xml)
+        provider = meta.to_provider("test-multi", self.flow, self.flow)
+
+        self.assertEqual(provider.issuer, "https://sp-multi.example.org/shibboleth")
+        self.assertEqual(provider.acs_url, "https://sp-multi.example.org/Shibboleth.sso/SAML2/POST")
+        self.assertEqual(provider.sp_binding, SAMLBindings.POST)
+
+        self.assertIsNone(provider.verification_kp)
+        self.assertIsNotNone(provider.verification_kp_ring)
+        self.assertIsNone(provider.encryption_kp)
+        self.assertIsNotNone(provider.encryption_kp_ring)
+
+        v = list(provider.verification_kp_ring.bindings.select_related("keypair").order_by("order"))
+        self.assertEqual([b.order for b in v], [0, 1])
+        self.assertTrue(all(b.keypair.certificate_data for b in v))
+
+        e = list(provider.encryption_kp_ring.bindings.select_related("keypair").order_by("order"))
+        self.assertEqual([b.order for b in e], [0, 1])
+        self.assertTrue(all(b.keypair.certificate_data for b in e))
+
+        self.assertIsNotNone(
+            pick_cert_pem(kp=provider.verification_kp, ring=provider.verification_kp_ring)
+        )
+
+    def test_apply_to_provider_creates_and_syncs_keyrings(self):
+        """apply_to_provider(create_missing_rings=True) creates rings and syncs certs."""
+        meta = ServiceProviderMetadataParser().parse(self.xml)
+
+        provider = SAMLProvider.objects.create(
+            name="test-to-apply",
+            authorization_flow=self.flow,
+            invalidation_flow=self.flow,
+            acs_url="https://dummy.invalid/acs",
+            issuer="dummy",
+            verification_kp=None,
+            encryption_kp=None,
+        )
+
+        meta.apply_to_provider(provider, create_missing_rings=True)
+        provider.refresh_from_db()
+
+        self.assertIsNotNone(provider.verification_kp_ring)
+        self.assertIsNotNone(provider.encryption_kp_ring)
+
+        # ordering + count are the important bits (ring has what metadata had)
+        v = list(provider.verification_kp_ring.bindings.order_by("order"))
+        e = list(provider.encryption_kp_ring.bindings.order_by("order"))
+
+        self.assertEqual(len(v), 2)
+        self.assertEqual(len(e), 2)
+
+        self.assertEqual([b.order for b in v], list(range(len(v))))
+        self.assertEqual([b.order for b in e], list(range(len(e))))

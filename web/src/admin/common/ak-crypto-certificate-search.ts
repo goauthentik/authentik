@@ -104,6 +104,9 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     };
 
+    @property({ type: Array, attribute: "exclude-keypairs" })
+    public excludeKeypairs: string[] = [];
+
     fetchObjects = async (query?: string): Promise<CertificateKeyPair[]> => {
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
@@ -118,7 +121,8 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         const certificates = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
             args,
         );
-        return certificates.results;
+        const exclude = new Set((this.excludeKeypairs ?? []).map(String));
+        return certificates.results.filter((kp) => !exclude.has(String(kp.pk)));
     };
 
     selected = (item: CertificateKeyPair, items: CertificateKeyPair[]) => {

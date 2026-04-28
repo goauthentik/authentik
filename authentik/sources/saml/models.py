@@ -35,6 +35,7 @@ from authentik.common.saml.constants import (
     SHA384,
     SHA512,
 )
+from authentik.core.api.object_types import CreatableType
 from authentik.core.models import (
     GroupSourceConnection,
     PropertyMapping,
@@ -132,7 +133,7 @@ class SAMLSource(Source):
     binding_type = models.CharField(
         max_length=100,
         choices=SAMLBindingTypes.choices,
-        default=SAMLBindingTypes.REDIRECT,
+        default=SAMLBindingTypes.POST,
     )
 
     temporary_user_delete_after = models.TextField(
@@ -182,7 +183,27 @@ class SAMLSource(Source):
         verbose_name=_("Encryption Keypair"),
         related_name="+",
     )
-
+    verification_kp_ring = models.OneToOneField(
+        "authentik_crypto.CertificateKeyPairRing",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    signing_kp_ring = models.OneToOneField(
+        "authentik_crypto.CertificateKeyPairRing",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    encryption_kp_ring = models.OneToOneField(
+        "authentik_crypto.CertificateKeyPairRing",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
     digest_algorithm = models.TextField(
         choices=(
             (SHA1, _("SHA1")),
@@ -256,7 +277,7 @@ class SAMLSource(Source):
 
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
-        if self.issuer is None:
+        if self.issuer is None or self.issuer == "":
             return self.build_full_url(request, view="metadata")
         return self.issuer
 
@@ -308,6 +329,21 @@ class SAMLSource(Source):
         verbose_name = _("SAML Source")
         verbose_name_plural = _("SAML Sources")
 
+class SAMLSourceImportModel(CreatableType, Source):
+    """Create a SAML Source by importing its Metadata."""
+
+    @property
+    def component(self):
+        return "ak-source-saml-import-form"
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/saml.png")
+
+    class Meta:
+        abstract = True
+        verbose_name = _("SAML Source from Metadata")
+        verbose_name_plural = _("SAML Sources from Metadata")
 
 class SAMLSourcePropertyMapping(PropertyMapping):
     """Map SAML properties to User or Group object attributes"""

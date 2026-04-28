@@ -1,7 +1,8 @@
 """SAMLProvider API Views"""
 
-from copy import copy
+from copy import copy  # noqa: I001
 from xml.etree.ElementTree import ParseError  # nosec
+from rest_framework.fields import BooleanField
 
 from defusedxml.ElementTree import fromstring
 from django.http import HttpRequest
@@ -13,6 +14,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
@@ -29,7 +31,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
-from authentik.crypto.models import KeyType
+from authentik.crypto.models import CertificateKeyPair, KeyType
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -210,6 +212,9 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signing_kp",
             "verification_kp",
             "encryption_kp",
+            "signing_kp_ring",
+            "verification_kp_ring",
+            "encryption_kp_ring",
             "sign_assertion",
             "sign_response",
             "sign_logout_request",
@@ -239,14 +244,50 @@ class SAMLMetadataSerializer(PassiveSerializer):
 class SAMLProviderImportSerializer(PassiveSerializer):
     """Import saml provider from XML Metadata"""
 
-    name = CharField(required=True)
+    provider = PrimaryKeyRelatedField(
+        queryset=SAMLProvider.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+    name = CharField(required=True, allow_blank=False)
     authorization_flow = PrimaryKeyRelatedField(
         queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION),
+        required=False,
+        allow_null=True,
     )
     invalidation_flow = PrimaryKeyRelatedField(
         queryset=Flow.objects.filter(designation=FlowDesignation.INVALIDATION),
+        required=False,
+        allow_null=True,
     )
-    file = FileField()
+
+    file = FileField(required=True)
+
+    signing_certificate = PrimaryKeyRelatedField(
+        queryset=CertificateKeyPair.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+
+    create_missing_rings = BooleanField(required=False, default=True)
+
+    def validate(self, attrs: dict):
+        target = attrs.get("provider")
+        # Apply to existing SAMLProvider.
+        if target:
+            return attrs
+
+        # Create new SAMLProvider.
+        missing = {}
+        if not attrs.get("name"):
+            missing["name"] = "This field is required when provider is not set."
+        if not attrs.get("authorization_flow"):
+            missing["authorization_flow"] = "This field is required when provider is not set."
+        if not attrs.get("invalidation_flow"):
+            missing["invalidation_flow"] = "This field is required when provider is not set."
+        if missing:
+            raise ValidationError(missing)
+        return attrs
 
 
 class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
@@ -336,7 +377,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
     @validate(SAMLProviderImportSerializer)
     def import_metadata(self, request: Request, body: SAMLProviderImportSerializer) -> Response:
-        """Create provider from SAML Metadata"""
+        """Create provider from SAML Metadata, or apply to an existing provider."""
         file = body.validated_data["file"]
         # Validate syntax first
         try:
@@ -345,13 +386,33 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             raise ValidationError(_("Invalid XML Syntax")) from None
         file.seek(0)
         try:
-            metadata = ServiceProviderMetadataParser().parse(file.read().decode())
+            sig_cert = body.validated_data.get("signing_certificate")
+            metadata = ServiceProviderMetadataParser(signing_certificate=sig_cert).parse(
+                file.read().decode()
+            )
+
+            target: SAMLProvider | None = body.validated_data.get("provider")
+            name: str = body.validated_data["name"]
+            create_missing_rings: bool = body.validated_data.get("create_missing_rings", True)
+
+            if target is not None:
+                if not (
+                    request.user.has_perm("authentik_providers_saml.change_samlprovider")
+                    or request.user.has_perm("authentik_providers_saml.change_samlprovider", target)
+                ):
+                    raise PermissionDenied()
+                if target.name != name:
+                    target.name = name
+                    target.save(update_fields=["name"])
+
+                metadata.apply_to_provider(target, create_missing_rings=create_missing_rings)
+                return Response(SAMLProviderSerializer(target).data, status=200)
+
             provider = metadata.to_provider(
                 body.validated_data["name"],
                 body.validated_data["authorization_flow"],
                 body.validated_data["invalidation_flow"],
             )
-            # Return the created provider for use in workflows like the application wizard
             return Response(SAMLProviderSerializer(provider).data, status=201)
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))

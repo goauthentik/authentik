@@ -6,9 +6,11 @@ import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/ModalForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
+import "#admin/common/ak-crypto-keyring-manager-form";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
 import {
@@ -20,6 +22,7 @@ import {
 } from "./SAMLProviderOptions.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
 
 import { RadioOption } from "#elements/forms/Radio";
 
@@ -37,7 +40,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
@@ -49,6 +52,13 @@ const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
         label: msg("Post"),
         value: SAMLBindingsEnum.Post,
     },
+];
+
+type KeyMode = "kp" | "ring";
+
+const keyModeOptions: RadioOption<KeyMode>[] = [
+    { label: msg("Single keypair"), value: "kp", default: true },
+    { label: msg("Key ring"), value: "ring" },
 ];
 
 function renderHasSigningKp(provider: Partial<SAMLProvider>) {
@@ -140,8 +150,61 @@ export interface SAMLProviderFormProps {
     hasPostBinding: boolean;
     logoutMethod: string;
     setLogoutMethod?: (ev: Event) => void;
+    signingKeyMode?: "kp" | "ring";
+    setSigningKeyMode?: (ev: Event) => void;
+    verificationKeyMode?: "kp" | "ring";
+    setVerificationKeyMode?: (ev: Event) => void;
+    encryptionKeyMode?: "kp" | "ring";
+    setEncryptionKeyMode?: (ev: Event) => void;
 }
 
+function renderKeyRingFixed(
+    fieldName: "verificationKpRing" | "encryptionKpRing" | "signingKpRing",
+    currentRingUuid: string | undefined | null,
+    label: string,
+): TemplateResult {
+    const hasRing = !!currentRingUuid;
+
+    return html`
+        <ak-form-element-horizontal label=${label} name=${fieldName}>
+            <div class="pf-c-input-group" style="width: 100%;">
+                ${hasRing
+                    ? html`
+                          <ak-forms-modal size=${PFSize.XLarge}>
+                              <span slot="header">${msg("Manage key ring")}</span>
+                              <span slot="submit">${msg("Save")}</span>
+
+                              <ak-crypto-keyring-manager-form
+                                  slot="form"
+                                  ring-uuid=${currentRingUuid!}
+                                  ?require-key=${fieldName === "signingKpRing"}
+                                  .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                              ></ak-crypto-keyring-manager-form>
+
+                              <button
+                                  slot="trigger"
+                                  class="pf-c-button pf-m-secondary"
+                                  type="button"
+                              >
+                                  ${msg("Manage")}
+                              </button>
+                          </ak-forms-modal>
+                      `
+                    : html`
+                          <button class="pf-c-button pf-m-secondary" type="button" disabled>
+                              ${msg("Not created")}
+                          </button>
+                      `}
+            </div>
+
+            <p class="pf-c-form__helper-text">
+                ${hasRing
+                    ? msg("This ring is bound to this provider.")
+                    : msg("No ring is attached yet. Apply metadata to create.")}
+            </p>
+        </ak-form-element-horizontal>
+    `;
+}
 export function renderForm({
     provider,
     errors,
@@ -154,6 +217,12 @@ export function renderForm({
     hasPostBinding,
     logoutMethod,
     setLogoutMethod,
+    signingKeyMode,
+    setSigningKeyMode,
+    verificationKeyMode,
+    setVerificationKeyMode,
+    encryptionKeyMode,
+    setEncryptionKeyMode,
 }: SAMLProviderFormProps) {
     provider ||= {};
     errors ||= {};
@@ -275,49 +344,118 @@ export function renderForm({
 
         <ak-form-group label="${msg("Advanced protocol settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("Signing Certificate")} name="signingKp">
-                    <ak-crypto-certificate-search
-                        .certificate=${provider.signingKp}
-                        @input=${setHasSigningKp}
-                        singleton
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
-                    ></ak-crypto-certificate-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Certificate used to sign outgoing Responses going to the Service Provider.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-                ${hasSigningKp ? renderHasSigningKp(provider) : nothing}
+                <!-- Signing -->
+                <ak-radio-input
+                    label=${msg("Signing key source")}
+                    name="signingKeyMode"
+                    .options=${keyModeOptions}
+                    .value=${signingKeyMode}
+                    help=${msg("Choose a single keypair or a key ring for signing.")}
+                    @change=${setSigningKeyMode}
+                >
+                </ak-radio-input>
 
-                <ak-form-element-horizontal
-                    label=${msg("Verification Certificate")}
-                    name="verificationKp"
+                ${signingKeyMode === "kp"
+                    ? html`
+                          <ak-form-element-horizontal
+                              label=${msg("Signing Certificate")}
+                              name="signingKp"
+                          >
+                              <ak-crypto-certificate-search
+                                  .certificate=${provider.signingKp}
+                                  @input=${setHasSigningKp}
+                                  singleton
+                                  .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                              ></ak-crypto-certificate-search>
+                              <p class="pf-c-form__helper-text">
+                                  ${msg(
+                                      "Keypair used to sign outgoing Responses going to the Service Provider.",
+                                  )}
+                              </p>
+                          </ak-form-element-horizontal>
+                          ${hasSigningKp ? renderHasSigningKp(provider) : nothing}
+                      `
+                    : html`
+                          ${renderKeyRingFixed(
+                              "signingKpRing",
+                              provider.signingKpRing,
+                              msg("Signing Key ring"),
+                          )}
+                          ${renderHasSigningKp(provider)}
+                      `}
+
+                <!-- Verification -->
+                <ak-radio-input
+                    label=${msg("Verification key source")}
+                    name="verificationKeyMode"
+                    .options=${keyModeOptions}
+                    .value=${verificationKeyMode}
+                    help=${msg(
+                        "Choose a single certificate or a key ring for request/response verification.",
+                    )}
+                    @change=${setVerificationKeyMode}
                 >
-                    <ak-crypto-certificate-search
-                        .certificate=${provider.verificationKp}
-                        nokey
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
-                    ></ak-crypto-certificate-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Encryption Certificate")}
-                    name="encryptionKp"
+                </ak-radio-input>
+
+                ${verificationKeyMode === "kp"
+                    ? html`
+                          <ak-form-element-horizontal
+                              label=${msg("Verification Certificate")}
+                              name="verificationKp"
+                          >
+                              <ak-crypto-certificate-search
+                                  .certificate=${provider.verificationKp}
+                                  nokey
+                                  .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                              ></ak-crypto-certificate-search>
+                              <p class="pf-c-form__helper-text">
+                                  ${msg(
+                                      "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
+                                  )}
+                              </p>
+                          </ak-form-element-horizontal>
+                      `
+                    : html`${renderKeyRingFixed(
+                          "verificationKpRing",
+                          provider.verificationKpRing,
+                          msg("Verification Key ring"),
+                      )}`}
+
+                <!-- Encryption -->
+                <ak-radio-input
+                    label=${msg("Encryption key source")}
+                    name="encryptionKeyMode"
+                    .options=${keyModeOptions}
+                    .value=${encryptionKeyMode}
+                    help=${msg("Choose a single certificate or a key ring for encryption.")}
+                    @change=${setEncryptionKeyMode}
                 >
-                    <ak-crypto-certificate-search
-                        .certificate=${provider.encryptionKp}
-                        nokey
-                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
-                    ></ak-crypto-certificate-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("When selected, assertions will be encrypted using this keypair.")}
-                    </p>
-                </ak-form-element-horizontal>
+                </ak-radio-input>
+
+                ${encryptionKeyMode === "kp"
+                    ? html`
+                          <ak-form-element-horizontal
+                              label=${msg("Encryption Certificate")}
+                              name="encryptionKp"
+                          >
+                              <ak-crypto-certificate-search
+                                  .certificate=${provider.encryptionKp}
+                                  nokey
+                                  .allowedKeyTypes=${SAMLSupportedKeyTypes}
+                              ></ak-crypto-certificate-search>
+                              <p class="pf-c-form__helper-text">
+                                  ${msg(
+                                      "When selected, assertions will be encrypted using this keypair.",
+                                  )}
+                              </p>
+                          </ak-form-element-horizontal>
+                      `
+                    : html`${renderKeyRingFixed(
+                          "encryptionKpRing",
+                          provider.encryptionKpRing,
+                          msg("Encryption Key ring"),
+                      )}`}
+
                 <ak-form-element-horizontal
                     label=${msg("Property mappings")}
                     name="propertyMappings"
