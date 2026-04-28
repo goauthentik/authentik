@@ -8854,7 +8854,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
   <source>Actions for &quot;<x id="0" equiv-text="${applicationName}"/>&quot;</source>
-  <target>Handlinger for &quot;<x id="0" equiv-text="${applicationName}"/>&quot;</target>
+  <target>Handlinger for &amp;quot;<x id="0" equiv-text="${applicationName}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
