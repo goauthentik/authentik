@@ -5210,7 +5210,7 @@ msgstr "Argumenter som skal sendes til aktøren"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Kwargs to send to the actor"
-msgstr "Nøkkelordargumenter (kwargs) som skal sendes til aktøren"
+msgstr "Kwargs som skal sendes til aktøren"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Options to send to the actor"
