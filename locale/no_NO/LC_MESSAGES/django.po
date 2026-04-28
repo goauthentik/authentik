@@ -5092,7 +5092,7 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
-msgstr "Aktiver/deaktiver etterligning (impersonation) globalt."
+msgstr "Aktiver/deaktiver impersonation globalt."
 
 #: authentik/tenants/models.py
 msgid "Require administrators to provide a reason for impersonating a user."
