@@ -58,7 +58,7 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    ClientTypes,
+    ClientType,
     DeviceToken,
     OAuth2Provider,
     RedirectURIMatchingMode,
@@ -165,6 +165,10 @@ class TokenParams:
                 raise TokenError("invalid_grant")
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
+        if self.grant_type not in self.provider.grant_types:
+            LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
+            raise TokenError("invalid_grant").with_cause("grant_type_not_configured")
+
         # Confidential clients MUST authenticate to the token endpoint per
         # RFC 6749 §2.3.1. The device code grant (RFC 8628 §3.4) inherits
         # that requirement - the device_code alone is not a substitute for
@@ -174,7 +178,7 @@ class TokenParams:
             GRANT_TYPE_REFRESH_TOKEN,
             GRANT_TYPE_DEVICE_CODE,
         ]:
-            if self.provider.client_type == ClientTypes.CONFIDENTIAL and not compare_digest(
+            if self.provider.client_type == ClientType.CONFIDENTIAL and not compare_digest(
                 self.provider.client_secret, self.client_secret
             ):
                 LOGGER.warning(
@@ -606,10 +610,10 @@ class TokenView(View):
                 if not self.provider:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
-                CTX_AUTH_VIA.set("oauth_client_secret")
                 self.params = self.params_class.parse(
                     request, self.provider, client_id, client_secret
                 )
+                CTX_AUTH_VIA.set("oauth_client_secret")
 
             with start_span(
                 op="authentik.providers.oauth2.post.response",

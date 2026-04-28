@@ -206,6 +206,13 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                             value: CompatibilityModeEnum.Webex,
                             description: html`${msg("Altered behavior for usage with Cisco Webex.")}`,
                         },
+                        {
+                            label: msg("vCenter"),
+                            value: CompatibilityModeEnum.Vcenter,
+                            description: html`${msg(
+                                "Altered behavior for usage with VMware vCenter.",
+                            )}`,
+                        },
                     ]}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
