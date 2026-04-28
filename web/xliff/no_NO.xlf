@@ -8266,7 +8266,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="s3b016caea59af3ef">
   <source>Warning: One or more license(s) will expire within the next 2 weeks.</source>
-  <target>Advarsel: Én eller flere lisenser utløper i løpet av de neste to ukene.</target>
+  <target>Advarsel: Én eller flere lisenser utløper i løpet av de neste 2 ukene.</target>
 </trans-unit>
 <trans-unit id="sd8a5f7269b7ac7a3">
   <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
