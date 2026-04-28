@@ -4588,7 +4588,7 @@ msgid ""
 "                    "
 msgstr ""
 "\n"
-"                    Dette er en test-e-post for å informere deg om at du har konfigurert authentik-e-poster på riktig måte.\n"
+"                    This is a test email to inform you, that you've successfully configured authentik emails.\n"
 "                    "
 
 #: authentik/stages/email/templates/email/setup.txt
