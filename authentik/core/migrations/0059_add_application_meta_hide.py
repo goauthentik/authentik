@@ -17,7 +17,7 @@ def migrate_blank_launch_url(apps: Apps, schema_editor: BaseDatabaseSchemaEditor
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0057_remove_user_groups_remove_user_user_permissions_and_more"),
+        ("authentik_core", "0058_setup"),
     ]
 
     operations = [
