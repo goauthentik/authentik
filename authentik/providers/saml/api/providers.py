@@ -251,8 +251,8 @@ class SAMLProviderSerializer(ProviderSerializer):
 class SAMLMetadataSerializer(PassiveSerializer):
     """SAML Provider Metadata serializer"""
 
-    metadata = CharField(read_only=True)
-    download_url = CharField(read_only=True, required=False)
+    metadata = CharField()
+    download_url = CharField(required=False, allow_null=True)
 
 
 class SAMLProviderImportSerializer(PassiveSerializer):
@@ -334,7 +334,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 return response
             return Response({"metadata": metadata}, content_type="application/json")
         except Provider.application.RelatedObjectDoesNotExist:
-            return Response({"metadata": ""}, content_type="application/json")
+            raise Http404 from None
 
     @permission_required(
         None,

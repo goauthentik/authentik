@@ -16,8 +16,8 @@ export const DefaultBrand = {
     matchedDomain: "",
     defaultLocale: "",
     flags: {
-        policiesBufferedAccessView: false,
         flowsRefreshOthers: false,
+        coreDefaultAppAccess: true,
         enterpriseAuditIncludeExpandedDiff: false,
         flowsContinuousLogin: false,
     },
@@ -93,7 +93,7 @@ export const DefaultUIConfig = {
     },
     locale: "",
     defaults: {
-        userPath: "users",
+        userPath: "",
     },
 } as const satisfies UIConfig;
 

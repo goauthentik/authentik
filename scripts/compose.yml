@@ -30,6 +30,13 @@ services:
     ports:
       - 127.0.0.1:8969:8969
     restart: always
+  diff:
+    image: docker.io/openapitools/openapi-diff:2.1.7
+    entrypoint: "/bin/true"
+    restart: no
+    network_mode: none
+    volumes:
+      - ../:/local:ro
 
 volumes:
   db-data:

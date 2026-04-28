@@ -464,7 +464,6 @@ class SCIMUserTests(TestCase):
     def test_user_create_update_noop(self, mock: Mocker):
         """Test user creation and update"""
         scim_id = generate_id()
-        mock: Mocker
         mock.get(
             "https://localhost/ServiceProviderConfig",
             json={},
@@ -539,6 +538,64 @@ class SCIMUserTests(TestCase):
         self.assertEqual(mock.call_count, 2)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
+
+    @Mocker()
+    def test_discover(self, mock: Mocker):
+        user = User.objects.create(username="admin@goauthentik.io")
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.get(
+            "https://localhost/Users",
+            json={
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+                "totalResults": 2,
+                "startIndex": 1,
+                "itemsPerPage": 1,
+                "Resources": [
+                    {
+                        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                        "id": "1",
+                        "userName": "admin@goauthentik.io",
+                        "name": {"givenName": "N/A", "familyName": "N/A"},
+                        "emails": [
+                            {"primary": True, "value": "admin@goauthentik.io", "type": "work"}
+                        ],
+                        "meta": {"resourceType": "User"},
+                        "sentryOrgRole": "owner",
+                        "active": True,
+                    },
+                ],
+            },
+        )
+        mock.get(
+            "https://localhost/Users?startIndex=2",
+            json={
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+                "totalResults": 2,
+                "startIndex": 2,
+                "itemsPerPage": 1,
+                "Resources": [
+                    {
+                        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                        "id": "2",
+                        "userName": "jens@goauthentik.io",
+                        "name": {"givenName": "N/A", "familyName": "N/A"},
+                        "emails": [
+                            {"primary": True, "value": "jens@goauthentik.io", "type": "work"}
+                        ],
+                        "meta": {"resourceType": "User"},
+                        "sentryOrgRole": "member",
+                        "active": True,
+                    },
+                ],
+            },
+        )
+        self.provider.client_for_model(User).discover()
+        connection = SCIMProviderUser.objects.filter(provider=self.provider, user=user).first()
+        self.assertIsNotNone(connection)
+        self.assertEqual(connection.scim_id, "1")
 
     def _create_stale_provider_user(self, scim_id: str, uid: str) -> User:
         """Create a service-account user (excluded from provider scope) with an existing

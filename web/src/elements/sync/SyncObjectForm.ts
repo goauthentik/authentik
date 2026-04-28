@@ -1,5 +1,4 @@
 import "#elements/events/LogViewer";
-import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
@@ -114,7 +113,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
             <div class="pf-c-form__group-label">
                 <div class="c-form__horizontal-group">
                     <dl class="pf-c-description-list pf-m-horizontal">
-                        <ak-log-viewer .logs=${this.result?.messages}></ak-log-viewer>
+                        <ak-log-viewer .items=${this.result?.messages}></ak-log-viewer>
                     </dl>
                 </div>
             </div>

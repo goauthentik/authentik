@@ -6,6 +6,7 @@ from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import AnonymousUser, Permission
+from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
@@ -22,6 +23,7 @@ from django_filters.filters import (
     UUIDFilter,
 )
 from django_filters.filterset import FilterSet
+from djangoql.schema import BoolField, StrField
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     OpenApiParameter,
@@ -55,6 +57,10 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.authentication import TokenAuthentication
+from authentik.api.search.fields import (
+    ChoiceSearchField,
+    JSONSearchField,
+)
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
@@ -126,7 +132,7 @@ class PartialGroupSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     """User Serializer"""
 
-    is_superuser = BooleanField(read_only=True)
+    is_superuser = SerializerMethodField()
     avatar = SerializerMethodField()
     attributes = JSONDictField(required=False)
     groups = PrimaryKeyRelatedField(
@@ -162,6 +168,14 @@ class UserSerializer(ModelSerializer):
         if not request:
             return True
         return str(request.query_params.get("include_roles", "true")).lower() == "true"
+
+    @extend_schema_field(BooleanField)
+    def get_is_superuser(self, instance: User) -> bool:
+        """Use annotation if available to avoid N+1 query"""
+        ann = getattr(instance, "_annotated_is_superuser", None)
+        if ann is not None:
+            return ann
+        return instance.is_superuser
 
     @extend_schema_field(PartialGroupSerializer(many=True))
     def get_groups_obj(self, instance: User) -> list[PartialGroupSerializer] | None:
@@ -524,13 +538,6 @@ class UserViewSet(
     ]
 
     def get_ql_fields(self):
-        from djangoql.schema import BoolField, StrField
-
-        from authentik.enterprise.search.fields import (
-            ChoiceSearchField,
-            JSONSearchField,
-        )
-
         return [
             StrField(User, "username"),
             StrField(User, "name"),
@@ -543,10 +550,30 @@ class UserViewSet(
 
     def get_queryset(self):
         base_qs = User.objects.all().exclude_anonymous()
+        # Always prefetch groups since group PKs are always serialized.
+        # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:
             base_qs = base_qs.prefetch_related("groups")
+        else:
+            base_qs = base_qs.prefetch_related(
+                Prefetch("groups", queryset=Group.objects.all().only("group_uuid"))
+            )
         if self.serializer_class(context={"request": self.request})._should_include_roles:
             base_qs = base_qs.prefetch_related("roles")
+        else:
+            base_qs = base_qs.prefetch_related(
+                Prefetch("roles", queryset=Role.objects.all().only("uuid"))
+            )
+        # Annotate is_superuser to avoid N+1 query per user
+        base_qs = base_qs.annotate(
+            _annotated_is_superuser=Exists(
+                Group.objects.filter(
+                    is_superuser=True,
+                ).filter(
+                    Q(users=OuterRef("pk")) | Q(descendant_nodes__descendant__users=OuterRef("pk"))
+                )
+            )
+        )
         return base_qs
 
     @extend_schema(

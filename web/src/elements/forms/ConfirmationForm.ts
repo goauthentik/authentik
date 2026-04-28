@@ -77,26 +77,26 @@ export class ConfirmationForm extends ModalButton {
                     <slot class="pf-c-content" name="body"></slot>
                 </form>
             </section>
-            <footer class="pf-c-modal-box__footer">
-                ${this.nonSubmittable
-                    ? nothing
-                    : html`<ak-spinner-button
-                              .callAction=${() => {
-                                  return this.confirm();
-                              }}
-                              class=${this.actionLevel}
-                          >
-                              ${this.action} </ak-spinner-button
-                          >&nbsp;`}
+            <fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;
                     }}
-                    class="pf-m-secondary"
+                    class="pf-m-plain"
                 >
                     ${msg("Cancel")}
                 </ak-spinner-button>
-            </footer>`;
+                ${this.nonSubmittable
+                    ? nothing
+                    : html`<ak-spinner-button
+                          .callAction=${() => {
+                              return this.confirm();
+                          }}
+                          class=${this.actionLevel}
+                          >${this.action}</ak-spinner-button
+                      >`}
+            </fieldset>`;
     }
 }
 

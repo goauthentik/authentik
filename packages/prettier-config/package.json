@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/prettier-config",
-    "version": "3.4.3",
+    "version": "3.5.0",
     "description": "authentik's Prettier config",
     "license": "MIT",
     "repository": {
@@ -40,17 +40,15 @@
         "@goauthentik/eslint-config": "../eslint-config",
         "@goauthentik/tsconfig": "../tsconfig",
         "@types/node": "^25.0.0",
-        "@typescript-eslint/eslint-plugin": "^8.49.0",
-        "@typescript-eslint/parser": "^8.49.0",
         "eslint": "^9.39.3",
         "prettier": "^3.8.1",
-        "prettier-plugin-packagejson": "^3.0.0",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.56.1"
+        "prettier-plugin-packagejson": "^3.0.2",
+        "typescript": "^6.0.2",
+        "typescript-eslint": "^8.57.2"
     },
     "peerDependencies": {
         "prettier": "^3.8.1",
-        "prettier-plugin-packagejson": "^3.0.0"
+        "prettier-plugin-packagejson": "^3.0.2"
     },
     "files": [
         "./index.js",
@@ -75,8 +73,17 @@
     },
     "prettier": "./index.js",
     "overrides": {
+        "@typescript-eslint/eslint-plugin": {
+            "typescript": "$typescript"
+        },
+        "@typescript-eslint/parser": {
+            "typescript": "$typescript"
+        },
         "format-imports": {
             "eslint": "$eslint"
+        },
+        "typescript-eslint": {
+            "typescript": "$typescript"
         }
     },
     "publishConfig": {

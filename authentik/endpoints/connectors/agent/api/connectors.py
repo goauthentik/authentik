@@ -65,7 +65,9 @@ class AgentConnectorSerializer(ConnectorSerializer):
 class MDMConfigSerializer(PassiveSerializer):
 
     platform = ChoiceField(choices=OSFamily.choices)
-    enrollment_token = PrimaryKeyRelatedField(queryset=EnrollmentToken.objects.all())
+    enrollment_token = PrimaryKeyRelatedField(
+        queryset=EnrollmentToken.objects.including_expired().all()
+    )
 
     def validate_platform(self, platform: OSFamily) -> OSFamily:
         if platform not in [OSFamily.iOS, OSFamily.macOS, OSFamily.windows]:
@@ -136,7 +138,7 @@ class AgentConnectorViewSet(
             device=device,
             connector=token.connector,
         )
-        DeviceToken.objects.filter(device=connection).delete()
+        DeviceToken.objects.including_expired().filter(device=connection).delete()
         token = DeviceToken.objects.create(device=connection, expiring=False)
         return Response(
             {
