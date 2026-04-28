@@ -800,7 +800,7 @@
 </trans-unit>
 <trans-unit id="saa0e2675da69651b">
   <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-  <target>Nettadressen &quot;<x id="0" equiv-text="${this.url}"/>&quot; ble ikke funnet.</target>
+  <target>Nettadressen &amp;quot;<x id="0" equiv-text="${this.url}"/>&amp;quot; ble ikke funnet.</target>
 </trans-unit>
 <trans-unit id="s58cd9c2fe836d9c6">
   <source>Return home</source>
