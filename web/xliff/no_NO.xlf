@@ -5510,7 +5510,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
   <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
-  <target>Skjul &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</target>
+  <target>Skjul &amp;quot;<x id="0" equiv-text="${itemLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s27df1f36ba8e269f">
   <source>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
