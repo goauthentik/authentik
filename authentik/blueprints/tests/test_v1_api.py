@@ -11,6 +11,8 @@ from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
+from authentik.stages.invitation.models import InvitationStage
+from authentik.stages.user_write.models import UserWriteStage
 
 TMP = mkdtemp("authentik-blueprints")
 
@@ -83,35 +85,45 @@ class TestBlueprintsV1API(APITestCase):
             {"content": ["Failed to validate blueprint", "- Invalid blueprint version"]},
         )
 
-    @CONFIG.patch("blueprints_dir", TMP)
     def test_api_import_with_context(self):
-        """Test that the import endpoint applies the supplied context to the blueprint"""
-        slug = generate_id()
-        flow_name = generate_id()
-        blueprint = (
-            "version: 1\n"
-            "entries:\n"
-            "  - identifiers:\n"
-            "      slug: !Context [flow_slug, fallback-slug]\n"
-            "    model: authentik_flows.flow\n"
-            "    attrs:\n"
-            "      name: !Context [flow_name, Fallback Flow]\n"
-            "      title: !Context [flow_name, Fallback Flow]\n"
-            "      designation: enrollment\n"
+        """Test that the import endpoint applies the supplied context to the real blueprint"""
+        slug = f"invitation-enrollment-{generate_id()}"
+        flow_name = f"Invitation Enrollment {generate_id()}"
+        stage_name = f"invitation-stage-{generate_id()}"
+        user_type = "internal"
+        continue_without_invitation = True
+
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-import-"),
+            data={
+                "path": "example/flows-invitation-enrollment-minimal.yaml",
+                "context": dumps(
+                    {
+                        "flow_slug": slug,
+                        "flow_name": flow_name,
+                        "stage_name": stage_name,
+                        "continue_flow_without_invitation": continue_without_invitation,
+                        "user_type": user_type,
+                    }
+                ),
+            },
+            format="multipart",
         )
-        with NamedTemporaryFile(mode="w+", suffix=".yaml", dir=TMP) as file:
-            file.write(blueprint)
-            file.flush()
-            relative_path = file.name.removeprefix(TMP).lstrip("/")
-            res = self.client.post(
-                reverse("authentik_api:blueprintinstance-import-"),
-                data={
-                    "path": relative_path,
-                    "context": dumps({"flow_slug": slug, "flow_name": flow_name}),
-                },
-                format="multipart",
-            )
         self.assertEqual(res.status_code, 200)
         self.assertTrue(res.json()["success"])
-        self.assertTrue(Flow.objects.filter(slug=slug, name=flow_name).exists())
-        self.assertFalse(Flow.objects.filter(slug="fallback-slug").exists())
+
+        flow = Flow.objects.get(slug=slug)
+        self.assertEqual(flow.name, flow_name)
+        self.assertEqual(flow.title, flow_name)
+
+        invitation_stage = InvitationStage.objects.get(name=stage_name)
+        self.assertEqual(
+            invitation_stage.continue_flow_without_invitation,
+            continue_without_invitation,
+        )
+
+        user_write_stage = UserWriteStage.objects.get(
+            name=f"invitation-enrollment-user-write-{slug}"
+        )
+        self.assertEqual(user_write_stage.user_type, user_type)
+        self.assertEqual(user_write_stage.user_path_template, f"users/{user_type}")
