@@ -1,29 +1,27 @@
 import "#admin/policies/BoundPoliciesList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/oauth/OAuthSourceDiagram";
-import "#admin/sources/oauth/OAuthSourceForm";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
+import { sourceBindingTypeNotices } from "#elements/sources/utils";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { sourceBindingTypeNotices } from "#admin/sources/utils";
+import renderDescriptionList from "#components/DescriptionList";
 
-import {
-    OAuthSource,
-    ProviderTypeEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SourcesApi,
-} from "@goauthentik/api";
+import { OAuthSourceForm } from "#admin/sources/oauth/OAuthSourceForm";
+
+import { ModelEnum, OAuthSource, ProviderTypeEnum, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -32,7 +30,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export function ProviderToLabel(provider?: ProviderTypeEnum): string {
     switch (provider) {
@@ -64,10 +61,14 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Patreon";
         case ProviderTypeEnum.Reddit:
             return "Reddit";
+        case ProviderTypeEnum.Slack:
+            return "Slack";
         case ProviderTypeEnum.Twitter:
             return "Twitter";
         case ProviderTypeEnum.Twitch:
             return "Twitch";
+        case ProviderTypeEnum.Wechat:
+            return "WeChat";
         case ProviderTypeEnum.UnknownDefaultOpenApi:
             return msg("Unknown provider type");
     }
@@ -89,15 +90,7 @@ export class OAuthSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: OAuthSource;
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFPage,
-        PFButton,
-        PFGrid,
-        PFContent,
-        PFCard,
-        PFDescriptionList,
-    ];
+    static styles: CSSResult[] = [PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList];
 
     constructor() {
         super();
@@ -107,151 +100,100 @@ export class OAuthSourceViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.source) {
-            return html``;
+            return nothing;
         }
-        return html`<ak-tabs>
-            <section
-                slot="page-overview"
-                data-tab-title="${msg("Overview")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Details")}</div>
-                        <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Name")}</span
+        return html`<main>
+            <ak-tabs>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div class="pf-c-card pf-l-grid__item pf-m-4-col">
+                            <div class="pf-c-card__title">${msg("Details")}</div>
+                            <div class="pf-c-card__body">
+                                ${renderDescriptionList([
+                                    [msg("Name"), html`${this.source.name}`],
+                                    [
+                                        msg("Provider Type"),
+                                        html`${ProviderToLabel(this.source.providerType)}`,
+                                    ],
+                                    [msg("Callback URL"), html`${this.source.callbackUrl}`],
+                                    [msg("Access Key"), html`${this.source.consumerKey}`],
+                                    [
+                                        msg("Authorization URL"),
+                                        html`${this.source.type?.authorizationUrl ||
+                                        this.source.authorizationUrl}`,
+                                    ],
+                                    [
+                                        msg("Token URL"),
+                                        html`${this.source.type?.accessTokenUrl ||
+                                        this.source.accessTokenUrl}`,
+                                    ],
+                                    [
+                                        msg("Related actions"),
+                                        html`<button
+                                            class="pf-c-button pf-m-primary pf-m-block"
+                                            ${modalInvoker(OAuthSourceForm, {
+                                                instancePk: this.source.slug,
+                                            })}
                                         >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.source.name}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Provider Type")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${ProviderToLabel(this.source.providerType)}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Callback URL")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <code class="pf-c-description-list__text"
-                                            >${this.source.callbackUrl}</code
-                                        >
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Access Key")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.source.consumerKey}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Authorization URL")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.source.type?.authorizationUrl ||
-                                            this.source.authorizationUrl}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Token URL")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.source.type?.accessTokenUrl ||
-                                            this.source.accessTokenUrl}
-                                        </div>
-                                    </dd>
-                                </div>
-                            </dl>
+                                            ${msg("Edit")}
+                                        </button>`,
+                                    ],
+                                ])}
+                            </div>
                         </div>
-                        <div class="pf-c-card__footer">
-                            <ak-forms-modal>
-                                <span slot="submit"> ${msg("Update")} </span>
-                                <span slot="header"> ${msg("Update OAuth Source")} </span>
-                                <ak-source-oauth-form slot="form" .instancePk=${this.source.slug}>
-                                </ak-source-oauth-form>
-                                <button slot="trigger" class="pf-c-button pf-m-primary">
-                                    ${msg("Edit")}
-                                </button>
-                            </ak-forms-modal>
-                        </div>
-                    </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Diagram")}</div>
-                        <div class="pf-c-card__body">
-                            <ak-source-oauth-diagram
-                                .source=${this.source}
-                            ></ak-source-oauth-diagram>
+                        <div class="pf-c-card pf-l-grid__item pf-m-8-col">
+                            <div class="pf-c-card__title">${msg("Diagram")}</div>
+                            <div class="pf-c-card__body">
+                                <ak-source-oauth-diagram
+                                    .source=${this.source}
+                                ></ak-source-oauth-diagram>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
-            <section
-                slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <ak-object-changelog
                                 targetModelPk=${this.source.pk || ""}
-                                targetModelApp="authentik_sources_oauth"
-                                targetModelName="oauthsource"
+                                targetModelName=${ModelEnum.AuthentikSourcesOauthOauthsource}
                             >
                             </ak-object-changelog>
                         </div>
                     </div>
                 </div>
-            </section>
-            <div
-                slot="page-policy-binding"
-                data-tab-title="${msg("Policy Bindings")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">
-                            ${msg(
-                                `These bindings control which users can access this source.
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-policy-binding"
+                    id="page-policy-binding"
+                    aria-label="${msg("Policy Bindings")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <div class="pf-c-card__title">
+                                ${msg(
+                                    `These bindings control which users can access this source.
             You can only use policies here as access is checked before the user is authenticated.`,
-                            )}
-                        </div>
-                        <div class="pf-c-card__body">
+                                )}
+                            </div>
                             <ak-bound-policies-list
                                 .target=${this.source.pk}
                                 .typeNotices=${sourceBindingTypeNotices()}
@@ -261,14 +203,17 @@ export class OAuthSourceViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
-            </div>
-            <ak-rbac-object-permission-page
-                slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesOauthOauthsource}
-                objectPk=${this.source.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${ModelEnum.AuthentikSourcesOauthOauthsource}
+                    objectPk=${this.source.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 }
 

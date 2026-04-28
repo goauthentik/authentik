@@ -60,7 +60,17 @@ export function oauth2ProviderSelector(instanceProviders: number[] | undefined) 
 @customElement("ak-provider-oauth2-form")
 export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
-    showClientSecret = true;
+    protected showClientSecret = true;
+
+    @state()
+    protected showLogoutMethod = false;
+
+    public override reset(): void {
+        super.reset();
+
+        this.showClientSecret = true;
+        this.showLogoutMethod = false;
+    }
 
     static styles = [
         ...super.styles,
@@ -76,6 +86,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
             id: pk,
         });
         this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
+        this.showLogoutMethod = !!provider.logoutUri;
         return provider;
     }
 
@@ -95,7 +106,16 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
-        return renderForm(this.instance ?? {}, [], this.showClientSecret, showClientSecretCallback);
+        const showLogoutMethodCallback = (show: boolean) => {
+            this.showLogoutMethod = show;
+        };
+        return renderForm({
+            provider: this.instance,
+            showClientSecret: this.showClientSecret,
+            showClientSecretCallback,
+            showLogoutMethod: this.showLogoutMethod,
+            showLogoutMethodCallback,
+        });
     }
 }
 

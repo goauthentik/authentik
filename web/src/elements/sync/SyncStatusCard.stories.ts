@@ -19,7 +19,9 @@ export const Running: StoryObj = {
             isRunning: true,
         } as SyncStatus,
     },
-    // @ts-ignore
+    // @ts-expect-error Typescript is unaware that arguments for components
+    // are treated as properties, and properties are typically renamed to lower case,
+    // even if the variable is not.
     render: ({ status }: SyncStatus) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">
             <ak-sync-status-card
@@ -38,7 +40,7 @@ export const LastSyncDone: StoryObj = {
             lastSyncStatus: TaskAggregatedStatusEnum.Done,
         } as SyncStatus,
     },
-    // @ts-ignore
+    // @ts-expect-error Typescript is unaware that arguments for components.
     render: ({ status }: SyncStatus) => {
         return html`
             <ak-sync-status-card
@@ -57,7 +59,7 @@ export const LastSyncError: StoryObj = {
             lastSyncStatus: TaskAggregatedStatusEnum.Error,
         } as SyncStatus,
     },
-    // @ts-ignore
+    // @ts-expect-error Typescript is unaware that arguments for components.
     render: ({ status }: SyncStatus) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">
             <ak-sync-status-card
@@ -76,7 +78,7 @@ export const LastSuccessfulSync: StoryObj = {
             lastSuccessfulSync: new Date(),
         } as SyncStatus,
     },
-    // @ts-ignore
+    // @ts-expect-error Typescript is unaware that arguments for components.
     render: ({ status }: SyncStatus) => {
         return html`
             <ak-sync-status-card

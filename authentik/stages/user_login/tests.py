@@ -10,6 +10,8 @@ from django.utils.timezone import now
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.events.models import Event, EventAction
+from authentik.events.utils import get_user
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -270,6 +272,7 @@ class TestUserLoginStage(FlowTestCase):
 
     def test_session_binding_broken(self):
         """Test session binding"""
+        Event.objects.all().delete()
         self.client.force_login(self.user)
         session = self.client.session
         session[Session.Keys.LAST_IP] = "192.0.2.1"
@@ -285,3 +288,5 @@ class TestUserLoginStage(FlowTestCase):
             )
             + f"?{NEXT_ARG_NAME}={reverse("authentik_api:user-me")}",
         )
+        event = Event.objects.filter(action=EventAction.LOGOUT).first()
+        self.assertEqual(event.user, get_user(self.user))

@@ -6,8 +6,11 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ifPresent } from "#elements/utils/attributes";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
@@ -50,12 +53,14 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const provider = this.instance;
 
         return html`<ak-text-input
                 name="name"
-                label=${msg("Name")}
+                label=${msg("Provider Name")}
+                placeholder=${msg("Type a provider name...")}
+                spellcheck="false"
                 value=${ifDefined(provider?.name)}
                 required
             ></ak-text-input>
@@ -66,13 +71,18 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                         name="signingKey"
                         required
                     >
-                        <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                         <ak-crypto-certificate-search
-                            certificate=${ifDefined(provider?.signingKey ?? undefined)}
+                            certificate=${ifPresent(provider?.signingKey)}
                             singleton
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the events.")}</p>
                     </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="pushVerifyCertificates"
+                        label=${msg("Verify Push stream endpoints' certificate")}
+                        ?checked=${this.instance?.pushVerifyCertificates ?? true}
+                    >
+                    </ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Event Retention")}
                         required
@@ -97,7 +107,7 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
             <ak-form-group label="${msg("Authentication settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("OIDC Providers")}
+                        label=${msg("Federated OAuth2/OpenID Providers")}
                         name="oidcAuthProviders"
                     >
                         <ak-dual-select-dynamic-selected

@@ -8,7 +8,6 @@ import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * @element ak-dual-select-controls
@@ -20,7 +19,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-dual-select-controls")
 export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventType>(AKElement) {
     static styles = [
-        PFBase,
         PFButton,
         css`
             :host {
@@ -36,6 +34,16 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
                 justify-content: center;
                 align-content: center;
                 height: 100%;
+            }
+
+            .pf-c-button {
+                --pf-c-button--m-plain--Color: var(--pf-global--Color-300) !important;
+
+                &.pf-m-plain {
+                    --pf-c-button--m-plain--disabled--Color: var(
+                        --pf-global--Color--400
+                    ) !important;
+                }
             }
         `,
     ];
@@ -105,7 +113,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
                     @click=${() => this.dispatchCustomEvent(eventType)}
                     data-ouia-component-type="AK/Button"
                 >
-                    <i class="fa ${direction}"></i>
+                    <i class="fa ${direction}" aria-hidden="true"></i>
                 </button>
             </div>
         </div>`;

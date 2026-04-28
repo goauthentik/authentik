@@ -3,6 +3,7 @@
  *
  * @import { NavbarItem } from "@docusaurus/theme-common";
  */
+
 import { DocusaurusURL, SocialURL } from "./routing.js";
 
 /**

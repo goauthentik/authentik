@@ -6,7 +6,7 @@ support_level: community
 
 ## What is FortiGate SSLVPN
 
-> FortiGate is a firewall from FortiNet. It is a NGFW with layer7 inspection and able to become a part of a FortiNet security fabric.
+> FortiGate is a firewall from Fortinet. It is an NGFW with layer 7 inspection and can become part of a Fortinet security fabric.
 >
 > -- https://www.fortinet.com/products/next-generation-firewall
 
@@ -14,10 +14,10 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of your authentik installation
-- `fortigate.company` is the FQDN of your FortiGate firewall
+- `authentik.company` is the FQDN of your authentik installation.
+- `fortigate.company` is the FQDN of your FortiGate firewall.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -34,7 +34,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ### Create a user group
 
-1. Log in to authentik as an administrator and navigate to the admin Interface.
+1. Log in to authentik as an administrator and navigate to the Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
 3. Set a descriptive name for the group (e.g. "FortiGate SSLVPN Users").
 4. Add the users who should have access to the SSLVPN.
@@ -42,21 +42,24 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin and navigate to the admin Interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+1. Log in to authentik as an admin and navigate to the Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
 
 - **Application**: provide a descriptive name (e.g. "FortiGate SSLVPN"), an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **SAML Provider from metadata** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
-    - Upload the metadata file from FortiGate (you will get this in the FortiGate configuration steps)
-    - Set the **ACS URL** to `https://fortigate.company/remote/saml/login`
-    - Set the **Audience** to `http://fortigate.company/remote/saml/metadata/`
-    - Select your signing certificate
-    - Under **Advanced Protocol Settings**:
-        - Set **Assertion valid not before** to `minutes=5`
-        - Set **Assertion valid not on or after** to `minutes=5`
-        - Set **Digest algorithm** to `sha256`
-        - Set **Signature algorithm** to `sha256`
+    - Upload the metadata file from FortiGate (you will get this in the FortiGate configuration steps).
+    - Set the **ACS URL** to `https://fortigate.company/remote/saml/login`.
+    - Set the **Issuer** to `https://authentik.company/`.
+    - Set the **Audience** to `http://fortigate.company/remote/saml/metadata/`.
+    - Set the **SLS URL** to `http://fortigate.company/remote/saml/logout/`.
+    - Under **Advanced protocol settings**:
+        - Set **Signing certificate** to use any available certificate.
+            - Enable both **Sign assertions** and **Sign responses**.
+        - Set **Assertion valid not before** to `minutes=5`.
+        - Set **Assertion valid not on or after** to `minutes=5`.
+        - Set **Digest algorithm** to `sha256`.
+        - Set **Signature algorithm** to `sha256`.
 - **Configure Bindings**: create a binding to the user group you created earlier to manage access to the SSLVPN.
 
 3. Click **Submit** to save the new application and provider.
@@ -65,7 +68,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ### Setup SAML SP
 
-1. SSH to the FortiGate (If you are using vdom change to the correct vdom).
+1. SSH into the FortiGate (if you are using vdom, change to the correct vdom).
 2. The configuration will be written to `/data/config/config.conf`. Copy and paste the following configuration, replacing the placeholders with your values:
 
 ```
@@ -75,7 +78,7 @@ config user saml
         set entity-id "http://fortigate.company/remote/saml/metadata/"
         set single-sign-on-url "https://fortigate.company/remote/saml/login"
         set single-logout-url "https://fortigate.company/remote/saml/logout"
-        set idp-entity-id "https://authentik.company"
+        set idp-entity-id "https://authentik.company/"
         set idp-single-sign-on-url "https://authentik.company/application/saml/fortigate-sslvpn/sso/binding/redirect/"
         set idp-single-logout-url "https://authentik.company/application/saml/fortigate-sslvpn/slo/binding/redirect/"
         set idp-cert "your-authentik-cert"
@@ -138,7 +141,7 @@ If you encounter any issues:
 - Check the FortiGate logs for SAML-related errors
   :::
 
-## Additional Resources
+## Resources
 
 - [FortiGate SSLVPN Documentation](https://docs.fortinet.com/document/fortigate/7.2.8/administration-guide/397719/ssl-vpn)
 - [FortiGate SAML Configuration Guide](https://docs.fortinet.com/document/fortigate/7.2.8/administration-guide/954635/saml-sp)

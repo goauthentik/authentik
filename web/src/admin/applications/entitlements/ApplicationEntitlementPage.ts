@@ -5,20 +5,15 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { PolicyBindingCheckTarget } from "#admin/policies/utils";
-
-import {
-    ApplicationEntitlement,
-    CoreApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
+import { ApplicationEntitlement, CoreApi, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -36,6 +31,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     order = "order";
 
+    protected override searchEnabled = true;
+
     async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsList({
             ...(await this.defaultEndpointConfig()),
@@ -43,14 +40,16 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Application entitlement(s)")}
+            object-label=${msg("Application entitlement(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ApplicationEntitlement) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsUsedByList({
@@ -69,12 +68,12 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ApplicationEntitlement): TemplateResult[] {
+    row(item: ApplicationEntitlement): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Entitlement")} </span>
+                    <span slot="submit">${msg("Save Changes")}</span>
+                    <span slot="header">${msg("Update Entitlement")}</span>
                     <ak-application-entitlement-form
                         slot="form"
                         .instancePk=${item.pbmUuid}
@@ -83,12 +82,12 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     </ak-application-entitlement-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplicationentitlement}
+                    model=${ModelEnum.AuthentikCoreApplicationentitlement}
                     objectPk=${item.pbmUuid}
                 >
                 </ak-rbac-object-permission-modal>`,
@@ -96,29 +95,17 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     }
 
     renderExpanded(item: ApplicationEntitlement): TemplateResult {
-        return html`<td></td>
-            <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-c-content">
-                        <p>
-                            ${msg(
-                                "These bindings control which users have access to this entitlement.",
-                            )}
-                        </p>
-                        <ak-bound-policies-list
-                            .target=${item.pbmUuid}
-                            .allowedTypes=${[
-                                PolicyBindingCheckTarget.group,
-                                PolicyBindingCheckTarget.user,
-                            ]}
-                        >
-                        </ak-bound-policies-list>
-                    </div>
-                </div>
-            </td>`;
+        return html`<div class="pf-c-content">
+            <p>${msg("These bindings control which users have access to this entitlement.")}</p>
+            <ak-bound-policies-list
+                .target=${item.pbmUuid}
+                .allowedTypes=${[PolicyBindingCheckTarget.Group, PolicyBindingCheckTarget.User]}
+            >
+            </ak-bound-policies-list>
+        </div>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No app entitlements created.")}</span>
@@ -135,8 +122,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderToolbar(): TemplateResult {
         return html`<ak-forms-modal size=${PFSize.Medium}>
-            <span slot="submit"> ${msg("Create")} </span>
-            <span slot="header"> ${msg("Create Entitlement")} </span>
+            <span slot="submit">${msg("Create")}</span>
+            <span slot="header">${msg("Create Entitlement")}</span>
             <ak-application-entitlement-form slot="form" targetPk=${ifDefined(this.app)}>
             </ak-application-entitlement-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -149,5 +136,11 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 declare global {
     interface HTMLElementTagNameMap {
         "ak-application-roles-list": ApplicationEntitlementsPage;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-entitlements-list": ApplicationEntitlementsPage;
     }
 }

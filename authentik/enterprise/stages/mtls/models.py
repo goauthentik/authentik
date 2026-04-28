@@ -3,15 +3,9 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.crypto.models import CertificateKeyPair
+from authentik.endpoints.models import StageMode
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
-
-
-class TLSMode(models.TextChoices):
-    """Modes the TLS Stage can operate in"""
-
-    OPTIONAL = "optional"
-    REQUIRED = "required"
 
 
 class CertAttributes(models.TextChoices):
@@ -32,7 +26,7 @@ class UserAttributes(models.TextChoices):
 class MutualTLSStage(Stage):
     """Authenticate/enroll users using a client-certificate."""
 
-    mode = models.TextField(choices=TLSMode.choices)
+    mode = models.TextField(choices=StageMode.choices)
 
     certificate_authorities = models.ManyToManyField(
         CertificateKeyPair,

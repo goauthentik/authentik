@@ -14,7 +14,6 @@ import { classMap } from "lit/directives/class-map.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Props for the EmptyState component
@@ -64,11 +63,16 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: Boolean, attribute: "full-height" })
     public fullHeight = false;
 
+    public role = "status";
+
     static styles = [
-        PFBase,
         PFEmptyState,
         PFTitle,
         css`
+            :host {
+                display: block;
+            }
+
             i.pf-c-empty-state__icon {
                 height: var(--pf-global--icon--FontSize--2xl);
                 line-height: var(--pf-global--icon--FontSize--2xl);
@@ -88,7 +92,7 @@ export class EmptyState extends AKElement implements IEmptyState {
     }
 
     render() {
-        const hasHeading = this.hasSlotted(null);
+        const hasHeading = this.findSlotted();
         const loading = this.loading || this.defaultLabel;
         const classes = {
             "pf-c-empty-state": true,
@@ -96,7 +100,7 @@ export class EmptyState extends AKElement implements IEmptyState {
         };
 
         return html`<div aria-label=${this.localAriaLabel ?? nothing} class="${classMap(classes)}">
-            <div class="pf-c-empty-state__content" role="progressbar">
+            <div class="pf-c-empty-state__content">
                 ${loading
                     ? html`<div part="spinner" class="pf-c-empty-state__icon">
                           <ak-spinner size=${PFSize.XLarge}></ak-spinner>
@@ -112,12 +116,12 @@ export class EmptyState extends AKElement implements IEmptyState {
                           <slot></slot>
                       </h1>`
                     : nothing}
-                ${this.hasSlotted("body")
+                ${this.findSlotted("body")
                     ? html` <div part="body" class="pf-c-empty-state__body">
                           <slot name="body"></slot>
                       </div>`
                     : nothing}
-                ${this.hasSlotted("primary")
+                ${this.findSlotted("primary")
                     ? html` <div part="primary" class="pf-c-empty-state__primary">
                           <slot name="primary"></slot>
                       </div>`
@@ -133,7 +137,6 @@ interface IEmptyStateContent {
     primary?: SlottedTemplateResult;
 }
 
-type ContentKey = keyof IEmptyStateContent;
 type ContentValue = SlottedTemplateResult | undefined;
 
 /**

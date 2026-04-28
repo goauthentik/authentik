@@ -10,10 +10,8 @@ import { PFColor } from "#elements/Label";
 import { OutpostHealth, OutpostsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-outpost-health-simple")
 export class OutpostHealthSimpleElement extends AKElement {
@@ -28,8 +26,6 @@ export class OutpostHealthSimpleElement extends AKElement {
 
     @property({ attribute: false })
     showVersion = true;
-
-    static styles: CSSResult[] = [PFBase];
 
     constructor() {
         super();

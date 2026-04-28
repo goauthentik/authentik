@@ -23,7 +23,7 @@ function renderError(detail: string) {
         return nothing;
     }
 
-    return html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
+    return html`<p class="pf-c-form__helper-text pf-m-error" role="alert" aria-label=${detail}>
         <span class="pf-c-form__helper-text-icon">
             <i class="fas fa-exclamation-circle" aria-hidden="true"></i> </span
         >${detail}

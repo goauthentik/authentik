@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `zulip.company` is the FQDN of the Zulip instance.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -28,7 +28,7 @@ To support the integration of Zulip with authentik, you need to create an applic
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
@@ -36,8 +36,11 @@ To support the integration of Zulip with authentik, you need to create an applic
     - Set the **ACS URL** to `https://zulip.company/complete/saml/`.
     - Set the **Issuer** to `https://authentik.company`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, select an available signing certificate.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - Set the **SLS URL** to `https://zulip.company/complete/saml/`.
+    - Set the **SLS Binding** to `Redirect`.
+    - Set the **Logout Method** to `Front-channel (Iframe)`.
+    - Under **Advanced protocol settings**, select an available **Signing certificate**.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -75,11 +78,11 @@ SOCIAL_AUTH_SAML_ENABLED_IDPS: Dict[str, Any] = {
 Place the certificate you associated with the SAML provider in authentik inside the `/etc/zulip/saml/idps` directory.
 The certificate file name must match the idp identifier name you set in the configuration (i.e. authentik.crt).
 
-:::note
+:::info
 Remember to restart Zulip.
 :::
 
-## Additional Resources
+## Resources
 
 Please refer to the following for further information:
 

@@ -2,7 +2,6 @@
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq import actor
 from packaging.version import parse
 from requests import RequestException
@@ -13,7 +12,7 @@ from authentik.admin.apps import PROM_INFO
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 VERSION_NULL = "0.0.0"
@@ -35,7 +34,7 @@ def _set_prom_info():
 
 @actor(description=_("Update latest version info."))
 def update_latest_version():
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
         self.info("Version check disabled.")
@@ -72,6 +71,3 @@ def update_latest_version():
     except (RequestException, IndexError) as exc:
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
         raise exc
-
-
-_set_prom_info()

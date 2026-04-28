@@ -1,5 +1,6 @@
-import { AkControlElement, isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
+import { isControlElement } from "#elements/ControlElement";
+import { FormField, isFormField } from "#elements/forms/form-associated-element";
 import { isNameableElement, NamedElement } from "#elements/utils/inputs";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
@@ -10,7 +11,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Horizontal Form Element Container.
@@ -29,14 +29,15 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFForm,
         PFFormControl,
         css`
             .pf-c-form__group {
                 display: grid;
                 grid-template-columns:
+                    [label]
                     var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
+                    [control]
                     var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
             }
         `,
@@ -70,7 +71,20 @@ export class HorizontalFormElement extends AKElement {
 
     //#endregion
 
-    public controlledElement: NamedElement | AkControlElement | null = null;
+    #controlledElement: FormField | NamedElement | null = null;
+
+    /**
+     * The element that should be focused when the form is submitted.
+     */
+    public get focusTarget(): FormField | NamedElement<HTMLElement> | null {
+        if (!(this.#controlledElement instanceof HTMLElement)) {
+            return null;
+        }
+
+        if (!this.#controlledElement.checkVisibility()) return null;
+
+        return this.#controlledElement;
+    }
 
     //#region Lifecycle
 
@@ -79,8 +93,8 @@ export class HorizontalFormElement extends AKElement {
     }
 
     public override updated(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("errorMessages") && this.controlledElement) {
-            this.controlledElement.setAttribute(
+        if (changedProperties.has("errorMessages") && this.#controlledElement) {
+            this.#controlledElement.setAttribute(
                 "aria-invalid",
                 this.errorMessages?.length ? "true" : "false",
             );
@@ -98,13 +112,15 @@ export class HorizontalFormElement extends AKElement {
 
         for (const element of this.querySelectorAll("*")) {
             // Is this element capable of being named?
-            if (!isControlElement(element) && !isNameableElement(element)) continue;
-            // And does the element already match the name?
-            if (element.getAttribute("name") === this.name) continue;
+            if (!isControlElement(element) && !isFormField(element) && !isNameableElement(element))
+                continue;
 
-            element.setAttribute("name", this.name);
+            this.#controlledElement = element;
 
-            this.controlledElement = element;
+            if (element.getAttribute("name") !== this.name) {
+                element.setAttribute("name", this.name);
+            }
+
             break;
         }
     }
@@ -116,18 +132,28 @@ export class HorizontalFormElement extends AKElement {
     render(): TemplateResult {
         this.#synchronizeAttributes();
 
-        return html`<div class="pf-c-form__group" role="group">
-            <div class="pf-c-form__group-label">
-                ${this.label
-                    ? html`
-                      ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
-                  </div>`
-                    : html`<slot name="label"></slot>`}
-            </div>
+        const { label, required, fieldID } = this;
 
-            <div class="pf-c-form__group-control">
-                <slot class="pf-c-form__horizontal-group"></slot>
-                <div class="pf-c-form__horizontal-group">
+        const labelTemplate = label
+            ? AKLabel(
+                  {
+                      className: "pf-c-form__group-label",
+                      htmlFor: fieldID,
+                      required,
+                  },
+                  label,
+              )
+            : this.findSlotted("label")
+              ? html`<slot name="label"></slot>`
+              : null;
+
+        return html`<div class="pf-c-form__group" part="form-group">
+            ${labelTemplate}
+            ${this.findSlotted("label-end") ? html`<slot name="label-end"></slot>` : null}
+
+            <div class="pf-c-form__group-control" part="group-control">
+                <slot class="pf-c-form__horizontal-group" part="content"></slot>
+                <div class="pf-c-form__horizontal-group" part="errors">
                     ${AKFormErrors({ errors: this.errorMessages })}
                 </div>
             </div>

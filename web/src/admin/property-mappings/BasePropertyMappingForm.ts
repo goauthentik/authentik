@@ -1,10 +1,13 @@
+import "#elements/CodeMirror/ak-codemirror";
+import "#components/ak-text-input";
+
 import { docLink } from "#common/global";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 interface PropertyMapping {
@@ -16,9 +19,10 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
     T,
     string
 > {
-    docLink(): string {
-        return "/docs/add-secure-apps/providers/property-mappings/expression?utm_source=authentik";
-    }
+    protected docLink: string | URL = "/add-secure-apps/providers/property-mappings/expression";
+
+    public static override verboseName = msg("Property Mapping");
+    public static override verboseNamePlural = msg("Property Mappings");
 
     getSuccessMessage(): string {
         return this.instance
@@ -26,29 +30,27 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
             : msg("Successfully created mapping.");
     }
 
-    renderExtraFields(): TemplateResult {
-        return html``;
+    renderExtraFields(): SlottedTemplateResult {
+        return nothing;
     }
 
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
+                label=${msg("Mapping Name")}
+                placeholder=${msg("Type a name for this mapping...")}
+                autocomplete="off"
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            >
+            </ak-text-input>
             ${this.renderExtraFields()}
             <ak-form-element-horizontal label=${msg("Expression")} required name="expression">
-                <ak-codemirror
-                    mode=${CodeMirrorMode.Python}
-                    value="${ifDefined(this.instance?.expression)}"
-                >
+                <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Expression using Python.")}
-                    <a target="_blank" rel="noopener noreferrer" href="${docLink(this.docLink())}">
+                    <a target="_blank" rel="noopener noreferrer" href=${docLink(this.docLink)}>
                         ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>

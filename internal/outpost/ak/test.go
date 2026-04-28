@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/securecookie"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/packages/client-go"
 )
 
 func TestSecret() string {
@@ -21,7 +21,6 @@ func MockConfig() api.Config {
 	return *api.NewConfig(
 		*api.NewErrorReportingConfig(false, "https://foo.bar/9", "test", false, 0.0),
 		[]api.CapabilitiesEnum{},
-		100,
 		100,
 		100,
 		100,

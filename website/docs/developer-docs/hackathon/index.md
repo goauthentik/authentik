@@ -10,9 +10,9 @@ title: Hackathon 2023
 
 ## Join us for our first authentik hackathon!
 
-Everyone welcome; we will work on code, docs, and anything else that looks interesting and challenging.
+Everyone is welcome; we will work on code, docs, and anything else that looks interesting and challenging.
 
-Moderators will be available for most US and European hours, so if during the multi-day event, participants have questions or a PR needs a technical review, we are here for you.
+Moderators will be available for most US and European hours, so if participants have questions during the multi-day event, or if a PR needs a technical review, we are here for you.
 
 Prizes? Why, Yes! We've got a total prize pool of $5000 and a bunch of cool authentik-branded socks and, indubitably, GitHub fame.
 
@@ -27,7 +27,7 @@ July 26-30, 2023
 
 ## Where
 
-Online, in our [GitHub repo](https://github.com/goauthentik/authentik), and on Discord in our [#hackathon23 channel](https://discord.com/channels/809154715984199690/1110948434552299673) for our Kickoff call, checkins, and the wrap-up and awards events. We will also use the #hackathon23 channel throughout the entire five days, for questions and general chatting. Be sure to first visit our [welcome-info-rules channel](https://discord.com/channels/809154715984199690/813452440660606986), to review our code of conduct and see the latest posts about the hackathon.
+Online, in our [GitHub repo](https://github.com/goauthentik/authentik), and on Discord in our [#hackathon23 channel](https://discord.com/channels/809154715984199690/1110948434552299673) for our Kickoff call, check-ins, and the wrap-up and awards events. We will also use the #hackathon23 channel throughout the entire five days for questions and general chatting. Be sure to first visit our [welcome-info-rules channel](https://discord.com/channels/809154715984199690/813452440660606986) to review our code of conduct and see the latest posts about the hackathon.
 
 ## Take a look on GitHub
 

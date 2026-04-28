@@ -1,0 +1,65 @@
+.pf-c-wizard {
+    --pf-c-wizard__nav--ZIndex: var(--pf-global--ZIndex--md);
+
+    --ak-c-wizard__header--BlockSpacer: clamp(0.25em, var(--pf-global--spacer--lg), 3cqb);
+    --ak-c-wizard__header--InlineSpacer: var(--pf-global--spacer--md);
+
+    --pf-c-wizard__header--PaddingTop: var(--ak-c-wizard__header--BlockSpacer);
+    --pf-c-wizard__header--PaddingBottom: var(--ak-c-wizard__header--BlockSpacer);
+
+    --pf-c-wizard__close--Right: var(--ak-c-wizard__header--InlineSpacer);
+    --pf-c-wizard__close--Top: var(--ak-c-wizard__header--BlockSpacer);
+
+    --ak-c-wizard__footer--BlockSpacer: clamp(0.25em, var(--pf-global--spacer--xl), 3cqb);
+    --pf-c-wizard__footer--PaddingTop: var(--ak-c-wizard__footer--BlockSpacer);
+    --pf-c-wizard__footer--PaddingBottom: var(--ak-c-wizard__footer--BlockSpacer);
+    --pf-c-wizard__footer--child--MarginBottom: 0;
+}
+
+.pf-c-wizard__main-body {
+    --ak-fieldset--BorderColor: var(--pf-global--BackgroundColor--150);
+
+    gap: var(--pf-global--spacer--lg);
+
+    fieldset {
+        .pf-c-description-list {
+            margin-inline: var(--pf-global--spacer--sm);
+        }
+    }
+}
+
+.pf-c-wizard__main-title {
+    width: 100%;
+    font-family: var(--pf-global--FontFamily--heading--sans-serif);
+    font-size: var(--pf-global--FontSize--md);
+    font-weight: var(--pf-global--FontWeight--bold);
+    line-height: var(--pf-global--LineHeight--md);
+}
+
+.pf-c-wizard__footer-cancel {
+    flex: 1 1 auto;
+    --pf-c-wizard__footer-cancel--MarginLeft: 0 !important;
+}
+
+.pf-c-wizard__footer {
+    justify-content: end;
+    align-items: center;
+}
+
+.pf-c-wizard__nav-link {
+    padding: var(--pf-global--spacer--form-element);
+
+    &::before {
+        top: var(--pf-global--spacer--form-element);
+    }
+}
+
+/* #region Dark Theme */
+
+:host([theme="dark"]) .pf-c-wizard {
+    --pf-c-wizard__header--BackgroundColor: var(--pf-global--BackgroundColor--dark-200);
+    --pf-c-wizard__nav--lg--BorderRightColor: var(--pf-global--BorderColor--200);
+    --pf-c-wizard__footer--BoxShadow: 0px -1px var(--pf-c-wizard__nav--lg--BorderRightColor);
+}
+
+/* #endregion */

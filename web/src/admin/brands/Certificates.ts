@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import {
+    DataProvider,
     DataProvision,
     DualSelectPair,
     DualSelectPairSource,
@@ -12,7 +13,10 @@ const certToSelect = (cert: CertificateKeyPair): DualSelectPair<CertificateKeyPa
     return [cert.pk, cert.name, cert.name, cert];
 };
 
-export async function certificateProvider(page = 1, search = ""): Promise<DataProvision> {
+export const certificateProvider: DataProvider = async (
+    page = 1,
+    search = "",
+): Promise<DataProvision> => {
     return new CryptoApi(DEFAULT_CONFIG)
         .cryptoCertificatekeypairsList({
             ordering: "name",
@@ -27,7 +31,7 @@ export async function certificateProvider(page = 1, search = ""): Promise<DataPr
                 options: results.map(certToSelect),
             };
         });
-}
+};
 
 export function certificateSelector(
     instanceMappings?: string[],

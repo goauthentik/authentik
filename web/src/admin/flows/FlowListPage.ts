@@ -1,5 +1,5 @@
 import "#admin/flows/FlowForm";
-import "#admin/flows/FlowImportForm";
+import "#admin/blueprints/BlueprintImportForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
@@ -7,41 +7,42 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
+import { IconEditButton, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
+import { FlowForm } from "#admin/flows/FlowForm";
 import { DesignationToLabel } from "#admin/flows/utils";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
+
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Flows");
-    }
-    pageDescription(): string {
-        return msg(
-            "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-process-automation";
-    }
+    static styles = [...super.styles, PFBanner];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    protected override searchEnabled = true;
+    public override searchPlaceholder = msg("Search for a flow by name or identifier...");
 
-    @property()
-    order = "slug";
+    public override pageTitle = msg("Flows");
+    public override pageDescription = msg(
+        "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
+    );
+    public override pageIcon = "pf-icon pf-icon-process-automation";
+
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    public override order = "slug";
 
     async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
@@ -53,20 +54,18 @@ export class FlowListPage extends TablePage<Flow> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Identifier"), "slug"),
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Stages")),
-            new TableColumn(msg("Policies")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Identifier"), "slug"],
+        [msg("Name"), "name"],
+        [msg("Stages")],
+        [msg("Policies")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Flow(s)")}
+            object-label=${msg("Flow(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Flow) => {
                 return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
@@ -85,28 +84,19 @@ export class FlowListPage extends TablePage<Flow> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Flow): TemplateResult[] {
+    row(item: Flow): SlottedTemplateResult[] {
         return [
-            html`<div>
-                    <a href="#/flow/flows/${item.slug}">
-                        <code>${item.slug}</code>
-                    </a>
-                </div>
+            html`<a href="#/flow/flows/${item.slug}" class="pf-m-block">
+                    <code>${item.slug}</code>
+                </a>
                 <small>${item.title}</small>`,
-            html`${item.name}`,
-            html`${Array.from(item.stages || []).length}`,
-            html`${Array.from(item.policies || []).length}`,
-            html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Flow")} </span>
-                    <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            item.name,
+            Array.from(item.stages || []).length,
+            Array.from(item.policies || []).length,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(FlowForm, item.slug, item.name)}
                 <button
+                    aria-label=${msg(str`Execute "${item.name}"`)}
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
                         const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(
@@ -119,43 +109,61 @@ export class FlowListPage extends TablePage<Flow> {
                         <i class="fas fa-play" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
-                <a class="pf-c-button pf-m-plain" href=${item.exportUrl}>
+                <a
+                    class="pf-c-button pf-m-plain"
+                    href=${item.exportUrl}
+                    aria-label=${msg(str`Export "${item.name}"`)}
+                >
                     <pf-tooltip position="top" content=${msg("Export")}>
-                        <i class="fas fa-download"></i>
+                        <i class="fas fa-download" aria-hidden="true"></i>
                     </pf-tooltip>
-                </a>`,
+                </a>
+            </div>`,
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Flow")} </span>
-                <ak-flow-form slot="form"> </ak-flow-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-            <ak-forms-modal>
-                <span slot="submit"> ${msg("Import")} </span>
-                <span slot="header"> ${msg("Import Flow")} </span>
-                <ak-flow-import-form slot="form"> </ak-flow-import-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Import")}</button>
-            </ak-forms-modal>
-        `;
+    protected renderObjectCreate(): SlottedTemplateResult {
+        return [
+            ModalInvokerButton(FlowForm),
+            html`<button
+                class="pf-c-button pf-m-primary"
+                type="button"
+                ${modalInvoker(() => {
+                    return html`<ak-blueprint-import-form>
+                        <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href=${docLink("/add-secure-apps/flows-stages/flow/examples/flows/")}
+                            slot="read-more-link"
+                            >${msg("Flow Examples")}</a
+                        >
+                        <span slot="banner-warning">
+                            ${msg(
+                                "Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).",
+                            )}<br />${msg(
+                                "You should only import files from trusted sources and review blueprints before importing them.",
+                            )}
+                        </span>
+                    </ak-blueprint-import-form>`;
+                })}
+            >
+                ${msg("Import")}
+            </button>`,
+        ];
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): SlottedTemplateResult {
         return html`
             ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared flow cache")}
                 errorMessage=${msg("Failed to delete flow cache")}
-                action=${msg("Clear cache")}
+                action=${msg("Clear Cache")}
                 .onConfirm=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();
                 }}
             >
-                <span slot="header"> ${msg("Clear Flow cache")} </span>
+                <span slot="header">${msg("Clear Flow cache")}</span>
                 <p slot="body">
                     ${msg(
                         `Are you sure you want to clear the flow cache?

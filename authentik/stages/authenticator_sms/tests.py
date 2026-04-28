@@ -18,7 +18,7 @@ from authentik.stages.authenticator_sms.models import (
     SMSProviders,
     hash_phone_number,
 )
-from authentik.stages.authenticator_sms.stage import PLAN_CONTEXT_PHONE, SESSION_KEY_SMS_DEVICE
+from authentik.stages.authenticator_sms.stage import PLAN_CONTEXT_PHONE, PLAN_CONTEXT_SMS_DEVICE
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
@@ -125,7 +125,7 @@ class AuthenticatorSMSStageTests(FlowTestCase):
             self.assertEqual(mocker.call_count, 1)
             self.assertEqual(mocker.request_history[0].method, "POST")
             request_body = dict(parse_qsl(mocker.request_history[0].body))
-            device: SMSDevice = self.client.session[SESSION_KEY_SMS_DEVICE]
+            device: SMSDevice = self.get_flow_plan().context[PLAN_CONTEXT_SMS_DEVICE]
             self.assertEqual(
                 request_body,
                 {

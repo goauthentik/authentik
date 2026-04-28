@@ -6,6 +6,8 @@ import {
     ValidationErrorFromJSON,
 } from "@goauthentik/api";
 
+import { sentenceCase } from "change-case";
+
 //#region HTTP
 
 /**
@@ -29,6 +31,32 @@ export const HTTPStatusCodeTransformer: Record<number, HTTPErrorJSONTransformer>
 //#endregion
 
 //#region Type Predicates
+
+/**
+ * A function that determines the specific type of error.
+ */
+export type ErrorPredicate<T> = (error: unknown) => error is T;
+
+/**
+ * Recursively checks if an error or any of its causes satisfies a given predicate.
+ *
+ * This is useful for unwrapping errors that may be wrapped in multiple layers of `Error` objects with causes.
+ *
+ * @param error The error to check.
+ * @param predicate The type predicate to apply to the error and its causes.
+ * @returns The first error in the chain that satisfies the predicate, or `null` if none do.
+ */
+export function findCause<T>(error: unknown, predicate: ErrorPredicate<T>): T | null {
+    if (predicate(error)) {
+        return error;
+    }
+
+    if (error instanceof Error && error.cause) {
+        return findCause(error.cause, predicate);
+    }
+
+    return null;
+}
 
 /**
  * Type predicate to check if a response contains a JSON body.
@@ -75,6 +103,30 @@ export function isCausedByAbortError(error: unknown): error is AbortErrorLike {
 //#region API
 
 /**
+ * A descriptor to provide a human readable error message for a given HTTP status code.
+ *
+ * @see {@linkcode ResponseErrorMessages} for a list of fallback error messages.
+ */
+interface ResponseErrorDescriptor {
+    headline: string;
+    reason: string;
+}
+
+/**
+ * Fallback error messages for HTTP status codes used when a more specific error message is not available in the response.
+ */
+export const ResponseErrorMessages: Record<number, ResponseErrorDescriptor> = {
+    [HTTPStatusCode.BadRequest]: {
+        headline: "Bad request",
+        reason: "The server did not understand the request",
+    },
+    [HTTPStatusCode.InternalServiceError]: {
+        headline: "Internal server error",
+        reason: "An unexpected error occurred",
+    },
+} as const;
+
+/**
  * An API response error, typically derived from a {@linkcode Response} body.
  *
  * @see {@linkcode parseAPIResponseError}
@@ -110,30 +162,6 @@ export function isResponseErrorLike(errorLike: unknown): errorLike is APIErrorWi
 
     return "response" in errorLike && errorLike.response instanceof Response;
 }
-
-/**
- * A descriptor to provide a human readable error message for a given HTTP status code.
- *
- * @see {@linkcode ResponseErrorMessages} for a list of fallback error messages.
- */
-interface ResponseErrorDescriptor {
-    headline: string;
-    reason: string;
-}
-
-/**
- * Fallback error messages for HTTP status codes used when a more specific error message is not available in the response.
- */
-export const ResponseErrorMessages: Record<number, ResponseErrorDescriptor> = {
-    [HTTPStatusCode.BadRequest]: {
-        headline: "Bad request",
-        reason: "The server did not understand the request",
-    },
-    [HTTPStatusCode.InternalServiceError]: {
-        headline: "Internal server error",
-        reason: "An unexpected error occurred",
-    },
-} as const;
 
 /**
  * Composes a human readable error message from a {@linkcode ResponseErrorDescriptor}.
@@ -203,15 +231,25 @@ export function pluckErrorDetail(errorLike: unknown, fallback?: string): string 
  * Given API error, parses the response body and transforms it into a {@linkcode APIError}.
  */
 export async function parseAPIResponseError<T extends APIError = APIError>(
-    error: unknown,
+    source: unknown,
 ): Promise<T> {
-    if (!isResponseErrorLike(error)) {
-        const message = error instanceof Error ? error.message : String(error);
+    const apiError = findCause(source, isResponseErrorLike);
+
+    if (!apiError) {
+        const message = source instanceof Error ? source.message : String(apiError);
 
         return createSyntheticGenericError(message) as T;
     }
+    const { response } = apiError;
+    let message: string | undefined;
 
-    const { response, message } = error;
+    if (apiError && apiError !== source) {
+        // The API error is wrapped in another error.
+        const wrapperMessage = pluckErrorDetail(source);
+        message = wrapperMessage ? `${wrapperMessage}: ${message}` : message;
+    } else {
+        message = apiError.message;
+    }
 
     if (!isJSONResponse(response)) {
         return createSyntheticGenericError(message || response.statusText) as T;
@@ -230,6 +268,34 @@ export async function parseAPIResponseError<T extends APIError = APIError>(
 
             return createSyntheticGenericError(message || response.statusText) as T;
         });
+}
+
+//#endregion
+
+//#region Validation errors
+
+/**
+ * Pluck a field error from a validation error.
+ *
+ * This is used to create a fallback error message when the API returns
+ * a validation error that isn't associated with field within the form.
+ *
+ * We can still show the error message, to at least give the user some feedback.
+ */
+export function pluckFallbackFieldErrors(parsedError: APIError): string[] {
+    let fallback: string[] = [];
+
+    for (const [fieldName, fieldErrors] of Object.entries(parsedError)) {
+        if (Array.isArray(fieldErrors)) {
+            return [`${sentenceCase(fieldName)}: ${fieldErrors.join(", ")}`];
+        }
+
+        if (typeof fieldErrors === "string") {
+            fallback = [`${sentenceCase(fieldName)}: ${fieldErrors}`];
+        }
+    }
+
+    return fallback;
 }
 
 //#endregion

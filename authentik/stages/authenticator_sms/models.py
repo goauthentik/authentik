@@ -68,7 +68,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         help_text=_("Optionally modify the payload being sent to custom providers."),
     )
 
-    def send(self, request: HttpRequest, token: str, device: "SMSDevice"):
+    def send(self, request: HttpRequest, token: str, device: SMSDevice):
         """Send message via selected provider"""
         if self.provider == SMSProviders.TWILIO:
             return self.send_twilio(request, token, device)
@@ -80,7 +80,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         """Get SMS message"""
         return _("Use this code to authenticate in authentik: {token}".format_map({"token": token}))
 
-    def send_twilio(self, request: HttpRequest, token: str, device: "SMSDevice"):
+    def send_twilio(self, request: HttpRequest, token: str, device: SMSDevice):
         """send sms via twilio provider"""
         client = Client(self.account_sid, self.auth)
         message_body = str(self.get_message(token))
@@ -105,7 +105,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             LOGGER.warning("Error sending token by Twilio SMS", exc=exc, msg=exc.msg)
             raise ValidationError(exc.msg) from None
 
-    def send_generic(self, request: HttpRequest, token: str, device: "SMSDevice"):
+    def send_generic(self, request: HttpRequest, token: str, device: SMSDevice):
         """Send SMS via outside API"""
         payload = {
             "From": self.from_number,

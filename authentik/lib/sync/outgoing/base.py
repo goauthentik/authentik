@@ -44,7 +44,7 @@ class BaseOutgoingSyncClient[
 
     provider: TProvider
     connection_type: type[TConnection]
-    connection_attr: str
+    connection_type_query: str
     mapper: PropertyMappingManager
 
     can_discover = False
@@ -64,7 +64,9 @@ class BaseOutgoingSyncClient[
     def write(self, obj: TModel) -> tuple[TConnection, bool]:
         """Write object to destination. Uses self.create and self.update, but
         can be overwritten for further logic"""
-        connection = getattr(obj, self.connection_attr).filter(provider=self.provider).first()
+        connection = self.connection_type.objects.filter(
+            provider=self.provider, **{self.connection_type_query: obj}
+        ).first()
         try:
             if not connection:
                 connection = self.create(obj)
@@ -82,7 +84,7 @@ class BaseOutgoingSyncClient[
                 connection.delete()
         return None, False
 
-    def delete(self, obj: TModel):
+    def delete(self, identifier: str):
         """Delete object from destination"""
         raise NotImplementedError()
 

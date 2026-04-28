@@ -2,10 +2,10 @@
 title: "Markdown template: reference"
 ---
 
-Write a few sentences introducing the feature/component/technology, and state that this page contains refeerence materials.
+Write a few sentences introducing the feature/component/technology, and state that this page contains reference materials.
 
-:::info
-if needed, use this syntax to add a note (info) or warning (warning)
+:::info Optionally add a title here
+If needed, use this syntax to add a info, warning or danger box to the document.
 :::
 
 ## Head 2

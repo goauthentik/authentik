@@ -10,11 +10,10 @@ import { customElement, property } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 export interface ILibraryPageApplicationEmptyList {
-    isAdmin: boolean;
+    admin: boolean;
 }
 
 /**
@@ -30,7 +29,6 @@ export class LibraryPageApplicationEmptyList
     implements ILibraryPageApplicationEmptyList
 {
     static styles = [
-        PFBase,
         PFEmptyState,
         PFButton,
         PFContent,
@@ -43,8 +41,8 @@ export class LibraryPageApplicationEmptyList
         `,
     ];
 
-    @property({ attribute: "isadmin", type: Boolean })
-    public isAdmin = false;
+    @property({ type: Boolean })
+    public admin = false;
 
     #renderNewAppButton() {
         const href = paramURL("/core/applications", {
@@ -60,7 +58,7 @@ export class LibraryPageApplicationEmptyList
                 >
             </div>
             <div class="pf-c-empty-state__body">
-                <a rel="noopener noreferrer" href="${docLink("/docs/applications")}" target="_blank"
+                <a rel="noopener noreferrer" href=${docLink("/applications")} target="_blank"
                     >${msg("Refer to documentation")}</a
                 >
             </div>
@@ -71,11 +69,11 @@ export class LibraryPageApplicationEmptyList
         return html` <div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
-                <h1 class="pf-c-title pf-m-lg">${msg("No Applications available.")}</h1>
+                <h2 class="pf-c-title pf-m-lg">${msg("No Applications available.")}</h2>
                 <div class="pf-c-empty-state__body">
                     ${msg("Either no applications are defined, or you don’t have access to any.")}
                 </div>
-                ${this.isAdmin ? this.#renderNewAppButton() : nothing}
+                ${this.admin ? this.#renderNewAppButton() : nothing}
             </div>
         </div>`;
     }

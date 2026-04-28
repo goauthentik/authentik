@@ -12,6 +12,7 @@ from authentik.providers.rac.consumer_outpost import RACOutpostConsumer
 from authentik.providers.rac.views import RACInterface, RACStartView
 from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.middleware import ChannelsLoggingMiddleware
+from authentik.tenants.channels import TenantsAwareMiddleware
 
 urlpatterns = [
     path(
@@ -29,11 +30,15 @@ urlpatterns = [
 websocket_urlpatterns = [
     path(
         "ws/rac/<str:token>/",
-        ChannelsLoggingMiddleware(AuthMiddlewareStack(RACClientConsumer.as_asgi())),
+        ChannelsLoggingMiddleware(
+            TenantsAwareMiddleware(AuthMiddlewareStack(RACClientConsumer.as_asgi()))
+        ),
     ),
     path(
         "ws/outpost_rac/<str:channel>/",
-        ChannelsLoggingMiddleware(TokenOutpostMiddleware(RACOutpostConsumer.as_asgi())),
+        ChannelsLoggingMiddleware(
+            TenantsAwareMiddleware(TokenOutpostMiddleware(RACOutpostConsumer.as_asgi()))
+        ),
     ),
 ]
 

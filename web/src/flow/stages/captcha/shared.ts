@@ -1,12 +1,35 @@
+import type { ResolvedUITheme } from "#common/theme";
+
 import { createDocumentTemplate } from "#elements/utils/iframe";
 
 import { html, TemplateResult } from "lit";
 
-export interface CaptchaHandler {
-    interactive(): TemplateResult;
-    execute(): Promise<void>;
-    refreshInteractive(): Promise<void>;
-    refresh(): Promise<void>;
+const ThemeColor = {
+    dark: "#18191a",
+    light: "#ffffff",
+} as const satisfies Record<ResolvedUITheme, string>;
+
+export function themeMeta(theme: ResolvedUITheme) {
+    switch (theme) {
+        case "dark":
+            return html`
+                <meta name="color-scheme" content="dark" />
+                <meta name="theme-color" content=${ThemeColor.dark} />
+            `;
+        case "light":
+            return html` <meta name="color-scheme" content="light" />
+                <meta name="theme-color" content=${ThemeColor.light} />`;
+    }
+}
+
+export interface IFrameTemplateInit {
+    challengeURL: URL | string;
+    theme: ResolvedUITheme;
+    /**
+     * If `true`, the script element will fire `loadListener()` on load.
+     * Defaults to `true`.
+     */
+    scriptOnLoad?: boolean;
 }
 
 /**
@@ -17,10 +40,17 @@ export interface CaptchaHandler {
  * margin, adding 2rem of height to our container adds padding and prevents scrollbars
  * or hidden rendering.
  */
-export function iframeTemplate(children: TemplateResult, challengeURL: string): string {
+export function iframeTemplate(
+    children: TemplateResult,
+    { challengeURL, theme, scriptOnLoad = true }: IFrameTemplateInit,
+) {
     return createDocumentTemplate({
-        head: html`<meta charset="UTF-8" />
+        head: html`
+            <meta charset="UTF-8" />
 
+            ${themeMeta(theme)}
+        `,
+        body: html`
             <script>
                 "use strict";
 
@@ -43,6 +73,11 @@ export function iframeTemplate(children: TemplateResult, challengeURL: string): 
             </script>
 
             <style>
+                html,
+                body {
+                    background: ${ThemeColor[theme]};
+                }
+
                 body {
                     margin: 0;
                     padding: 0;
@@ -58,8 +93,12 @@ export function iframeTemplate(children: TemplateResult, challengeURL: string): 
                     align-items: center;
                     justify-content: center;
                 }
-            </style>`,
-        body: html`${children}
-            <script onload="loadListener()" src="${challengeURL}"></script> `,
+            </style>
+            ${children}
+            <script
+                ${scriptOnLoad ? 'onload="loadListener()"' : ""}
+                src="${challengeURL.toString()}"
+            ></script>
+        `,
     });
 }

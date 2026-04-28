@@ -1,3 +1,5 @@
+import "#components/ak-switch-input";
+import "#elements/forms/SearchSelect/ak-search-select";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -46,7 +48,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<span>
                 ${msg("Redirect the user to another flow, potentially with all gathered context")}
             </span>

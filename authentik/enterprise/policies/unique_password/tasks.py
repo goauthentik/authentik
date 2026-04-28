@@ -1,6 +1,5 @@
 from django.db.models.aggregates import Count
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog import get_logger
 
@@ -8,7 +7,7 @@ from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
     UserPasswordHistory,
 )
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 
@@ -19,7 +18,7 @@ LOGGER = get_logger()
     )
 )
 def check_and_purge_password_history():
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
 
     if not UniquePasswordPolicy.objects.exists():
         UserPasswordHistory.objects.all().delete()
@@ -39,7 +38,7 @@ def trim_password_histories():
     UniquePasswordPolicy policies.
     """
 
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
 
     # No policy, we'll let the cleanup above do its thing
     if not UniquePasswordPolicy.objects.exists():

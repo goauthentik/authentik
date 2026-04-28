@@ -1,17 +1,18 @@
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
 import "#elements/forms/ModalForm";
 
-import { AKElement } from "#elements/Base";
-import { ModelForm } from "#elements/forms/ModelForm";
+import { PFSize } from "#common/enums";
 
-import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import { AKElement } from "#elements/Base";
+import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * This is a bit of a hack to get the viewport checking from ModelForm,
@@ -19,22 +20,37 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * #TODO: Rework this in the future
  */
 @customElement("ak-rbac-object-permission-modal-form")
-export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
-    @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+export class ObjectPermissionsPageForm extends ModelForm<never, string> {
+    public static verboseName = msg("Object Permission");
+    public static verboseNamePlural = msg("Object Permissions");
+    public static createLabel = msg("Update");
 
-    @property()
-    objectPk?: string | number;
+    public override cancelButtonLabel = msg("Close");
+    public override cancelable = true;
 
-    loadInstance(): Promise<unknown> {
-        return Promise.resolve();
+    public override size = PFSize.XLarge;
+
+    @property({ type: String })
+    public model: ModelEnum | null = null;
+
+    @property({ type: String })
+    public objectPk: string | null = null;
+
+    protected override loadInstance(): Promise<never> {
+        return Promise.resolve() as never;
     }
-    send(): Promise<unknown> {
-        return Promise.resolve();
+
+    protected override send(): Promise<never> {
+        return Promise.resolve() as never;
     }
 
-    renderForm(): TemplateResult {
+    public override renderActions(): SlottedTemplateResult {
+        return null;
+    }
+
+    protected override renderForm(): SlottedTemplateResult {
         return html`<ak-rbac-object-permission-page
+            embedded
             .model=${this.model}
             .objectPk=${this.objectPk}
             slot="form"
@@ -43,32 +59,30 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
     }
 }
 
+/**
+ * @deprecated Use {@linkcode IconPermissionButton}
+ */
 @customElement("ak-rbac-object-permission-modal")
 export class ObjectPermissionModal extends AKElement {
-    @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+    protected override createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
+    }
 
-    @property()
-    objectPk?: string | number;
+    @property({ type: String })
+    public model: ModelEnum | null = null;
 
-    static styles: CSSResult[] = [PFBase, PFButton];
+    // TODO: Switch to attribute-casing after the RBAC components settle.
+    @property({ type: String })
+    public objectPk: string | null = null;
 
-    render(): TemplateResult {
-        return html`
-            <ak-forms-modal .showSubmitButton=${false} cancelText=${msg("Close")}>
-                <span slot="header"> ${msg("Update Permissions")} </span>
-                <ak-rbac-object-permission-modal-form
-                    slot="form"
-                    .model=${this.model}
-                    .objectPk=${this.objectPk}
-                ></ak-rbac-object-permission-modal-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Permissions")}>
-                        <i class="fas fa-lock"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>
-        `;
+    @property({ type: String })
+    public label: string | null = null;
+
+    protected override render(): SlottedTemplateResult {
+        return IconPermissionButton(this.label, {
+            model: this.model,
+            objectPk: this.objectPk,
+        });
     }
 }
 

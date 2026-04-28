@@ -1,0 +1,129 @@
+---
+title: Integrate with Vikunja
+sidebar_label: Vikunja
+support_level: community
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Vikunja
+
+> Vikunja is an Open-Source, self-hosted To-Do list application for all platforms.
+>
+> -- https://vikunja.io/
+
+:::info
+This guide is based on authentik 2026.2.0 and Vikunja v1.1.0 using the [Docker Compose install](https://vikunja.io/docs/full-docker-example/). Instructions may differ between versions. Vikunja versions before 1.0 use different OpenID configuration syntax.
+:::
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `vikunja.company` is the FQDN of the Vikunja installation.
+- `authentik.company` is the FQDN of the authentik installation.
+- `authentik` is the provider key set in `config.yml` under `auth.openid.providers`. This key is used as the path segment in the redirect URI.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Vikunja with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - For web login, set a `Strict` redirect URI to `https://vikunja.company/auth/openid/authentik`.
+        - If using the Vikunja desktop client, add a `Regex` redirect URI such as `^http://127\\.0\\.0\\.1:[0-9]+/auth/openid/authentik$` to allow loopback redirects to `127.0.0.1`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+3. Click **Submit** to save the new application and provider.
+
+## Vikunja configuration
+
+Configure Vikunja using either a config file or environment variables.
+
+<Tabs
+  defaultValue="config-file"
+  values={[
+    { label: "Config File", value: "config-file" },
+    { label: "Env File", value: "env-file" },
+  ]}>
+  <TabItem value="config-file">
+
+Set the following values in `config.yml`:
+
+```yaml title="config.yml"
+auth:
+    local:
+        enabled: true
+    openid:
+        enabled: true
+        providers:
+            authentik:
+                name: "authentik Login"
+                authurl: https://authentik.company/application/o/<application_slug>/
+                clientid: <client_id>
+                clientsecret: <client_secret>
+                scope: openid email profile
+```
+
+  </TabItem>
+  <TabItem value="env-file">
+
+Set the following values in your `.env` file:
+
+```bash title=".env"
+VIKUNJA_AUTH_OPENID_ENABLED=true
+VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME="authentik Login"
+VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL=https://authentik.company/application/o/<application_slug>/
+VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID=<client_id>
+VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET=<client_secret>
+VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_SCOPE=openid email profile
+# Optional: disable local auth if all users must sign in through authentik
+VIKUNJA_AUTH_LOCAL_ENABLED=false
+```
+
+When using environment variables for providers, define the provider key in `config.yml`:
+
+```yaml title="config.yml"
+auth:
+    openid:
+        providers:
+            authentik: {}
+```
+
+  </TabItem>
+</Tabs>
+
+:::info
+The key under `auth.openid.providers` (for example, `authentik`) must match the path segment in the redirect URI configured in authentik.
+
+If the key contains uppercase letters, Vikunja converts it to lowercase and removes spaces.
+:::
+
+:::info
+The Vikunja frontend expects redirects at `/auth/openid/<provider_key>`.
+:::
+
+:::info
+If all users must sign in through authentik, disable local auth (`auth.local.enabled: false` or `VIKUNJA_AUTH_LOCAL_ENABLED=false`).
+:::
+
+Restart the Vikunja API after applying the OpenID configuration.
+
+## Configuration verification
+
+To verify that authentik is correctly integrated with Vikunja, log out of Vikunja and sign in again using the configured OpenID provider. You should be redirected to authentik for authentication and then redirected back to Vikunja.
+
+## Resources
+
+- [Vikunja configuration options - auth](https://vikunja.io/docs/config-options/#0--auth)

@@ -2,14 +2,167 @@
 title: API Client Overview
 ---
 
-import DocCardList from "@theme/DocCardList";
-
 These API clients are officially supported and maintained.
 
 :::info
 
-These API clients are primarily built around creating/updating/deleting configuration objects in authentik, and in most cases can **not** be used to implemented SSO into your application.
+These API clients are primarily built around creating/updating/deleting configuration objects in authentik, and in most cases **cannot** be used to implemented SSO into your application.
 
 :::
 
-<DocCardList />
+The API clients are generated using the [OpenAPI Generator](https://openapi-generator.tech/) and the [OpenAPI v3 schema](https://api.goauthentik.io/schema.yml).
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## Installation
+
+<Tabs groupId="language">
+  <TabItem value="golang" label="Golang" default>
+    ```shell
+    go get goauthentik.io/api/v3
+    ```
+
+  </TabItem>
+  <TabItem value="python" label="Python">
+    ```shell
+    pip install authentik-client
+    ```
+
+  </TabItem>
+  <TabItem value="rust" label="Rust">
+    ```shell
+    cargo install authentik-client
+    ```
+
+  </TabItem>
+  <TabItem value="node" label="Node">
+    ```shell
+    npm install @goauthentik/api
+    ```
+
+  </TabItem>
+</Tabs>
+
+## Get started
+
+<Tabs groupId="language">
+  <TabItem value="golang" label="Golang" default>
+    ```go
+    import (
+        "context"
+        "goauthentik.io/api/v3"
+    )
+
+    apiConfig := api.NewConfiguration()
+    apiConfig.Host = "authentik.company"
+    apiConfig.Servers = api.ServerConfigurations{
+        {
+            URL: "/api/v3",
+        },
+    }
+
+    apiClient := api.NewAPIClient(apiConfig)
+
+    status, _, err := apiClient.AdminAPI.AdminSystemRetrieve(context.Background()).Execute()
+    ```
+
+  </TabItem>
+  <TabItem value="python" label="Python">
+    ```python
+    import authentik_client
+
+    configuration = authentik_client.Configuration(host="authentik.company/api/v3")
+
+    with authentik_client.ApiClient(configuration) as api_client:
+        admin_api = authentik_client.AdminApi(api_client)
+
+        status = admin_api.admin_system_retrieve()
+    ```
+
+  </TabItem>
+  <TabItem value="rust" label="Rust">
+    ```rust
+    use authentik_client::api::{
+        admin_api::admin_system_retrieve,
+        configuration::Configuration,
+    };
+
+    let config = Configuration {
+        base_path: String::from("authentik.company/api/v3"),
+        ..Default::default()
+    };
+
+    let status = admin_system_retrieve(&config).await?;
+    ```
+
+  </TabItem>
+  <TabItem value="node" label="Node">
+    ```ts
+    import { AdminApi, Configuration } from "@goauthentik/api";
+
+    const config = new Configuration({
+        basePath: "authentik.company/api/v3",
+    });
+
+    const status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
+    ```
+
+  </TabItem>
+</Tabs>
+
+## Inspecting the client source code
+
+Each API client is published in its own repository:
+
+<Tabs groupId="language">
+    <TabItem value="golang" label="Golang" default>
+        [Go to repository](https://github.com/goauthentik/client-go)
+    </TabItem>
+    <TabItem value="python" label="Python">
+        [Go to repository](https://github.com/goauthentik/client-python)
+    </TabItem>
+    <TabItem value="rust" label="Rust">
+        [Go to repository](https://github.com/goauthentik/client-rust)
+    </TabItem>
+    <TabItem value="node" label="Node">
+        [Go to repository](https://github.com/goauthentik/client-ts)
+    </TabItem>
+</Tabs>
+
+The `main` branch only contains code for generating the API client. Navigate to a specific branch or tag to see the source code of the API client for the corresponding authentik version. For unreleased versions, see the next section.
+
+## Generating a custom API client
+
+To generate a custom API client from a specific schema, follow these steps:
+
+1. Clone one of the repositories above for the language you need.
+2. Download the OpenAPI schema from which the client will be generated and save it at the root of the repository under `schema.yml`.
+3. Run `make build version=<authentik version>`.
+
+## Usage in authentik
+
+API clients used by authentik itself are vendored in the [authentik repository](https://github.com/goauthentik/authentik) under the `/packages/client-*` paths.
+
+To generate the clients in that repository, run `make gen-clients`. To generate the client for a specific language, use the following commands:
+
+<Tabs groupId="language">
+  <TabItem value="golang" label="Golang" default>
+    ```shell
+    make gen-client-go
+    ```
+
+  </TabItem>
+  <TabItem value="rust" label="Rust">
+    ```shell
+    make gen-client-rust
+    ```
+
+  </TabItem>
+  <TabItem value="node" label="Node">
+    ```shell
+    make gen-client-ts
+    ```
+
+  </TabItem>
+</Tabs>

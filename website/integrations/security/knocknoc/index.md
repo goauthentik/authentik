@@ -17,13 +17,13 @@ The following placeholders are used in this guide:
 - `knocknoc.company` is the FQDN of the Knocknoc installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik configuration
 
-To support the integration of Knocknoc with authentik, you need to create an application/provider pair and 3 property mappings in authentik.
+To support the integration of Knocknoc with authentik, you need to create an application/provider pair and three property mappings in authentik.
 
 ### Create property mappings in authentik
 
@@ -50,7 +50,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
     - **Expression**:
 
     ```python
-    for group in user.ak_groups.all(): yield group.name
+    for group in user.groups.all(): yield group.name
     ```
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
@@ -63,14 +63,14 @@ To support the integration of Knocknoc with authentik, you need to create an app
     return 540
     ```
 
-:::note
-This example will set session duration at 540 minutes. Change the value to match your desired session duration length in minutes.
+:::info
+This example sets the session duration to 540 minutes. Change the value to match your desired session duration in minutes.
 :::
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
@@ -79,9 +79,9 @@ This example will set session duration at 540 minutes. Change the value to match
     - **ACS URL**: `https://knocknoc.company/api/saml/acs`
     - **Issuer**: `https://authentik.company`
     - **Service Provider Binding**: `Post`
-    - **Audience**: `https://kocknoc.company/api/saml/metadata`
+    - **Audience**: `https://knocknoc.company/api/saml/metadata`
     - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `Authentik default SAML Mapping: Username`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -101,7 +101,7 @@ This example will set session duration at 540 minutes. Change the value to match
 
 3. Click on **Save**.
 
-:::note
+:::info
 Key file and Cert file are currently required fields in Knocknoc. You can generate a certificate and key on a Linux host with this command:
 `openssl req -new -x509 -days 3650 -nodes -subj /CN=Knocknoc/ -out <certificate_filename>.crt -keyout <certificate_key_filename>.key`
 :::

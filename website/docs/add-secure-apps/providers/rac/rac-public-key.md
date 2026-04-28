@@ -10,12 +10,12 @@ SSH private keys can be configured via several methods:
 
 ## Apply a private key to an RAC provider
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**.
 3. Click the **Edit** icon on the RAC provider that requires public key authentication.
 4. In the **Settings** codebox enter the private key of the endpoint, for example:
-    ```python
-    private-key:
+    ```yaml
+    private-key: |
         -----BEGIN SSH PRIVATE KEY-----
         SAMPLEgIBAAJBAKj34GkxFhD90vcNLYLInFEX6Ppy1tPf9Cnzj4p4WGeKLs1Pt8Qu
         KUpRKfFLfRYC9AIKjbJTWit+CqvjWYzvQwECAwEAAQJAIJLixBy2qpFoS4DSmoEm
@@ -28,15 +28,19 @@ SSH private keys can be configured via several methods:
     ```
 5. Click **Update**.
 
+:::info
+The pipe character (`|`) is required to preserve linebreaks in the YAML text. See the [YAML spec](https://yaml.org/spec/1.2.2/#literal-style) for more information.
+:::
+
 ## Apply a private key to an RAC endpoint
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**.
 3. Click the name of the RAC provider that the endpoint belongs to.
-4. Under **Endpoints**- click on the **Edit** icon next to the endpoint that requires public key authentication.
+4. Under **Endpoints**, click on the **Edit** icon next to the endpoint that requires public key authentication.
 5. Under **Advanced settings**, in the **Settings** codebox enter the private key of the endpoint:
-    ```python
-    private-key:
+    ```yaml
+    private-key: |
         -----BEGIN SSH PRIVATE KEY-----
         SAMPLEgIBAAJBAKj34GkxFhD90vcNLYLInFEX6Ppy1tPf9Cnzj4p4WGeKLs1Pt8Qu
         KUpRKfFLfRYC9AIKjbJTWit+CqvjWYzvQwECAwEAAQJAIJLixBy2qpFoS4DSmoEm
@@ -49,17 +53,23 @@ SSH private keys can be configured via several methods:
     ```
 6. Click **Update**.
 
+:::info
+The pipe character (`|`) is required to preserve linebreaks in the YAML text. See the [YAML spec](https://yaml.org/spec/1.2.2/#literal-style) for more information.
+:::
+
 ## Apply a private key to an RAC property mapping
 
-1.  Log in to authentik as an administrator, and open the authentik Admin interface.
-2.  Navigate to **Customization** > **Property Mappings** and click **Create**, then create a **RAC Provider Property Mapping** with the following settings:
+1.  Log in to authentik as an administrator and open the authentik Admin interface.
+2.  Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**, then create a **RAC Provider Property Mapping** with the following settings:
     - **Name**: Choose a descriptive name
     - Under **Advanced Settings**:
         - **Expression**:
 
     ```python
-    return {
-    "private-key": "-----BEGIN SSH PRIVATE KEY-----
+    import textwrap
+
+    private_key = textwrap.dedent("""
+    -----BEGIN SSH PRIVATE KEY-----
     SAMPLEgIBAAJBAKj34GkxFhD90vcNLYLInFEX6Ppy1tPf9Cnzj4p4WGeKLs1Pt8Qu
     KUpRKfFLfRYC9AIKjbJTWit+CqvjWYzvQwECAwEAAQJAIJLixBy2qpFoS4DSmoEm
     o3qGy0t6z09AIJtH+5OeRV1be+N4cDYJKffGzDa88vQENZiRm0GRq6a+HPGQMd2k
@@ -67,7 +77,12 @@ SSH private keys can be configured via several methods:
     9mxDXDf6AU0cN/RPBjb9qSHDcWZHGzUCIG2Es59z8ugGrDY+pxLQnwfotadxd+Uy
     v/Ow5T0q5gIJAiEAyS4RaI9YG8EWx/2w0T67ZUVAw8eOMB6BIUg0Xcu+3okCIBOs
     /5OiPgoTdSy7bcF9IGpSE8ZgGKzgYQVZeN97YE00
-    -----END SSH PRIVATE KEY-----",
+    -----END SSH PRIVATE KEY-----
+    """)
+
+    return {
+        "username": "<your_username>",
+        "private-key": private_key
     }
     ```
 
@@ -79,8 +94,8 @@ SSH private keys can be configured via several methods:
 
 ## Retrieve a private key from a user's attributes and apply it to an RAC property mapping
 
-1.  Log in to authentik as an administrator, and open the authentik Admin interface.
-2.  Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **RAC Provider Property Mapping** with the following settings:
+1.  Log in to authentik as an administrator and open the authentik Admin interface.
+2.  Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**. Create a **RAC Provider Property Mapping** with the following settings:
     - **Name**: Choose a descriptive name
     - Under **Advanced Settings**:
         - **Expression**:
@@ -96,6 +111,6 @@ SSH private keys can be configured via several methods:
 6.  Under **Protocol Settings**, add the newly created property mapping to **Selected Property Mappings**.
 7.  Click **Update**.
 
-:::note
-For group attributes, the following expression can be used `request.user.group_attributes(request.http_request)`
+:::info
+For group attributes, the following expression can be used `request.user.group_attributes(request.http_request)`.
 :::

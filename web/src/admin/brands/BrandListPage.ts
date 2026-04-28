@@ -8,29 +8,26 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { Brand, CoreApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import { BrandForm } from "#admin/brands/BrandForm";
+
+import { Brand, CoreApi, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Brands");
-    }
-    pageDescription(): string {
-        return msg("Configure visual settings and defaults for different domains.");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-tenant";
-    }
+    protected override searchEnabled = true;
+    public override searchPlaceholder = msg("Search by domain or brand name...");
+    public pageTitle = msg("Brands");
+    public pageDescription = msg("Configure visual settings and defaults for different domains.");
+    public pageIcon = "pf-icon pf-icon-tenant";
 
     checkbox = true;
     clearOnRefresh = true;
@@ -42,19 +39,22 @@ export class BrandListPage extends TablePage<Brand> {
         return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Domain"), "domain"),
-            new TableColumn(msg("Brand name"), "branding_title"),
-            new TableColumn(msg("Default?"), "default"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: Brand): string | null {
+        return item.domain ?? null;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected columns: TableColumn[] = [
+        [msg("Domain"), "domain"],
+        [msg("Brand name"), "branding_title"],
+        [msg("Default?"), "default"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
+
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Brand(s)")}
+            object-label=${msg("Brand(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Brand) => {
                 return [{ key: msg("Domain"), value: item.domain }];
@@ -76,39 +76,25 @@ export class BrandListPage extends TablePage<Brand> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Brand): TemplateResult[] {
+    protected override row(item: Brand): SlottedTemplateResult[] {
         return [
-            html`${item.domain}`,
-            html`${item.brandingTitle}`,
+            item.domain,
+            item.brandingTitle || msg("-"),
             html`<ak-status-label ?good=${item._default}></ak-status-label>`,
-            html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Brand")} </span>
-                    <ak-brand-form slot="form" .instancePk=${item.brandUuid}> </ak-brand-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(BrandForm, item.brandUuid, item.brandingTitle)}
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBrandsBrand}
+                    model=${ModelEnum.AuthentikBrandsBrand}
                     objectPk=${item.brandUuid}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Brand")} </span>
-                <ak-brand-form slot="form"> </ak-brand-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(BrandForm);
     }
 }
 

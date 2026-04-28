@@ -3,7 +3,7 @@
 from json import dumps
 
 from django_filters.rest_framework import DjangoFilterBackend
-from guardian.utils import get_anonymous_user
+from guardian.shortcuts import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -62,7 +62,7 @@ class AuthorizationCodeViewSet(
 ):
     """AuthorizationCode Viewset"""
 
-    queryset = AuthorizationCode.objects.all()
+    queryset = AuthorizationCode.objects.including_expired().all()
     serializer_class = ExpiringBaseGrantModelSerializer
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
@@ -88,7 +88,7 @@ class RefreshTokenViewSet(
 ):
     """RefreshToken Viewset"""
 
-    queryset = RefreshToken.objects.all()
+    queryset = RefreshToken.objects.including_expired().all()
     serializer_class = TokenModelSerializer
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
@@ -114,7 +114,7 @@ class AccessTokenViewSet(
 ):
     """AccessToken Viewset"""
 
-    queryset = AccessToken.objects.all()
+    queryset = AccessToken.objects.including_expired().all()
     serializer_class = TokenModelSerializer
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]

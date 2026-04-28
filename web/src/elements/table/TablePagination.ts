@@ -8,32 +8,33 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type TablePageChangeListener = (page: number) => void;
 
 @customElement("ak-table-pagination")
 export class TablePagination extends AKElement {
     @property({ type: String })
-    public label?: string;
+    public label: string | null = null;
 
     @property({ attribute: false })
     public pages?: Pagination;
+
+    @property({ type: Boolean })
+    public loading = false;
 
     @property({ attribute: false })
     public onPageChange?: TablePageChangeListener;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPagination,
         css`
-            :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button {
-                color: var(--pf-c-button--m-plain--disabled--Color);
-                --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
-            }
-            :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button:disabled {
-                color: var(--pf-c-button--disabled--Color);
+            .pf-c-pagination {
+                min-width: 8rem;
+
+                &[inert] {
+                    opacity: 0.5;
+                }
             }
         `,
     ];
@@ -47,21 +48,24 @@ export class TablePagination extends AKElement {
     };
 
     render() {
-        if (!this.pages) {
+        if (!this.pages && !this.loading) {
             return nothing;
         }
 
+        const startIndex = this.pages?.startIndex || 1;
+        const endIndex = this.pages?.endIndex || 1;
+        const pageCount = this.pages?.count || 1;
+
         return html` <nav
-            aria-label=${this.label || msg("Table pagination")}
+            aria-label=${msg(str`${this.label || ""} table pagination`)}
             class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md"
+            ?inert=${this.loading}
         >
             <div class="pf-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">
                 <div class="pf-c-options-menu">
                     <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
                         <span role="heading" aria-level="4" class="pf-c-options-menu__toggle-text">
-                            ${msg(
-                                str`${this.pages?.startIndex} - ${this.pages?.endIndex} of ${this.pages?.count}`,
-                            )}
+                            ${msg(str`${startIndex} - ${endIndex} of ${pageCount}`)}
                         </span>
                     </div>
                 </div>

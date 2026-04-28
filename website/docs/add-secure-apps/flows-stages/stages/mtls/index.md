@@ -8,7 +8,12 @@ toc_max_heading_level: 5
 
 The Mutual TLS stage enables authentik to use client certificates to enroll and authenticate users. These certificates can be local to the device or available via PIV Smart Cards, Yubikeys, etc.
 
-Management of client certificates is out of the scope of this document.
+:::warning Use of trusted Certificate Authority
+
+For mTLS, note that you should NOT use a globally known CA.
+
+Using private PKI certificates that are trusted by the end-device is best practice. For example, using a Verisign certificate as a "known CA" means that ANYONE who has a certificate signed by them can authenticate via mTLS, and in addition you should implement [custom validation](../../flow/context/index.mdx#auth_method-string) to prevent unauthorized access.
+:::
 
 ## Reverse-proxy configuration
 
@@ -92,15 +97,15 @@ See the [Envoy mTLS documentation](https://www.envoyproxy.io/docs/envoy/latest/s
 
 #### No reverse proxy
 
-When using authentik without a reverse proxy, select the certificate authorities in the corresponding [brand](../../../../sys-mgmt/brands.md#client-certificates) for the domain, under **Other global settings**.
+When using authentik without a reverse proxy, select the certificate authorities in the corresponding [brand](../../../../sys-mgmt/brands/index.md#client-certificates) for the domain, under **Other global settings**.
 
 ## Stage configuration
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 
 2. Navigate to **System** > **Certificates**, and either generate or add the certificate you’ll use as a certificate authority.
 
-3. Then, navigate to **Flows and Stages** > **Stages** and click **Create**. Select **Mutual TLS Stage**, click **Next**, and set the following fields:
+3. Then, navigate to **Flows and Stages** > **Stages** and click **New Stage**. Select **Mutual TLS Stage**, click **Next**, and set the following fields:
     - **Name**: provide a descriptive name, such as "chrome-device-trust".
 
     - **Stage-specific settings**:

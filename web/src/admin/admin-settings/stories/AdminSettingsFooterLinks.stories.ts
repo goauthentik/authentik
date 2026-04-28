@@ -34,7 +34,7 @@ const metadata: Meta<FooterLinkInput> = {
                         return;
                     }
                     const target = event.target as FooterLinkInput;
-                    messages!.innerText = `${JSON.stringify(target.json(), null, 2)}\n\nValid: ${target.isValid ? "Yes" : "No"}`;
+                    messages!.innerText = `${JSON.stringify(target.toJSON(), null, 2)}\n\nValid: ${target.valid ? "Yes" : "No"}`;
                 });
             }, 250);
 
@@ -71,8 +71,5 @@ type Story = StoryObj;
 
 export const Default: Story = {
     render: () =>
-        html` <ak-admin-settings-footer-link
-            id="footer-link"
-            name="the-footer"
-        ></ak-admin-settings-footer-link>`,
+        html` <ak-admin-settings-footer-link id="footer-link"></ak-admin-settings-footer-link>`,
 };

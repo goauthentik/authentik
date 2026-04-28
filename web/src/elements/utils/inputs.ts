@@ -45,7 +45,7 @@ export function isNameableElement(element: Element): element is NamedElement {
         return false;
     }
 
-    return NameableElements.has(element.tagName);
+    return NameableElements.has(element.tagName) || element.getAttribute("name") !== null;
 }
 
 /**

@@ -5,6 +5,7 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -15,11 +16,10 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
+	staticWeb "goauthentik.io/web"
 )
 
-var (
-	ErrAuthentikStarting = errors.New("authentik starting")
-)
+var ErrAuthentikStarting = errors.New("authentik starting")
 
 const (
 	maxBodyBytes = 32 * 1024 * 1024
@@ -63,7 +63,11 @@ func (ws *WebServer) configureProxy() {
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
 	ws.mainRouter.PathPrefix(config.Get().Web.Path).Path("/-/health/live/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
-		rw.WriteHeader(200)
+		if ws.upstreamHealthcheck() {
+			rw.WriteHeader(200)
+		} else {
+			rw.WriteHeader(502)
+		}
 	}))
 	ws.mainRouter.PathPrefix(config.Get().Web.Path).HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		if !ws.g.IsRunning() {
@@ -71,6 +75,7 @@ func (ws *WebServer) configureProxy() {
 			return
 		}
 		before := time.Now()
+
 		if ws.ProxyServer != nil && ws.ProxyServer.HandleHost(rw, r) {
 			elapsed := time.Since(before)
 			Requests.With(prometheus.Labels{
@@ -78,29 +83,89 @@ func (ws *WebServer) configureProxy() {
 			}).Observe(float64(elapsed) / float64(time.Second))
 			return
 		}
+
+		r.Body = http.MaxBytesReader(rw, r.Body, maxBodyBytes)
+		rp.ServeHTTP(rw, r)
+
 		elapsed := time.Since(before)
 		Requests.With(prometheus.Labels{
 			"dest": "core",
 		}).Observe(float64(elapsed) / float64(time.Second))
-		r.Body = http.MaxBytesReader(rw, r.Body, maxBodyBytes)
-		rp.ServeHTTP(rw, r)
 	}))
 }
 
 func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request, err error) {
-	if !errors.Is(err, ErrAuthentikStarting) {
-		ws.log.WithError(err).Warning("failed to proxy to backend")
+	accept := req.Header.Get("Accept")
+
+	header := rw.Header()
+
+	if errors.Is(err, ErrAuthentikStarting) {
+		header.Set("Retry-After", "5")
+
+		if strings.Contains(accept, "application/json") {
+			header.Set("Content-Type", "application/json")
+			rw.WriteHeader(http.StatusServiceUnavailable)
+
+			err = json.NewEncoder(rw).Encode(map[string]string{
+				"error": "authentik starting",
+			})
+			if err != nil {
+				ws.log.WithError(err).Warning("failed to write error message")
+				return
+			}
+		} else if strings.Contains(accept, "text/html") {
+			header.Set("Content-Type", "text/html")
+			rw.WriteHeader(http.StatusServiceUnavailable)
+
+			loadingSplashFile, err := staticWeb.StaticDir.Open("standalone/loading/startup.html")
+			if err != nil {
+				ws.log.WithError(err).Warning("failed to open startup splash screen")
+				return
+			}
+
+			loadingSplashHTML, err := io.ReadAll(loadingSplashFile)
+			if err != nil {
+				ws.log.WithError(err).Warning("failed to read startup splash screen")
+				return
+			}
+
+			_, err = rw.Write(loadingSplashHTML)
+			if err != nil {
+				ws.log.WithError(err).Warning("failed to write startup splash screen")
+				return
+			}
+		} else {
+			header.Set("Content-Type", "text/plain")
+			rw.WriteHeader(http.StatusServiceUnavailable)
+
+			// Fallback to just a status message
+			_, err = rw.Write([]byte("authentik starting"))
+			if err != nil {
+				ws.log.WithError(err).Warning("failed to write initializing HTML")
+			}
+		}
+
+		return
 	}
-	rw.WriteHeader(http.StatusBadGateway)
+
+	ws.log.WithError(err).Warning("failed to proxy to backend")
+
 	em := fmt.Sprintf("failed to connect to authentik backend: %v", err)
-	// return json if the client asks for json
-	if req.Header.Get("Accept") == "application/json" {
+
+	if strings.Contains(accept, "application/json") {
+		header.Set("Content-Type", "application/json")
+		rw.WriteHeader(http.StatusBadGateway)
+
 		err = json.NewEncoder(rw).Encode(map[string]string{
 			"error": em,
 		})
 	} else {
+		header.Set("Content-Type", "text/plain")
+		rw.WriteHeader(http.StatusBadGateway)
+
 		_, err = rw.Write([]byte(em))
 	}
+
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to write error message")
 	}

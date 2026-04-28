@@ -1,6 +1,6 @@
 import { AkSecretTextInput } from "./ak-secret-text-input.js";
 
-import { ifNotEmpty } from "#elements/utils/ifNotEmpty";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -26,7 +26,7 @@ export class AkSecretTextAreaInput extends AkSecretTextInput {
             class="${classMap(classes)}"
             ?required=${this.required}
             name=${this.name}
-            placeholder=${ifNotEmpty(this.placeholder)}
+            placeholder=${ifPresent(this.placeholder)}
             autocomplete=${ifDefined(code ? "off" : undefined)}
             spellcheck=${ifDefined(code ? "false" : undefined)}
         >${this.value !== undefined ? this.value : ""}</textarea

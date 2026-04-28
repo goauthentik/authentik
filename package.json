@@ -1,23 +1,64 @@
 {
     "name": "@goauthentik/authentik",
-    "version": "2025.10.0-rc1",
+    "version": "2026.5.0-rc1",
     "private": true,
+    "scripts": {
+        "lint": "run-s lint:spellcheck lint:lockfile",
+        "lint:lockfile": "echo 'Skipping lockfile linting'",
+        "lint:node": "echo 'Skipping node linting'",
+        "lint:spellcheck": "cspell . --config cspell.config.jsonc"
+    },
     "type": "module",
+    "imports": {
+        "#logger": "./packages/logger-js/lib/node.js"
+    },
     "dependencies": {
-        "@eslint/js": "^9.31.0",
-        "@typescript-eslint/eslint-plugin": "^8.38.0",
-        "@typescript-eslint/parser": "^8.38.0",
-        "eslint": "^9.31.0",
-        "prettier": "^3.6.2",
-        "prettier-plugin-packagejson": "^2.5.19",
-        "typescript": "^5.8.3",
-        "typescript-eslint": "^8.38.0"
+        "@eslint/js": "^9.39.3",
+        "@goauthentik/eslint-config": "./packages/eslint-config",
+        "@goauthentik/logger-js": "./packages/logger-js",
+        "@goauthentik/prettier-config": "./packages/prettier-config",
+        "@goauthentik/tsconfig": "./packages/tsconfig",
+        "cspell": "^10.0.0",
+        "eslint": "^9.39.3",
+        "npm-run-all": "^4.1.5",
+        "pino": "^10.3.1",
+        "pino-pretty": "^13.1.2",
+        "prettier": "^3.8.1",
+        "prettier-plugin-packagejson": "^3.0.0",
+        "typescript": "^6.0.2",
+        "typescript-eslint": "^8.57.2"
     },
     "workspaces": [],
-    "prettier": "./packages/prettier-config/index.js",
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.10.1"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "warn",
+            "version": ">=24"
+        },
+        "packageManager": {
+            "name": "npm",
+            "version": ">=11.10.1",
+            "onFail": "warn"
+        }
+    },
+    "packageManager": "npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973",
+    "prettier": "@goauthentik/prettier-config",
     "overrides": {
+        "@typescript-eslint/eslint-plugin": {
+            "typescript": "$typescript"
+        },
+        "@typescript-eslint/parser": {
+            "typescript": "$typescript"
+        },
         "format-imports": {
             "eslint": "$eslint"
+        },
+        "typescript-eslint": {
+            "typescript": "$typescript"
         }
     }
 }

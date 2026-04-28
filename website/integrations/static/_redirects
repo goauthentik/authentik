@@ -1,0 +1,13 @@
+# @file Redirect rules for the Docusaurus site.
+#
+# See https://docs.netlify.com/manage/routing/redirects/overview/
+#
+# Note: The order of the rules defines the priority of the redirect.
+#       i.e. The first rule that matches the URL will take precedence.
+
+
+#region Integrations prefix
+/integrations/*                                                     /:splat 301!
+#endregion
+
+/networking/cloudflare-access                                       /security/cloudflare-access 301!

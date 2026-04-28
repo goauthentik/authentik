@@ -20,12 +20,33 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 | Version   | Supported |
 | --------- | --------- |
-| 2025.4.x  | ✅        |
-| 2025.6.x  | ✅        |
+| 2025.12.x | ✅        |
+| 2026.2.x  | ✅        |
 
 ## Reporting a Vulnerability
 
-To report a vulnerability, send an email to [security@goauthentik.io](mailto:security@goauthentik.io). Be sure to include relevant information like which version you've found the issue in, instructions on how to reproduce the issue, and anything else that might make it easier for us to find the issue.
+If you discover a potential vulnerability, please report it responsibly through one of the following channels:
+
+- **Email**: [security@goauthentik.io](mailto:security@goauthentik.io)
+- **GitHub**: Submit a private security advisory via our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new)
+
+When submitting a report, please include as much detail as possible, such as:
+
+- **Affected version(s)**: The version of authentik where the issue was identified.
+- **Steps to reproduce**: A clear description or proof of concept to help us verify the issue.
+- **Impact assessment**: How the vulnerability could be exploited and its potential effect.
+- **Additional information**: Logs, configuration details (if relevant), or any suggested mitigations.
+
+We kindly ask that you do not disclose the vulnerability publicly until we have confirmed and addressed the issue.
+
+Our team will:
+
+- Acknowledge receipt of your report as quickly as possible.
+- Keep you updated on the investigation and resolution progress.
+
+## Researcher Recognition
+
+We value contributions from the security community. For each valid report, we will publish a dedicated entry on our Security Advisory page that optionally includes the reporter’s name (or preferred alias). Please note that while we do not currently offer monetary bounties, we are committed to giving researchers appropriate credit for their efforts in keeping authentik secure.
 
 ## Severity levels
 
@@ -38,6 +59,40 @@ authentik reserves the right to reclassify CVSS as necessary. To determine sever
 | 4.0 – 6.9  | Medium   |
 | 7.0 – 8.9  | High     |
 | 9.0 – 10.0 | Critical |
+
+## Intended functionality
+
+The following capabilities are part of intentional system design and should not be reported as security vulnerabilities:
+
+- Expressions (property mappings/policies/prompts) can execute arbitrary Python code without safeguards.
+
+This is expected behavior. Any user with permission to create or modify objects containing expression fields can write code that is executed within authentik. If a vulnerability allows a user without the required permissions to write or modify code and have it executed, that would be a valid security report.
+
+However, the fact that expressions are executed as part of normal operations is not considered a privilege escalation or security vulnerability.
+
+- Blueprints can access all files on the filesystem.
+
+This access is intentional to allow legitimate configuration and deployment tasks. It does not represent a security problem by itself.
+
+- Importing blueprints allows arbitrary modification of application objects.
+
+This is intended functionality. This behavior reflects the privileged design of blueprint imports. It is "exploitable" when importing blueprints from untrusted sources without reviewing the blueprint beforehand. However, any method to create, modify or execute blueprints without the required permissions would be a valid security report.
+
+- Flow imports may contain objects other than flows (such as policies, users, groups, etc.)
+
+This is expected behavior as flow imports are blueprint files.
+
+- Prompt HTML is not escaped.
+
+Prompts intentionally allow raw HTML, including script tags, so they can be used to create interactive or customized user interface elements. Because of this, scripts within prompts may affect or interact with the surrounding page as designed.
+
+- Open redirects that do not include tokens or other sensitive information are not considered a security vulnerability.
+
+Redirects that only change navigation flow and do not expose session tokens, API keys, or other confidential data are considered acceptable and do not require reporting.
+
+- Outgoing network requests are not filtered.
+
+The destinations of outgoing network requests (HTTP, TCP, etc.) made by authentik to configurable endpoints through objects such as OAuth Sources, SSO Providers, and others are not validated. Depending on your threat model, these requests should be restricted at the network level using appropriate firewall or network policies.
 
 ## Disclosure process
 

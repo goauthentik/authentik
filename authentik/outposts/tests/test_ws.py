@@ -45,7 +45,7 @@ class TestOutpostWS(TransactionTestCase):
         communicator = WebsocketCommunicator(
             URLRouter(websocket.websocket_urlpatterns),
             f"/ws/outpost/{self.outpost.pk}/",
-            {b"authorization": f"Bearer {self.token}".encode()},
+            [(b"authorization", f"Bearer {self.token}".encode())],
         )
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
@@ -56,7 +56,7 @@ class TestOutpostWS(TransactionTestCase):
         communicator = WebsocketCommunicator(
             URLRouter(websocket.websocket_urlpatterns),
             f"/ws/outpost/{self.outpost.pk}/",
-            {b"authorization": f"Bearer {self.token}".encode()},
+            [(b"authorization", f"Bearer {self.token}".encode())],
         )
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
@@ -83,7 +83,7 @@ class TestOutpostWS(TransactionTestCase):
         communicator = WebsocketCommunicator(
             URLRouter(websocket.websocket_urlpatterns),
             f"/ws/outpost/{self.outpost.pk}/",
-            {b"authorization": f"Bearer {self.token}".encode()},
+            [(b"authorization", f"Bearer {self.token}".encode())],
         )
         connected, _ = await communicator.connect()
         self.assertTrue(connected)

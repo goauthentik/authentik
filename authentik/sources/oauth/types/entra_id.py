@@ -41,7 +41,7 @@ class EntraIDClient(UserprofileHeaderAuthClient):
             LOGGER.warning(
                 "Unable to fetch user profile",
                 exc=exc,
-                response=exc.response.text if exc.response else str(exc),
+                response=exc.response.text if exc.response is not None else str(exc),
             )
             return None
         profile_data["raw_groups"] = group_response.json()
@@ -96,7 +96,11 @@ class EntraIDType(SourceType):
         }
 
     def get_base_group_properties(self, source, group_id, **kwargs):
-        raw_group = kwargs["info"]["raw_groups"][group_id]
+        raw_groups = kwargs["info"]["raw_groups"]
+        if group_id in raw_groups:
+            name = raw_groups[group_id]["displayName"]
+        else:
+            name = group_id
         return {
-            "name": raw_group["displayName"],
+            "name": name,
         }

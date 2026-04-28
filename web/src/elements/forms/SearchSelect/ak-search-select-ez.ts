@@ -3,17 +3,17 @@ import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-export interface ISearchSelectApi<T> {
+export interface ISearchSelectConfig<T = unknown> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
-    value: (element: T | undefined) => string;
+    value: (element: T | null) => string;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy?: (items: T[]) => [string, T[]][];
 }
 
-export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
-    config: ISearchSelectApi<T>;
+export interface ISearchSelectEz<T = unknown> extends ISearchSelectBase<T> {
+    config: ISearchSelectConfig<T>;
 }
 
 /**
@@ -44,21 +44,28 @@ export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
  */
 
 @customElement("ak-search-select-ez")
-export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSelectEz<T> {
-    static styles = [...SearchSelectBase.styles];
+export class SearchSelectEz<T> extends SearchSelectBase<T> {
+    public fetchObjects!: (query?: string) => Promise<T[]>;
+    public renderElement!: (element: T) => string;
+    public renderDescription?: ((element: T) => string | TemplateResult) | undefined;
+    public value!: (element: T | null) => string;
+    public selected?: ((element: T, elements: T[]) => boolean) | undefined;
 
     @property({ type: Object, attribute: false })
-    config!: ISearchSelectApi<T>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public config!: ISearchSelectConfig<T | any>;
 
-    connectedCallback() {
+    public override connectedCallback() {
         this.fetchObjects = this.config.fetchObjects;
         this.renderElement = this.config.renderElement;
         this.renderDescription = this.config.renderDescription;
         this.value = this.config.value;
         this.selected = this.config.selected;
-        if (this.config.groupBy !== undefined) {
+
+        if (this.config.groupBy) {
             this.groupBy = this.config.groupBy;
         }
+
         super.connectedCallback();
     }
 }

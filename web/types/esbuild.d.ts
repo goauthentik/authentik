@@ -13,6 +13,32 @@ declare global {
         readonly AK_VERSION: string;
 
         /**
+         * The documentation URL.
+         *
+         * @format url
+         */
+        readonly AK_DOCS_URL: string;
+
+        /**
+         * The pre-release documentation URL.
+         *
+         * @format url
+         */
+        readonly AK_DOCS_PRE_RELEASE_URL: string;
+
+        /**
+         * The bundler used to build the application.
+         */
+        readonly AK_BUNDLER: "authentik" | "storybook";
+
+        /**
+         * The current release notes URL.
+         *
+         * @format url
+         */
+        readonly AK_DOCS_RELEASE_NOTES_URL: string;
+
+        /**
          * @todo Determine where this is used and if it is needed,
          * give it a better name.
          * @deprecated

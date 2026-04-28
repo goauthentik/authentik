@@ -1,9 +1,10 @@
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { LitPropertyRecord } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
-import { MatchingModeEnum, RedirectURI } from "@goauthentik/api";
+import { MatchingModeEnum, RedirectURI, RedirectUriTypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -12,7 +13,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type RedirectURIProperties = LitPropertyRecord<{
     redirectURI: RedirectURI;
@@ -22,9 +22,8 @@ export type RedirectURIProperties = LitPropertyRecord<{
 };
 
 @customElement("ak-provider-oauth2-redirect-uri")
-export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
+export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
     static styles = [
-        PFBase,
         PFInputGroup,
         PFFormControl,
         css`
@@ -38,21 +37,25 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
     public redirectURI: RedirectURI = {
         matchingMode: MatchingModeEnum.Strict,
         url: "",
+        redirectUriType: RedirectUriTypeEnum.Authorization,
     };
 
-    @property({ type: String })
+    @property({ type: String, useDefault: true })
+    public name = "";
+
+    @property({ type: String, attribute: "input-id" })
     public inputID?: string;
 
     @queryAll(".ak-form-control")
     controls?: HTMLInputElement[];
 
-    json() {
+    toJSON(): RedirectURI {
         return Object.fromEntries(
             Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
         ) as unknown as RedirectURI;
     }
 
-    get isValid() {
+    get valid() {
         return true;
     }
 
@@ -80,10 +83,29 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
                     ${msg("Regex")}
                 </option>
             </select>
+            <select
+                name="redirectUriType"
+                class="pf-c-form-control ak-form-control"
+                @change=${onChange}
+            >
+                <option
+                    value="${RedirectUriTypeEnum.Authorization}"
+                    ?selected=${(this.redirectURI.redirectUriType ??
+                        RedirectUriTypeEnum.Authorization) === RedirectUriTypeEnum.Authorization}
+                >
+                    ${msg("Authorization")}
+                </option>
+                <option
+                    value="${RedirectUriTypeEnum.Logout}"
+                    ?selected=${this.redirectURI.redirectUriType === RedirectUriTypeEnum.Logout}
+                >
+                    ${msg("Post Logout")}
+                </option>
+            </select>
             <input
                 type="text"
                 @change=${onChange}
-                value="${ifDefined(this.redirectURI.url ?? undefined)}"
+                value="${ifPresent(this.redirectURI.url)}"
                 class="pf-c-form-control ak-form-control pf-m-monospace"
                 spellcheck="false"
                 autocomplete="off"

@@ -3,19 +3,15 @@
 from asyncio.exceptions import CancelledError
 from typing import Any
 
-from channels_redis.core import ChannelFull
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
 from django.db import DatabaseError, InternalError, OperationalError, ProgrammingError
 from django.http.response import Http404
-from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
 from dramatiq.errors import Retry
 from h11 import LocalProtocolError
 from ldap3.core.exceptions import LDAPException
 from psycopg.errors import Error
-from redis.exceptions import ConnectionError as RedisConnectionError
-from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
 from sentry_sdk import HttpTransport, get_current_scope
 from sentry_sdk import init as sentry_sdk_init
@@ -23,7 +19,6 @@ from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.argv import ArgvIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.dramatiq import DramatiqIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.socket import SocketIntegration
 from sentry_sdk.integrations.stdlib import StdlibIntegration
 from sentry_sdk.integrations.threading import ThreadingIntegration
@@ -59,13 +54,7 @@ ignored_classes = (
     ProgrammingError,
     SuspiciousOperation,
     ValidationError,
-    # Redis errors
-    RedisConnectionError,
-    ConnectionInterrupted,
-    RedisError,
-    ResponseError,
     # websocket errors
-    ChannelFull,
     WebSocketException,
     LocalProtocolError,
     # rest_framework error
@@ -112,7 +101,6 @@ def sentry_init(**sentry_init_kwargs):
             ArgvIntegration(),
             DjangoIntegration(transaction_style="function_name", cache_spans=True),
             DramatiqIntegration(),
-            RedisIntegration(),
             SocketIntegration(),
             StdlibIntegration(),
             ThreadingIntegration(propagate_hub=True),
@@ -159,9 +147,7 @@ def before_send(event: dict, hint: dict) -> dict | None:
         if event["logger"] in [
             "asyncio",
             "multiprocessing",
-            "django_redis",
             "django.security.DisallowedHost",
-            "django_redis.cache",
             "paramiko.transport",
         ]:
             return None

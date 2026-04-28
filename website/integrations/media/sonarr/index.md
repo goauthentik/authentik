@@ -4,7 +4,7 @@ sidebar_label: Sonarr
 support_level: community
 ---
 
-:::note
+:::info
 These instructions apply to all projects in the \*arr Family. If you use multiple of these projects, you can assign them to the same Outpost.
 :::
 
@@ -21,19 +21,19 @@ The following placeholders are used in this guide:
 - `sonarr.company` is the FQDN of the Sonarr installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create a Proxy Provider with the following values
+Create a Proxy Provider with the following values:
 
-- Internal host
+- **Internal host**
 
     If Sonarr is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://sonarr:8989`, where sonarr is the name of your container.
 
     If Sonarr is running on a different server than where you are deploying the authentik proxy, set the value to `http://sonarr.company:8989`.
 
-- External host
+- **External host**
 
     Set this to the external URL you will be accessing Sonarr from.
 
@@ -58,8 +58,22 @@ Additional note: Make sure the type of authentication is set to "Basic (Browser 
 
 Add all Sonarr users to the Group. You should also create a Group Membership Policy to limit access to the application.
 
-Enable the `Use Basic Authentication` option. Set and `HTTP-Basic Username` and `HTTP-Basic Password` to `sonarr_user` and `sonarr_password` respectively. These values can be chosen freely, `sonarr_` is just used as a prefix for clarity.
+Enable the `Use Basic Authentication` option. Set `HTTP-Basic Username` and `HTTP-Basic Password` to `sonarr_user` and `sonarr_password` respectively. These values can be chosen freely, `sonarr_` is just used as a prefix for clarity.
 
 ## Reverse Proxy Setup
 
-Finally, in your reverse proxy setup for Sonarr, replace the current value with your Authentik Server
+Finally, in your reverse proxy setup for Sonarr, replace the current value for the proxied server (e.g. proxy_pass in nginx) with your authentik outpost proxy provider address.
+
+```mermaid
+architecture-beta
+    service client(server)[Client]
+    service revprox(server)[Reverse Proxy]
+    service outpost(server)[Outpost]
+    service sonarr(server)[Sonarr]
+    service auth(server)[authentik]
+
+    client:R -- L:revprox
+    revprox:R -- L:outpost
+    outpost:R -- L:sonarr
+    outpost:T -- B:auth
+```

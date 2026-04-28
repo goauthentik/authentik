@@ -65,7 +65,7 @@ Because Mautic requires a first name and last name attribute, create two [SAML p
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider**: select **SAML Provider** as the provider type.
     - **Configure the Provider**:
@@ -73,15 +73,14 @@ Because Mautic requires a first name and last name attribute, create two [SAML p
         - Set the **ACS URL** to `https://mautic.company/s/saml/login_check`
         - Set the **Issuer** to `mautic.company`
         - Set the **Service Provider Binding** to `Post`
-        - Under **Advanced protocol settings** set the **Signing Certificate** to `authentik Self-signed Certificate` and check **Sign assertions** and **Sign responses**
-        - Under **Advanced protocol settings** add the newly created property mappings `SAML-FirstName-from-Name` and `SAML-LastName-from-Name` under **Property Mappings**. **Property Mappings**.
+        - Under **Advanced protocol settings**, select an available **Signing certificate**, check **Sign assertions** and **Sign responses**, and add the two **Property Mappings** you created in the previous section.
 3. Click **Submit** to save the new application and provider.
 4. Go to **Applications** > **Providers** and click on `mautic-provider`.
     - Under **Metadata** click on **Download** to save the file as `mautic-provider\_authentik_meta.xml`.
 
 ## Mautic configuration
 
-:::note
+:::info
 
 When running behind an SSL-terminating reverse proxy (e.g. traefik): In **Configuration > System Settings**, make sure that:
 
@@ -149,11 +148,11 @@ To avoid changing certificates in authentik, go to the authentik Admin interface
     - **Private key Algorithm**: `RSA`
 2. Click the caret (**>**) next to the newly generated certificate, then select **Download certificate** to get the `Mautic Self-signed Certificate\_certificate.pem` file and **Download Private key** to get the `Mautic Self-signed Certificate\_private_key.pem` file.
 3. Make sure that the `Mautic Self-signed Certificate\_private_key.pem` is in PKCS#1 format.
-   To verify, use `grep`to check for`RSA` in the header and footer of the file:
-   `sh
-grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
-`
-   If the command returns the correct match (e.g., `-----BEGIN RSA PRIVATE KEY-----` and `-----BEGIN RSA PRIVATE KEY-----`), the key is in PKCS#1 format, and you can skip steps 4 to 6.
+   To verify, use `grep` to check for `RSA` in the header and footer of the file:
+    ```sh
+    grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
+    ```
+    If the command returns the correct match (e.g., `-----BEGIN RSA PRIVATE KEY-----` and `-----END RSA PRIVATE KEY-----`), the key is in PKCS#1 format, and you can skip steps 4 to 6.
 4. If the key is not in PKCS#1 format, add RSA after `BEGIN` and `END` in `Mautic Self-signed Certificate\_private_key.pem` as shown below and save the file as `private_key_new.pem`:
     ```diff
     - -----BEGIN PRIVATE KEY-----
@@ -182,7 +181,7 @@ grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
     openssl x509 -req -days 365 -in request.csr -signkey private_key_new.pem -out certificate_new.pem
     ```
 
-7. In authentik, navigate to **System > Certificates** and click on **Edit** the update previously generated certificate.
+7. In authentik, navigate to **System > Certificates** and click **Edit** on the previously generated certificate.
    Click on the description below the text inputs to activate the inputs.
     - **Certificate**: Enter the contents of `certificate_new.pem` or, if steps 4 to 6 were skipped, `Mautic Self-signed Certificate\_certificate.pem`
     - **Private Key**: Enter the contents of `private_key_new.pem` or, if steps 4 to 6 were skipped, `Mautic Self-signed Certificate\_private_key.pem`

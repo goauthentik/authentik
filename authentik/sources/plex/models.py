@@ -116,8 +116,9 @@ class PlexSource(ScheduledModel, Source):
                     "slug": self.slug,
                 }
             ),
-            icon_url=self.icon_url,
+            icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
             name=self.name,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:

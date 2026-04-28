@@ -8,3 +8,6 @@ coverage:
         threshold: 1%
 comment:
   after_n_builds: 3
+ignore:
+  - packages/client-rust
+  - packages/client-ts

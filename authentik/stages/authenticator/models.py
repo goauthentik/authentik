@@ -143,7 +143,7 @@ class Device(CreatedUpdatedModel):
                 if for_verify:
                     device_set = device_set.select_for_update()
                 device = device_set.first()
-        except (ValueError, LookupError):
+        except ValueError, LookupError:
             pass
 
         return device

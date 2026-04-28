@@ -11,7 +11,7 @@
   base    = "website"
   package = "integrations"
   command = "npm run build -w integrations"
-  publish = "website/integrations/build"
+  publish = "integrations/build"
 
 [dev]
   command    = "npm start"

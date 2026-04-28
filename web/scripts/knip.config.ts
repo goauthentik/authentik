@@ -1,27 +1,29 @@
 import { type KnipConfig } from "knip";
 
 const config: KnipConfig = {
-    "entry": [
-        "./src/admin/AdminInterface/AdminInterface.ts",
-        "./src/user/UserInterface.ts",
-        "./src/flow/FlowInterface.ts",
-        "./src/standalone/api-browser/index.ts",
-        "./src/rac/index.ts",
-        "./src/standalone/loading/index.ts",
-        "./src/polyfill/poly.ts",
+    entry: [
+        "./src/admin/index.entrypoint.ts",
+        "./src/user/index.entrypoint.ts",
+        "./src/flow/index.entrypoint.ts",
+        "./src/standalone/api-browser/index.entrypoint.ts",
+        "./src/rac/index.entrypoint.ts",
+        "./src/standalone/loading/index.entrypoint.ts",
+        "./src/polyfill/index.entrypoint.ts",
     ],
-    "project": ["src/**/*.ts", "src/**/*.js", "./scripts/*.mjs", ".storybook/*.ts"],
+    ignore: ["packages/client-ts/**", "out/**/*"],
+
+    project: ["src/**/*.ts", "src/**/*.js", "./scripts/*.mjs", ".storybook/*.ts"],
     // "ignore": ["src/**/*.test.ts", "src/**/*.stories.ts"],
     // Prevent Knip from complaining about web components, which export their classes but also
     // export their registration, and we don't always use both.
-    "ignoreExportsUsedInFile": true,
-    "typescript": {
+    ignoreExportsUsedInFile: true,
+    typescript: {
         config: ["tsconfig.json"],
     },
-    "wireit": {
+    wireit: {
         config: ["package.json"],
     },
-    "storybook": {
+    storybook: {
         config: [".storybook/{main,test-runner}.{js,ts}"],
         entry: [
             ".storybook/{manager,preview}.{js,jsx,ts,tsx}",
@@ -29,7 +31,7 @@ const config: KnipConfig = {
         ],
         project: [".storybook/**/*.{js,jsx,ts,tsx}"],
     },
-    "eslint": {
+    eslint: {
         entry: [
             "eslint.config.mjs",
             "scripts/eslint.precommit.mjs",
@@ -39,9 +41,6 @@ const config: KnipConfig = {
             "scripts/eslint.mjs",
         ],
         config: ["package.json"],
-    },
-    "webdriver-io": {
-        config: ["wdio.conf.js"],
     },
 };
 

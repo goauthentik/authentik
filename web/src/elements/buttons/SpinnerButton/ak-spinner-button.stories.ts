@@ -29,11 +29,11 @@ export default metadata;
 
 export const ButtonWithSuccess = () => {
     const run = () =>
-        new Promise<void>(function (resolve) {
-            setTimeout(function () {
+        new Promise<void>((resolve) =>
+            setTimeout(() => {
                 resolve();
-            }, 3000);
-        });
+            }, 3000),
+        );
 
     return html`<div style="padding: 4em">
         <ak-spinner-button class="pf-m-primary" .callAction=${run}>3 Seconds</ak-spinner-button>

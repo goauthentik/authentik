@@ -16,7 +16,7 @@ class RedirectMode(models.TextChoices):
 
 
 class RedirectStage(Stage):
-    """Redirect the user to another flow, potentially with all gathered context"""
+    """Redirect the user to another flow, potentially with all gathered context."""
 
     keep_context = models.BooleanField(default=True)
     mode = models.TextField(choices=RedirectMode.choices)

@@ -41,6 +41,8 @@ metadata:
             https://app.company/outpost.goauthentik.io/start?rd=$scheme://$http_host$escaped_request_uri
         nginx.ingress.kubernetes.io/auth-response-headers: |-
             Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid
+            # Add the 'authorization' header to auth-response-headers if you need proxy providers which
+            # send a custom HTTP-Basic Authentication header based on values from authentik
         nginx.ingress.kubernetes.io/auth-snippet: |
             proxy_set_header X-Forwarded-Host $http_host;
 ```

@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -33,14 +33,14 @@ To support the integration of HashiCorp Cloud with authentik, you need to create
 ### Create an Application and Provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider**.
+2. Navigate to **Applications** > **Applications** and click **New Application**.
     - **Application**: Provide a descriptive name, an optional group, and UI settings. Take note of the **slug** as it will be required later.
     - **Choose a Provider type**: Select **SAML Provider**.
     - **Configure the Provider**:
         - Set the **ACS URL** to the value of `SSO Sign-On URL` in the **HashiCorp Cloud preparation** section.
         - Set the **Issuer** and **Audience** to the value of `Entity ID` in the **HashiCorp Cloud preparation** section.
         - Set the **Service Provider Binding** to `Post`.
-        - Under **Advanced protocol settings**, select an available signing certificate.
+        - Under **Advanced protocol settings**, select an available **Signing certificate**.
 3. Click **Submit** to save the new application and provider.
 
 ## HashiCorp Cloud configuration

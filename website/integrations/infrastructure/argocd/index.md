@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `argocd.company` is the FQDN of the ArgoCD installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -28,14 +28,14 @@ To support the integration of ArgoCD with authentik, you need to create an appli
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Add two `Strict` redirect URI and set them to `https://argocd.company/api/dex/callback` and `https://localhost:8085/auth/callback`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -47,7 +47,7 @@ After creating the groups, select a group, navigate to the **Users** tab, and ma
 
 ## ArgoCD Configuration
 
-:::note
+:::info
 We're not going to use the oidc config, but instead the "dex", oidc doesn't allow ArgoCD CLI usage while DEX does.
 :::
 
@@ -92,7 +92,7 @@ dex.config: |
 
 ### Step 3 - Map the `ArgoCD Admins` group to ArgoCD's admin role
 
-In the `argocd-rbac-cm` ConfigMap, add the following to the data field (or create it if it's not already there) :
+In the `argocd-rbac-cm` ConfigMap, add the following to the data field (or create it if it's not already there):
 
 ```yaml
 policy.csv: |
@@ -103,4 +103,4 @@ policy.csv: |
 If you already had an "admin" group and thus didn't create the `ArgoCD Admins` one, just replace `ArgoCD Admins` with your existing group name.
 If you did not opt to create a read-only group, or chose to use one with a different name in authentik, rename or remove here accordingly.
 
-Apply all the modified manifests, and you should be able to login to ArgoCD both through the UI and the CLI.
+Apply all the modified manifests, and you should be able to log in to ArgoCD both through the UI and the CLI.

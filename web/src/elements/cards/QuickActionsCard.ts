@@ -3,18 +3,31 @@ import "#elements/cards/AggregateCard";
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type QuickAction = [label: string, url: string, isExternal?: boolean];
 
 export interface IQuickActionsCard {
     title?: string;
     actions: QuickAction[];
+}
+
+function renderItem([label, url, external]: QuickAction) {
+    return html` <li>
+        <a class="pf-u-mb-xl" href=${url} target=${ifDefined(external ? "_blank" : undefined)}
+            >${label}${external
+                ? html`&nbsp;<i
+                          aria-hidden="true"
+                          class="fas fa-external-link-alt ak-external-link"
+                      ></i>`
+                : nothing}
+        </a>
+    </li>`;
 }
 
 /**
@@ -25,7 +38,7 @@ export interface IQuickActionsCard {
  */
 @customElement("ak-quick-actions-card")
 export class QuickActionsCard extends AKElement implements IQuickActionsCard {
-    static styles = [PFBase, PFList];
+    static styles = [PFList];
 
     /**
      * Card title
@@ -45,19 +58,7 @@ export class QuickActionsCard extends AKElement implements IQuickActionsCard {
     actions: QuickAction[] = [];
 
     render() {
-        const renderItem = ([label, url, external]: QuickAction) =>
-            html` <li>
-                <a class="pf-u-mb-xl" href=${url} ${external ? 'target="_blank"' : ""}>
-                    ${external
-                        ? html`${label}&nbsp;<i
-                                  aria-hidden="true"
-                                  class="fas fa-external-link-alt ak-external-link"
-                              ></i>`
-                        : label}
-                </a>
-            </li>`;
-
-        return html` <ak-aggregate-card icon="fa fa-share" header=${this.title} left-justified>
+        return html` <ak-aggregate-card icon="fa fa-share" label=${this.title}>
             <ul aria-label="${msg("Quick actions")}" class="pf-c-list">
                 ${map(this.actions, renderItem)}
             </ul>

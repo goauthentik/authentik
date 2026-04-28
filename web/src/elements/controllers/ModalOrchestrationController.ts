@@ -30,8 +30,6 @@ declare global {
 const modalIsLive = (modal: ModalElement) => modal.isConnected && modal.checkVisibility();
 
 /**
- * class ModalOrchetrationController
- *
  * A top-level controller that listens for requests from modals to be added to
  * the management list, such that the *topmost* modal will be closed (and all
  * references to it eliminated) whenever the user presses the Escape key.
@@ -51,13 +49,13 @@ export class ModalOrchestrationController implements ReactiveController {
     #knownModals: ModalElement[] = [];
 
     public hostConnected() {
-        window.addEventListener("keyup", this.handleKeyup);
+        window.addEventListener("keyup", this.#keyupListener);
         window.addEventListener("ak-modal-show", this.#addModal);
         window.addEventListener("ak-modal-hide", this.closeModal);
     }
 
     public hostDisconnected() {
-        window.removeEventListener("keyup", this.handleKeyup);
+        window.removeEventListener("keyup", this.#keyupListener);
         window.removeEventListener("ak-modal-show", this.#addModal);
         window.removeEventListener("ak-modal-hide", this.closeModal);
     }
@@ -108,8 +106,16 @@ export class ModalOrchestrationController implements ReactiveController {
         this.#knownModals = knownModals;
     };
 
-    handleKeyup = ({ key }: KeyboardEvent) => {
+    #keyupListener = ({ key, defaultPrevented }: KeyboardEvent) => {
         // The latter handles Firefox 37 and earlier.
+        if (key !== "Escape" && key !== "Esc") {
+            return;
+        }
+
+        // Allow an event listener within the modal to prevent
+        // our default behavior of closing the modal.
+        if (defaultPrevented) return;
+
         if (key === "Escape" || key === "Esc") {
             this.#removeTopmostModal();
         }

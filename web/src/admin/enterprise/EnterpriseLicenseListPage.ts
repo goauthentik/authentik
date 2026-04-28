@@ -9,11 +9,15 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
+import { docLink } from "#common/global";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EnterpriseLicenseForm } from "#admin/enterprise/EnterpriseLicenseForm";
 
 import {
     EnterpriseApi,
@@ -21,12 +25,12 @@ import {
     LicenseForecast,
     LicenseSummary,
     LicenseSummaryStatusEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    ModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { css, CSSResult, html, nothing } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -36,35 +40,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
-    checkbox = true;
-    clearOnRefresh = true;
-
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Licenses");
-    }
-    pageDescription(): string {
-        return msg("Manage enterprise licenses");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-key";
-    }
-
-    @property()
-    order = "name";
-
-    @state()
-    forecast?: LicenseForecast;
-
-    @state()
-    summary?: LicenseSummary;
-
-    @state()
-    installID?: string;
-
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         PFGrid,
         PFBanner,
@@ -81,6 +57,25 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `,
     ];
 
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    protected override searchEnabled = true;
+    public override pageTitle = msg("Licenses");
+    public override pageDescription = msg("Manage enterprise licenses");
+    public override pageIcon = "pf-icon pf-icon-key";
+    public override searchPlaceholder = msg("Search for a license by name...");
+    public override order = "name";
+
+    @state()
+    protected forecast?: LicenseForecast;
+
+    @state()
+    protected summary?: LicenseSummary;
+
+    @state()
+    protected installID?: string;
+
     async apiEndpoint(): Promise<PaginatedResponse<License>> {
         this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
         this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve({
@@ -94,35 +89,33 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         );
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Users")),
-            new TableColumn(msg("Expiry date")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Users")],
+        [msg("Expiry date")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     // TODO: Make this more generic, maybe automatically get the plural name
     // of the object to use in the renderEmpty
-    renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: SlottedTemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
-                : html`<ak-empty-state icon=${this.pageIcon()}
+                : html`<ak-empty-state icon=${this.pageIcon}
                       ><span>${msg("No licenses found.")}</span>
                       <div slot="body">
-                          ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
+                          ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
                       </div>
                       <div slot="primary">${this.renderObjectCreate()}</div>
                   </ak-empty-state>`}
         `);
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("License(s)")}
+            object-label=${msg("License(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: License) => {
                 return [
@@ -147,7 +140,17 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderSectionBefore(): TemplateResult {
+    protected override renderSectionBefore(): SlottedTemplateResult {
+        const {
+            externalUsers = 0,
+            internalUsers = 0,
+            forecastedExternalUsers = 0,
+            forecastedInternalUsers = 0,
+        } = this.forecast || {};
+
+        const totalInternalUserEstimate = internalUsers + forecastedInternalUsers;
+        const totalExternalUserEstimate = externalUsers + forecastedExternalUsers;
+
         return html`
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
@@ -155,39 +158,40 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 >
                     ${this.renderGetLicenseCard()}
                     <ak-aggregate-card
+                        role="status"
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
-                        header=${msg("Forecast internal users")}
+                        label=${msg("Forecast internal users")}
                         subtext=${msg(
-                            str`Estimated user count one year from now based on ${this.forecast?.internalUsers} current internal users and ${this.forecast?.forecastedInternalUsers} forecasted internal users.`,
+                            str`Estimated user count one year from now based on ${internalUsers} current internal users and ${forecastedInternalUsers} forecasted internal users.`,
                         )}
+                        ><span aria-label=${msg("Approximately")}>&#8776;</span
+                        >${totalInternalUserEstimate}&nbsp;&nbsp;</ak-aggregate-card
                     >
-                        ~&nbsp;${(this.forecast?.internalUsers || 0) +
-                        (this.forecast?.forecastedInternalUsers || 0)}
-                    </ak-aggregate-card>
                     <ak-aggregate-card
+                        role="status"
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
-                        header=${msg("Forecast external users")}
+                        label=${msg("Forecast external users")}
                         subtext=${msg(
-                            str`Estimated user count one year from now based on ${this.forecast?.externalUsers} current external users and ${this.forecast?.forecastedExternalUsers} forecasted external users.`,
+                            str`Estimated user count one year from now based on ${externalUsers} current external users and ${forecastedExternalUsers} forecasted external users.`,
                         )}
+                        ><span aria-label=${msg("Approximately")}>&#8776;</span
+                        >${totalExternalUserEstimate}&nbsp;&nbsp;</ak-aggregate-card
                     >
-                        ~&nbsp;${(this.forecast?.externalUsers || 0) +
-                        (this.forecast?.forecastedExternalUsers || 0)}
-                    </ak-aggregate-card>
                     <ak-aggregate-card
+                        role="status"
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
-                        header=${msg("Expiry")}
+                        label=${msg("Expiry")}
                         subtext=${msg("Cumulative license expiry")}
-                    >
-                        ${this.summary &&
+                        >${this.summary &&
                         this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
-                            ? html`<div>${formatElapsedTime(this.summary.latestValid)}</div>
-                                  <small>${this.summary.latestValid.toLocaleString()}</small>`
-                            : "-"}
-                    </ak-aggregate-card>
+                            ? Timestamp(this.summary.latestValid)
+                            : html`<span aria-label=${msg("No expiry")}
+                                  >-</span
+                              >`}</ak-aggregate-card
+                    >
                 </div>
             </section>
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
@@ -199,7 +203,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `;
     }
 
-    row(item: License): TemplateResult[] {
+    row(item: License): SlottedTemplateResult[] {
         let color = PFColor.Green;
         if (item.expiry) {
             const now = new Date();
@@ -217,26 +221,19 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             html`<div>${msg(str`Internal: ${item.internalUsers}`)}</div>
                 <div>${msg(str`External: ${item.externalUsers}`)}</div>`,
             html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
-            html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update License")} </span>
-                    <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
-                    </ak-enterprise-license-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(EnterpriseLicenseForm, item.licenseUuid, item.name)}
+
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEnterpriseLicense}
+                    model=${ModelEnum.AuthentikEnterpriseLicense}
                     objectPk=${item.licenseUuid}
                 >
-                </ak-rbac-object-permission-modal> `,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 
-    renderGetLicenseCard() {
+    protected renderGetLicenseCard() {
         const renderSpinner = () =>
             html` <div class="pf-c-card__body">
                 <ak-spinner></ak-spinner>
@@ -262,7 +259,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 >
             </div>
             <div class="pf-c-card__body">
-                <a target="_blank" href="https://docs.goauthentik.io/docs/enterprise/get-started"
+                <a target="_blank" href=${docLink("/enterprise/get-started")}
                     >${msg("Learn more")}</a
                 >
             </div>
@@ -273,15 +270,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         </div> `;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit"> ${msg("Install")} </span>
-                <span slot="header"> ${msg("Install License")} </span>
-                <ak-enterprise-license-form slot="form"> </ak-enterprise-license-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Install")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(EnterpriseLicenseForm);
     }
 }
 

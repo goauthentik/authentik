@@ -1,9 +1,13 @@
+import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
+import "#components/ak-text-input";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKLabel } from "#components/ak-label";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -42,24 +46,34 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
         });
     }
 
-    renderForm(): TemplateResult {
-        return html` <span>
+    protected override renderForm(): TemplateResult {
+        return html` <div>
                 ${msg(
                     `Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
         is pending, a new user is created, and data is written to them.`,
                 )}
-            </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-group open label="${msg("Stage-specific settings")}">
+            </div>
+            <ak-text-input
+                autofocus
+                label=${msg("Stage Name")}
+                placeholder=${msg("Type a stage name...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name || "")}"
+            >
+            </ak-text-input>
+            <ak-form-group open label=${msg("Stage-specific settings")}>
                 <div class="pf-c-form">
                     <ak-form-element-horizontal name="userCreationMode">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userCreationMode",
+                            },
+                            msg("User creation mode"),
+                        )}
+
                         <ak-radio
                             .options=${[
                                 {
@@ -89,26 +103,12 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="createUsersAsInactive">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.createUsersAsInactive ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Create users as inactive")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Mark newly created users as inactive.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="createUsersAsInactive"
+                        label=${msg("Create users as inactive")}
+                        ?checked=${this.instance?.createUsersAsInactive ?? true}
+                        help=${msg("Mark newly created users as inactive.")}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal label=${msg("User type")} name="userType">
                         <ak-radio
                             .options=${[
@@ -152,7 +152,6 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"
-                            required
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(

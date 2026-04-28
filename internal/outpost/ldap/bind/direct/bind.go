@@ -23,7 +23,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
 
 	fe.Answers[flow.StageIdentification] = username
-	fe.SetSecrets(req.BindPW, db.si.GetMFASupport())
+	fe.SetSecrets(req.Password, db.si.GetMFASupport())
 
 	passed, err := fe.Execute()
 	flags := flags.UserFlags{
@@ -59,7 +59,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 		return ldap.LDAPResultInvalidCredentials, nil
 	}
 
-	access, _, err := fe.ApiClient().OutpostsApi.OutpostsLdapAccessCheck(
+	access, _, err := fe.ApiClient().OutpostsAPI.OutpostsLdapAccessCheck(
 		req.Context(), db.si.GetProviderID(),
 	).AppSlug(db.si.GetAppSlug()).Execute()
 	if !access.Access.Passing {
@@ -85,7 +85,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 	req.Log().Info("User has access")
 	uisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.bind.user_info")
 	// Get user info to store in context
-	userInfo, _, err := fe.ApiClient().CoreApi.CoreUsersMeRetrieve(context.Background()).Execute()
+	userInfo, _, err := fe.ApiClient().CoreAPI.CoreUsersMeRetrieve(context.Background()).Execute()
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": db.si.GetOutpostName(),

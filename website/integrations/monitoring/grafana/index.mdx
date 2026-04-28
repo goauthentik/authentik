@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `grafana.company` is the FQDN of the Grafana installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -33,14 +33,31 @@ To support the integration of Grafana with authentik, you need to create an appl
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://grafana.company/login/generic_oauth`.
+    - Set the Logout URI to `https://grafana.company/logout`.
+    - Set the Logout Method to `Front-channel`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the display and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-## Terraform provider
+### Create application entitlements for Grafana roles
+
+Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to represent the Grafana roles that can be assigned to users.
+
+1. Open the Grafana application that you just created in the authentik Admin interface.
+2. Click the **Application entitlements** tab.
+3. Create the entitlements that you want Grafana to evaluate, such as `Grafana Admins`, `Grafana Editors`, and `Grafana Viewers`.
+4. Bind the appropriate users or groups to each entitlement.
+
+:::tip
+For this integration, the entitlement names should exactly match the values referenced in Grafana's `role_attribute_path`. This keeps Grafana-specific authorization scoped to the Grafana application instead of relying on global authentik group names.
+:::
+
+<details>
+<summary>Configure with Terraform</summary>
 
 ```hcl
 data "authentik_flow" "default-provider-authorization-implicit-consent" {
@@ -59,6 +76,10 @@ data "authentik_property_mapping_provider_scope" "scope-openid" {
   name = "authentik default OAuth Mapping: OpenID 'openid'"
 }
 
+data "authentik_property_mapping_provider_scope" "scope-entitlements" {
+  name = "authentik default OAuth Mapping: OpenID 'entitlements'"
+}
+
 resource "authentik_provider_oauth2" "grafana" {
   name          = "Grafana"
   #  Required. You can use the output of:
@@ -70,12 +91,18 @@ resource "authentik_provider_oauth2" "grafana" {
 
   authorization_flow  = data.authentik_flow.default-provider-authorization-implicit-consent.id
 
-  redirect_uris = ["https://grafana.company/login/generic_oauth"]
+  allowed_redirect_uris = [
+    {
+      matching_mode = "strict",
+      url           = "https://grafana.company/login/generic_oauth",
+    }
+  ]
 
   property_mappings = [
     data.authentik_property_mapping_provider_scope.scope-email.id,
     data.authentik_property_mapping_provider_scope.scope-profile.id,
     data.authentik_property_mapping_provider_scope.scope-openid.id,
+    data.authentik_property_mapping_provider_scope.scope-entitlements.id,
   ]
 }
 
@@ -85,19 +112,9 @@ resource "authentik_application" "grafana" {
   protocol_provider = authentik_provider_oauth2.grafana.id
 }
 
-resource "authentik_group" "grafana_admins" {
-  name    = "Grafana Admins"
-}
-
-resource "authentik_group" "grafana_editors" {
-  name    = "Grafana Editors"
-}
-
-resource "authentik_group" "grafana_viewers" {
-  name    = "Grafana Viewers"
-}
-
 ```
+
+</details>
 
 ## Grafana configuration
 
@@ -120,15 +137,15 @@ environment:
     GF_AUTH_GENERIC_OAUTH_NAME: "authentik"
     GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "<Client ID from above>"
     GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "<Client Secret from above>"
-    GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
+    GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email entitlements"
     GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://authentik.company/application/o/authorize/"
     GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://authentik.company/application/o/token/"
     GF_AUTH_GENERIC_OAUTH_API_URL: "https://authentik.company/application/o/userinfo/"
     GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.company/application/o/<application_slug>/end-session/"
     # Optionally enable auto-login (bypasses Grafana login screen)
     GF_AUTH_OAUTH_AUTO_LOGIN: "true"
-    # Optionally map user groups to Grafana roles
-    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'"
+    # Optionally map user entitlements to Grafana roles
+    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(entitlements[*], 'Grafana Admins') && 'Admin' || contains(entitlements[*], 'Grafana Editors') && 'Editor' || 'Viewer'"
     # Required if Grafana is running behind a reverse proxy
     GF_SERVER_ROOT_URL: "https://grafana.company"
 ```
@@ -148,12 +165,12 @@ name = authentik
 enabled = true
 client_id = <Client ID from above>
 client_secret = <Client Secret from above>
-scopes = openid email profile
+scopes = openid email profile entitlements
 auth_url = https://authentik.company/application/o/authorize/
 token_url = https://authentik.company/application/o/token/
 api_url = https://authentik.company/application/o/userinfo/
-# Optionally map user groups to Grafana roles
-role_attribute_path = contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
+# Optionally map user entitlements to Grafana roles
+role_attribute_path = contains(entitlements, 'Grafana Admins') && 'Admin' || contains(entitlements, 'Grafana Editors') && 'Editor' || 'Viewer'
 ```
 
   </TabItem>
@@ -170,15 +187,15 @@ grafana.ini:
         enabled: true
         client_id: "<Client ID from above>"
         client_secret: "<Client Secret from above>"
-        scopes: "openid profile email"
+        scopes: "openid profile email entitlements"
         auth_url: "https://authentik.company/application/o/authorize/"
         token_url: "https://authentik.company/application/o/token/"
         api_url: "https://authentik.company/application/o/userinfo/"
-        # Optionally map user groups to Grafana roles
-        role_attribute_path: contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
+        # Optionally map user entitlements to Grafana roles
+        role_attribute_path: contains(entitlements, 'Grafana Admins') && 'Admin' || contains(entitlements, 'Grafana Editors') && 'Editor' || 'Viewer'
 ```
 
-:::note
+:::info
 For security reasons you shouldn't inline the client_secret in the values, but use a secret instead. For more information, see https://github.com/grafana/helm-charts/blob/main/charts/grafana/README.md#how-to-securely-reference-secrets-in-grafanaini
 :::
 
@@ -187,12 +204,12 @@ For security reasons you shouldn't inline the client_secret in the values, but u
 
 ### Role Mappings
 
-In the configuration above you can see an example of a role mapping. Upon login, this configuration looks at the groups of which the current user is a member. If any of the specified group names are found, the user will be granted the resulting role in Grafana.
+In the configuration above you can see an example of a role mapping. Upon login, this configuration looks at the `entitlements` claim returned by authentik. If any of the specified entitlement names are found, the user will be granted the resulting role in Grafana.
 
-In the example shown above, one of the specified group names is "Grafana Admins". If the user is a member of this group, they will be granted the "Admin" role in Grafana.
-If the user is not a member of the "Grafana Admins" group, it moves on to see if the user is a member of the "Grafana Editors" group. If they are, they are granted the "Editor" role. Finally, if the user is not found to be a member of either of these groups, it fails back to granting the "Viewer" role.
+In the example shown above, one of the specified entitlement names is `Grafana Admins`. If that entitlement is present, the user will be granted the `Admin` role in Grafana.
+If `Grafana Admins` is not present, Grafana checks for `Grafana Editors`. If that entitlement is present, the user is granted the `Editor` role. Finally, if neither entitlement is present, it falls back to granting the `Viewer` role.
 
-For more information on group/role mappings, see [Grafana's docs](https://grafana.com/docs/grafana/latest/auth/generic-oauth/#role-mapping).
+For more information on role mappings, see [Grafana's docs](https://grafana.com/docs/grafana/latest/auth/generic-oauth/#role-mapping).
 
 ### Grafana Configuration Considerations
 
@@ -205,3 +222,11 @@ If you get `user does not belong to org` error when trying to log into grafana f
 auto_assign_org = true
 auto_assign_org_id = <id-of-your-default-organization>
 ```
+
+If your first OAuth login fails with a `user.sync` error such as `cannot remove last grafana admin`, verify whether the OAuth user's username or email matches that of an existing local Grafana server admin account. In such cases, Grafana attempts to link the local account to the OAuth user. If the OAuth role mapped to that user is not a server admin, the login can fail because Grafana tries to remove the last remaining server admin account.
+
+For OSS Grafana, the simplest workaround is to create a separate OAuth-backed user first, grant that new user admin access, and only then remove the old local admin account.
+
+If you are configuring Generic OAuth from the Grafana UI instead of a config file, the `Allow assign Grafana admin` toggle is under **Administration** > **Authentication** > **Generic OAuth**.
+
+Its config-file equivalent is `allow_assign_grafana_admin`, or `GF_AUTH_GENERIC_OAUTH_ALLOW_ASSIGN_GRAFANA_ADMIN` in Docker-based deployments. This setting is only required if your `role_attribute_path` can return `GrafanaAdmin`; the example role mapping on this page returns `Admin`, `Editor`, or `Viewer`.

@@ -13,11 +13,12 @@ from urllib3.exceptions import HTTPError
 from yaml import dump_all
 
 from authentik.events.logs import LogEvent, capture_logs
+from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
 from authentik.outposts.controllers.k8s.secret import SecretReconciler
-from authentik.outposts.controllers.k8s.service import ServiceReconciler
+from authentik.outposts.controllers.k8s.service import MetricsServiceReconciler, ServiceReconciler
 from authentik.outposts.controllers.k8s.service_monitor import PrometheusServiceMonitorReconciler
 from authentik.outposts.models import (
     KubernetesServiceConnection,
@@ -48,7 +49,7 @@ class KubernetesClient(ApiClient, BaseClient):
             api_instance = VersionApi(self)
             version: VersionInfo = api_instance.get_code()
             return OutpostServiceConnectionState(version=version.git_version, healthy=True)
-        except (OpenApiException, HTTPError, ServiceConnectionInvalid):
+        except OpenApiException, HTTPError, ServiceConnectionInvalid:
             return OutpostServiceConnectionState(version="", healthy=False)
 
 
@@ -73,6 +74,7 @@ class KubernetesController(BaseController):
             SecretReconciler.reconciler_name(): SecretReconciler,
             DeploymentReconciler.reconciler_name(): DeploymentReconciler,
             ServiceReconciler.reconciler_name(): ServiceReconciler,
+            MetricsServiceReconciler.reconciler_name(): MetricsServiceReconciler,
             PrometheusServiceMonitorReconciler.reconciler_name(): (
                 PrometheusServiceMonitorReconciler
             ),
@@ -81,6 +83,7 @@ class KubernetesController(BaseController):
             SecretReconciler.reconciler_name(),
             DeploymentReconciler.reconciler_name(),
             ServiceReconciler.reconciler_name(),
+            MetricsServiceReconciler.reconciler_name(),
             PrometheusServiceMonitorReconciler.reconciler_name(),
         ]
 
@@ -105,7 +108,7 @@ class KubernetesController(BaseController):
                         LogEvent(
                             log_level="info",
                             event=f"{reconcile_key.title()}: Disabled",
-                            logger=str(type(self)),
+                            logger=class_to_path(self.__class__),
                         )
                     )
                     continue
@@ -144,7 +147,7 @@ class KubernetesController(BaseController):
                         LogEvent(
                             log_level="info",
                             event=f"{reconcile_key.title()}: Disabled",
-                            logger=str(type(self)),
+                            logger=class_to_path(self.__class__),
                         )
                     )
                     continue

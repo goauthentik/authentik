@@ -3,10 +3,17 @@ import "#flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
 
+import Styles from "./AuthenticatorValidateStage.css";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
+
+import { shouldResetSelectedChallenge } from "#flow/stages/authenticator_validate/challenge-selection";
+import { BaseStage } from "#flow/stages/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
+import type { StageHost, SubmitOptions } from "#flow/types";
 
 import {
     AuthenticatorValidationChallenge,
@@ -14,50 +21,83 @@ import {
     CurrentBrand,
     DeviceChallenge,
     DeviceClassesEnum,
+    FlowChallengeResponseRequest,
     FlowsApi,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
+import { repeat } from "lit/directives/repeat.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-const customCSS = css`
-    ul {
-        padding-top: 1rem;
+interface DevicePickerProps {
+    icon?: string;
+    label: string;
+    description?: string;
+}
+
+const createDevicePickerPropMap = () =>
+    ({
+        [DeviceClassesEnum.Duo]: {
+            icon: "fa-mobile-alt",
+            label: msg("Duo push-notifications"),
+            description: msg("Receive a push notification on your device."),
+        },
+        [DeviceClassesEnum.Webauthn]: {
+            icon: "fa-mobile-alt",
+            label: msg("Security key"),
+            description: msg("Use a Passkey or security key to prove your identity."),
+        },
+        [DeviceClassesEnum.Totp]: {
+            icon: "fa-clock",
+            label: msg("Traditional authenticator"),
+            description: msg("Use a code-based authenticator."),
+        },
+        [DeviceClassesEnum.Static]: {
+            icon: "fa-key",
+            label: msg("Recovery keys"),
+            description: msg("In case you lose access to your primary authenticators."),
+        },
+        [DeviceClassesEnum.Sms]: {
+            icon: "fa-comment",
+            label: msg("SMS"),
+            description: msg("Tokens sent via SMS."),
+        },
+        [DeviceClassesEnum.Email]: {
+            icon: "fa-envelope",
+            label: msg("Email"),
+            description: msg("Tokens sent via email."),
+        },
+        [DeviceClassesEnum.UnknownDefaultOpenApi]: {
+            icon: "fa-question",
+            label: msg("Unknown device"),
+            description: msg("An unknown device class was provided."),
+        },
+    }) as const satisfies Record<DeviceClassesEnum, DevicePickerProps>;
+
+export function resolveAuthenticatorComponentTag(
+    deviceClass: DeviceClassesEnum | null | undefined,
+) {
+    switch (deviceClass) {
+        case DeviceClassesEnum.Static:
+        case DeviceClassesEnum.Totp:
+        case DeviceClassesEnum.Email:
+        case DeviceClassesEnum.Sms:
+            return "ak-stage-authenticator-validate-code";
+        case DeviceClassesEnum.Webauthn:
+            return "ak-stage-authenticator-validate-webauthn";
+        case DeviceClassesEnum.Duo:
+            return "ak-stage-authenticator-validate-duo";
+        default:
+            return null;
     }
-    ul > li {
-        padding-bottom: 1rem;
-    }
-    .authenticator-button {
-        display: flex;
-        align-items: center;
-    }
-    :host([theme="dark"]) .authenticator-button {
-        color: var(--ak-dark-foreground) !important;
-    }
-    i {
-        font-size: 1.5rem;
-        padding: 1rem 0;
-        width: 3rem;
-    }
-    .right {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-        text-align: left;
-    }
-    .right > * {
-        height: 50%;
-    }
-`;
+}
 
 @customElement("ak-stage-authenticator-validate")
 export class AuthenticatorValidateStage
@@ -68,16 +108,18 @@ export class AuthenticatorValidateStage
     implements StageHost
 {
     static styles: CSSResult[] = [
-        PFBase,
+        // ---
         PFLogin,
         PFForm,
         PFFormControl,
         PFTitle,
         PFButton,
-        customCSS,
+        Styles,
     ];
 
-    flowSlug = "";
+    #api = new FlowsApi(DEFAULT_CONFIG);
+
+    public flowSlug = "";
 
     set loading(value: boolean) {
         this.host.loading = value;
@@ -92,47 +134,70 @@ export class AuthenticatorValidateStage
     }
 
     @state()
-    _firstInitialized: boolean = false;
+    protected initialized = false;
+
+    #selectedDeviceChallenge: DeviceChallenge | null = null;
 
     @state()
-    _selectedDeviceChallenge?: DeviceChallenge;
+    protected set selectedDeviceChallenge(value: DeviceChallenge | null) {
+        const previousChallenge = this.#selectedDeviceChallenge;
+        this.#selectedDeviceChallenge = value;
 
-    set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
-        const previousChallenge = this._selectedDeviceChallenge;
-        this._selectedDeviceChallenge = value;
-        if (value === undefined || value === previousChallenge) {
+        if (!value || value === previousChallenge) {
             return;
         }
+
+        const component = (this.challenge?.component ||
+            "") as unknown as "ak-stage-authenticator-validate";
+
+        value.lastUsed ??= new Date();
+
+        const flowChallengeResponseRequest = {
+            component,
+            selectedChallenge: value,
+        } satisfies FlowChallengeResponseRequest;
+
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
-        new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
+        this.#api.flowsExecutorSolve({
             flowSlug: this.host?.flowSlug || "",
             query: window.location.search.substring(1),
-            flowChallengeResponseRequest: {
-                // @ts-ignore
-                component: this.challenge.component || "",
-                selectedChallenge: value,
-            },
+            flowChallengeResponseRequest,
         });
     }
 
-    get selectedDeviceChallenge(): DeviceChallenge | undefined {
-        return this._selectedDeviceChallenge;
+    protected get selectedDeviceChallenge(): DeviceChallenge | null {
+        return this.#selectedDeviceChallenge;
     }
 
-    submit(
+    public submit(
         payload: AuthenticatorValidationChallengeResponseRequest,
         options?: SubmitOptions,
     ): Promise<boolean> {
         return this.host?.submit(payload, options) || Promise.resolve();
     }
 
-    willUpdate(_changed: PropertyValues<this>) {
-        if (this._firstInitialized || !this.challenge) {
+    public reset(): void {
+        this.selectedDeviceChallenge = null;
+    }
+
+    protected override willUpdate(changed: PropertyValues<this>) {
+        // When moving between multiple authenticator-validate stages in one flow, the element
+        // instance is reused. Reset selection if it is no longer valid in the new challenge.
+        if (changed.has("challenge")) {
+            const allowedChallenges = this.challenge?.deviceChallenges ?? [];
+
+            if (shouldResetSelectedChallenge(this.selectedDeviceChallenge, allowedChallenges)) {
+                this.selectedDeviceChallenge = null;
+                this.initialized = false;
+            }
+        }
+
+        if (this.initialized || !this.challenge) {
             return;
         }
 
-        this._firstInitialized = true;
+        this.initialized = true;
 
         // If user only has a single device, autoselect that device.
         if (this.challenge.deviceChallenges.length === 1) {
@@ -146,161 +211,135 @@ export class AuthenticatorValidateStage
             (challenge) => challenge.deviceClass === DeviceClassesEnum.Totp,
         );
         if (PasswordManagerPrefill.totp && totpChallenge) {
-            console.debug(
-                "authentik/stages/authenticator_validate: found prefill totp code, selecting totp challenge",
-            );
+            this.logger.debug("Found prefill TOTP code to select");
             this.selectedDeviceChallenge = totpChallenge;
+
             return;
         }
 
         // If the last used device is not Static, autoselect that device.
-        const lastUsedChallenge = this.challenge.deviceChallenges
+        const [lastUsedChallenge = null] = this.challenge.deviceChallenges
             .filter((deviceChallenge) => deviceChallenge.lastUsed)
-            .sort((a, b) => b.lastUsed!.valueOf() - a.lastUsed!.valueOf())[0];
+            .sort((a, b) => b.lastUsed!.valueOf() - a.lastUsed!.valueOf());
+
         if (lastUsedChallenge && lastUsedChallenge.deviceClass !== DeviceClassesEnum.Static) {
             this.selectedDeviceChallenge = lastUsedChallenge;
         }
     }
 
-    renderDevicePickerSingle(deviceChallenge: DeviceChallenge) {
-        switch (deviceChallenge.deviceClass) {
-            case DeviceClassesEnum.Duo:
-                return html`<i class="fas fa-mobile-alt"></i>
-                    <div class="right">
-                        <p>${msg("Duo push-notifications")}</p>
-                        <small>${msg("Receive a push notification on your device.")}</small>
-                    </div>`;
-            case DeviceClassesEnum.Webauthn:
-                return html`<i class="fas fa-mobile-alt"></i>
-                    <div class="right">
-                        <p>${msg("Authenticator")}</p>
-                        <small>${msg("Use a security key to prove your identity.")}</small>
-                    </div>`;
-            case DeviceClassesEnum.Totp:
-                return html`<i class="fas fa-clock"></i>
-                    <div class="right">
-                        <p>${msg("Traditional authenticator")}</p>
-                        <small>${msg("Use a code-based authenticator.")}</small>
-                    </div>`;
-            case DeviceClassesEnum.Static:
-                return html`<i class="fas fa-key"></i>
-                    <div class="right">
-                        <p>${msg("Recovery keys")}</p>
-                        <small>${msg("In case you can't access any other method.")}</small>
-                    </div>`;
-            case DeviceClassesEnum.Sms:
-                return html`<i class="fas fa-mobile-alt"></i>
-                    <div class="right">
-                        <p>${msg("SMS")}</p>
-                        <small>${msg("Tokens sent via SMS.")}</small>
-                    </div>`;
-            case DeviceClassesEnum.Email:
-                return html`<i class="fas fa-envelope"></i>
-                    <div class="right">
-                        <p>${msg("Email")}</p>
-                        <small>${msg("Tokens sent via email.")}</small>
-                    </div>`;
-            default:
-                break;
-        }
-        return nothing;
-    }
+    protected renderDevicePicker(): SlottedTemplateResult {
+        const { deviceChallenges } = this.challenge || {};
 
-    renderDevicePicker(): TemplateResult {
-        return html`<ul>
-            ${this.challenge?.deviceChallenges.map((challenges) => {
-                return html`<li>
+        if (!deviceChallenges?.length) {
+            return nothing;
+        }
+
+        const devicePickerPropMap = createDevicePickerPropMap();
+
+        const deviceChallengeButtons = repeat(
+            deviceChallenges,
+            (challenges) => challenges.deviceUid,
+            (challenges, idx) => {
+                const buttonID = `device-challenge-${idx}`;
+                const labelID = `${buttonID}-label`;
+                const descriptionID = `${buttonID}-description`;
+
+                const { icon, label, description } = devicePickerPropMap[challenges.deviceClass];
+
+                return html`
                     <button
+                        id=${buttonID}
+                        aria-labelledby=${labelID}
+                        aria-describedby=${descriptionID}
                         class="pf-c-button authenticator-button"
                         type="button"
                         @click=${() => {
                             this.selectedDeviceChallenge = challenges;
                         }}
                     >
-                        ${this.renderDevicePickerSingle(challenges)}
-                    </button>
-                </li>`;
-            })}
-        </ul>`;
-    }
-
-    renderStagePicker(): TemplateResult {
-        return html`<ul>
-            ${this.challenge?.configurationStages.map((stage) => {
-                return html`<li>
-                    <button
-                        class="pf-c-button authenticator-button"
-                        type="button"
-                        @click=${() => {
-                            this.submit({
-                                component: this.challenge.component || "",
-                                selectedStage: stage.pk,
-                            });
-                        }}
-                    >
-                        <div class="right">
-                            <p>${stage.name}</p>
-                            <small>${stage.verboseName}</small>
+                        <i class="fas ${icon}" aria-hidden="true"></i>
+                        <div class="content">
+                            <h1 class="pf-c-title pf-m-sm" id=${labelID}>${label}</h1>
+                            <p class="pf-c-form__helper-text" id=${descriptionID}>${description}</p>
                         </div>
                     </button>
-                </li>`;
-            })}
-        </ul>`;
+                `;
+            },
+        );
+
+        return html`<fieldset class="pf-c-form__group pf-m-action" name="device-challenges">
+            <legend class="pf-c-title">${msg("Select an authentication method")}</legend>
+            ${deviceChallengeButtons}
+        </fieldset>`;
     }
 
-    renderDeviceChallenge() {
+    protected renderStagePicker(): SlottedTemplateResult {
+        if (!this.challenge?.configurationStages.length) {
+            return nothing;
+        }
+
+        const stageButtons = repeat(
+            this.challenge.configurationStages,
+            (stage) => stage.pk,
+            (stage) => {
+                return html`<button
+                    class="pf-c-button authenticator-button"
+                    type="button"
+                    @click=${() => {
+                        this.submit({
+                            component: this.challenge?.component || "",
+                            selectedStage: stage.pk,
+                        });
+                    }}
+                >
+                    <div class="content">
+                        <h1 class="pf-c-title pf-m-sm">${stage.name}</h1>
+                        <p class="pf-c-form__helper-text">${stage.verboseName}</p>
+                    </div>
+                </button>`;
+            },
+        );
+
+        return html`<fieldset class="pf-c-form__group pf-m-action" name="stages">
+            <legend class="sr-only">${msg("Select a configuration stage")}</legend>
+            ${stageButtons}
+        </fieldset>`;
+    }
+
+    protected renderDeviceChallenge() {
         if (!this.selectedDeviceChallenge) {
             return nothing;
         }
-        switch (this.selectedDeviceChallenge?.deviceClass) {
-            case DeviceClassesEnum.Static:
-            case DeviceClassesEnum.Totp:
-            case DeviceClassesEnum.Email:
-            case DeviceClassesEnum.Sms:
-                return html` <ak-stage-authenticator-validate-code
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
-                >
-                </ak-stage-authenticator-validate-code>`;
-            case DeviceClassesEnum.Webauthn:
-                return html` <ak-stage-authenticator-validate-webauthn
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
-                >
-                </ak-stage-authenticator-validate-webauthn>`;
-            case DeviceClassesEnum.Duo:
-                return html` <ak-stage-authenticator-validate-duo
-                    .host=${this}
-                    .challenge=${this.challenge}
-                    .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
-                >
-                </ak-stage-authenticator-validate-duo>`;
-        }
-        return nothing;
+
+        const tag = resolveAuthenticatorComponentTag(this.selectedDeviceChallenge.deviceClass);
+        if (!tag) return null;
+
+        const showBackButton = (this.challenge?.deviceChallenges || []).length > 1;
+
+        return StrictUnsafe(tag, {
+            host: this,
+            challenge: this.challenge,
+            deviceChallenge: this.selectedDeviceChallenge,
+            showBackButton,
+        });
     }
 
-    render(): TemplateResult {
+    protected renderAuthenticatorSelection(): TemplateResult {
+        return html`<form class="pf-c-form">
+            ${this.renderUserInfo()}${this.renderStagePicker()}${this.renderDevicePicker()}
+        </form>`;
+    }
+
+    protected override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             ${this.selectedDeviceChallenge
                 ? this.renderDeviceChallenge()
-                : html`<form class="pf-c-form">
-                          ${this.renderUserInfo()}
-                          ${this.selectedDeviceChallenge
-                              ? nothing
-                              : html`<p>${msg("Select an authentication method.")}</p>`}
-                          ${this.challenge.configurationStages.length > 0
-                              ? this.renderStagePicker()
-                              : nothing}
-                      </form>
-                      ${this.renderDevicePicker()}`}
+                : this.renderAuthenticatorSelection()}
         </ak-flow-card>`;
     }
 }
+
+export default AuthenticatorValidateStage;
 
 declare global {
     interface HTMLElementTagNameMap {

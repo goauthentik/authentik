@@ -32,12 +32,12 @@ func CodecsFromPairs(maxAge int, keyPairs ...[]byte) []securecookie.Codec {
 	return codecs
 }
 
-func (s *Codec) Encode(name string, value interface{}) (string, error) {
+func (s *Codec) Encode(name string, value any) (string, error) {
 	log.Trace("cookie encode")
 	return s.SecureCookie.Encode("authentik_proxy", value)
 }
 
-func (s *Codec) Decode(name string, value string, dst interface{}) error {
+func (s *Codec) Decode(name string, value string, dst any) error {
 	log.Trace("cookie decode")
 	return s.SecureCookie.Decode("authentik_proxy", value, dst)
 }

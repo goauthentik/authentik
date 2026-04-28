@@ -2,22 +2,24 @@
 title: Kubernetes installation
 ---
 
-You can install authentik to run on Kubernetes using Helm Chart.
+You can install authentik to run on Kubernetes using a Helm chart.
 
 :::info
 You can also [view a video walk-through](https://www.youtube.com/watch?v=O1qUbrk4Yc8) of the installation process on Kubernetes (with bonus details about email configuration and other important options).
 :::
 
-### Requirements
+## Requirements
 
 - Kubernetes
 - Helm
 
 ## Video
 
+View our video about installing authentik on Kubernetes.
+
 <iframe width="560" height="315" src="https://www.youtube.com/embed/O1qUbrk4Yc8?si=hs-ZhbVk4Y-TW_Vw&amp;start=562" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-### Generate Passwords
+## Generate passwords
 
 Start by generating passwords for the database and cache. You can use either of the following commands:
 
@@ -26,7 +28,7 @@ pwgen -s 50 1
 openssl rand 60 | base64 -w 0
 ```
 
-### Set Values
+## Set values
 
 Create a `values.yaml` file with a minimum of these settings:
 
@@ -52,13 +54,48 @@ postgresql:
     enabled: true
     auth:
         password: "ThisIsNotASecurePassword"
-redis:
-    enabled: true
 ```
+
+If your cluster or controller supports the Gateway API, replace the `server.ingress` section above with this Gateway API configuration:
+
+```yaml
+server:
+    route:
+        main:
+            enabled: true
+            hostnames:
+                - authentik.domain.tld
+            parentRefs:
+                - name: shared-gateway
+                  namespace: default
+```
+
+The Helm chart creates an `HTTPRoute`, but it does not create `Gateway` or `GatewayClass` resources. Create the `Gateway` separately, then set `server.route.main.parentRefs` to that `Gateway` resource's name and namespace. In the example above, `name: shared-gateway` and `namespace: default` must match the manually created `Gateway`.
+
+If your cluster or controller does not support the Gateway API, use the `server.ingress` configuration shown above.
 
 See all configurable values on [ArtifactHub](https://artifacthub.io/packages/helm/goauthentik/authentik).
 
-### Install authentik Helm Chart
+## PostgreSQL production setup
+
+The PostgreSQL database installed by default with the Helm chart is intended for demonstration and test environments.
+
+For production deployments, use a separately managed PostgreSQL installation instead of relying on the chart's bundled database.
+
+Common options include:
+
+- [CloudNativePG](https://github.com/cloudnative-pg/cloudnative-pg)
+- [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
+
+After you provision PostgreSQL externally, configure authentik to use it with the settings in the [PostgreSQL configuration reference](../configuration/configuration.mdx#postgresql-settings).
+
+## Email configuration (optional but recommended)
+
+It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
+
+For more information, refer to our [Email configuration](../email.mdx) documentation.
+
+## Install authentik Helm Chart
 
 Now, execute the following commands to install authentik:
 
@@ -70,39 +107,18 @@ helm upgrade --install authentik authentik/authentik -f values.yaml
 
 During the installation process, the database migrations will be applied automatically on startup.
 
-### Accessing authentik
+## Access authentik
 
-After the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
+To start the initial setup, navigate to `http://<your server's IP or hostname>:9000`.
 
-:::info
-You will get `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete url (`http://<ingress-host-name>/if/flow/initial-setup/`) including the trailing forward slash.
+You are then prompted to set a password for the `akadmin` user (the default user).
+
+:::info Issues with initial setup
+If you run into issues, refer to our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
 :::
 
-### Optional step: Configure global email credentials
+## First steps in authentik
 
-It is recommended to configure global email credentials as well. These are used by authentik to notify you about alerts and configuration issues. Additionally, they can be utilized by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification and recovery emails.
+import BlurbFirstSteps from "../first-steps/\_blurb_first_steps.mdx";
 
-To configure this, append this block to your `values.yaml` file:
-
-```yaml
-# add this block under the `authentik:` block in your values.yaml file
-# authentik:
-email:
-    # -- SMTP Server emails are sent from, fully optional
-    host: ""
-    port: 587
-    # -- SMTP credentials. When left empty, no authentication will be done.
-    username: ""
-    # -- SMTP credentials. When left empty, no authentication will be done.
-    password: ""
-    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
-    use_tls: false
-    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
-    use_ssl: false
-    # -- Connection timeout in seconds
-    timeout: 30
-    # -- Email 'from' address can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
-    from: ""
-```
-
-By following these steps, you will successfully install and set up authentik on Kubernetes using Helm.
+<BlurbFirstSteps />

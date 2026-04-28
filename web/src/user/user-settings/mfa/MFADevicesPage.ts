@@ -7,18 +7,20 @@ import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { createPaginatedResponse } from "#common/api/responses";
 import { globalAK } from "#common/global";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export const stageToAuthenticatorName = (stage: UserSetting) =>
@@ -29,55 +31,61 @@ export class MFADevicesPage extends Table<Device> {
     @property({ attribute: false })
     userSettings?: UserSetting[];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    public override label = msg("MFA Devices");
+    protected override emptyStateMessage = msg("No MFA devices enrolled.");
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
-        return {
-            pagination: {
-                current: 0,
-                count: devices.length,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: devices.length,
-                next: 0,
-                previous: 0,
-            },
-            results: devices,
-        };
+        return createPaginatedResponse(devices);
     }
 
-    columns(): TableColumn[] {
-        // prettier-ignore
-        return [
-            msg("Name"),
-            msg("Type"),
-            msg("Created at"),
-            msg("Last used at"),
-            ""
-        ].map((th) => new TableColumn(th, ""));
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name")],
+        [msg("Type")],
+        [msg("Created at")],
+        [msg("Last used at")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
-    renderToolbar(): TemplateResult {
-        const settings = (this.userSettings || []).filter((stage) => {
-            if (stage.component === "ak-user-settings-password") {
-                return false;
-            }
-            return stage.configureUrl;
-        });
-        return html`<ak-dropdown class="pf-c-dropdown">
-                <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
+    protected renderEnrollButton(): SlottedTemplateResult {
+        return guard([this.userSettings], () => {
+            const settings = (this.userSettings || []).filter((stage) => {
+                if (stage.component === "ak-user-settings-password") {
+                    return false;
+                }
+
+                return stage.configureUrl;
+            });
+
+            return html`<ak-dropdown class="pf-c-dropdown">
+                <button
+                    class="pf-m-primary pf-c-dropdown__toggle"
+                    type="button"
+                    id="add-mfa-toggle"
+                    aria-haspopup="menu"
+                    aria-controls="add-mfa-menu"
+                    tabindex="0"
+                >
                     <span class="pf-c-dropdown__toggle-text">${msg("Enroll")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul class="pf-c-dropdown__menu" hidden>
+                <menu
+                    class="pf-c-dropdown__menu"
+                    hidden
+                    id="add-mfa-menu"
+                    aria-labelledby="add-mfa-toggle"
+                    tabindex="-1"
+                >
                     ${settings.map((stage) => {
-                        return html`<li>
+                        return html`<li role="presentation">
                             <a
+                                role="menuitem"
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
                                     `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
-                                        page: "page-mfa",
+                                        page: "page-credentials",
                                     })}`,
                                 )}"
                                 class="pf-c-dropdown__menu-item"
@@ -86,9 +94,13 @@ export class MFADevicesPage extends Table<Device> {
                             </a>
                         </li>`;
                     })}
-                </ul>
-            </ak-dropdown>
-            ${super.renderToolbar()}`;
+                </menu>
+            </ak-dropdown>`;
+        });
+    }
+
+    protected override renderToolbar(): TemplateResult {
+        return html`${this.renderEnrollButton()} ${super.renderToolbar()}`;
     }
 
     async deleteWrapper(device: Device) {
@@ -117,7 +129,7 @@ export class MFADevicesPage extends Table<Device> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Device(s)")}
+            object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Device) => {
                 return this.deleteWrapper(item);
@@ -129,7 +141,7 @@ export class MFADevicesPage extends Table<Device> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Device): TemplateResult[] {
+    row(item: Device): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<div>${deviceTypeName(item)}</div>
@@ -140,23 +152,21 @@ export class MFADevicesPage extends Table<Device> {
                           </pf-tooltip>
                       `
                     : nothing} `,
-            html`${item.created.getTime() > 0
-                ? html`<div>${formatElapsedTime(item.created)}</div>
-                      <small>${item.created.toLocaleString()}</small>`
-                : html`-`}`,
-            html`${item.lastUsed
-                ? html`<div>${formatElapsedTime(item.lastUsed)}</div>
-                      <small>${item.lastUsed.toLocaleString()}</small>`
-                : html`-`}`,
+            Timestamp(item.created),
+            Timestamp(item.lastUsed),
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Device")}</span>
                     <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
                     </ak-user-mfa-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <button
+                        aria-label=${msg("Edit device")}
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                    >
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>

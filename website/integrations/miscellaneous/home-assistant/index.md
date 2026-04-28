@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://www.home-assistant.io/
 
-:::note
+:::info
 To integrate Home Assistant with authentik, a custom integration needs to be installed in Home Assistant.
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `hass.company` is the FQDN of the Home Assistant installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -37,26 +37,25 @@ defaultValue="oidc"
 values={[
 { label: "OIDC", value: "oidc" },
 { label: "Proxy Provider", value: "proxy" }
-]}
-
->   <TabItem value="oidc">
+]}>
+<TabItem value="oidc">
 
 ## authentik configuration
 
-To support the integration of Home Assistant with authentik you need to create an application/provider pair in authentik.
+To support the integration of Home Assistant with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID** as the provider type.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - **Signing Key**: Select any available signing key.
         - **Redirect URIs**:
             - Strict: `http://hass.company:8123/auth/openid/callback`
 
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -77,7 +76,7 @@ openid:
 
 3. Restart Home Assistant
 
-:::note
+:::info
 You must create OIDC users in Home Assistant before they can log in using OIDC.
 :::
 
@@ -102,14 +101,14 @@ To support the integration of Home Assistant using `hass-auth-headers` with auth
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **Proxy** as the provider type.
         - **External Host**: Set this to the external URL you will be accessing Home Assistant from.
         - **Internal Host**: `http://hass.company:8123`
 
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -118,17 +117,17 @@ To support the integration of Home Assistant using `hass-auth-headers` with auth
 ## Home Assistant configuration
 
 1. Configure [trusted_proxies](https://www.home-assistant.io/integrations/http/#trusted_proxies) for the HTTP integration with the IP(s) of the Host(s) authentik is running on.
-2. If you don't already have it set up, https://github.com/BeryJu/hass-auth-header, using the installation guide.
+2. If you don't already have it set up, install [hass-auth-header](https://github.com/BeryJu/hass-auth-header) using the installation guide.
 3. There are two ways to configure the custom component:
 
 ### Match on user's authentik username
 
 To match on the user's authentik username, use the following configuration:
 
-    ```yaml
-    auth_header:
-        username_header: X-authentik-username
-    ```
+```yaml
+auth_header:
+    username_header: X-authentik-username
+```
 
 ### Associate existing Home Assistant username
 
@@ -137,21 +136,21 @@ Alternatively, you can associate an existing Home Assistant username to an authe
 1. Within authentik, navigate to **Directory** > **Users**.
 2. Select **Edit** for the user then add the following configuration to the **Attributes** section. Be sure to replace `hassusername` with the Home Assistant username.
 
-:::note
+:::info
 This configuration adds an extra header for the authentik user, containing the Home Assistant username, which allows Home Assistant to authenticate the user accordingly.
 :::
 
-    ```yaml
-    additionalHeaders:
-        X-ak-hass-user: hassusername
-    ```
+```yaml
+additionalHeaders:
+    X-ak-hass-user: hassusername
+```
 
 3. Then configure the Home Assistant custom component to use this header:
 
-    ```yaml
-    auth_header:
-        username_header: X-ak-hass-user
-    ```
+```yaml
+auth_header:
+    username_header: X-ak-hass-user
+```
 
   </TabItem>
 </Tabs>

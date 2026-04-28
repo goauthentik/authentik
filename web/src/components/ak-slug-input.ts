@@ -1,9 +1,11 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
 import { bound } from "#elements/decorators/bound";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { kebabCase } from "change-case";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -49,6 +51,9 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
     @query("input")
     private input!: HTMLInputElement;
+
+    @property({ type: String })
+    public placeholder: string | null = msg("e.g. my-slug");
 
     #origin?: HTMLInputElement | null;
 
@@ -125,11 +130,15 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
     public override renderControl() {
         return html`<input
+            id=${ifDefined(this.fieldID)}
             @input=${(ev: Event) => this.handleTouch(ev)}
             type="text"
+            spellcheck="false"
+            autocomplete="off"
             value=${ifDefined(this.value)}
-            class="pf-c-form-control"
+            class="pf-c-form-control pf-m-monospace"
             ?required=${this.required}
+            placeholder=${ifPresent(this.placeholder)}
         />`;
     }
 
@@ -144,6 +153,12 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         }
         if (this.#origin) {
             this.#origin.addEventListener("input", this.slugify);
+        }
+
+        // If the slug already has a value (editing an existing item), mark it as touched
+        // to prevent automatic updates when the name changes
+        if (this.value) {
+            this.#touched = true;
         }
     }
 }

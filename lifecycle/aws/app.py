@@ -21,9 +21,6 @@ from aws_cdk import (
     aws_efs as efs,
 )
 from aws_cdk import (
-    aws_elasticache as elasticache,
-)
-from aws_cdk import (
     aws_elasticloadbalancingv2 as elbv2,
 )
 from aws_cdk import (
@@ -60,21 +57,6 @@ class AuthentikStack(Stack):
             default=10,
             min_value=10,
             description="RDS PostgreSQL storage size in GB",
-        )
-
-        redis_instance_type = CfnParameter(
-            self,
-            "RedisInstanceType",
-            type="String",
-            default="cache.t4g.medium",
-            description="ElastiCache Redis instance type (with the leading cache.)",
-        )
-        redis_version = CfnParameter(
-            self,
-            "RedisVersion",
-            type="String",
-            default="7.1",
-            description="ElastiCache Redis version",
         )
 
         authentik_image = CfnParameter(
@@ -156,9 +138,6 @@ class AuthentikStack(Stack):
         db_security_group = ec2.SecurityGroup(
             self, "DatabaseSG", vpc=vpc, description="Security Group for authentik RDS PostgreSQL"
         )
-        redis_security_group = ec2.SecurityGroup(
-            self, "RedisSG", vpc=vpc, description="Security Group for authentik ElastiCache Redis"
-        )
         authentik_security_group = ec2.SecurityGroup(
             self, "AuthentikSG", vpc=vpc, description="Security Group for authentik services"
         )
@@ -166,11 +145,6 @@ class AuthentikStack(Stack):
             peer=authentik_security_group,
             connection=ec2.Port.tcp(5432),
             description="Allow authentik to connect to RDS PostgreSQL",
-        )
-        redis_security_group.add_ingress_rule(
-            peer=authentik_security_group,
-            connection=ec2.Port.tcp(6379),
-            description="Allow authentik to connect to ElastiCache Redis",
         )
 
         # Generated secrets
@@ -212,31 +186,32 @@ class AuthentikStack(Stack):
             removal_policy=RemovalPolicy.SNAPSHOT,
         )
 
-        # Redis
-
-        redis_subnet_group = elasticache.CfnSubnetGroup(
-            self,
-            "AuthentikRedisSubnetGroup",
-            subnet_ids=vpc.select_subnets(
-                subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS
-            ).subnet_ids,
-            description="Subnet group for authentik ElastiCache Redis",
-        )
-
-        redis = elasticache.CfnReplicationGroup(
-            self,
-            "AuthentikRedis",
-            replication_group_description="Redis cluster for authentik",
-            engine="redis",
-            engine_version=redis_version.value_as_string,
-            cache_node_type=redis_instance_type.value_as_string,
-            num_cache_clusters=2,
-            automatic_failover_enabled=True,
-            security_group_ids=[redis_security_group.security_group_id],
-            cache_subnet_group_name=redis_subnet_group.ref,
-        )
-
         # Storage
+
+        data_fs = efs.FileSystem(
+            self,
+            "AuthentikDataEFS",
+            vpc=vpc,
+            removal_policy=RemovalPolicy.RETAIN,
+            security_group=ec2.SecurityGroup(
+                self,
+                "AuthentikDataEFSSecurityGroup",
+                vpc=vpc,
+                description="Security group for authentik data EFS",
+                allow_all_outbound=True,
+            ),
+            encrypted=True,
+            performance_mode=efs.PerformanceMode.GENERAL_PURPOSE,
+            throughput_mode=efs.ThroughputMode.BURSTING,
+        )
+        data_fs.connections.allow_default_port_from(authentik_security_group)
+
+        data_access_point = data_fs.add_access_point(
+            "AuthentikDataAccessPoint",
+            path="/data",
+            create_acl=efs.Acl(owner_uid="1000", owner_gid="1000", permissions="755"),
+            posix_user=efs.PosixUser(uid="1000", gid="1000"),
+        )
 
         media_fs = efs.FileSystem(
             self,
@@ -270,7 +245,6 @@ class AuthentikStack(Stack):
         environment = {
             "AUTHENTIK_POSTGRESQL__HOST": database.instance_endpoint.hostname,
             "AUTHENTIK_POSTGRESQL__USER": "authentik",
-            "AUTHENTIK_REDIS__HOST": redis.attr_primary_end_point_address,
         }
 
         secrets = {
@@ -285,6 +259,17 @@ class AuthentikStack(Stack):
             "AuthentikServerTask",
             cpu=server_cpu.value_as_number,
             memory_limit_mib=server_memory.value_as_number,
+        )
+        server_task.add_volume(
+            name="data",
+            efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                file_system_id=data_fs.file_system_id,
+                transit_encryption="ENABLED",
+                authorization_config=ecs.AuthorizationConfig(
+                    access_point_id=data_access_point.access_point_id,
+                    iam="ENABLED",
+                ),
+            ),
         )
         server_task.add_volume(
             name="media",
@@ -317,7 +302,10 @@ class AuthentikStack(Stack):
         )
         server_container.add_port_mappings(ecs.PortMapping(container_port=9000))
         server_container.add_mount_points(
-            ecs.MountPoint(container_path="/media", source_volume="media", read_only=False)
+            ecs.MountPoint(container_path="/data", source_volume="data", read_only=False)
+        )
+        server_container.add_mount_points(
+            ecs.MountPoint(container_path="/data/media", source_volume="media", read_only=False)
         )
         server_service = ecs.FargateService(
             self,
@@ -336,6 +324,17 @@ class AuthentikStack(Stack):
             "AuthentikWorkerTask",
             cpu=worker_cpu.value_as_number,
             memory_limit_mib=worker_memory.value_as_number,
+        )
+        worker_task.add_volume(
+            name="data",
+            efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                file_system_id=data_fs.file_system_id,
+                transit_encryption="ENABLED",
+                authorization_config=ecs.AuthorizationConfig(
+                    access_point_id=data_access_point.access_point_id,
+                    iam="ENABLED",
+                ),
+            ),
         )
         worker_task.add_volume(
             name="media",
@@ -367,7 +366,10 @@ class AuthentikStack(Stack):
             ),
         )
         worker_container.add_mount_points(
-            ecs.MountPoint(container_path="/media", source_volume="media", read_only=False)
+            ecs.MountPoint(container_path="/data", source_volume="data", read_only=False)
+        )
+        worker_container.add_mount_points(
+            ecs.MountPoint(container_path="/data/media", source_volume="media", read_only=False)
         )
         worker_service = ecs.FargateService(  # noqa: F841
             self,

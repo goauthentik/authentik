@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `example.com` is the default E-mail address configured in Google workspace.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -42,7 +42,7 @@ Click the _Download_ button next to the _Download signing certificate_ label.
 
 Log in to the Google Workspace Admin portal by navigating to https://admin.google.com/, and authenticating with a super-admin account.
 
-Navigate to _Security_ -> _Authentication_ -> _SSO with third-party IdP_.
+Navigate to **Security > Authentication > SSO with third-party IdP**.
 
 Open the _Third-party SSO profile for your organization_ section.
 
@@ -58,6 +58,6 @@ Ensure the option _Use a domain specific issuer_ is enabled.
 
 ## Notes
 
-Google will not use these SSO settings with super-admins, although they will apply for any other user account. User accounts must already exist in Google workspace when attempting to login with authentik; Google will not create them automatically.
+Google will not use these SSO settings with super-admins, although they will apply for any other user account. User accounts must already exist in Google workspace when attempting to log in with authentik; Google will not create them automatically.
 
 To verify that the configuration is correct for a super-admin account, navigate to `https://mail.google.com/a/example.com`, which redirects to the configured authentik instance.

@@ -1,4 +1,4 @@
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
@@ -9,7 +9,6 @@ import { map } from "lit/directives/map.js";
 
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type CheckboxKv = { name: string; label: string | TemplateResult };
 type CheckboxPr = [string, string | TemplateResult];
@@ -23,7 +22,7 @@ function* kvToPairs(items: CheckboxPair[]): Iterable<CheckboxPr> {
     }
 }
 
-const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
+const AkElementWithCustomEvents = CustomEmitterElement(AKControlElement);
 
 /**
  * @element ak-checkbox-group
@@ -80,7 +79,6 @@ const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
 @customElement("ak-checkbox-group")
 export class CheckboxGroup extends AkElementWithCustomEvents {
     static styles = [
-        PFBase,
         PFForm,
         PFCheck,
         css`
@@ -103,7 +101,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     value: string[] = [];
 
     @property({ type: String })
-    name?: string;
+    public name: string | null = null;
 
     @property({ type: Boolean })
     required = false;
@@ -117,12 +115,12 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     internals?: ElementInternals;
     doneFirstUpdate = false;
 
-    json() {
+    toJSON() {
         return this.values;
     }
 
     private get formValue() {
-        if (this.name === undefined) {
+        if (typeof this.name !== "string") {
             throw new Error("This cannot be called without having the name set.");
         }
         const name = this.name;

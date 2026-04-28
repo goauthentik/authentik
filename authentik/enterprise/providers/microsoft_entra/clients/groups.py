@@ -29,7 +29,7 @@ class MicrosoftEntraGroupClient(
     """Microsoft client for groups"""
 
     connection_type = MicrosoftEntraProviderGroup
-    connection_attr = "microsoftentraprovidergroup_set"
+    connection_type_query = "group"
     can_discover = True
 
     def __init__(self, provider: MicrosoftEntraProvider) -> None:
@@ -48,18 +48,13 @@ class MicrosoftEntraGroupClient(
         except TypeError as exc:
             raise StopSync(exc, obj) from exc
 
-    def delete(self, obj: Group):
+    def delete(self, identifier: str):
         """Delete group"""
-        microsoft_group = MicrosoftEntraProviderGroup.objects.filter(
-            provider=self.provider, group=obj
-        ).first()
-        if not microsoft_group:
-            self.logger.debug("Group does not exist in Microsoft, skipping")
-            return None
-        with transaction.atomic():
-            if self.provider.group_delete_action == OutgoingSyncDeleteAction.DELETE:
-                self._request(self.client.groups.by_group_id(microsoft_group.microsoft_id).delete())
-            microsoft_group.delete()
+        MicrosoftEntraProviderGroup.objects.filter(
+            provider=self.provider, microsoft_id=identifier
+        ).delete()
+        if self.provider.group_delete_action == OutgoingSyncDeleteAction.DELETE:
+            return self._request(self.client.groups.by_group_id(identifier).delete())
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
@@ -220,11 +215,11 @@ class MicrosoftEntraGroupClient(
         )
         if not matching_authentik_group:
             return
-        MicrosoftEntraProviderGroup.objects.get_or_create(
+        MicrosoftEntraProviderGroup.objects.update_or_create(
             provider=self.provider,
             group=matching_authentik_group,
             microsoft_id=group.id,
-            attributes=self.entity_as_dict(group),
+            defaults={"attributes": self.entity_as_dict(group)},
         )
 
     def update_single_attribute(self, connection: MicrosoftEntraProviderGroup):

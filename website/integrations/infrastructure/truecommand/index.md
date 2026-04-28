@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `truecommand.company` is the FQDN of the snipe-it installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -62,7 +62,7 @@ To support the integration of TrueCommand with authentik, you need to create an 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
@@ -70,8 +70,8 @@ To support the integration of TrueCommand with authentik, you need to create an 
     - Set the **ACS URL** to `https://truecommand.company/saml/acs`.
     - Set the **Issuer** to `truecommand-saml`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, add the three or five **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to be based on the user's email. Finally, select an available signing certificate.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - Under **Advanced protocol settings**, add the three or five **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to be based on the user's email. Finally, select an available **Signing certificate**.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -85,6 +85,6 @@ To support the integration of TrueCommand with authentik, you need to create an 
 - SAML Identity Provider URL: `Paste the Metadata URL from your clipboard.`
 - Click _Save_, then click _Configure_ again then select _Start the SAML service_, then click _Save_ to start the service.
 
-## Additional Resources
+## Resources
 
 - https://www.truenas.com/docs/truecommand/administration/settings/samlad/
