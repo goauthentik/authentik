@@ -7346,7 +7346,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
   <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
-  <target>Utfør &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; med inspektør</target>
+  <target>Utfør &amp;quot;<x id="0" equiv-text="${this.flow.name}"/>&amp;quot; med inspektør</target>
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
   <source>Use inspector</source>
