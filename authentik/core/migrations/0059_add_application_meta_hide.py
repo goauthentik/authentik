@@ -25,7 +25,8 @@ class Migration(migrations.Migration):
             model_name="application",
             name="meta_hide",
             field=models.BooleanField(
-                default=False, help_text="Hide this application from the user dashboard."
+                default=False,
+                help_text="Hide this application from the user's My applications page.",
             ),
         ),
         migrations.RunPython(migrate_blank_launch_url, migrations.RunPython.noop),

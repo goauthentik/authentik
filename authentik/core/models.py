@@ -736,7 +736,7 @@ class Application(SerializerModel, PolicyBindingModel):
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
     meta_hide = models.BooleanField(
-        default=False, help_text=_("Hide this application from the user dashboard.")
+        default=False, help_text=_("Hide this application from the user's My applications page.")
     )
 
     objects = ApplicationQuerySet.as_manager()
