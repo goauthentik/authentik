@@ -384,7 +384,14 @@ class ContentSecurityPolicyMiddleware:
     def _build_policy(self, nonce: str) -> str:
         nonce_token = f"'nonce-{nonce}'"
         script_src = ("'self'", nonce_token, *self.SCRIPT_SRC_THIRD_PARTY)
-        style_src = ("'self'", nonce_token)
+        # Per CSP3 §6.6.2.2, browsers ignore `'unsafe-inline'` whenever a
+        # nonce is also present in the same source list. Several runtime
+        # libraries we ship (mermaid, PatternFly's own style injections,
+        # DOMPurify's sanitization sandbox) emit `<style>` elements
+        # dynamically without a nonce, so we drop the nonce for styles
+        # and rely on `'unsafe-inline'`. Script-side CSP is unaffected
+        # — the eval/script protections remain strict.
+        style_src = ("'self'", "'unsafe-inline'")
         frame_src = ("'self'", *self.FRAME_SRC_THIRD_PARTY)
         connect_src: tuple[str, ...] = ("'self'", "ws:", "wss:")
         if self.sentry_origin:
