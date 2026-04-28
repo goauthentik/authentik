@@ -198,14 +198,15 @@ class UserSerializer(ModelSerializer):
 
     def create(self, validated_data: dict) -> User:
         """Create a user, with blueprint-only password and permission writes."""
-        password = validated_data.pop("password", None)
-        password_hash = validated_data.pop("password_hash", None)
-        permissions = validated_data.pop("permissions", [])
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+        is_blueprint = SERIALIZER_CONTEXT_BLUEPRINT in self.context
+        if is_blueprint:
+            password = validated_data.pop("password", None)
+            password_hash = validated_data.pop("password_hash", None)
+            permissions = validated_data.pop("permissions", [])
             self._validate_password_inputs(password, password_hash)
 
         instance: User = super().create(validated_data)
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+        if is_blueprint:
             self._set_password(instance, password, password_hash)
             perms_qs = Permission.objects.filter(
                 codename__in=[permission.split(".")[1] for permission in permissions]
@@ -217,14 +218,15 @@ class UserSerializer(ModelSerializer):
 
     def update(self, instance: User, validated_data: dict) -> User:
         """Update a user, with blueprint-only password and permission writes."""
-        password = validated_data.pop("password", None)
-        password_hash = validated_data.pop("password_hash", None)
-        permissions = validated_data.pop("permissions", [])
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+        is_blueprint = SERIALIZER_CONTEXT_BLUEPRINT in self.context
+        if is_blueprint:
+            password = validated_data.pop("password", None)
+            password_hash = validated_data.pop("password_hash", None)
+            permissions = validated_data.pop("permissions", [])
             self._validate_password_inputs(password, password_hash)
 
         instance = super().update(instance, validated_data)
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+        if is_blueprint:
             self._set_password(instance, password, password_hash)
             perms_qs = Permission.objects.filter(
                 codename__in=[permission.split(".")[1] for permission in permissions]
