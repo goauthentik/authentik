@@ -28,12 +28,7 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-// Slug used by blueprints/example/flows-invitation-enrollment-minimal.yaml when
-// no context is supplied. Once the /managed/blueprints/import/ endpoint accepts
-// a context parameter, the slug the user typed will take effect and this
-// fallback can be removed.
 const MINIMAL_BLUEPRINT_PATH = "example/flows-invitation-enrollment-minimal.yaml";
-const MINIMAL_BLUEPRINT_DEFAULT_SLUG = "invitation-enrollment-flow";
 
 @customElement("ak-invitation-wizard-details-step")
 export class InvitationWizardDetailsStep extends WizardPage {
@@ -102,13 +97,15 @@ export class InvitationWizardDetailsStep extends WizardPage {
 
         if (wizardState.needsFlow) {
             try {
-                // TODO(@BeryJu context): once /managed/blueprints/import/ accepts a
-                // context parameter, pass { flow_name, flow_slug, stage_name,
-                // continue_flow_without_invitation, user_type } so the user's inputs
-                // drive the generated flow. Until then the blueprint's !Context
-                // defaults apply and the generated flow uses the fixed slug below.
                 const result = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsImportCreate({
                     path: MINIMAL_BLUEPRINT_PATH,
+                    context: JSON.stringify({
+                        flow_name: wizardState.newFlowName,
+                        flow_slug: wizardState.newFlowSlug,
+                        stage_name: wizardState.newStageName,
+                        continue_flow_without_invitation: wizardState.continueFlowWithoutInvitation,
+                        user_type: wizardState.newUserType,
+                    }),
                 });
                 if (!result.success) {
                     const logs = (result.logs || [])
@@ -121,7 +118,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
                     );
                 }
 
-                const slugToLookup = MINIMAL_BLUEPRINT_DEFAULT_SLUG;
+                const slugToLookup = wizardState.newFlowSlug!;
                 const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                     slug: slugToLookup,
                 });

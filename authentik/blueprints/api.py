@@ -1,5 +1,6 @@
 """Serializer mixin for managed models"""
 
+from json import JSONDecodeError, loads
 from typing import cast
 
 from django.conf import settings
@@ -44,6 +45,7 @@ class BlueprintUploadSerializer(PassiveSerializer):
 
     file = FileField(required=False)
     path = CharField(required=False)
+    context = CharField(required=False, allow_blank=True)
 
     def validate_path(self, path: str) -> str:
         """Ensure the path (if set) specified is retrievable"""
@@ -53,6 +55,18 @@ class BlueprintUploadSerializer(PassiveSerializer):
         if path not in [file["path"] for file in files]:
             raise ValidationError(_("Blueprint file does not exist"))
         return path
+
+    def validate_context(self, context: str) -> dict:
+        """Parse context as a JSON object"""
+        if not context:
+            return {}
+        try:
+            parsed = loads(context)
+        except JSONDecodeError as exc:
+            raise ValidationError(_("Context must be valid JSON")) from exc
+        if not isinstance(parsed, dict):
+            raise ValidationError(_("Context must be a JSON object"))
+        return parsed
 
 
 class ManagedSerializer:
@@ -224,7 +238,8 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
             ).retrieve_file()
         else:
             raise ValidationError("Either path or file must be set")
-        importer = Importer.from_string(string_contents)
+        context = body.validated_data.get("context") or {}
+        importer = Importer.from_string(string_contents, context)
 
         check_blueprint_perms(importer.blueprint, request.user)
 
