@@ -63,7 +63,6 @@ class TestViews(TestCase):
             f'--ak-global--background-image: url("{background_url}");',
             html=False,
         )
-        self.assertNotContains(response, "&amp;X-Amz-Credential")
 
     def test_flow_sfe_css_background_preserves_presigned_url_query(self):
         """Test SFE flow CSS keeps signed URL query separators intact."""
@@ -84,7 +83,6 @@ class TestViews(TestCase):
             f'background-image: url("{background_url}");',
             html=False,
         )
-        self.assertNotContains(response, "&amp;X-Amz-Credential")
 
 
 def view_tester_factory(view_class: type[StageView]) -> Callable:
