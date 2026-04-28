@@ -11,7 +11,7 @@ from django.http import HttpRequest
 from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, User
-from authentik.core.signals import login_failed, password_changed
+from authentik.core.signals import login_failed, password_changed, password_hash_changed
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
 from authentik.flows.planner import (
@@ -113,8 +113,20 @@ def on_invitation_used(sender, request: HttpRequest, invitation: Invitation, **_
 
 
 @receiver(password_changed)
-def on_password_changed(sender, user: User, password: str | None, request: HttpRequest | None, **_):
+def on_password_changed(
+    sender,
+    user: User,
+    password: str | None,
+    request: HttpRequest | None,
+    **_,
+):
     """Log password change"""
+    Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
+
+
+@receiver(password_hash_changed)
+def on_password_hash_changed(sender, user: User, request: HttpRequest | None = None, **_):
+    """Log password hash change"""
     Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
 
 

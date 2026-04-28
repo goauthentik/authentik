@@ -556,7 +556,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         signal=True,
         sender=None,
         request: HttpRequest | None = None,
-        password_source: str | None = None,
     ):
         if not self.pk or not signal:
             return
@@ -570,8 +569,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             "password": password,
             "request": request,
         }
-        if password_source:
-            signal_kwargs["password_source"] = password_source
         password_changed.send(**signal_kwargs)
 
     def set_password(self, raw_password, signal=True, sender=None, request=None):
@@ -596,16 +593,13 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
         Raises ValueError if the hash format is not recognized.
         """
-        from authentik.core.signals import PASSWORD_SOURCE_HASH
-
         self.validate_password_hash(password_hash)
-        self._send_password_changed_signal(
-            None,
-            signal,
-            sender,
-            request,
-            password_source=PASSWORD_SOURCE_HASH,
-        )
+        if self.pk and signal:
+            from authentik.core.signals import password_hash_changed
+
+            if not sender:
+                sender = self
+            password_hash_changed.send(sender=sender, user=self, request=request)
         self.password = password_hash
         self.password_change_date = now()
 

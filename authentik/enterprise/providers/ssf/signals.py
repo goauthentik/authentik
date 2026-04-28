@@ -12,7 +12,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.core.signals import PASSWORD_SOURCE_HASH, password_changed
+from authentik.core.signals import password_changed, password_hash_changed
 from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
@@ -84,16 +84,8 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
     )
 
 
-@receiver(password_changed)
-def ssf_password_changed_cred_change(
-    sender, user: User, password: str | None, password_source: str | None = None, **_
-):
+def _send_password_credential_change(user: User, change_type: str):
     """Credential change trigger (password changed)"""
-    # set_password_from_hash() has no raw password but still represents an update.
-    if password_source == PASSWORD_SOURCE_HASH:
-        change_type = "update"
-    else:
-        change_type = "revoke" if password is None else "update"
     send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         {
@@ -108,6 +100,18 @@ def ssf_password_changed_cred_change(
             },
         },
     )
+
+
+@receiver(password_changed)
+def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
+    """Credential change trigger (password changed)"""
+    _send_password_credential_change(user, "revoke" if password is None else "update")
+
+
+@receiver(password_hash_changed)
+def ssf_password_hash_changed_cred_change(sender, user: User, **_):
+    """Credential change trigger (password hash changed)"""
+    _send_password_credential_change(user, "update")
 
 
 device_type_map = {

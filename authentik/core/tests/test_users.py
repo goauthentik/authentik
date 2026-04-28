@@ -9,7 +9,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
-from authentik.core.signals import PASSWORD_SOURCE_HASH, password_changed
+from authentik.core.signals import password_changed, password_hash_changed
 from authentik.events.models import Event
 from authentik.lib.generators import generate_id
 
@@ -47,13 +47,21 @@ class TestUsers(TestCase):
             username=generate_id(),
             attributes={"distinguishedName": "cn=test,ou=users,dc=example,dc=com"},
         )
-        captured = []
+        password_changed_captured = []
+        password_hash_changed_captured = []
         dispatch_uid = generate_id()
+        hash_dispatch_uid = generate_id()
 
-        def receiver(sender, **kwargs):
-            captured.append(kwargs)
+        def password_changed_receiver(sender, **kwargs):
+            password_changed_captured.append(kwargs)
 
-        password_changed.connect(receiver, dispatch_uid=dispatch_uid)
+        def password_hash_changed_receiver(sender, **kwargs):
+            password_hash_changed_captured.append(kwargs)
+
+        password_changed.connect(password_changed_receiver, dispatch_uid=dispatch_uid)
+        password_hash_changed.connect(
+            password_hash_changed_receiver, dispatch_uid=hash_dispatch_uid
+        )
         try:
             with (
                 patch(
@@ -68,10 +76,10 @@ class TestUsers(TestCase):
                 user.save()
         finally:
             password_changed.disconnect(dispatch_uid=dispatch_uid)
+            password_hash_changed.disconnect(dispatch_uid=hash_dispatch_uid)
 
-        self.assertEqual(len(captured), 1)
-        self.assertIsNone(captured[0]["password"])
-        self.assertEqual(captured[0]["password_source"], PASSWORD_SOURCE_HASH)
+        self.assertEqual(password_changed_captured, [])
+        self.assertEqual(len(password_hash_changed_captured), 1)
         ldap_sources_filter.assert_not_called()
         kerberos_connections_select.assert_not_called()
 
