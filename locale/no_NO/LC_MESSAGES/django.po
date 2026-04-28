@@ -2380,8 +2380,7 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Configure how the issuer field of the ID Token should be filled."
-msgstr ""
-"Konfigurer hvordan utstederfeltet (issuer) i ID-tokenet skal fylles ut."
+msgstr "Konfigurer hvordan utsteder-feltet i ID-tokenet skal fylles ut."
 
 #: authentik/providers/oauth2/models.py
 msgid "Key used to sign the tokens."
