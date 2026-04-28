@@ -1514,7 +1514,7 @@ msgid ""
 "Check if policies attached to NotificationRule match event and dispatch "
 "notification tasks."
 msgstr ""
-"Sjekk om policyer knyttet til NotificationRule samsvarer med hendelsen og "
+"Sjekk om policyer knyttet til varslingsregler samsvarer med hendelsen og "
 "send ut varslingsoppgaver."
 
 #: authentik/events/tasks.py
