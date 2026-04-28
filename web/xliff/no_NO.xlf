@@ -9283,7 +9283,7 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role &quot;<x id="0" equiv-text="${this.targetRole.name}"/>&quot;.</source>
-  <target>Denne brukeren vil bli lagt til i rollen &quot;<x id="0" equiv-text="${this.targetRole.name}"/>&quot;.</target>
+  <target>Denne brukeren vil bli lagt til i rollen &amp;quot;<x id="0" equiv-text="${this.targetRole.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
