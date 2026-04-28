@@ -22,7 +22,7 @@ You can create and configure Lifecycle rules via the **Events** > **Lifecycle Ru
 A lifecycle rule can be scoped to:
 
 - **A specific object**: The rule applies only to that individual Application, Group, or Role.
-- **An entire object type**: The rule applies to all objects of that type, e.g., all applications.
+- **An entire object type**: The rule applies to all objects of that type (e.g., all applications).
 
 Multiple rules can apply to the same object. For example, you can have a type-level rule that schedules quarterly reviews for all applications and an object-specific rule that schedules monthly reviews for a critical application. Each rule creates its own independent review cycle, so the object may have multiple concurrent reviews visible on its **Lifecycle** tab.
 
