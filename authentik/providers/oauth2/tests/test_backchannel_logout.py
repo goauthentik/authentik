@@ -4,22 +4,19 @@ from unittest.mock import Mock, patch
 
 import jwt
 from django.test import RequestFactory
-from django.utils import timezone
 from dramatiq.results.errors import ResultFailure
 from requests import Response
 from requests.exceptions import HTTPError, Timeout
 
-from authentik.core.models import Application, AuthenticatedSession, Session
+from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import (
-    AccessToken,
     OAuth2LogoutMethod,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
-    RefreshToken,
 )
 from authentik.providers.oauth2.tasks import send_backchannel_logout_request
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
@@ -44,52 +41,6 @@ class TestBackChannelLogout(OAuthTestCase):
         )
         self.app.provider = self.provider
         self.app.save()
-
-    def _create_session(self, session_key=None):
-        """Create a session with the given key or a generated one"""
-        session_key = session_key or f"session-{generate_id()}"
-        session = Session.objects.create(
-            session_key=session_key,
-            expires=timezone.now() + timezone.timedelta(hours=1),
-            last_ip="255.255.255.255",
-        )
-        auth_session = AuthenticatedSession.objects.create(
-            session=session,
-            user=self.user,
-        )
-        return auth_session
-
-    def _create_token(
-        self, provider, user, session=None, token_type="access", token_id=None
-    ):  # nosec
-        """Create a token of the specified type"""
-        token_id = token_id or f"{token_type}-token-{generate_id()}"
-        kwargs = {
-            "provider": provider,
-            "user": user,
-            "session": session,
-            "token": token_id,
-            "_id_token": "{}",
-            "auth_time": timezone.now(),
-        }
-
-        if token_type == "access":  # nosec
-            return AccessToken.objects.create(**kwargs)
-        else:  # refresh
-            return RefreshToken.objects.create(**kwargs)
-
-    def _create_provider(self, name=None):
-        """Create an OAuth2 provider"""
-        name = name or f"provider-{generate_id()}"
-        provider = OAuth2Provider.objects.create(
-            name=name,
-            authorization_flow=create_test_flow(),
-            redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, f"http://{name}/callback"),
-            ],
-            signing_key=self.keypair,
-        )
-        return provider
 
     def _create_logout_token(
         self,

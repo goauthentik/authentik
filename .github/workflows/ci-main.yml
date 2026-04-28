@@ -127,7 +127,10 @@ jobs:
         with:
           postgresql_version: ${{ matrix.psql }}
       - name: run migrations to stable
-        run: uv run python -m lifecycle.migrate
+        run: |
+          docker ps
+          docker logs setup-postgresql-1
+          uv run python -m lifecycle.migrate
       - name: checkout current code
         run: |
           set -x
@@ -250,7 +253,7 @@ jobs:
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
@@ -296,7 +299,7 @@ jobs:
         run: |
           docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
@@ -317,7 +320,7 @@ jobs:
         with:
           flags: conformance
       - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: conformance-certification-${{ matrix.job.name }}
           path: tests/openid_conformance/exports/
@@ -340,7 +343,7 @@ jobs:
           files: target/llvm-cov-target/rust.json
           flags: rust
       - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: test-rust
           path: target/llvm-cov-target/rust.json

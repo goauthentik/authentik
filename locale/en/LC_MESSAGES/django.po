@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-08 00:28+0000\n"
+"POT-Creation-Date: 2026-04-28 00:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -730,6 +730,14 @@ msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Apple Nonces"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclave"
+msgstr ""
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclaves"
 msgstr ""
 
 #: authentik/endpoints/facts.py
@@ -1569,6 +1577,10 @@ msgstr ""
 
 #: authentik/flows/models.py
 msgid "Flow Tokens"
+msgstr ""
+
+#: authentik/flows/planner.py
+msgid "This link is invalid or has expired. Please request a new one."
 msgstr ""
 
 #: authentik/flows/views/executor.py
@@ -2703,6 +2715,10 @@ msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Webex"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "vCenter"
 msgstr ""
 
 #: authentik/providers/scim/models.py

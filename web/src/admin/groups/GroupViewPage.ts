@@ -1,4 +1,3 @@
-import "#admin/groups/ak-group-form";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/roles/ak-related-role-table";
@@ -10,18 +9,20 @@ import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/forms/ModalForm";
 import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
+
+import { GroupForm } from "#admin/groups/ak-group-form";
 
 import { ContentTypeEnum, CoreApi, Group, ModelEnum } from "@goauthentik/api";
 
@@ -150,18 +151,14 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                     ],
                                     [
                                         msg("Related actions"),
-                                        html`<ak-forms-modal>
-                                            <span slot="submit">${msg("Save Changes")}</span>
-                                            <span slot="header">${msg("Update Group")}</span>
-                                            <ak-group-form slot="form" .instancePk=${this.group.pk}>
-                                            </ak-group-form>
-                                            <button
-                                                slot="trigger"
-                                                class="pf-m-primary pf-c-button pf-m-block"
-                                            >
-                                                ${msg("Edit")}
-                                            </button>
-                                        </ak-forms-modal>`,
+                                        html`<button
+                                            class="pf-c-button pf-m-primary pf-m-block"
+                                            ${modalInvoker(GroupForm, {
+                                                instancePk: this.group.pk,
+                                            })}
+                                        >
+                                            ${msg("Edit")}
+                                        </button>`,
                                     ],
                                 ])}
                             </div>

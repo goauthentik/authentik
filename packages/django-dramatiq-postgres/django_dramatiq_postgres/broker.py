@@ -62,6 +62,10 @@ def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:  # noqa: UP0
             return func(*args, **kwargs)
         except DATABASE_ERRORS as exc:
             logger.warning("Database error encountered", exc=exc)
+            try:
+                connections.close_all()
+            except DATABASE_ERRORS:
+                pass
             raise ConnectionError(str(exc)) from exc  # type: ignore[no-untyped-call]
 
     return wrapper

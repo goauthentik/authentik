@@ -37,7 +37,7 @@ runs:
         sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57 # v5
+      uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -52,24 +52,24 @@ runs:
       run: uv sync --all-extras --dev --frozen
     - name: Setup rust (stable)
       if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1
       with:
         rustflags: ""
     - name: Setup rust (nightly)
       if: ${{ contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1
       with:
         toolchain: nightly
         components: rustfmt
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@80e6af7a2ec7f280fffe2d0a9d3a12a9d11d86e9 # v2
+      uses: taiki-e/install-action@cf525cb33f51aca27cd6fa02034117ab963ff9f1 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup node (web)
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
+      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
       with:
         node-version-file: "${{ inputs.working-directory }}web/package.json"
         cache: "npm"
@@ -77,7 +77,7 @@ runs:
         registry-url: "https://registry.npmjs.org"
     - name: Setup node (root)
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v4
+      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
       with:
         node-version-file: "${{ inputs.working-directory }}package.json"
         cache: "npm"

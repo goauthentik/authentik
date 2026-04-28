@@ -19,6 +19,7 @@ from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
     AgentDeviceUserBinding,
+    AppleIndependentSecureEnclave,
     AppleNonce,
     DeviceAuthenticationToken,
 )
@@ -103,7 +104,9 @@ class TokenView(View):
         nonce.delete()
         return decoded
 
-    def validate_embedded_assertion(self, assertion: str) -> tuple[AgentDeviceUserBinding, dict]:
+    def validate_embedded_assertion(
+        self, assertion: str
+    ) -> tuple[AgentDeviceUserBinding | AppleIndependentSecureEnclave, dict]:
         """Decode an embedded assertion and validate it by looking up the matching device user"""
         decode_unvalidated = get_unverified_header(assertion)
         expected_kid = decode_unvalidated["kid"]
@@ -112,8 +115,13 @@ class TokenView(View):
             target=self.device_connection.device, apple_enclave_key_id=expected_kid
         ).first()
         if not device_user:
-            LOGGER.warning("Could not find device user binding for user")
-            raise ValidationError("Invalid request")
+            independent_user = AppleIndependentSecureEnclave.objects.filter(
+                apple_enclave_key_id=expected_kid
+            ).first()
+            if not independent_user:
+                LOGGER.warning("Could not find device user binding or independent enclave for user")
+                raise ValidationError("Invalid request")
+            device_user = independent_user
         decoded: dict[str, Any] = decode(
             assertion,
             device_user.apple_secure_enclave_key,

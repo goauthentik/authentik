@@ -101,13 +101,23 @@ class Brand(SerializerModel):
         """Get themed URLs for branding_favicon if it contains %(theme)s"""
         return get_file_manager(FileUsage.MEDIA).themed_urls(self.branding_favicon)
 
-    def branding_default_flow_background_url(self) -> str:
+    def branding_default_flow_background_url(self, request=None, use_cache: bool = True) -> str:
         """Get branding_default_flow_background URL"""
-        return get_file_manager(FileUsage.MEDIA).file_url(self.branding_default_flow_background)
+        return get_file_manager(FileUsage.MEDIA).file_url(
+            self.branding_default_flow_background,
+            request,
+            use_cache=use_cache,
+        )
 
-    def branding_default_flow_background_themed_urls(self) -> dict[str, str] | None:
+    def branding_default_flow_background_themed_urls(
+        self, request=None, use_cache: bool = True
+    ) -> dict[str, str] | None:
         """Get themed URLs for branding_default_flow_background if it contains %(theme)s"""
-        return get_file_manager(FileUsage.MEDIA).themed_urls(self.branding_default_flow_background)
+        return get_file_manager(FileUsage.MEDIA).themed_urls(
+            self.branding_default_flow_background,
+            request,
+            use_cache=use_cache,
+        )
 
     @property
     def serializer(self) -> type[Serializer]:

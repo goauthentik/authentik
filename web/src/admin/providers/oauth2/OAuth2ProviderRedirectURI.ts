@@ -49,13 +49,13 @@ export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
     @queryAll(".ak-form-control")
     controls?: HTMLInputElement[];
 
-    json() {
+    toJSON(): RedirectURI {
         return Object.fromEntries(
             Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
         ) as unknown as RedirectURI;
     }
 
-    get isValid() {
+    get valid() {
         return true;
     }
 

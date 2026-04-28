@@ -194,7 +194,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     //#region Listeners
 
-    @listen(AKSessionAuthenticatedEvent)
+    @listen(AKSessionAuthenticatedEvent, { target: window })
     protected sessionAuthenticatedListener = () => {
         if (!document.hidden) {
             return;

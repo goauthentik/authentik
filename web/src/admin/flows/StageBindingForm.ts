@@ -24,7 +24,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 function createInvalidResponseOptions(): RadioOption<InvalidResponseActionEnum>[] {
@@ -52,6 +52,9 @@ function createInvalidResponseOptions(): RadioOption<InvalidResponseActionEnum>[
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
+    public static override verboseName = msg("Stage Binding");
+    public static override verboseNamePlural = msg("Stage Bindings");
+
     async load() {
         this.defaultOrder = await this.getOrder();
     }
@@ -124,10 +127,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         </ak-form-element-horizontal>`;
     }
 
-    protected override renderForm(): TemplateResult {
-        return html` ${this.renderTarget()}
+    protected override renderForm(): SlottedTemplateResult {
+        return html`${this.renderTarget()}
             <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
                 <ak-search-select
+                    placeholder=${msg("Select a stage...")}
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {
                             ordering: "name",

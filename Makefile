@@ -115,6 +115,9 @@ run-server:  ## Run the main authentik server process
 run-worker:  ## Run the main authentik worker process
 	$(UV) run ak worker
 
+run-worker-watch:  ## Run the authentik worker, with auto reloading
+	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- $(UV) run ak worker
+
 core-i18n-extract:
 	$(UV) run ak makemessages \
 		--add-location file \
@@ -205,10 +208,10 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	npx prettier --write diff.md
 
 gen-client-go:  ## Build and install the authentik API for Golang
-	make -C "${PWD}/packages/client-go" build
+	$(UV) run make -C "${PWD}/packages/client-go" build
 
 gen-client-rust:  ## Build and install the authentik API for Rust
-	make -C "${PWD}/packages/client-rust" build version=${NPM_VERSION}
+	$(UV) run make -C "${PWD}/packages/client-rust" build version=${NPM_VERSION}
 	make lint-fix-rust
 
 gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
@@ -350,7 +353,7 @@ ci-lint-clippy: ci--meta-debug
 	$(CARGO) clippy --workspace -- -D warnings
 
 ci-test: ci--meta-debug
-	$(UV) run coverage run manage.py test --keepdb authentik
+	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik
 	$(UV) run coverage combine
 	$(UV) run coverage report
 	$(UV) run coverage xml

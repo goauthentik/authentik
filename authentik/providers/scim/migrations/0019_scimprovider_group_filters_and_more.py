@@ -94,6 +94,7 @@ class Migration(migrations.Migration):
                     ("slack", "Slack"),
                     ("sfdc", "Salesforce"),
                     ("webex", "Webex"),
+                    ("vcenter", "vCenter"),
                 ],
                 default="default",
                 help_text="Alter authentik behavior for vendor-specific SCIM implementations.",

@@ -50,8 +50,8 @@ const renderSAMLImportOverview: ProviderOverview<ProvidersSamlImportMetadataCrea
     provider,
 ) => {
     return renderSummary("SAML", provider.name, [
-        [msg("Authorization flow"), provider.authorizationFlow ?? "-"],
-        [msg("Invalidation flow"), provider.invalidationFlow ?? "-"],
+        [msg("Authorization Flow"), provider.authorizationFlow ?? "-"],
+        [msg("Invalidation Flow"), provider.invalidationFlow ?? "-"],
     ]);
 };
 
@@ -153,7 +153,7 @@ const renderOAuth2Overview: ProviderOverview<OAuth2Provider> = (provider) => {
     const label = provider.clientType ? clientTypeToLabel[provider.clientType]() : "";
 
     return renderSummary("OAuth2", provider.name, [
-        [msg("Client type"), label],
+        [msg("Client Type"), label],
         [msg("Client ID"), provider.clientId],
         [msg("Redirect URIs"), formatRedirectUris(provider.redirectUris)],
     ]);

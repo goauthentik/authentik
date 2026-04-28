@@ -13,11 +13,11 @@ However, for further hardening compliant to the NIST Guidelines, consider
 - setting the length of the password to a minimum of 15 characters, and
 - enabling the "Check haveibeenpwned.com" blocklist comparison (note that this cannot be used on Air-gapped instances)
 
-For further options, see [Password policy](../customize/policies/index.md#password-policy).
+For further options, see [Password Policy](../customize/policies/types/password.md).
 
 ### Expressions
 
-[Expressions](../customize/policies/expression.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
+[Expressions](../customize/policies/types/expression/index.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
 
 However, for further hardening, it is possible to prevent any user (even super-users) from using expressions to create or edit any objects. To do so, configure your deployment to block API requests to these endpoints:
 

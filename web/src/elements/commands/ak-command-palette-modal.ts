@@ -16,9 +16,8 @@ import {
     resolveCommandNamespace,
 } from "#elements/commands/shared";
 import { listen } from "#elements/decorators/listen";
-import { AKModal } from "#elements/modals/ak-modal";
-import { TransclusionElement } from "#elements/modals/shared";
-import { asInvoker, renderDialog } from "#elements/modals/utils";
+import { asInvoker, renderDialog } from "#elements/dialogs";
+import { AKModal } from "#elements/dialogs/ak-modal";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { FocusTarget } from "#elements/utils/focus";
@@ -48,7 +47,7 @@ export class AKCommandPaletteModal extends AKModal {
     public static open = asInvoker(AKCommandPaletteModal);
 
     protected autofocusTarget = new FocusTarget<HTMLInputElement>();
-    protected formRef = createRef<HTMLFormElement & TransclusionElement>();
+    protected formRef = createRef<HTMLFormElement>();
 
     public readonly actionNamespaceSymbol = CommandNamespaceSymbol[PaletteCommandNamespace.Action];
     public readonly navigationNamespaceSymbol =
@@ -446,9 +445,7 @@ export class AKCommandPaletteModal extends AKModal {
 
     //#region Event Listeners
 
-    @listen(AKCommandChangeEvent, {
-        target: this,
-    })
+    @listen(AKCommandChangeEvent)
     protected commandChangeListener = (event: AKCommandChangeEvent) => {
         this.setCommands(event.commands, event.previousCommands);
     };
@@ -621,7 +618,7 @@ export class AKCommandPaletteModal extends AKModal {
             @submit=${this.submitListener}
         >
             <div
-                class="input"
+                part="command-field-container"
                 aria-expanded=${this.open ? "true" : "false"}
                 aria-autocomplete="list"
                 role="combobox"

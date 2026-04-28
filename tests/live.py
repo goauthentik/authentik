@@ -6,6 +6,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from dramatiq import get_broker
 from structlog.stdlib import get_logger
 
+from authentik.core.apps import Setup
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.tasks.test import use_test_broker
@@ -27,6 +28,7 @@ class E2ETestMixin(DockerTestCase):
         self.wait_timeout = 60
         self.logger = get_logger()
         self.user = create_test_admin_user()
+        Setup.set(True)
         super().setUp()
 
     @classmethod
