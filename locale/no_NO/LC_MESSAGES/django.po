@@ -3801,8 +3801,8 @@ msgid ""
 "manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
 "Tidsforskyvning for når midlertidige brukere skal slettes. Dette gjelder "
-"bare hvis din IdP bruker NameID-formatet 'transient' (midlertidig), og "
-"brukeren ikke logger ut manuelt. (Format: hours=1;minutes=2;seconds=3)."
+"bare hvis din IdP bruker NameID-formatet 'transient', og brukeren ikke "
+"logger ut manuelt. (Format: hours=1;minutes=2;seconds=3)."
 
 #: authentik/sources/saml/models.py
 msgid ""
