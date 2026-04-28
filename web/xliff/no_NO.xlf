@@ -5342,7 +5342,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
   <source>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
-  <target>Vis detaljer for gruppe &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+  <target>Vis detaljer for gruppe &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s7c5774fad9d050ce">
   <source>Create group</source>
