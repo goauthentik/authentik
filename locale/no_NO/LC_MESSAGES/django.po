@@ -638,7 +638,7 @@ msgstr "Grensesnittet er kun tilgjengelig for interne brukere."
 
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
-msgstr "Alternativt emnenavn, SAN"
+msgstr "Alternativt emnenavn"
 
 #: authentik/crypto/builder.py
 msgid "rsa"
