@@ -23,6 +23,7 @@ export const AuthenticationEnum = {
     RequireSuperuser: "require_superuser",
     RequireRedirect: "require_redirect",
     RequireOutpost: "require_outpost",
+    RequireToken: "require_token",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type AuthenticationEnum = (typeof AuthenticationEnum)[keyof typeof AuthenticationEnum];

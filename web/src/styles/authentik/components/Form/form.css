@@ -193,7 +193,6 @@ label.pf-c-radio {
     padding-block: var(--pf-global--spacer--sm);
     cursor: pointer;
     background-color: var(--pf-c-radio--BackgroundColor, transparent);
-    border: 1px solid var(--pf-c-radio--BorderColor);
     border-radius: var(--pf-global--BorderRadius--sm);
     position: relative;
 
@@ -220,21 +219,28 @@ label.pf-c-radio {
         padding: 0.25em;
         border: 1px solid;
         color: var(--pf-c-radio--checkmark--BorderColor, transparent);
-        border-radius: 3px;
+        border-radius: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 1;
+        background: color-mix(var(--pf-c-radio--checkmark--BorderColor), transparent 84%);
 
         &::after {
             font-family: "Font Awesome 5 Free";
             font-weight: 900;
 
-            content: "\f00c";
+            content: "";
             display: block;
             line-height: 1;
             color: var(--pf-c-radio--checkmark--Color);
             transition: color 0.2s;
+
+            background: var(--pf-c-radio--checkmark--Color);
+            height: 100%;
+            width: 100%;
+            border-radius: 100%;
+            filter: drop-shadow(0 0 6px color-mix(currentColor, transparent 50%));
         }
     }
 

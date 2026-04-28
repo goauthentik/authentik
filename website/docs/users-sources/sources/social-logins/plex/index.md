@@ -1,5 +1,6 @@
 ---
-title: Plex
+title: Log in with Plex
+sidebar_label: Plex
 tags:
     - source
     - plex

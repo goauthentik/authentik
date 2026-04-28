@@ -14,6 +14,8 @@
 
 import type { ClientTypeEnum } from "./ClientTypeEnum";
 import { ClientTypeEnumFromJSON, ClientTypeEnumToJSON } from "./ClientTypeEnum";
+import type { GrantTypesEnum } from "./GrantTypesEnum";
+import { GrantTypesEnumFromJSON, GrantTypesEnumToJSON } from "./GrantTypesEnum";
 import type { IssuerModeEnum } from "./IssuerModeEnum";
 import { IssuerModeEnumFromJSON, IssuerModeEnumToJSON } from "./IssuerModeEnum";
 import type { OAuth2ProviderLogoutMethodEnum } from "./OAuth2ProviderLogoutMethodEnum";
@@ -68,6 +70,12 @@ export interface OAuth2ProviderRequest {
      * @memberof OAuth2ProviderRequest
      */
     clientType?: ClientTypeEnum;
+    /**
+     *
+     * @type {Array<GrantTypesEnum>}
+     * @memberof OAuth2ProviderRequest
+     */
+    grantTypes?: Array<GrantTypesEnum>;
     /**
      *
      * @type {string}
@@ -197,6 +205,10 @@ export function OAuth2ProviderRequestFromJSONTyped(
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         clientType:
             json["client_type"] == null ? undefined : ClientTypeEnumFromJSON(json["client_type"]),
+        grantTypes:
+            json["grant_types"] == null
+                ? undefined
+                : (json["grant_types"] as Array<any>).map(GrantTypesEnumFromJSON),
         clientId: json["client_id"] == null ? undefined : json["client_id"],
         clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
         accessCodeValidity:
@@ -248,6 +260,10 @@ export function OAuth2ProviderRequestToJSONTyped(
         invalidation_flow: value["invalidationFlow"],
         property_mappings: value["propertyMappings"],
         client_type: ClientTypeEnumToJSON(value["clientType"]),
+        grant_types:
+            value["grantTypes"] == null
+                ? undefined
+                : (value["grantTypes"] as Array<any>).map(GrantTypesEnumToJSON),
         client_id: value["clientId"],
         client_secret: value["clientSecret"],
         access_code_validity: value["accessCodeValidity"],

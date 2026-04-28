@@ -77,7 +77,12 @@ func (ac *APIController) initEvent(outpostUUID string, attempt int) error {
 		Instruction: EventKindHello,
 		Args:        ac.getEventPingArgs(),
 	}
+	// Serialize this write against concurrent SendEventHello callers (health
+	// ticker, RAC handlers) sharing the same *websocket.Conn. Gorilla's Conn
+	// does not permit concurrent writes.
+	ac.eventConnMu.Lock()
 	err = ws.WriteJSON(msg)
+	ac.eventConnMu.Unlock()
 	if err != nil {
 		ac.logger.WithField("logger", "authentik.outpost.events").WithError(err).Warning("Failed to hello to authentik")
 		return err
@@ -91,7 +96,9 @@ func (ac *APIController) initEvent(outpostUUID string, attempt int) error {
 func (ac *APIController) Shutdown() {
 	// Cleanly close the connection by sending a close message and then
 	// waiting (with timeout) for the server to close the connection.
+	ac.eventConnMu.Lock()
 	err := ac.eventConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+	ac.eventConnMu.Unlock()
 	if err != nil {
 		ac.logger.WithError(err).Warning("failed to write close message")
 		return
@@ -252,6 +259,10 @@ func (a *APIController) SendEventHello(args map[string]any) error {
 		Instruction: EventKindHello,
 		Args:        allArgs,
 	}
+	// Gorilla *websocket.Conn does not permit concurrent writes. This method
+	// is invoked from the health ticker and from RAC session handlers.
+	a.eventConnMu.Lock()
 	err := a.eventConn.WriteJSON(aliveMsg)
+	a.eventConnMu.Unlock()
 	return err
 }

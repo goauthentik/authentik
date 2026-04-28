@@ -109,10 +109,12 @@ During the installation process, the database migrations will be applied automat
 
 ## Access authentik
 
-After the installation is complete, access authentik at `https://<authentik-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
+To start the initial setup, navigate to `http://<your server's IP or hostname>:9000`.
 
-:::info Initial setup in browser
-You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
+You are then prompted to set a password for the `akadmin` user (the default user).
+
+:::info Issues with initial setup
+If you run into issues, refer to our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
 :::
 
 ## First steps in authentik
