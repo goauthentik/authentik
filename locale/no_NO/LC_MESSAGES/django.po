@@ -4939,9 +4939,9 @@ msgid ""
 "expiry,to remember the device the user is logging in from. (Format: "
 "hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
-"Når det er angitt til en verdi over null, vil authentik lagre en "
-"informasjonskapsel (cookie) med lengre utløpstid, for å huske enheten "
-"brukeren logger inn fra. (Format: hours=-1;minutes=-2;seconds=-3)"
+"Når satt til en verdi ulik null, vil authentik lagre en informasjonskapsel "
+"med lengre utløpstid for å huske enheten brukeren logger inn fra. (Format: "
+"hours=-1;minutes=-2;seconds=-3)"
 
 #: authentik/stages/user_login/models.py
 msgid "User Login Stage"
