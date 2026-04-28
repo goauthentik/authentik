@@ -85,7 +85,7 @@ If the user has more than one device, the user is prompted to select which devic
 
 #### Throttling
 
-To slow down brute-force attacks against code-based authenticators, the stage applies an exponential back-off to each device after a failed verification attempt. The delay required between verification attempts grows with each successive failure, as:
+To slow down brute-force attacks against code-based authentication methods, the stage applies an exponential back-off to each device after a failed verification attempt. The delay required between verification attempts grows with each successive failure, as:
 
 ```
 delay_seconds = factor * 2^(n - 1)
