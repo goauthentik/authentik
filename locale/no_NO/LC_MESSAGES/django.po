@@ -4588,8 +4588,8 @@ msgid ""
 "                    "
 msgstr ""
 "\n"
-"                Dette er en test-e-post for å informere deg om at du har konfigurert authentik-e-poster på riktig måte.\n"
-"           "
+"                    Dette er en test-e-post for å informere deg om at du har konfigurert authentik-e-poster på riktig måte.\n"
+"                    "
 
 #: authentik/stages/email/templates/email/setup.txt
 msgid ""
