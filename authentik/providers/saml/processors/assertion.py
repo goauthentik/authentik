@@ -150,6 +150,7 @@ class AssertionProcessor:
                 "authentik_providers_saml:base",
                 kwargs={"application_slug": self.provider.application.slug},
             )
+            + "metadata/"
         )
 
     def get_issuer(self) -> Element:

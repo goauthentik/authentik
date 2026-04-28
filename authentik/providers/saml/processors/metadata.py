@@ -51,6 +51,7 @@ class MetadataProcessor:
                 "authentik_providers_saml:base",
                 kwargs={"application_slug": self.provider.application.slug},
             )
+            + "metadata/"
         )
 
     # Using type unions doesn't work with cython types (which is what lxml is)

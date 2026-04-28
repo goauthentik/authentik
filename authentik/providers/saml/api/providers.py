@@ -103,6 +103,7 @@ class SAMLProviderSerializer(ProviderSerializer):
                     "authentik_providers_saml:base",
                     kwargs={"application_slug": instance.application.slug},
                 )
+                + "metadata/"
             )
         except Provider.application.RelatedObjectDoesNotExist:
             return DEFAULT_ISSUER
