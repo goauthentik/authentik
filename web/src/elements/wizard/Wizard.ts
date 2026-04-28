@@ -553,12 +553,14 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
         return guard(
             [activeStepIndex, lastPage, canBack, cancelable, valid, childElementCount],
             () => {
+                const customLabel = this.activeStepElement?.formatNextLabel();
                 const nextLabel =
-                    lastPage && activeStepIndex > 0
+                    customLabel ??
+                    (lastPage && activeStepIndex > 0
                         ? this.cancelable
                             ? ButtonKindLabelRecord.create()
                             : ButtonKindLabelRecord.finish()
-                        : ButtonKindLabelRecord.next();
+                        : ButtonKindLabelRecord.next());
 
                 return [
                     cancelable

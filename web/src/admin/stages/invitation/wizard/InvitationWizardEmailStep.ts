@@ -13,6 +13,7 @@ import { AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
 
 import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 import { WizardPage } from "#elements/wizard/WizardPage";
 
 import { StagesApi, TypeCreate } from "@goauthentik/api";
@@ -43,6 +44,13 @@ export class InvitationWizardEmailStep extends WizardPage {
 
     @state()
     availableTemplates: TypeCreate[] = [];
+
+    override formatNextLabel(): SlottedTemplateResult {
+        return html`${msg("Send")}
+            <span class="pf-c-button__icon pf-m-end">
+                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+            </span>`;
+    }
 
     activeCallback = async (): Promise<void> => {
         this.host.valid = this.toAddresses.trim().length > 0;
