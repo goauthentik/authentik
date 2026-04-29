@@ -12,9 +12,9 @@ Allows users to authenticate using their Google Workspace credentials by configu
 
 ## What is Google Workspace?
 
-Google Workspace (formerly G Suite) is a collection of cloud computing, productivity and collaboration tools, software and products developed and marketed by Google.
+Google Workspace (formerly G Suite) is a collection of cloud-computing, productivity, and collaboration tools, software, and products developed and marketed by Google.
 
-Organizations using Google Workspace allow their users to authenticate into applications using their company email addresses. This guide shows how to set up Security Assertion Markup Language (SAML) as the authentication method between Google Workspace and authentik.
+Organizations using Google Workspace allow their users to authenticate to applications using their company email addresses. This guide shows how to set up Security Assertion Markup Language (SAML) as the authentication method between Google Workspace and authentik.
 
 ## SAML Authentication Flow
 
@@ -39,7 +39,7 @@ sequenceDiagram
 
 In short, the user navigates to the application, is redirected to authentik, chooses Google Workspace as the authentication method, authenticates with Google, and is redirected back to the application.
 
-The key characteristic that makes this an IdP-to-IdP flow is that authentik is acting as an intermediary identity provider, brokering trust between your application and Google Workspace.
+The key characteristic of this IdP-to-IdP flow is that authentik acts as an intermediary identity provider, brokering trust between your application and Google Workspace.
 
 ## Preparation
 
@@ -105,7 +105,7 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
 ### Create a SAML source in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login** and click **Create**.
+2. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
 3. Select **SAML Source** and configure the following settings:
     - Set **Name** to `Google Workspace`.
     - Set **Slug** to `google` (must match the slug used in Google Workspace ACS URL).

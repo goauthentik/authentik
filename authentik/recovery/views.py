@@ -19,7 +19,7 @@ class UseTokenView(View):
         """Check if token exists, log user in and delete token."""
         with transaction.atomic():
             tokens = (
-                Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_RECOVERY)
+                Token.objects.filter(key=key, intent=TokenIntents.INTENT_RECOVERY)
                 .select_for_update()
                 .select_related("user")
             )

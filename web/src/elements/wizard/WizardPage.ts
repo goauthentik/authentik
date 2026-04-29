@@ -1,7 +1,11 @@
 import { AKElement } from "#elements/Base";
-import { Wizard } from "#elements/wizard/Wizard";
+import { SlottedTemplateResult } from "#elements/types";
+import type { AKWizard } from "#elements/wizard/Wizard";
 
-import { html, LitElement, PropertyDeclaration, TemplateResult } from "lit";
+import { ConsoleLogger } from "#logger/browser";
+
+import { msg } from "@lit/localize";
+import { html, LitElement, PropertyDeclaration } from "lit";
 import { property } from "lit/decorators.js";
 
 /**
@@ -14,18 +18,29 @@ export type WizardPageActiveCallback = () => void | Promise<void>;
  *
  * @returns `true` if the wizard can proceed to the next page, `false` otherwise.
  */
-export type WizardPageNextCallback = () => boolean | Promise<boolean>;
+export type WizardPageNextCallback = (event?: Event) => boolean | Promise<boolean>;
 
-export abstract class WizardPage extends AKElement {
+export interface WizardPageState {
+    [slotName: string]: unknown;
+}
+
+export abstract class WizardPage<S = WizardPageState> extends AKElement {
+    declare parentElement: AKWizard<S> | null;
+    declare slot: Extract<keyof S, string>;
+
+    protected logger = ConsoleLogger.prefix(this.localName);
+    protected defaultSlot = this.ownerDocument.createElement("slot");
+
     /**
      * The label to display in the sidebar for this page.
      *
+     * @see {@linkcode formatSidebarLabel} for a method to compute this value based on the page's content or other properties.
      */
-    @property({ type: String })
-    public label: string | null = null;
+    @property({ type: String, attribute: "headline" })
+    public headline: string | null = null;
 
-    public get host(): Wizard {
-        return this.parentElement as Wizard;
+    public get host(): AKWizard<S> {
+        return this.parentElement!;
     }
 
     /**
@@ -41,8 +56,19 @@ export abstract class WizardPage extends AKElement {
      * Called when this is the page brought into view.
      */
     public activeCallback: WizardPageActiveCallback = () => {
-        this.host.isValid = false;
+        this.host.valid = false;
     };
+
+    /**
+     * An overridable method to compute the sidebar label for this page.
+     *
+     * Override to compute a label based on the page's content or other properties.
+     *
+     * @returns The {@linkcode headline} to display for this page in the sidebar.
+     */
+    public formatSidebarLabel(): SlottedTemplateResult {
+        return html`<div part="sidebar-label-headline">${this.headline ?? msg("UNNAMED")}</div>`;
+    }
 
     /**
      * Called when the `next` button on the wizard is pressed. For forms, results in the submission
@@ -54,6 +80,11 @@ export abstract class WizardPage extends AKElement {
     public nextCallback: WizardPageNextCallback = () => {
         return Promise.resolve(true);
     };
+
+    public constructor() {
+        super();
+        this.part.add("wizard-page");
+    }
 
     public override requestUpdate(
         name?: PropertyKey,
@@ -69,8 +100,8 @@ export abstract class WizardPage extends AKElement {
         return super.requestUpdate(name, oldValue, options);
     }
 
-    render(): TemplateResult {
-        return html`<slot></slot>`;
+    protected override render(): SlottedTemplateResult {
+        return this.defaultSlot;
     }
 }
 

@@ -9,7 +9,7 @@ authentik uses background tasks to run various operations independently and asyn
 
 Here is a non-exhaustive list of what background tasks are used for:
 
-- Outposts: manage [outpost](../add-secure-apps/outposts/index.mdx) deployments, send notifications to outpost when a refresh is needed
+- Outposts: manage [outpost](../add-secure-apps/outposts/index.mdx) deployments, send notifications to outposts when a refresh is needed
 - Housekeeping: clean up old objects, check for updates, etc.
 - Blueprints: import and apply [Blueprints](../customize/blueprints/index.mdx)
 - Synchronization: sync users to and from authentik, from sources and to providers. This is used by:
@@ -37,7 +37,7 @@ A task can have the following statuses:
 
 - **Successful**: the task executed successfully. No extra action is required.
 - **Warning**: the task emitted a warning. Look at the task logs for further information. See [Failed tasks](#failed-tasks) for more details.
-- **Error**: the task failed to process. Either the task threw an exception, or reported an other error. Look at the task logs for further information. See [Failed tasks](#failed-tasks) for more details.
+- **Error**: the task failed to process. Either the task threw an exception, or reported another error. Look at the task logs for further information. See [Failed tasks](#failed-tasks) for more details.
 - **Waiting to run**: the task has been queued for running, but no worker has picked it up yet, either because none are available, they are already busy, or because it's just been queued.
 - **Consumed**: the task has been picked up by a worker.
 - **Pre-processing**: the task is being prepared to run.
@@ -72,13 +72,13 @@ Some tasks are required to run at regular intervals. For tuning reasons we recom
 If the "Next run" field appears to be in the past, this is normal and expected. It simply means the scheduler will dispatch the task the next time the scheduler runs. By default, the scheduler runs every 60 seconds (configurable via [`AUTHENTIK_WORKER__SCHEDULER_INTERVAL`](../install-config/configuration/configuration.mdx#authentik_worker__scheduler_interval)).
 :::
 
-Schedules can also be _paused_ to prevent new tasks to be created from them. They can still be triggered manually while paused. When you un-pause a schedule, it will be triggered immediately.
+Schedules can also be _paused_ to prevent new tasks from being created. They can still be triggered manually while paused. When you un-pause a schedule, it will be triggered immediately.
 
 ### Failed tasks
 
 When a task fails, i.e. when the code throws an exception, the task will be retried as many times as the value configured in [`AUTHENTIK_WORKER__TASK_MAX_RETRIES`](../install-config/configuration/configuration.mdx#authentik_worker__task_max_retries). Tasks that self-reported an error or a warning will not be retried.
 
-Failed tasks will be displayed like any other tasks. Each task can be expanded to show its logs. The logs are split into two parts: "Current execution logs" for the current execution, and "Previous execution logs" for logs from previous executions that happened before a retry was initiated. The information contained in the logs indicate either a transient error (a network connection failed for example), a mis-configuration (wrong password set in the LDAP source for example), or a bug in authentik.
+Failed tasks will be displayed like any other tasks. Each task can be expanded to show its logs. The logs are split into two parts: "Current execution logs" for the current execution, and "Previous execution logs" for logs from previous executions that happened before a retry was initiated. The information contained in the logs indicates either a transient error (a network connection failed for example), a misconfiguration (wrong password set in the LDAP source for example), or a bug in authentik.
 
 #### Restarting tasks
 

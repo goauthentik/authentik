@@ -11,6 +11,12 @@ from authentik.providers.saml.views.sp_slo import (
 )
 
 urlpatterns = [
+    # Base path for Issuer/Entity ID
+    path(
+        "<slug:application_slug>/",
+        sso.SAMLSSOBindingRedirectView.as_view(),
+        name="base",
+    ),
     # SSO Bindings
     path(
         "<slug:application_slug>/sso/binding/redirect/",

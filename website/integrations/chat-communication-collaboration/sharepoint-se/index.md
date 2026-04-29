@@ -117,7 +117,10 @@ return {
     "unique_name": request.user.name,                                  # (Optional) Used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
     "preferred_username": request.user.username,                       # (Optional) The primary username that represents the user.
     "nickname": request.user.username,                                 # (Optional) Used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
-    "roles": [group.name for group in request.user.groups.all()],   # The set of roles that were assigned to the user who is logging in.
+    "roles": [
+        entitlement.name
+        for entitlement in request.user.app_entitlements(provider.application)
+    ],                                                                 # The set of role entitlements that were assigned to the user who is logging in.
 }
 ```
 
@@ -151,6 +154,7 @@ From the authentik Admin Dashboard:
       The minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired.
       :::
     - **Scopes**: select default email, SPopenid and SPprofile
+    - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
     - **Subject mode**: Based on the User's hashed ID
 5. Click **Finish**.
 
@@ -167,6 +171,22 @@ From the authentik Admin Dashboard:
     - (Optional) **Launch URL**: `sp.webAppURL`
     - (Optional) **Icon**: https://res-1.cdn.office.net/files/fabric-cdn-prod_20221209.001/assets/brand-icons/product/svg/sharepoint_48x1.svg
 4. Click **Create**.
+
+### Step 3b: Create application entitlements in authentik
+
+Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to define the values that authentik sends in the `roles` claim for this SharePoint Server SE application.
+
+From the authentik Admin Dashboard:
+
+1. Open **Applications > Applications** from the sidebar.
+2. Open the application `auth.applicationName`.
+3. Click the **Application entitlements** tab.
+4. Create the entitlements that SharePoint should receive in the `roles` claim.
+5. Open each entitlement and bind the users or groups that should receive it.
+
+:::tip Entitlement role names
+For this integration, entitlement names should exactly match the role values that your SharePoint configuration expects in the incoming `roles` claim. This keeps SharePoint-specific authorization scoped to the SharePoint application instead of relying on global authentik group names.
+:::
 
 ### Step 4: Setup OIDC authentication in SharePoint Server
 
@@ -250,7 +270,7 @@ $idClaim = New-SPClaimTypeMapping "http://schemas.microsoft.com/identity/claims/
 ## User claims mappings
 $claims = @(
     $idClaim
-    ## User Roles (Group membership)
+    ## User Roles (application entitlements sent in the roles claim)
     ,(New-SPClaimTypeMapping ([System.Security.Claims.ClaimTypes]::Role) -IncomingClaimTypeDisplayName "Role" -SameAsIncoming)
     ## User email
     ,(New-SPClaimTypeMapping ([System.Security.Claims.ClaimTypes]::Email) -IncomingClaimTypeDisplayName "Email" -SameAsIncoming)

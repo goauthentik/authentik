@@ -5,6 +5,9 @@ import "#flow/components/ak-flow-card";
 import "#flow/inspector/FlowInspectorButton";
 import "#flow/tabs/broadcast";
 
+import { FlowIframeMessageController } from "./controllers/FlowIframeMessageController";
+import { FlowMultitabController } from "./controllers/FlowMultitabController";
+import { FlowWebsocketClientController } from "./controllers/FlowWebsocketClientController";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -13,7 +16,6 @@ import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
 import { AKSessionAuthenticatedEvent } from "#common/ws/events";
-import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { listen } from "#elements/decorators/listen";
 import { Interface } from "#elements/Interface";
@@ -23,11 +25,14 @@ import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
-import { AKFlowAdvanceEvent } from "#flow/events";
+import {
+    AKFlowAdvanceEvent,
+    AKFlowSubmitRequest,
+    AKFlowUpdateChallengeRequest,
+} from "#flow/events";
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { BaseStage } from "#flow/stages/base";
-import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
-import type { StageHost, SubmitOptions } from "#flow/types";
+import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -118,6 +123,15 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     #api: FlowsApi;
 
+    // Listen for challenge-forwarding events from iframe-based third-party verifiers (Device Compliance)
+    #flowIframeMessageController = new FlowIframeMessageController(this);
+
+    // Listen for authentik state-change events from other tabs
+    #flowMultitabController = new FlowMultitabController(this);
+
+    // Listen for server-side events and forward them to the notification handler
+    #flowWebsocketClientController = new FlowWebsocketClientController(this);
+
     //#endregion
 
     //#region Accessors
@@ -126,63 +140,45 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         return this.challenge?.flowInfo ?? null;
     }
 
+    //region Live event handlers
+
+    handleChallengeRequest = (event: AKFlowUpdateChallengeRequest) => {
+        this.challenge = event.challenge;
+    };
+
+    handleSubordinateSubmit = (event: AKFlowSubmitRequest) => {
+        // prettier-ignore
+        const { request: { payload, options } } = event;
+        this.submit(payload, options);
+    };
+
+    //endregion
+
     //#region Lifecycle
 
     constructor() {
         configureSentry();
-
         super();
-
-        WebsocketClient.connect();
-
         this.#api = new FlowsApi(DEFAULT_CONFIG);
-
-        window.addEventListener("message", (event) => {
-            const msg: {
-                source?: string;
-                context?: string;
-                message: string;
-            } = event.data;
-
-            if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
-                return;
-            }
-            if (msg.message === "submit") {
-                this.submit({} as FlowChallengeResponseRequest);
-            }
-        });
-
-        window.addEventListener("ak-multitab-continue", () => {
-            document.title = "continued";
-            if (
-                this.challenge?.component === "ak-stage-identification" &&
-                this.challenge.applicationPreLaunch &&
-                this.challenge.applicationPreLaunch !== "blank://blank"
-            ) {
-                multiTabOrchestrateLeave();
-                window.location.assign(this.challenge.applicationPreLaunch);
-                return;
-            }
-            const qs = new URLSearchParams(window.location.search);
-            const next = qs.get("next");
-            if (next) {
-                const url = new URL(next, window.location.origin);
-                if (url.origin !== window.location.origin) {
-                    multiTabOrchestrateLeave();
-                }
-                window.location.assign(url);
-            }
-        });
+        this.addController(this.#flowIframeMessageController);
+        this.addController(this.#flowMultitabController);
+        this.addController(this.#flowWebsocketClientController);
+        this.addEventListener(AKFlowUpdateChallengeRequest.eventName, this.handleChallengeRequest);
+        this.addEventListener(AKFlowSubmitRequest.eventName, this.handleSubordinateSubmit);
     }
 
     /**
      * Synchronize flow info such as background image with the current state.
      */
-    #synchronizeFlowInfo() {
-        if (!this.flowInfo) return;
+    get #layoutUsesSidebarFrames() {
+        return (
+            this.layout === FlowLayoutEnum.SidebarLeftFrameBackground ||
+            this.layout === FlowLayoutEnum.SidebarRightFrameBackground
+        );
+    }
 
-        if (this.layout === FlowLayoutEnum.SidebarLeftFrameBackground) return;
-        if (this.layout === FlowLayoutEnum.SidebarRightFrameBackground) return;
+    #synchronizeFlowInfo() {
+        if (!this.flowInfo || this.#layoutUsesSidebarFrames) return;
 
         const background =
             this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
@@ -198,7 +194,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     //#region Listeners
 
-    @listen(AKSessionAuthenticatedEvent)
+    @listen(AKSessionAuthenticatedEvent, { target: window })
     protected sessionAuthenticatedListener = () => {
         if (!document.hidden) {
             return;
@@ -207,12 +203,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         console.debug("authentik/ws: Reloading after session authenticated event");
         window.location.reload();
     };
-
-    public disconnectedCallback(): void {
-        super.disconnectedCallback();
-
-        WebsocketClient.close();
-    }
 
     private setFlowErrorChallenge(error: APIError) {
         this.challenge = {
@@ -280,7 +270,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     //#region Public Methods
 
     public submit = async (
-        payload?: FlowChallengeResponseRequest,
+        payload?: FlowChallengeResponseRequestBody,
         options?: SubmitOptions,
     ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
@@ -296,7 +286,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             throw new Error("No flow slug provided");
         }
 
-        payload.component = this.challenge.component as FlowChallengeResponseRequest["component"];
+        // This order is deliberate; the executor always specifies the component token.
+        const flowChallengeResponseRequest = {
+            ...payload,
+            component: this.challenge.component as FlowChallengeResponseRequest["component"],
+        } as FlowChallengeResponseRequest;
 
         if (!options?.invisible) {
             this.loading = true;
@@ -306,7 +300,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             .flowsExecutorSolve({
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
-                flowChallengeResponseRequest: payload,
+                flowChallengeResponseRequest,
             })
             .then((challenge) => {
                 window.dispatchEvent(new AKFlowAdvanceEvent());
@@ -394,15 +388,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     protected renderFrameBackground(): SlottedTemplateResult {
         return guard([this.layout, this.challenge], () => {
-            if (
-                this.layout !== FlowLayoutEnum.SidebarLeftFrameBackground &&
-                this.layout !== FlowLayoutEnum.SidebarRightFrameBackground
-            ) {
-                return nothing;
-            }
+            if (!this.#layoutUsesSidebarFrames) return;
 
             const src = this.challenge?.flowInfo?.background;
-
             if (!src) return nothing;
 
             return html`
@@ -441,7 +429,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
             ></ak-locale-select>
-
+            ${this.renderFrameBackground()}
             <header class="pf-c-login__header">
                 <ak-flow-inspector-button></ak-flow-inspector-button>
             </header>

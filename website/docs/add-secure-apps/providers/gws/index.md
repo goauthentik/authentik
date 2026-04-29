@@ -57,3 +57,9 @@ For groups, Google Workspace groups require an email address. Therefore the Goog
 By default, authentik only maps a group's name.
 
 Refer to Google documentation for further details on which attributes can be mapped: [Google Workspace Reference - Resource: Group](https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group)
+
+### Skipping objects during synchronization
+
+To exclude specific users or groups from Google Workspace synchronization, you can create a property mapping that raises the `SkipObject` exception. When this exception is raised during the evaluation of a property mapping, the object is skipped and the sync continues with the next object.
+
+For more information, refer to [Skip objects during synchronization](../property-mappings/#skip-objects-during-synchronization).

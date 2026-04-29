@@ -14,6 +14,10 @@
     "[xml]": {
         "editor.minimap.markSectionHeaderRegex": "<!--\\s*#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)\\s*-->"
     },
+    "files.associations": {
+        // The built-in "ignore" language gives us enough syntax highlighting to make these files readable.
+        "**/dictionaries/*.txt": "ignore"
+    },
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "yaml.customTags": [
@@ -34,10 +38,10 @@
         "!AtIndex scalar",
         "!ParseJSON scalar"
     ],
-    "typescript.preferences.importModuleSpecifier": "non-relative",
-    "typescript.preferences.importModuleSpecifierEnding": "index",
-    "typescript.tsdk": "./node_modules/typescript/lib",
-    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "js/ts.preferences.importModuleSpecifier": "non-relative",
+    "js/ts.preferences.importModuleSpecifierEnding": "index",
+    "js/ts.tsdk.path": "./node_modules/typescript/lib",
+    "js/ts.tsdk.promptToUseWorkspaceVersion": true,
     "yaml.schemas": {
         "./blueprints/schema.json": "blueprints/**/*.yaml"
     },
@@ -49,13 +53,17 @@
             "ignoreCase": false
         }
     ],
-    "go.testFlags": [
-        "-count=1"
-    ],
+    "go.testFlags": ["-count=1"],
     "go.testEnvVars": {
         "WORKSPACE_DIR": "${workspaceFolder}"
     },
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/ci-main.yml"
-    ]
+    "github-actions.workflows.pinned.workflows": [".github/workflows/ci-main.yml"],
+    "search.exclude": {
+        "**/*.code-search": true,
+        "**/bower_components": true,
+        "**/node_modules": true,
+        "**/playwright-report/**": true,
+        "**/website/**/build": true,
+        "**/client-*": true
+    }
 }

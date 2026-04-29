@@ -6,7 +6,6 @@ import (
 
 	"github.com/pires/go-proxyproto"
 
-	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/utils"
 	"goauthentik.io/internal/utils/web"
@@ -19,11 +18,7 @@ func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Config
 	}
 	return func(ch *tls.ClientHelloInfo) (*tls.Config, error) {
 		cfg := utils.GetTLSConfig()
-		if ch.ServerName == "" {
-			cfg.Certificates = []tls.Certificate{fallback}
-			return cfg, nil
-		}
-		if ws.ProxyServer != nil {
+		if ch.ServerName != "" && ws.ProxyServer != nil {
 			appCert := ws.ProxyServer.GetCertificate(ch.ServerName)
 			if appCert != nil {
 				cfg.Certificates = []tls.Certificate{*appCert}
@@ -48,13 +43,13 @@ func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Config
 }
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
-func (ws *WebServer) listenTLS() {
+func (ws *WebServer) listenTLS(listen string) {
 	tlsConfig := utils.GetTLSConfig()
 	tlsConfig.GetConfigForClient = ws.GetCertificate()
 
-	ln, err := net.Listen("tcp", config.Get().Listen.HTTPS)
+	ln, err := net.Listen("tcp", listen)
 	if err != nil {
-		ws.log.WithError(err).Warning("failed to listen (TLS)")
+		ws.log.WithField("listen", listen).WithError(err).Warning("failed to listen (TLS)")
 		return
 	}
 	proxyListener := &proxyproto.Listener{
@@ -71,7 +66,7 @@ func (ws *WebServer) listenTLS() {
 	}()
 
 	tlsListener := tls.NewListener(proxyListener, tlsConfig)
-	ws.log.WithField("listen", config.Get().Listen.HTTPS).Info("Starting HTTPS server")
+	ws.log.WithField("listen", listen).Info("Starting HTTPS server")
 	ws.serve(tlsListener)
-	ws.log.WithField("listen", config.Get().Listen.HTTPS).Info("Stopping HTTPS server")
+	ws.log.WithField("listen", listen).Info("Stopping HTTPS server")
 }

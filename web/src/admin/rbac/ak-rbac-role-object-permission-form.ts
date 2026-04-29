@@ -1,0 +1,140 @@
+import "#components/ak-switch-input";
+import "#components/ak-toggle-group";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
+
+import {
+    ModelEnum,
+    PaginatedPermissionList,
+    RbacApi,
+    RbacRolesListRequest,
+    Role,
+} from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+interface RoleAssignData {
+    role: string;
+    permissions: {
+        [key: string]: boolean;
+    };
+}
+
+@customElement("ak-rbac-role-object-permission-form")
+export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> {
+    public static override verboseName = msg("Role Object Permission");
+    public static override verboseNamePlural = msg("Role Object Permissions");
+    public static override createLabel = msg("Assign");
+    public static override submitVerb = msg("Assign");
+
+    @property({ type: String })
+    public model: ModelEnum | null = null;
+
+    @property({
+        attribute: "object-pk",
+        useDefault: true,
+    })
+    public objectPk: string | null = null;
+
+    @state()
+    protected modelPermissions: PaginatedPermissionList | null = null;
+
+    public override reset(): void {
+        super.reset();
+
+        this.modelPermissions = null;
+    }
+
+    async load(): Promise<void> {
+        const [appLabel, modelName] = (this.model || "").split(".");
+        this.modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+            contentTypeModel: modelName,
+            contentTypeAppLabel: appLabel,
+            ordering: "codename",
+        });
+    }
+
+    loadInstance(): Promise<RoleAssignData> {
+        throw new Error("Method not implemented.");
+    }
+
+    getSuccessMessage(): string {
+        return msg("Successfully assigned permission.");
+    }
+
+    send(data: RoleAssignData): Promise<unknown> {
+        const [app, _model] = this.model?.split(".") || "";
+
+        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
+            uuid: data.role,
+            permissionAssignRequest: {
+                permissions: Object.keys(data.permissions)
+                    .filter((key) => data.permissions[key])
+                    .map((permission) => `${app}.${permission}`),
+                model: this.model!,
+                objectPk: this.objectPk ?? undefined,
+            },
+        });
+    }
+
+    renderForm(): SlottedTemplateResult {
+        if (!this.modelPermissions) {
+            return null;
+        }
+
+        return html`<span
+                >${msg(
+                    "Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.",
+                )}</span
+            >
+            <form class="pf-c-form pf-m-horizontal">
+                <ak-form-element-horizontal label=${msg("Role")} name="role">
+                    <ak-search-select
+                        placeholder=${msg("Select a role...")}
+                        .fetchObjects=${async (query?: string): Promise<Role[]> => {
+                            const args: RbacRolesListRequest = {
+                                ordering: "name",
+                            };
+                            if (query !== undefined) {
+                                args.search = query;
+                            }
+                            const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
+                            return roles.results;
+                        }}
+                        .renderElement=${(role: Role): string => {
+                            return role.name;
+                        }}
+                        .value=${(role: Role | undefined): string | undefined => {
+                            return role?.pk;
+                        }}
+                    >
+                    </ak-search-select>
+                </ak-form-element-horizontal>
+                ${this.modelPermissions?.results
+                    .filter((perm) => {
+                        const [_app, model] = this.model?.split(".") || "";
+                        return perm.codename !== `add_${model}`;
+                    })
+                    .map((perm) => {
+                        return html`<ak-switch-input
+                            name="permissions.${perm.codename}"
+                            label=${perm.name}
+                        ></ak-switch-input>`;
+                    })}
+            </form>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rbac-role-object-permission-form": RoleObjectPermissionForm;
+    }
+}

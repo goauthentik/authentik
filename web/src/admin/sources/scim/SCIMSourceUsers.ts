@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatUserDisplayName } from "#common/users";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -25,7 +26,7 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
     }
 
     protected override rowLabel(item: SCIMSourceUser): string {
-        return item.userObj.name || item.userObj.username;
+        return formatUserDisplayName(item.userObj);
     }
 
     protected columns: TableColumn[] = [

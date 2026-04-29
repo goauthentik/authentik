@@ -1,6 +1,6 @@
 ---
-title: Transport rules
-sidebar_label: Transport rules
+title: Notification Transports
+sidebar_label: Notification Transports
 ---
 
 To receive notifications about events you must first [create a notification transport](#create-a-notification-transport), and then define a notification rule with a bound policy. For more information, see the [Workflow overview](./notifications.md#workflow-overview).
@@ -43,6 +43,10 @@ This will send a POST request to the given URL with the following contents:
 
 The `Content-Type` header is set to `text/json`.
 
+##### Webhook Certificate Authority
+
+If the server in the webhook URL doesn’t have a certificate issued by a public certificate authority, you can select a Certificate-Keypair here to validate the server’s certificate. If no keypair is selected, authentik will use the Root certificates from [mkcert.org](https://mkcert.org/).
+
 #### Webhook mappings
 
 You can use Webhook mappings to configure the request's payload and/or header. These are a type of property mapping that can be applied to the `Webhook Body Mapping` or `Webhook Header Mapping` fields of the webhook notification transport.
@@ -73,8 +77,8 @@ This sends a request using the Slack-specific format. This is also compatible wi
 
 ## Create a notification transport
 
-1. Log in as an administrator to the authentik Admin interface, and then navigate to **Event > Notification Transports**.
+1. Log in as an administrator to the authentik Admin interface, and then navigate to **Event > Notification Transports**.
 
-2. Click **Create** to add a new transport or click the **Edit** icon next to an existing notification transport to modify it.
+2. Click **New Notification Transport** to add a new transport or click the **Edit** icon next to an existing notification transport to modify it.
 
-3. Define the **Name** and **Mode** for the notification transport, enter required configuration settings, and then click **Create**.
+3. Define the **Name** and **Mode** for the notification transport, enter required configuration settings, and then click **Create Notification Transport**.

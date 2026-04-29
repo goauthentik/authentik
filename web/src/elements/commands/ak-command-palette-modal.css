@@ -1,0 +1,284 @@
+:host {
+    --pf-global--Color--100: var(--pf-global--palette--purple-50);
+    --pf-global--Color--200: var(--pf-global--palette--purple-100);
+
+    --ak-c-command-palette--PaddingBlock: calc(1em * var(--pf-global--LineHeight--sm));
+    --ak-c-command-palette--PaddingInline: calc(
+        2 * var(--pf-global--spacer--form-element) + var(--pf-global--spacer--sm)
+    );
+
+    --ak-c-command-palette__group--BorderColor: var(
+        --pf-global--BackgroundColor--dark-transparent-200
+    );
+    --ak-c-command-palette__group--Color: var(--pf-global--palette--purple-100);
+
+    --ak-fieldset--BorderColor: transparent;
+
+    --ak-c-command-palette__item--BackgroundColor: transparent;
+    --ak-c-command-palette__item--Color: var(--pf-global--palette--purple-50);
+    --ak-c-command-palette__item--selected--BackgroundColor: var(--pf-global--palette--purple-50);
+    --ak-c-command-palette__item--selected--Color: var(--pf-global--palette--red-500);
+    --ak-c-command-palette__item__suffix--Color: var(--pf-global--palette--gold-200);
+    --ak-c-command-palette__item--selected__suffix--Color: var(--pf-global--palette--gold-700);
+
+    --ak-c-command-palette__item--hover--BackgroundColor: color-mix(
+        var(--ak-c-dialog--BackgroundColor),
+        var(--pf-global--palette--purple-200) 40%
+    );
+
+    --ak-c-command-palette__item--hover-selected--BackgroundColor: color-mix(
+        var(--pf-global--palette--purple-50),
+        var(--pf-global--palette--white) 50%
+    );
+
+    --ak-c-command-palette__item--AccentColor: var(--pf-global--palette--purple-600);
+    --ak-c-command-palette__item--AccentWidth: 0.5px;
+
+    transform: translate3d(0, 0, 0); /* Fixes rendering artifacts. */
+
+    @media (prefers-contrast: more) {
+        --ak-fieldset--BorderColor: var(--pf-global--palette--purple-500);
+    }
+}
+
+:host {
+    display: block;
+    min-height: min(10rem, 20dvh);
+    padding: 0;
+    padding-block-end: var(--pf-global--spacer--md);
+    color: var(--pf-global--Color--100);
+}
+
+[part="empty-state"]::part(body) {
+    color: var(--pf-global--Color--200);
+}
+
+[part="empty-state"]::part(icon) {
+    --pf-c-empty-state__icon--Color: var(--pf-global--Color--100);
+}
+
+[part="command-field-container"] {
+    position: relative;
+    z-index: 3;
+}
+
+[part="command-field"] {
+    padding-block: var(--pf-global--spacer--sm);
+    margin-inline: var(--pf-global--spacer--sm);
+    padding-inline-start: var(--pf-global--spacer--sm);
+
+    &::after {
+        content: "";
+        display: block;
+        inset-inline: var(--pf-global--spacer--md);
+        inset-block-end: 0;
+        position: absolute;
+        height: 0.5px;
+        z-index: 3;
+        background-color: var(--pf-global--palette--purple-100);
+    }
+}
+
+#command-input {
+    background: transparent;
+    display: block;
+    width: 100%;
+    font-size: var(--pf-global--FontSize--2xl);
+    padding-block: var(--pf-global--spacer--form-element);
+    padding-inline-start: calc(var(--ak-c-command-palette--PaddingInline) * 2);
+    padding-inline-end: var(--ak-c-command-palette--PaddingInline);
+    border: none;
+
+    outline: none;
+
+    &::placeholder {
+        color: var(--pf-global--palette--purple-50);
+        font-weight: 300;
+        font-family: var(--pf-global--FontFamily--heading--sans-serif);
+    }
+}
+
+[part="results-group"] {
+    user-select: none;
+    border-width: 0;
+    padding-inline: 0 !important;
+    padding-block-end: 0 !important;
+
+    transition-property: border-color;
+    transition-timing-function: cubic-bezier(0.08, 0.52, 0.52, 1);
+    transition-duration: 0.2s;
+
+    legend {
+        --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--md);
+
+        cursor: pointer;
+        color: var(--ak-c-command-palette__group--Color);
+        padding-block: var(--pf-global--spacer--sm) !important;
+        margin-inline: 0 !important;
+        width: 100%;
+        text-align: end;
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 2;
+
+        & > * {
+            filter: var(--ak-global--BackgroundContrastFilter);
+        }
+    }
+
+    &:has(.selected),
+    &:hover {
+        --ak-c-command-palette__group--Color: var(--pf-global--palette--purple-50);
+        --ak-c-command-palette__item--AccentColor: var(--pf-global--palette--black-150);
+    }
+}
+
+[part="results"] {
+    overflow-y: auto;
+    max-height: calc(100dvh - (1.75 * var(--ak-c-dialog--MarginBlockStart)));
+    overscroll-behavior-inline: none;
+    overscroll-behavior-block: contain;
+    scrollbar-gutter: stable;
+
+    @supports (scrollbar-width: thin) {
+        scrollbar-width: none;
+
+        @media (pointer: coarse) {
+            /**
+             * Avoids issues on touch devices where thin scrollbars
+             * are difficult to interact with.
+             */
+            scrollbar-width: auto;
+        }
+    }
+}
+
+[part="results-list"] {
+    margin-block-start: calc(var(--pf-global--spacer--sm) * -1);
+
+    &:has(.selected) {
+        --ak-c-command-palette__item--AccentColor: var(--pf-global--palette--purple-500);
+    }
+}
+
+[part="command-item-label"] {
+    grid-row: label;
+    font-family: var(--pf-global--FontFamily--heading--sans-serif);
+    font-weight: 500;
+}
+
+[part="command-item-prefix"] {
+    grid-row: icon / prefix;
+    grid-column: icon / prefix;
+    line-height: calc(var(--ak-c-dialog__title--LineHeight) + 1);
+    color: var(--pf-global--palette--blue-300);
+    text-transform: uppercase;
+    font-size: 0.7em;
+    font-weight: 500;
+}
+
+[part="command-item-suffix"] {
+    grid-area: suffix;
+    font-variant: all-small-caps;
+    line-height: calc(var(--ak-c-dialog__title--LineHeight) + 0.05);
+    font-weight: bold;
+    display: flex;
+    color: var(--ak-c-command-palette__item__suffix--Color);
+    justify-content: end;
+    align-items: center;
+}
+
+[part="command-item-description"] {
+    grid-area: description;
+}
+
+[part="group-heading"] {
+    margin-block: var(--pf-global--spacer--sm);
+    margin-inline: var(--pf-global--spacer--sm);
+}
+
+[part="command-button"] {
+    display: grid;
+    grid-template-areas:
+        "icon prefix label suffix"
+        "icon description description suffix";
+    background: transparent;
+
+    padding: var(--pf-global--spacer--md);
+    border: none;
+    column-gap: var(--pf-global--spacer--sm);
+
+    background-color: var(--ak-c-command-palette__item--BackgroundColor);
+
+    width: 100%;
+    border-radius: 0;
+    text-align: start;
+    color: var(--ak-c-command-palette__item--Color);
+    grid-template-columns: [icon] auto [prefix] auto [label] 1fr [suffix] auto;
+    transition-property: border-color;
+    transition-timing-function: cubic-bezier(0.08, 0.52, 0.52, 1);
+    transition-duration: 0.2s;
+
+    position: relative;
+    padding-inline-start: var(--pf-global--spacer--md);
+    padding-inline-end: var(--pf-global--spacer--lg);
+
+    &::before {
+        inset-block: 0;
+        inset-inline-start: -1px;
+        content: "";
+        position: absolute;
+        background-color: var(--ak-c-command-palette__item--AccentColor);
+        width: var(--ak-c-command-palette__item--AccentWidth);
+    }
+
+    &:hover {
+        background-color: var(--ak-c-command-palette__item--hover--BackgroundColor);
+
+        [part="command-item-label"] {
+            text-decoration: underline;
+        }
+    }
+}
+
+[part="command-item"]:hover {
+    --ak-c-command-palette__item--AccentWidth: 1px;
+    --ak-c-command-palette__item--AccentColor: var(--ak-c-command-palette__item--Color);
+}
+
+[part="command-item"].selected {
+    --ak-c-command-palette__item--AccentWidth: 3px;
+    --ak-c-command-palette__item--AccentColor: var(--ak-c-command-palette__item--Color);
+
+    --ak-c-command-palette__item--BackgroundColor: var(
+        --ak-c-command-palette__item--selected--BackgroundColor
+    );
+    --ak-c-command-palette__item--Color: var(--ak-c-command-palette__item--selected--Color);
+    --ak-c-command-palette__item--hover--BackgroundColor: var(
+        --ak-c-command-palette__item--hover-selected--BackgroundColor
+    );
+
+    --ak-c-command-palette__item__suffix--Color: var(
+        --ak-c-command-palette__item--selected__suffix--Color
+    );
+
+    &:hover {
+        --ak-c-command-palette__item--AccentWidth: 3px;
+    }
+}
+
+[part="input-label"] {
+    cursor: pointer;
+    position: absolute;
+    inset-block-start: var(--ak-c-command-palette--PaddingBlock);
+    inset-inline-start: var(--ak-c-command-palette--PaddingInline);
+    z-index: 1;
+    pointer-events: none;
+
+    .icon {
+        display: block;
+        height: var(--pf-global--icon--FontSize--lg);
+        fill: currentColor;
+        stroke: currentColor;
+    }
+}
