@@ -2176,9 +2176,6 @@
   <source>Issuer</source>
   <target>Emisor</target>
 </trans-unit>
-<trans-unit id="sd4fd64791f73d37b">
-  <source>Also known as Entity ID.</source>
-</trans-unit>
 <trans-unit id="sd5a4b41c6c883b03">
   <source>Audience</source>
   <target>Audiencia</target>
@@ -10955,6 +10952,18 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="s71724d2ff6637203">
   <source>Altered behavior for usage with VMware vCenter.</source>
+</trans-unit>
+<trans-unit id="s9eda7101f63a8652">
+  <source>Hide from My applications</source>
+</trans-unit>
+<trans-unit id="s30f30e9c42594a33">
+  <source>If checked, this application will not be shown on the user's My applications page.</source>
+</trans-unit>
+<trans-unit id="s2ea2e39e4b470249">
+  <source>EntityID/Issuer override</source>
+</trans-unit>
+<trans-unit id="sf7aba95a8c43b7b1">
+  <source>Sets a custom EntityID/Issuer to override the authentik generated default.</source>
 </trans-unit>
 </body>
 </file>
