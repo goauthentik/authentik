@@ -42,7 +42,7 @@ const renderSAMLOverview: ProviderOverview<SAMLProvider> = (provider) => {
     return renderSummary("SAML", provider.name, [
         [msg("ACS URL"), provider.acsUrl],
         [msg("Audience"), provider.audience || "-"],
-        [msg("Issuer"), provider.issuer],
+        [msg("Issuer"), provider.urlIssuer],
     ]);
 };
 

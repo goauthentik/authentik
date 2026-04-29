@@ -198,6 +198,7 @@ dependencies = [
  "metrics-exporter-prometheus",
  "nix 0.31.2",
  "pyo3",
+ "pyo3-build-config",
  "sqlx",
  "tokio",
  "tracing",

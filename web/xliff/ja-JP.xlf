@@ -11157,6 +11157,36 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
   <note from="lit-localize">Zero: no objects use this entity.</note>
 </trans-unit>
+<trans-unit id="s78a13f8f08d3a317">
+  <source>Authorization Code</source>
+</trans-unit>
+<trans-unit id="s9765a1c7821ec626">
+  <source>Implicit</source>
+</trans-unit>
+<trans-unit id="s6032372e5812d743">
+  <source>Hybrid</source>
+</trans-unit>
+<trans-unit id="s4c21579d264ff019">
+  <source>Refresh token</source>
+</trans-unit>
+<trans-unit id="sec04243bf971ba5c">
+  <source>Client credentials</source>
+</trans-unit>
+<trans-unit id="sf6625f1c093feb17">
+  <source>Device-code</source>
+</trans-unit>
+<trans-unit id="sccb6f4a3d1fb9434">
+  <source>Grant Types</source>
+</trans-unit>
+<trans-unit id="s89c63fb4a8cb6d2b">
+  <source>Grant types this provider may use.</source>
+</trans-unit>
+<trans-unit id="s86a9472dc09ecf48">
+  <source>vCenter</source>
+</trans-unit>
+<trans-unit id="s71724d2ff6637203">
+  <source>Altered behavior for usage with VMware vCenter.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
