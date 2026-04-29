@@ -286,6 +286,12 @@ jobs:
             glob: tests/openid_conformance/test_basic.py
           - name: implicit
             glob: tests/openid_conformance/test_implicit.py
+          - name: rp-initiated
+            glob: tests/openid_conformance/test_rp_initiated.py
+          - name: frontchannel
+            glob: tests/openid_conformance/test_frontchannel.py
+          - name: backchannel
+            glob: tests/openid_conformance/test_backchannel.py
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
