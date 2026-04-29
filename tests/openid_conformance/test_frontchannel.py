@@ -11,7 +11,7 @@ class TestOpenIDConformanceFrontchannel(TestOpenIDConformance):
         OAuth2Provider.objects.filter(name__startswith="oidc-conformance-").update(
             invalidation_flow=Flow.objects.get(slug="default-invalidation-flow"),
             logout_method=OAuth2LogoutMethod.FRONTCHANNEL,
-            logout_uri="https://host.docker.internal:8443/test/a/authentik/frontchannel_logout",
+            logout_uri="https://localhost:8443/test/a/authentik/frontchannel_logout",
         )
 
     @retry()
