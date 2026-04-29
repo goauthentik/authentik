@@ -10,7 +10,11 @@
         "allowSyntheticDefaultImports": true,
         "emitDeclarationOnly": true,
         "experimentalDecorators": true,
-        // See https://lit.dev/docs/components/properties/
+
+        // `useDefineForClassFields` is required for Lit decorator compatibility.
+        // See the Lit documentation
+        // [Typescript class fields for reactive properties](https://lit.dev/docs/components/properties/#:~:text=Set%20the%20useDefineForClassFields%20compiler%20option%20to%20false)
+        // for details.
         "useDefineForClassFields": false,
         "target": "esnext",
         "module": "preserve",
