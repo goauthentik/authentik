@@ -51,6 +51,17 @@ export const SanitizedTrustPolicy = trustedTypes.createPolicy("authentik-sanitiz
 });
 
 /**
+ * Trusted types policy for HTML produced by our own build-time markdown
+ * pipeline. The HTML is generated from source we own (the `mdx-plugin`),
+ * including custom elements like `<ak-md-a>` and `<ak-alert>` that
+ * DOMPurify's default tag list would strip. Treat the input as already
+ * trusted and pass it through unmodified.
+ */
+export const CompiledMarkdownTrustPolicy = trustedTypes.createPolicy("authentik-markdown", {
+    createHTML: (trustedHTML: string) => trustedHTML,
+});
+
+/**
  * Trusted types policy, allowing a minimal set of _safe_ HTML tags supplied by
  * a trusted source, such as the brand API.
  */

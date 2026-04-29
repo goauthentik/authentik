@@ -8,7 +8,7 @@ import { VFile } from "vfile";
 /**
  * Remark plugin to add IDs to headings.
  */
-export const remarkHeadings: Plugin<[unknown], Root, VFile> = () => {
+export const remarkHeadings: Plugin<[], Root, VFile> = () => {
     return function transformer(tree) {
         const visitor = (node: Heading) => {
             const textContent = toString(node);
