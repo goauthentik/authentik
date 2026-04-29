@@ -3,13 +3,15 @@
 The authetik WebUI is the default UI for the authentik Single Sign-on (SSO) server. It consists of
 three primary applications:
 
-- Flow: The transaction-driven interface for logging in and other activities
-- User: The user's library of applications to which they have access, and some user settings
-- Admin: The system adminstration tool for defining applications, providers, policies, and
+- Flow: The transaction-driven, customizable interface for logging in and all other workflow
+  activities
+- User: The user's library of applications to which they have access, and user settings such as
+  configuring their MFA and email address, viewing their current sessions, and more
+- Admin: The system administration tool for defining applications, providers, policies, and
   everything else
 
-Each of these is a [thin client] around data objects provided by and transactions available with
-the authentik SSO server.
+Each of these is a [thin client] application around data objects provided by and transactions
+available with the authentik SSO server. Business logic and validation is provided by the server.
 
 The authentik SSO server is written in Python and Django.
 
@@ -39,12 +41,12 @@ reload by running, from this folder,
 $ npm run watch
 ```
 
-## WebUI Architecture
+## Front-End Architecture
 
 ### The Django side
 
-The WebUI is delivered via a Django server. The server delivers an HTML template that executes a
-sequence of startup operations:
+The authentik web-based applications are delivered via a Django server. The server delivers an HTML
+template that executes a sequence of startup operations:
 
 - Assigns the language code and `data-theme="light|dark"` settings to the `html` tag. Assigns the
   favicon links. Creates a `window.authentik` object and assigns a variety of site-wide
@@ -71,16 +73,16 @@ The Flow Interface has three subsystems:
 - The Flow Inspector: `<ak-flow-inspector>`
 - The Flow Executor: `<ak-flow-executor>`
 
-The Locale Selector and the Inspector are independent buttons that exist on the page (both can
-be disabled by admin preference). The Locale Selector does exactly that. The Flow Inspector, when
-enabled, can query the server for details about the state of a flow: the accumulated context of the
-current flow, existing error messages, and expected next steps; it is present to assist with
-debugging.
+The Locale Selector and the Inspector are independent buttons that exist on the page (both can be
+disabled by admin preference). The Locale Selector allows the user to select an alternative locale
+in which to display text and labels. The Flow Inspector, when enabled, can query the server for
+details about the state of a flow: the accumulated context of the current flow, existing error
+messages, and expected next steps; it is present to assist with debugging.
 
 The Executor is the heart of the system. It executes Flows.
 
 A _Flow_ in authentik is the workflow that accomplishes a specific SSO-oriented task such as logging
-in, logging out, or enrolling as a new user, among other tasks.
+in, logging out, or enrolling as a new user, among others.
 
 The Executor starts by examining the current URL for the `flowSlug`, and sends a request for a
 _Challenge_ to the server. Upon the response, the Executor loads the corresponding _Stage_: the UI
@@ -98,9 +100,10 @@ The architecture for the Executor is straightforward:
         - The current Stage
 
 A Stage may have interior stages or components. The Identification Stage is the most complex of our
-stages. It usually shows the Username field, and it _may_ host the password; in that case, the
-password component exists to allow the user to "show password". It may also host the Captcha and
-Passkey stages within, to complete the initial user identity and validity.
+stages. It usually shows the Username field, and in some configurations it _can_ show the Password
+field; in that case, the password component exists to allow the user to "show password". It may also
+host the Captcha and Passkey stages within, to complete the initial task of determining and
+validating a user's identity.
 
 ### User and Admin Interfaces
 

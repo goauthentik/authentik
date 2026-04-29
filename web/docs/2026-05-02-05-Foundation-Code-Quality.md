@@ -55,8 +55,8 @@ We use this template:
 > Keep the tone neutral-professional-skeptical, the voice of an expert. Avoid excessive enthusiasm.
 > This is the root folder for the authentik single sign-on server.
 >
-> Read the patch file `./21867.patch`. This [community-provided] patch [describe the patch here in
-> > your own words, using only one or two sentences].
+> Read the patch file `./21868.patch`. This [community-provided] patch [describe the patch here in
+> your own words, using only one or two sentences].
 >
 > Task 1: Provide a high-level summary of the effect of applying `./21868.patch` Point out any
 > shortcomings or security considerations.
