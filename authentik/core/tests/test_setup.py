@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from os import environ
 
+from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 
 from authentik.blueprints.tests import apply_blueprint
@@ -16,6 +17,7 @@ from authentik.tenants.flags import patch_flag
 class TestSetup(FlowTestCase):
     def tearDown(self):
         environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
+        environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH", None)
         environ.pop("AUTHENTIK_BOOTSTRAP_TOKEN", None)
 
     @patch_flag(Setup, True)
@@ -154,3 +156,19 @@ class TestSetup(FlowTestCase):
         token = Token.objects.filter(identifier="authentik-bootstrap-token").first()
         self.assertEqual(token.intent, TokenIntents.INTENT_API)
         self.assertEqual(token.key, environ["AUTHENTIK_BOOTSTRAP_TOKEN"])
+
+    def test_setup_bootstrap_env_password_hash(self):
+        """Test setup with password hash env var"""
+        User.objects.filter(username="akadmin").delete()
+        Setup.set(False)
+
+        password = generate_id()
+        password_hash = make_password(password)
+        environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = password_hash
+        pre_startup.send(sender=self)
+        post_startup.send(sender=self)
+
+        self.assertTrue(Setup.get())
+        user = User.objects.get(username="akadmin")
+        self.assertEqual(user.password, password_hash)
+        self.assertTrue(user.check_password(password))

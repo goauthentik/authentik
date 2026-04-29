@@ -4522,6 +4522,41 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/set_password_hash/:
+    post:
+      operationId: core_users_set_password_hash_create
+      description: |-
+        Set a user's password from a pre-hashed Django password value.
+
+        Submit the Django password hash in the shared ``password`` request field.
+
+        This updates authentik's local password verifier only. It does not attempt
+        to propagate the password change to LDAP or Kerberos because no raw password
+        is available from the request payload.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPasswordHashSetRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully changed password
+        '400':
+          description: Bad request
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/used_by/:
     get:
       operationId: core_users_used_by_list
@@ -57588,6 +57623,15 @@ components:
       - identifier
       - source
       - user
+    UserPasswordHashSetRequest:
+      type: object
+      description: Payload to set a users' password hash directly
+      properties:
+        password:
+          type: string
+          minLength: 1
+      required:
+      - password
     UserPasswordSetRequest:
       type: object
       description: Payload to set a users' password directly
