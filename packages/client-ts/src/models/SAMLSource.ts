@@ -30,6 +30,8 @@ import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
 } from "./SignatureAlgorithmEnum";
+import type { SloBindingEnum } from "./SloBindingEnum";
+import { SloBindingEnumFromJSON, SloBindingEnumToJSON } from "./SloBindingEnum";
 import type { ThemedUrls } from "./ThemedUrls";
 import { ThemedUrlsFromJSON } from "./ThemedUrls";
 import type { UserMatchingModeEnum } from "./UserMatchingModeEnum";
@@ -216,6 +218,12 @@ export interface SAMLSource {
      */
     bindingType?: BindingTypeEnum;
     /**
+     * Binding type for Single Logout requests to the IdP.
+     * @type {SloBindingEnum}
+     * @memberof SAMLSource
+     */
+    sloBinding?: SloBindingEnum;
+    /**
      * When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.
      * @type {string}
      * @memberof SAMLSource
@@ -263,6 +271,18 @@ export interface SAMLSource {
      * @memberof SAMLSource
      */
     signedResponse?: boolean;
+    /**
+     * Whether to sign outgoing AuthnRequests. Requires a Signing Keypair to be set.
+     * @type {boolean}
+     * @memberof SAMLSource
+     */
+    signAuthnRequest?: boolean;
+    /**
+     * Whether to sign outgoing LogoutRequests. Requires a Signing Keypair to be set.
+     * @type {boolean}
+     * @memberof SAMLSource
+     */
+    signLogoutRequest?: boolean;
 }
 
 /**
@@ -343,6 +363,8 @@ export function SAMLSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
             json["binding_type"] == null
                 ? undefined
                 : BindingTypeEnumFromJSON(json["binding_type"]),
+        sloBinding:
+            json["slo_binding"] == null ? undefined : SloBindingEnumFromJSON(json["slo_binding"]),
         verificationKp: json["verification_kp"] == null ? undefined : json["verification_kp"],
         signingKp: json["signing_kp"] == null ? undefined : json["signing_kp"],
         digestAlgorithm:
@@ -360,6 +382,10 @@ export function SAMLSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         encryptionKp: json["encryption_kp"] == null ? undefined : json["encryption_kp"],
         signedAssertion: json["signed_assertion"] == null ? undefined : json["signed_assertion"],
         signedResponse: json["signed_response"] == null ? undefined : json["signed_response"],
+        signAuthnRequest:
+            json["sign_authn_request"] == null ? undefined : json["sign_authn_request"],
+        signLogoutRequest:
+            json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
     };
 }
 
@@ -407,6 +433,7 @@ export function SAMLSourceToJSONTyped(
         force_authn: value["forceAuthn"],
         name_id_policy: SAMLNameIDPolicyEnumToJSON(value["nameIdPolicy"]),
         binding_type: BindingTypeEnumToJSON(value["bindingType"]),
+        slo_binding: SloBindingEnumToJSON(value["sloBinding"]),
         verification_kp: value["verificationKp"],
         signing_kp: value["signingKp"],
         digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
@@ -415,5 +442,7 @@ export function SAMLSourceToJSONTyped(
         encryption_kp: value["encryptionKp"],
         signed_assertion: value["signedAssertion"],
         signed_response: value["signedResponse"],
+        sign_authn_request: value["signAuthnRequest"],
+        sign_logout_request: value["signLogoutRequest"],
     };
 }

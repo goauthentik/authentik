@@ -24397,12 +24397,10 @@ paths:
       - in: query
         name: slo_binding
         schema:
-          type: string
-          enum:
-          - POST
-          - REDIRECT
-        description: |+
-          Binding type for Single Logout requests to the IdP.
+          allOf:
+          - $ref: '#/components/schemas/SloBindingEnum'
+          description: |+
+            Binding type for Single Logout requests to the IdP.
 
       - in: query
         name: slo_url

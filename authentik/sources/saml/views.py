@@ -61,6 +61,8 @@ from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_HEADER, ConsentS
 
 LOGGER = get_logger()
 
+PLAN_CONTEXT_SAML_RELAY_STATE = "goauthentik.io/sources/saml/relay_state"
+
 
 class AutosubmitStageView(ChallengeStageView):
     """Wrapper stage to create an autosubmit challenge from plan context variables"""
@@ -361,13 +363,23 @@ class SLOView(View):
 
         # If a RelayState was provided (e.g. the flow executor URL), advance
         # past the current stage (RedirectStage) in the plan so the flow
-        # continues to the next stage instead of looping.
+        # continues to the next stage instead of looping. Only redirect to the
+        # value stashed in the plan context on outbound — never to the value
+        # echoed back in the request, which is attacker-controllable.
         if relay_state and SESSION_KEY_PLAN in request.session:
             plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+            stored_relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE, "")
+            if relay_state != stored_relay_state:
+                LOGGER.warning(
+                    "SAML logout relay_state mismatch, possible open redirect attempt",
+                    received_relay_state=relay_state,
+                    stored_relay_state=stored_relay_state,
+                )
             if plan.bindings:
                 plan.pop()
                 request.session[SESSION_KEY_PLAN] = plan
-            return redirect(relay_state)
+            if stored_relay_state:
+                return redirect(stored_relay_state)
         return redirect("authentik_core:root-redirect")
 
 

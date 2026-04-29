@@ -14,7 +14,7 @@ from authentik.flows.views.executor import FlowExecutorView
 from authentik.providers.saml.native_logout import NativeLogoutStageView
 from authentik.sources.saml.models import SAMLSLOBindingTypes, SAMLSourceSession
 from authentik.sources.saml.processors.logout_request import LogoutRequestProcessor
-from authentik.sources.saml.views import AutosubmitStageView
+from authentik.sources.saml.views import PLAN_CONTEXT_SAML_RELAY_STATE, AutosubmitStageView
 from authentik.stages.user_logout.models import UserLogoutStage
 from authentik.stages.user_logout.stage import flow_pre_user_logout
 
@@ -85,6 +85,10 @@ def handle_saml_source_pre_user_logout(
                     kwargs={"flow_slug": executor.flow.slug},
                 )
             )
+
+            # Stash the outbound relay_state so the SLOView can redirect to a
+            # server-known value rather than trusting the echoed request param.
+            executor.plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
 
             processor = LogoutRequestProcessor(
                 source=source,
