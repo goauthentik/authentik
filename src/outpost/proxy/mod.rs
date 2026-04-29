@@ -1,17 +1,15 @@
-use ak_common::config;
 use std::{collections::HashMap, sync::Arc};
 
 use ak_axum::router::wrap_router;
-use ak_client::apis::outposts_api::outposts_proxy_list;
-use ak_common::{Tasks, api::fetch_all};
+use ak_client::{apis::outposts_api::outposts_proxy_list, models::ProxyMode};
+use ak_common::{Tasks, api::fetch_all, config};
 use arc_swap::ArcSwap;
 use argh::FromArgs;
 use axum::Router;
 use eyre::Result;
-use tracing::{debug, error, info, instrument, warn};
+use tracing::{debug, error, info, instrument, trace, warn};
 
-use crate::outpost::proxy::application::Application;
-use crate::outpost::{Outpost, OutpostController};
+use crate::outpost::{Outpost, OutpostController, proxy::application::Application};
 
 mod application;
 mod handlers;
@@ -27,7 +25,7 @@ pub(crate) struct Cli {}
 
 pub(crate) struct ProxyOutpost {
     controller: Arc<OutpostController>,
-    applications: ArcSwap<HashMap<String, Application>>,
+    apps: ArcSwap<HashMap<String, Arc<Application>>>,
 }
 
 impl Outpost for ProxyOutpost {
@@ -39,7 +37,7 @@ impl Outpost for ProxyOutpost {
     async fn new(controller: Arc<OutpostController>) -> Result<Self> {
         Ok(Self {
             controller,
-            applications: ArcSwap::from_pointee(HashMap::with_capacity(0)),
+            apps: ArcSwap::from_pointee(HashMap::with_capacity(0)),
         })
     }
 
@@ -97,21 +95,18 @@ impl Outpost for ProxyOutpost {
         let mut apps = HashMap::with_capacity(providers.len());
 
         for provider in providers {
-            let Ok(application) = Application::new(self, &provider)
+            let name = provider.name.clone();
+            let Ok(application) = Application::new(self, provider)
                 .inspect_err(|err| warn!(?err, "failed to setup application, skipping provider"))
             else {
                 continue;
             };
-            info!(
-                name = provider.name,
-                host = application.host,
-                "loaded application"
-            );
+            info!(name, host = application.host, "loaded application");
 
-            apps.insert(application.host.clone(), application);
+            apps.insert(application.host.clone(), Arc::new(application));
         }
 
-        self.applications.store(Arc::new(apps));
+        self.apps.store(Arc::new(apps));
 
         Ok(())
     }
@@ -123,20 +118,68 @@ impl Outpost for ProxyOutpost {
     }
 }
 
-// TODO: actually write this
-fn build_static_router() -> Router {
-    Router::new()
+impl ProxyOutpost {
+    #[instrument(skip(self))]
+    fn lookup_app(&self, host: &str) -> Option<Arc<Application>> {
+        let apps = self.apps.load();
+
+        // If we only have a single app, host name switching doesn't matter.
+        if apps.len() == 1
+            && let Some(app) = apps.values().next()
+        {
+            debug!(app = app.provider.name, "found a single app, using it");
+            return Some(Arc::clone(app));
+        }
+
+        if let Some(app) = apps.get(host) {
+            debug!(app = app.provider.name, "found app based direct host match");
+            return Some(Arc::clone(app));
+        }
+
+        // For forward_auth_domain, we don't have a direct app to domain relationship.
+        // Check through all apps, and check how much of their cookie domain matches the host.
+        // Return the application that has the longest match.
+        let mut longest_match = None;
+        let mut longest_len = 0_usize;
+
+        for app in apps.values() {
+            if app.provider.mode != Some(ProxyMode::ForwardDomain) {
+                continue;
+            }
+
+            if let Some(cookie_domain) = app.provider.cookie_domain.as_deref() {
+                // Check if the cookie domain has a leading period for a wildcard.
+                // This will decrease the weight of a wildcard domain, but a request to example.com
+                // with the cookie domain set to example.com will still be routed correctly.
+                let domain = cookie_domain.trim_start_matches('.');
+
+                if host.ends_with(domain) && domain.len() > longest_len {
+                    longest_len = domain.len();
+                    longest_match = Some(Arc::clone(app));
+                }
+                // For forward_auth_domain, we need to response on the external domain too.
+                if app.provider.external_host == host {
+                    debug!(app = app.provider.name, "found app based on external_host");
+                    return Some(Arc::clone(app));
+                }
+            }
+        }
+
+        if let Some(app) = &longest_match {
+            debug!(app = app.provider.name, "found app based on cookie domain");
+        }
+
+        longest_match
+    }
 }
 
 fn build_router(outpost: Arc<ProxyOutpost>) -> Router {
-    // TODO: static files
     wrap_router(
         Router::new()
             .nest(
                 "/outpost.goauthentik.io/ping",
                 Router::new().fallback(handlers::handle_ping),
             )
-            // .nest("/outpost.goauthentik.io/static", build_static_router())
             .fallback(handlers::default)
             .with_state(outpost),
         true,

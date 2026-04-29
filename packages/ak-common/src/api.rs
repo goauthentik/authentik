@@ -1,7 +1,6 @@
 //! Utilities for working with the authentik API client.
 
-use ak_client::apis::configuration::Configuration;
-use ak_client::models::Pagination;
+use ak_client::{apis::configuration::Configuration, models::Pagination};
 use eyre::{Result, eyre};
 use url::Url;
 
