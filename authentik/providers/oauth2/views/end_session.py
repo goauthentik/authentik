@@ -99,7 +99,7 @@ class EndSessionView(PolicyAccessView):
             # OIDC Certification: OP MUST NOT perform post-logout redirection
             # if the supplied URI does not exactly match a registered one
             if self.post_logout_redirect_uri is None:
-                raise TokenError("invalid_request", "invalid_post_logout_redirect_uri")
+                raise TokenError("invalid_request").with_cause("invalid_post_logout_redirect_uri")
 
         # Append state to the redirect URI if both are present
         if self.post_logout_redirect_uri and state:

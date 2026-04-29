@@ -158,6 +158,7 @@ class TestEndSessionView(OAuthTestCase):
         view.request = request
         view.kwargs = {"application_slug": self.app.slug}
         view.resolve_provider_application()
+        view.validate()
 
         self.assertIn("state=test-state-123", view.post_logout_redirect_uri)
 
