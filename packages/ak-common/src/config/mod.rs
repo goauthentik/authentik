@@ -16,7 +16,10 @@ use url::Url;
 pub mod schema;
 pub use schema::Config;
 
-use crate::arbiter::{Arbiter, Event, Tasks};
+use crate::{
+    arbiter::{Arbiter, Event, Tasks},
+    config::schema::KEYS_TO_PARSE_AS_LIST,
+};
 
 static DEFAULT_CONFIG: &str = include_str!("../../../../authentik/lib/default.yml");
 static CONFIG_MANAGER: OnceLock<ConfigManager> = OnceLock::new();
@@ -75,11 +78,15 @@ impl Config {
                 config_rs::File::from(path.as_path()).format(config_rs::FileFormat::Yaml),
             );
         }
-        builder = builder.add_source(
-            config_rs::Environment::with_prefix("AUTHENTIK")
-                .prefix_separator("_")
-                .separator("__"),
-        );
+        let mut env_source = config_rs::Environment::with_prefix("AUTHENTIK")
+            .prefix_separator("_")
+            .separator("__")
+            .try_parsing(true)
+            .list_separator(",");
+        for key in KEYS_TO_PARSE_AS_LIST {
+            env_source = env_source.with_list_parse_key(key);
+        }
+        builder = builder.add_source(env_source);
         if let Some(overrides) = overrides {
             builder = builder.add_source(config_rs::File::from_str(
                 &overrides.to_string(),
@@ -263,7 +270,7 @@ async fn watch_config(arbiter: Arbiter) -> Result<()> {
 /// Start the configuration watcher.
 ///
 /// [`init`] must be called before this is used.
-pub fn run(tasks: &mut Tasks) -> Result<()> {
+pub fn start(tasks: &mut Tasks) -> Result<()> {
     info!("starting config file watcher");
     let arbiter = tasks.arbiter();
     tasks
@@ -400,7 +407,7 @@ mod tests {
         let arbiter = tasks.arbiter();
         let mut events_rx = arbiter.events_subscribe();
 
-        super::run(&mut tasks).expect("failed to start watcher");
+        super::start(&mut tasks).expect("failed to start watcher");
 
         assert_eq!(super::get().secret_key, "my_secret_key");
         assert_eq!(super::get().postgresql.password, "my_postgres_pass");
@@ -454,5 +461,93 @@ mod tests {
         assert_eq!(super::get().secret_key, String::new());
         super::set(json!({"secret_key": "my_new_secret_key"})).expect("failed to set config");
         assert_eq!(super::get().secret_key, "my_new_secret_key");
+    }
+
+    #[test]
+    fn env_bool_true() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_DEBUG", "true");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert!(config.debug);
+    }
+
+    #[test]
+    fn env_bool_false() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_DEBUG", "false");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert!(!config.debug);
+    }
+
+    // See https://github.com/rust-cli/config-rs/issues/443
+    // #[test]
+    // fn env_list_empty() {
+    //     #[expect(unsafe_code, reason = "testing")]
+    //     // SAFETY: testing
+    //     unsafe {
+    //         env::set_var("AUTHENTIK_LISTEN__HTTP", "");
+    //     }
+    //
+    //     let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+    //
+    //     assert_eq!(config.listen.http, []);
+    // }
+
+    #[test]
+    fn env_list_one_element() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_LISTEN__HTTP", "[::1]:9000");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert_eq!(
+            config.listen.http,
+            ["[::1]:9000".parse().expect("infallible")]
+        );
+    }
+
+    #[test]
+    fn env_list_many_elements() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_LISTEN__HTTP", "[::1]:9000,[::1]:9001");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert_eq!(
+            config.listen.http,
+            [
+                "[::1]:9000".parse().expect("infallible"),
+                "[::1]:9001".parse().expect("infallible")
+            ]
+        );
+    }
+
+    #[test]
+    fn env_string() {
+        #[expect(unsafe_code, reason = "testing")]
+        // SAFETY: testing
+        unsafe {
+            env::set_var("AUTHENTIK_SECRET_KEY", "my_secret_key");
+        }
+
+        let (config, _) = super::Config::load(&[], None).expect("failed to load config");
+
+        assert_eq!(config.secret_key, "my_secret_key",);
     }
 }

@@ -30,6 +30,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AKUserWizard } from "#admin/users/ak-user-wizard";
 import { RecoveryButtons } from "#admin/users/recovery";
+import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
@@ -69,7 +70,7 @@ export class UserListPage extends WithBrandConfig(
             .pf-c-avatar {
                 max-height: var(--pf-c-avatar--Height);
                 max-width: var(--pf-c-avatar--Width);
-                margin-bottom: calc(var(--pf-c-avatar--Width) * -0.6);
+                vertical-align: middle;
             }
         `,
     ];
@@ -309,22 +310,7 @@ export class UserListPage extends WithBrandConfig(
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <ak-user-active-form
-                            object-label=${msg("User")}
-                            .obj=${item}
-                            .delete=${() => {
-                                return this.#api.coreUsersPartialUpdate({
-                                    id: item.pk,
-                                    patchedUserRequest: {
-                                        isActive: !item.isActive,
-                                    },
-                                });
-                            }}
-                        >
-                            <button slot="trigger" class="pf-c-button pf-m-warning">
-                                ${item.isActive ? msg("Deactivate") : msg("Activate")}
-                            </button>
-                        </ak-user-active-form>
+                        ${ToggleUserActivationButton(item)}
                     </div>
                 </dd>
             </div>

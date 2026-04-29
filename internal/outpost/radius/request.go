@@ -1,7 +1,6 @@
 package radius
 
 import (
-	"bytes"
 	"crypto/hmac"
 	"crypto/md5"
 	"errors"
@@ -40,13 +39,18 @@ func (r *RadiusRequest) ID() string {
 
 func (r *RadiusRequest) validateMessageAuthenticator() error {
 	mauth := rfc2869.MessageAuthenticator_Get(r.Packet)
+	// Per RFC 2869 §5.14, the Message-Authenticator field must be treated as
+	// 16 zero bytes when computing the HMAC-MD5 for verification.
+	_ = rfc2869.MessageAuthenticator_Set(r.Packet, make([]byte, 16))
 	hash := hmac.New(md5.New, r.Secret)
 	encode, err := r.MarshalBinary()
+	// Restore the original value regardless of whether marshaling succeeded.
+	_ = rfc2869.MessageAuthenticator_Set(r.Packet, mauth)
 	if err != nil {
 		return err
 	}
 	hash.Write(encode)
-	if bytes.Equal(mauth, hash.Sum(nil)) {
+	if !hmac.Equal(mauth, hash.Sum(nil)) {
 		return ErrInvalidMessageAuthenticator
 	}
 	return nil
@@ -54,7 +58,7 @@ func (r *RadiusRequest) validateMessageAuthenticator() error {
 
 func (r *RadiusRequest) setMessageAuthenticator(rp *radius.Packet) error {
 	_ = rfc2869.MessageAuthenticator_Set(rp, make([]byte, 16))
-	hash := hmac.New(md5.New, rp.Secret)
+	hash := hmac.New(md5.New, r.pi.SharedSecret)
 	encode, err := rp.MarshalBinary()
 	if err != nil {
 		return err

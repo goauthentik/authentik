@@ -3,6 +3,13 @@ use std::{collections::HashMap, net::SocketAddr, num::NonZeroUsize};
 use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
 
+pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 4] = [
+    "listen.http",
+    "listen.metrics",
+    "listen.trusted_proxy_cidrs",
+    "log.http_headers",
+];
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
     pub postgresql: PostgreSQLConfig,
