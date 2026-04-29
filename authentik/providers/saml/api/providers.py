@@ -100,10 +100,9 @@ class SAMLProviderSerializer(ProviderSerializer):
         try:
             return request.build_absolute_uri(
                 reverse(
-                    "authentik_providers_saml:base",
+                    "authentik_providers_saml:metadata-download",
                     kwargs={"application_slug": instance.application.slug},
                 )
-                + "metadata/"
             )
         except Provider.application.RelatedObjectDoesNotExist:
             return DEFAULT_ISSUER

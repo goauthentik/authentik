@@ -48,10 +48,9 @@ class MetadataProcessor:
 
         return self.http_request.build_absolute_uri(
             reverse(
-                "authentik_providers_saml:base",
+                "authentik_providers_saml:metadata-download",
                 kwargs={"application_slug": self.provider.application.slug},
             )
-            + "metadata/"
         )
 
     # Using type unions doesn't work with cython types (which is what lxml is)
