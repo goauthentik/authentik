@@ -398,7 +398,7 @@ export class SAMLProviderViewPage extends AKElement {
                                               class="pf-c-form-control"
                                               readonly
                                               type="text"
-                                              value="${ifDefined(this.provider.urlSaml)}"
+                                              value="${ifDefined(this.provider.urlUnified)}"
                                           />
                                           <p class="pf-c-form__helper-text">
                                               ${msg(
@@ -416,7 +416,7 @@ export class SAMLProviderViewPage extends AKElement {
                                               class="pf-c-form-control"
                                               readonly
                                               type="text"
-                                              value="${ifDefined(this.provider.urlSamlInit)}"
+                                              value="${ifDefined(this.provider.urlUnifiedInit)}"
                                           />
                                       </div>
                                   </form>

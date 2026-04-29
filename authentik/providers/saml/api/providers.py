@@ -62,8 +62,8 @@ class SAMLProviderSerializer(ProviderSerializer):
     url_issuer = SerializerMethodField()
 
     # Unified SAML endpoint (primary)
-    url_saml = SerializerMethodField()
-    url_saml_init = SerializerMethodField()
+    url_unified = SerializerMethodField()
+    url_unified_init = SerializerMethodField()
 
     # Legacy endpoints (for backward compatibility)
     url_sso_post = SerializerMethodField()
@@ -105,14 +105,14 @@ class SAMLProviderSerializer(ProviderSerializer):
         try:
             return request.build_absolute_uri(
                 reverse(
-                    "authentik_providers_saml:metadata-download",
+                    "authentik_providers_saml:base",
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
         except Provider.application.RelatedObjectDoesNotExist:
             return DEFAULT_ISSUER
 
-    def get_url_saml(self, instance: SAMLProvider) -> str:
+    def get_url_unified(self, instance: SAMLProvider) -> str:
         """Get unified SAML endpoint URL (handles SSO and SLO)"""
         if "request" not in self._context:
             return ""
@@ -120,14 +120,14 @@ class SAMLProviderSerializer(ProviderSerializer):
         try:
             return request.build_absolute_uri(
                 reverse(
-                    "authentik_providers_saml:saml",
+                    "authentik_providers_saml:base",
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
         except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
-    def get_url_saml_init(self, instance: SAMLProvider) -> str:
+    def get_url_unified_init(self, instance: SAMLProvider) -> str:
         """Get IdP-initiated SAML URL"""
         if "request" not in self._context:
             return ""
@@ -278,8 +278,8 @@ class SAMLProviderSerializer(ProviderSerializer):
             "default_name_id_policy",
             "url_download_metadata",
             "url_issuer",
-            "url_saml",
-            "url_saml_init",
+            "url_unified",
+            "url_unified_init",
             "url_sso_post",
             "url_sso_redirect",
             "url_sso_init",

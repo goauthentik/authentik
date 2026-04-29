@@ -147,7 +147,7 @@ class AssertionProcessor:
 
         return self.http_request.build_absolute_uri(
             reverse(
-                "authentik_providers_saml:metadata-download",
+                "authentik_providers_saml:base",
                 kwargs={"application_slug": self.provider.application.slug},
             )
         )

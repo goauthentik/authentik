@@ -15,7 +15,7 @@ urlpatterns = [
     path(
         "<slug:application_slug>/",
         unified.SAMLUnifiedView.as_view(),
-        name="saml",
+        name="base",
     ),
     # IdP-initiated
     path(

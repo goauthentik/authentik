@@ -271,13 +271,13 @@ export interface SAMLProvider {
      * @type {string}
      * @memberof SAMLProvider
      */
-    readonly urlSaml: string;
+    readonly urlUnified: string;
     /**
      * Get IdP-initiated SAML URL
      * @type {string}
      * @memberof SAMLProvider
      */
-    readonly urlSamlInit: string;
+    readonly urlUnifiedInit: string;
     /**
      * Get SSO Post URL
      * @type {string}
@@ -340,8 +340,8 @@ export function instanceOfSAMLProvider(value: object): value is SAMLProvider {
     if (!("urlDownloadMetadata" in value) || value["urlDownloadMetadata"] === undefined)
         return false;
     if (!("urlIssuer" in value) || value["urlIssuer"] === undefined) return false;
-    if (!("urlSaml" in value) || value["urlSaml"] === undefined) return false;
-    if (!("urlSamlInit" in value) || value["urlSamlInit"] === undefined) return false;
+    if (!("urlUnified" in value) || value["urlUnified"] === undefined) return false;
+    if (!("urlUnifiedInit" in value) || value["urlUnifiedInit"] === undefined) return false;
     if (!("urlSsoPost" in value) || value["urlSsoPost"] === undefined) return false;
     if (!("urlSsoRedirect" in value) || value["urlSsoRedirect"] === undefined) return false;
     if (!("urlSsoInit" in value) || value["urlSsoInit"] === undefined) return false;
@@ -428,8 +428,8 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : SAMLNameIDPolicyEnumFromJSON(json["default_name_id_policy"]),
         urlDownloadMetadata: json["url_download_metadata"],
         urlIssuer: json["url_issuer"],
-        urlSaml: json["url_saml"],
-        urlSamlInit: json["url_saml_init"],
+        urlUnified: json["url_unified"],
+        urlUnifiedInit: json["url_unified_init"],
         urlSsoPost: json["url_sso_post"],
         urlSsoRedirect: json["url_sso_redirect"],
         urlSsoInit: json["url_sso_init"],
@@ -456,8 +456,8 @@ export function SAMLProviderToJSONTyped(
         | "meta_model_name"
         | "url_download_metadata"
         | "url_issuer"
-        | "url_saml"
-        | "url_saml_init"
+        | "url_unified"
+        | "url_unified_init"
         | "url_sso_post"
         | "url_sso_redirect"
         | "url_sso_init"

@@ -53821,11 +53821,11 @@ components:
           type: string
           description: Get Issuer/EntityID URL
           readOnly: true
-        url_saml:
+        url_unified:
           type: string
           description: Get unified SAML endpoint URL (handles SSO and SLO)
           readOnly: true
-        url_saml_init:
+        url_unified_init:
           type: string
           description: Get IdP-initiated SAML URL
           readOnly: true
@@ -53863,13 +53863,13 @@ components:
       - pk
       - url_download_metadata
       - url_issuer
-      - url_saml
-      - url_saml_init
       - url_slo_post
       - url_slo_redirect
       - url_sso_init
       - url_sso_post
       - url_sso_redirect
+      - url_unified
+      - url_unified_init
       - verbose_name
       - verbose_name_plural
     SAMLProviderImportRequest:
