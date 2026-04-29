@@ -4,7 +4,7 @@ import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
+import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -12,17 +12,17 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 @customElement("ak-source-ldap-connectivity")
 export class LDAPSourceConnectivity extends AKElement {
     @property()
-    connectivity?: {
+    connectivity: {
         [key: string]: {
             [key: string]: string;
         };
-    };
+    } | null = null;
 
     static styles: CSSResult[] = [PFList];
 
     render(): SlottedTemplateResult {
         if (!this.connectivity) {
-            return nothing;
+            return html`${msg("No connectivity status available.")}`;
         }
         return html`<ul class="pf-c-list">
             ${Object.keys(this.connectivity).map((serverKey) => {

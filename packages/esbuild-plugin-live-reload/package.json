@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "1.6.1",
+    "version": "2.0.1",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
     "repository": {
@@ -34,6 +34,7 @@
             "types": "./out/client/index.d.ts",
             "import": "./client/index.js"
         },
+        "./client/types": "./client/types.d.ts",
         "./plugin": {
             "types": "./out/plugin/index.d.ts",
             "import": "./plugin/index.js"
@@ -45,23 +46,23 @@
     "devDependencies": {
         "@eslint/js": "^9.39.3",
         "@goauthentik/eslint-config": "../eslint-config",
+        "@goauthentik/logger-js": "../logger-js",
         "@goauthentik/prettier-config": "../prettier-config",
         "@goauthentik/tsconfig": "../tsconfig",
         "@types/node": "^25.3.0",
-        "@typescript-eslint/eslint-plugin": "^8.56.1",
-        "@typescript-eslint/parser": "^8.56.1",
-        "esbuild": "^0.27.3",
+        "esbuild": "^0.27.4",
         "eslint": "^9.39.3",
         "pino": "^10.3.1",
         "prettier": "^3.8.1",
-        "prettier-plugin-packagejson": "^3.0.0",
-        "typedoc": "^0.28.15",
-        "typedoc-plugin-markdown": "^4.9.0",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.56.1"
+        "prettier-plugin-packagejson": "^3.0.2",
+        "typedoc": "^0.28.18",
+        "typedoc-plugin-markdown": "^4.11.0",
+        "typescript": "^6.0.2",
+        "typescript-eslint": "^8.57.2"
     },
     "peerDependencies": {
-        "esbuild": "^0.27.3"
+        "@goauthentik/logger-js": "^1.0.1",
+        "esbuild": "^0.27.4"
     },
     "files": [
         "./index.js",
@@ -95,6 +96,25 @@
         "reload",
         "authentik"
     ],
+    "overrides": {
+        "@typescript-eslint/eslint-plugin": {
+            "typescript": "$typescript"
+        },
+        "@typescript-eslint/parser": {
+            "typescript": "$typescript"
+        },
+        "format-imports": {
+            "eslint": "$eslint"
+        },
+        "typescript-eslint": {
+            "typescript": "$typescript"
+        }
+    },
+    "peerDependenciesMeta": {
+        "@goauthentik/logger-js": {
+            "optional": true
+        }
+    },
     "publishConfig": {
         "access": "public"
     }

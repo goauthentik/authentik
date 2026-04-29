@@ -42,7 +42,8 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
     renderForm() {
         return html`<ak-text-input
                 name="name"
-                placeholder=${msg("Connector name...")}
+                autofocus
+                placeholder=${msg("Type a connector name...")}
                 label=${msg("Connector name")}
                 value=${this.instance?.name ?? ""}
                 required
@@ -57,6 +58,7 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
                     <ak-text-input
                         name="url"
                         label=${msg("Fleet Server URL")}
+                        inputmode="url"
                         value=${this.instance?.url ?? ""}
                         required
                         input-hint="code"
@@ -64,6 +66,7 @@ export class FleetConnectorForm extends ModelForm<FleetConnector, string> {
                     </ak-text-input>
                     <ak-secret-text-input
                         label=${msg("Fleet API Token")}
+                        placeholder=${msg("Provide your Fleet API token...")}
                         name="token"
                         ?revealed=${!this.instance}
                     ></ak-secret-text-input>

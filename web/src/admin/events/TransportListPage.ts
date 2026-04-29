@@ -9,20 +9,18 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    EventsApi,
-    ModelEnum,
-    NotificationTransport,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { TransportForm } from "#admin/events/TransportForm";
+
+import { EventsApi, ModelEnum, NotificationTransport } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
@@ -33,26 +31,28 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     );
     public pageIcon = "pf-icon pf-icon-export";
 
-    checkbox = true;
-    clearOnRefresh = true;
-    expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override expandable = true;
+    public override searchPlaceholder = msg(
+        "Search for a notification transport by name or mode...",
+    );
 
-    @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<NotificationTransport>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<NotificationTransport>> {
         return new EventsApi(DEFAULT_CONFIG).eventsTransportsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    protected columns: TableColumn[] = [
+    protected override columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Mode"), "mode"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Notification transport(s)")}
@@ -74,25 +74,15 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: NotificationTransport): SlottedTemplateResult[] {
+    protected override row(item: NotificationTransport): SlottedTemplateResult[] {
         return [
-            html`${item.name}`,
-            html`${item.modeVerbose}`,
-            html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Notification Transport")}</span>
-                    <ak-event-transport-form slot="form" .instancePk=${item.pk}>
-                    </ak-event-transport-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            item.name,
+            item.modeVerbose,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(TransportForm, item.pk, item.name)}
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEventsNotificationtransport}
+                    model=${ModelEnum.AuthentikEventsNotificationtransport}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>
@@ -112,7 +102,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         ];
     }
 
-    renderExpanded(item: NotificationTransport): TemplateResult {
+    protected override renderExpanded(item: NotificationTransport): SlottedTemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationtransport.split(".");
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
@@ -132,15 +122,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         </dl>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Notification Transport")}</span>
-                <ak-event-transport-form slot="form"> </ak-event-transport-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(TransportForm);
     }
 }
 

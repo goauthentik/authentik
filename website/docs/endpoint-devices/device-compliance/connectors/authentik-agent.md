@@ -9,14 +9,14 @@ The authentik Agent connector allows device information to be reported by the [a
 
 Unlike other connectors, the agent connector is used directly by the agent itself, rather than communicating with external systems or APIs. As a result, its behavior and functionality differ from those of other connectors.
 
-The agent connector mainly holds configuration for the agent itself, as well as implementing certain platform specific protocols like Apple's Platform SSO.
+The agent connector mainly holds configuration for the agent itself, as well as implementing certain platform-specific protocols like Apple's Platform SSO.
 
 ## Configure the authentik Agent connector
 
 Follow these instructions to configure the authentik Agent connector:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
+2. Navigate to **Endpoint Devices** > **Connectors** and click **New Endpoint Connector**.
 3. Select **Agent Connector** as the connector type, click **Next**, and configure the following required settings:
     - **Connector name**: provide a descriptive name for the connector.
     - **Refresh interval**: select how often the agent will attempt to update its configuration.

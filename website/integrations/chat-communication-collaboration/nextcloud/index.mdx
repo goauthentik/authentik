@@ -168,6 +168,17 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
     If you're using the `Nextcloud Profile` property mapping and want administrators to retain their ability to log in, make sure that **Use unique user ID** is disabled. If this setting is enabled, it will remove administrator users from the internal admin group and replace them with a hashed group ID named "admin," which does not have real administrative privileges.
     :::
 
+## Enabling OIDC back-channel logout
+
+To automatically log users out of their Nextcloud sessions when they log out of authentik, enable back-channel logout.
+
+1. Log in to Nextcloud as an administrator and navigate to **Settings** > **OpenID Connect**.
+2. Under **Registered Providers**, locate the provider with the identifier used earlier.
+3. Copy the `back-channel-logout-URL` value for that provider. For example: `https://nextcloud.company/apps/user_oidc/backchannel-logout/<identifier>`
+4. In authentik, navigate to **Applications** > **Providers** and edit the Nextcloud provider.
+5. Under **Protocol Settings**, set the **Logout URI** to the copied back-channel logout URL.
+6. Set the **Logout Method** to `Back-channel`.
+
 ## Making OIDC the default login method
 
 Automatically redirect users to authentik when they access Nextcloud by running the following command on your Nextcloud docker host:

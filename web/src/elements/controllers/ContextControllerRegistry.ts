@@ -39,4 +39,4 @@ const ContextControllerConstructor = supportsSymbolKeyedWeakMap() ? WeakMap : Ma
  * This is exported separately to avoid circular dependencies.
  */
 export const ContextControllerRegistry =
-    new ContextControllerConstructor() as ContextControllerRegistryMap;
+    new (ContextControllerConstructor as WeakMapConstructor)() as ContextControllerRegistryMap;

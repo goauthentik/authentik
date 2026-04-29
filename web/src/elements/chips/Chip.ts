@@ -40,7 +40,7 @@ export class Chip extends AKElement {
                               );
                           }}
                       >
-                          <pf-tooltip position="top" content=${msg("Remove item")}>
+                          <pf-tooltip position="right" content=${msg("Remove item")}>
                               <i class="fas fa-times" aria-hidden="true"></i>
                           </pf-tooltip>
                       </button>`

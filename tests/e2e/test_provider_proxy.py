@@ -3,11 +3,8 @@
 from base64 import b64encode
 from dataclasses import asdict
 from json import dumps
-from sys import platform
 from time import sleep
-from unittest.case import skip, skipUnless
 
-from channels.testing import ChannelsLiveServerTestCase
 from jwt import decode
 from selenium.webdriver.common.by import By
 
@@ -15,10 +12,11 @@ from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
-from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
-from authentik.outposts.tasks import outpost_connection_discovery
+from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.live import ChannelsE2ETestCase
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderProxy(SeleniumTestCase):
@@ -215,10 +213,7 @@ class TestProviderProxy(SeleniumTestCase):
         )
 
 
-# TODO: Fix flaky test
-@skip("Flaky test")
-@skipUnless(platform.startswith("linux"), "requires local docker")
-class TestProviderProxyConnect(ChannelsLiveServerTestCase):
+class TestProviderProxyConnect(ChannelsE2ETestCase):
     """Test Proxy connectivity over websockets"""
 
     @retry(exceptions=[AssertionError])
@@ -232,7 +227,6 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     @reconcile_app("authentik_crypto")
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
-        outpost_connection_discovery()
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(
@@ -246,15 +240,24 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         proxy.save()
         # we need to create an application to actually access the proxy
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=proxy)
-        service_connection = DockerServiceConnection.objects.get(local=True)
+
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
             type=OutpostType.PROXY,
-            service_connection=service_connection,
             _config=asdict(OutpostConfig(authentik_host=self.live_server_url, log_level="debug")),
         )
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
+
+        self.run_container(
+            image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
+            ports={
+                "9000": "9000",
+            },
+            environment={
+                "AUTHENTIK_TOKEN": outpost.token.key,
+            },
+        )
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0

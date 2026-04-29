@@ -1,4 +1,4 @@
-from tests.e2e.utils import retry
+from tests.decorators import retry
 from tests.openid_conformance.base import TestOpenIDConformance
 
 

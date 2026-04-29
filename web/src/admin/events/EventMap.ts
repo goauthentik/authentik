@@ -1,5 +1,4 @@
 import "@openlayers-elements/core/ol-layer-vector";
-import "@openlayers-elements/maps/ol-layer-openstreetmap";
 import "@openlayers-elements/maps/ol-select";
 import "./OpenLayer.d.ts";
 
@@ -13,12 +12,17 @@ import { Event } from "@goauthentik/api";
 
 import type OlLayerVector from "@openlayers-elements/core/ol-layer-vector.js";
 import OlMap from "@openlayers-elements/core/ol-map.js";
+import OlLayerOpenstreetmap from "@openlayers-elements/maps/ol-layer-openstreetmap";
 import { isEmpty } from "ol/extent.js";
 import Feature from "ol/Feature.js";
 import { Point } from "ol/geom.js";
+import ImageTile from "ol/ImageTile";
+import TileLayer from "ol/layer/Tile";
 import { fromLonLat } from "ol/proj.js";
+import OSM from "ol/source/OSM";
 import Icon from "ol/style/Icon.js";
 import Style from "ol/style/Style.js";
+import Tile from "ol/Tile";
 
 import { css, CSSResult, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
@@ -51,6 +55,24 @@ export class Map extends OlMap {
             <div id="map"></div>
             <slot></slot>
         `;
+    }
+}
+
+@customElement("ak-map-layer-osm")
+export class OSMLayer extends OlLayerOpenstreetmap {
+    async _createLayer() {
+        return new TileLayer({
+            source: new OSM({
+                tileLoadFunction: (rawTile: Tile, src: string) => {
+                    const tile = rawTile as ImageTile;
+                    const image = tile.getImage() as HTMLImageElement | HTMLVideoElement;
+                    if (image instanceof HTMLImageElement) {
+                        image.referrerPolicy = "origin-when-cross-origin";
+                    }
+                    image.src = src;
+                },
+            }),
+        });
     }
 }
 
@@ -168,7 +190,7 @@ export class EventMap extends AKElement {
         return html`<div class="pf-c-card">
             <ak-map>
                 <ol-select></ol-select>
-                <ol-layer-openstreetmap></ol-layer-openstreetmap>
+                <ak-map-layer-osm></ak-map-layer-osm>
                 <ol-layer-vector></ol-layer-vector>
             </ak-map>
         </div>`;
@@ -179,6 +201,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "ak-map": Map;
         "ak-events-map": EventMap;
+        "ak-map-layer-osm": OSMLayer;
     }
 }
 

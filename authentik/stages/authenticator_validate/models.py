@@ -8,7 +8,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import NotConfiguredAction, Stage
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.stages.authenticator_webauthn.models import UserVerification
+from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnHint
 
 
 class DeviceClasses(models.TextChoices):
@@ -72,6 +72,11 @@ class AuthenticatorValidateStage(Stage):
         help_text=_("Enforce user verification for WebAuthn devices."),
         choices=UserVerification.choices,
         default=UserVerification.PREFERRED,
+    )
+    webauthn_hints = ArrayField(
+        models.TextField(choices=WebAuthnHint.choices),
+        default=list,
+        blank=True,
     )
     webauthn_allowed_device_types = models.ManyToManyField(
         "authentik_stages_authenticator_webauthn.WebAuthnDeviceType", blank=True
