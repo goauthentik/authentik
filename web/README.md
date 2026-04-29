@@ -65,19 +65,22 @@ The interface code is mostly the core web component and its responsibilities. Th
 hydrated when the interface root bundle in the second step above is executed and the components are
 registered with the browser.
 
-### The Flow Interface
+### The Flow interface
 
-The Flow Interface has three subsystems:
+The Flow interface has three subsystems:
 
 - The Locale Selector: `<ak-locale-select>`
 - The Flow Inspector: `<ak-flow-inspector>`
 - The Flow Executor: `<ak-flow-executor>`
 
-The Locale Selector and the Inspector are independent buttons that exist on the page (both can be
-disabled by admin preference). The Locale Selector allows the user to select an alternative locale
-in which to display text and labels. The Flow Inspector, when enabled, can query the server for
-details about the state of a flow: the accumulated context of the current flow, existing error
-messages, and expected next steps; it is present to assist with debugging.
+The Flow interface is a single-page application. The Locale Selector and the Inspector are
+independent buttons that persist on the web page for the duration of a Flow. Either can be disabled
+and hidden by admin preference. The Locale Selector allows the user to select an alternative locale
+in which to display text and labels. The [Flow
+Inspector](https://docs.goauthentik.io/add-secure-apps/flows-stages/flow/inspector/), when enabled,
+can query the server and then display details about the state of a flow: the accumulated context of
+the current flow, existing error messages, and expected next steps; it is present to assist with
+debugging.
 
 The Executor is the heart of the system. It executes Flows.
 
@@ -112,7 +115,7 @@ logged in and so is said to have a _Session_. The architecture is structured:
 
 - The HTML Document
 - The Interface
-    - Licence: a context handler for the site's enterprise license status
+    - License: a context handler for the site's enterprise license status
     - Session: a context handler for the user's current session. This mostly the `user` identity
     - Version: a context handler for the current version of authentik
     - Notifications: a context handler for outstanding messages sent from the server to the user
@@ -131,13 +134,13 @@ logged in and so is said to have a _Session_. The architecture is structured:
                     - IDP Sources
                     - Everything else!
 
-### Miscellaneous Interfaces
+### Miscellaneous interfaces
 
 There are three miscellaneous interfaces:
 
-#### API Browser
+#### API browser
 
-A single page app that loads our schema and allows the user to experiment with it. Uses the
+A single page application that loads our schema and allows the user to experiment with it. Uses the
 [RapiDoc](https://rapidocweb.com/) app.
 
 #### Loading
@@ -148,12 +151,11 @@ pretty animation.
 
 #### SFE: Simplified Flow Executor
 
-The SFE is a limited version of the FlowExecutor written to use [jQuery](https://jquery.com/). It
-supports only log-in operations, and is meant for places where the log-in is embedded in an
-Office365 or MicrosoftTeams settings, as those use Trident (Internet Explorer) for their web-based
-log-in.
+The SFE is a limited version of the Flow Executor written to use [jQuery](https://jquery.com/). It
+supports only login operations, and is meant for places where the login is embedded in an Office365
+or MicrosoftTeams settings, as those use Trident (Internet Explorer) for their web-based login.
 
-## WebUI Foundations
+## Front-end foundations
 
 ### CSS
 
@@ -161,8 +163,9 @@ Our current CSS is provided by [Patternfly 4](https://v4-archive.patternfly.org/
 different layers of CSS.
 
 The first is the Global CSS that appears in the `<head>`. This defines the basic look: theme,
-start-up, reset, and fonts. It also provides the CSS Custom Properties that will control the look
-and feel of the rest of an Interface.
+start-up, reset, and fonts. It also provides the [CSS Custom
+Properties](https://docs.goauthentik.io/brands/custom-css/) that control the look and feel of the
+rest of an Interface.
 
 The second is per-component CSS. This is linked into each component using [Adopted
 Stylesheets](https://developer.mozilla.org/en-US/docs/Web/API/Document/adoptedStyleSheets).
@@ -237,7 +240,7 @@ is. If it's likely to have internal scrolling, opt for a separate page.
 
 For complex objects that have a lot of detail or subsidiary lists of features (such as Flows),
 provide a separate View page for each one. We have a specified display standard encapsulated in our
-DictionaryList component.
+`DictionaryList` component.
 
 Creation and Updating are handled using the web component parent in `./elements/forms`. Like
 tables, a child component inherits and extends the Form class, providing three features: how to
