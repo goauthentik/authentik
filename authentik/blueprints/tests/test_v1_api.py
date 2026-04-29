@@ -127,3 +127,64 @@ class TestBlueprintsV1API(APITestCase):
         )
         self.assertEqual(user_write_stage.user_type, user_type)
         self.assertEqual(user_write_stage.user_path_template, f"users/{user_type}")
+
+    def test_api_import_blank_path(self):
+        """Validator returns empty path unchanged (covers api.py:53)."""
+        with NamedTemporaryFile(mode="w+", suffix=".yaml") as file:
+            file.write(dump({"version": 1, "entries": []}))
+            file.flush()
+            file.seek(0)
+            res = self.client.post(
+                reverse("authentik_api:blueprintinstance-import-"),
+                data={"path": "", "file": file},
+                format="multipart",
+            )
+        self.assertEqual(res.status_code, 200)
+
+    def test_api_import_unknown_path(self):
+        """Path not in available blueprints is rejected (covers api.py:56)."""
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-import-"),
+            data={"path": "does/not/exist.yaml"},
+            format="multipart",
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("Blueprint file does not exist", res.content.decode())
+
+    def test_api_import_blank_context(self):
+        """Blank context is normalized to empty dict (covers api.py:62)."""
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-import-"),
+            data={
+                "path": "example/flows-invitation-enrollment-minimal.yaml",
+                "context": "",
+            },
+            format="multipart",
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_api_import_invalid_json_context(self):
+        """Malformed JSON context raises ValidationError (covers api.py:65-66)."""
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-import-"),
+            data={
+                "path": "example/flows-invitation-enrollment-minimal.yaml",
+                "context": "{not json",
+            },
+            format="multipart",
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("Context must be valid JSON", res.content.decode())
+
+    def test_api_import_non_object_context(self):
+        """JSON context that isn't an object is rejected (covers api.py:68)."""
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-import-"),
+            data={
+                "path": "example/flows-invitation-enrollment-minimal.yaml",
+                "context": "[1, 2, 3]",
+            },
+            format="multipart",
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("Context must be a JSON object", res.content.decode())
