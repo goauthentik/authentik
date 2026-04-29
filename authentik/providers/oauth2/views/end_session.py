@@ -23,8 +23,9 @@ from authentik.flows.planner import (
 from authentik.flows.stage import SessionEndStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
-from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.policies.views import PolicyAccessView
 from authentik.providers.iframe_logout import IframeLogoutStageView
+from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
     JWTAlgorithms,
@@ -41,15 +42,7 @@ class EndSessionView(PolicyAccessView):
     flow: Flow
     post_logout_redirect_uri: str | None
 
-    def resolve_provider_application(self):
-        self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
-        self.provider = self.application.get_provider()
-        if not self.provider:
-            raise Http404
-        self.flow = self.provider.invalidation_flow or self.request.brand.flow_invalidation
-        if not self.flow:
-            raise Http404
-
+    def validate(self):
         # Parse end session parameters
         query_dict = self.request.POST if self.request.method == "POST" else self.request.GET
         state = query_dict.get("state")
@@ -75,11 +68,8 @@ class EndSessionView(PolicyAccessView):
                         options={"verify_exp": False},
                     )
                 except PyJWTError:
-                    raise RequestValidationError(
-                        bad_request_message(
-                            self.request,
-                            "Invalid id_token_hint",
-                        )
+                    raise TokenError("invalid_request").with_cause(
+                        "id_token_hint_decode_failed"
                     ) from None
             finally:
                 # Drop cached cryptography key objects so the flow plan
@@ -94,19 +84,9 @@ class EndSessionView(PolicyAccessView):
         if request_redirect_uri:
             # OIDC Certification: id_token_hint required with post_logout_redirect_uri
             if not id_token_hint:
-                raise RequestValidationError(
-                    bad_request_message(
-                        self.request,
-                        "post_logout_redirect_uri requires id_token_hint",
-                    )
-                )
+                raise TokenError("invalid_request").with_cause("id_token_hint_missing")
             if urlparse(request_redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
-                raise RequestValidationError(
-                    bad_request_message(
-                        self.request,
-                        "Forbidden URI scheme in post_logout_redirect_uri",
-                    )
-                )
+                raise TokenError("invalid_request").with_cause("post_logout_redirect_uri")
             for allowed in self.provider.post_logout_redirect_uris:
                 if allowed.matching_mode == RedirectURIMatchingMode.STRICT:
                     if request_redirect_uri == allowed.url:
@@ -119,12 +99,7 @@ class EndSessionView(PolicyAccessView):
             # OIDC Certification: OP MUST NOT perform post-logout redirection
             # if the supplied URI does not exactly match a registered one
             if self.post_logout_redirect_uri is None:
-                raise RequestValidationError(
-                    bad_request_message(
-                        self.request,
-                        "Invalid post_logout_redirect_uri",
-                    )
-                )
+                raise TokenError("invalid_request", "invalid_post_logout_redirect_uri")
 
         # Append state to the redirect URI if both are present
         if self.post_logout_redirect_uri and state:
@@ -132,6 +107,15 @@ class EndSessionView(PolicyAccessView):
             self.post_logout_redirect_uri = (
                 f"{self.post_logout_redirect_uri}{separator}state={quote(state, safe='')}"
             )
+
+    def resolve_provider_application(self):
+        self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
+        self.provider = self.application.get_provider()
+        if not self.provider:
+            raise Http404
+        self.flow = self.provider.invalidation_flow or self.request.brand.flow_invalidation
+        if not self.flow:
+            raise Http404
 
     # If IFrame provider logout happens when a saml provider has redirect
     # logout enabled, the flow won't make it back without this dispatch
@@ -149,6 +133,13 @@ class EndSessionView(PolicyAccessView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Dispatch the flow planner for the invalidation flow"""
+        try:
+            self.validate()
+        except TokenError as exc:
+            return bad_request_message(
+                self.request,
+                exc.description,
+            )
         planner = FlowPlanner(self.flow)
         planner.allow_empty_flows = True
 
@@ -203,12 +194,13 @@ class EndSessionView(PolicyAccessView):
                 }
             ]
 
-        if request.user.is_authenticated and auth_session:
-            AccessToken.objects.filter(
-                user=request.user,
-                provider=self.provider,
-                session=auth_session,
-            ).delete()
+        access_tokens = AccessToken.objects.filter(
+            user=request.user,
+            provider=self.provider,
+        )
+        if auth_session:
+            access_tokens = access_tokens.filter(session=auth_session)
+        access_tokens.delete()
 
         plan = planner.plan(request, context)
 
