@@ -1,8 +1,13 @@
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import type { Stage } from "@goauthentik/api/dist/models/Stage";
+
 import { msg } from "@lit/localize";
 
-export abstract class BaseStageForm<T extends object> extends ModelForm<T, string> {
+export abstract class BaseStageForm<T extends Stage> extends ModelForm<T, string> {
+    public static override verboseName = msg("Stage");
+    public static override verboseNamePlural = msg("Stages");
+
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated stage.")

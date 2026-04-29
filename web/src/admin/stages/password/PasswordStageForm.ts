@@ -12,8 +12,8 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     BackendsEnum,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     PasswordStage,
     StagesApi,
@@ -108,8 +108,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

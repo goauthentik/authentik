@@ -8,10 +8,12 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { createPaginatedResponse } from "#common/api/responses";
 import { isResponseErrorLike } from "#common/errors/network";
 
+import { ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPreviousValue } from "#elements/utils/properties";
 
+import { ObjectReviewForm } from "#admin/lifecycle/ObjectReviewForm";
 import { LifecycleIterationStatus } from "#admin/lifecycle/utils";
 
 import {
@@ -31,6 +33,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
@@ -43,6 +46,7 @@ export class ObjectLifecyclePage extends Table<Review> {
         PFBanner,
         PFCard,
         PFFlex,
+        PFPage,
         PFDescriptionList,
     ];
 
@@ -255,7 +259,7 @@ export class ObjectLifecyclePage extends Table<Review> {
         ];
     }
 
-    protected override renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-task"
                 ><span>${this.emptyStateMessage}</span></ak-empty-state
@@ -265,34 +269,26 @@ export class ObjectLifecyclePage extends Table<Review> {
 
     protected renderObjectCreate(): SlottedTemplateResult {
         if (!this.iteration?.userCanReview) {
-            return nothing;
+            return null;
         }
 
-        return html`<ak-forms-modal>
-            <span slot="submit">${msg("Confirm Review")}</span>
-            <span slot="header">${msg("Confirm this object has been reviewed")}</span>
-            <ak-object-review-form slot="form" .iteration=${this.iteration}>
-            </ak-object-review-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${msg("Confirm Review")}
-            </button>
-        </ak-forms-modal>`;
+        return ModalInvokerButton(ObjectReviewForm, {
+            iteration: this.iteration,
+        });
     }
 
     protected override render(): SlottedTemplateResult {
-        return html`<div class="pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>
-                </div>
-                ${this.renderReviewSummary()}
+        return html`<ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>
+            <div class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-l-grid pf-m-gutter">
+                    ${this.renderReviewSummary()}
                     <div class="pf-c-card pf-l-grid__item pf-m-9-col">
                         <div class="pf-c-card__title">${msg("Reviews")}</div>
-                        <div class="pf-c-card__body">
                         ${super.render()}
-                        </div>
                     </div>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     //#endregion

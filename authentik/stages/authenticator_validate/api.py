@@ -36,6 +36,7 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
             "configuration_stages",
             "last_auth_threshold",
             "webauthn_user_verification",
+            "webauthn_hints",
             "webauthn_allowed_device_types",
             "webauthn_allowed_device_types_obj",
         ]

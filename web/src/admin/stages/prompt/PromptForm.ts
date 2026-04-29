@@ -39,6 +39,9 @@ class PreviewStageHost implements StageHost {
 
 @customElement("ak-prompt-form")
 export class PromptForm extends ModelForm<Prompt, string> {
+    public static override verboseName = msg("Prompt");
+    public static override verboseNamePlural = msg("Prompts");
+
     @state()
     protected preview: PromptChallenge | null = null;
 
@@ -77,7 +80,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
     }
 
     async refreshPreview(prompt?: Prompt): Promise<void> {
-        const promptRequest = prompt || this.serialize();
+        const promptRequest = prompt || this.toJSON();
 
         if (!promptRequest) {
             return;

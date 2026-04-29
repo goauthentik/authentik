@@ -1,5 +1,8 @@
 import type { GroupedOptions, SelectGrouped, SelectOption, SelectOptions } from "#elements/types";
 
+export const withQuery = <T>(search: string | undefined, args: T) =>
+    search ? { ...args, search } : args;
+
 type Pair = [string, SelectOption];
 const mapPair = (option: SelectOption): Pair => [option[0], option];
 

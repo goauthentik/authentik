@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 
 import { AkFlowSearch } from "#admin/common/ak-flow-search/ak-flow-search";
 
-import { Flow, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import { Flow, FlowDesignationEnum } from "@goauthentik/api";
 
 import { Meta } from "@storybook/web-components";
 
@@ -116,7 +116,7 @@ export const Default = () =>
             name="authorizationFlow"
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 @input=${displayChange}
             ></ak-flow-search
         ></ak-form-element-horizontal>`,
@@ -130,7 +130,7 @@ export const WithInitialValue = () =>
             name="authorizationFlow"
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 currentFlow="89f57fd8-fd1e-42be-a5fd-abc13b19529b"
                 @input=${displayChange}
             ></ak-flow-search

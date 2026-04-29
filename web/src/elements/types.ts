@@ -176,19 +176,29 @@ export type LitElementConstructor<T = unknown> = new (...args: any[]) => LitElem
 //#region Mixins
 
 /**
+ * A utility type to extract the public static members of a class, excluding the constructor.
+ *
+ * This is used to ensure that when we create a mixin, we don't accidentally lose any static members of the superclass.
+ */
+type PublicStaticsOf<T> = Pick<T, keyof T>;
+
+/**
  * A constructor that has been extended with a mixin.
  */
 export type ConstructorWithMixin<SuperClass, Mixin> =
     // Is the superclass abstract?
     SuperClass extends abstract new (...args: never[]) => unknown
-        ? // Lift the abstractness to of the mixin.
-          new (...args: ConstructorParameters<SuperClass>) => InstanceType<SuperClass> & Mixin
+        ? // Lift the abstractness to the mixin.
+          PublicStaticsOf<SuperClass> & {
+              new (...args: ConstructorParameters<SuperClass>): InstanceType<SuperClass> & Mixin;
+          }
         : // Is the superclass **not** abstract?
           SuperClass extends new (...args: never[]) => unknown
           ? // So shall be the mixin.
-            new (...args: ConstructorParameters<SuperClass>) => InstanceType<SuperClass> & Mixin
+            PublicStaticsOf<SuperClass> & {
+                new (...args: ConstructorParameters<SuperClass>): InstanceType<SuperClass> & Mixin;
+            }
           : never;
-
 /**
  * The init object passed to the `createMixin` callback.
  */

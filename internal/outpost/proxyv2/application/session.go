@@ -12,12 +12,12 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/filesystemstore"
 	"goauthentik.io/internal/outpost/proxyv2/postgresstore"
 	"goauthentik.io/internal/outpost/proxyv2/types"
+	api "goauthentik.io/packages/client-go"
 )
 
 const PostgresKeyPrefix = "authentik_proxy_session_"

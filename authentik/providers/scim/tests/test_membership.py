@@ -7,7 +7,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider
+from authentik.providers.scim.models import SCIMCompatibilityMode, SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
 from authentik.tenants.models import Tenant
 
@@ -26,12 +26,13 @@ class SCIMMembershipTests(TestCase):
         Tenant.objects.update(avatars="none")
 
     @apply_blueprint("system/providers-scim.yaml")
-    def configure(self) -> None:
+    def configure(self, **kwargs) -> None:
         """Configure provider"""
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
             token=generate_id(),
+            **kwargs,
         )
         self.app: Application = Application.objects.create(
             name=generate_id(),
@@ -333,6 +334,116 @@ class SCIMMembershipTests(TestCase):
                             "op": "add",
                             "path": "members",
                             "value": [{"value": user_scim_id}],
+                        }
+                    ],
+                },
+            )
+            self.assertJSONEqual(
+                mocker.request_history[1].body,
+                {
+                    "Operations": [
+                        {
+                            "op": "replace",
+                            "value": {
+                                "id": group_scim_id,
+                                "displayName": group.name,
+                                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                                "externalId": str(group.pk),
+                            },
+                        }
+                    ]
+                },
+            )
+
+    def test_member_add_save_compat_webex(self):
+        """Test member add + save"""
+        config = ServiceProviderConfiguration.default()
+
+        config.patch.supported = True
+        user_scim_id = generate_id()
+        group_scim_id = generate_id()
+        uid = generate_id()
+        group = Group.objects.create(
+            name=uid,
+        )
+
+        user = User.objects.create(username=generate_id())
+
+        # Test initial sync of group creation
+        with Mocker() as mocker:
+            mocker.get(
+                "https://localhost/ServiceProviderConfig",
+                json=config.model_dump(),
+            )
+            mocker.post(
+                "https://localhost/Users",
+                json={
+                    "id": user_scim_id,
+                },
+            )
+            mocker.post(
+                "https://localhost/Groups",
+                json={
+                    "id": group_scim_id,
+                },
+            )
+
+            self.configure(compatibility_mode=SCIMCompatibilityMode.WEBEX)
+            scim_sync.send(self.provider.pk)
+
+            self.assertEqual(mocker.call_count, 3)
+            self.assertEqual(mocker.request_history[0].method, "GET")
+            self.assertEqual(mocker.request_history[1].method, "POST")
+            self.assertEqual(mocker.request_history[2].method, "POST")
+            self.assertJSONEqual(
+                mocker.request_history[1].body,
+                {
+                    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                    "emails": [],
+                    "active": True,
+                    "externalId": user.uid,
+                    "name": {"familyName": " ", "formatted": " ", "givenName": ""},
+                    "displayName": "",
+                    "userName": user.username,
+                },
+            )
+            self.assertJSONEqual(
+                mocker.request_history[2].body,
+                {
+                    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                    "externalId": str(group.pk),
+                    "displayName": group.name,
+                },
+            )
+
+        with Mocker() as mocker:
+            mocker.get(
+                "https://localhost/ServiceProviderConfig",
+                json=config.model_dump(),
+            )
+            mocker.get(
+                f"https://localhost/Groups/{group_scim_id}",
+                json={},
+            )
+            mocker.patch(
+                f"https://localhost/Groups/{group_scim_id}",
+                json={},
+            )
+            group.users.add(user)
+            group.save()
+            self.assertEqual(mocker.call_count, 3)
+            self.assertEqual(mocker.request_history[0].method, "PATCH")
+            self.assertEqual(mocker.request_history[1].method, "PATCH")
+            self.assertEqual(mocker.request_history[2].method, "GET")
+            self.assertJSONEqual(
+                mocker.request_history[0].body,
+                {
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+                    "Operations": [
+                        {
+                            "op": "add",
+                            "path": "members",
+                            "value": [{"value": user_scim_id, "type": "user"}],
                         }
                     ],
                 },

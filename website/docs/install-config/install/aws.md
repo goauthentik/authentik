@@ -17,7 +17,7 @@ Under the **Certificate ARN** input, enter the previously created certificate AR
 
 This stack will create the following resources:
 
-- AWS SSM secrets for the PostgreSQL user and the authentik secret key
+- AWS SSM secrets for the PostgreSQL user and the authentik secret key
 - A VPC for all other resources
 - A RDS PostgreSQL Multi-AZ cluster
 - An ECS cluster with two tasks:
@@ -26,16 +26,16 @@ This stack will create the following resources:
 - An ALB (Application Load Balancer) pointing to the authentik server ECS task with the configured certificate
 - An EFS filesystem mounted on both ECS tasks for file storage
 
-The stack will output the endpoint of the ALB that to which you can point your DNS records.
+The stack will output the endpoint of the ALB to which you can point your DNS records.
 
 ## Access authentik from AWS CloudFormation
 
-To launch authentik, in your browser go to:
+To start the initial setup, navigate to `http://<domain_you_configured>`.
 
-`http://<domain_you_configured>/if/flow/initial-setup/`
+You are then prompted to set a password for the `akadmin` user (the default user).
 
-:::info Initial setup in browser
-You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
+:::info Issues with initial setup
+If you run into issues, refer to our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
 :::
 
 ### Further customization

@@ -10,8 +10,9 @@ import { AKLabel } from "#components/ak-label";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { html, nothing, PropertyValues } from "lit";
+import { html, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
     name: string;
@@ -192,14 +193,18 @@ export abstract class HorizontalLightComponent<T>
     protected abstract renderControl(): SlottedTemplateResult;
 
     protected renderHelp(): SlottedTemplateResult | SlottedTemplateResult[] {
-        const bigHelp: SlottedTemplateResult[] = Array.isArray(this.bighelp)
-            ? this.bighelp
-            : [this.bighelp ?? nothing];
+        const { help, bighelp } = this;
 
-        return [
-            this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing,
-            ...bigHelp,
-        ];
+        return guard([help, bighelp], () => {
+            const bigHelp: SlottedTemplateResult[] = Array.isArray(this.bighelp)
+                ? this.bighelp
+                : [this.bighelp ?? null];
+
+            return [
+                this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : null,
+                ...bigHelp,
+            ].filter(Boolean);
+        });
     }
 
     render() {
@@ -210,8 +215,7 @@ export abstract class HorizontalLightComponent<T>
             name=${this.name}
             role="presentation"
             .errorMessages=${this.errorMessages}
-        >
-            ${AKLabel(
+            >${AKLabel(
                 {
                     id: this.labelID,
                     className: "pf-c-form__group-label",
@@ -222,7 +226,7 @@ export abstract class HorizontalLightComponent<T>
                 this.label || "",
             )}
             ${this.renderControl()}
-            <div id=${this.helpID}>${this.renderHelp()}</div>
+            <div id=${this.helpID} part="help">${this.renderHelp()}</div>
         </ak-form-element-horizontal> `;
     }
 
