@@ -428,7 +428,7 @@ Defaults to `minutes=15`.
 
 ### S3 storage backend settings
 
-For more information on S3 storage, see [S3 storage setup](../../sys-mgmt/ops/storage-s3.md).
+For more information on S3 storage, see [S3 storage setup](../../sys-mgmt/ops/storage-s3/index.md).
 
 #### `AUTHENTIK_STORAGE__S3__REGION`
 
@@ -502,13 +502,47 @@ Defaults to not set.
 
 Name of the bucket to use to store files.
 
+#### `AUTHENTIK_STORAGE__S3__OBJECT_ACL`
+
+Canned ACL to apply to uploaded objects.
+
+Defaults to `private`.
+
+Set to an empty value or `null` to omit the ACL argument. See the [S3 storage setup](../../sys-mgmt/ops/storage-s3/index.md#bucket-creation) docs for AWS buckets with ACLs disabled.
+
 #### `AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN`
 
-Domain to use to create URLs for users. Mainly useful for non-AWS providers.
+Domain to use to create URLs for users. This can be a CloudFront distribution domain, a CloudFront alternate domain name, a virtual-hosted S3 domain, or a path-style S3-compatible provider domain.
 
-May include a port. Must include the bucket.
+May include a port. Include the bucket only when the public URL path needs it, for example with path-style S3-compatible providers.
 
 Example: `s3.company:8080/authentik-data`.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__QUERYSTRING_AUTH`
+
+Whether generated file URLs should be S3 presigned URLs.
+
+Defaults to `true`.
+
+Set to `false` when files are delivered by a public CDN, by CloudFront with Origin Access Control, or by another layer that performs viewer authorization.
+
+#### `AUTHENTIK_STORAGE__S3__CLOUDFRONT_KEY_ID`
+
+CloudFront public key ID to use for signed viewer URLs.
+
+Only used when `AUTHENTIK_STORAGE__S3__QUERYSTRING_AUTH=false` and `AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN` is set.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__CLOUDFRONT_KEYPAIR`
+
+Name or UUID of the authentik Certificate-Key Pair to use for CloudFront signed viewer URLs.
+
+Only used when `AUTHENTIK_STORAGE__S3__QUERYSTRING_AUTH=false` and `AUTHENTIK_STORAGE__S3__CLOUDFRONT_KEY_ID` is also set.
+
+See [CloudFront signed viewer URLs](../../sys-mgmt/ops/storage-s3/cloudfront.md#configure-cloudfront-signed-viewer-urls) for supported key types and setup steps.
 
 Defaults to not set.
 

@@ -1,12 +1,106 @@
+from unittest import TestCase as UnitTestCase
 from unittest import skipUnless
+from unittest.mock import Mock, PropertyMock, patch
 from urllib.parse import parse_qs, urlsplit
 
 from botocore.exceptions import UnsupportedSignatureVersionError
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import ec, rsa
+from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 
+from authentik.admin.files.backends.s3 import S3Backend
 from authentik.admin.files.tests.utils import FileTestS3BackendMixin, s3_test_server_available
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
+
+
+class TestS3BackendUploadArgs(UnitTestCase):
+    """Test S3 upload arguments that don't require a live S3 service."""
+
+    @CONFIG.patch("storage.s3.bucket_name", "test-bucket")
+    def test_save_file_includes_private_acl_by_default(self):
+        client = Mock()
+        backend = S3Backend(FileUsage.MEDIA)
+
+        with (
+            patch.object(S3Backend, "client", new_callable=PropertyMock, return_value=client),
+            patch("authentik.admin.files.backends.s3.connection") as connection_mock,
+        ):
+            connection_mock.schema_name = "public"
+            backend.save_file("test.png", b"test")
+
+        client.put_object.assert_called_once()
+        self.assertEqual(client.put_object.call_args.kwargs["ACL"], "private")
+
+    @CONFIG.patch("storage.s3.bucket_name", "test-bucket")
+    @CONFIG.patch("storage.s3.bucket_name", "test-bucket")
+    @CONFIG.patch("storage.s3.object_acl", "")
+    def test_save_file_stream_omits_acl_when_empty_string(self):
+        client = Mock()
+        backend = S3Backend(FileUsage.MEDIA)
+
+        with (
+            patch.object(S3Backend, "client", new_callable=PropertyMock, return_value=client),
+            patch("authentik.admin.files.backends.s3.connection") as connection_mock,
+        ):
+            connection_mock.schema_name = "public"
+            with backend.save_file_stream("test.csv") as file:
+                file.write(b"test")
+
+        client.upload_fileobj.assert_called_once()
+        self.assertNotIn("ACL", client.upload_fileobj.call_args.kwargs["ExtraArgs"])
+
+
+class TestS3BackendCloudFrontKeypair(UnitTestCase):
+    """Test CloudFront signing keypair resolution without a live S3 service."""
+
+    def _keypair(self, key_size: int = 2048, private_key=None):
+        private_key = private_key or rsa.generate_private_key(
+            public_exponent=65537, key_size=key_size
+        )
+        keypair = Mock()
+        keypair.key_data = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.TraditionalOpenSSL,
+            encryption_algorithm=serialization.NoEncryption(),
+        ).decode("utf-8")
+        keypair.private_key = private_key
+        return keypair
+
+    @CONFIG.patch("storage.s3.cloudfront_keypair", "missing")
+    def test_cloudfront_private_key_requires_existing_keypair(self):
+        backend = S3Backend(FileUsage.MEDIA)
+
+        with patch(
+            "authentik.admin.files.backends.s3.CertificateKeyPair.objects.filter"
+        ) as filter_mock:
+            filter_mock.return_value.first.return_value = None
+            with self.assertRaises(ImproperlyConfigured):
+                _ = backend.cloudfront_private_key
+
+    @CONFIG.patch("storage.s3.cloudfront_keypair", "cloudfront")
+    def test_cloudfront_private_key_requires_rsa_2048(self):
+        backend = S3Backend(FileUsage.MEDIA)
+        keypair = self._keypair(key_size=4096)
+
+        with patch(
+            "authentik.admin.files.backends.s3.CertificateKeyPair.objects.filter"
+        ) as filter_mock:
+            filter_mock.return_value.first.return_value = keypair
+            with self.assertRaisesRegex(ImproperlyConfigured, "2048-bit"):
+                _ = backend.cloudfront_private_key
+
+    @CONFIG.patch("storage.s3.cloudfront_keypair", "cloudfront")
+    def test_cloudfront_private_key_allows_ecdsa_p256(self):
+        backend = S3Backend(FileUsage.MEDIA)
+        keypair = self._keypair(private_key=ec.generate_private_key(ec.SECP256R1()))
+
+        with patch(
+            "authentik.admin.files.backends.s3.CertificateKeyPair.objects.filter"
+        ) as filter_mock:
+            filter_mock.return_value.first.return_value = keypair
+            self.assertEqual(backend.cloudfront_private_key, keypair.key_data)
 
 
 @skipUnless(s3_test_server_available(), "S3 test server not available")
@@ -82,6 +176,25 @@ class TestS3Backend(FileTestS3BackendMixin, TestCase):
         self.assertIn("X-Amz-Algorithm=AWS4-HMAC-SHA256", url)
         self.assertIn("X-Amz-Signature=", url)
         self.assertIn("test.png", url)
+
+    @CONFIG.patch("storage.s3.querystring_auth", False)
+    @CONFIG.patch("storage.s3.custom_domain", "assets.example.test")
+    def test_file_url_unsigned_custom_domain(self):
+        """Test file_url can generate stable unsigned CDN URLs."""
+        url = self.media_s3_backend.file_url("test.png", use_cache=False)
+
+        self.assertEqual(url, "https://assets.example.test/media/public/test.png")
+
+    @CONFIG.patch("storage.s3.querystring_auth", True)
+    @CONFIG.patch("storage.media.s3.querystring_auth", False)
+    @CONFIG.patch("storage.media.s3.custom_domain", "assets.example.test")
+    def test_file_url_querystring_auth_usage_override(self):
+        """Test usage-specific querystring_auth overrides global config."""
+        media_url = self.media_s3_backend.file_url("test.png", use_cache=False)
+        reports_url = self.reports_s3_backend.file_url("test.csv", use_cache=False)
+
+        self.assertEqual(media_url, "https://assets.example.test/media/public/test.png")
+        self.assertIn("X-Amz-Signature=", reports_url)
 
     def test_client_signature_version_default_v4(self):
         """Test S3 client defaults to v4 signature when not configured."""

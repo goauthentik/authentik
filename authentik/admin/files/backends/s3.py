@@ -1,18 +1,69 @@
 from collections.abc import Generator, Iterator
 from contextlib import contextmanager
 from tempfile import SpooledTemporaryFile
-from urllib.parse import urlsplit, urlunsplit
+from typing import Any
+from uuid import UUID
 
 import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
+from cryptography.hazmat.primitives.asymmetric.ec import SECP256R1, EllipticCurvePrivateKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
+from django.core.exceptions import ImproperlyConfigured
 from django.db import connection
+from django.db.models import Q
 from django.http.request import HttpRequest
 
 from authentik.admin.files.backends.base import ManageableBackend, get_content_type
+from authentik.admin.files.backends.s3_urls import S3UrlOptions, s3_file_url
 from authentik.admin.files.usage import FileUsage
+from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
+
+_CLOUDFRONT_RSA_KEY_SIZE = 2048
+
+
+def _validate_cloudfront_private_key(private_key) -> None:
+    """Validate a private key against CloudFront signed URL key requirements."""
+    if isinstance(private_key, RSAPrivateKey):
+        if private_key.key_size != _CLOUDFRONT_RSA_KEY_SIZE:
+            raise ImproperlyConfigured(
+                "CloudFront URL signing keypair must contain a 2048-bit RSA private key, "
+                "or an ECDSA P-256 private key."
+            )
+        return
+    if isinstance(private_key, EllipticCurvePrivateKey):
+        if not isinstance(private_key.curve, SECP256R1):
+            raise ImproperlyConfigured(
+                "CloudFront URL signing keypair must contain an ECDSA P-256 private key, "
+                "or a 2048-bit RSA private key."
+            )
+        return
+    raise ImproperlyConfigured(
+        "CloudFront URL signing keypair must contain an RSA or ECDSA private key."
+    )
+
+
+def _cloudfront_private_key_from_keypair(selector: str) -> str:
+    """Return the PEM private key for a CloudFront signing Certificate-Key Pair."""
+    query = Q(name=selector)
+    try:
+        query |= Q(kp_uuid=UUID(str(selector)))
+    except ValueError:
+        pass
+
+    keypair = CertificateKeyPair.objects.filter(query).first()
+    if keypair is None:
+        raise ImproperlyConfigured(
+            "CloudFront URL signing keypair was not found. Configure "
+            "storage.s3.cloudfront_keypair with a Certificate-Key Pair name or UUID."
+        )
+    if not keypair.key_data:
+        raise ImproperlyConfigured("CloudFront URL signing keypair must include a private key.")
+    private_key = keypair.private_key
+    _validate_cloudfront_private_key(private_key)
+    return keypair.key_data
 
 
 class S3Backend(ManageableBackend):
@@ -33,7 +84,7 @@ class S3Backend(ManageableBackend):
         self._config = {}
         self._session = None
 
-    def _get_config(self, key: str, default: str | None) -> tuple[str | None, bool]:
+    def _get_config(self, key: str, default: Any = None) -> tuple[Any, bool]:
         unset = object()
         current = self._config.get(key, unset)
         refreshed = CONFIG.refresh(
@@ -45,6 +96,18 @@ class S3Backend(ManageableBackend):
         self._config[key] = refreshed
         return (refreshed, current != refreshed)
 
+    def _get_config_value(self, key: str, default: Any = None) -> Any:
+        return CONFIG.get(
+            f"storage.{self.usage.value}.{self.name}.{key}",
+            CONFIG.get(f"storage.{self.name}.{key}", default),
+        )
+
+    def _get_config_bool(self, key: str, default: bool = False) -> bool:
+        return CONFIG.get_bool(
+            f"storage.{self.usage.value}.{self.name}.{key}",
+            CONFIG.get_bool(f"storage.{self.name}.{key}", default),
+        )
+
     @property
     def base_path(self) -> str:
         """S3 key prefix: {usage}/{schema}/"""
@@ -52,10 +115,23 @@ class S3Backend(ManageableBackend):
 
     @property
     def bucket_name(self) -> str:
-        return CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.bucket_name",
-            CONFIG.get(f"storage.{self.name}.bucket_name"),
-        )
+        return self._get_config_value("bucket_name")
+
+    @property
+    def object_acl(self) -> str | None:
+        """ACL applied to uploaded objects, or None to omit ACL entirely."""
+        object_acl = self._get_config_value("object_acl", "private")
+        if object_acl in (None, ""):
+            return None
+        return object_acl
+
+    @property
+    def cloudfront_private_key(self) -> str | None:
+        """Private key loaded from an authentik Certificate-Key Pair."""
+        keypair = self._get_config_value("cloudfront_keypair", None)
+        if keypair in (None, ""):
+            return None
+        return _cloudfront_private_key_from_keypair(str(keypair))
 
     @property
     def session(self) -> boto3.Session:
@@ -84,26 +160,11 @@ class S3Backend(ManageableBackend):
     @property
     def client(self):
         """Create S3 client with configured endpoint and region."""
-        endpoint_url = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.endpoint",
-            CONFIG.get(f"storage.{self.name}.endpoint", None),
-        )
-        use_ssl = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.use_ssl",
-            CONFIG.get(f"storage.{self.name}.use_ssl", True),
-        )
-        region_name = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.region",
-            CONFIG.get(f"storage.{self.name}.region", None),
-        )
-        addressing_style = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.addressing_style",
-            CONFIG.get(f"storage.{self.name}.addressing_style", "auto"),
-        )
-        signature_version = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.signature_version",
-            CONFIG.get(f"storage.{self.name}.signature_version", "s3v4"),
-        )
+        endpoint_url = self._get_config_value("endpoint", None)
+        use_ssl = self._get_config_value("use_ssl", True)
+        region_name = self._get_config_value("region", None)
+        addressing_style = self._get_config_value("addressing_style", "auto")
+        signature_version = self._get_config_value("signature_version", "s3v4")
         # Keep signature_version pass-through and let boto3/botocore handle it.
         # In boto3's S3 configuration docs, `s3v4` (default) and deprecated `s3`
         # are the documented values:
@@ -148,75 +209,29 @@ class S3Backend(ManageableBackend):
         request: HttpRequest | None = None,
         use_cache: bool = True,
     ) -> str:
-        """Generate presigned URL for file access."""
-        use_https = CONFIG.get_bool(
-            f"storage.{self.usage.value}.{self.name}.secure_urls",
-            CONFIG.get_bool(f"storage.{self.name}.secure_urls", True),
-        )
+        """Generate a signed or unsigned URL for file access."""
+        use_https = self._get_config_bool("secure_urls", True)
+        querystring_auth = self._get_config_bool("querystring_auth", True)
 
         expires_in = int(
             timedelta_from_string(
-                CONFIG.get(
-                    f"storage.{self.usage.value}.{self.name}.url_expiry",
-                    CONFIG.get(f"storage.{self.name}.url_expiry", "minutes=15"),
-                )
+                self._get_config_value("url_expiry", "minutes=15")
             ).total_seconds()
         )
 
         def _file_url(name: str, request: HttpRequest | None) -> str:
-            client = self.client
-            params = {
-                "Bucket": self.bucket_name,
-                "Key": f"{self.base_path}/{name}",
-            }
-
-            operation_name = "GetObject"
-            operation_model = client.meta.service_model.operation_model(operation_name)
-            request_dict = client._convert_to_request_dict(
-                params,
-                operation_model,
-                endpoint_url=client.meta.endpoint_url,
-                context={"is_presign_request": True},
-            )
-
-            # Support custom domain for S3-compatible storage (so not AWS)
-            # Well, can't you do custom domains on AWS as well?
-            custom_domain = CONFIG.get(
-                f"storage.{self.usage.value}.{self.name}.custom_domain",
-                CONFIG.get(f"storage.{self.name}.custom_domain", None),
-            )
-            if custom_domain:
-                scheme = "https" if use_https else "http"
-                path = request_dict["url_path"]
-
-                # When using path-style addressing, the presigned URL contains the bucket
-                # name in the path (e.g., /bucket-name/key). Since custom_domain must
-                # include the bucket name (per docs), strip it from the path to avoid
-                # duplication. See: https://github.com/goauthentik/authentik/issues/19521
-                # Check with trailing slash to ensure exact bucket name match
-                if path.startswith(f"/{self.bucket_name}/"):
-                    path = path.removeprefix(f"/{self.bucket_name}")
-
-                # Normalize to avoid double slashes
-                custom_domain = custom_domain.rstrip("/")
-                if not path.startswith("/"):
-                    path = f"/{path}"
-
-                custom_base = urlsplit(f"{scheme}://{custom_domain}")
-
-                # Sign the final public URL instead of signing the internal S3 endpoint and
-                # rewriting it afterwards. Presigned SigV4 URLs include the host header in the
-                # canonical request, so post-sign host changes break strict backends like RustFS.
-                public_path = f"{custom_base.path.rstrip('/')}{path}" if custom_base.path else path
-                request_dict["url_path"] = public_path
-                request_dict["url"] = urlunsplit(
-                    (custom_base.scheme, custom_base.netloc, public_path, "", "")
-                )
-
-            return client._request_signer.generate_presigned_url(
-                request_dict,
-                operation_name,
-                expires_in=expires_in,
+            return s3_file_url(
+                client=self.client,
+                bucket_name=self.bucket_name,
+                key=f"{self.base_path}/{name}",
+                options=S3UrlOptions(
+                    expires_in=expires_in,
+                    custom_domain=self._get_config_value("custom_domain", None),
+                    use_https=use_https,
+                    querystring_auth=querystring_auth,
+                    cloudfront_key_id=self._get_config_value("cloudfront_key_id", None),
+                    cloudfront_private_key=self.cloudfront_private_key,
+                ),
             )
 
         if use_cache:
@@ -226,12 +241,15 @@ class S3Backend(ManageableBackend):
 
     def save_file(self, name: str, content: bytes) -> None:
         """Save file to S3."""
+        extra_args = {}
+        if self.object_acl is not None:
+            extra_args["ACL"] = self.object_acl
         self.client.put_object(
             Bucket=self.bucket_name,
             Key=f"{self.base_path}/{name}",
             Body=content,
-            ACL="private",
             ContentType=get_content_type(name),
+            **extra_args,
         )
 
     @contextmanager
@@ -241,14 +259,14 @@ class S3Backend(ManageableBackend):
         with SpooledTemporaryFile(max_size=5 * 1024 * 1024, suffix=".S3File") as file:
             yield file
             file.seek(0)
+            extra_args = {"ContentType": get_content_type(name)}
+            if self.object_acl is not None:
+                extra_args["ACL"] = self.object_acl
             self.client.upload_fileobj(
                 Fileobj=file,
                 Bucket=self.bucket_name,
                 Key=f"{self.base_path}/{name}",
-                ExtraArgs={
-                    "ACL": "private",
-                    "ContentType": get_content_type(name),
-                },
+                ExtraArgs=extra_args,
             )
 
     def delete_file(self, name: str) -> None:

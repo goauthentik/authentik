@@ -692,7 +692,20 @@ const items = [
                 items: [
                     "sys-mgmt/ops/monitoring",
                     "sys-mgmt/ops/worker",
-                    "sys-mgmt/ops/storage-s3",
+                    {
+                        type: "category",
+                        label: "S3 storage",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "sys-mgmt/ops/storage-s3/index",
+                        },
+                        items: [
+                            "sys-mgmt/ops/storage-s3/index",
+                            "sys-mgmt/ops/storage-s3/standard",
+                            "sys-mgmt/ops/storage-s3/cloudfront",
+                        ],
+                    },
                     "sys-mgmt/ops/geoip",
                     "sys-mgmt/ops/backup-restore",
                 ],

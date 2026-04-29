@@ -190,8 +190,12 @@ storage:
     # access_key: ""
     # secret_key: ""
     # bucket_name: "authentik-data"
+    # object_acl: "private"
     # How to render file URLs
     # custom_domain: null
+    # querystring_auth: True
+    # cloudfront_key_id: null
+    # cloudfront_keypair: null
     secure_urls: True
     url_expiry: "minutes=15"
   # Usage based settings. Same schema as global settings, overrides global settings
