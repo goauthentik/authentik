@@ -1,3 +1,5 @@
+import { formatUserDisplayName } from "#common/users";
+
 import { modalInvoker } from "#elements/dialogs";
 import { LitFC } from "#elements/types";
 
@@ -52,7 +54,7 @@ export const RecoveryButtons: LitFC<RecoveryButtonsProps> = ({
             class="pf-c-button pf-m-secondary ${buttonClasses || ""}"
             type="button"
             ${modalInvoker(UserPasswordForm, {
-                headline: msg(str`Update ${user.name || user.username}'s password`),
+                headline: msg(str`Update ${formatUserDisplayName(user)}'s password`),
                 username: user.username,
                 email: user.email,
                 instancePk: user.pk,

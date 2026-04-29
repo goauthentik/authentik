@@ -187,6 +187,15 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             )}
                         >
                         </ak-switch-input>
+                        <ak-switch-input
+                            name="metaHide"
+                            ?checked=${app.metaHide ?? false}
+                            label=${msg("Hide from My applications")}
+                            help=${msg(
+                                "If checked, this application will not be shown on the user's My applications page.",
+                            )}
+                        >
+                        </ak-switch-input>
                         <ak-file-search-input
                             name="metaIcon"
                             label=${msg("Icon")}

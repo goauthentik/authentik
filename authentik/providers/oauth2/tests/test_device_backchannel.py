@@ -10,7 +10,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_flow
 from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import DeviceToken, GrantType, OAuth2Provider, ScopeMapping
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
@@ -22,6 +22,7 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
+            grant_types=[GrantType.DEVICE_CODE],
         )
         self.application = Application.objects.create(
             name=generate_id(),
@@ -42,6 +43,21 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             reverse("authentik_providers_oauth2:device"),
         )
         self.assertEqual(res.status_code, 400)
+
+    def test_backchannel_invalid_no_grant(self):
+        """Test backchannel"""
+        self.provider.grant_types = []
+        self.provider.save()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            data={
+                "client_id": "test",
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_backchannel_invalid_no_app(self):
+        """Test backchannel"""
         # test without application
         self.application.provider = None
         self.application.save()

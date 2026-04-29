@@ -17,6 +17,7 @@ from authentik.lib.generators import generate_code_fixed_length, generate_id
 from authentik.providers.oauth2.models import (
     AccessToken,
     DeviceToken,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -37,6 +38,7 @@ class TestTokenDeviceCode(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=create_test_cert(),
+            grant_types=[GrantType.DEVICE_CODE],
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())
         self.app = Application.objects.create(name="test", slug="test", provider=self.provider)
