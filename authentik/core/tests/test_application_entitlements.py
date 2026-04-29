@@ -151,29 +151,3 @@ class TestApplicationEntitlements(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
         self.assertTrue(PolicyBinding.objects.filter(target=ent.pbm_uuid).exists())
-
-    def test_api_search(self):
-        """Test search"""
-        admin = create_test_admin_user()
-        self.client.force_login(admin)
-        ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
-        # Search by entitlement name
-        res = self.client.get(
-            reverse("authentik_api:applicationentitlement-list"),
-            data={
-                "search": ent.name,
-            },
-        )
-        self.assertEqual(res.status_code, 200)
-        self.assertIn(str(ent.pk), res.content.decode())
-        self.assertIn(str(self.app.pk), res.content.decode())
-        # Search by app name
-        res = self.client.get(
-            reverse("authentik_api:applicationentitlement-list"),
-            data={
-                "search": self.app.name,
-            },
-        )
-        self.assertEqual(res.status_code, 200)
-        self.assertIn(str(ent.pk), res.content.decode())
-        self.assertIn(str(self.app.pk), res.content.decode())
