@@ -7,7 +7,7 @@ use arc_swap::ArcSwap;
 use argh::FromArgs;
 use axum::Router;
 use eyre::Result;
-use tracing::{debug, error, info, instrument, trace, warn};
+use tracing::{debug, error, info, instrument, warn};
 
 use crate::outpost::{Outpost, OutpostController, proxy::application::Application};
 

@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use tower::util::ServiceExt;
 
 use ak_axum::{error::Result, extract::host::Host};
 use axum::{
@@ -36,7 +37,7 @@ pub(super) async fn default(
     State(outpost): State<Arc<ProxyOutpost>>,
     request: Request,
 ) -> Result<Response> {
-    let Some(_app) = outpost.lookup_app(&host) else {
+    let Some(app) = outpost.lookup_app(&host) else {
         trace!(headers = ?request.headers(), "tracing headers for no hostname match");
         warn!("no app for hostname");
         return Ok(Response::builder()
@@ -53,7 +54,7 @@ pub(super) async fn default(
             )
             .expect("infallible"));
     };
-    trace!("passing to application");
 
-    Ok(StatusCode::NOT_FOUND.into_response())
+    trace!("passing to application");
+    Ok(app.router.clone().oneshot(request).await?)
 }

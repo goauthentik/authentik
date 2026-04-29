@@ -1,4 +1,5 @@
 use ak_client::models::ProxyOutpostConfig;
+use axum::Router;
 use eyre::{Result, eyre};
 use tracing::instrument;
 use url::Url;
@@ -13,6 +14,7 @@ const LOGOUT_SIGNATURE: &str = "X-authentik-logout";
 pub(super) struct Application {
     pub(super) host: String,
     pub(super) provider: ProxyOutpostConfig,
+    pub(super) router: Router,
 }
 
 impl Application {
@@ -33,6 +35,7 @@ impl Application {
         Ok(Self {
             host: external_host.to_owned(),
             provider,
+            router: Router::new(),
         })
     }
 }

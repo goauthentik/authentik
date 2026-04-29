@@ -295,6 +295,7 @@ time.workspace = true
 tokio-retry2.workspace = true
 tokio-tungstenite.workspace = true
 tokio.workspace = true
+tower.workspace = true
 tracing.workspace = true
 url.workspace = true
 uuid.workspace = true
