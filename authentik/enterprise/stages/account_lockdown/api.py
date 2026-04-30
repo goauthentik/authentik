@@ -13,7 +13,7 @@ from structlog.stdlib import get_logger
 
 from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import LinkSerializer, PassiveSerializer
 from authentik.core.models import (
     User,
 )
@@ -24,7 +24,6 @@ from authentik.enterprise.stages.account_lockdown.stage import (
     get_lockdown_target_users,
 )
 from authentik.flows.api.stages import StageSerializer
-from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 
@@ -90,17 +89,16 @@ class UserAccountLockdownMixin:
         return plan.to_redirect(request._request, flow).url
 
     @extend_schema(
-        description=_("Choose the target account, then return a redirect challenge."),
+        description=_("Choose the target account, then return a flow link."),
         request=UserAccountLockdownSerializer,
         responses={
             "200": OpenApiResponse(
-                response=RedirectChallenge,
+                response=LinkSerializer,
                 examples=[
                     OpenApiExample(
                         "Lockdown flow URL",
                         value={
-                            "component": "xak-flow-redirect",
-                            "to": "https://example.invalid/if/flow/default-account-lockdown/",
+                            "link": "https://example.invalid/if/flow/default-account-lockdown/",
                         },
                         response_only=True,
                         status_codes=["200"],
@@ -129,7 +127,7 @@ class UserAccountLockdownMixin:
         If no user is specified, locks the current user (self-service).
         When targeting another user, admin permissions are required.
 
-        Returns a redirect challenge for the frontend to follow. The flow is pre-planned
+        Returns a flow link for the frontend to follow. The flow is pre-planned
         with the target user as pending user for the lockdown stage.
         """
         user = body.validated_data.get("user") or request.user
@@ -140,4 +138,4 @@ class UserAccountLockdownMixin:
 
         flow_url = self._create_lockdown_flow_url(request, user)
         LOGGER.debug("Returning lockdown flow URL", flow_url=flow_url, user=user.username)
-        return Response({"component": "xak-flow-redirect", "to": flow_url})
+        return Response({"link": flow_url})

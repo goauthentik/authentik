@@ -4558,7 +4558,7 @@ paths:
   /core/users/account_lockdown/:
     post:
       operationId: core_users_account_lockdown_create
-      description: Choose the target account, then return a redirect challenge.
+      description: Choose the target account, then return a flow link.
       tags:
       - core
       requestBody:
@@ -4573,12 +4573,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RedirectChallenge'
+                $ref: '#/components/schemas/Link'
               examples:
                 LockdownFlowURL:
                   value:
-                    component: xak-flow-redirect
-                    to: https://example.invalid/if/flow/default-account-lockdown/
+                    link: https://example.invalid/if/flow/default-account-lockdown/
                   summary: Lockdown flow URL
           description: ''
         '400':

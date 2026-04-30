@@ -49,12 +49,11 @@ class AccountLockdownAPITestCase(APITestCase):
         return user
 
     def assert_redirect_targets(self, response, user):
-        """Assert that a response contains a pre-planned lockdown redirect for a user."""
+        """Assert that a response contains a pre-planned lockdown flow link for a user."""
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
-        self.assertEqual(body["component"], "xak-flow-redirect")
-        self.assertIn(self.lockdown_flow.slug, body["to"])
-        self.assertEqual(urlparse(body["to"]).query, "")
+        self.assertIn(self.lockdown_flow.slug, body["link"])
+        self.assertEqual(urlparse(body["link"]).query, "")
         plan = self.client.session[SESSION_KEY_PLAN]
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER].pk, user.pk)
 

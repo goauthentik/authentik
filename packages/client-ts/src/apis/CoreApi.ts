@@ -43,7 +43,6 @@ import type {
     PatchedTokenRequest,
     PatchedUserRequest,
     PolicyTestResult,
-    RedirectChallenge,
     SessionUser,
     Token,
     TokenRequest,
@@ -95,7 +94,6 @@ import {
     PatchedTokenRequestToJSON,
     PatchedUserRequestToJSON,
     PolicyTestResultFromJSON,
-    RedirectChallengeFromJSON,
     SessionUserFromJSON,
     TokenFromJSON,
     TokenRequestToJSON,
@@ -4228,28 +4226,26 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * Choose the target account, then return a redirect challenge.
+     * Choose the target account, then return a flow link.
      */
     async coreUsersAccountLockdownCreateRaw(
         requestParameters: CoreUsersAccountLockdownCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<RedirectChallenge>> {
+    ): Promise<runtime.ApiResponse<Link>> {
         const requestOptions =
             await this.coreUsersAccountLockdownCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) =>
-            RedirectChallengeFromJSON(jsonValue),
-        );
+        return new runtime.JSONApiResponse(response, (jsonValue) => LinkFromJSON(jsonValue));
     }
 
     /**
-     * Choose the target account, then return a redirect challenge.
+     * Choose the target account, then return a flow link.
      */
     async coreUsersAccountLockdownCreate(
         requestParameters: CoreUsersAccountLockdownCreateRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<RedirectChallenge> {
+    ): Promise<Link> {
         const response = await this.coreUsersAccountLockdownCreateRaw(
             requestParameters,
             initOverrides,
