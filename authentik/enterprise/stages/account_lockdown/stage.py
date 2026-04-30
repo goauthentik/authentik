@@ -256,6 +256,8 @@ class AccountLockdownStageView(StageView):
             try:
                 self._sync_deactivated_user_to_outgoing_providers(user)
             except Exception as exc:  # noqa: BLE001
+                # Local lockdown has already committed. Provider sync failures
+                # must not reopen access or mark the lockdown itself as failed.
                 self.logger.warning(
                     "Failed to sync account lockdown deactivation to outgoing providers",
                     user=user.username,
@@ -305,6 +307,8 @@ class AccountLockdownStageView(StageView):
             self._lockdown_user(request, stage, user, reason)
             self.logger.info("Account lockdown completed", user=user.username)
         except Exception as exc:  # noqa: BLE001
+            # Convert unexpected lockdown errors to a flow-stage failure instead
+            # of leaking an exception through the flow executor.
             self.logger.warning("Account lockdown failed", user=user.username, exc=exc)
             return self.executor.stage_invalid(ACCOUNT_LOCKDOWN_FAILED_MESSAGE)
 
