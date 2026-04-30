@@ -61,6 +61,29 @@ return {
 }
 ```
 
+You can also include fields from the notification recipient and the triggering event:
+
+```python
+return {
+    "email": request.user.email,
+    "client_ip": notification.event.client_ip,
+}
+```
+
+For failed login notifications, the attempted username is stored on the event context. If the GeoIP and ASN context processors are configured, their data is also available from the same context:
+
+```python
+event = notification.event
+
+return {
+    "action": event.action,
+    "username": event.context.get("username"),
+    "client_ip": event.client_ip,
+    "geo": event.context.get("geo"),
+    "asn": event.context.get("asn"),
+}
+```
+
 ##### Webhook header example
 
 An example of a webhook header mapping that sets an authorization key:
