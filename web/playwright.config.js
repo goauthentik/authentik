@@ -26,7 +26,11 @@ export default defineConfig({
     retries: CI ? 2 : 0,
     workers: CI ? 1 : undefined,
     reporter: CI
-        ? "github"
+        ? [
+              // ---
+              ["github"],
+              ["html", { open: "never", outputFolder: "playwright-report" }],
+          ]
         : [
               // ---
               ["list", { printSteps: true }],
@@ -36,6 +40,8 @@ export default defineConfig({
         testIdAttribute: "data-test-id",
         baseURL,
         trace: "on-first-retry",
+        screenshot: "only-on-failure",
+        video: CI ? "retain-on-failure" : "off",
         colorScheme: "dark",
         launchOptions: {
             logger: {
