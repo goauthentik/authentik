@@ -1,6 +1,5 @@
 """Account Lockdown Stage API Views"""
 
-from django.urls import reverse
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
@@ -28,7 +27,6 @@ from authentik.flows.api.stages import StageSerializer
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
-from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
 
 LOGGER = get_logger()
 
@@ -89,11 +87,7 @@ class UserAccountLockdownMixin:
             raise ValidationError(
                 {"non_field_errors": [_("Lockdown flow is not applicable.")]}
             ) from None
-        request.session[SESSION_KEY_HISTORY] = []
-        request.session[SESSION_KEY_PLAN] = plan
-        return request.build_absolute_uri(
-            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
-        )
+        return plan.to_redirect(request._request, flow).url
 
     @extend_schema(
         description=_("Choose the target account, then return a redirect challenge."),
