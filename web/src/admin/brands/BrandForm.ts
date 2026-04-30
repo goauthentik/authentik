@@ -341,7 +341,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         ${this.lockdownWarningVisible
                             ? html`<ak-alert inline>
                                   ${msg(
-                                      "Recommended: set Flow Authentication to 'Require authentication' for lockdown flows. Other brand edits can become confusing later if this flow is changed away from that setting.",
+                                      "Account lockdown flows should require authentication so they can only be started from a signed-in session.",
                                   )}
                               </ak-alert>`
                             : null}
