@@ -1,18 +1,22 @@
 """Attach pdb to a running authentik Python worker via PEP 768."""
 
 import os
-import subprocess
+import shutil
+import subprocess  # nosec B404 — needed to launch ps and pdb
 import sys
+
+PS_BIN = shutil.which("ps") or "/bin/ps"
 
 
 def list_python_procs() -> list[tuple[int, int, str]]:
-    out = subprocess.check_output(["ps", "-eo", "pid,ppid,command"], text=True)
+    # argv is fully controlled, no shell, ps path resolved at startup.
+    out = subprocess.check_output([PS_BIN, "-eo", "pid,ppid,command"], text=True)  # nosec B603
     procs: list[tuple[int, int, str]] = []
     for line in out.splitlines()[1:]:
-        parts = line.split(None, 2)
-        if len(parts) < 3:
+        try:
+            pid_s, ppid_s, cmd = line.split(None, 2)
+        except ValueError:
             continue
-        pid_s, ppid_s, cmd = parts
         if not pid_s.isdigit() or not ppid_s.isdigit():
             continue
         procs.append((int(pid_s), int(ppid_s), cmd))
@@ -48,7 +52,8 @@ def attach(pid: int) -> int:
     if use_sudo:
         cmd = ["sudo", "-E", *cmd]
     print(f"attaching pdb to pid {pid} (Ctrl-D or `quit` to detach)", file=sys.stderr)
-    rc = subprocess.call(cmd)
+    # cmd is built from sys.executable plus a digits-only PID.
+    rc = subprocess.call(cmd)  # nosec B603
     if rc != 0 and not use_sudo and sys.platform == "darwin":
         print(
             "\nattach failed. On macOS task_for_pid is restricted; "
