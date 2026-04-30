@@ -12,6 +12,13 @@ on:
       - main
       - version-*
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+  AUTHENTIK_BLUEPRINTS_DIR: "./blueprints"
+  AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST: "true"
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -39,6 +46,103 @@ jobs:
       - name: build
         working-directory: web/
         run: corepack npm run build
+  e2e:
+    name: e2e (playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: system,python,node,go,rust,runtime
+      - name: Build web UI
+        run: corepack npm run --prefix web build
+      - name: Build authentik server (Go)
+        run: |
+          go build -o ./bin/authentik-server ./cmd/server
+          sudo install -m 0755 ./bin/authentik-server /usr/local/bin/authentik-server
+      - name: Build authentik worker (Rust)
+        run: |
+          cargo build --release --bin authentik
+          sudo install -m 0755 ./target/release/authentik /usr/local/bin/authentik
+      - name: Apply migrations
+        run: uv run python -m lifecycle.migrate
+      - name: Stage test admin blueprint for discovery
+        run: |
+          mkdir -p blueprints/local
+          cp web/test/blueprints/test-admin-user.yaml blueprints/local/test-admin-user.yaml
+      - name: Resolve Playwright version
+        id: playwright-version
+        working-directory: web
+        run: |
+          version=$(node -p "require('@playwright/test/package.json').version")
+          if [ -z "$version" ]; then
+            echo "Failed to resolve @playwright/test version" >&2
+            exit 1
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+      - name: Install Playwright browsers
+        working-directory: web
+        run: |
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = "true" ]; then
+            corepack npm exec -- playwright install-deps chromium
+          else
+            corepack npm exec -- playwright install --with-deps chromium
+          fi
+      - name: Start authentik server and worker
+        run: |
+          mkdir -p /tmp/ak-logs
+          uv run ak server > /tmp/ak-logs/server.log 2>&1 &
+          echo $! > /tmp/ak-logs/server.pid
+          uv run ak worker > /tmp/ak-logs/worker.log 2>&1 &
+          echo $! > /tmp/ak-logs/worker.pid
+      - name: Wait for authentik to be ready
+        run: |
+          set -euo pipefail
+          # Wait for the HTTP server to come up.
+          timeout 240 bash -c 'until curl -fsS http://localhost:9000/-/health/ready/ >/dev/null; do sleep 2; done'
+          # Wait for the worker to discover & apply default blueprints — the
+          # default-authentication-flow URL is the gating prerequisite for the
+          # Playwright login fixture.
+          timeout 300 bash -c 'until [ "$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9000/if/flow/default-authentication-flow/)" = "200" ]; do sleep 3; done'
+      - name: Apply test-admin user blueprint
+        run: uv run ak apply_blueprint local/test-admin-user.yaml
+      - name: Run Playwright tests
+        working-directory: web
+        env:
+          AK_TEST_RUNNER_PAGE_URL: http://localhost:9000
+        run: corepack npm run test:e2e
+      - name: Upload Playwright HTML report
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report
+          path: web/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Upload Playwright traces and videos
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-traces
+          path: web/test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Upload authentik server and worker logs
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: authentik-logs
+          path: /tmp/ak-logs/
+          retention-days: 14
+          if-no-files-found: ignore
   ci-web-mark:
     if: always()
     needs:
