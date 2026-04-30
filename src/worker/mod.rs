@@ -54,6 +54,7 @@ const INITIAL_WORKER_ID: usize = 1000;
 static INITIAL_WORKER_READY: AtomicBool = AtomicBool::new(false);
 
 pub(crate) struct Worker {
+    worker_id: usize,
     worker: Child,
     client: Client<UnixSocketConnector<PathBuf>, Body>,
     socket_path: PathBuf,
@@ -75,6 +76,7 @@ impl Worker {
             .build(UnixSocketConnector::new(socket_path.clone()));
 
         Ok(Self {
+            worker_id,
             worker: cmd
                 .kill_on_drop(true)
                 .stdin(Stdio::null())
@@ -108,7 +110,7 @@ impl Worker {
         self.shutdown(Signal::SIGINT).await
     }
 
-    #[instrument(skip_all)]
+    #[instrument(skip(self), fields(worker_id = self.worker_id))]
     fn is_alive(&mut self) -> bool {
         let try_wait = self.worker.try_wait();
         match try_wait {
@@ -133,34 +135,52 @@ impl Worker {
         result.is_ok()
     }
 
-    #[instrument(skip_all)]
+    #[instrument(skip(self), fields(worker_id = self.worker_id))]
     async fn health_live(&self) -> Result<bool> {
+        trace!("sending health live request to worker");
         let req = Request::builder()
             .method("GET")
             .uri("http://localhost:8000/-/health/live/")
             .header(HOST, "localhost")
             .body(Body::from(""))?;
-        Ok(self.client.request(req).await?.status().is_success())
+        Ok(self
+            .client
+            .request(req)
+            .await
+            .inspect_err(|err| warn!(?err, "failed to send health live request to worker"))?
+            .status()
+            .is_success())
     }
 
-    #[instrument(skip_all)]
+    #[instrument(skip(self), fields(worker_id = self.worker_id))]
     async fn health_ready(&self) -> Result<bool> {
+        trace!("sending health ready request to worker");
         let req = Request::builder()
             .method("GET")
             .uri("http://localhost:8000/-/health/ready/")
             .header(HOST, "localhost")
             .body(Body::from(""))?;
-        Ok(self.client.request(req).await?.status().is_success())
+        Ok(self
+            .client
+            .request(req)
+            .await
+            .inspect_err(|err| warn!(?err, "failed to send health ready request to worker"))?
+            .status()
+            .is_success())
     }
 
-    #[instrument(skip_all)]
+    #[instrument(skip(self), fields(worker_id = self.worker_id))]
     async fn notify_metrics(&self) -> Result<()> {
+        trace!("sending metrics request to worker");
         let req = Request::builder()
             .method("GET")
             .uri("http://localhost:8000/-/metrics/")
             .header(HOST, "localhost")
             .body(Body::from(""))?;
-        self.client.request(req).await?;
+        self.client
+            .request(req)
+            .await
+            .inspect_err(|err| warn!(?err, "failed to send metrics request to worker"))?;
         Ok(())
     }
 }
