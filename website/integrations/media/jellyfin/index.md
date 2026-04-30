@@ -36,13 +36,15 @@ This documentation lists only the settings that you need to change from their de
 
 ### authentik Configuration
 
-No additional authentik configuration is required. Follow the LDAP outpost instructions to create an LDAP outpost and configure access through it.
+Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create the LDAP application, provider, service account, and outpost.
+
+The service account used as the Jellyfin LDAP bind user must be allowed to access the LDAP provider's application. If the application has policy, group, or user bindings, include the service account in those bindings.
+
+Jellyfin searches the LDAP directory during setup and login, so the bind user also needs the **Search full LDAP directory** permission on the LDAP provider. Assign this permission from **Applications** > **Providers**, select the LDAP provider, open the **Permissions** tab, and assign **Search full LDAP directory** to the bind user or a role containing the bind user.
 
 ### Jellyfin configuration
 
-1. If you don't have one already, create an LDAP bind user before starting these steps.
-    - Ideally, this user doesn't have any permissions other than the ability to view other users. However, some functions do require an account with permissions.
-    - This user must be part of the group that is specified in the "Search group" in the LDAP outpost.
+1. Use the LDAP service account configured in authentik as the Jellyfin LDAP bind user.
 2. Navigate to your Jellyfin installation and log in with the administrator account or currently configured local admin.
 3. Open the **Administrator dashboard** and go to the **Plugins** section.
 4. Click **Catalog** at the top of the page, and locate the "LDAP Authentication Plugin".
