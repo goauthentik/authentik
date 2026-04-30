@@ -115,6 +115,9 @@ run-server:  ## Run the main authentik server process
 run-worker:  ## Run the main authentik worker process
 	$(UV) run ak worker
 
+run-worker-watch:  ## Run the authentik worker, with auto reloading
+	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- $(UV) run ak worker
+
 core-i18n-extract:
 	$(UV) run ak makemessages \
 		--add-location file \

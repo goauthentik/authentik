@@ -92,6 +92,15 @@ For other distributions (Red Hat, SUSE, Arch), adjust the package names as neede
 
 Install `golangci-lint` by following the [official installation instructions](https://golangci-lint.run/welcome/install/#other-ci).
 
+:::warning
+
+[aws-lc-rs](https://github.com/aws/aws-lc-rs) currently has an [issue](https://github.com/aws/aws-lc-rs/issues/569) building its FIPS module with GCC >= 14. If you encounter this issue, you have two options:
+
+- Use an older version of GCC.
+- Install [Clang](https://clang.llvm.org) and `export AWS_LC_FIPS_SYS_CC=clang`.
+
+:::
+
 </TabItem>
 <TabItem value="Windows">
 
@@ -154,7 +163,13 @@ Both processes need to run to get a fully functioning authentik development envi
 
 ### Hot-reloading
 
-When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environment), the authentik server automatically reloads whenever changes are made to the code. However, due to instabilities in the reloading process of the worker, that behavior is turned off for the worker. You can enable code reloading in the worker by manually running `uv run ak worker --watch`.
+When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environment), the authentik server automatically reloads whenever changes are made to the code.
+
+For the authentik worker, install [watchexec](https://github.com/watchexec/watchexec), and run:
+
+```shell
+make run-worker-watch
+```
 
 ## 6. Build the frontend
 

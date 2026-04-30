@@ -55,6 +55,7 @@ import type {
     UserAccountLockdownRequest,
     UserAccountRequest,
     UserConsent,
+    UserPasswordHashSetRequest,
     UserPasswordSetRequest,
     UserPath,
     UserRecoveryEmailRequest,
@@ -106,6 +107,7 @@ import {
     UserAccountRequestToJSON,
     UserConsentFromJSON,
     UserFromJSON,
+    UserPasswordHashSetRequestToJSON,
     UserPasswordSetRequestToJSON,
     UserPathFromJSON,
     UserRecoveryEmailRequestToJSON,
@@ -513,6 +515,11 @@ export interface CoreUsersServiceAccountCreateRequest {
 export interface CoreUsersSetPasswordCreateRequest {
     id: number;
     userPasswordSetRequest: UserPasswordSetRequest;
+}
+
+export interface CoreUsersSetPasswordHashCreateRequest {
+    id: number;
+    userPasswordHashSetRequest: UserPasswordHashSetRequest;
 }
 
 export interface CoreUsersUpdateRequest {
@@ -5357,6 +5364,77 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<void> {
         await this.coreUsersSetPasswordCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for coreUsersSetPasswordHashCreate without sending the request
+     */
+    async coreUsersSetPasswordHashCreateRequestOpts(
+        requestParameters: CoreUsersSetPasswordHashCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling coreUsersSetPasswordHashCreate().',
+            );
+        }
+
+        if (requestParameters["userPasswordHashSetRequest"] == null) {
+            throw new runtime.RequiredError(
+                "userPasswordHashSetRequest",
+                'Required parameter "userPasswordHashSetRequest" was null or undefined when calling coreUsersSetPasswordHashCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/users/{id}/set_password_hash/`;
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserPasswordHashSetRequestToJSON(requestParameters["userPasswordHashSetRequest"]),
+        };
+    }
+
+    /**
+     * Set a user\'s password from a pre-hashed Django password value.  Submit the Django password hash in the shared ``password`` request field.  This updates authentik\'s local password verifier only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw password is available from the request payload.
+     */
+    async coreUsersSetPasswordHashCreateRaw(
+        requestParameters: CoreUsersSetPasswordHashCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.coreUsersSetPasswordHashCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Set a user\'s password from a pre-hashed Django password value.  Submit the Django password hash in the shared ``password`` request field.  This updates authentik\'s local password verifier only. It does not attempt to propagate the password change to LDAP or Kerberos because no raw password is available from the request payload.
+     */
+    async coreUsersSetPasswordHashCreate(
+        requestParameters: CoreUsersSetPasswordHashCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.coreUsersSetPasswordHashCreateRaw(requestParameters, initOverrides);
     }
 
     /**

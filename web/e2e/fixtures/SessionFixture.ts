@@ -1,6 +1,8 @@
 import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
 import { PageFixture, PageFixtureInit } from "#e2e/fixtures/PageFixture";
 
+import { expect, Page } from "@playwright/test";
+
 export const GOOD_USERNAME = "test-admin@goauthentik.io";
 export const GOOD_PASSWORD = "test-runner";
 
@@ -11,6 +13,8 @@ export interface LoginInit {
     username?: string;
     password?: string;
     to?: URL | string;
+    rememberMe?: boolean;
+    page?: Page;
 }
 
 export interface SessionFixtureInit extends PageFixtureInit {
@@ -35,6 +39,10 @@ export class SessionFixture extends PageFixture {
 
     public $passwordStage = this.page.locator("ak-stage-password");
     public $passwordField = this.page.getByLabel("Password");
+
+    public $rememberMeCheckbox = this.page.getByRole("checkbox", {
+        name: "Remember me on this device",
+    });
 
     /**
      * The button to submit the the login flow,
@@ -66,19 +74,45 @@ export class SessionFixture extends PageFixture {
     /**
      * Log into the application.
      */
-    public async login({
-        username = GOOD_USERNAME,
-        password = GOOD_PASSWORD,
-        to = SessionFixture.pathname,
-    }: LoginInit = {}) {
+    public async login(
+        {
+            username = GOOD_USERNAME,
+            password = GOOD_PASSWORD,
+            to = SessionFixture.pathname,
+            rememberMe,
+        }: LoginInit = {},
+        page = this.page,
+    ): Promise<void> {
         this.logger.info("Logging in...");
 
-        const initialURL = new URL(this.page.url());
+        const initialURL = new URL(page.url());
 
         if (initialURL.pathname === SessionFixture.pathname) {
             this.logger.info("Skipping navigation because we're already in a authentication flow");
         } else {
-            await this.page.goto(to.toString());
+            await page.goto(to.toString());
+        }
+
+        if (typeof rememberMe === "boolean") {
+            const rememberMeCheckboxVisible = await this.$rememberMeCheckbox.isVisible();
+
+            if (rememberMeCheckboxVisible) {
+                if (rememberMe) {
+                    await this.$rememberMeCheckbox.check();
+
+                    await expect(
+                        this.$rememberMeCheckbox,
+                        "Remember me checkbox is checked",
+                    ).toBeChecked();
+                } else {
+                    await this.$rememberMeCheckbox.uncheck();
+
+                    await expect(
+                        this.$rememberMeCheckbox,
+                        "Remember me checkbox is unchecked",
+                    ).not.toBeChecked();
+                }
+            }
         }
 
         await this.$usernameField.fill(username);
@@ -102,7 +136,7 @@ export class SessionFixture extends PageFixture {
 
     //#region Navigation
 
-    public async toLoginPage() {
-        await this.page.goto(SessionFixture.pathname);
+    public async toLoginPage(page: Page = this.page) {
+        await page.goto(SessionFixture.pathname);
     }
 }

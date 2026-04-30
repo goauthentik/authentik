@@ -22,6 +22,7 @@ export const CompatibilityModeEnum = {
     Slack: "slack",
     Sfdc: "sfdc",
     Webex: "webex",
+    Vcenter: "vcenter",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type CompatibilityModeEnum =

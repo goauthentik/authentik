@@ -7,9 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"strconv"
 	"strings"
-	"syscall"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -17,8 +15,6 @@ import (
 	utils "goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web"
 )
-
-var workerPidFile = path.Join(os.TempDir(), "authentik-worker.pid")
 
 var healthcheckCmd = &cobra.Command{
 	Use: "healthcheck",
@@ -31,9 +27,9 @@ var healthcheckCmd = &cobra.Command{
 		log.WithField("mode", mode).Debug("checking health")
 		switch strings.ToLower(mode) {
 		case "server":
-			exitCode = checkServer()
+			exitCode = check(fmt.Sprintf("http://localhost%s-/health/live/", config.Get().Web.Path))
 		case "worker":
-			exitCode = checkWorker()
+			exitCode = check("http://localhost/-/health/live/")
 		default:
 			log.Warn("Invalid mode")
 		}
@@ -45,7 +41,7 @@ func init() {
 	rootCmd.AddCommand(healthcheckCmd)
 }
 
-func checkServer() int {
+func check(url string) int {
 	h := &http.Client{
 		Transport: utils.NewUserAgentTransport("goauthentik.io/healthcheck",
 			&http.Transport{
@@ -55,7 +51,6 @@ func checkServer() int {
 			},
 		),
 	}
-	url := fmt.Sprintf("http://localhost%s-/health/live/", config.Get().Web.Path)
 	res, err := h.Head(url)
 	if err != nil {
 		log.WithError(err).Warning("failed to send healthcheck request")
@@ -66,31 +61,5 @@ func checkServer() int {
 		return 1
 	}
 	log.Debug("successfully checked health")
-	return 0
-}
-
-func checkWorker() int {
-	pidB, err := os.ReadFile(workerPidFile)
-	if err != nil {
-		log.WithError(err).Warning("failed to check worker PID file")
-		return 1
-	}
-	pidS := strings.TrimSpace(string(pidB[:]))
-	pid, err := strconv.Atoi(pidS)
-	if err != nil {
-		log.WithError(err).Warning("failed to find worker process PID")
-		return 1
-	}
-	process, err := os.FindProcess(pid)
-	if err != nil {
-		log.WithError(err).Warning("failed to find worker process")
-		return 1
-	}
-	err = process.Signal(syscall.Signal(0))
-	if err != nil {
-		log.WithError(err).Warning("failed to signal worker process")
-		return 1
-	}
-	log.Info("successfully checked health")
 	return 0
 }

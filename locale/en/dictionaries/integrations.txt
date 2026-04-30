@@ -19,6 +19,7 @@ Forti
 Fortigate
 Gatus
 Gestionnaire
+ghec
 Gitea
 Gravitee
 Homarr

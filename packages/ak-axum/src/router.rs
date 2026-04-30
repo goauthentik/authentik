@@ -1,7 +1,13 @@
 //! Utilities for working with [`Router`].
 
 use ak_common::config;
-use axum::{Router, http::StatusCode, middleware::from_fn};
+use axum::{
+    Router,
+    extract::Request,
+    http::{HeaderName, HeaderValue, StatusCode},
+    middleware::{Next, from_fn},
+    response::Response,
+};
 use tower::ServiceBuilder;
 use tower_http::timeout::TimeoutLayer;
 
@@ -12,6 +18,16 @@ use crate::{
     },
     tracing::{span_middleware, tracing_middleware},
 };
+
+const X_POWERED_BY: HeaderName = HeaderName::from_static("x-powered-by");
+
+async fn powered_by_authentik_middleware(request: Request, next: Next) -> Response {
+    let mut response = next.run(request).await;
+    response
+        .headers_mut()
+        .insert(X_POWERED_BY, HeaderValue::from_static("authentik"));
+    response
+}
 
 /// Wrap a [`Router`] with common middlewares.
 ///
@@ -30,6 +46,7 @@ pub fn wrap_router(router: Router, with_tracing: bool) -> Router {
             timeout,
         ))
         .layer(from_fn(span_middleware))
+        .layer(from_fn(powered_by_authentik_middleware))
         .layer(from_fn(trusted_proxy_middleware))
         .layer(from_fn(client_ip_middleware))
         .layer(from_fn(scheme_middleware))
