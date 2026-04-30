@@ -88,7 +88,7 @@ export class ObjectLifecyclePage extends WithLicenseSummary(WithSession(AKElemen
 
     protected override render(): SlottedTemplateResult {
         return html`
-            <ak-lifecycle-preview-banner slot="header"></ak-lifecycle-preview-banner>
+            <ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>
             <div class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-mobile">
                 <h2 class="pf-c-title pf-m-xl">
                     ${this.iterations?.length
