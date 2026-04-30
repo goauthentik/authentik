@@ -24,7 +24,7 @@ To _apply_ a blueprint is to have authentik read and execute the contents of a b
         - **Context**: add any [`key:value` context variable](./index.mdx#blueprint-execution) used in the blueprint instance.
 4. Click **Create** to save the new blueprint instance. This file is read and applied regularly by authentik.
 
-### Import and apply a blueprint once
+### Import and apply a blueprint
 
 You can import and apply a blueprint once from either the **Flows** page or the **Blueprints** page. This validates and applies the blueprint immediately, but it does not create a blueprint instance that is monitored or automatically re-applied.
 
