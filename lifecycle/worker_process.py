@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import faulthandler
 import os
 import random
 import signal
@@ -76,6 +77,12 @@ def main(worker_id: int, socket_path: str):
     signal.signal(signal.SIGINT, immediate_shutdown)
     signal.signal(signal.SIGQUIT, immediate_shutdown)
     signal.signal(signal.SIGTERM, graceful_shutdown)
+    # SIGUSR1 dumps every thread's traceback to stderr. Without this, the default
+    # action is "terminate", which kills the worker (and trips the Rust supervisor).
+    # Side-benefit: signal delivery wakes the eval loop, so `pdb -p` can attach to
+    # an otherwise-idle worker parked in a C-level syscall.
+    faulthandler.enable()
+    faulthandler.register(signal.SIGUSR1)
 
     random.seed()
 

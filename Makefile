@@ -118,6 +118,9 @@ run-worker:  ## Run the main authentik worker process
 run-worker-watch:  ## Run the authentik worker, with auto reloading
 	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- $(UV) run ak worker
 
+debug-attach:  ## Attach pdb to a running authentik Python worker (PEP 768). PID=<pid> to pick; SUDO=1 on macOS.
+	$(UV) run python scripts/debug_attach.py
+
 core-i18n-extract:
 	$(UV) run ak makemessages \
 		--add-location file \
