@@ -27,11 +27,15 @@ To create or edit a source in authentik, open the Admin interface and navigate t
     - **Enable StartTLS**: Enables StartTLS functionality. To use LDAPS instead, use port `636`.
     - **Use Server URI for SNI verification**: this setting is required for servers using TLS 1.3+
 
-- **TLS Verification Certificate**: Specify a keypair to validate the remote certificate.
+- **TLS Verification Certificate**: Select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate. Leave this field empty to skip certificate validation for LDAPS and StartTLS connections. Leaving it empty does not use the container or operating system trust store.
 - **TLS Client authentication certificate**: Client certificate keypair to authenticate against the LDAP Server's Certificate.
 - **Bind CN**: CN of the bind user. This can also be a UPN in the format of `user@domain.tld`.
 - **Bind Password**: Password used during the bind process.
 - **Base DN**: Base DN (distinguished name) used for all LDAP queries.
+
+:::note TLS handshake failures
+If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enable StartTLS**, and **Use Server URI for SNI verification** match the server configuration. You can also configure `AUTHENTIK_LDAP__TLS__CIPHERS` if the server requires a specific cipher suite.
+:::
 
 #### LDAP Attribute mapping
 
