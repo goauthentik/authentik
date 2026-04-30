@@ -12,6 +12,7 @@ from django.http import HttpResponse
 from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils import timezone
+from dramatiq.results.errors import ResultTimeout
 
 from authentik.core.models import AuthenticatedSession, Session, Token, TokenIntents
 from authentik.core.tests.utils import (
@@ -506,6 +507,34 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
             uid=f"{provider.name}:user:{self.target_user.pk}:direct",
         )
         task_group_cls.assert_called_once_with(["direct-message"])
+        task_group.run.return_value.wait.assert_called_once_with(timeout=5000)
+
+    def test_lockdown_outgoing_provider_sync_timeout_leaves_tasks_running(self):
+        """Test timeout while waiting for direct outgoing syncs does not fail lockdown."""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        view = self.make_stage_view(plan)
+        provider = SimpleNamespace(name="outgoing", pk=1, sync_page_timeout="seconds=5")
+        task_sync_direct = MagicMock()
+        task_sync_direct.message_with_options.return_value = "direct-message"
+        provider_model = SimpleNamespace(
+            objects=SimpleNamespace(filter=MagicMock(return_value=[provider]))
+        )
+        task_group = MagicMock()
+        task_group.run.return_value.wait.side_effect = ResultTimeout("timed out")
+
+        with (
+            patch(
+                "authentik.enterprise.stages.account_lockdown.stage.get_outgoing_sync_tasks",
+                return_value=((provider_model, task_sync_direct),),
+            ),
+            patch(
+                "authentik.enterprise.stages.account_lockdown.stage.group",
+                return_value=task_group,
+            ),
+        ):
+            view._sync_deactivated_user_to_outgoing_providers(self.target_user)
+
+        task_group.run.assert_called_once_with()
         task_group.run.return_value.wait.assert_called_once_with(timeout=5000)
 
     def test_lockdown_outgoing_provider_sync_failure_does_not_fail_lockdown(self):

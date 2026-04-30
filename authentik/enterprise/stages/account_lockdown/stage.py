@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
 from dramatiq.composition import group
+from dramatiq.results.errors import ResultTimeout
 
 from authentik.core.models import (
     AuthenticatedSession,
@@ -179,7 +180,14 @@ class AccountLockdownStageView(StageView):
 
         if not messages:
             return
-        group(messages).run().wait(timeout=wait_timeout)
+        try:
+            group(messages).run().wait(timeout=wait_timeout)
+        except ResultTimeout:
+            self.logger.warning(
+                "Timed out waiting for outgoing sync tasks; tasks remain queued",
+                user=user.username,
+                timeout=wait_timeout,
+            )
 
     def _get_lockdown_artifact_querysets(
         self, stage: AccountLockdownStage, user: User
