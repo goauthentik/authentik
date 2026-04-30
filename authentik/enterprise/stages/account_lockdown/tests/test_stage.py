@@ -339,7 +339,7 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
             name=generate_id(),
             authorization_flow=create_test_flow(),
             acs_url="https://sp.example.com/acs",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
         )
         session = Session.objects.create(
             session_key=generate_id(),
