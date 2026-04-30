@@ -108,7 +108,9 @@ Use Notification Rules to alert when lockdowns occur:
 2. Set **Action** to **User Write**
 3. Set **Query** to `context.action_id = "account_lockdown"`
 4. Navigate to **Events** > **Notification Rules** and create a rule
-5. Bind the Event Matcher Policy to the rule
+5. Select a notification transport, such as `default-email-transport`
+6. Select a destination group, or enable **Send notification to event user** to notify the locked user
+7. Bind the Event Matcher Policy to the rule
 
 ## Restore access after lockdown
 
