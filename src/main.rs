@@ -95,8 +95,8 @@ fn main() -> Result<()> {
             match cli.command {
                 #[cfg(feature = "core")]
                 Command::AllInOne(_) => {
-                    server::start(Default::default(), &mut tasks).await?;
-                    let workers = worker::start(Default::default(), &mut tasks)?;
+                    server::start(server::Cli::default(), &mut tasks).await?;
+                    let workers = worker::start(worker::Cli::default(), &mut tasks)?;
                     metrics.workers.store(Some(workers));
                 }
                 #[cfg(feature = "core")]
