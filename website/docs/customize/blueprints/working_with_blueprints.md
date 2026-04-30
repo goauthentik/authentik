@@ -24,24 +24,33 @@ To _apply_ a blueprint is to have authentik read and execute the contents of a b
         - **Context**: add any [`key:value` context variable](./index.mdx#blueprint-execution) used in the blueprint instance.
 4. Click **Create** to save the new blueprint instance. This file is read and applied regularly by authentik.
 
-### Apply a new flow
+### Import and apply a blueprint once
 
-You can apply a new flow from either the **Flows** page or the **Blueprints** page.
+You can import and apply a blueprint once from either the **Flows** page or the **Blueprints** page. This validates and applies the blueprint immediately, but it does not create a blueprint instance that is monitored or automatically re-applied.
 
 #### Flows page
 
 1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Flows and Stages > Flows**, then click **Import**.
-3. Under **Flow**, select the YAML file to import. Typically this is a file you [exported](./export.mdx) and saved to your local file system.
+3. Choose how to import the blueprint:
+    - **File upload**: upload a `.yaml` file from your local file system. Typically this is a downloaded example flow or a file you [exported](./export.mdx).
+    - **Local path**: select one of the blueprints available on the authentik server, such as a bundled [example flow](../../add-secure-apps/flows-stages/flow/examples/flows.md).
+4. Click **Import**.
 
 #### Blueprints page
 
 1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Customization > Blueprints**.
-3. Select the blueprint, and, under **Actions**, click the **Apply** icon.
+3. Click **Import**.
+4. Choose **File upload** to upload a `.yaml` file, or choose **Local path** to select a blueprint available on the authentik server.
+5. Click **Import**.
 
 :::info Download example flows
-You can download our [example flows](../../add-secure-apps/flows-stages/flow/examples/flows.md) and import them into your authentik instance.
+You can download our [example flows](../../add-secure-apps/flows-stages/flow/examples/flows.md) and import them with **File upload**, or select the bundled example from **Local path**.
+:::
+
+:::info Apply a blueprint instance
+To apply an existing blueprint instance, select the blueprint on the **Blueprints** page and click the **Apply** icon under **Actions**.
 :::
 
 ## Edit a blueprint instance or flow
