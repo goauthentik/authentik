@@ -20,10 +20,10 @@
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    padding-top: var(--ak-c-dialog__header--PaddingTop);
-    padding-bottom: var(--ak-c-dialog__header--PaddingBottom);
-    padding-right: var(--ak-c-dialog__header--PaddingRight);
-    padding-left: var(--ak-c-dialog__header--PaddingLeft);
+    padding-block-start: var(--ak-c-dialog__header--PaddingBlockStart);
+    padding-block-end: var(--ak-c-dialog__header--PaddingBlockEnd);
+    padding-inline-end: var(--ak-c-dialog__header--PaddingInlineEnd);
+    padding-inline-start: var(--ak-c-dialog__header--PaddingInlineStart);
 }
 
 .ak-c-dialog__header.pf-m-help {
@@ -32,12 +32,7 @@
 }
 
 .ak-c-dialog__header:last-child {
-    padding-bottom: var(--ak-c-dialog__header--last-child--PaddingBottom);
-}
-
-.ak-c-dialog__header + .ak-c-dialog__body,
-.ak-c-dialog__header + slot + .ak-c-dialog__body {
-    --ak-c-dialog__body--PaddingTop: 0;
+    padding-block-end: var(--ak-c-dialog__header--last-child--PaddingBlockEnd);
 }
 
 .ak-c-dialog__header-main {
@@ -73,7 +68,7 @@
 }
 
 .ak-c-dialog__description {
-    padding-top: var(--ak-c-dialog__description--PaddingTop);
+    padding-block-start: var(--ak-c-dialog__description--PaddingBlockStart);
 }
 
 /* #endregion */
@@ -82,9 +77,10 @@
 
 .ak-c-dialog__body {
     min-height: var(--ak-c-dialog__body--MinHeight);
-    padding-top: var(--ak-c-dialog__body--PaddingTop);
-    padding-right: var(--ak-c-dialog__body--PaddingRight);
-    padding-left: var(--ak-c-dialog__body--PaddingLeft);
+    padding-block-start: var(--ak-c-dialog__body--PaddingBlockStart);
+    padding-inline-end: var(--ak-c-dialog__body--PaddingInlineEnd);
+    padding-inline-start: var(--ak-c-dialog__body--PaddingInlineStart);
+    padding-block-end: var(--ak-c-dialog__body--PaddingBlockEnd);
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -93,7 +89,7 @@
 }
 
 .ak-c-dialog__body:last-child {
-    padding-bottom: var(--ak-c-dialog__body--last-child--PaddingBottom);
+    padding-block-end: var(--ak-c-dialog__body--last-child--PaddingBlockEnd);
 }
 
 .ak-c-dialog__footer {
@@ -102,14 +98,11 @@
     align-items: center;
     justify-content: end;
 
-    margin-block-start: var(--pf-global--spacer--md);
+    padding-block-start: var(--ak-c-dialog__footer--PaddingBlockStart);
+    padding-inline-end: var(--ak-c-dialog__footer--PaddingInlineEnd);
+    padding-block-end: var(--ak-c-dialog__footer--PaddingBlockEnd);
+    padding-inline-start: var(--ak-c-dialog__footer--PaddingInlineStart);
 
-    padding-top: var(--ak-c-dialog__footer--PaddingTop);
-    padding-right: var(--ak-c-dialog__footer--PaddingRight);
-    padding-bottom: var(--ak-c-dialog__footer--PaddingBottom);
-    padding-left: var(--ak-c-dialog__footer--PaddingLeft);
-
-    box-shadow: var(--ak-c-dialog__footer--BoxShadow);
     gap: var(--pf-global--spacer--xs);
 
     @media screen and (min-width: 576px) {

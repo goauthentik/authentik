@@ -35,13 +35,13 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v5
         with:
           node-version-file: ${{ matrix.package }}/package.json
           registry-url: "https://registry.npmjs.org"
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
         with:
           files: |
             ${{ matrix.package }}/package.json

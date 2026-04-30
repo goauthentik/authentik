@@ -11,16 +11,16 @@ import { SlottedTemplateResult } from "#elements/types";
 import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-log-viewer")
 export class LogViewer extends StaticTable<LogEvent> {
-    expandable = true;
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public override expandable = true;
 
     protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
@@ -28,7 +28,7 @@ export class LogViewer extends StaticTable<LogEvent> {
         );
     }
 
-    renderExpanded(item: LogEvent): TemplateResult {
+    protected override renderExpanded(item: LogEvent): SlottedTemplateResult {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
@@ -53,8 +53,8 @@ export class LogViewer extends StaticTable<LogEvent> {
         </dl>`;
     }
 
-    renderToolbarContainer(): SlottedTemplateResult {
-        return nothing;
+    protected override renderToolbarContainer(): SlottedTemplateResult {
+        return null;
     }
 
     protected columns: TableColumn[] = [
@@ -64,7 +64,7 @@ export class LogViewer extends StaticTable<LogEvent> {
         [msg("Logger")],
     ];
 
-    statusForItem(item: LogEvent): string {
+    protected statusForItem(item: LogEvent): string {
         switch (item.logLevel) {
             case LogLevelEnum.Critical:
             case LogLevelEnum.Error:
@@ -82,15 +82,15 @@ export class LogViewer extends StaticTable<LogEvent> {
         return formatElapsedTime(item.timestamp);
     }
 
-    row(item: LogEvent): SlottedTemplateResult[] {
+    protected override row(item: LogEvent): SlottedTemplateResult[] {
         return [
             html`<ak-timestamp .timestamp=${item.timestamp} refresh></ak-timestamp>`,
             html`<ak-status-label
                 type=${this.statusForItem(item)}
                 bad-label=${item.logLevel}
             ></ak-status-label>`,
-            html`${item.event}`,
-            html`${item.logger}`,
+            item.event,
+            item.logger,
         ];
     }
 }

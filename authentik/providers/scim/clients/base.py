@@ -97,6 +97,9 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         if cached_config is not None:
             return cached_config
 
+        if self.provider.compatibility_mode == SCIMCompatibilityMode.VCENTER:
+            return default_config
+
         # Attempt to fetch from remote
         path = "/ServiceProviderConfig"
         if self.provider.compatibility_mode == SCIMCompatibilityMode.SALESFORCE:

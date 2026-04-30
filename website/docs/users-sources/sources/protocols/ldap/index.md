@@ -17,7 +17,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 - **Enabled**: Toggle this option on to allow authentik to use the defined LDAP source.
 - **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Toggle off (default setting) if you do not want to store the hashed passwords in authentik.
 - **Sync users**: Enable or disable user synchronization between authentik and the LDAP source.
-- **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP.
+- **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP. This requires authentik to receive the raw password; [hashed-password imports](../../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) are not written back to LDAP.
 - **Sync groups**: Enable/disable group synchronization between authentik and the LDAP source.
 - **Delete Not Found Objects**: :ak-version[2025.6] This option synchronizes user and group deletions from LDAP sources to authentik. User deletion requires enabling **Sync users** and group deletion requires enabling **Sync groups**.
 
@@ -73,6 +73,33 @@ return {
 }
 ```
 
+The same LDAP source property mapping type is used for both users and groups. A mapping only applies to groups when you assign it under **Group Property Mappings** on the LDAP source. If you only use the built-in group property mappings, synced groups will keep the automatically populated LDAP attributes, such as `distinguishedName`, but custom LDAP attributes won't be copied unless you add your own group mapping.
+
+### Copy a custom LDAP group attribute
+
+To store a custom LDAP group attribute in authentik's group `attributes`, create an **LDAP Source Property Mapping** and assign it to **Group Property Mappings** on the source:
+
+```python
+return {
+    "attributes": {
+        "acl": list_flatten(ldap.get("acl")),
+    },
+}
+```
+
+If your LDAP server stores the value as JSON text and you want authentik to keep it as structured data instead of a string, decode it in the mapping:
+
+```python
+import json
+
+raw_acl = list_flatten(ldap.get("acl"))
+return {
+    "attributes": {
+        "acl": json.loads(raw_acl) if raw_acl else None,
+    },
+}
+```
+
 ### Built-in property mappings
 
 LDAP property mappings are used when you define an LDAP source. These mappings define which LDAP property maps to which authentik property. By default, the following mappings are created:
@@ -90,7 +117,7 @@ These are configured with most common LDAP setups.
 
 ### Expression data
 
-The following variables are available to LDAP source property mappings:
+The following variables are available to LDAP source property mappings:
 
 - `ldap`: A Python dictionary containing data from LDAP.
 - `dn`: The object DN.

@@ -61,7 +61,7 @@ Finally, you'll need to create a User Login Stage.
 Now you'll need to create the LDAP authentication flow and bind the previously created stages.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Flows**, click **Create**, and set the following required configurations:
+2. Navigate to **Flows and Stages** > **Flows**, click **New Flow**, and set the following required configurations:
     - Provide a **Name**, **Title** and **Slug** for the flow (e.g. `ldap-authentication-flow`).
     - Set **Designation** to `Authentication`.
 3. Click **Create**.
@@ -75,7 +75,7 @@ Now you'll need to create the LDAP authentication flow and bind the previously c
 The LDAP application and provider can now be created.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications**, click **Create with Provider** to create an application and provider pair.
+2. Navigate to **Applications** > **Applications**, click **New Application** to create an application and provider pair.
 3. On the **New application** page, define the application details, and then click **Next**.
 4. Select **LDAP Provider** as the **Provider Type**, and then click **Next**.
 5. On the **Configure LDAP Provider** page, provide the configuration settings and then click **Submit** to create both the application and the provider.
@@ -117,7 +117,7 @@ The service account needs permissions to search the LDAP directory. You'll need 
 The LDAP provider requires the deployment of an LDAP [Outpost](../../outposts/index.mdx).
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Outposts**, click **Create** and set the following required configurations:
+2. Navigate to **Applications** > **Outposts**, click **New Outpost** and set the following required configurations:
     - Provide a **Name** for the outpost (e.g. `LDAP Outpost').
     - Set the **Type** as `LDAP`.
     - Set **Integration** to match your deployment method or manually deploy an outpost via [Docker-Compose](../../outposts/manual-deploy-docker-compose.md) or [Kubernetes](../../outposts/manual-deploy-kubernetes.md). For more information, refer to the [Outpost documentation](../../outposts/index.mdx).

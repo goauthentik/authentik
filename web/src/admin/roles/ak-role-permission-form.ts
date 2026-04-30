@@ -85,7 +85,10 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
                     </button>
 
                     <div class="pf-c-form-control">
-                        <ak-chip-group>
+                        <ak-chip-group
+                            @click=${this.openSelectPermissionsModal}
+                            placeholder=${msg("Select one or more permissions...")}
+                        >
                             ${this.permissionsToAdd.map((permission) => {
                                 return html`<ak-chip
                                     removable

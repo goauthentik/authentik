@@ -205,14 +205,14 @@ return {
 }
 ```
 
-## Signing & Encryption
+## Signing and encryption
 
-[JWTs](https://jwt.io/introduction) created by authentik will always be signed.
+Selecting **Signing Key** is optional. [JWTs](https://jwt.io/introduction) created by authentik will always be signed.
 
-When a _Signing Key_ is selected in the provider, the JWT will be signed asymmetrically with the private key of the selected certificate, and can be verified using the public key of the certificate. The public key data of the signing key can be retrieved via the JWKS endpoint listed on the provider page.
+When **Signing Key** is selected in the provider, authentik signs JWTs asymmetrically with the private key of the selected certificate. Clients can verify those JWTs with the certificate's public key, which is available from the JWKS endpoint listed on the provider page.
 
-When no _Signing Key_ is selected, the JWT will be signed symmetrically with the _Client secret_ of the provider, which can be seen in the provider settings.
+When **Signing Key** is not selected, authentik signs JWTs symmetrically with the provider **Client secret**, which is shown in the provider settings.
 
 ### Encryption
 
-authentik can also encrypt JWTs (turning them into JWEs) it issues by selecting an _Encryption Key_ in the provider. When selected, all JWTs will be encrypted symmetrically using the selected certificate. authentik uses the `RSA-OAEP-256` algorithm with the `A256CBC-HS512` encryption method.
+authentik can also encrypt JWTs (turning them into JWEs) it issues by selecting an **Encryption Key** in the provider. When selected, all JWTs will be encrypted symmetrically using the selected certificate. authentik uses the `RSA-OAEP-256` algorithm with the `A256CBC-HS512` encryption method.

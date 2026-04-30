@@ -73,6 +73,7 @@ class TestProviderRadius(E2ETestCase):
             code=AccessRequest, User_Name=self.user.username, NAS_Identifier="localhost"
         )
         req["User-Password"] = req.PwCrypt(self.user.username)
+        req.add_message_authenticator()
 
         reply = srv.SendPacket(req)
         self.assertEqual(reply.code, AccessAccept)
@@ -95,6 +96,7 @@ class TestProviderRadius(E2ETestCase):
             code=AccessRequest, User_Name=self.user.username, NAS_Identifier="localhost"
         )
         req["User-Password"] = req.PwCrypt(self.user.username + "foo")
+        req.add_message_authenticator()
 
         reply = srv.SendPacket(req)
         self.assertEqual(reply.code, AccessReject)

@@ -7,7 +7,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/dialogs/ak-modal";
 import "#admin/applications/ApplicationForm";
-import "#admin/applications/ApplicationWizardHint";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -127,6 +126,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         return [
             html`<ak-app-icon
                 aria-label=${msg(str`Application icon for "${item.name}"`)}
+                role="img"
                 name=${item.name}
                 icon=${ifPresent(item.metaIconUrl)}
                 .iconThemedUrls=${item.metaIconThemedUrls}
@@ -201,7 +201,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                             "Opens the new application wizard, which will guide you through creating a new application with an existing provider.",
                         )}
                     >
-                        ${msg("With New Provider...")}
+                        ${msg("with New Provider...")}
                     </button>
                 </li>
                 <li role="presentation">
@@ -214,7 +214,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                             "Opens the new application form, which will guide you through creating a new application with an existing provider.",
                         )}
                     >
-                        ${msg("With Existing Provider...")}
+                        ${msg("with Existing Provider...")}
                     </button>
                 </li>
             </menu>

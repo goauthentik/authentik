@@ -14,6 +14,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
+import "#elements/ak-checkbox-group/ak-checkbox-group";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
@@ -29,6 +30,7 @@ import { AKLabel } from "#components/ak-label";
 import {
     ClientTypeEnum,
     FlowDesignationEnum,
+    GrantTypesEnum,
     IssuerModeEnum,
     MatchingModeEnum,
     OAuth2Provider,
@@ -131,6 +133,27 @@ const redirectUriHelpMessages: string[] = [
     ),
 ];
 
+const grantTypes = [
+    [GrantTypesEnum.AuthorizationCode, msg("Authorization Code")],
+    [GrantTypesEnum.Implicit, msg("Implicit")],
+    [GrantTypesEnum.Hybrid, msg("Hybrid")],
+    [GrantTypesEnum.RefreshToken, msg("Refresh token")],
+    [GrantTypesEnum.ClientCredentials, msg("Client credentials")],
+    [GrantTypesEnum.Password, msg("Password")],
+    [GrantTypesEnum.UrnIetfParamsOauthGrantTypeDeviceCode, msg("Device-code")],
+];
+
+const defaultGrantTypes = [
+    // TODO: Clean up defaults after 2026
+    GrantTypesEnum.AuthorizationCode,
+    GrantTypesEnum.Implicit,
+    GrantTypesEnum.Hybrid,
+    GrantTypesEnum.RefreshToken,
+    GrantTypesEnum.ClientCredentials,
+    GrantTypesEnum.Password,
+    GrantTypesEnum.UrnIetfParamsOauthGrantTypeDeviceCode,
+];
+
 type ShowClientSecret = (show: boolean) => void;
 type ShowLogoutMethod = (show: boolean) => void;
 
@@ -218,6 +241,26 @@ export function renderForm({
                     ?hidden=${!showClientSecret}
                 >
                 </ak-hidden-text-input>
+                <ak-form-element-horizontal label=${msg("Grant Types")} required name="grantTypes">
+                    <ak-checkbox-group
+                        name="users"
+                        class="user-field-select"
+                        .options=${grantTypes}
+                        .value=${grantTypes
+                            .map((grantType) => grantType[0])
+                            .filter(
+                                (type) =>
+                                    (provider?.grantTypes || defaultGrantTypes).filter(
+                                        (isField) => {
+                                            return type === isField;
+                                        },
+                                    ).length > 0,
+                            )}
+                    ></ak-checkbox-group>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Grant types this provider may use.")}
+                    </p>
+                </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Redirect URIs/Origins (RegEx)")}
                     name="redirectUris"

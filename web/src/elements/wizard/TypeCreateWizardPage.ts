@@ -1,5 +1,6 @@
 import "#elements/LicenseNotice";
 import "#elements/Alert";
+import "#elements/forms/FormGroup";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { SlottedTemplateResult } from "#elements/types";
@@ -39,6 +40,12 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     @property({ type: String, useDefault: true })
     public layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
+
+    @property({ type: String, attribute: "group-label", useDefault: true })
+    public groupLabel: string | null = null;
+
+    @property({ type: String, attribute: "group-description", useDefault: true })
+    public groupDescription: string | null = null;
 
     //#endregion
 
@@ -244,6 +251,18 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             return html`<div class="ak-c-loading-skeleton ak-m-list"></div>`;
         }
 
+        const renderedItems = this.renderListItems();
+        const content = this.groupLabel
+            ? html`<ak-form-group
+                  label=${this.groupLabel}
+                  description=${ifPresent(this.groupDescription)}
+                  part="group"
+                  open
+              >
+                  ${renderedItems}
+              </ak-form-group>`
+            : renderedItems;
+
         return [
             this.findSlotted() ? this.defaultSlot : null,
             html`<form
@@ -253,7 +272,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 role="radiogroup"
                 aria-label=${ifPresent(this.headline)}
             >
-                ${this.renderListItems()}
+                <slot name="pre-items"></slot>
+                ${content}
             </form>`,
         ];
     }

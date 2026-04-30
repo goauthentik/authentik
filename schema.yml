@@ -4522,6 +4522,41 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/set_password_hash/:
+    post:
+      operationId: core_users_set_password_hash_create
+      description: |-
+        Set a user's password from a pre-hashed Django password value.
+
+        Submit the Django password hash in the shared ``password`` request field.
+
+        This updates authentik's local password verifier only. It does not attempt
+        to propagate the password change to LDAP or Kerberos because no raw password
+        is available from the request payload.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPasswordHashSetRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully changed password
+        '400':
+          description: Bad request
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/used_by/:
     get:
       operationId: core_users_used_by_list
@@ -5645,6 +5680,209 @@ paths:
           description: ''
         '404':
           description: Token not found or expired
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/psso/ise/:
+    get:
+      operationId: endpoints_agents_psso_ise_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: query
+        name: apple_enclave_key_id
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAppleIndependentSecureEnclaveList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_agents_psso_ise_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppleIndependentSecureEnclaveRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppleIndependentSecureEnclave'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/psso/ise/{uuid}/:
+    get:
+      operationId: endpoints_agents_psso_ise_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Apple Independent Secure Enclave.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppleIndependentSecureEnclave'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_agents_psso_ise_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Apple Independent Secure Enclave.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppleIndependentSecureEnclaveRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppleIndependentSecureEnclave'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_agents_psso_ise_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Apple Independent Secure Enclave.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAppleIndependentSecureEnclaveRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppleIndependentSecureEnclave'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_agents_psso_ise_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Apple Independent Secure Enclave.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/agents/psso/ise/{uuid}/used_by/:
+    get:
+      operationId: endpoints_agents_psso_ise_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Apple Independent Secure Enclave.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -18716,7 +18954,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: issuer
+        name: issuer_override
         schema:
           type: string
       - in: query
@@ -19875,7 +20113,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: issuer
+        name: issuer_override
         schema:
           type: string
       - in: query
@@ -33772,6 +34010,49 @@ components:
           type: string
           minLength: 1
           default: ak-source-oauth-apple
+    AppleIndependentSecureEnclave:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        user:
+          type: integer
+          description: The user that this device belongs to.
+        apple_secure_enclave_key:
+          type: string
+        apple_enclave_key_id:
+          type: string
+        device_type:
+          type: string
+      required:
+      - apple_enclave_key_id
+      - apple_secure_enclave_key
+      - device_type
+      - user
+    AppleIndependentSecureEnclaveRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        user:
+          type: integer
+          description: The user that this device belongs to.
+        apple_secure_enclave_key:
+          type: string
+          minLength: 1
+        apple_enclave_key_id:
+          type: string
+          minLength: 1
+        device_type:
+          type: string
+          minLength: 1
+      required:
+      - apple_enclave_key_id
+      - apple_secure_enclave_key
+      - device_type
+      - user
     AppleLoginChallenge:
       type: object
       description: Special challenge for apple-native authentication flow, which happens
@@ -33865,6 +34146,9 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
         group:
           type: string
+        meta_hide:
+          type: boolean
+          description: Hide this application from the user's My applications page.
       required:
       - backchannel_providers_obj
       - launch_url
@@ -33946,6 +34230,9 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
         group:
           type: string
+        meta_hide:
+          type: boolean
+          description: Hide this application from the user's My applications page.
       required:
       - name
       - slug
@@ -34109,6 +34396,7 @@ components:
       - require_superuser
       - require_redirect
       - require_outpost
+      - require_token
       type: string
     AuthenticatorAttachmentEnum:
       enum:
@@ -35933,6 +36221,7 @@ components:
       - slack
       - sfdc
       - webex
+      - vcenter
       type: string
     Config:
       type: object
@@ -39740,6 +40029,16 @@ components:
       - google_id
       - provider
       - user
+    GrantTypesEnum:
+      enum:
+      - authorization_code
+      - implicit
+      - hybrid
+      - refresh_token
+      - client_credentials
+      - password
+      - urn:ietf:params:oauth:grant-type:device_code
+      type: string
     Group:
       type: object
       description: Group Serializer
@@ -43392,6 +43691,10 @@ components:
           - $ref: '#/components/schemas/ClientTypeEnum'
           description: Confidential clients are capable of maintaining the confidentiality
             of their credentials. Public clients are incapable
+        grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypesEnum'
         client_id:
           type: string
           maxLength: 255
@@ -43513,6 +43816,10 @@ components:
           - $ref: '#/components/schemas/ClientTypeEnum'
           description: Confidential clients are capable of maintaining the confidentiality
             of their credentials. Public clients are incapable
+        grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypesEnum'
         client_id:
           type: string
           minLength: 1
@@ -44288,6 +44595,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AgentConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedAppleIndependentSecureEnclaveList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppleIndependentSecureEnclave'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -47079,6 +47401,24 @@ components:
           type: array
           items:
             type: integer
+    PatchedAppleIndependentSecureEnclaveRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        user:
+          type: integer
+          description: The user that this device belongs to.
+        apple_secure_enclave_key:
+          type: string
+          minLength: 1
+        apple_enclave_key_id:
+          type: string
+          minLength: 1
+        device_type:
+          type: string
+          minLength: 1
     PatchedApplicationEntitlementRequest:
       type: object
       description: ApplicationEntitlement Serializer
@@ -47128,6 +47468,9 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
         group:
           type: string
+        meta_hide:
+          type: boolean
+          description: Hide this application from the user's My applications page.
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -49042,6 +49385,10 @@ components:
           - $ref: '#/components/schemas/ClientTypeEnum'
           description: Confidential clients are capable of maintaining the confidentiality
             of their credentials. Public clients are incapable
+        grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypesEnum'
         client_id:
           type: string
           minLength: 1
@@ -49889,10 +50236,10 @@ components:
           type: string
           description: Value of the audience restriction field of the assertion. When
             left empty, no audience restriction will be added.
-        issuer:
+        issuer_override:
           type: string
-          minLength: 1
-          description: Also known as EntityID
+          description: Also known as EntityID. Providing a value overrides the default
+            issuer generated by authentik.
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -53407,9 +53754,10 @@ components:
           type: string
           description: Value of the audience restriction field of the assertion. When
             left empty, no audience restriction will be added.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as EntityID
+          description: Also known as EntityID. Providing a value overrides the default
+            issuer generated by authentik.
         assertion_valid_not_before:
           type: string
           description: 'Assertion valid not before current time + this value (Format:
@@ -53499,6 +53847,10 @@ components:
           type: string
           description: Get metadata download URL
           readOnly: true
+        url_issuer:
+          type: string
+          description: Get Issuer/EntityID URL
+          readOnly: true
         url_sso_post:
           type: string
           description: Get SSO Post URL
@@ -53532,6 +53884,7 @@ components:
       - name
       - pk
       - url_download_metadata
+      - url_issuer
       - url_slo_post
       - url_slo_redirect
       - url_sso_init
@@ -53599,10 +53952,10 @@ components:
           type: string
           description: Value of the audience restriction field of the assertion. When
             left empty, no audience restriction will be added.
-        issuer:
+        issuer_override:
           type: string
-          minLength: 1
-          description: Also known as EntityID
+          description: Also known as EntityID. Providing a value overrides the default
+            issuer generated by authentik.
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -57252,6 +57605,15 @@ components:
       - identifier
       - source
       - user
+    UserPasswordHashSetRequest:
+      type: object
+      description: Payload to set a users' password hash directly
+      properties:
+        password:
+          type: string
+          minLength: 1
+      required:
+      - password
     UserPasswordSetRequest:
       type: object
       description: Payload to set a users' password directly
