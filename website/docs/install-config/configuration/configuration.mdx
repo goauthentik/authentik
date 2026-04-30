@@ -76,6 +76,8 @@ Use the settings in this section to configure:
 
 For more information, see the PostgreSQL upgrade guides for [Docker Compose](../../troubleshooting/postgres/upgrade_docker.md) and [Kubernetes](../../troubleshooting/postgres/upgrade_kubernetes.md). For backup guidance, see [Backup and restore](../../sys-mgmt/ops/backup-restore.md).
 
+authentik requires PostgreSQL 14 or newer. authentik does not define a maximum PostgreSQL version, but only PostgreSQL 14 and 18 are part of regular CI coverage.
+
 ### Connection settings
 
 These settings define the primary database connection used for writes and reads, unless you've set up read replicas.
