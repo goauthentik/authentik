@@ -5395,7 +5395,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>アクティブ化</target>
 </trans-unit>
 <trans-unit id="s547b687213f48489">
-  <source>Update <x id="0" equiv-text="${user.name || user.username}"/>'s password</source>
+  <source>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>'s password</source>
   <target><x id="0" equiv-text="${item.name || item.username}"/> のパスワードを更新</target>
 </trans-unit>
 <trans-unit id="sce8d867ca5f35304">
@@ -11194,6 +11194,22 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf7aba95a8c43b7b1">
   <source>Sets a custom EntityID/Issuer to override the authentik generated default.</source>
+</trans-unit>
+<trans-unit id="sa3a27a128ad87f31">
+  <source>Passwords</source>
+</trans-unit>
+<trans-unit id="s16d13ea527d7fe6b">
+  <source>Setting</source>
+</trans-unit>
+<trans-unit id="sfef81bb4077a56fd">
+  <source>Type a new password...</source>
+</trans-unit>
+<trans-unit id="sf9ec917e3e986bc1">
+  <source>When enabled, your username will be remembered on this device for future logins.</source>
+</trans-unit>
+<trans-unit id="form.submitting.no-entity">
+  <source><x id="0" equiv-text="${submittingVerb}"/>...</source>
+  <note from="lit-localize">The message shown while a form is being submitted, when no entity name is provided.</note>
 </trans-unit>
 </body>
 </file>
