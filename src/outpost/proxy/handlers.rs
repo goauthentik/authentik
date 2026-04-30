@@ -1,5 +1,5 @@
 use std::sync::Arc;
-use tower::util::ServiceExt;
+use tower::util::ServiceExt as _;
 
 use ak_axum::{error::Result, extract::host::Host};
 use axum::{
@@ -10,10 +10,11 @@ use axum::{
 use metrics::histogram;
 use serde_json::json;
 use tokio::time::Instant;
-use tracing::{instrument, trace, warn};
+use tracing::{Instrument as _, field, info_span, instrument, trace, warn};
 
 use crate::outpost::proxy::ProxyOutpost;
 
+#[instrument(skip_all)]
 pub(super) async fn handle_ping(
     method: Method,
     Host(host): Host,
@@ -31,12 +32,16 @@ pub(super) async fn handle_ping(
     StatusCode::NO_CONTENT.into_response()
 }
 
-#[instrument(skip(request, outpost))]
+#[instrument(skip_all)]
 pub(super) async fn default(
+    method: Method,
     Host(host): Host,
     State(outpost): State<Arc<ProxyOutpost>>,
     request: Request,
 ) -> Result<Response> {
+    let span = info_span!("proxy outpost request", user = field::Empty);
+    let start = Instant::now();
+
     let Some(app) = outpost.lookup_app(&host) else {
         trace!(headers = ?request.headers(), "tracing headers for no hostname match");
         warn!("no app for hostname");
@@ -56,5 +61,16 @@ pub(super) async fn default(
     };
 
     trace!("passing to application");
-    Ok(app.router.clone().oneshot(request).await?)
+    let response = app.router.clone().oneshot(request).instrument(span).await?;
+
+    histogram!(
+        "authentik_outpost_proxy_request_duration_seconds",
+        "outpost_name" => outpost.controller.outpost.load().name.clone(),
+        "method" => method.to_string(),
+        "host" => host,
+        "type" => "app",
+    )
+    .record(start.elapsed().as_secs_f64());
+
+    Ok(response)
 }
