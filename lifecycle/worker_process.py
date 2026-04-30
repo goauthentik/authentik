@@ -104,7 +104,11 @@ def main(worker_id: int, socket_path: str):
     # Notify rust process that we are ready
     os.kill(os.getppid(), signal.SIGUSR2)
 
-    shutdown.wait()
+    # Poll instead of waiting indefinitely so the main thread's eval loop ticks
+    # periodically — PEP 768's debugger pending hook is serviced on the main
+    # thread, and a permanent Event.wait() never returns to bytecode execution.
+    while not shutdown.wait(timeout=1.0):
+        pass
 
     logger.info("Shutting down worker...")
 
