@@ -14,6 +14,7 @@ from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,
@@ -106,6 +107,10 @@ from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
 
+INVALID_PASSWORD_HASH_MESSAGE = gettext_lazy(
+    "Invalid password hash format. Must be a valid Django password hash."
+)
+
 
 class ParamUserSerializer(PassiveSerializer):
     """Partial serializer for query parameters to select a user"""
@@ -190,47 +195,79 @@ class UserSerializer(ModelSerializer):
         return RoleSerializer(instance.roles, many=True).data
 
     def __init__(self, *args, **kwargs):
+        """Setting password and permissions directly is allowed only in blueprints."""
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
+            self.fields["password_hash"] = CharField(required=False, allow_null=True)
             self.fields["permissions"] = ListField(
                 required=False,
                 child=ChoiceField(choices=get_permission_choices()),
             )
 
     def create(self, validated_data: dict) -> User:
-        """If this serializer is used in the blueprint context, we allow for
-        directly setting a password. However should be done via the `set_password`
-        method instead of directly setting it like rest_framework."""
-        password = validated_data.pop("password", None)
-        perms_qs = Permission.objects.filter(
-            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        ).values_list("content_type__app_label", "codename")
-        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
+        """Create a user, with blueprint-only password and permission writes."""
+        is_blueprint = SERIALIZER_CONTEXT_BLUEPRINT in self.context
+        if is_blueprint:
+            password = validated_data.pop("password", None)
+            password_hash = validated_data.pop("password_hash", None)
+            permissions = validated_data.pop("permissions", [])
+            self._validate_password_inputs(password, password_hash)
+
         instance: User = super().create(validated_data)
-        self._set_password(instance, password)
-        instance.assign_perms_to_managed_role(perms_list)
+        if is_blueprint:
+            self._set_password(instance, password, password_hash)
+            perms_qs = Permission.objects.filter(
+                codename__in=[permission.split(".")[1] for permission in permissions]
+            ).values_list("content_type__app_label", "codename")
+            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
+            instance.assign_perms_to_managed_role(perms_list)
+        self._ensure_password_not_empty(instance)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
-        """Same as `create` above, set the password directly if we're in a blueprint
-        context"""
-        password = validated_data.pop("password", None)
-        perms_qs = Permission.objects.filter(
-            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        ).values_list("content_type__app_label", "codename")
-        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
+        """Update a user, with blueprint-only password and permission writes."""
+        is_blueprint = SERIALIZER_CONTEXT_BLUEPRINT in self.context
+        if is_blueprint:
+            password = validated_data.pop("password", None)
+            password_hash = validated_data.pop("password_hash", None)
+            permissions = validated_data.pop("permissions", [])
+            self._validate_password_inputs(password, password_hash)
+
         instance = super().update(instance, validated_data)
-        self._set_password(instance, password)
-        instance.assign_perms_to_managed_role(perms_list)
+        if is_blueprint:
+            self._set_password(instance, password, password_hash)
+            perms_qs = Permission.objects.filter(
+                codename__in=[permission.split(".")[1] for permission in permissions]
+            ).values_list("content_type__app_label", "codename")
+            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
+            instance.assign_perms_to_managed_role(perms_list)
+        self._ensure_password_not_empty(instance)
         return instance
 
-    def _set_password(self, instance: User, password: str | None):
-        """Set password of user if we're in a blueprint context, and if it's an empty
-        string then use an unusable password"""
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and password:
+    def _validate_password_inputs(self, password: str | None, password_hash: str | None):
+        """Validate mutually-exclusive password inputs before any model mutation."""
+        if password is not None and password_hash is not None:
+            raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
+        if password_hash is None:
+            return
+        try:
+            User.validate_password_hash(password_hash)
+        except ValueError as exc:
+            LOGGER.warning("Failed to identify password hash format", exc_info=exc)
+            raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
+
+    def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
+        """Set password from plain text or hash."""
+        if password_hash is not None:
+            instance.set_password_from_hash(password_hash)
+            instance.save()
+        elif password:
             instance.set_password(password)
             instance.save()
+
+    def _ensure_password_not_empty(self, instance: User):
+        """Store an explicit unusable password instead of an empty password field."""
         if len(instance.password) == 0:
             instance.set_unusable_password()
             instance.save()
@@ -395,6 +432,12 @@ class SessionUserSerializer(PassiveSerializer):
 
 class UserPasswordSetSerializer(PassiveSerializer):
     """Payload to set a users' password directly"""
+
+    password = CharField(required=True)
+
+
+class UserPasswordHashSetSerializer(PassiveSerializer):
+    """Payload to set a users' password hash directly"""
 
     password = CharField(required=True)
 
@@ -742,6 +785,11 @@ class UserViewSet(
         self.request.session.modified = True
         return Response(serializer.initial_data)
 
+    def _update_session_hash_after_password_change(self, request: Request, user: User):
+        if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
+            LOGGER.debug("Updating session hash after password change")
+            update_session_auth_hash(self.request, user)
+
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
         request=UserPasswordSetSerializer,
@@ -765,9 +813,45 @@ class UserViewSet(
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
-        if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
-            LOGGER.debug("Updating session hash after password change")
-            update_session_auth_hash(self.request, user)
+        self._update_session_hash_after_password_change(request, user)
+        return Response(status=204)
+
+    @permission_required("authentik_core.reset_user_password")
+    @extend_schema(
+        request=UserPasswordHashSetSerializer,
+        responses={
+            204: OpenApiResponse(description="Successfully changed password"),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(
+        detail=True,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+    )
+    @validate(UserPasswordHashSetSerializer)
+    def set_password_hash(
+        self, request: Request, pk: int, body: UserPasswordHashSetSerializer
+    ) -> Response:
+        """Set a user's password from a pre-hashed Django password value.
+
+        Submit the Django password hash in the shared ``password`` request field.
+
+        This updates authentik's local password verifier only. It does not attempt
+        to propagate the password change to LDAP or Kerberos because no raw password
+        is available from the request payload.
+        """
+        user: User = self.get_object()
+        try:
+            user.set_password_from_hash(body.validated_data["password"], request=request)
+            user.save()
+        except ValueError as exc:
+            LOGGER.debug("Failed to set password hash", exc=exc)
+            return Response(data={"password": [INVALID_PASSWORD_HASH_MESSAGE]}, status=400)
+        except (ValidationError, IntegrityError) as exc:
+            LOGGER.debug("Failed to set password hash", exc=exc)
+            return Response(status=400)
+        self._update_session_hash_after_password_change(request, user)
         return Response(status=204)
 
     @permission_required("authentik_core.reset_user_password")

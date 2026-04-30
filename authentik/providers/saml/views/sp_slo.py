@@ -107,12 +107,25 @@ class SPInitiatedSLOView(PolicyAccessView):
             # Store relay state for the logout response
             plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
 
+            # Look up the session issuer to use in the logout response
+            auth_session = AuthenticatedSession.from_request(request, request.user)
+            session_issuer = None
+            if auth_session:
+                saml_session = SAMLSession.objects.filter(
+                    session=auth_session,
+                    user=request.user,
+                    provider=self.provider,
+                ).first()
+                if saml_session:
+                    session_issuer = saml_session.issuer
+
             if self.provider.logout_method == SAMLLogoutMethods.FRONTCHANNEL_NATIVE:
                 # Native mode - user will be redirected/posted away from authentik
                 processor = LogoutResponseProcessor(
                     self.provider,
                     logout_request,
                     destination=self.provider.sls_url,
+                    issuer=session_issuer,
                 )
 
                 if self.provider.sls_binding == SAMLBindings.POST:
@@ -152,6 +165,7 @@ class SPInitiatedSLOView(PolicyAccessView):
                     sls_url=self.provider.sls_url,
                     logout_request_id=logout_request.id if logout_request else None,
                     relay_state=relay_state,
+                    issuer=session_issuer,
                 )
 
                 LOGGER.debug(
@@ -168,6 +182,7 @@ class SPInitiatedSLOView(PolicyAccessView):
                     self.provider,
                     logout_request,
                     destination=self.provider.sls_url,
+                    issuer=session_issuer,
                 )
 
                 logout_response = processor.build_response()

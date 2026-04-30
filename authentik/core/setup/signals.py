@@ -16,7 +16,11 @@ LOGGER = get_logger()
 
 @receiver(post_startup)
 def post_startup_setup_bootstrap(sender, **_):
-    if not getenv("AUTHENTIK_BOOTSTRAP_PASSWORD") and not getenv("AUTHENTIK_BOOTSTRAP_TOKEN"):
+    if (
+        not getenv("AUTHENTIK_BOOTSTRAP_PASSWORD")
+        and not getenv("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH")
+        and not getenv("AUTHENTIK_BOOTSTRAP_TOKEN")
+    ):
         return
     LOGGER.info("Configuring authentik through bootstrap environment variables")
     content = BlueprintInstance(path=BOOTSTRAP_BLUEPRINT).retrieve()

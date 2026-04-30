@@ -842,6 +842,7 @@ export * from "./UserLogoutStageRequest";
 export * from "./UserMatchingModeEnum";
 export * from "./UserOAuthSourceConnection";
 export * from "./UserOAuthSourceConnectionRequest";
+export * from "./UserPasswordHashSetRequest";
 export * from "./UserPasswordSetRequest";
 export * from "./UserPath";
 export * from "./UserPlexSourceConnection";

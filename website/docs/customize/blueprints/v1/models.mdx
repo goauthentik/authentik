@@ -45,6 +45,33 @@ For example:
       password: this-should-be-a-long-value
 ```
 
+### `password_hash`
+
+In blueprints, a user's password can also be set using the `password_hash` field. The value must be a valid Django password hash, such as one generated with the `hash_password` management command.
+
+Use `password_hash` when you need to import or bootstrap an existing hash without exposing the raw password to authentik:
+
+```bash
+docker compose run --rm server hash_password 'your-password'
+```
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_core.user
+  state: present
+  identifiers:
+      username: test-user
+  attrs:
+      name: test user
+      password_hash: pbkdf2_sha256$1000000$xKKFuYtJEE27km09BD49x2$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM=
+```
+
+`password` and `password_hash` are mutually exclusive; setting both on the same user causes blueprint validation to fail.
+
+`password_hash` follows the [hashed-password import behavior](../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash): it updates only authentik's local password verifier and does not propagate to LDAP or Kerberos integrations.
+
 ### `permissions`
 
 The `permissions` field can be used to set global permissions for a user. A full list of possible permissions is included in the JSON schema for blueprints.
