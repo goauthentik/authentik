@@ -323,14 +323,7 @@ pub(crate) fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
         let router = healthcheck::build_router(Arc::clone(&workers));
 
         for addr in config::get().listen.http.iter().copied() {
-            ak_axum::server::start_plain(
-                tasks,
-                "worker",
-                router.clone(),
-                addr,
-                config::get().debug, /* Allow failure in case the server is running on the same
-                                      * machine, like in dev. */
-            )?;
+            ak_axum::server::start_plain(tasks, "worker", router.clone(), addr)?;
         }
 
         ak_axum::server::start_unix(
@@ -338,8 +331,6 @@ pub(crate) fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
             "worker",
             router,
             unix::net::SocketAddr::from_pathname(socket_path())?,
-            config::get().debug, /* Allow failure in case the server is running on the same
-                                  * machine, like in dev. */
         )?;
     }
 
