@@ -29,6 +29,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
+LOCKDOWN_EVENT_ACTION_ID = "account_lockdown"
 
 TARGET_REQUIRED_MESSAGE = _("No target user specified for account lockdown")
 PERMISSION_DENIED_MESSAGE = _("You do not have permission to lock down this account.")
@@ -211,7 +212,8 @@ class AccountLockdownStageView(StageView):
         # failed even though the account changes have already been committed.
         try:
             Event.new(
-                EventAction.USER_LOCKDOWN_TRIGGERED,
+                EventAction.USER_WRITE,
+                action_id=LOCKDOWN_EVENT_ACTION_ID,
                 reason=reason,
                 affected_user=user.username,
             ).from_http(request)

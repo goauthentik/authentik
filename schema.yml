@@ -38775,7 +38775,6 @@ components:
       - source_linked
       - impersonation_started
       - impersonation_ended
-      - user_lockdown_triggered
       - flow_execution
       - policy_execution
       - policy_exception

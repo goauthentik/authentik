@@ -105,9 +105,10 @@ Since the user's session is deleted, the stage redirects to a separate unauthent
 Use Notification Rules to alert when lockdowns occur:
 
 1. Navigate to **Customization** > **Policies** and create an **Event Matcher Policy**
-2. Set **Action** to **User Lockdown Triggered**
-3. Navigate to **Events** > **Notification Rules** and create a rule
-4. Bind the Event Matcher Policy to the rule
+2. Set **Action** to **User Write**
+3. Set **Query** to `context.action_id = "account_lockdown"`
+4. Navigate to **Events** > **Notification Rules** and create a rule
+5. Bind the Event Matcher Policy to the rule
 
 ## Restore access after lockdown
 

@@ -34,7 +34,6 @@ const (
 	EVENTACTIONS_SOURCE_LINKED              EventActions = "source_linked"
 	EVENTACTIONS_IMPERSONATION_STARTED      EventActions = "impersonation_started"
 	EVENTACTIONS_IMPERSONATION_ENDED        EventActions = "impersonation_ended"
-	EVENTACTIONS_USER_LOCKDOWN_TRIGGERED    EventActions = "user_lockdown_triggered"
 	EVENTACTIONS_FLOW_EXECUTION             EventActions = "flow_execution"
 	EVENTACTIONS_POLICY_EXECUTION           EventActions = "policy_execution"
 	EVENTACTIONS_POLICY_EXCEPTION           EventActions = "policy_exception"
@@ -72,7 +71,6 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"source_linked",
 	"impersonation_started",
 	"impersonation_ended",
-	"user_lockdown_triggered",
 	"flow_execution",
 	"policy_execution",
 	"policy_exception",

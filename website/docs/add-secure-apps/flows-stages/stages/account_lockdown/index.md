@@ -61,12 +61,13 @@ The completion flow must have **Authentication** set to **No authentication requ
 
 ## Events
 
-Creates a **User Lockdown Triggered** event. Use [Notification Rules](../../../../sys-mgmt/events/index.md) to send alerts.
+Creates a **User Write** event with an account-lockdown action ID. Use [Notification Rules](../../../../sys-mgmt/events/index.md) to send alerts. To match account-lockdown events, use action `user_write` and query `context.action_id = "account_lockdown"`.
 
 ```json
 {
-    "action": "user_lockdown_triggered",
+    "action": "user_write",
     "context": {
+        "action_id": "account_lockdown",
         "reason": "User-provided reason",
         "affected_user": "username"
     }

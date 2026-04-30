@@ -23,6 +23,7 @@ from authentik.core.tests.utils import (
 )
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.enterprise.stages.account_lockdown.stage import (
+    LOCKDOWN_EVENT_ACTION_ID,
     PLAN_CONTEXT_LOCKDOWN_REASON,
     AccountLockdownStageView,
     can_lock_user,
@@ -105,6 +106,13 @@ class AccountLockdownStageTestMixin:
             user=user,
         )
 
+    def get_lockdown_event(self):
+        """Return the account-lockdown user-write event."""
+        return Event.objects.filter(
+            action=EventAction.USER_WRITE,
+            context__action_id=LOCKDOWN_EVENT_ACTION_ID,
+        ).first()
+
 
 class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
     """Account lockdown stage tests"""
@@ -138,8 +146,9 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         self.assertEqual(response.status_code, 204)
 
         # Check event was created
-        event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
+        event = self.get_lockdown_event()
         self.assertIsNotNone(event)
+        self.assertEqual(event.context["action_id"], LOCKDOWN_EVENT_ACTION_ID)
         self.assertEqual(event.context["reason"], "Security incident")
         self.assertEqual(event.context["affected_user"], self.target_user.username)
 
@@ -174,7 +183,7 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         request = self.make_request(user=self.user)
         view._lockdown_user(request, self.stage, self.target_user, view.get_reason())
 
-        event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
+        event = self.get_lockdown_event()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["reason"], "User requested lockdown")
 
@@ -194,7 +203,10 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         original_event_new = Event.new
 
         def _event_new_side_effect(action, *args, **kwargs):
-            if action == EventAction.USER_LOCKDOWN_TRIGGERED:
+            if (
+                action == EventAction.USER_WRITE
+                and kwargs.get("action_id") == LOCKDOWN_EVENT_ACTION_ID
+            ):
                 raise RuntimeError("simulated event failure")
             return original_event_new(action, *args, **kwargs)
 
@@ -225,7 +237,10 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         original_event_new = Event.new
 
         def _event_new_side_effect(action, *args, **kwargs):
-            if action == EventAction.USER_LOCKDOWN_TRIGGERED:
+            if (
+                action == EventAction.USER_WRITE
+                and kwargs.get("action_id") == LOCKDOWN_EVENT_ACTION_ID
+            ):
                 raise RuntimeError("simulated event failure")
             return original_event_new(action, *args, **kwargs)
 
@@ -438,7 +453,7 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
         # Password should still be usable
         self.assertTrue(self.target_user.has_usable_password())
         # Event should still be created
-        event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
+        event = self.get_lockdown_event()
         self.assertIsNotNone(event)
 
     def test_lockdown_deactivation_inhibits_signal_dispatch_until_after_commit(self):
@@ -507,7 +522,7 @@ class TestAccountLockdownStage(AccountLockdownStageTestMixin, FlowTestCase):
 
         self.target_user.refresh_from_db()
         self.assertFalse(self.target_user.is_active)
-        event = Event.objects.filter(action=EventAction.USER_LOCKDOWN_TRIGGERED).first()
+        event = self.get_lockdown_event()
         self.assertIsNotNone(event)
 
 

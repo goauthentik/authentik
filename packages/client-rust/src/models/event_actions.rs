@@ -39,8 +39,6 @@ pub enum EventActions {
     ImpersonationStarted,
     #[serde(rename = "impersonation_ended")]
     ImpersonationEnded,
-    #[serde(rename = "user_lockdown_triggered")]
-    UserLockdownTriggered,
     #[serde(rename = "flow_execution")]
     FlowExecution,
     #[serde(rename = "policy_execution")]
@@ -99,7 +97,6 @@ impl std::fmt::Display for EventActions {
             Self::SourceLinked => write!(f, "source_linked"),
             Self::ImpersonationStarted => write!(f, "impersonation_started"),
             Self::ImpersonationEnded => write!(f, "impersonation_ended"),
-            Self::UserLockdownTriggered => write!(f, "user_lockdown_triggered"),
             Self::FlowExecution => write!(f, "flow_execution"),
             Self::PolicyExecution => write!(f, "policy_execution"),
             Self::PolicyException => write!(f, "policy_exception"),
