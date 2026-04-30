@@ -78,7 +78,8 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         .name(&format!("{}::run_upkeep", module_path!()))
         .spawn(run_upkeep(arbiter, Arc::clone(&metrics)))?;
 
-    // Only run HTTP server in worker mode, in server or allinone mode, they're handled by the server.
+    // Only run HTTP server in worker mode, in server or allinone mode, they're handled by the
+    // server.
     if Mode::get() == Mode::Worker {
         for addr in config::get().listen.metrics.iter().copied() {
             server::start_plain(tasks, "metrics", router.clone(), addr)?;

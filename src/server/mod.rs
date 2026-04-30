@@ -1,10 +1,12 @@
+use std::{env::temp_dir, path::PathBuf, process::Stdio, sync::Arc};
+
 use ak_common::{Arbiter, Tasks, config};
 use argh::FromArgs;
 use eyre::{Result, eyre};
-use nix::sys::signal::{Signal, kill};
-use nix::unistd::Pid;
-use std::sync::Arc;
-use std::{env::temp_dir, path::PathBuf, process::Stdio};
+use nix::{
+    sys::signal::{Signal, kill},
+    unistd::Pid,
+};
 use tokio::{
     process::{Child, Command},
     sync::Mutex,
