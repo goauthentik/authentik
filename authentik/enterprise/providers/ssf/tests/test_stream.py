@@ -54,7 +54,7 @@ class TestStream(APITestCase):
         self.assertEqual(event.status, SSFEventStatus.PENDING_FAILED)
         self.assertEqual(
             event.payload["events"],
-            {"https://schemas.openid.net/secevent/ssf/event-type/verification": {"state": None}},
+            {"https://schemas.openid.net/secevent/ssf/event-type/verification": {}},
         )
 
     def test_stream_add_poll(self):

@@ -33,7 +33,7 @@ class TestTasks(APITestCase):
         )
         event_data = stream.prepare_event_payload(
             EventTypes.SET_VERIFICATION,
-            {"state": None},
+            {},
             sub_id={"format": "opaque", "id": str(stream.uuid)},
         )
         with Mocker() as mocker:
@@ -58,7 +58,7 @@ class TestTasks(APITestCase):
         )
         event_data = stream.prepare_event_payload(
             EventTypes.SET_VERIFICATION,
-            {"state": None},
+            {},
             sub_id={"format": "opaque", "id": str(stream.uuid)},
         )
         with Mocker() as mocker:
@@ -85,7 +85,7 @@ class TestTasks(APITestCase):
         )
         event_data = stream.prepare_event_payload(
             EventTypes.SET_VERIFICATION,
-            {"state": None},
+            {},
             sub_id={"format": "opaque", "id": str(stream.uuid)},
         )
         with Mocker() as mocker:
@@ -106,7 +106,7 @@ class TestTasks(APITestCase):
         )
         event_data = stream.prepare_event_payload(
             EventTypes.SET_VERIFICATION,
-            {"state": None},
+            {},
             sub_id={"format": "opaque", "id": str(stream.uuid)},
         )
         with Mocker() as mocker:
