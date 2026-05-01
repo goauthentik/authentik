@@ -98,7 +98,7 @@ Before upgrading an air-gapped deployment, review the [release notes](../../rele
   ]}>
   <TabItem value="docker-compose">
 
-On a system with internet access, download the target release's `compose.yml`, then mirror the authentik server image referenced by that file. If you use managed outposts, mirror the matching outpost images as well.
+On a system with internet access, download the target release's `compose.yml` file, then mirror the authentik server image that is referenced by that file. If you use managed outposts, mirror the matching outpost images as well.
 
 After transferring the updated `compose.yml` into the air-gapped environment, update your `.env` file to point to the mirrored authentik image repository and target tag:
 
