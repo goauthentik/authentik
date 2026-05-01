@@ -220,6 +220,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                     name="failureResult"
                     label=${msg("Failure result")}
                     .options=${createPassFailOptions}
+                    required
                 ></ak-radio-input>
             </form>`;
     }
