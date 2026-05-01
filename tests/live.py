@@ -61,6 +61,10 @@ class E2ETestMixin(DockerTestCase):
 
 
 class SSLLiveMixin(DockerTestCase):
+    """Mixin to provide an SSL-enabled webserver for integration/e2e tests that require it.
+
+    Overrides `live_server_url` and as such other all usual helper functions will return an HTTPS
+    URL. Certificate is self-signed and random on each run."""
 
     def setUp(self):
         super().setUp()
@@ -86,9 +90,7 @@ class SSLLiveMixin(DockerTestCase):
                     }
                 },
                 "services": {
-                    "authentik": {
-                        "loadBalancer": {"servers": [{"url": super().live_server_url}]}
-                    }
+                    "authentik": {"loadBalancer": {"servers": [{"url": super().live_server_url}]}}
                 },
             }
         }
@@ -105,9 +107,6 @@ class SSLLiveMixin(DockerTestCase):
                 "--api.dashboard=true",
                 "--api.insecure=true",
             ],
-            # extra_hosts={
-            #     "host.docker.internal": "host-gateway",
-            # },
             ports={
                 "9443": None,
             },
