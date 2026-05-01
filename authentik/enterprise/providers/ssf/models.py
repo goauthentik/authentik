@@ -25,15 +25,23 @@ class EventTypes(models.TextChoices):
 
     CAEP_SESSION_REVOKED = "https://schemas.openid.net/secevent/caep/event-type/session-revoked"
     """https://openid.net/specs/openid-caep-1_0-final.html#section-3.1"""
-    CAEP_TOKEN_CLAIMS_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/token-claims-change"
+    CAEP_TOKEN_CLAIMS_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/token-claims-change"
+    )
     """https://openid.net/specs/openid-caep-1_0-final.html#section-3.2"""
     CAEP_CREDENTIAL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/credential-change"
     """https://openid.net/specs/openid-caep-1_0-final.html#section-3.3"""
-    CAEP_ASSURANCE_LEVEL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/assurance-level-change"
+    CAEP_ASSURANCE_LEVEL_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/assurance-level-change"
+    )
     """https://openid.net/specs/openid-caep-1_0-final.html#section-3.4"""
-    CAEP_DEVICE_COMPLIANCE_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/device-compliance-change"
+    CAEP_DEVICE_COMPLIANCE_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/device-compliance-change"
+    )
     """https://openid.net/specs/openid-caep-1_0-final.html#section-3.5"""
-    CAEP_SESSION_ESTABLISHED = "https://schemas.openid.net/secevent/caep/event-type/session-established"
+    CAEP_SESSION_ESTABLISHED = (
+        "https://schemas.openid.net/secevent/caep/event-type/session-established"
+    )
     """https://openid.net/specs/openid-caep-1_0-final.html#section-3.6"""
     CAEP_SESSION_PRESENTED = "https://schemas.openid.net/secevent/caep/event-type/session-presented"
     """https://openid.net/specs/openid-caep-1_0-final.html#section-3.7"""
