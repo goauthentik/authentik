@@ -4151,9 +4151,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sd65f96914ccbeb76">
   <source>User Search</source>
 </trans-unit>
-<trans-unit id="s3616cc78631f5893">
-  <source>Warning: You're about to delete the user you're logged in as (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Proceed at your own risk.</source>
-</trans-unit>
 <trans-unit id="s7c6c86d9a97ed706">
   <source>Show deactivated users</source>
 </trans-unit>
@@ -5589,9 +5586,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s2e9d5ea88f02ae68">
   <source>Select the group of users which the alerts are sent to. </source>
-</trans-unit>
-<trans-unit id="se630f2ccd39bf9e6">
-  <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
 </trans-unit>
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
@@ -7068,9 +7062,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s567c5a6e42cc5036">
   <source>Maximum page size for API requests.</source>
 </trans-unit>
-<trans-unit id="sed1058bca1c065f7">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
-</trans-unit>
 <trans-unit id="s9864bd5cd7bb4bd0">
   <source>Local connection</source>
 </trans-unit>
@@ -7596,14 +7587,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1b5d2f91633b74d6">
   <source>Reviewer groups</source>
 </trans-unit>
-<trans-unit id="s94c5d9fea467cdbb">
-  <source>Min reviewers</source>
-</trans-unit>
 <trans-unit id="s693370c05900a1c6">
   <source>Number of users from the selected reviewer groups that must approve the review.</source>
-</trans-unit>
-<trans-unit id="s20c950d20c8aec84">
-  <source>Min reviewers is per-group</source>
 </trans-unit>
 <trans-unit id="s74906f78877111cb">
   <source>Reviewers</source>
@@ -8402,9 +8387,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6e89acb429653073">
   <source>Search for a lifecycle rule by name or target...</source>
 </trans-unit>
-<trans-unit id="sb5ff45c4476cd097">
-  <source>Search tasks...</source>
-</trans-unit>
 <trans-unit id="sfc53e352afbca881">
   <source>Review</source>
 </trans-unit>
@@ -8881,9 +8863,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="form.headline.activation">
   <source>Review <x id="0" equiv-text="${this.verboseName}"/> Activation</source>
 </trans-unit>
-<trans-unit id="usedBy.associated-objects.label">
-  <source>Objects associated with this user</source>
-</trans-unit>
 <trans-unit id="sa2ddb53b55f7432b">
   <source>Objects</source>
 </trans-unit>
@@ -9025,6 +9004,108 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="form.submitting.no-entity">
   <source><x id="0" equiv-text="${submittingVerb}"/>...</source>
   <note from="lit-localize">The message shown while a form is being submitted, when no entity name is provided.</note>
+</trans-unit>
+<trans-unit id="sddfad4253602f965">
+  <source>Account lockdown flow</source>
+</trans-unit>
+<trans-unit id="sda9155d390bca7b4">
+  <source>Select an account lockdown flow...</source>
+</trans-unit>
+<trans-unit id="s77321fadb314f860">
+  <source>Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.</source>
+</trans-unit>
+<trans-unit id="sf4ccddbac7b6ec31">
+  <source>Account lockdown flows should require authentication so they can only be started from a signed-in session.</source>
+</trans-unit>
+<trans-unit id="sc9e81e2f575bcf24">
+  <source>If no group is selected and 'Send notification to event user' is disabled, the rule is disabled.</source>
+</trans-unit>
+<trans-unit id="sd30f00ff2135589c">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+</trans-unit>
+<trans-unit id="s1c0267488c33401b">
+  <source>Minimum reviewers</source>
+</trans-unit>
+<trans-unit id="sa80395e2be5324e4">
+  <source>Minimum reviewers is per-group</source>
+</trans-unit>
+<trans-unit id="se18d75eda2628862">
+  <source>The following reviews apply to this object:</source>
+</trans-unit>
+<trans-unit id="sea618ff863cfa3da">
+  <source>This object has no reviews yet.</source>
+</trans-unit>
+<trans-unit id="sea74bf2b70c27113">
+  <source>Rule</source>
+</trans-unit>
+<trans-unit id="s5ba577d0cda2bad2">
+  <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
+</trans-unit>
+<trans-unit id="sc2908875e6774352">
+  <source>Type a name for this stage...</source>
+</trans-unit>
+<trans-unit id="scf443deca2f466b6">
+  <source>Deactivate user</source>
+</trans-unit>
+<trans-unit id="s2abd586c2258eae4">
+  <source>Deactivate the user account (set is_active to False).</source>
+</trans-unit>
+<trans-unit id="s89db6a525bb42303">
+  <source>Set unusable password</source>
+</trans-unit>
+<trans-unit id="s52dc7e97dfbb99dd">
+  <source>Set an unusable password for the user.</source>
+</trans-unit>
+<trans-unit id="sb144fbff5de59af3">
+  <source>Delete sessions</source>
+</trans-unit>
+<trans-unit id="s20fb386bfce5e225">
+  <source>Delete all active sessions for the user.</source>
+</trans-unit>
+<trans-unit id="s6216c07f360073f7">
+  <source>Revoke tokens</source>
+</trans-unit>
+<trans-unit id="s334ebfb3605630b0">
+  <source>Revoke all tokens for the user (API, app password, recovery, verification).</source>
+</trans-unit>
+<trans-unit id="sdd3dfdd51bfbcd21">
+  <source>Self-service completion</source>
+</trans-unit>
+<trans-unit id="s0ef55fed99322c71">
+  <source>Configure what happens after a user locks their own account. Since all sessions are deleted, the user cannot continue in the current flow and will be redirected to a separate completion flow.</source>
+</trans-unit>
+<trans-unit id="sa42bdb7e1f7c8b75">
+  <source>Completion flow</source>
+</trans-unit>
+<trans-unit id="sf8f0cfd7ce5e081a">
+  <source>Select a completion flow...</source>
+</trans-unit>
+<trans-unit id="s7f8967e8077f2734">
+  <source>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted.</source>
+</trans-unit>
+<trans-unit id="se84707d40ed8f349">
+  <source>Alert (Info): Static alert box with info styling</source>
+</trans-unit>
+<trans-unit id="sb919fcbc8720c669">
+  <source>Alert (Warning): Static alert box with warning styling</source>
+</trans-unit>
+<trans-unit id="sa50b13d36ee4f763">
+  <source>Alert (Danger): Static alert box with danger styling</source>
+</trans-unit>
+<trans-unit id="s1c23a9eed1a415df">
+  <source>Warning: You are about to delete user <x id="0" equiv-text="${shouldShowWarning.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
+</trans-unit>
+<trans-unit id="s11064f3323dac957">
+  <source>Account Lockdown</source>
+</trans-unit>
+<trans-unit id="s01a8d45397ec133b">
+  <source>Security</source>
+</trans-unit>
+<trans-unit id="s5a1cd1f7b7a43204">
+  <source>If you suspect your account has been compromised, you can immediately lock it to prevent unauthorized access.</source>
+</trans-unit>
+<trans-unit id="s36535ff645fd37f7">
+  <source>Lock my account</source>
 </trans-unit>
 </body>
 </file>

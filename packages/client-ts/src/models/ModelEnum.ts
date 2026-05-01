@@ -175,6 +175,8 @@ export const ModelEnum = {
     AuthentikProvidersWsFederationWsfederationprovider:
         "authentik_providers_ws_federation.wsfederationprovider",
     AuthentikReportsDataexport: "authentik_reports.dataexport",
+    AuthentikStagesAccountLockdownAccountlockdownstage:
+        "authentik_stages_account_lockdown.accountlockdownstage",
     AuthentikStagesAuthenticatorEndpointGdtcAuthenticatorendpointgdtcstage:
         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
     AuthentikStagesMtlsMutualtlsstage: "authentik_stages_mtls.mutualtlsstage",
