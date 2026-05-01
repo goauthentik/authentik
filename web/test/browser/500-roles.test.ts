@@ -161,8 +161,13 @@ test.describe("Roles", () => {
         });
 
         await test.step("Verify role name updated on view page", async () => {
+            // The role name shows up in both the page-navbar heading (as
+            // "Role <name>") and the description-list text (raw <name>); a
+            // bare getByText match hits both and triggers strict-mode. Pin
+            // to the description list so we're asserting the canonical
+            // value the edit just wrote, not the heading template.
             await expect(
-                page.getByText(updatedName),
+                page.getByText(updatedName, { exact: true }),
                 "Updated role name is visible on view page",
             ).toBeVisible();
         });

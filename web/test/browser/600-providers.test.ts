@@ -17,7 +17,15 @@ test.describe("Provider Wizard", () => {
 
         const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
 
-        await test.step("Authenticate", async () => session.login());
+        // session.login() with no `to` waits for the auth flow URL pattern to
+        // re-appear, which it does immediately (we just navigated there), so
+        // the helper returns *before* the post-login redirect lands. The
+        // wizard buttons probed below live on /if/admin/#/core/providers, so
+        // pin the destination explicitly — same shape as the other test files.
+        await test.step("Authenticate", async () =>
+            session.login({
+                to: "/if/admin/#/core/providers",
+            }));
 
         await test.step("Navigate to provider wizard", async () => {
             await expect(dialog, "Dialog is initially closed").toBeHidden();
