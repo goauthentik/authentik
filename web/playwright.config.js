@@ -23,8 +23,9 @@ export default defineConfig({
     testDir: "./test/browser",
     fullyParallel: true,
     forbidOnly: CI,
-    retries: CI ? 2 : 0,
-    workers: CI ? 1 : undefined,
+    retries: CI ? 1 : 0,
+    workers: CI ? "50%" : undefined,
+    maxFailures: CI ? 5 : 0,
     reporter: CI
         ? [
               // ---
