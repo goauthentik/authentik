@@ -30,7 +30,11 @@ import "#elements/ak-mdx/ak-mdx";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { AKRefreshEvent } from "#common/events";
 import { userTypeToLabel } from "#common/labels";
-import { formatDisambiguatedUserDisplayName, formatUserDisplayName } from "#common/users";
+import {
+    formatDisambiguatedUserDisplayName,
+    formatUserDisplayName,
+    startAccountLockdown,
+} from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
@@ -41,7 +45,6 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithLocale } from "#elements/mixins/locale";
 import { WithSession } from "#elements/mixins/session";
 import { Timestamp } from "#elements/table/shared";
-import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
@@ -151,19 +154,21 @@ export class UserViewPage extends WithLicenseSummary(
 
         const user = this.user;
 
-        // prettier-ignore
         const userInfo: DescriptionPair[] = [
-            [ msg("Username"), user.username ],
-            [ msg("Name"), user.name ],
-            [ msg("Email"), user.email || "-" ],
-            [ msg("Last login"), Timestamp(user.lastLogin) ],
-            [ msg("Last password change"), Timestamp(user.passwordChangeDate) ],
-            [ msg("Active"), html`<ak-status-label ?good=${user.isActive}></ak-status-label>` ],
-            [ msg("Type"), userTypeToLabel(user.type) ],
-            [ msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>` ],
-            [ msg("Actions"), this.renderActionButtons(user) ],
-            [ msg("Recovery"), this.renderRecoveryButtons(user) ],
-        ]
+            [msg("Username"), user.username],
+            [msg("Name"), user.name],
+            [msg("Email"), user.email || "-"],
+            [msg("Last login"), Timestamp(user.lastLogin)],
+            [msg("Last password change"), Timestamp(user.passwordChangeDate)],
+            [msg("Active"), html`<ak-status-label ?good=${user.isActive}></ak-status-label>`],
+            [msg("Type"), userTypeToLabel(user.type)],
+            [
+                msg("Superuser"),
+                html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`,
+            ],
+            [msg("Actions"), this.renderActionButtons(user)],
+            [msg("Recovery"), this.renderRecoveryButtons(user)],
+        ];
 
         return html`
             <div class="pf-c-card__title">${msg("User Info")}</div>
@@ -173,9 +178,21 @@ export class UserViewPage extends WithLicenseSummary(
         `;
     }
 
-    protected renderActionButtons(user: User): SlottedTemplateResult {
+    /**
+     * Initiates the account lockdown flow for this user, if any.
+     */
+    protected lockdownUser = async () => {
+        if (!this.user) {
+            return;
+        }
+
+        return startAccountLockdown(this.user.pk).catch(showAPIErrorMessage);
+    };
+
+    protected renderActionButtons(user: User) {
         const showImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
+        const showLockdown = this.hasEnterpriseLicense && user.pk !== this.currentUser?.pk;
 
         const displayName = formatUserDisplayName(user);
 
@@ -188,6 +205,15 @@ export class UserViewPage extends WithLicenseSummary(
             </button>
 
             ${ToggleUserActivationButton(user, { className: "pf-m-block" })}
+            ${showLockdown
+                ? html`<button
+                      class="pf-c-button pf-m-danger pf-m-block"
+                      @click=${this.lockdownUser}
+                      type="button"
+                  >
+                      ${msg("Account Lockdown")}
+                  </button>`
+                : null}
             ${showImpersonate
                 ? html`<button
                       class="pf-c-button pf-m-tertiary pf-m-block"
