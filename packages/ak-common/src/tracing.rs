@@ -100,6 +100,7 @@ mod json {
         );
 
         let mut json_layer = json_subscriber::fmt::layer()
+            .with_level(false)
             .with_timer(LocalTime::new(time_format))
             .with_file(true)
             .with_line_number(true)
@@ -109,6 +110,11 @@ mod json {
         let inner_layer = json_layer.inner_layer_mut();
         inner_layer.with_thread_ids("thread_id");
         inner_layer.with_thread_names("thread_name");
+        inner_layer.add_dynamic_field("level", |event, _| {
+            Some(serde_json::Value::String(
+                event.metadata().level().as_str().to_lowercase(),
+            ))
+        });
         inner_layer.add_dynamic_field("pid", |_, _| {
             Some(serde_json::Value::Number(serde_json::Number::from(
                 std::process::id(),
