@@ -1,5 +1,3 @@
-import "#admin/applications/wizard/ak-wizard-title";
-
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError } from "#common/errors/network";
@@ -154,7 +152,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 return;
             }
 
-            this.handleUpdate({ errors: parsedError });
+            this.dispatchEvents({ update: { errors: parsedError } });
             this.state = "reviewing";
         }
     }
@@ -243,7 +241,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                     }
                 }
 
-                this.handleUpdate({ errors: parsedError });
+                this.dispatchEvents({ update: { errors: parsedError } });
                 this.state = "reviewing";
             });
     }
@@ -269,19 +267,22 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             });
     }
 
-    get buttons(): WizardButton[] {
-        const forReview: WizardButton[] = [
-            { kind: "cancel" },
-            { kind: "back", destination: "bindings" },
-            { kind: "next", label: msg("Create Application"), destination: "here" },
-        ];
-
-        const forSubmit: WizardButton[] = [{ kind: "close" }];
-
+    protected get buttons(): WizardButton[] {
         return match(this.state)
-            .with("submitted", () => forSubmit)
+            .with("submitted", () => {
+                return [
+                    { kind: "close" },
+                    { kind: "finish", destination: "close" },
+                ] satisfies WizardButton[];
+            })
+            .with("reviewing", () => {
+                return [
+                    { kind: "cancel" },
+                    { kind: "back", destination: "bindings" },
+                    { kind: "next", label: msg("Create Application"), destination: "here" },
+                ] satisfies WizardButton[];
+            })
             .with("running", () => [])
-            .with("reviewing", () => forReview)
             .exhaustive();
     }
 
@@ -377,36 +378,53 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         const metaLaunchUrl = app.metaLaunchUrl?.trim();
 
-        return html`
-            <div class="ak-wizard-main-content">
-                <ak-wizard-title>${msg("Review the Application and Provider")}</ak-wizard-title>
-                <h2 class="pf-c-title pf-m-xl">${msg("Application")}</h2>
-                <dl class="pf-c-description-list">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">${msg("Name")}</dt>
-                        <dt class="pf-c-description-list__description">${app.name}</dt>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">${msg("Group")}</dt>
-                        <dt class="pf-c-description-list__description">${app.group || msg("-")}</dt>
-                    </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">${msg("Policy engine mode")}</dt>
-                        <dt class="pf-c-description-list__description">
-                            ${app.policyEngineMode?.toUpperCase()}
-                        </dt>
-                    </div>
-                    ${metaLaunchUrl
-                        ? html`<div class="pf-c-description-list__group">
-                              <dt class="pf-c-description-list__term">${msg("Launch URL")}</dt>
-                              <dt class="pf-c-description-list__description">${metaLaunchUrl}</dt>
-                          </div>`
-                        : nothing}
-                </dl>
-                ${renderer
-                    ? html`<h2 class="pf-c-title pf-m-xl pf-u-pt-xl">${msg("Provider")}</h2>
-                          ${renderer(provider)}`
-                    : nothing}
+        return html`<h2 class="pf-c-wizard__main-title">
+                    ${msg("Review the Application and Provider")}
+                </h2>
+                <fieldset>
+                    <legend>${msg("Application Details")}</legend>
+                    <dl class="pf-c-description-list">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">${msg("Application Name")}</dt>
+                            <dt class="pf-c-description-list__description">${app.name}</dt>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">${msg("Group")}</dt>
+                            <dt class="pf-c-description-list__description">
+                                ${app.group || msg("-")}
+                            </dt>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                ${msg("Policy engine mode")}
+                            </dt>
+                            <dt class="pf-c-description-list__description">
+                                ${app.policyEngineMode?.toUpperCase()}
+                            </dt>
+                        </div>
+                        ${
+                            metaLaunchUrl
+                                ? html`<div class="pf-c-description-list__group">
+                                      <dt class="pf-c-description-list__term">
+                                          ${msg("Launch URL")}
+                                      </dt>
+                                      <dt class="pf-c-description-list__description">
+                                          ${metaLaunchUrl}
+                                      </dt>
+                                  </div>`
+                                : nothing
+                        }
+                    </dl>
+                </fieldset>
+
+                ${
+                    renderer
+                        ? html`<fieldset>
+                              <legend>${msg("Provider Details")}</legend>
+                              ${renderer(provider)}
+                          </fieldset>`
+                        : null
+                }
             </div>
         `;
     }

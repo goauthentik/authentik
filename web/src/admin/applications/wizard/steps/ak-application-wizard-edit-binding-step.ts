@@ -1,5 +1,4 @@
 import "#components/ak-number-input";
-import "#admin/applications/wizard/ak-wizard-title";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
@@ -27,7 +26,7 @@ import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWiz
 
 import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
@@ -50,17 +49,15 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
     @state()
     policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
 
-    instanceId = -1;
+    protected instanceId = -1;
 
-    instance?: PolicyBinding;
+    protected instance: PolicyBinding | null = null;
 
-    get buttons(): WizardButton[] {
-        return [
-            { kind: "cancel" },
-            { kind: "next", label: msg("Save Binding"), destination: "bindings" },
-            { kind: "back", destination: "bindings" },
-        ];
-    }
+    protected buttons: WizardButton[] = [
+        { kind: "cancel" },
+        { kind: "back", destination: "bindings" },
+        { kind: "next", label: msg("Save Binding"), destination: "bindings" },
+    ];
 
     public override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
@@ -84,12 +81,14 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
             }
 
             this.instanceId = -1;
-            this.handleUpdate({ bindings }, "bindings");
 
-            return;
+            return this.dispatchEvents({
+                update: { bindings },
+                destination: "bindings",
+            });
         }
 
-        super.handleButton(button);
+        return super.handleButton(button);
     }
 
     // The search select configurations for the three different types of fetches that we care about,
@@ -153,7 +152,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
         }
     }
 
-    renderSearch(title: string, policyKind: PolicyBindingCheckTarget) {
+    protected renderSearch(title: string, policyKind: PolicyBindingCheckTarget) {
         if (policyKind !== this.policyGroupUser) {
             return nothing;
         }
@@ -163,12 +162,15 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                 .config=${this.searchSelectConfigs(policyKind)}
                 class="policy-search-select"
                 blankable
+                placeholder=${msg(str`Select a ${title}...`)}
             ></ak-search-select-ez>
         </ak-form-element-horizontal>`;
     }
 
-    renderForm(instance?: PolicyBinding) {
-        return html`<ak-wizard-title>${msg("Create a Policy/User/Group Binding")}</ak-wizard-title>
+    protected renderForm(instance?: PolicyBinding | null) {
+        return html`<h3 class="pf-c-wizard__main-title">
+                ${msg("Create a Policy/User/Group Binding")}
+            </h3>
             <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
                 <div class="pf-c-card pf-m-selectable pf-m-selected">
                     <div class="pf-c-card__body">
@@ -222,16 +224,18 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
             </form>`;
     }
 
-    renderMain() {
+    protected renderMain() {
         if (!(this.wizard.bindings && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }
+
         const currentBinding = this.wizard.currentBinding ?? -1;
+
         if (this.instanceId !== currentBinding) {
             this.instanceId = currentBinding;
-            this.instance =
-                this.instanceId === -1 ? undefined : this.wizard.bindings[this.instanceId];
+            this.instance = this.instanceId === -1 ? null : this.wizard.bindings[this.instanceId];
         }
+
         return this.renderForm(this.instance);
     }
 }

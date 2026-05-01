@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from django.db.models import BooleanField as ModelBooleanField
-from django.db.models import Case, Q, Value, When
+from django.db.models import Exists, OuterRef, Q, Subquery
 from django_filters.rest_framework import BooleanFilter, FilterSet
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
@@ -14,7 +13,7 @@ from rest_framework.viewsets import GenericViewSet
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.lifecycle.api.reviews import ReviewSerializer
-from authentik.enterprise.lifecycle.models import LifecycleIteration, ReviewState
+from authentik.enterprise.lifecycle.models import LifecycleIteration, LifecycleRule, ReviewState
 from authentik.enterprise.lifecycle.utils import (
     ContentTypeField,
     ReviewerGroupSerializer,
@@ -26,19 +25,24 @@ from authentik.enterprise.lifecycle.utils import (
 from authentik.lib.utils.time import timedelta_from_string
 
 
+class RelatedRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
+    reviewer_groups = ReviewerGroupSerializer(many=True, read_only=True)
+    min_reviewers = IntegerField(read_only=True)
+    reviewers = ReviewerUserSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = LifecycleRule
+        fields = ["id", "name", "reviewer_groups", "min_reviewers", "reviewers"]
+
+
 class LifecycleIterationSerializer(EnterpriseRequiredMixin, ModelSerializer):
     content_type = ContentTypeField()
     object_verbose = SerializerMethodField()
+    rule = RelatedRuleSerializer(read_only=True)
     object_admin_url = SerializerMethodField(read_only=True)
     grace_period_end = SerializerMethodField(read_only=True)
     reviews = ReviewSerializer(many=True, read_only=True, source="review_set.all")
     user_can_review = SerializerMethodField(read_only=True)
-
-    reviewer_groups = ReviewerGroupSerializer(
-        many=True, read_only=True, source="rule.reviewer_groups"
-    )
-    min_reviewers = IntegerField(read_only=True, source="rule.min_reviewers")
-    reviewers = ReviewerUserSerializer(many=True, read_only=True, source="rule.reviewers")
 
     next_review_date = SerializerMethodField(read_only=True)
 
@@ -55,10 +59,8 @@ class LifecycleIterationSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "grace_period_end",
             "next_review_date",
             "reviews",
+            "rule",
             "user_can_review",
-            "reviewer_groups",
-            "min_reviewers",
-            "reviewers",
         ]
         read_only_fields = fields
 
@@ -88,43 +90,55 @@ class IterationViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet
     queryset = LifecycleIteration.objects.all()
     serializer_class = LifecycleIterationSerializer
     ordering = ["-opened_on"]
-    ordering_fields = ["state", "content_type__model", "opened_on", "grace_period_end"]
+    ordering_fields = [
+        "state",
+        "content_type__model",
+        "rule__name",
+        "opened_on",
+        "grace_period_end",
+    ]
     filterset_class = LifecycleIterationFilterSet
 
     def get_queryset(self):
         user = self.request.user
         return self.queryset.annotate(
-            user_is_reviewer=Case(
-                When(
-                    Q(rule__reviewers=user)
-                    | Q(rule__reviewer_groups__in=user.groups.all().with_ancestors()),
-                    then=Value(True),
-                ),
-                default=Value(False),
-                output_field=ModelBooleanField(),
+            user_is_reviewer=Exists(
+                LifecycleRule.objects.filter(
+                    pk=OuterRef("rule_id"),
+                ).filter(
+                    Q(reviewers=user) | Q(reviewer_groups__in=user.groups.all().with_ancestors())
+                )
             )
-        ).distinct()
+        )
 
+    @extend_schema(
+        operation_id="lifecycle_iterations_list_latest",
+        responses={200: LifecycleIterationSerializer(many=True)},
+    )
     @action(
         detail=False,
+        pagination_class=None,
         methods=["get"],
         url_path=r"latest/(?P<content_type>[^/]+)/(?P<object_id>[^/]+)",
     )
-    def latest_iteration(self, request: Request, content_type: str, object_id: str) -> Response:
+    def latest_iterations(self, request: Request, content_type: str, object_id: str) -> Response:
         ct = parse_content_type(content_type)
-        try:
-            obj = (
-                self.get_queryset()
-                .filter(
-                    content_type__app_label=ct["app_label"],
-                    content_type__model=ct["model"],
-                    object_id=object_id,
-                )
-                .latest("opened_on")
+        latest_ids_subquery = (
+            LifecycleIteration.objects.filter(
+                rule=OuterRef("rule"),
+                content_type__app_label=ct["app_label"],
+                content_type__model=ct["model"],
+                object_id=object_id,
             )
-        except LifecycleIteration.DoesNotExist:
-            return Response(status=404)
-        serializer = self.get_serializer(obj)
+            .order_by("-opened_on")
+            .values("id")[:1]
+        )
+        latest_per_rule = LifecycleIteration.objects.filter(
+            content_type__app_label=ct["app_label"],
+            content_type__model=ct["model"],
+            object_id=object_id,
+        ).filter(id=Subquery(latest_ids_subquery))
+        serializer = self.get_serializer(latest_per_rule, many=True)
         return Response(serializer.data)
 
     @extend_schema(

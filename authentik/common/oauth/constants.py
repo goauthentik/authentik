@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code"
 GRANT_TYPE_IMPLICIT = "implicit"
+GRANT_TYPE_HYBRID = "hybrid"
 GRANT_TYPE_REFRESH_TOKEN = "refresh_token"  # nosec
 GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
 GRANT_TYPE_PASSWORD = "password"  # nosec

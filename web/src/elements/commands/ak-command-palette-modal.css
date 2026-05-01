@@ -6,36 +6,34 @@
     --ak-c-command-palette--PaddingInline: calc(
         2 * var(--pf-global--spacer--form-element) + var(--pf-global--spacer--sm)
     );
-    --ak-c-command-palette--Translucency: 25%;
 
     --ak-c-command-palette__group--BorderColor: var(
         --pf-global--BackgroundColor--dark-transparent-200
     );
-    --ak-c-command-palette__group--Color: var(--pf-global--palette--purple-200);
+    --ak-c-command-palette__group--Color: var(--pf-global--palette--purple-100);
 
     --ak-fieldset--BorderColor: transparent;
 
-    --ak-c-command-palette__item--BackgroundColor: var(--pf-global--palette--purple-700);
+    --ak-c-command-palette__item--BackgroundColor: transparent;
+    --ak-c-command-palette__item--Color: var(--pf-global--palette--purple-50);
+    --ak-c-command-palette__item--selected--BackgroundColor: var(--pf-global--palette--purple-50);
+    --ak-c-command-palette__item--selected--Color: var(--pf-global--palette--red-500);
+    --ak-c-command-palette__item__suffix--Color: var(--pf-global--palette--gold-200);
+    --ak-c-command-palette__item--selected__suffix--Color: var(--pf-global--palette--gold-700);
 
-    --ak-c-command-palette__item--Color: var(--pf-global--palette--purple-700);
-
-    --ak-c-command-palette__item--Color: var(--pf-global--palette--blue-50);
-    --ak-c-command-palette__item--selected--BackgroundColor: var(--pf-global--palette--blue-400);
     --ak-c-command-palette__item--hover--BackgroundColor: color-mix(
-        var(--pf-global--palette--purple-600),
-        var(--pf-global--palette--purple-700) 80%
+        var(--ak-c-dialog--BackgroundColor),
+        var(--pf-global--palette--purple-200) 40%
     );
-    --ak-c-command-palette__item--hover-selected--BackgroundColor: var(
-        --pf-global--palette--blue-300
+
+    --ak-c-command-palette__item--hover-selected--BackgroundColor: color-mix(
+        var(--pf-global--palette--purple-50),
+        var(--pf-global--palette--white) 50%
     );
 
     --ak-c-command-palette__item--AccentColor: var(--pf-global--palette--purple-600);
     --ak-c-command-palette__item--AccentWidth: 0.5px;
 
-    @media (prefers-reduced-transparency: reduce) {
-        --ak-c-command-palette--Translucency: 0%;
-    }
-    will-change: opacity, text-decoration-color, background-color, color;
     transform: translate3d(0, 0, 0); /* Fixes rendering artifacts. */
 
     @media (prefers-contrast: more) {
@@ -59,11 +57,26 @@
     --pf-c-empty-state__icon--Color: var(--pf-global--Color--100);
 }
 
+[part="command-field-container"] {
+    position: relative;
+    z-index: 3;
+}
+
 [part="command-field"] {
-    border-bottom: 0.5px solid var(--pf-global--palette--black-600);
     padding-block: var(--pf-global--spacer--sm);
     margin-inline: var(--pf-global--spacer--sm);
     padding-inline-start: var(--pf-global--spacer--sm);
+
+    &::after {
+        content: "";
+        display: block;
+        inset-inline: var(--pf-global--spacer--md);
+        inset-block-end: 0;
+        position: absolute;
+        height: 0.5px;
+        z-index: 3;
+        background-color: var(--pf-global--palette--purple-100);
+    }
 }
 
 #command-input {
@@ -79,8 +92,8 @@
     outline: none;
 
     &::placeholder {
-        color: var(--pf-global--palette--purple-100);
-        font-weight: 100;
+        color: var(--pf-global--palette--purple-50);
+        font-weight: 300;
         font-family: var(--pf-global--FontFamily--heading--sans-serif);
     }
 }
@@ -108,19 +121,24 @@
         inset-block-start: 0;
         z-index: 2;
 
-        background: var(--pf-global--palette--purple-700);
+        & > * {
+            filter: var(--ak-global--BackgroundContrastFilter);
+        }
     }
 
     &:has(.selected),
     &:hover {
         --ak-c-command-palette__group--Color: var(--pf-global--palette--purple-50);
-        --ak-c-command-palette__item--AccentColor: var(--pf-global--palette--purple-500);
+        --ak-c-command-palette__item--AccentColor: var(--pf-global--palette--black-150);
     }
 }
 
 [part="results"] {
     overflow-y: auto;
-    max-height: calc(100dvh - (1.75 * var(--ak-c-modal--MarginBlockStart)));
+    max-height: calc(100dvh - (1.75 * var(--ak-c-dialog--MarginBlockStart)));
+    overscroll-behavior-inline: none;
+    overscroll-behavior-block: contain;
+    scrollbar-gutter: stable;
 
     @supports (scrollbar-width: thin) {
         scrollbar-width: none;
@@ -146,24 +164,26 @@
 [part="command-item-label"] {
     grid-row: label;
     font-family: var(--pf-global--FontFamily--heading--sans-serif);
+    font-weight: 500;
 }
 
 [part="command-item-prefix"] {
     grid-row: icon / prefix;
     grid-column: icon / prefix;
-    font-variant: all-small-caps;
-    line-height: calc(var(--ak-c-modal__title--LineHeight) + 0.05);
-    font-weight: bold;
-    color: var(--pf-global--palette--gold-200);
+    line-height: calc(var(--ak-c-dialog__title--LineHeight) + 1);
+    color: var(--pf-global--palette--blue-300);
+    text-transform: uppercase;
+    font-size: 0.7em;
+    font-weight: 500;
 }
 
 [part="command-item-suffix"] {
     grid-area: suffix;
     font-variant: all-small-caps;
-    line-height: calc(var(--ak-c-modal__title--LineHeight) + 0.05);
+    line-height: calc(var(--ak-c-dialog__title--LineHeight) + 0.05);
     font-weight: bold;
     display: flex;
-    color: var(--pf-global--palette--gold-200);
+    color: var(--ak-c-command-palette__item__suffix--Color);
     justify-content: end;
     align-items: center;
 }
@@ -213,30 +233,33 @@
     }
 
     &:hover {
-        background-color: color-mix(
-            var(--ak-c-command-palette__item--hover--BackgroundColor),
-            transparent var(--ak-c-command-palette--Translucency)
-        );
+        background-color: var(--ak-c-command-palette__item--hover--BackgroundColor);
+
+        [part="command-item-label"] {
+            text-decoration: underline;
+        }
     }
-}
-[part="command-item"] {
-    padding-inline-start: var(--pf-global--spacer--md);
 }
 
 [part="command-item"]:hover {
     --ak-c-command-palette__item--AccentWidth: 1px;
-    --ak-c-command-palette__item--AccentColor: var(--ak-accent);
+    --ak-c-command-palette__item--AccentColor: var(--ak-c-command-palette__item--Color);
 }
 
 [part="command-item"].selected {
     --ak-c-command-palette__item--AccentWidth: 3px;
-    --ak-c-command-palette__item--AccentColor: var(--ak-accent);
+    --ak-c-command-palette__item--AccentColor: var(--ak-c-command-palette__item--Color);
 
     --ak-c-command-palette__item--BackgroundColor: var(
         --ak-c-command-palette__item--selected--BackgroundColor
     );
+    --ak-c-command-palette__item--Color: var(--ak-c-command-palette__item--selected--Color);
     --ak-c-command-palette__item--hover--BackgroundColor: var(
         --ak-c-command-palette__item--hover-selected--BackgroundColor
+    );
+
+    --ak-c-command-palette__item__suffix--Color: var(
+        --ak-c-command-palette__item--selected__suffix--Color
     );
 
     &:hover {

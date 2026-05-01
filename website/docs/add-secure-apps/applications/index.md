@@ -30,7 +30,7 @@ The following options can be configured:
 
     For a reference of all fields available, see [the API schema for the User object](https://api.goauthentik.io/reference/core-users-retrieve/).
 
-    Only applications whose launch URL starts with `http://` or `https://` or are relative URLs are shown on the users' **My applications** page. This can also be used to hide applications that shouldn't be visible on the **My applications** page but are still accessible by users, by setting the _Launch URL_ to `blank://blank`.
+    Only apps with launch URLs that begin with `http://` or `https://`, or that use relative paths, appear on the user's **My applications** page. To keep an app accessible but remove it from that page, use the **Hide from My applications** option (see [Hide applications](./manage_apps.mdx#hide-applications)).
 
 - _Icon (URL)_: Optionally configure an icon for the application. You can select from files uploaded to the [Files](../../customize/files.md) library or enter an absolute URL.
 

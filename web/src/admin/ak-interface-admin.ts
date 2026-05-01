@@ -4,6 +4,7 @@ import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
 import "#elements/router/RouterOutlet";
 import "#elements/commands/ak-command-palette";
+import "#elements/commands/ak-command-palette-user-modal";
 
 import {
     createAdminSidebarEnterpriseEntries,
@@ -24,10 +25,10 @@ import {
     PaletteCommandNamespace,
 } from "#elements/commands/shared";
 import { listen } from "#elements/decorators/listen";
+import { renderDialog } from "#elements/dialogs";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
-import { renderDialog } from "#elements/modals/utils";
 import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import {
     DrawerState,
@@ -36,6 +37,7 @@ import {
     renderNotificationDrawerPanel,
 } from "#elements/notifications/utils";
 import { navigate } from "#elements/router/RouterOutlet";
+import { SlottedTemplateResult } from "#elements/types";
 
 import Styles from "#admin/ak-interface-admin.css";
 import { ROUTES } from "#admin/Routes";
@@ -46,6 +48,7 @@ import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, eventOptions, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
+import { guard } from "lit/directives/guard.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -108,13 +111,13 @@ export class AdminInterface extends WithCapabilitiesConfig(
     @state()
     protected drawer: DrawerState = readDrawerParams();
 
-    @listen(AKDrawerChangeEvent)
+    @listen(AKDrawerChangeEvent, { target: window })
     protected drawerListener = (event: AKDrawerChangeEvent) => {
         this.drawer = event.drawer;
         persistDrawerParams(event.drawer);
     };
 
-    @listen(LOCALE_STATUS_EVENT)
+    @listen(LOCALE_STATUS_EVENT, { target: window })
     localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
         if (event.detail.status === "ready") {
             this.synchronizeSidebarEntries();
@@ -266,40 +269,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
                         <i aria-hidden="true" class="fas fa-bars"></i>
                     </button>
 
-                    <button
-                        slot="nav-buttons"
-                        @click=${this.commandPalette.showListener}
-                        class="pf-c-button pf-m-plain command-palette-trigger"
-                        aria-label=${msg("Open Command Palette", {
-                            id: "command-palette-trigger-label",
-                            desc: "Label for the button that opens the command palette",
-                        })}
-                    >
-                        <pf-tooltip position="top-end">
-                            <div slot="content" class="ak-tooltip__content--inline">
-                                ${msg("Open Command Palette", {
-                                    id: "command-palette-trigger-tooltip",
-                                    desc: "Tooltip for the button that opens the command palette",
-                                })}
-                                <div class="ak-c-kbd"><kbd>Ctrl</kbd> + <kbd>K</kbd></div>
-                            </div>
-
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                aria-hidden="true"
-                                class="ak-c-vector-icon"
-                                role="img"
-                                viewBox="0 0 32 32"
-                            >
-                                <path
-                                    d="M26 4.01H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-20a2 2 0 0 0-2-2m0 2v4H6v-4Zm-20 20v-14h20v14Z"
-                                />
-                                <path
-                                    d="m10.76 16.18 2.82 2.83-2.82 2.83 1.41 1.41 4.24-4.24-4.24-4.24z"
-                                />
-                            </svg>
-                        </pf-tooltip>
-                    </button>
+                    ${this.renderCommandPaletteButton()}
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
@@ -342,6 +312,47 @@ export class AdminInterface extends WithCapabilitiesConfig(
                 </div>
             </div>
             ${this.commandPalette}`;
+    }
+
+    protected renderCommandPaletteButton(): SlottedTemplateResult {
+        return guard([this.commandPalette.showListener], () => {
+            const macOS = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+
+            const primaryModifierKey = macOS ? "⌘" : "Ctrl";
+
+            return html`<button
+                slot="nav-buttons"
+                @click=${this.commandPalette.showListener}
+                class="pf-c-button pf-m-plain command-palette-trigger"
+                aria-label=${msg("Open Command Palette", {
+                    id: "command-palette-trigger-label",
+                    desc: "Label for the button that opens the command palette",
+                })}
+            >
+                <pf-tooltip position="top-end">
+                    <div slot="content" class="ak-tooltip__content--inline">
+                        ${msg("Open Command Palette", {
+                            id: "command-palette-trigger-tooltip",
+                            desc: "Tooltip for the button that opens the command palette",
+                        })}
+                        <div class="ak-c-kbd"><kbd>${primaryModifierKey}</kbd> + <kbd>K</kbd></div>
+                    </div>
+
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                        class="ak-c-vector-icon"
+                        role="img"
+                        viewBox="0 0 32 32"
+                    >
+                        <path
+                            d="M26 4.01H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-20a2 2 0 0 0-2-2m0 2v4H6v-4Zm-20 20v-14h20v14Z"
+                        />
+                        <path d="m10.76 16.18 2.82 2.83-2.82 2.83 1.41 1.41 4.24-4.24-4.24-4.24z" />
+                    </svg>
+                </pf-tooltip>
+            </button>`;
+        });
     }
 
     //#endregion

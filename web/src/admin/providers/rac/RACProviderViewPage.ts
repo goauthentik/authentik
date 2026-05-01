@@ -20,7 +20,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { ModelEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -36,12 +36,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-provider-rac-view")
 export class RACProviderViewPage extends AKElement {
-    @property({ type: Number })
-    providerID?: number;
-
-    @state()
-    provider?: RACProvider;
-
     static styles: CSSResult[] = [
         PFButton,
         PFPage,
@@ -55,6 +49,12 @@ export class RACProviderViewPage extends AKElement {
         PFBanner,
     ];
 
+    @property({ type: Number })
+    public providerID?: number;
+
+    @state()
+    protected provider?: RACProvider;
+
     constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
@@ -63,22 +63,23 @@ export class RACProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+    protected fetchProvider(id: number) {
+        return new ProvidersApi(DEFAULT_CONFIG)
             .providersRacRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    protected override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }
     }
 
-    render(): SlottedTemplateResult {
+    protected override render(): SlottedTemplateResult {
         if (!this.provider) {
-            return nothing;
+            return null;
         }
+
         return html`<main>
             <ak-tabs>
                 <div
@@ -133,12 +134,12 @@ export class RACProviderViewPage extends AKElement {
         </main>`;
     }
 
-    renderTabOverview(): SlottedTemplateResult {
+    protected renderTabOverview(): SlottedTemplateResult {
         if (!this.provider) {
-            return nothing;
+            return null;
         }
         return html`${this.provider?.assignedApplicationName
-                ? nothing
+                ? null
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
                   </div>`}
@@ -146,7 +147,7 @@ export class RACProviderViewPage extends AKElement {
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by any Outpost.")}
                   </div>`
-                : nothing}
+                : null}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">

@@ -24,6 +24,62 @@ Keep in mind that when using Code-based devices (TOTP, Static and SMS), values l
 
 ### Options
 
+#### Require more than one MFA method
+
+To require users to enroll more than one MFA method and validate with each method on every login, add multiple **Authenticator Validation** stages to the same authentication flow.
+
+Configure each authenticator validation stage with a different set of allowed **Device classes**, and set **Not configured action** to **Configure**.
+
+#### Example: require both TOTP and WebAuthn
+
+To require both TOTP and WebAuthn:
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Create a TOTP setup stage and a WebAuthn setup stage if you do not already have them.
+3. Navigate to **Flows and Stages** > **Stages** and create an **Authenticator Validation** stage for TOTP:
+    - Set **Device classes** to `totp`.
+    - Set **Not configured action** to **Configure**.
+    - Set **Configuration stages** to your TOTP setup stage.
+4. Create a second **Authenticator Validation** stage for WebAuthn:
+    - Set **Device classes** to `webauthn`.
+    - Set **Not configured action** to **Configure**.
+    - Set **Configuration stages** to your WebAuthn setup stage.
+5. Navigate to **Flows and Stages** > **Flows** and open your authentication flow.
+6. On the **Stage Bindings** tab, bind both validation stages to the flow in the order that you want users to enroll them.
+
+On first sign-in, users who do not yet have one of the required methods are prompted to configure it before the flow continues. On later sign-ins, each validation stage checks only the device classes configured on that stage.
+
+#### Require at least two enrolled MFA methods of any type
+
+If you want to require users to enroll at least two different MFA methods, regardless of which types they choose, use an [Expression Policy](../../../../customize/policies/types/expression/index.mdx) to count the enrolled device classes for the user.
+
+To enforce this requirement:
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Policies** and create an **Expression Policy**.
+3. Add an expression like the following to count the user's confirmed authenticator types:
+
+```python
+from authentik.stages.authenticator import devices_for_user
+
+pending_user = request.context.get("pending_user")
+if not pending_user or not pending_user.pk:
+    return False
+
+device_types = {
+    device.__class__.__name__.lower().replace("device", "")
+    for device in devices_for_user(pending_user, confirmed=True)
+}
+
+return len(device_types) >= 2
+```
+
+4. Bind the policy to the flow or stage binding that controls whether the user can continue without enrolling another authenticator.
+
+#### Allow users to choose from multiple enrollment methods
+
+If you select multiple **Configuration stages** on a single validation stage, users can choose which authenticator to enroll for that requirement.
+
 #### Less-frequent validation
 
 You can configure this stage to only ask for MFA validation if the user hasn't authenticated themselves within a defined time period. To configure this, set _Last validation threshold_ to any non-zero value. Any of the user's devices within the selected classes are checked.

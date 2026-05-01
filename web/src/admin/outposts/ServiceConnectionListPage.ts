@@ -1,6 +1,6 @@
 import "#admin/outposts/ServiceConnectionDockerForm";
 import "#admin/outposts/ServiceConnectionKubernetesForm";
-import "#admin/outposts/ServiceConnectionWizard";
+import "#admin/outposts/ak-service-connection-wizard";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
@@ -12,16 +12,23 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CustomFormElementTagName } from "#elements/forms/unsafe";
+import { IconEditButtonByTagName } from "#elements/dialogs";
+import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-import { StrictUnsafe } from "#elements/utils/unsafe";
 
-import { OutpostsApi, ServiceConnection, ServiceConnectionState } from "@goauthentik/api";
+import { AKServiceConnectionWizard } from "#admin/outposts/ak-service-connection-wizard";
 
-import { msg, str } from "@lit/localize";
+import {
+    ModelEnum,
+    OutpostsApi,
+    ServiceConnection,
+    ServiceConnectionState,
+} from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -36,9 +43,12 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     public pageIcon = "pf-icon pf-icon-integration";
     protected override searchEnabled = true;
 
-    checkbox = true;
-    expandable = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override expandable = true;
+    public override clearOnRefresh = true;
+    public override searchPlaceholder = msg(
+        "Search for an outpost integration by name, type or assigned integration...",
+    );
 
     async apiEndpoint(): Promise<PaginatedResponse<ServiceConnection>> {
         const connections = await new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList(
@@ -75,31 +85,19 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     row(item: ServiceConnection): SlottedTemplateResult[] {
         const itemState = this.state[item.pk];
         return [
-            html`${item.name}`,
-            html`${item.verboseName}`,
+            item.name,
+            item.verboseName,
             html`<ak-status-label type="info" ?good=${item.local}></ak-status-label>`,
             html`${itemState?.healthy
                 ? html`<ak-label color=${PFColor.Green}>${ifDefined(itemState.version)}</ak-label>`
                 : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,
-            html`
-                <ak-forms-modal>
-                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
-                        slot: "form",
-                        instancePk: item.pk,
-                        submitLabel: msg("Save Changes"),
-                        headline: msg(str`Update ${item.verboseName}`, {
-                            id: "form.headline.update",
-                        }),
-                    })}
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
-                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
-                </ak-rbac-object-permission-modal>
-            `,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButtonByTagName(item.component, item.pk, item.verboseName)}
+                ${IconPermissionButton(item.name, {
+                    model: item.metaModelName as ModelEnum,
+                    objectPk: item.pk,
+                })}
+            </div>`,
         ];
     }
 
@@ -161,8 +159,15 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         </ak-forms-delete-bulk>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`<ak-service-connection-wizard></ak-service-connection-wizard> `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return html`<button
+            class="pf-c-button pf-m-primary"
+            type="button"
+            aria-description="${msg("Open the wizard to create a new service connection.")}"
+            ${AKServiceConnectionWizard.asModalInvoker()}
+        >
+            ${msg("New Outpost Integration")}
+        </button>`;
     }
 }
 

@@ -1,4 +1,3 @@
-import "#admin/applications/wizard/ak-wizard-title";
 import "#elements/forms/FormGroup";
 
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
@@ -30,7 +29,7 @@ export class ApplicationWizardProviderWSFedForm extends ApplicationWizardProvide
             this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
         };
 
-        return html` <ak-wizard-title>${this.label}</ak-wizard-title>
+        return html`<h3 class="pf-c-wizard__main-title">${this.label}</h3>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm({
                     provider: this.wizard.provider as WSFederationProvider,

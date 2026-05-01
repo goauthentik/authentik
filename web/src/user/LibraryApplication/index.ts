@@ -3,12 +3,13 @@ import "#user/LibraryApplication/RACLaunchEndpointModal";
 
 import { PFSize } from "#common/enums";
 
-import { renderModal } from "#elements/modals/utils";
+import { modalInvoker } from "#elements/dialogs";
 import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { CardHeader } from "#user/LibraryApplication/CardHeader";
 import { CardMenu } from "#user/LibraryApplication/CardMenu";
+import { RACLaunchEndpointLaunch } from "#user/LibraryApplication/RACLaunchEndpointModal";
 
 import { Application } from "@goauthentik/api";
 
@@ -48,14 +49,6 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     };
 
     const dataID = kebabCase(application.name);
-
-    const launchModal = () => {
-        return renderModal(
-            html`<ak-library-rac-endpoint-launch
-                .app=${application}
-            ></ak-library-rac-endpoint-launch>`,
-        );
-    };
 
     const cardID = `app-${application.pk}`;
     const titleID = `${cardID}-title`;
@@ -98,7 +91,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                       ${primaryRef}
                       role="button"
                       aria-describedby=${descriptionID}
-                      @click=${launchModal}
+                      ${modalInvoker(RACLaunchEndpointLaunch, { app: application })}
                       ${spread(extendedProps)}
                   >
                       ${cardHeader}

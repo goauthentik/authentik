@@ -14,11 +14,12 @@ import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { Form } from "#elements/forms/Form";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -56,7 +57,20 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         return result;
     }
 
-    protected override renderForm(): TemplateResult {
+    public override submitLabel = msg("Save changes");
+
+    public override renderHeader() {
+        return html`<div class="ak-c-form__header">
+            <h2 class="pf-c-title pf-m-2xl sr-only">${msg("Edit Settings")}</h2>
+            <div part="form-actions">${this.renderSubmitButton()}</div>
+        </div>`;
+    }
+
+    public override renderActions(): SlottedTemplateResult {
+        return null;
+    }
+
+    protected override renderForm(): SlottedTemplateResult {
         const { settings } = this;
 
         return html`

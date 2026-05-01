@@ -42,8 +42,19 @@
 /customize/interfaces/admin/customization                   /customize/interfaces/admin/ 301!
 /customize/interfaces/flow/customization                    /customize/interfaces/flow/ 301!
 /customize/interfaces/user/customization                    /customize/interfaces/user/ 301!
-/customize/policies/working_with_policies/unique_email	    /customize/policies/expression/unique_email/ 301!
-/customize/policies/working_with_policies/whitelist_email   /customize/policies/expression/whitelist_email/ 301!
+/customize/policies/expression                             /customize/policies/types/expression/ 301!
+/customize/policies/expression/managing_flow_context_keys  /customize/policies/types/expression/managing_flow_context_keys/ 301!
+/customize/policies/expression/source_switch               /customize/policies/types/expression/source_switch/ 301!
+/customize/policies/expression/unique_email                /customize/policies/types/expression/unique_email/ 301!
+/customize/policies/expression/whitelist_email             /customize/policies/types/expression/whitelist_email/ 301!
+/customize/policies/working_with_policies/unique_email	    /customize/policies/types/expression/unique_email/ 301!
+/customize/policies/working_with_policies/whitelist_email   /customize/policies/types/expression/whitelist_email/ 301!
+/customize/policies/event_matcher                          /customize/policies/types/event-matcher/ 301!
+/customize/policies/geoip                                  /customize/policies/types/geoip/ 301!
+/customize/policies/password                               /customize/policies/types/password/ 301!
+/customize/policies/password_expiry                        /customize/policies/types/password-expiry/ 301!
+/customize/policies/reputation                             /customize/policies/types/reputation/ 301!
+/customize/policies/unique_password                        /customize/policies/types/password-uniqueness/ 301!
 /interfaces/*                                               /customize/interfaces/:splat 301!
 /policies/*                                                 /customize/policies/:splat 301!
 #endregion

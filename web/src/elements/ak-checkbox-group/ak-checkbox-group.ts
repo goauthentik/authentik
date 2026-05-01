@@ -101,7 +101,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     value: string[] = [];
 
     @property({ type: String })
-    name?: string;
+    public name: string | null = null;
 
     @property({ type: Boolean })
     required = false;
@@ -115,12 +115,12 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     internals?: ElementInternals;
     doneFirstUpdate = false;
 
-    json() {
+    toJSON() {
         return this.values;
     }
 
     private get formValue() {
-        if (this.name === undefined) {
+        if (typeof this.name !== "string") {
             throw new Error("This cannot be called without having the name set.");
         }
         const name = this.name;

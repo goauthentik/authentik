@@ -8,9 +8,9 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent } from "#elements/forms/Form";
 import { ModelForm } from "#elements/forms/ModelForm";
-import { renderModal } from "#elements/modals/utils";
 
 import { Permission, RbacApi } from "@goauthentik/api";
 
@@ -27,8 +27,8 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     @state()
     protected permissionsToAdd: Permission[] = [];
 
-    @property({ type: String })
-    public roleUuid: string | null = null;
+    @property({ type: String, attribute: "role-uuid" })
+    public roleUUID: string | null = null;
 
     public override reset(): void {
         super.reset();
@@ -36,20 +36,20 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         this.permissionsToAdd = [];
     }
 
-    loadInstance(): Promise<RolePermissionAssign> {
+    protected override loadInstance(): Promise<RolePermissionAssign> {
         throw new Error("Method not implemented.");
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully assigned permission.");
     }
 
-    async send(data: RolePermissionAssign) {
-        if (!this.roleUuid) {
+    protected override async send(data: RolePermissionAssign) {
+        if (!this.roleUUID) {
             return;
         }
         await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
-            uuid: this.roleUuid,
+            uuid: this.roleUUID,
             permissionAssignRequest: {
                 permissions: data.permissions,
             },
@@ -58,16 +58,16 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     }
 
     protected openSelectPermissionsModal = () => {
-        return renderModal(html`
-            <ak-form
+        return renderModal(
+            html`<ak-form
                 headline=${msg("Select permissions to assign")}
-                action-label=${msg("Confirm")}
+                submit-label=${msg("Confirm")}
                 @submit=${(event: AKFormSubmitEvent<Permission[]>) => {
                     this.permissionsToAdd = event.target.toJSON();
                 }}
                 ><ak-rbac-permission-table></ak-rbac-permission-table>
-            </ak-form>
-        `);
+            </ak-form> `,
+        );
     };
 
     protected override renderForm(): TemplateResult {
@@ -85,7 +85,10 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
                     </button>
 
                     <div class="pf-c-form-control">
-                        <ak-chip-group>
+                        <ak-chip-group
+                            @click=${this.openSelectPermissionsModal}
+                            placeholder=${msg("Select one or more permissions...")}
+                        >
                             ${this.permissionsToAdd.map((permission) => {
                                 return html`<ak-chip
                                     removable

@@ -634,7 +634,7 @@ export interface ProvidersSamlListRequest {
     encryptionKp?: string;
     invalidationFlow?: string;
     isBackchannel?: boolean;
-    issuer?: string;
+    issuerOverride?: string;
     logoutMethod?: SAMLLogoutMethods;
     name?: string;
     nameIdMapping?: string;
@@ -841,7 +841,7 @@ export interface ProvidersWsfedListRequest {
     encryptionKp?: string;
     invalidationFlow?: string;
     isBackchannel?: boolean;
-    issuer?: string;
+    issuerOverride?: string;
     logoutMethod?: SAMLLogoutMethods;
     name?: string;
     nameIdMapping?: string;
@@ -6842,8 +6842,8 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["is_backchannel"] = requestParameters["isBackchannel"];
         }
 
-        if (requestParameters["issuer"] != null) {
-            queryParameters["issuer"] = requestParameters["issuer"];
+        if (requestParameters["issuerOverride"] != null) {
+            queryParameters["issuer_override"] = requestParameters["issuerOverride"];
         }
 
         if (requestParameters["logoutMethod"] != null) {
@@ -9326,8 +9326,8 @@ export class ProvidersApi extends runtime.BaseAPI {
             queryParameters["is_backchannel"] = requestParameters["isBackchannel"];
         }
 
-        if (requestParameters["issuer"] != null) {
-            queryParameters["issuer"] = requestParameters["issuer"];
+        if (requestParameters["issuerOverride"] != null) {
+            queryParameters["issuer_override"] = requestParameters["issuerOverride"];
         }
 
         if (requestParameters["logoutMethod"] != null) {

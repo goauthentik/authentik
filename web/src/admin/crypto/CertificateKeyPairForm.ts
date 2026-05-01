@@ -1,4 +1,5 @@
 import "#components/ak-secret-textarea-input";
+import "#components/ak-text-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
@@ -14,7 +15,13 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-crypto-certificate-form")
-export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string> {
+export class CryptoCertificateForm extends ModelForm<CertificateKeyPair, string> {
+    public static override verboseName = msg("Certificate-Key Pair");
+    public static override verboseNamePlural = msg("Certificate-Key Pairs");
+    public static override createLabel = msg("Import Existing");
+    public static override submitVerb = msg("Import");
+    public static override submittingVerb = msg("Importing");
+
     loadInstance(pk: string): Promise<CertificateKeyPair> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
             kpUuid: pk,
@@ -40,14 +47,16 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} name="name" required>
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+        return html`<ak-text-input
+                label=${msg("Certificate Name")}
+                name="name"
+                required
+                value="${ifDefined(this.instance?.name)}"
+                placeholder=${msg("Type a name for this certificate-key pair...")}
+                autofocus
+                autocomplete="off"
+                spellcheck="false"
+            ></ak-text-input>
             <ak-secret-textarea-input
                 label=${msg("Certificate")}
                 name="certificateData"
@@ -59,6 +68,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
             ></ak-secret-textarea-input>
             <ak-secret-textarea-input
                 label=${msg("Private Key")}
+                placeholder="-----BEGIN PRIVATE KEY-----"
                 name="keyData"
                 input-hint="code"
                 ?revealed=${!this.instance}
@@ -71,6 +81,6 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-crypto-certificate-form": CertificateKeyPairForm;
+        "ak-crypto-certificate-form": CryptoCertificateForm;
     }
 }

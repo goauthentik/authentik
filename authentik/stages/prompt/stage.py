@@ -124,6 +124,9 @@ class PromptChallengeResponse(ChallengeResponse):
             type__in=[
                 FieldTypes.HIDDEN,
                 FieldTypes.STATIC,
+                FieldTypes.ALERT_INFO,
+                FieldTypes.ALERT_WARNING,
+                FieldTypes.ALERT_DANGER,
                 FieldTypes.TEXT_READ_ONLY,
                 FieldTypes.TEXT_AREA_READ_ONLY,
             ]

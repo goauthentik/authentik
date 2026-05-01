@@ -194,12 +194,14 @@ class ChallengeStageView(StageView):
             if not hasattr(challenge, "initial_data"):
                 challenge.initial_data = {}
             if "flow_info" not in challenge.initial_data:
+                # Flow payloads can outlive the previous signed media JWT, so
+                # refreshes must mint fresh URLs instead of reusing cached ones.
                 flow_info = ContextualFlowInfo(
                     data={
                         "title": self.format_title(),
-                        "background": self.executor.flow.background_url(self.request),
+                        "background": self.executor.flow.background_url(use_cache=False),
                         "background_themed_urls": self.executor.flow.background_themed_urls(
-                            self.request
+                            use_cache=False,
                         ),
                         "cancel_url": self.cancel_url,
                         "layout": self.executor.flow.layout,
