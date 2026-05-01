@@ -24,8 +24,8 @@ export default defineConfig({
     fullyParallel: true,
     forbidOnly: CI,
     retries: CI ? 1 : 0,
-    workers: CI ? "50%" : undefined,
-    maxFailures: CI ? 5 : 0,
+    workers: "50%",
+    maxFailures: CI ? 5 : 2,
     reporter: CI
         ? [
               // ---
@@ -100,6 +100,7 @@ export default defineConfig({
             dependencies: ["prerequisites"],
             use: {
                 ...devices["Desktop Chrome"],
+                headless: false,
             },
         },
     ],
