@@ -7,11 +7,11 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.providers.oauth2.models import OAuth2Provider
+from tests.live import E2ETestCase
 from tests.openid_conformance.conformance import Conformance
-from tests.selenium import SeleniumTestCase
 
 
-class TestOpenIDConformance(SeleniumTestCase):
+class TestOpenIDConformance(E2ETestCase):
 
     conformance: Conformance
 

@@ -2,14 +2,14 @@ services:
   mongodb:
     image: mongo:6.0.13
   nginx:
-    image: ghcr.io/beryju/oidc-conformance-suite-nginx:v5.1.41
+    image: ghcr.io/beryju/oidc-conformance-suite-nginx:v5.1.43
     ports:
       - "8443:8443"
       - "8444:8444"
     depends_on:
       - server
   server:
-    image: ghcr.io/beryju/oidc-conformance-suite-server:v5.1.41
+    image: ghcr.io/beryju/oidc-conformance-suite-server:v5.1.43
     ports:
       - "9999:9999"
     extra_hosts:
