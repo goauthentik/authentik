@@ -3929,14 +3929,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Application entitlements</source>
   <target>应用程序授权</target>
 </trans-unit>
-<trans-unit id="application.entitlements.preview.info">
-  <source>Application entitlements are in preview.</source>
-  <target>应用程序授权目前处于预览状态。</target>
-</trans-unit>
-<trans-unit id="preview.send-us-feedback">
-  <source>Send us feedback!</source>
-  <target>给我们发送反馈</target>
-</trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
   <target>这些授权可以用于配置用户对应用程序的访问。</target>
@@ -4471,10 +4463,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s2221fef80f4753a2">
   <source>TLS Verification Certificate</source>
   <target>TLS 验证证书</target>
-</trans-unit>
-<trans-unit id="sb8c13bd58191cea2">
-  <source>When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.</source>
-  <target>使用 TLS 连接到 LDAP 服务器时，默认情况下不检查证书。指定密钥对以验证远程证书。</target>
 </trans-unit>
 <trans-unit id="s000ee3e634868b3c">
   <source>TLS Client authentication certificate</source>
@@ -11559,6 +11547,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s36535ff645fd37f7">
   <source>Lock my account</source>
+</trans-unit>
+<trans-unit id="s7abbf11fd03b3c12">
+  <source>Bind existing group/user</source>
+</trans-unit>
+<trans-unit id="s33bfd42437266a1f">
+  <source>Leave empty to skip certificate validation, or select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate.</source>
 </trans-unit>
 </body>
 </file>

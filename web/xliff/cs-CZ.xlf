@@ -3823,12 +3823,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Application entitlements</source>
   <target>Oprávnění aplikace</target>
 </trans-unit>
-<trans-unit id="application.entitlements.preview.info">
-  <source>Application entitlements are in preview.</source>
-</trans-unit>
-<trans-unit id="preview.send-us-feedback">
-  <source>Send us feedback!</source>
-</trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
   <target>Tato oprávnění lze použít k nastavení přístupu uživatelů v této aplikaci.</target>
@@ -4305,10 +4299,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s2221fef80f4753a2">
   <source>TLS Verification Certificate</source>
   <target>Ověřovací TLS certifikát</target>
-</trans-unit>
-<trans-unit id="sb8c13bd58191cea2">
-  <source>When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.</source>
-  <target>Při připojování k LDAP serveru s TLS nejsou certifikáty ve výchozím nastavení kontrolovány. Zadejte pár klíčů pro ověření vzdáleného certifikátu.</target>
 </trans-unit>
 <trans-unit id="s000ee3e634868b3c">
   <source>TLS Client authentication certificate</source>
@@ -11101,6 +11091,12 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s36535ff645fd37f7">
   <source>Lock my account</source>
+</trans-unit>
+<trans-unit id="s7abbf11fd03b3c12">
+  <source>Bind existing group/user</source>
+</trans-unit>
+<trans-unit id="s33bfd42437266a1f">
+  <source>Leave empty to skip certificate validation, or select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate.</source>
 </trans-unit>
 </body>
 </file>
