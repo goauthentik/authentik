@@ -78,16 +78,15 @@ class TestOpenIDConformance(SeleniumTestCase):
         )
         plan_id = test_plan["id"]
         for test in test_plan["modules"]:
-            with self.subTest(test["testModule"], **test["variant"]):
-                # Fetch name and variant of the next test to run
-                module_name = test["testModule"]
-                variant = test["variant"]
-                module_instance = self.conformance.create_test_from_plan_with_variant(
-                    plan_id, module_name, variant
-                )
-                module_id = module_instance["id"]
-                self.run_single_test(module_id)
-                self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
+            # Fetch name and variant of the next test to run
+            module_name = test["testModule"]
+            variant = test["variant"]
+            module_instance = self.conformance.create_test_from_plan_with_variant(
+                plan_id, module_name, variant
+            )
+            module_id = module_instance["id"]
+            self.run_single_test(module_id)
+            self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
             sleep(2)
         self.conformance.export_html(plan_id, Path(__file__).parent / "exports")
 
