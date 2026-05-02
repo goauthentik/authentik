@@ -68,7 +68,6 @@ class TestOpenIDConformance(SeleniumTestCase):
     def run_test(
         self, test_name: str, test_plan_config: dict[str, Any], test_variant: dict[str, Any]
     ):
-        # Create a Conformance instance...
         self.conformance = Conformance(f"https://{self.host}:8443/", None, verify_ssl=False)
 
         test_plan = self.conformance.create_test_plan(

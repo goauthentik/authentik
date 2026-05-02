@@ -8,6 +8,7 @@ from tests.openid_conformance.base import TestOpenIDConformance
 
 
 class TestOpenIDConformanceSSFTransmitter(TestOpenIDConformance, SSLLiveMixin):
+
     def setUp(self):
         super().setUp()
         self.provider = SSFProvider.objects.create(
@@ -23,9 +24,8 @@ class TestOpenIDConformanceSSFTransmitter(TestOpenIDConformance, SSLLiveMixin):
             "authentik_providers_ssf:configuration",
             application_slug="oidc-conformance-1",
         )
-        test_plan_name = "openid-ssf-transmitter-test-plan"
         self.run_test(
-            test_plan_name,
+            "openid-ssf-transmitter-test-plan",
             {
                 "alias": "authentik",
                 "description": "authentik",
