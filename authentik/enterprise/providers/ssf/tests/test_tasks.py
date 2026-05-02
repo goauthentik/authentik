@@ -46,7 +46,7 @@ class TestTasks(APITestCase):
         )
         jwt = decode_complete(mocker.request_history[0].body, options={"verify_signature": False})
         self.assertEqual(jwt["header"]["typ"], "secevent+jwt")
-        self.assertIsNone(jwt["payload"]["events"][EventTypes.SET_VERIFICATION]["state"])
+        self.assertEqual(jwt["payload"]["events"][EventTypes.SET_VERIFICATION], {})
 
     def test_push_auth(self):
         auth = generate_id()
@@ -72,7 +72,7 @@ class TestTasks(APITestCase):
         )
         jwt = decode_complete(mocker.request_history[0].body, options={"verify_signature": False})
         self.assertEqual(jwt["header"]["typ"], "secevent+jwt")
-        self.assertIsNone(jwt["payload"]["events"][EventTypes.SET_VERIFICATION]["state"])
+        self.assertEqual(jwt["payload"]["events"][EventTypes.SET_VERIFICATION], {})
 
     def test_push_stream_disable(self):
         auth = generate_id()
@@ -95,7 +95,7 @@ class TestTasks(APITestCase):
             ).get_result(block=True, timeout=1)
         jwt = decode_complete(mocker.request_history[0].body, options={"verify_signature": False})
         self.assertEqual(jwt["header"]["typ"], "secevent+jwt")
-        self.assertIsNone(jwt["payload"]["events"][EventTypes.SET_VERIFICATION]["state"])
+        self.assertEqual(jwt["payload"]["events"][EventTypes.SET_VERIFICATION], {})
         self.assertFalse(Stream.objects.filter(pk=stream.pk).exists())
 
     def test_push_error(self):
