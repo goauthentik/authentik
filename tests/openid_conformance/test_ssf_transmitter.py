@@ -14,6 +14,7 @@ class TestOpenIDConformanceSSFTransmitter(TestOpenIDConformance, SSLLiveMixin):
             name=generate_id(),
             signing_key=CertificateKeyPair.objects.get(name="authentik Self-signed Certificate"),
             backchannel_application=Application.objects.get(slug="oidc-conformance-1"),
+            push_verify_certificates=False,
         )
 
     @retry()
@@ -23,24 +24,26 @@ class TestOpenIDConformanceSSFTransmitter(TestOpenIDConformance, SSLLiveMixin):
             application_slug="oidc-conformance-1",
         )
         test_plan_name = "openid-ssf-transmitter-test-plan"
-        self.test_plan_config = {
-            "alias": "authentik",
-            "description": "authentik",
-            "ssf": {
-                "transmitter": {
-                    "issuer": iss,
-                    "configuration_metadata_endpoint": iss,
-                    "access_token": self.provider.token.key,
-                }
+        self.run_test(
+            test_plan_name,
+            {
+                "alias": "authentik",
+                "description": "authentik",
+                "ssf": {
+                    "transmitter": {
+                        "issuer": iss,
+                        "configuration_metadata_endpoint": iss,
+                        "access_token": self.provider.token.key,
+                    }
+                },
             },
-        }
-        self.test_variant = {
-            "client_auth_type": "client_secret_post",
-            "ssf_server_metadata": "static",
-            "server_metadata": "static",
-            "ssf_auth_mode": "static",
-            "ssf_delivery_mode": "push",
-            "ssf_profile": "caep_interop",
-            "client_registration": "static_client",
-        }
-        self.run_test(test_plan_name, self.test_plan_config)
+            test_variant={
+                "client_auth_type": "client_secret_post",
+                "ssf_server_metadata": "static",
+                "server_metadata": "static",
+                "ssf_auth_mode": "static",
+                "ssf_delivery_mode": "push",
+                "ssf_profile": "caep_interop",
+                "client_registration": "static_client",
+            },
+        )

@@ -1,6 +1,7 @@
 from os import makedirs
 from pathlib import Path
 from time import sleep
+from typing import Any
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -64,14 +65,16 @@ class TestOpenIDConformance(SeleniumTestCase):
             "client_registration": "static_client",
         }
 
-    def run_test(self, test_name: str, test_plan_config: dict):
+    def run_test(
+        self, test_name: str, test_plan_config: dict[str, Any], test_variant: dict[str, Any]
+    ):
         # Create a Conformance instance...
         self.conformance = Conformance(f"https://{self.host}:8443/", None, verify_ssl=False)
 
         test_plan = self.conformance.create_test_plan(
             test_name,
             test_plan_config,
-            self.test_variant,
+            test_variant,
         )
         plan_id = test_plan["id"]
         for test in test_plan["modules"]:
