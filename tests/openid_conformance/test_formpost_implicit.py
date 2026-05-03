@@ -7,10 +7,4 @@ class TestOpenIDConformanceFormPostImplicit(TestOpenIDConformance):
     @retry()
     def test_oidcc_formpost_implicit_certification_test_plan(self):
         test_plan_name = "oidcc-formpost-implicit-certification-test-plan"
-        self.test_variant = {
-            "server_metadata": "discovery",
-            "client_registration": "static_client",
-            "response_type": "id_token token",
-            "response_mode": "form_post",
-        }
         self.run_test(test_plan_name, self.test_plan_config)
