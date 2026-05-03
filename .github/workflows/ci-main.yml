@@ -317,12 +317,6 @@ jobs:
           npm run build
           npm run build:sfe
       - name: run conformance
-        env:
-          # Bind the live server to all interfaces so the docker bridge can
-          # reach it; otherwise Django binds to the runner's LAN IP only and
-          # Traefik (in tests/openid_conformance/compose.yml) can't forward
-          # requests from host.docker.internal back to Django.
-          LOCAL_IP: 0.0.0.0
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
           uv run coverage combine
