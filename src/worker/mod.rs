@@ -328,8 +328,8 @@ pub(crate) fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
                 "worker",
                 router.clone(),
                 addr,
-                true, /* Allow failure in case the server is running on the same machine, like
-                       * in dev. */
+                config::get().debug, /* Allow failure in case the server is running on the same
+                                      * machine, like in dev. */
             )?;
         }
 
@@ -338,7 +338,8 @@ pub(crate) fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
             "worker",
             router,
             unix::net::SocketAddr::from_pathname(socket_path())?,
-            true, // Allow failure in case the server is running on the same machine, like in dev.
+            config::get().debug, /* Allow failure in case the server is running on the same
+                                  * machine, like in dev. */
         )?;
     }
 

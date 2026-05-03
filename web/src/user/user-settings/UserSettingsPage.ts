@@ -9,10 +9,14 @@ import "#user/user-settings/tokens/UserTokenList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+import { startAccountLockdown } from "#common/users";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
+import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import Styles from "#user/user-settings/styles.css";
@@ -20,10 +24,11 @@ import Styles from "#user/user-settings/styles.css";
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -36,9 +41,10 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-settings")
-export class UserSettingsPage extends WithSession(AKElement) {
+export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement)) {
     static styles: CSSResult[] = [
         PFPage,
+        PFButton,
         PFDisplay,
         PFGallery,
         PFContent,
@@ -51,21 +57,69 @@ export class UserSettingsPage extends WithSession(AKElement) {
         Styles,
     ];
 
+    protected stagesAPI = new StagesApi(DEFAULT_CONFIG);
+
     @state()
-    userSettings?: UserSetting[];
+    protected userSettings: UserSetting[] | null = null;
+
+    protected refresh = () => {
+        return this.stagesAPI
+            .stagesAllUserSettingsList()
+            .then((nextUserSettings) => {
+                this.userSettings = nextUserSettings;
+            })
+            .catch(showAPIErrorMessage);
+    };
 
     constructor() {
         super();
-        this.addEventListener(EVENT_REFRESH, () => {
-            this.firstUpdated();
-        });
+        this.addEventListener(EVENT_REFRESH, this.refresh);
     }
 
-    async firstUpdated(): Promise<void> {
-        this.userSettings = await new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
+    public async firstUpdated(): Promise<void> {
+        this.refresh();
     }
 
-    render(): TemplateResult {
+    protected lockAccount = () => {
+        return startAccountLockdown().catch(showAPIErrorMessage);
+    };
+
+    protected renderSecuritySettings(): SlottedTemplateResult {
+        if (!this.hasEnterpriseLicense) {
+            return null;
+        }
+
+        return html`<div
+            id="page-security"
+            role="tabpanel"
+            tabindex="0"
+            slot="page-security"
+            aria-label=${msg("Security")}
+            class="pf-c-page__main-section pf-m-no-padding-mobile"
+        >
+            <div class="pf-l-stack pf-m-gutter">
+                <div class="pf-l-stack__item">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__title">${msg("Account Lockdown")}</div>
+                        <div class="pf-c-card__body">
+                            <p>
+                                ${msg(
+                                    "If you suspect your account has been compromised, you can immediately lock it to prevent unauthorized access.",
+                                )}
+                            </p>
+                        </div>
+                        <div class="pf-c-card__footer">
+                            <button class="pf-c-button pf-m-danger" @click=${this.lockAccount}>
+                                ${msg("Lock my account")}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    protected override render(): SlottedTemplateResult {
         const pwStage =
             this.userSettings?.filter((stage) => stage.component === "ak-user-settings-password") ||
             [];
@@ -176,6 +230,7 @@ export class UserSettingsPage extends WithSession(AKElement) {
                             ></ak-user-settings-source>
                         </div>
                     </div>
+                    ${this.renderSecuritySettings()}
                 </ak-tabs>
             </div>
         </div>`;
