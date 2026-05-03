@@ -2,26 +2,19 @@ from os import makedirs
 from pathlib import Path
 from time import sleep
 
-from django.utils.functional import classproperty
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.providers.oauth2.models import OAuth2Provider
+from tests.live import SSLLiveMixin
 from tests.openid_conformance.conformance import Conformance
 from tests.selenium import SeleniumTestCase
 
 
-class TestOpenIDConformance(SeleniumTestCase):
+class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
 
     conformance: Conformance
-    # Pinned so Traefik (in compose.yml) can forward TLS from
-    # host.docker.internal:8445 to Django on this port.
-    port = 8123
-
-    @classproperty
-    def live_server_url(cls):
-        return "https://host.docker.internal:8445"
 
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",

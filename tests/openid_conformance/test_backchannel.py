@@ -22,14 +22,9 @@ class TestOpenIDConformanceBackchannel(TestOpenIDConformance):
         OAuth2Provider.objects.filter(name__startswith="oidc-conformance-").update(
             invalidation_flow=Flow.objects.get(slug="default-invalidation-flow"),
             logout_method=OAuth2LogoutMethod.BACKCHANNEL,
-            # Authentik's actor POSTs from the host (not a container), so the URL
-            # must resolve there. host.docker.internal isn't a host-side hostname
-            # on Linux CI — localhost works everywhere.
             logout_uri="https://localhost:8443/test/a/authentik/backchannel_logout",
         )
-        # Conformance suite ships a self-signed cert with no SAN; modern Python
-        # SSL won't trust it under any hostname. Skip verification for this
-        # test only — production keeps verify=True via get_http_session().
+        # We are unable to use https for this at the current time
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         self._http_patcher = patch(
             "authentik.providers.oauth2.tasks.get_http_session",

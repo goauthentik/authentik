@@ -27,16 +27,3 @@ services:
       - mongodb:mongodb
     depends_on:
       - mongodb
-  traefik:
-    image: traefik:v3.1
-    ports:
-      - "8445:8445"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command:
-      - --entrypoints.websecure.address=:8445
-      - --providers.file.filename=/etc/traefik/dynamic.yml
-      - --providers.file.watch=true
-      - --log.level=INFO
-    volumes:
-      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
