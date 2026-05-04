@@ -65,7 +65,7 @@ All selected mappings are applied in the order of their name, and are deeply mer
 
 ### Custom attributes and schemas
 
-To send attributes in a custom SCIM extension, [create or edit a SCIM provider property mapping](../property-mappings/#create-a-custom-provider-property-mapping), then add it to the SCIM provider's **User Property Mappings**.
+To send attributes in a custom SCIM schema extension, [create or edit a SCIM provider property mapping](../property-mappings/#create-a-custom-provider-property-mapping), then add it to the SCIM provider's **User Property Mappings**.
 
 The property mapping must return both the extension schema URN in `schemas` and the object for that schema. For example, to send a standard work phone number and a custom `github` attribute from a user's authentik attributes, use the following code:
 
