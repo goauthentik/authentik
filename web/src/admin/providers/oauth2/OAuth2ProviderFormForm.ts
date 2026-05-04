@@ -1,4 +1,4 @@
-import "#components/ak-switch-input";
+﻿import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-hidden-text-input";
@@ -36,7 +36,7 @@ import {
     OAuth2Provider,
     OAuth2ProviderLogoutMethodEnum,
     RedirectURI,
-    RedirectUriTypeEnum,
+    RedirectURITypeEnum,
     SubModeEnum,
     ValidationError,
 } from "@goauthentik/api";
@@ -270,7 +270,7 @@ export function renderForm({
                         .newItem=${() => ({
                             matchingMode: MatchingModeEnum.Strict,
                             url: "",
-                            redirectUriType: RedirectUriTypeEnum.Authorization,
+                            redirectUriType: RedirectURITypeEnum.Authorization,
                         })}
                         .row=${(redirectURI: RedirectURI, idx: number) => {
                             return html`<ak-provider-oauth2-redirect-uri
@@ -312,7 +312,7 @@ export function renderForm({
                           required
                           .options=${logoutMethodOptions}
                           .help=${msg(
-                              "The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).",
+                              "The logout method determines how the logout URI is called â€” back-channel (server-to-server) or front-channel (browser iframe).",
                           )}
                       ></ak-radio-input>`
                     : html``}
