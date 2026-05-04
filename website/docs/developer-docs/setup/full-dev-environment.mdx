@@ -92,6 +92,14 @@ For other distributions (Red Hat, SUSE, Arch), adjust the package names as neede
 
 Install `golangci-lint` by following the [official installation instructions](https://golangci-lint.run/welcome/install/#other-ci).
 
+</TabItem>
+<TabItem value="Windows">
+
+We're currently seeking community input on running the full development environment on Windows. If you have experience with this setup, please consider contributing to this documentation.
+
+</TabItem>
+</Tabs>
+
 :::warning
 
 [aws-lc-rs](https://github.com/aws/aws-lc-rs) currently has an [issue](https://github.com/aws/aws-lc-rs/issues/569) building its FIPS module with GCC >= 14. If you encounter this issue, you have two options:
@@ -100,14 +108,6 @@ Install `golangci-lint` by following the [official installation instructions](ht
 - Install [Clang](https://clang.llvm.org) and `export AWS_LC_FIPS_SYS_CC=clang`.
 
 :::
-
-</TabItem>
-<TabItem value="Windows">
-
-We're currently seeking community input on running the full development environment on Windows. If you have experience with this setup, please consider contributing to this documentation.
-
-</TabItem>
-</Tabs>
 
 ## 4. Set up the backend
 
