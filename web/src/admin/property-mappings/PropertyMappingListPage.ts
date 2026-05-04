@@ -14,7 +14,7 @@ import "#admin/property-mappings/PropertyMappingSourceSAMLForm";
 import "#admin/property-mappings/PropertyMappingSourceSCIMForm";
 import "#admin/property-mappings/PropertyMappingSourceTelegramForm";
 import "#admin/property-mappings/PropertyMappingTestForm";
-import "#admin/property-mappings/PropertyMappingWizard";
+import "#admin/property-mappings/ak-property-mapping-wizard";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -22,49 +22,54 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CustomFormElementTagName } from "#elements/forms/unsafe";
+import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
+import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-import { StrictUnsafe } from "#elements/utils/unsafe";
 
-import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+import { AKPropertyMappingWizard } from "#admin/property-mappings/ak-property-mapping-wizard";
+import { PropertyMappingTestForm } from "#admin/property-mappings/PropertyMappingTestForm";
 
-import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { ModelEnum, PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Property Mappings");
-    public pageDescription = msg("Control how authentik exposes and interprets information.");
-    public pageIcon = "pf-icon pf-icon-blueprint";
+    public override pageTitle = msg("Property Mappings");
+    public override pageDescription = msg(
+        "Control how authentik exposes and interprets information.",
+    );
+    public override pageIcon = "pf-icon pf-icon-blueprint";
+    public override searchPlaceholder = msg("Search for a property mapping by name or type...");
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    @property()
-    order = "name";
+    public override order = "name";
 
     @state()
-    hideManaged = getURLParam<boolean>("hideManaged", true);
+    protected hideManaged = getURLParam<boolean>("hideManaged", true);
 
-    async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
             ...(await this.defaultEndpointConfig()),
             managedIsnull: this.hideManaged ? true : undefined,
         });
     }
 
-    protected columns: TableColumn[] = [
+    protected override columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Type"), "type"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Property Mapping(s)")}
@@ -86,46 +91,45 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: PropertyMapping): SlottedTemplateResult[] {
+    protected override row(item: PropertyMapping): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.verboseName}`,
-            html` <ak-forms-modal>
-                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
-                        slot: "form",
-                        instancePk: item.pk,
-                        actionLabel: msg("Update"),
-                        headline: msg(str`Update ${item.verboseName}`, {
-                            id: "form.headline.update",
-                        }),
-                    })}
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
-                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
-                </ak-rbac-object-permission-modal>
-                <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                    <span slot="submit">${msg("Test")}</span>
-                    <span slot="header">${msg("Test Property Mapping")}</span>
-                    <ak-property-mapping-test-form slot="form" .mapping=${item}>
-                    </ak-property-mapping-test-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Test")}>
-                            <i class="fas fa-vial" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>`,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButtonByTagName(item.component, item.pk)}
+                ${IconPermissionButton(item.name, {
+                    model: item.metaModelName as ModelEnum,
+                    objectPk: item.pk,
+                })}
+
+                <button
+                    class="pf-c-button pf-m-plain"
+                    ${modalInvoker(
+                        PropertyMappingTestForm,
+                        { mapping: item },
+                        {
+                            closedBy: "closerequest",
+                        },
+                    )}
+                >
+                    <pf-tooltip position="top" content=${msg("Test")}>
+                        <i class="fas fa-vial" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
+            </div>`,
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`<ak-property-mapping-wizard></ak-property-mapping-wizard> `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return html`<button
+            class="pf-c-button pf-m-primary"
+            ${modalInvoker(AKPropertyMappingWizard)}
+        >
+            ${msg("New Property Mapping")}
+        </button>`;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): SlottedTemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <div class="pf-c-input-group">

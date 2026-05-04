@@ -7,6 +7,9 @@ import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 
 export function formatUUID(hex: string): string {
+    if (typeof hex !== "string") {
+        return String(hex ?? "");
+    }
     if (hex.length < 32) {
         return hex;
     }

@@ -15,7 +15,8 @@ from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderSAML(SeleniumTestCase):
@@ -38,7 +39,7 @@ class TestProviderSAML(SeleniumTestCase):
                 "9009": "9009",
             },
             environment={
-                "SP_ENTITY_ID": provider.issuer,
+                "SP_ENTITY_ID": provider.issuer_override,
                 "SP_SSO_BINDING": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
                 "SP_METADATA_URL": metadata_url,
                 **kwargs,
@@ -67,7 +68,7 @@ class TestProviderSAML(SeleniumTestCase):
             name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -146,7 +147,7 @@ class TestProviderSAML(SeleniumTestCase):
             name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -225,7 +226,7 @@ class TestProviderSAML(SeleniumTestCase):
             name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -320,7 +321,7 @@ class TestProviderSAML(SeleniumTestCase):
             name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -414,7 +415,7 @@ class TestProviderSAML(SeleniumTestCase):
             name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -502,7 +503,7 @@ class TestProviderSAML(SeleniumTestCase):
             name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
@@ -552,7 +553,7 @@ class TestProviderSAML(SeleniumTestCase):
             name=generate_id(),
             acs_url="http://localhost:9009/saml/acs",
             audience="authentik-e2e",
-            issuer="authentik-e2e",
+            issuer_override="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
             invalidation_flow=invalidation_flow,

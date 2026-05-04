@@ -125,7 +125,7 @@ To connect to an existing Nextcloud user, set the `nextcloud_user_id` attribute 
         - Under **Advanced protocol settings**:
             - _(optional)_ If you created the `Nextcloud Profile` scope mapping, add it to **Selected Scopes**.
             - **Subject Mode**: `Based on the User's UUID`
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -167,6 +167,17 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
     :::danger
     If you're using the `Nextcloud Profile` property mapping and want administrators to retain their ability to log in, make sure that **Use unique user ID** is disabled. If this setting is enabled, it will remove administrator users from the internal admin group and replace them with a hashed group ID named "admin," which does not have real administrative privileges.
     :::
+
+## Enabling OIDC back-channel logout
+
+To automatically log users out of their Nextcloud sessions when they log out of authentik, enable back-channel logout.
+
+1. Log in to Nextcloud as an administrator and navigate to **Settings** > **OpenID Connect**.
+2. Under **Registered Providers**, locate the provider with the identifier used earlier.
+3. Copy the `back-channel-logout-URL` value for that provider. For example: `https://nextcloud.company/apps/user_oidc/backchannel-logout/<identifier>`
+4. In authentik, navigate to **Applications** > **Providers** and edit the Nextcloud provider.
+5. Under **Protocol Settings**, set the **Logout URI** to the copied back-channel logout URL.
+6. Set the **Logout Method** to `Back-channel`.
 
 ## Making OIDC the default login method
 
@@ -211,7 +222,7 @@ If you require [server side encryption](https://docs.nextcloud.com/server/latest
         - Set the **Audience** to `https://nextcloud.company/apps/user_saml/saml/metadata`.
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, set an available **Signing certificate**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -339,7 +350,7 @@ This documentation lists only the settings that you need to change from their de
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **LDAP** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name) and the bind flow to use for this provider
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -383,7 +394,7 @@ This documentation lists only the settings that you need to change from their de
                 - **Base User Tree**: enter the **Search base** of the authentik LDAP provider.
                 - **Group Display Name Field**: `cn`
                 - **Base Group Tree**: enter the **Search base** of the authentik LDAP provider.
-                - **Group-Member Association**: `gidNumber`
+                - **Group-Member Association**: `member (AD)`
             - Under **Special Attributes**:
                 - **Email Field**: `mailPrimaryAddress`
 

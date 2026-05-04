@@ -2,7 +2,7 @@
 title: Applications
 ---
 
-Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **My applications** page.
+Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **User Dashboard**.
 
 When a user logs into authentik, they see a list of the applications for which authentik is configured to provide authentication and authorization (the applications that they are authorized to use).
 
@@ -30,9 +30,9 @@ The following options can be configured:
 
     For a reference of all fields available, see [the API schema for the User object](https://api.goauthentik.io/reference/core-users-retrieve/).
 
-    Only applications whose launch URL starts with `http://` or `https://` or are relative URLs are shown on the users' **My applications** page. This can also be used to hide applications that shouldn't be visible on the **My applications** page but are still accessible by users, by setting the _Launch URL_ to `blank://blank`.
+    Only apps with launch URLs that begin with `http://` or `https://`, or that use relative paths, appear on the **User Dashboard**. To keep an app accessible but remove it from that page, use the **Hide from User Dashboard** option (see [Hide applications](./manage_apps.mdx#hide-applications)).
 
-- _Icon (URL)_: Optionally configure an Icon for the application. You can select from files uploaded to the [Files](../../customize/files.md) library or enter an absolute URL.
+- _Icon (URL)_: Optionally configure an icon for the application. You can select from files uploaded to the [Files](../../customize/files.md) library or enter an absolute URL.
 
 - _Publisher_: Text shown in the application card's expandable kebab menu (⋮)
 - _Description_: Text shown in the application card's expandable kebab menu (⋮)

@@ -28,7 +28,7 @@ To support the integration of NetBox with authentik, you need to create an appli
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -36,7 +36,7 @@ To support the integration of NetBox with authentik, you need to create an appli
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://netbox.company/oauth/complete/oidc/`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -61,36 +61,21 @@ SOCIAL_AUTH_OIDC_SCOPE=openid profile email roles
 LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<application_slug>/end-session/'
 ```
 
-To extend the NetBox configuration, create a new file in the configuration folder (for example, `authentik.py`).
+Use the authentik provider URL without `/.well-known/openid-configuration`. python-social-auth discovers the OpenID configuration from that endpoint.
+
+For non-Docker installations, extend the NetBox configuration by creating a new file in the configuration folder (for example, `authentik.py`).
 
 ```py
-from os import environ
-
-#############
-# Docker
-#############
-
-# python-social-auth configuration
-SOCIAL_AUTH_OIDC_OIDC_ENDPOINT = environ.get('SOCIAL_AUTH_OIDC_OIDC_ENDPOINT')
-SOCIAL_AUTH_OIDC_KEY = environ.get('SOCIAL_AUTH_OIDC_KEY')
-SOCIAL_AUTH_OIDC_SECRET = environ.get('SOCIAL_AUTH_OIDC_SECRET')
-SOCIAL_AUTH_OIDC_SCOPE = environ.get('SOCIAL_AUTH_OIDC_SCOPE').split(' ')
-LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
-
-
-#############
-# non-Docker
-#############
-
 # NetBox settings
-#REMOTE_AUTH_ENABLED = True
-#REMOTE_AUTH_BACKEND = 'social_core.backends.open_id_connect.OpenIdConnectAuth'
+REMOTE_AUTH_ENABLED = True
+REMOTE_AUTH_BACKEND = 'social_core.backends.open_id_connect.OpenIdConnectAuth'
 
 # python-social-auth configuration
-#SOCIAL_AUTH_OIDC_ENDPOINT = 'https://authentik.company/application/o/<application_slug>/'
-#SOCIAL_AUTH_OIDC_KEY = '<Client ID>'
-#SOCIAL_AUTH_OIDC_SECRET = '<Client Secret>'
-#LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<application_slug>/end-session/'
+SOCIAL_AUTH_OIDC_OIDC_ENDPOINT = 'https://authentik.company/application/o/<application_slug>/'
+SOCIAL_AUTH_OIDC_KEY = '<Client ID>'
+SOCIAL_AUTH_OIDC_SECRET = '<Client Secret>'
+SOCIAL_AUTH_OIDC_SCOPE = ['openid', 'profile', 'email', 'roles']
+LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<application_slug>/end-session/'
 ```
 
 ### Groups

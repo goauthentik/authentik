@@ -32,7 +32,7 @@ To support the integration of Hashicorp Vault with authentik, you need to create
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -40,7 +40,7 @@ To support the integration of Hashicorp Vault with authentik, you need to create
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Add three `Strict` redirect URIs and set them to `https://vault.company/ui/vault/auth/oidc/oidc/callback`, `https://vault.company/oidc/callback`, and `http://localhost:8250/oidc/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
 
 3. Click **Submit** to save the new application and provider.
 

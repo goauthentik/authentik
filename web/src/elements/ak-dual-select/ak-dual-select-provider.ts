@@ -3,7 +3,7 @@ import "./ak-dual-select.js";
 import { AkDualSelect } from "./ak-dual-select.js";
 import { type DataProvider, DualSelectEventType, type DualSelectPair } from "./types.js";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import type { Pagination } from "@goauthentik/api";
@@ -23,7 +23,7 @@ import { createRef, ref } from "lit/directives/ref.js";
  * about authentik at all and could be dropped into Gravity unchanged.)
  */
 @customElement("ak-dual-select-provider")
-export class AkDualSelectProvider extends CustomListenerElement(AkControlElement) {
+export class AkDualSelectProvider extends CustomListenerElement(AKControlElement) {
     //#region Properties
 
     /**
@@ -60,6 +60,9 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
     @property({ attribute: "selected-label" })
     public selectedLabel = msg("Selected options");
 
+    @property({ type: String })
+    public name: string | null = null;
+
     /**
      * When true, the selected pane preserves insertion order instead of sorting alphabetically.
      *
@@ -92,11 +95,11 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
     @property({ attribute: "search-delay", type: Number })
     public searchDelay = 250;
 
-    public get value() {
+    public get value(): Array<string | number> {
         return this.dualSelector.value!.selected.map(([k, _]) => k);
     }
 
-    public json() {
+    public toJSON(): Array<string | number> {
         return this.value;
     }
 

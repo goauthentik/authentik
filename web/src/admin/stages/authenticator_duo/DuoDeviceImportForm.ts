@@ -2,6 +2,7 @@ import "#elements/Divider";
 import "#elements/buttons/ActionButton/index";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { MessageLevel } from "#common/messages";
@@ -9,6 +10,7 @@ import { MessageLevel } from "#common/messages";
 import { ModalForm } from "#elements/forms/ModalForm";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     AuthenticatorDuoStage,
@@ -25,6 +27,14 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-duo-device-import-form")
 export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string> {
+    public static override verboseName = msg("Duo Device");
+    public static override verboseNamePlural = msg("Duo Devices");
+    public static override createLabel = msg("Import");
+    public static override submitVerb = msg("Import");
+    public static override modifierLabel = msg("Import");
+    public static override saveLabel = msg("Import");
+    public static override submittingVerb = msg("Importing");
+
     loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoRetrieve({
             stageUuid: pk,
@@ -43,16 +53,17 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
         });
     }
 
-    protected override renderForm(): TemplateResult {
+    protected override renderForm(): SlottedTemplateResult {
         return html` ${this.instance?.adminIntegrationKey !== ""
             ? this.renderFormAutomatic()
             : nothing}
         ${this.renderFormManual()}`;
     }
 
-    renderFormManual(): TemplateResult {
+    protected renderFormManual(): SlottedTemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="username">
                 <ak-search-select
+                    placeholder=${msg("Select a user...")}
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
@@ -79,17 +90,20 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                     ${msg("The user in authentik this device will be assigned to.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Duo User ID")} required name="duoUserId">
-                <input type="text" class="pf-c-form-control" required />
-                <p class="pf-c-form__helper-text">
-                    ${msg("The user ID in Duo, can be found in the URL after clicking on a user.")}
-                </p>
-            </ak-form-element-horizontal>`;
+            <ak-text-input
+                label=${msg("Duo User ID")}
+                required
+                name="duoUserId"
+                placeholder=${msg("Type the Duo user ID for this device...")}
+                autocomplete="off"
+                input-hint="code"
+                help=${msg("The user ID in Duo, can be found in the URL after clicking on a user.")}
+            >
+            </ak-text-input>`;
     }
 
-    renderFormAutomatic(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Automatic import")}>
+    renderFormAutomatic(): SlottedTemplateResult {
+        return html`<ak-form-element-horizontal label=${msg("Automatic import")}>
                 <ak-action-button
                     class="pf-m-primary"
                     .apiRequest=${() => {
@@ -111,8 +125,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                 </ak-action-button>
             </ak-form-element-horizontal>
             <ak-divider>${msg("Or manually import")}</ak-divider>
-            <br />
-        `;
+            <br /> `;
     }
 }
 

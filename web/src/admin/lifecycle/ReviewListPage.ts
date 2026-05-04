@@ -70,6 +70,7 @@ export class ReviewListPage extends TablePage<LifecycleIteration> {
     protected columns: TableColumn[] = [
         [msg("State"), "state"],
         [msg("Object"), "content_type__model"],
+        [msg("Rule"), "rule__name"],
         [msg("Opened"), "opened_on"],
         [msg("Grace period ends")],
     ];
@@ -78,6 +79,7 @@ export class ReviewListPage extends TablePage<LifecycleIteration> {
         return [
             LifecycleIterationStatus({ status: item.state }),
             html`<a href="#${item.objectAdminUrl}">${item.objectVerbose}</a>`,
+            html`${item.rule.name}`,
             html`<ak-timestamp .timestamp=${item.openedOn} datetime dateonly></ak-timestamp>`,
             html`<ak-timestamp .timestamp=${item.gracePeriodEnd} datetime dateonly></ak-timestamp>`,
         ];

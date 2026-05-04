@@ -48,7 +48,7 @@ Vaultwarden either requires the email scope to return a true value for whether t
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -59,7 +59,7 @@ Vaultwarden either requires the email scope to return a true value for whether t
             - Set **Access token validity** to more than 5 minutes.
             - Ensure the `offline_access` scope mapping is available by adding `authentik default OAuth Mapping: OpenID 'offline_access'` to the selected scopes.
             - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope, and add the custom scope mapping you created above.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
 
 3. Click **Submit** to save the new application and provider.
 

@@ -27,7 +27,7 @@ from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
 
 LOGGER = get_logger()
-SYNC_CLASSES = [
+SYNC_CLASSES: list[type[BaseLDAPSynchronizer]] = [
     UserLDAPSynchronizer,
     GroupLDAPSynchronizer,
     MembershipLDAPSynchronizer,

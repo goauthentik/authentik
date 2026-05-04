@@ -42,6 +42,10 @@ For backward compatibility with older browsers that do not support hints, authen
 - Only client device hint: `platform`
 - If both client-device and cross-platform hints are selected, no value is inferred
 
+### Prevent duplicate devices
+
+When enabled, any unique authenticator can only be registered once. This check can only be enforced if the authenticator stores a unique attestsion certificate.
+
 #### Device type restrictions
 
 Optionally restrict the types of devices allowed to be enrolled. This option can be used to ensure users are only able to enroll FIPS-compliant devices for example.

@@ -1,16 +1,16 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
+        "ignoreDeprecations": "6.0",
         "alwaysStrict": true,
-        "baseUrl": ".",
         "composite": true,
         "declaration": true,
         "declarationMap": true,
-        "esModuleInterop": false,
         "isolatedModules": true,
         "incremental": true,
         "jsx": "react-jsx",
         "lib": ["ESNext"],
+        "types": ["node"],
         "module": "NodeNext",
         "moduleResolution": "NodeNext",
         "newLine": "lf",
