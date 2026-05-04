@@ -72,6 +72,12 @@ export interface SourceType {
      * @memberof SourceType
      */
     readonly oidcJwksUrl: string | null;
+    /**
+     *
+     * @type {boolean}
+     * @memberof SourceType
+     */
+    clientSecretRequired: boolean;
 }
 
 /**
@@ -87,6 +93,8 @@ export function instanceOfSourceType(value: object): value is SourceType {
     if (!("profileUrl" in value) || value["profileUrl"] === undefined) return false;
     if (!("oidcWellKnownUrl" in value) || value["oidcWellKnownUrl"] === undefined) return false;
     if (!("oidcJwksUrl" in value) || value["oidcJwksUrl"] === undefined) return false;
+    if (!("clientSecretRequired" in value) || value["clientSecretRequired"] === undefined)
+        return false;
     return true;
 }
 
@@ -108,6 +116,7 @@ export function SourceTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         profileUrl: json["profile_url"],
         oidcWellKnownUrl: json["oidc_well_known_url"],
         oidcJwksUrl: json["oidc_jwks_url"],
+        clientSecretRequired: json["client_secret_required"],
     };
 }
 
@@ -135,5 +144,6 @@ export function SourceTypeToJSONTyped(
         name: value["name"],
         verbose_name: value["verboseName"],
         urls_customizable: value["urlsCustomizable"],
+        client_secret_required: value["clientSecretRequired"],
     };
 }

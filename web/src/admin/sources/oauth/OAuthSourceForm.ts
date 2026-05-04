@@ -30,6 +30,7 @@ import {
     GroupMatchingModeEnum,
     OAuthSource,
     OAuthSourceRequest,
+    PatchedOAuthSourceRequest,
     PKCEMethodEnum,
     ProviderTypeEnum,
     SourcesApi,
@@ -81,6 +82,20 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
 
     //#region Lifecycle
 
+    private get isAtProtocolSource(): boolean {
+        return (
+            this.providerType?.name === ProviderTypeEnum.Atproto ||
+            this.modelName?.includes("atproto") === true
+        );
+    }
+
+    private get isClientSecretRequired(): boolean {
+        if (this.isAtProtocolSource) {
+            return false;
+        }
+        return this.providerType?.clientSecretRequired !== false;
+    }
+
     protected async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
@@ -97,16 +112,20 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
 
     protected async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
+        const requestData = data as unknown as OAuthSourceRequest & PatchedOAuthSourceRequest;
+        if (!this.isClientSecretRequired) {
+            requestData.consumerSecret = "";
+        }
 
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
-                patchedOAuthSourceRequest: data,
+                patchedOAuthSourceRequest: requestData,
             });
         }
 
         return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
-            oAuthSourceRequest: data as unknown as OAuthSourceRequest,
+            oAuthSourceRequest: requestData,
         });
     }
 
@@ -186,9 +205,11 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                               autocomplete="off"
                           />
                           <p class="pf-c-form__helper-text">
-                              ${msg(
-                                  "URL used to request the initial token. This URL is only required for OAuth 1.",
-                              )}
+                              ${this.isAtProtocolSource
+                                  ? msg("URL used to create pushed authorization requests.")
+                                  : msg(
+                                        "URL used to request the initial token. This URL is only required for OAuth 1.",
+                                    )}
                           </p>
                       </ak-form-element-horizontal> `
                     : nothing}
@@ -405,16 +426,22 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                             spellcheck="false"
                             required
                         />
-                        <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${this.isAtProtocolSource
+                                ? msg("Client metadata URL.")
+                                : msg("Also known as Client ID.")}
+                        </p>
                     </ak-form-element-horizontal>
-                    <ak-secret-textarea-input
-                        label=${msg("Consumer secret")}
-                        name="consumerSecret"
-                        input-hint="code"
-                        help=${msg("Also known as Client Secret.")}
-                        ?required=${!this.instance}
-                        ?revealed=${!this.instance}
-                    ></ak-secret-textarea-input>
+                    ${this.isClientSecretRequired
+                        ? html`<ak-secret-textarea-input
+                              label=${msg("Consumer secret")}
+                              name="consumerSecret"
+                              input-hint="code"
+                              help=${msg("Also known as Client Secret.")}
+                              ?required=${!this.instance}
+                              ?revealed=${!this.instance}
+                          ></ak-secret-textarea-input>`
+                        : nothing}
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
                             type="text"

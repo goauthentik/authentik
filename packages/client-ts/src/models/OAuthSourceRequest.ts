@@ -162,7 +162,7 @@ export interface OAuthSourceRequest {
      * @type {string}
      * @memberof OAuthSourceRequest
      */
-    consumerSecret: string;
+    consumerSecret?: string;
     /**
      *
      * @type {string}
@@ -203,7 +203,6 @@ export function instanceOfOAuthSourceRequest(value: object): value is OAuthSourc
     if (!("slug" in value) || value["slug"] === undefined) return false;
     if (!("providerType" in value) || value["providerType"] === undefined) return false;
     if (!("consumerKey" in value) || value["consumerKey"] === undefined) return false;
-    if (!("consumerSecret" in value) || value["consumerSecret"] === undefined) return false;
     return true;
 }
 
@@ -252,7 +251,7 @@ export function OAuthSourceRequestFromJSONTyped(
         profileUrl: json["profile_url"] == null ? undefined : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"],
-        consumerSecret: json["consumer_secret"],
+        consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],
         additionalScopes: json["additional_scopes"] == null ? undefined : json["additional_scopes"],
         oidcWellKnownUrl:
             json["oidc_well_known_url"] == null ? undefined : json["oidc_well_known_url"],

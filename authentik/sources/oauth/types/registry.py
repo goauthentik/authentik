@@ -42,6 +42,8 @@ class SourceType:
     oidc_jwks_url: str | None = None
     pkce: PKCEMethod = PKCEMethod.NONE
 
+    client_secret_required = True
+
     authorization_code_auth_method: AuthorizationCodeAuthMethod = (
         AuthorizationCodeAuthMethod.BASIC_AUTH
     )

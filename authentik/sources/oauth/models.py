@@ -271,6 +271,15 @@ class EntraIDOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Entra ID OAuth Sources")
 
 
+class AtProtoOAuthSource(CreatableType, OAuthSource):
+    """Social Login using AT Protocol."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("AT Protocol OAuth Source")
+        verbose_name_plural = _("AT Protocol OAuth Sources")
+
+
 class OpenIDConnectOAuthSource(CreatableType, OAuthSource):
     """Login using a Generic OpenID-Connect compliant provider."""
 

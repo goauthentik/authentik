@@ -18,6 +18,7 @@
  */
 export const ProviderTypeEnum = {
     Apple: "apple",
+    Atproto: "atproto",
     Openidconnect: "openidconnect",
     Entraid: "entraid",
     Azuread: "azuread",

@@ -33,6 +33,7 @@ class SourceTypeSerializer(PassiveSerializer):
     profile_url = CharField(read_only=True, allow_null=True)
     oidc_well_known_url = CharField(read_only=True, allow_null=True)
     oidc_jwks_url = CharField(read_only=True, allow_null=True)
+    client_secret_required = BooleanField()
 
 
 class OAuthSourceSerializer(SourceSerializer):
@@ -64,6 +65,15 @@ class OAuthSourceSerializer(SourceSerializer):
             self.instance.provider_type if self.instance else None,
         )
         source_type = registry.find_type(provider_type_name)
+
+        if not source_type.client_secret_required and "consumer_secret" not in attrs:
+            attrs["consumer_secret"] = ""
+        if (
+            source_type.client_secret_required
+            and not self.instance
+            and not attrs.get("consumer_secret")
+        ):
+            raise ValidationError({"consumer_secret": "This field is required."})
 
         well_known = attrs.get("oidc_well_known_url") or source_type.oidc_well_known_url
         inferred_oidc_jwks_url = None
@@ -149,7 +159,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "authorization_code_auth_method",
         ]
         extra_kwargs = {
-            "consumer_secret": {"write_only": True},
+            "consumer_secret": {"write_only": True, "allow_blank": True, "required": False},
             "request_token_url": {"allow_blank": True},
             "authorization_url": {"allow_blank": True},
             "access_token_url": {"allow_blank": True},

@@ -622,6 +622,7 @@ const items = [
                         },
                         items: [
                             "users-sources/sources/social-logins/apple/index",
+                            "users-sources/sources/social-logins/atproto/index",
                             "users-sources/sources/social-logins/discord/index",
                             {
                                 type: "category",
