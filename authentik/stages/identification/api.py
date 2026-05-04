@@ -33,6 +33,7 @@ class IdentificationStageSerializer(StageSerializer):
             "enrollment_flow",
             "recovery_flow",
             "passwordless_flow",
+            "passwordless_label",
             "sources",
             "show_source_labels",
             "pretend_user_exists",
@@ -56,6 +57,7 @@ class IdentificationStageViewSet(UsedByMixin, ModelViewSet):
         "enrollment_flow",
         "recovery_flow",
         "passwordless_flow",
+        "passwordless_label",
         "show_source_labels",
     ]
     search_fields = ["name"]

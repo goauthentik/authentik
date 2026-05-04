@@ -124,6 +124,14 @@ class IdentificationStage(Stage):
         default=None,
         help_text=_("Optional passwordless flow, which is linked at the bottom of the page."),
     )
+    passwordless_label = models.TextField(
+        blank=True,
+        default="",
+        help_text=_(
+            "Custom label for the passwordless flow button. "
+            "If left blank, the default 'Use a security key' is shown."
+        ),
+    )
 
     sources = models.ManyToManyField(
         Source, default=list, help_text=_("Specify which sources should be shown."), blank=True
