@@ -139,7 +139,7 @@ Optional hints can be used to guide the browser in prioritizing the preferred au
 - **Client device**: Suggests that the user authenticate with a built-in platform authenticator such as Touch ID or Windows Hello.
 - **Hybrid**: Suggests that the user authenticate using a platform authenticator on a nearby mobile device, typically via a QR code.
 
-The order of selected hints matters: earlier hints have higher priority. For example, selecting "Security key" first and "Hybrid" second asks the browser to prefer security keys before hybrid authentication.
+The order of selected hints matters: the first hint has the highest priority. For example, selecting "Security key" first and "Hybrid" second asks the browser to prefer security keys before hybrid registration.
 
 #### WebAuthn Device type restrictions
 
