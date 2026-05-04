@@ -42,8 +42,8 @@ OneUptime currently supports the RSA-based SAML signature methods `RSA-SHA1`, `R
 2. Navigate to **Project Settings** > **Authentication** > **SSO**.
 3. Click **Create SSO** and configure the following settings:
     - **Name**: enter a descriptive name, such as `authentik`.
-    - **Sign On URL**: temporarily set to `https://placeholder.invalid/sso`.
-    - **Issuer**: temporarily set to `https://placeholder.invalid/issuer`.
+    - **Sign On URL**: set to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
+    - **Issuer**: set to `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - **Public Certificate**: paste the certificate that you downloaded from authentik, including the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines.
     - **Signature Method**: select `RSA-SHA256`.
     - **Digest Method**: select `SHA256`.
@@ -74,16 +74,6 @@ To support the integration of OneUptime with authentik, you need an application/
 :::info NameID mapping
 OneUptime uses the SAML NameID as the user email address. Setting the authentik **NameID Property Mapping** to `authentik default SAML Mapping: Email` ensures that users can sign in successfully.
 :::
-
-## Complete the OneUptime configuration
-
-1. Return to **Project Settings** > **Authentication** > **SSO** in OneUptime.
-2. Open the SSO configuration that you created earlier.
-3. Replace the temporary values with the following settings:
-    - **Sign On URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-    - **Issuer**: `https://authentik.company/application/saml/<application_slug>/metadata/`
-4. Leave the **Public Certificate**, **Signature Method**, and **Digest Method** values unchanged.
-5. Save the configuration.
 
 :::info Role mapping
 OneUptime does not currently support SAML role mapping. Configure user roles separately in OneUptime after users sign in.
