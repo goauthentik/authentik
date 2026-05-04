@@ -34,6 +34,9 @@ export const PromptTypeEnum = {
     Separator: "separator",
     Hidden: "hidden",
     Static: "static",
+    AlertInfo: "alert_info",
+    AlertWarning: "alert_warning",
+    AlertDanger: "alert_danger",
     AkLocale: "ak-locale",
     UnknownDefaultOpenApi: "11184809",
 } as const;
