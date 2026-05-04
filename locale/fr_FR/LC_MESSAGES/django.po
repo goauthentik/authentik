@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-08 00:28+0000\n"
+"POT-Creation-Date: 2026-05-01 03:47+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Sp P, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/authentik/teams/119923/fr_FR/)\n"
@@ -264,6 +264,18 @@ msgstr ""
 "backchannels sont exclus"
 
 #: authentik/core/api/users.py
+msgid "Invalid password hash format. Must be a valid Django password hash."
+msgstr ""
+"Format de hachage de mot de passe invalide. Cela doit être un hachage de mot"
+" de passe Django valide."
+
+#: authentik/core/api/users.py
+msgid "Cannot set both password and password_hash. Use only one."
+msgstr ""
+"Impossible de définir à la fois password (mot de passe) et password_hash "
+"(hachage de mot de passe). N'en utiliser qu'un seul."
+
+#: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
 msgstr ""
 "Les barres obliques, ou slashes, de tête ou de queue ne sont pas autorisées."
@@ -442,6 +454,11 @@ msgstr "Nom de l'application interne, utilisé dans les URLs."
 msgid "Open launch URL in a new browser tab or window."
 msgstr ""
 "Ouvrir l'URL de lancement dans une nouvelle fenêtre ou un nouvel onglet."
+
+#: authentik/core/models.py
+msgid "Hide this application from the user's My applications page."
+msgstr ""
+"Masquer cette application dans la page Mes applications de l'utilisateur."
 
 #: authentik/core/models.py
 msgid "Application"
@@ -810,6 +827,14 @@ msgstr "Nonce Apple"
 msgid "Apple Nonces"
 msgstr "Nonces Apple"
 
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclave"
+msgstr "Secure Enclave indépendante d'Apple"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclaves"
+msgstr "Secure Enclaves indépendantes d'Apple"
+
 #: authentik/endpoints/facts.py
 msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
 msgstr "Nom du système d'exploitation, comme 'Server 2022' ou 'Ubuntu'"
@@ -936,12 +961,6 @@ msgstr "Soit un groupe de réviseurs soit un réviseur doit être défini."
 msgid "Grace period must be shorter than the interval."
 msgstr "La période de grâce doit être plus courte que l'intervalle."
 
-#: authentik/enterprise/lifecycle/api/rules.py
-msgid "Only one type-wide rule for each object type is allowed."
-msgstr ""
-"Une seule règle pour l'ensemble du type est autorisée pour chaque type "
-"d'objet."
-
 #: authentik/enterprise/lifecycle/models.py
 msgid ""
 "Select which transports should be used to notify the reviewers. If none are "
@@ -972,10 +991,11 @@ msgid "Go to {self._get_model_name()}"
 msgstr "Aller à {self._get_model_name()}"
 
 #: authentik/enterprise/lifecycle/models.py
-msgid "Access review is due for {self.content_type.name} {str(self.object)}"
+msgid ""
+"Access review is due for {self.content_type.name.lower()} {object_label}"
 msgstr ""
-"La révision d'accès est attendue pour {self.content_type.name} "
-"{str(self.object)}"
+"La révision de l'accès doit être effectuée pour "
+"{self.content_type.name.lower()} {object_label}"
 
 #: authentik/enterprise/lifecycle/models.py
 msgid ""
@@ -992,8 +1012,8 @@ msgstr ""
 "{str(self.object)}"
 
 #: authentik/enterprise/lifecycle/tasks.py
-msgid "Dispatch tasks to validate lifecycle rules."
-msgstr "Déclenche les tâches pour valider les règles de cycle de vie"
+msgid "Dispatch tasks to apply lifecycle rules."
+msgstr "Déclencher les tâches pour appliquer les règles de cycle de vie"
 
 #: authentik/enterprise/lifecycle/tasks.py
 msgid "Apply lifecycle rule."
@@ -1336,6 +1356,86 @@ msgstr "Télécharger"
 msgid "Generate data export."
 msgstr "Générer un export de données."
 
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "User to lock. If omitted, locks the current user (self-service)."
+msgstr ""
+"Utilisateur à bloquer. Si non renseigné, bloque l'utilisateur actuel (libre "
+"service)."
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured."
+msgstr "Aucun flux de blocage configuré."
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Lockdown flow is not applicable."
+msgstr "Le flux de blocage n'est pas applicable."
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Choose the target account, then return a flow link."
+msgstr "Choisit le compte cible, puis renvoie un lien de flux."
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured or the flow is not applicable"
+msgstr "Aucun flux de blocage configuré, ou le flux n'est pas applicable"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Permission denied (when targeting another user)"
+msgstr "Permission refusée (lors du ciblage d'un autre utilisateur)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Deactivate the user account (set is_active to False)"
+msgstr "Désactiver le compte de l'utilisateur (définir is_active à False)."
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Set an unusable password for the user"
+msgstr "Définit un mot de passe inutilisable pour cet utilisateur."
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Delete all active sessions for the user"
+msgstr "Supprimer toutes les sessions actives pour cet utilisateur."
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Revoke all tokens for the user (API, app password, recovery, verification, "
+"OAuth)"
+msgstr ""
+"Révoquer tous les jetons pour cet utilisateur (API, mot de passe applicatif,"
+" récupération, vérification, OAuth)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Flow to redirect users to after self-service lockdown. This flow should not "
+"require authentication since the user's session is deleted."
+msgstr ""
+"Flux vers lequel rediriger les utilisateurs après le blocage en libre "
+"service. Ce flux ne doit pas nécessiter d'authentification car la session "
+"utilisateur est supprimée."
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stage"
+msgstr "Etape de blocage de compte"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stages"
+msgstr "Etapes de blocage de compte"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "No target user specified for account lockdown"
+msgstr "Aucun utilisateur ciblé défini pour le blocage de compte"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "You do not have permission to lock down this account."
+msgstr "Vous n'avez pas la permission de bloquer ce compte."
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Account lockdown failed for this account."
+msgstr "Echec du blocage de compte pour ce compte."
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Self-service account lockdown requires a completion flow."
+msgstr ""
+"Le blocage de compte en libre service nécessite un flux de finalisation."
+
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
 msgstr ""
@@ -1469,11 +1569,11 @@ msgstr "Évènement utilisateur"
 
 #: authentik/events/models.py
 msgid "Notification Transport"
-msgstr "Transport de Notification"
+msgstr "Transport de notification"
 
 #: authentik/events/models.py
 msgid "Notification Transports"
-msgstr "Transports de notification"
+msgstr "Transports de notifications"
 
 #: authentik/events/models.py
 msgid "Notice"
@@ -1744,6 +1844,10 @@ msgstr "Jeton du flux"
 #: authentik/flows/models.py
 msgid "Flow Tokens"
 msgstr "Jetons du flux"
+
+#: authentik/flows/planner.py
+msgid "This link is invalid or has expired. Please request a new one."
+msgstr "Ce lien est invalide ou a expiré. Veuillez un demander un nouveau."
 
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
@@ -2772,8 +2876,12 @@ msgstr ""
 "restriction d'audience ne sera ajoutée."
 
 #: authentik/providers/saml/models.py
-msgid "Also known as EntityID"
-msgstr "Aussi appelé EntityID"
+msgid ""
+"Also known as EntityID. Providing a value overrides the default issuer "
+"generated by authentik."
+msgstr ""
+"Aussi appelé EntityID. Fournir une valeur remplace l'émetteur par défaut "
+"généré par authentik."
 
 #: authentik/providers/saml/models.py
 msgid "SLS URL"
@@ -2995,6 +3103,10 @@ msgid "SAML NameID format"
 msgstr "Format SAML NameID"
 
 #: authentik/providers/saml/models.py
+msgid "SAML Issuer used for this session"
+msgstr "Émetteur SAML utilisé pour cette session"
+
+#: authentik/providers/saml/models.py
 msgid "SAML Session"
 msgstr "Session SAML"
 
@@ -3025,6 +3137,10 @@ msgstr "Salesforce"
 #: authentik/providers/scim/models.py
 msgid "Webex"
 msgstr "Webex"
+
+#: authentik/providers/scim/models.py
+msgid "vCenter"
+msgstr "vCenter"
 
 #: authentik/providers/scim/models.py
 msgid "Group filters used to define sync-scope for groups."
@@ -3749,8 +3865,8 @@ msgid ""
 "Which servers a user has to be a member of to be granted access. Empty list "
 "allows every server."
 msgstr ""
-"De quels serveurs un utilisateur doit être membre afin d'être autorisé. Une "
-"liste vide autorise tous les serveurs."
+"De quels serveurs un utilisateur doit être membre afin d'obtenir l'accès. "
+"Une liste vide autorise tous les serveurs."
 
 #: authentik/sources/plex/models.py
 msgid "Allow friends to authenticate, even if you don't share a server."
@@ -4455,11 +4571,11 @@ msgstr "Activer les utilisateurs à la complétion de l'étape."
 
 #: authentik/stages/email/models.py
 msgid "Email Stage"
-msgstr "Étape Courriel"
+msgstr "Étape de Courriel"
 
 #: authentik/stages/email/models.py
 msgid "Email Stages"
-msgstr "Étapes Courriel"
+msgstr "Étapes de Courriel"
 
 #: authentik/stages/email/stage.py
 msgid "Successfully verified Email."
@@ -4932,6 +5048,19 @@ msgstr ""
 #: authentik/stages/prompt/models.py
 msgid "Static: Static value, displayed as-is."
 msgstr "Statique : valeur statique, affichée comme telle."
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Info): Static alert box with info styling"
+msgstr "Alerte (Info) : message d'alerte statique au format information"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Warning): Static alert box with warning styling"
+msgstr ""
+"Alerte (Avertissement) : message d'alerte statique au format avertissement"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Danger): Static alert box with danger styling"
+msgstr "Alerte (Danger) : message d'alerte statique au format danger"
 
 #: authentik/stages/prompt/models.py
 msgid "authentik: Selection of locales authentik supports"

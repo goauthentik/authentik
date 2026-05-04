@@ -13,6 +13,8 @@
  */
 
 import type {
+    AccountLockdownStage,
+    AccountLockdownStageRequest,
     AuthenticatorAttachmentEnum,
     AuthenticatorDuoStage,
     AuthenticatorDuoStageDeviceImportResponse,
@@ -61,6 +63,7 @@ import type {
     MutualTLSStageRequest,
     NetworkBindingEnum,
     NotConfiguredActionEnum,
+    PaginatedAccountLockdownStageList,
     PaginatedAuthenticatorDuoStageList,
     PaginatedAuthenticatorEmailStageList,
     PaginatedAuthenticatorEndpointGDTCStageList,
@@ -92,6 +95,7 @@ import type {
     PaginatedWebAuthnDeviceTypeList,
     PasswordStage,
     PasswordStageRequest,
+    PatchedAccountLockdownStageRequest,
     PatchedAuthenticatorDuoStageRequest,
     PatchedAuthenticatorEmailStageRequest,
     PatchedAuthenticatorEndpointGDTCStageRequest,
@@ -150,6 +154,8 @@ import type {
     WebAuthnDeviceType,
 } from "../models/index";
 import {
+    AccountLockdownStageFromJSON,
+    AccountLockdownStageRequestToJSON,
     AuthenticatorDuoStageDeviceImportResponseFromJSON,
     AuthenticatorDuoStageFromJSON,
     AuthenticatorDuoStageManualDeviceImportRequestToJSON,
@@ -190,6 +196,7 @@ import {
     InvitationStageRequestToJSON,
     MutualTLSStageFromJSON,
     MutualTLSStageRequestToJSON,
+    PaginatedAccountLockdownStageListFromJSON,
     PaginatedAuthenticatorDuoStageListFromJSON,
     PaginatedAuthenticatorEmailStageListFromJSON,
     PaginatedAuthenticatorEndpointGDTCStageListFromJSON,
@@ -221,6 +228,7 @@ import {
     PaginatedWebAuthnDeviceTypeListFromJSON,
     PasswordStageFromJSON,
     PasswordStageRequestToJSON,
+    PatchedAccountLockdownStageRequestToJSON,
     PatchedAuthenticatorDuoStageRequestToJSON,
     PatchedAuthenticatorEmailStageRequestToJSON,
     PatchedAuthenticatorEndpointGDTCStageRequestToJSON,
@@ -272,6 +280,46 @@ import {
     WebAuthnDeviceTypeFromJSON,
 } from "../models/index";
 import * as runtime from "../runtime";
+
+export interface StagesAccountLockdownCreateRequest {
+    accountLockdownStageRequest: AccountLockdownStageRequest;
+}
+
+export interface StagesAccountLockdownDestroyRequest {
+    stageUuid: string;
+}
+
+export interface StagesAccountLockdownListRequest {
+    deactivateUser?: boolean;
+    deleteSessions?: boolean;
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    revokeTokens?: boolean;
+    search?: string;
+    selfServiceCompletionFlow?: string;
+    setUnusablePassword?: boolean;
+    stageUuid?: string;
+}
+
+export interface StagesAccountLockdownPartialUpdateRequest {
+    stageUuid: string;
+    patchedAccountLockdownStageRequest?: PatchedAccountLockdownStageRequest;
+}
+
+export interface StagesAccountLockdownRetrieveRequest {
+    stageUuid: string;
+}
+
+export interface StagesAccountLockdownUpdateRequest {
+    stageUuid: string;
+    accountLockdownStageRequest: AccountLockdownStageRequest;
+}
+
+export interface StagesAccountLockdownUsedByListRequest {
+    stageUuid: string;
+}
 
 export interface StagesAllDestroyRequest {
     stageUuid: string;
@@ -1366,6 +1414,534 @@ export interface StagesUserWriteUsedByListRequest {
  *
  */
 export class StagesApi extends runtime.BaseAPI {
+    /**
+     * Creates request options for stagesAccountLockdownCreate without sending the request
+     */
+    async stagesAccountLockdownCreateRequestOpts(
+        requestParameters: StagesAccountLockdownCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["accountLockdownStageRequest"] == null) {
+            throw new runtime.RequiredError(
+                "accountLockdownStageRequest",
+                'Required parameter "accountLockdownStageRequest" was null or undefined when calling stagesAccountLockdownCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_lockdown/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AccountLockdownStageRequestToJSON(
+                requestParameters["accountLockdownStageRequest"],
+            ),
+        };
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownCreateRaw(
+        requestParameters: StagesAccountLockdownCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountLockdownStage>> {
+        const requestOptions = await this.stagesAccountLockdownCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountLockdownStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownCreate(
+        requestParameters: StagesAccountLockdownCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountLockdownStage> {
+        const response = await this.stagesAccountLockdownCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountLockdownDestroy without sending the request
+     */
+    async stagesAccountLockdownDestroyRequestOpts(
+        requestParameters: StagesAccountLockdownDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountLockdownDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_lockdown/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownDestroyRaw(
+        requestParameters: StagesAccountLockdownDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAccountLockdownDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownDestroy(
+        requestParameters: StagesAccountLockdownDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.stagesAccountLockdownDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for stagesAccountLockdownList without sending the request
+     */
+    async stagesAccountLockdownListRequestOpts(
+        requestParameters: StagesAccountLockdownListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["deactivateUser"] != null) {
+            queryParameters["deactivate_user"] = requestParameters["deactivateUser"];
+        }
+
+        if (requestParameters["deleteSessions"] != null) {
+            queryParameters["delete_sessions"] = requestParameters["deleteSessions"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["revokeTokens"] != null) {
+            queryParameters["revoke_tokens"] = requestParameters["revokeTokens"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["selfServiceCompletionFlow"] != null) {
+            queryParameters["self_service_completion_flow"] =
+                requestParameters["selfServiceCompletionFlow"];
+        }
+
+        if (requestParameters["setUnusablePassword"] != null) {
+            queryParameters["set_unusable_password"] = requestParameters["setUnusablePassword"];
+        }
+
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_lockdown/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownListRaw(
+        requestParameters: StagesAccountLockdownListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAccountLockdownStageList>> {
+        const requestOptions = await this.stagesAccountLockdownListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAccountLockdownStageListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownList(
+        requestParameters: StagesAccountLockdownListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAccountLockdownStageList> {
+        const response = await this.stagesAccountLockdownListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountLockdownPartialUpdate without sending the request
+     */
+    async stagesAccountLockdownPartialUpdateRequestOpts(
+        requestParameters: StagesAccountLockdownPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountLockdownPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_lockdown/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedAccountLockdownStageRequestToJSON(
+                requestParameters["patchedAccountLockdownStageRequest"],
+            ),
+        };
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownPartialUpdateRaw(
+        requestParameters: StagesAccountLockdownPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountLockdownStage>> {
+        const requestOptions =
+            await this.stagesAccountLockdownPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountLockdownStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownPartialUpdate(
+        requestParameters: StagesAccountLockdownPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountLockdownStage> {
+        const response = await this.stagesAccountLockdownPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountLockdownRetrieve without sending the request
+     */
+    async stagesAccountLockdownRetrieveRequestOpts(
+        requestParameters: StagesAccountLockdownRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountLockdownRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_lockdown/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownRetrieveRaw(
+        requestParameters: StagesAccountLockdownRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountLockdownStage>> {
+        const requestOptions =
+            await this.stagesAccountLockdownRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountLockdownStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownRetrieve(
+        requestParameters: StagesAccountLockdownRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountLockdownStage> {
+        const response = await this.stagesAccountLockdownRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountLockdownUpdate without sending the request
+     */
+    async stagesAccountLockdownUpdateRequestOpts(
+        requestParameters: StagesAccountLockdownUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountLockdownUpdate().',
+            );
+        }
+
+        if (requestParameters["accountLockdownStageRequest"] == null) {
+            throw new runtime.RequiredError(
+                "accountLockdownStageRequest",
+                'Required parameter "accountLockdownStageRequest" was null or undefined when calling stagesAccountLockdownUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_lockdown/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AccountLockdownStageRequestToJSON(
+                requestParameters["accountLockdownStageRequest"],
+            ),
+        };
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownUpdateRaw(
+        requestParameters: StagesAccountLockdownUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountLockdownStage>> {
+        const requestOptions = await this.stagesAccountLockdownUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountLockdownStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountLockdownStage Viewset
+     */
+    async stagesAccountLockdownUpdate(
+        requestParameters: StagesAccountLockdownUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountLockdownStage> {
+        const response = await this.stagesAccountLockdownUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountLockdownUsedByList without sending the request
+     */
+    async stagesAccountLockdownUsedByListRequestOpts(
+        requestParameters: StagesAccountLockdownUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountLockdownUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_lockdown/{stage_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesAccountLockdownUsedByListRaw(
+        requestParameters: StagesAccountLockdownUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAccountLockdownUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesAccountLockdownUsedByList(
+        requestParameters: StagesAccountLockdownUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAccountLockdownUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
     /**
      * Creates request options for stagesAllDestroy without sending the request
      */

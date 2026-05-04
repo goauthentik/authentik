@@ -175,6 +175,21 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     protected renderNewPolicyButton(): SlottedTemplateResult {
+        if (!this.allowedTypes.includes(PolicyBindingCheckTarget.Policy)) {
+            return html`<button
+                type="button"
+                class="pf-c-button pf-m-primary"
+                ${modalInvoker(() => {
+                    return StrictUnsafe<PolicyBindingForm>(this.bindingEditForm, {
+                        allowedTypes: this.allowedTypes,
+                        typeNotices: this.typeNotices,
+                        targetPk: this.target || "",
+                    });
+                })}
+            >
+                ${msg("Bind existing group/user")}
+            </button>`;
+        }
         return html`<button
             class="pf-c-button pf-m-primary"
             type="button"
