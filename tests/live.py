@@ -110,7 +110,7 @@ class SSLLiveMixin(DockerTestCase):
                 "--ping=true",
             ],
             healthcheck=Healthcheck(
-                test=["CMD", "traefik", "healthcheck"],
+                test=["CMD", "traefik", "healthcheck", "--ping"],
                 interval=5 * 1_000 * 1_000_000,
                 start_period=1 * 1_000 * 1_000_000,
             ),
