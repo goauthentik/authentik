@@ -108,13 +108,13 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
         event.save()
         self.info("Event successfully sent", status=response.status_code)
         # Cleanup, if we were the last pending message for this stream and it has been deleted
-        # (status=StreamStatus.DISABLED), then we can delete the stream
+        # (status=StreamStatus.DISABLED_DELETED), then we can delete the stream
         if (
             not StreamEvent.objects.filter(
                 stream=stream,
                 status__in=[SSFEventStatus.PENDING_FAILED, SSFEventStatus.PENDING_NEW],
             ).exists()
-            and stream.status == StreamStatus.DISABLED
+            and stream.status == StreamStatus.DISABLED_DELETED
         ):
             LOGGER.info(
                 "Deleting inactive stream as all pending messages were sent.", stream=stream

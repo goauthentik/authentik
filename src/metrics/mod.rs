@@ -2,6 +2,7 @@ use std::{env::temp_dir, os::unix, path::PathBuf, sync::Arc};
 
 use ak_axum::{router::wrap_router, server};
 use ak_common::{
+    Mode,
     arbiter::{Arbiter, Tasks},
     config,
 };
@@ -77,25 +78,20 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         .name(&format!("{}::run_upkeep", module_path!()))
         .spawn(run_upkeep(arbiter, Arc::clone(&metrics)))?;
 
-    for addr in config::get().listen.metrics.iter().copied() {
-        server::start_plain(
+    // Only run HTTP server in worker mode, in server or allinone mode, they're handled by the
+    // server.
+    if Mode::get() == Mode::Worker {
+        for addr in config::get().listen.metrics.iter().copied() {
+            server::start_plain(tasks, "metrics", router.clone(), addr)?;
+        }
+
+        server::start_unix(
             tasks,
             "metrics",
-            router.clone(),
-            addr,
-            config::get().debug, /* Allow failure in case the server is running on the same
-                                  * machine, like in dev */
+            router,
+            unix::net::SocketAddr::from_pathname(socket_path())?,
         )?;
     }
-
-    server::start_unix(
-        tasks,
-        "metrics",
-        router,
-        unix::net::SocketAddr::from_pathname(socket_path())?,
-        config::get().debug, /* Allow failure in case the server is running on the same machine,
-                              * like in dev */
-    )?;
 
     Ok(metrics)
 }

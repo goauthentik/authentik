@@ -28,20 +28,45 @@ class HttpHandler(BaseHTTPRequestHandler):
             _ = db_conn.cursor()
 
     def do_GET(self):
-        if self.path == "/-/metrics/":
-            from authentik.root.monitoring import monitoring_set
+        from django.db import (
+            DatabaseError,
+            InterfaceError,
+            OperationalError,
+            connections,
+        )
+        from psycopg.errors import AdminShutdown
 
-            monitoring_set.send_robust(self)
-            self.send_response(200)
+        from authentik.root.monitoring import monitoring_set
+
+        DATABASE_ERRORS = (
+            AdminShutdown,
+            InterfaceError,
+            DatabaseError,
+            ConnectionError,
+            OperationalError,
+        )
+
+        if self.path == "/-/metrics/":
+            try:
+                monitoring_set.send(self)
+            except DATABASE_ERRORS as exc:
+                LOGGER.warning("failed to send monitoring_set", exc=exc)
+                for db_conn in connections.all():
+                    db_conn.close()
+                self.send_response(503)
+            else:
+                self.send_response(200)
             self.end_headers()
         elif self.path == "/-/health/ready/":
-            from django.db.utils import OperationalError
-
             try:
                 self.check_db()
-            except OperationalError:
+            except DATABASE_ERRORS as exc:
+                LOGGER.warning("failed to check database health", exc=exc)
+                for db_conn in connections.all():
+                    db_conn.close()
                 self.send_response(503)
-            self.send_response(200)
+            else:
+                self.send_response(200)
             self.end_headers()
         else:
             self.send_response(200)

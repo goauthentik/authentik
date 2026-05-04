@@ -201,7 +201,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                 <ak-switch-input
                     name="negate"
                     ?checked=${instance?.negate ?? false}
-                    label=${msg("Negate result")}
+                    label=${msg("Negate Result")}
                     help=${msg("Negates the outcome of the binding. Messages are unaffected.")}
                 ></ak-switch-input>
                 <ak-number-input
@@ -218,8 +218,9 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                 ></ak-number-input>
                 <ak-radio-input
                     name="failureResult"
-                    label=${msg("Failure result")}
+                    label=${msg("Failure Result")}
                     .options=${createPassFailOptions}
+                    required
                 ></ak-radio-input>
             </form>`;
     }

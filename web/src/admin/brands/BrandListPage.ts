@@ -80,7 +80,7 @@ export class BrandListPage extends TablePage<Brand> {
         return [
             item.domain,
             item.brandingTitle || msg("-"),
-            html`<ak-status-label ?good=${item._default}></ak-status-label>`,
+            html`<ak-status-label ?good=${item._default} type="neutral"></ak-status-label>`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(BrandForm, item.brandUuid, item.brandingTitle)}
 
