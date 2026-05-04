@@ -51,7 +51,7 @@ If the server in the webhook URL doesn’t have a certificate issued by a public
 
 You can use Webhook mappings to configure the request's payload and/or header. These are a type of property mapping that can be applied to the `Webhook Body Mapping` or `Webhook Header Mapping` fields of the webhook notification transport.
 
-##### Webhook body example
+##### Webhook body examples
 
 An example of a webhook body mapping that sets a `foo` key with its value set to the body of the notification:
 
