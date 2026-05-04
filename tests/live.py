@@ -7,6 +7,7 @@ from channels.testing import ChannelsLiveServerTestCase
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
+from docker.types import Healthcheck
 from dramatiq import get_broker
 from structlog.stdlib import get_logger
 from yaml import safe_dump
@@ -96,23 +97,23 @@ class SSLLiveMixin(DockerTestCase):
         }
         fd, self._traefik_config = mkstemp()
         write(fd, safe_dump(config).encode())
-        ping_flags = [
-            "--ping=true",
-            "--ping.entrypoint=ping",
-            "--entrypoints.ping.address=:8082",
-        ]
         traefik = self.run_container(
             image="docker.io/library/traefik:3.1",
             command=[
                 "--providers.file.filename=/etc/traefik/dynamic.yml",
                 "--providers.file.watch=true",
                 "--entrypoints.websecure.address=:9443",
-                *ping_flags,
                 "--log.level=DEBUG",
                 "--api=true",
                 "--api.dashboard=true",
                 "--api.insecure=true",
+                "--ping=true",
             ],
+            healthcheck=Healthcheck(
+                test=["CMD", "traefik", "healthcheck", "--ping"],
+                interval=5 * 1_000 * 1_000_000,
+                start_period=1 * 1_000 * 1_000_000,
+            ),
             ports={
                 "9443": None,
             },
@@ -120,13 +121,6 @@ class SSLLiveMixin(DockerTestCase):
                 self._traefik_config: {
                     "bind": "/etc/traefik/dynamic.yml",
                 }
-            },
-            healthcheck={
-                "test": ["CMD", "traefik", "healthcheck", *ping_flags],
-                "interval": 1_000_000_000,
-                "timeout": 3_000_000_000,
-                "retries": 30,
-                "start_period": 1_000_000_000,
             },
         )
         # {

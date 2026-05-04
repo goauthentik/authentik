@@ -6,8 +6,10 @@ class TestOpenIDConformanceDynamic(TestOpenIDConformance):
 
     @retry()
     def test_oidcc_dynamic_certification_test_plan(self):
-        test_plan_name = "oidcc-dynamic-certification-test-plan"
-        self.test_variant = {
-            "response_type": "code",
-        }
-        self.run_test(test_plan_name, self.test_plan_config)
+        self.run_test(
+            "oidcc-dynamic-certification-test-plan",
+            self.test_plan_config,
+            {
+                "response_type": "code",
+            },
+        )

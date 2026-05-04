@@ -282,24 +282,32 @@ jobs:
       fail-fast: false
       matrix:
         job:
-          - name: basic
-            glob: tests/openid_conformance/test_basic.py
-          - name: implicit
-            glob: tests/openid_conformance/test_implicit.py
-          - name: hybrid
-            glob: tests/openid_conformance/test_hybrid.py
-          - name: config
-            glob: tests/openid_conformance/test_config.py
-          - name: dynamic
-            glob: tests/openid_conformance/test_dynamic.py
-          - name: formpost-basic
-            glob: tests/openid_conformance/test_formpost_basic.py
-          - name: formpost-implicit
-            glob: tests/openid_conformance/test_formpost_implicit.py
-          - name: formpost-hybrid
-            glob: tests/openid_conformance/test_formpost_hybrid.py
-          - name: 3rdparty-init-login
-            glob: tests/openid_conformance/test_3rdparty_init_login.py
+          - name: oidc_basic
+            glob: tests/openid_conformance/test_oidc_basic.py
+          - name: oidc_implicit
+            glob: tests/openid_conformance/test_oidc_implicit.py
+          - name: oidc_hybrid
+            glob: tests/openid_conformance/test_oidc_hybrid.py
+          - name: oidc_config
+            glob: tests/openid_conformance/test_oidc_config.py
+          - name: oidc_dynamic
+            glob: tests/openid_conformance/test_oidc_dynamic.py
+          - name: oidc_formpost_basic
+            glob: tests/openid_conformance/test_oidc_formpost_basic.py
+          - name: oidc_formpost_implicit
+            glob: tests/openid_conformance/test_oidc_formpost_implicit.py
+          - name: oidc_formpost_hybrid
+            glob: tests/openid_conformance/test_oidc_formpost_hybrid.py
+          - name: oidc_3rdparty_init_login
+            glob: tests/openid_conformance/test_oidc_3rdparty_init_login.py
+          - name: oidc_rp-initiated
+            glob: tests/openid_conformance/test_oidc_rp_initiated.py
+          - name: oidc_frontchannel
+            glob: tests/openid_conformance/test_oidc_frontchannel.py
+          - name: oidc_backchannel
+            glob: tests/openid_conformance/test_oidc_backchannel.py
+          - name: ssf_transmitter
+            glob: tests/openid_conformance/test_ssf_transmitter.py
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env

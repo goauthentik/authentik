@@ -24,8 +24,21 @@ struct Cli {
 #[argh(subcommand)]
 enum Command {
     #[cfg(feature = "core")]
+    AllInOne(AllInOne),
+    #[cfg(feature = "core")]
+    Server(server::Cli),
+    #[cfg(feature = "core")]
     Worker(worker::Cli),
 }
+
+#[derive(Debug, FromArgs, PartialEq)]
+/// Run both the authentik server and worker.
+#[argh(subcommand, name = "allinone")]
+#[expect(
+    clippy::empty_structs_with_brackets,
+    reason = "argh doesn't support unit structs"
+)]
+pub(crate) struct AllInOne {}
 
 fn main() -> Result<()> {
     let tracing_crude = ak_tracing::install_crude();
@@ -34,6 +47,10 @@ fn main() -> Result<()> {
     let cli: Cli = argh::from_env();
 
     match &cli.command {
+        #[cfg(feature = "core")]
+        Command::AllInOne(_) => Mode::set(Mode::AllInOne)?,
+        #[cfg(feature = "core")]
+        Command::Server(_) => Mode::set(Mode::Server)?,
         #[cfg(feature = "core")]
         Command::Worker(_) => Mode::set(Mode::Worker)?,
     }
@@ -76,6 +93,16 @@ fn main() -> Result<()> {
             }
 
             match cli.command {
+                #[cfg(feature = "core")]
+                Command::AllInOne(_) => {
+                    server::start(server::Cli::default(), &mut tasks).await?;
+                    let workers = worker::start(worker::Cli::default(), &mut tasks)?;
+                    metrics.workers.store(Some(workers));
+                }
+                #[cfg(feature = "core")]
+                Command::Server(args) => {
+                    server::start(args, &mut tasks).await?;
+                }
                 #[cfg(feature = "core")]
                 Command::Worker(args) => {
                     let workers = worker::start(args, &mut tasks)?;

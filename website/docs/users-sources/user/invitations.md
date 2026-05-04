@@ -37,7 +37,7 @@ We have two pre-defined blueprints, the`Example - Invitation-based Enrollment` b
     wget https://goauthentik.io/blueprints/example/flows-invitation-enrollment.yaml
     ```
 
-    Alternatively, use this [link](/blueprints/example/flows-invitation-enrollment.yaml) to view and save the file.
+    Alternatively, use this <DownloadLink to="/blueprints/example/flows-invitation-enrollment.yaml">link</DownloadLink> to view and save the file.
 
 - #### Option 2: Download the `Example - Enrollment (2 Stage)` blueprint
 
@@ -47,7 +47,7 @@ We have two pre-defined blueprints, the`Example - Invitation-based Enrollment` b
     wget https://goauthentik.io/blueprints/example/flows-enrollment-2-stage.yaml
     ```
 
-    Alternatively, use this [link](/blueprints/example/flows-enrollment-2-stage.yaml) to view and save the file.
+    Alternatively, use this <DownloadLink to="/blueprints/example/flows-enrollment-2-stage.yaml">link</DownloadLink> to view and save the file.
 
 ### Step 2. Import the blueprint file
 

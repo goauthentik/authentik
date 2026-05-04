@@ -18,6 +18,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -114,11 +116,20 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
             ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Device classes")}
-                        required
-                        name="deviceClasses"
-                    >
+                    <ak-form-element-horizontal required name="deviceClasses">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "deviceClasses",
+                                required: true,
+                            },
+                            msg("Device Classes"),
+                        )}
+
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Device classes which can be used to authenticate.")}
+                        </p>
                         <ak-checkbox-group
                             name="users"
                             class="user-field-select"
@@ -129,9 +140,6 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                     this.isDeviceClassSelected(name as DeviceClassesEnum),
                                 )}
                         ></ak-checkbox-group>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Device classes which can be used to authenticate.")}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Last validation threshold")}

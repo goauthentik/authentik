@@ -83,6 +83,13 @@
     text-wrap: pretty;
 }
 
+ak-form-element-horizontal:has(.pf-c-form__helper-text + ak-checkbox-group) {
+    .pf-c-form__helper-text {
+        margin-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+        line-height: var(--pf-global--LineHeight--sm);
+    }
+}
+
 /* #region Fields */
 
 fieldset {
@@ -178,17 +185,20 @@ label.pf-c-radio {
     --pf-c-radio--checkmark--BorderColor: var(--pf-global--BorderColor--300);
     --pf-c-radio--checkmark--Color: transparent;
     --pf-c-radio--BorderColor: transparent;
-    --pf-c-radio--BoxShadowColor: transparent;
 
     --pf-c-radio--checked--BackgroundColor: transparent;
     --pf-c-radio--checked--BorderColor: var(--pf-global--active-color--300);
+    --pf-c-radio--checked--Hover--BorderColor: var(--pf-global--active-color--400);
     --pf-c-radio--hover--BorderColor: var(--pf-global--active-color--200);
-
     --pf-c-radio--disabled--BackgroundColor: var(--pf-global--BackgroundColor--150);
+    --pf-c-radio__description--Color: var(--pf-global--Color--300);
+
     transition:
+        background-color 0.2s,
         border-color 0.2s,
         color 0.2s;
 
+    margin-block: 0;
     padding-inline: var(--pf-global--spacer--md);
     padding-block: var(--pf-global--spacer--sm);
     cursor: pointer;
@@ -217,7 +227,7 @@ label.pf-c-radio {
         width: 1.5em;
         height: 1.5em;
         padding: 0.25em;
-        border: 1px solid;
+        border: 0.5px solid;
         color: var(--pf-c-radio--checkmark--BorderColor, transparent);
         border-radius: 100%;
         display: flex;
@@ -225,6 +235,8 @@ label.pf-c-radio {
         align-items: center;
         z-index: 1;
         background: color-mix(var(--pf-c-radio--checkmark--BorderColor), transparent 84%);
+        box-shadow: inset 0 0 1px
+            color-mix(var(--pf-c-radio--checkmark--BorderColor), var(--pf-global--BorderColor--200));
 
         &::after {
             font-family: "Font Awesome 5 Free";
@@ -244,25 +256,19 @@ label.pf-c-radio {
         }
     }
 
-    &:not(:last-child) {
-        --pf-c-radio--BoxShadowColor: var(--pf-global--BorderColor--100);
-    }
-
-    &::after {
-        content: "";
-        position: absolute;
-        display: block;
-        background-color: var(--pf-c-radio--BoxShadowColor);
-        height: 0.5px;
-        inset-inline: 0;
-        inset-block-end: 0;
+    &:hover:has(.pf-c-radio__input:not(:disabled)) {
+        --pf-c-radio--BackgroundColor: color-mix(currentColor, transparent 98%);
     }
 
     &:has(.pf-c-radio__input:checked:not(:disabled)) {
-        --pf-c-radio--BackgroundColor: var(--pf-c-radio--checked--BackgroundColor);
         --pf-c-radio--BorderColor: var(--pf-c-radio--checked--BorderColor);
         --pf-c-radio--checkmark--BorderColor: var(--pf-global--active-color--300);
         --pf-c-radio--checkmark--Color: var(--pf-c-radio--checked--BorderColor);
+    }
+
+    &:hover:has(.pf-c-radio__input:checked:not(:disabled)) {
+        --pf-c-radio--checkmark--BorderColor: var(--pf-c-radio--checked--Hover--BorderColor);
+        --pf-c-radio--checkmark--Color: var(--pf-c-radio--checked--Hover--BorderColor);
     }
 
     &:hover:not(:has(.pf-c-radio__input:checked)):not(:has(.pf-c-radio__input:disabled)) {
@@ -282,6 +288,8 @@ label.pf-c-radio {
 
     .pf-c-radio__label {
         align-self: center;
+        font-weight: var(--pf-global--FontWeight--overpass--semi-bold);
+        font-family: var(--pf-global--FontFamily--redhat-updated--heading--sans-serif);
     }
 
     &:has(.pf-c-radio__input:last-child) .pf-c-radio__label {
@@ -303,9 +311,8 @@ label.pf-c-radio {
 /* #endregion */
 
 ak-switch-input {
-    padding-inline: var(--pf-global--spacer--form-element);
     ::part(group-control) {
-        grid-area: control;
+        grid-column: 1 / -1;
     }
 
     .pf-c-switch {
@@ -330,8 +337,10 @@ ak-switch-input {
     }
 
     .pf-c-form__helper-text {
-        padding-inline-end: var(--pf-global--spacer--2xl);
         grid-area: secondary / label / secondary / -1;
+        /* Fallback for browsers that do not support container queries. */
+        max-width: clamp(25cqi, 90%, 90ch);
+        max-width: clamp(25cqi, 90cqi, 90ch);
     }
 }
 
