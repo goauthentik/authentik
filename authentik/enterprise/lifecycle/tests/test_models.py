@@ -2,6 +2,7 @@ import datetime as dt
 from datetime import timedelta
 from unittest.mock import patch
 
+from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
@@ -28,6 +29,11 @@ class TestLifecycleModels(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def _get_request(self):
         return self.factory.get("/")
@@ -438,31 +444,6 @@ class TestLifecycleModels(TestCase):
         self.assertIn(app_one, objects)
         self.assertIn(app_two, objects)
 
-    def test_rule_type_excludes_objects_with_specific_rules(self):
-        app_with_rule = Application.objects.create(name=generate_id(), slug=generate_id())
-        app_without_rule = Application.objects.create(name=generate_id(), slug=generate_id())
-        content_type = ContentType.objects.get_for_model(Application)
-
-        # Create a specific rule for app_with_rule
-        LifecycleRule.objects.create(
-            name=generate_id(),
-            content_type=content_type,
-            object_id=str(app_with_rule.pk),
-            interval="days=30",
-        )
-
-        # Create a type-level rule
-        type_rule = LifecycleRule.objects.create(
-            name=generate_id(),
-            content_type=content_type,
-            object_id=None,
-            interval="days=60",
-        )
-
-        objects = list(type_rule.get_objects())
-        self.assertNotIn(app_with_rule, objects)
-        self.assertIn(app_without_rule, objects)
-
     def test_rule_type_apply_creates_iterations_for_all_objects(self):
         app_one = Application.objects.create(name=generate_id(), slug=generate_id())
         app_two = Application.objects.create(name=generate_id(), slug=generate_id())
@@ -669,6 +650,73 @@ class TestLifecycleModels(TestCase):
         self.assertIn(explicit_reviewer, reviewers)
         self.assertIn(group_member, reviewers)
 
+    def test_multiple_rules_same_object_create_separate_iterations(self):
+        """Two rules targeting the same object each create their own iteration."""
+        obj = Application.objects.create(name=generate_id(), slug=generate_id())
+        content_type = ContentType.objects.get_for_model(obj)
+
+        rule_one = self._create_rule_for_object(obj, interval="days=30", grace_period="days=10")
+        rule_two = self._create_rule_for_object(obj, interval="days=60", grace_period="days=20")
+
+        iterations = LifecycleIteration.objects.filter(
+            content_type=content_type, object_id=str(obj.pk)
+        )
+        self.assertEqual(iterations.count(), 2)
+
+        iter_one = iterations.get(rule=rule_one)
+        iter_two = iterations.get(rule=rule_two)
+        self.assertEqual(iter_one.state, ReviewState.PENDING)
+        self.assertEqual(iter_two.state, ReviewState.PENDING)
+        self.assertNotEqual(iter_one.pk, iter_two.pk)
+
+    def test_multiple_rules_same_object_reviewed_independently(self):
+        """Reviewing one rule's iteration does not affect the other rule's iteration."""
+        obj = Application.objects.create(name=generate_id(), slug=generate_id())
+        content_type = ContentType.objects.get_for_model(obj)
+
+        reviewer = create_test_user()
+
+        rule_one = self._create_rule_for_object(obj, min_reviewers=1)
+        rule_two = self._create_rule_for_object(obj, min_reviewers=1)
+
+        group = Group.objects.create(name=generate_id())
+        group.users.add(reviewer)
+        rule_one.reviewer_groups.add(group)
+        rule_two.reviewer_groups.add(group)
+
+        iter_one = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule_one
+        )
+        iter_two = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule_two
+        )
+
+        request = self._get_request()
+
+        # Review only rule_one's iteration
+        Review.objects.create(iteration=iter_one, reviewer=reviewer)
+        iter_one.on_review(request)
+
+        iter_one.refresh_from_db()
+        iter_two.refresh_from_db()
+        self.assertEqual(iter_one.state, ReviewState.REVIEWED)
+        self.assertEqual(iter_two.state, ReviewState.PENDING)
+
+    def test_type_rule_and_object_rule_both_create_iterations(self):
+        """A type-level rule and an object-level rule both create iterations for the same object."""
+        obj = Application.objects.create(name=generate_id(), slug=generate_id())
+        content_type = ContentType.objects.get_for_model(obj)
+
+        object_rule = self._create_rule_for_object(obj, interval="days=30")
+        type_rule = self._create_rule_for_type(Application, interval="days=60")
+
+        iterations = LifecycleIteration.objects.filter(
+            content_type=content_type, object_id=str(obj.pk)
+        )
+        self.assertEqual(iterations.count(), 2)
+        self.assertTrue(iterations.filter(rule=object_rule).exists())
+        self.assertTrue(iterations.filter(rule=type_rule).exists())
+
 
 class TestLifecycleDateBoundaries(TestCase):
     """Verify that start_of_day normalization ensures correct overdue/due
@@ -678,6 +726,11 @@ class TestLifecycleDateBoundaries(TestCase):
     normalization in _get_newly_overdue_iterations and _get_newly_due_objects
     ensures that the boundary is always at midnight, so millisecond variations
     in task execution time do not affect results."""
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def _create_rule_and_iteration(self, grace_period="days=1", interval="days=365"):
         app = Application.objects.create(name=generate_id(), slug=generate_id())

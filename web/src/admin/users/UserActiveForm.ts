@@ -4,9 +4,7 @@ import "#elements/forms/FormGroup";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
 
-import { RawContent } from "#elements/ak-table/ak-simple-table";
 import { modalInvoker } from "#elements/dialogs";
-import { pluckEntityName } from "#elements/entities/names";
 import { DestructiveModelForm } from "#elements/forms/DestructiveModelForm";
 import { WithLocale } from "#elements/mixins/locale";
 import { SlottedTemplateResult } from "#elements/types";
@@ -77,41 +75,6 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
 
         return this.coreAPI.coreUsersUsedByList({ id: this.instance.pk });
     };
-
-    protected override renderUsedBySection(): SlottedTemplateResult {
-        if (this.instance?.isActive) {
-            return super.renderUsedBySection();
-        }
-
-        const displayName = this.formatDisplayName();
-        const { usedByList, verboseName } = this;
-
-        return html`<ak-form-group
-            open
-            label=${msg("Objects associated with this user", {
-                id: "usedBy.associated-objects.label",
-            })}
-        >
-            <div
-                class="pf-m-monospace"
-                aria-description=${msg(
-                    str`List of objects that are associated with this ${verboseName}.`,
-                    {
-                        id: "usedBy.description",
-                    },
-                )}
-                slot="description"
-            >
-                ${displayName}
-            </div>
-            <ak-simple-table
-                .columns=${[msg("Object Name"), msg("ID")]}
-                .content=${usedByList.map((ub): RawContent[] => {
-                    return [pluckEntityName(ub) || msg("Unnamed"), html`<code>${ub.pk}</code>`];
-                })}
-            ></ak-simple-table>
-        </ak-form-group>`;
-    }
 }
 
 declare global {
