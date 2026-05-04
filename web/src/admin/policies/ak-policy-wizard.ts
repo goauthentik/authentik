@@ -46,7 +46,7 @@ export class PolicyWizard extends CreateWizard {
     @property()
     public bindingTarget: string | null = null;
 
-    public override groupLabel = msg("Bind New Policy");
+    public override groupLabel = msg("Choose Policy Type");
     public override groupDescription = msg("Select the type of policy you want to create.");
 
     public override initialSteps = this.showBindingPage

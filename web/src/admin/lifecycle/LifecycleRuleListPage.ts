@@ -26,7 +26,6 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-lifecycle-rule-list")
 export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
-    public override expandable = true;
     public override checkbox = true;
     public override clearOnRefresh = true;
     public override searchPlaceholder = msg("Search for a lifecycle rule by name or target...");
@@ -95,26 +94,6 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
         ];
     }
 
-    protected override renderExpanded(item: LifecycleRule): SlottedTemplateResult {
-        const [appLabel, modelName] = ModelEnum.AuthentikLifecycleLifecyclerule.split(".");
-        return html`<dl class="pf-c-description-list pf-m-horizontal">
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
-                        <ak-task-list
-                            search-placeholder=${msg("Search tasks...")}
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${item.id}"
-                        ></ak-task-list>
-                    </div>
-                </dd>
-            </div>
-        </dl>`;
-    }
     protected override renderObjectCreate(): SlottedTemplateResult {
         return ModalInvokerButton(LifecycleRuleForm);
     }

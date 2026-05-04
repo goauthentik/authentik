@@ -146,9 +146,7 @@ class Importer:
         try:
             from authentik.enterprise.license import LicenseKey
 
-            context["goauthentik.io/enterprise/licensed"] = (
-                LicenseKey.get_total().status().is_valid,
-            )
+            context["goauthentik.io/enterprise/licensed"] = LicenseKey.get_total().status().is_valid
         except ModuleNotFoundError:
             pass
         return context
