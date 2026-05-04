@@ -15,8 +15,8 @@ def _insecure_http_session():
     return session
 
 
+@patch("authentik.providers.oauth2.tasks.get_http_session", _insecure_http_session)
 class TestOpenIDConformanceBackchannel(TestOpenIDConformance):
-
     def setUp(self):
         super().setUp()
         OAuth2Provider.objects.filter(name__startswith="oidc-conformance-").update(
@@ -26,12 +26,6 @@ class TestOpenIDConformanceBackchannel(TestOpenIDConformance):
         )
         # We are unable to use https for this at the current time
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        self._http_patcher = patch(
-            "authentik.providers.oauth2.tasks.get_http_session",
-            _insecure_http_session,
-        )
-        self._http_patcher.start()
-        self.addCleanup(self._http_patcher.stop)
 
     @retry()
     def test_oidcc_backchannel_logout_certification_test_plan(self):
