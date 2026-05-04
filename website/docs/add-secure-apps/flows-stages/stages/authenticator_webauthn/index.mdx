@@ -24,7 +24,7 @@ Configure if authentik will require either a removable device (like a YubiKey, G
 
 #### WebAuthn Hints
 
-:::info
+:::info Browser behavior
 Hints are advisory and browsers may ignore them based on available authenticators or platform capabilities.
 :::
 
@@ -36,7 +36,7 @@ Optional hints can be used to guide the browser in prioritizing the preferred au
 
 The order of selected hints matters: the first hint has the highest priority. For example, selecting "Security key" first and "Hybrid" second asks the browser to prefer security keys before hybrid registration.
 
-For backward compatibility with older browsers that do not support hints, authentik automatically infers the `authenticatorAttachment` parameter from the selected hints when it is not explicitly set:
+For backward compatibility with older browsers that do not support hints, authentik automatically infers the [`authenticatorAttachment`](#authenticator-attachment) parameter from the selected hints when it is not explicitly set:
 
 - Only security key and/or hybrid hints: `cross-platform`
 - Only client device hint: `platform`
