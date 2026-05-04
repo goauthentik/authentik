@@ -36,11 +36,9 @@ This documentation lists only the settings that you need to change from their de
 
 ### authentik Configuration
 
-Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create the LDAP application, provider, service account, and outpost.
+Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create the LDAP application, provider, service account, and outpost. Complete the [service account creation](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#create-a-service-account) and [LDAP search permission](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#assign-the-ldap-search-permission-to-the-service-account) steps for the account Jellyfin uses to connect to LDAP.
 
-The LDAP service account must be allowed to access the LDAP provider's application. If the application has access restrictions, open the application in **Applications** > **Applications** and use the **Policy/Group/User Bindings** tab to allow the service account. For a user binding, bind the service account directly. For a group binding, add the service account to the bound group. For a policy binding, ensure the policy allows the service account.
-
-Jellyfin searches the LDAP directory during setup and login, so the LDAP service account also needs the **Search full LDAP directory** permission on the LDAP provider. Assign this permission from **Applications** > **Providers**, select the LDAP provider, open the **Permissions** tab, and assign **Search full LDAP directory** to the service account or a role containing the service account.
+If the LDAP application has access restrictions, allow the LDAP service account through the application's [policy, group, or user bindings](/docs/add-secure-apps/applications/manage_apps/#use-bindings-to-control-access).
 
 ### Jellyfin configuration
 
