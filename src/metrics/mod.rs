@@ -83,7 +83,8 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
             "metrics",
             router.clone(),
             addr,
-            true, // Allow failure in case the server is running on the same machine, like in dev
+            config::get().debug, /* Allow failure in case the server is running on the same
+                                  * machine, like in dev */
         )?;
     }
 
@@ -92,7 +93,8 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         "metrics",
         router,
         unix::net::SocketAddr::from_pathname(socket_path())?,
-        true, // Allow failure in case the server is running on the same machine, like in dev
+        config::get().debug, /* Allow failure in case the server is running on the same machine,
+                              * like in dev */
     )?;
 
     Ok(metrics)
