@@ -282,10 +282,12 @@ jobs:
       fail-fast: false
       matrix:
         job:
-          - name: basic
-            glob: tests/openid_conformance/test_basic.py
-          - name: implicit
-            glob: tests/openid_conformance/test_implicit.py
+          - name: oidc_basic
+            glob: tests/openid_conformance/test_oidc_basic.py
+          - name: oidc_implicit
+            glob: tests/openid_conformance/test_oidc_implicit.py
+          - name: ssf_transmitter
+            glob: tests/openid_conformance/test_ssf_transmitter.py
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env

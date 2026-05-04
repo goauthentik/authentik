@@ -1,6 +1,7 @@
 from os import makedirs
 from pathlib import Path
 from time import sleep
+from typing import Any
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -64,27 +65,27 @@ class TestOpenIDConformance(SeleniumTestCase):
             "client_registration": "static_client",
         }
 
-    def run_test(self, test_name: str, test_plan_config: dict):
-        # Create a Conformance instance...
+    def run_test(
+        self, test_name: str, test_plan_config: dict[str, Any], test_variant: dict[str, Any]
+    ):
         self.conformance = Conformance(f"https://{self.host}:8443/", None, verify_ssl=False)
 
         test_plan = self.conformance.create_test_plan(
             test_name,
             test_plan_config,
-            self.test_variant,
+            test_variant,
         )
         plan_id = test_plan["id"]
         for test in test_plan["modules"]:
-            with self.subTest(test["testModule"], **test["variant"]):
-                # Fetch name and variant of the next test to run
-                module_name = test["testModule"]
-                variant = test["variant"]
-                module_instance = self.conformance.create_test_from_plan_with_variant(
-                    plan_id, module_name, variant
-                )
-                module_id = module_instance["id"]
-                self.run_single_test(module_id)
-                self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
+            # Fetch name and variant of the next test to run
+            module_name = test["testModule"]
+            variant = test["variant"]
+            module_instance = self.conformance.create_test_from_plan_with_variant(
+                plan_id, module_name, variant
+            )
+            module_id = module_instance["id"]
+            self.run_single_test(module_id)
+            self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
             sleep(2)
         self.conformance.export_html(plan_id, Path(__file__).parent / "exports")
 

@@ -6,5 +6,6 @@ class TestOpenIDConformanceImplicit(TestOpenIDConformance):
 
     @retry()
     def test_oidcc_implicit_certification_test_plan(self):
-        test_plan_name = "oidcc-implicit-certification-test-plan"
-        self.run_test(test_plan_name, self.test_plan_config)
+        self.run_test(
+            "oidcc-implicit-certification-test-plan", self.test_plan_config, self.test_variant
+        )
