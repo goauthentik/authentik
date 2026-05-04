@@ -1,11 +1,15 @@
 import re
+from plistlib import loads
 from typing import Any
 
+from cryptography.hazmat.primitives import serialization
+from cryptography.x509 import load_der_x509_certificate
 from django.db import transaction
 from requests import RequestException
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.models import User
+from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.controller import BaseController, Capabilities, ConnectorSyncException
 from authentik.endpoints.facts import (
     DeviceFacts,
@@ -44,7 +48,7 @@ class FleetController(BaseController[DBC]):
         return "fleetdm.com"
 
     def capabilities(self) -> list[Capabilities]:
-        return [Capabilities.ENROLL_AUTOMATIC_API]
+        return [Capabilities.STAGE_ENDPOINTS, Capabilities.ENROLL_AUTOMATIC_API]
 
     def _url(self, path: str) -> str:
         return f"{self.connector.url}{path}"
@@ -76,8 +80,44 @@ class FleetController(BaseController[DBC]):
         except RequestException as exc:
             raise ConnectorSyncException(exc) from exc
 
+    @property
+    def mtls_ca_managed(self) -> str:
+        return f"goauthentik.io/endpoints/connectors/fleet/{self.connector.pk}"
+
+    def _sync_mtls_ca(self):
+        """Sync conditional access Root CA for mTLS"""
+        try:
+            # Fleet doesn't have an API to just get the Conditional Access Root CA Cert (yet),
+            # hence we fetch the apple config profile and extract it
+            res = self._session.get(self._url("/api/v1/fleet/conditional_access/idp/apple/profile"))
+            res.raise_for_status()
+            profile = loads(res.text).get("PayloadContent", [])
+            raw_cert = None
+            for payload in profile:
+                if payload.get("PayloadIdentifier", "") != "com.fleetdm.conditional-access-ca":
+                    continue
+                raw_cert = payload.get("PayloadContent")
+            if not raw_cert:
+                raise ConnectorSyncException("Failed to get conditional acccess CA")
+        except RequestException as exc:
+            raise ConnectorSyncException(exc) from exc
+        cert = load_der_x509_certificate(raw_cert)
+        CertificateKeyPair.objects.update_or_create(
+            managed=self.mtls_ca_managed,
+            defaults={
+                "name": f"Fleet Endpoint connector {self.connector.name}",
+                "certificate_data": cert.public_bytes(
+                    encoding=serialization.Encoding.PEM,
+                ).decode("utf-8"),
+            },
+        )
+
     @transaction.atomic
     def sync_endpoints(self) -> None:
+        try:
+            self._sync_mtls_ca()
+        except ConnectorSyncException as exc:
+            self.logger.warning("Failed to sync conditional access CA", exc=exc)
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
             device, _ = Device.objects.get_or_create(
@@ -198,6 +238,8 @@ class FleetController(BaseController[DBC]):
                         for policy in host.get("policies", [])
                     ],
                     "agent_version": fleet_version,
+                    # Host UUID is required for conditional access matching
+                    "uuid": host.get("uuid", "").lower(),
                 },
             },
         }

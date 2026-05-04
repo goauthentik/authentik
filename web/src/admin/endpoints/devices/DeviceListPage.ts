@@ -1,14 +1,15 @@
 import "#elements/cards/AggregateCard";
 import "#elements/forms/DeleteBulkForm";
-import "#admin/endpoints/devices/DeviceForm";
 import "#admin/endpoints/devices/DeviceAddHowTo";
-import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { modalInvoker } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { EndpointDeviceForm } from "#admin/endpoints/devices/DeviceForm";
 
 import { DeviceSummary, EndpointDevice, EndpointsApi } from "@goauthentik/api";
 
@@ -132,17 +133,14 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             html`${item.facts.data.os?.name} ${item.facts.data.os?.version}`,
             html`${item.accessGroupObj?.name || "-"}`,
             item.facts.created ? Timestamp(item.facts.created) : html`-`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Save Changes")}</span>
-                <span slot="header">${msg("Update Device")}</span>
-                <ak-endpoints-device-form slot="form" .instancePk=${item.deviceUuid}>
-                </ak-endpoints-device-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<button
+                class="pf-c-button pf-m-plain"
+                ${modalInvoker(EndpointDeviceForm, { instancePk: item.deviceUuid })}
+            >
+                <pf-tooltip position="top" content=${msg("Edit")}>
+                    <i class="fas fa-edit" aria-hidden="true"></i>
+                </pf-tooltip>
+            </button>`,
         ];
     }
 

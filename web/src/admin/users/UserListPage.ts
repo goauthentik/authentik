@@ -22,6 +22,7 @@ import { formatUserDisplayName } from "#common/users";
 import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -30,6 +31,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { AKUserWizard } from "#admin/users/ak-user-wizard";
 import { RecoveryButtons } from "#admin/users/recovery";
+import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
@@ -55,8 +57,8 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithBrandConfig(
-    WithCapabilitiesConfig(WithSession(TablePage<User>)),
+export class UserListPage extends WithLicenseSummary(
+    WithBrandConfig(WithCapabilitiesConfig(WithSession(TablePage<User>))),
 ) {
     static styles: CSSResult[] = [
         ...TablePage.styles,
@@ -69,7 +71,7 @@ export class UserListPage extends WithBrandConfig(
             .pf-c-avatar {
                 max-height: var(--pf-c-avatar--Height);
                 max-width: var(--pf-c-avatar--Width);
-                margin-bottom: calc(var(--pf-c-avatar--Width) * -0.6);
+                vertical-align: middle;
             }
         `,
     ];
@@ -194,7 +196,7 @@ export class UserListPage extends WithBrandConfig(
                               </div>
                               <h4 class="pf-c-alert__title">
                                   ${msg(
-                                      str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
+                                      str`Warning: You are about to delete user ${shouldShowWarning.username}, but you are currently logged in as this user. Proceed at your own risk.`,
                                   )}
                               </h4>
                           </div>
@@ -251,10 +253,19 @@ export class UserListPage extends WithBrandConfig(
         const displayName = formatUserDisplayName(item);
 
         return [
-            html`<img class="pf-c-avatar pf-m-hidden pf-m-visible-on-xl" src=${item.avatar} />`,
-            html`<a href="#/identity/users/${item.pk}">
-                <div>${item.username}</div>
-                <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
+            html`<img
+                class="pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
+                src=${item.avatar}
+                alt=${msg(str`Avatar for ${displayName}`)}
+            />`,
+            html`<a
+                href="#/identity/users/${item.pk}"
+                aria-label=${msg(str`View details for ${displayName}`)}
+            >
+                <div aria-label=${msg(str`Username: ${item.username}`)}>${item.username}</div>
+                <small aria-label=${msg(str`Display name: ${displayName || msg("No name set")}`)}
+                    >${displayName ? item.name : html`&lt;${msg("No name set")}&gt;`}</small
+                >
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             Timestamp(item.lastLogin),
@@ -300,22 +311,7 @@ export class UserListPage extends WithBrandConfig(
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <ak-user-active-form
-                            object-label=${msg("User")}
-                            .obj=${item}
-                            .delete=${() => {
-                                return this.#api.coreUsersPartialUpdate({
-                                    id: item.pk,
-                                    patchedUserRequest: {
-                                        isActive: !item.isActive,
-                                    },
-                                });
-                            }}
-                        >
-                            <button slot="trigger" class="pf-c-button pf-m-warning">
-                                ${item.isActive ? msg("Deactivate") : msg("Activate")}
-                            </button>
-                        </ak-user-active-form>
+                        ${ToggleUserActivationButton(item)}
                     </div>
                 </dd>
             </div>

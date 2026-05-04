@@ -9,7 +9,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { CoreApi, Group } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
+import { CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -26,44 +26,44 @@ export class UserGroupTable extends Table<Group> {
 
     public override order = "name";
 
-    protected async apiEndpoint(): Promise<PaginatedResponse<Group>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             includeUsers: false,
         });
     }
 
-    protected columns: TableColumn[] = [
+    protected override columns: TableColumn[] = [
         [msg("Name"), "username"],
         [msg("Superuser"), "is_superuser"],
         [msg("Members"), ""],
     ];
 
-    protected row(item: Group): SlottedTemplateResult[] {
+    protected override row(item: Group): SlottedTemplateResult[] {
         return [
-            html`<div>${item.name}</div>`,
+            item.name,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
-            html`${(item.users || []).length}`,
+            item.users?.length || 0,
         ];
     }
 
-    protected renderSelectedChip(item: Group): SlottedTemplateResult {
+    protected override renderSelectedChip(item: Group): SlottedTemplateResult {
         return item.name;
     }
 
     protected override render(): SlottedTemplateResult {
-        const willSuperuser = this.selectedElements.filter((g) => g.isSuperuser).length;
+        const willSuperuser = this.selectedElements.some((g) => g.isSuperuser);
 
-        return html`${willSuperuser
-            ? html`
-                  <div class="pf-c-banner pf-m-warning">
-                      ${msg(
-                          "Warning: Adding the user to the selected group(s) will give them superuser permissions.",
-                      )}
-                  </div>
-              `
-            : nothing}
-        ${super.render()}`;
+        if (!willSuperuser) {
+            return super.render();
+        }
+
+        return html`<div class="pf-c-banner pf-m-warning">
+                ${msg(
+                    "Warning: Adding the user to the selected group(s) will give them superuser permissions.",
+                )}
+            </div>
+            ${super.render()}`;
     }
 }
 

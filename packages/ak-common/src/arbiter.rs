@@ -235,7 +235,7 @@ impl Arbiter {
     }
 
     /// Shutdown the application immediately.
-    async fn do_fast_shutdown(&self) {
+    pub async fn do_fast_shutdown(&self) {
         info!("arbiter has been told to shutdown immediately");
         self.unix_handles
             .lock()
@@ -253,7 +253,7 @@ impl Arbiter {
     }
 
     /// Shutdown the application gracefully.
-    async fn do_graceful_shutdown(&self) {
+    pub async fn do_graceful_shutdown(&self) {
         info!("arbiter has been told to shutdown gracefully");
         // Match the value in lifecycle/gunicorn.conf.py for graceful shutdown
         let timeout = Some(Duration::from_secs(30 + 5));

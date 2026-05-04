@@ -40,18 +40,14 @@ class EventMatcherPolicySerializer(PolicySerializer):
             and attrs["client_ip"] == ""
             and attrs["app"] == ""
             and attrs["model"] == ""
+            and attrs["query"] == ""
         ):
             raise ValidationError(_("At least one criteria must be set."))
         return super().validate(attrs)
 
     class Meta:
         model = EventMatcherPolicy
-        fields = PolicySerializer.Meta.fields + [
-            "action",
-            "client_ip",
-            "app",
-            "model",
-        ]
+        fields = PolicySerializer.Meta.fields + ["action", "client_ip", "app", "model", "query"]
 
 
 class EventMatcherPolicyViewSet(UsedByMixin, ModelViewSet):

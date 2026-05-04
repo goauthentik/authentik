@@ -4,6 +4,7 @@ from functools import wraps
 from typing import TYPE_CHECKING, Any, Literal
 
 from django.db import DatabaseError, InternalError, ProgrammingError
+from django.db.models import F, Func, JSONField, Value
 
 from authentik.lib.utils.reflection import all_subclasses
 
@@ -13,7 +14,9 @@ if TYPE_CHECKING:
 
 class Flag[T]:
     default: T | None = None
-    visibility: Literal["none"] | Literal["public"] | Literal["authenticated"] = "none"
+    visibility: (
+        Literal["none"] | Literal["public"] | Literal["authenticated"] | Literal["system"]
+    ) = "none"
     description: str | None = None
 
     def __init_subclass__(cls, key: str, **kwargs):
@@ -24,12 +27,15 @@ class Flag[T]:
         return self.__key
 
     @classmethod
-    def get(cls) -> T | None:
+    def get(cls, tenant: Tenant | None = None) -> T | None:
         from authentik.tenants.utils import get_current_tenant
+
+        if not tenant:
+            tenant = get_current_tenant(["flags"])
 
         flags = {}
         try:
-            flags: dict[str, Any] = get_current_tenant(["flags"]).flags
+            flags: dict[str, Any] = tenant.flags
         except DatabaseError, ProgrammingError, InternalError:
             pass
         value = flags.get(cls.__key, None)
@@ -37,20 +43,38 @@ class Flag[T]:
             return cls().get_default()
         return value
 
+    @classmethod
+    def set(cls, value: T, tenant: Tenant | None = None) -> T | None:
+        from authentik.tenants.models import Tenant
+        from authentik.tenants.utils import get_current_tenant
+
+        if not tenant:
+            tenant = get_current_tenant()
+
+        Tenant.objects.filter(pk=tenant.pk).update(
+            flags=Func(
+                F("flags"),
+                Value([cls.__key]),
+                Value(value, JSONField()),
+                function="jsonb_set",
+            )
+        )
+
     def get_default(self) -> T | None:
         return self.default
 
     @staticmethod
     def available(
         visibility: Literal["none"] | Literal["public"] | Literal["authenticated"] | None = None,
+        exclude_system=True,
     ):
         flags = all_subclasses(Flag)
-        if visibility:
-            for flag in flags:
-                if flag.visibility == visibility:
-                    yield flag
-        else:
-            yield from flags
+        for flag in flags:
+            if visibility and flag.visibility != visibility:
+                continue
+            if exclude_system and flag.visibility == "system":
+                continue
+            yield flag
 
 
 def patch_flag[T](flag: Flag[T], value: T):

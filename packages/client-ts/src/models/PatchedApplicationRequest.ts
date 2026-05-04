@@ -87,6 +87,12 @@ export interface PatchedApplicationRequest {
      * @memberof PatchedApplicationRequest
      */
     group?: string;
+    /**
+     * Hide this application from the user's My applications page.
+     * @type {boolean}
+     * @memberof PatchedApplicationRequest
+     */
+    metaHide?: boolean;
 }
 
 /**
@@ -125,6 +131,7 @@ export function PatchedApplicationRequestFromJSONTyped(
                 ? undefined
                 : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
         group: json["group"] == null ? undefined : json["group"],
+        metaHide: json["meta_hide"] == null ? undefined : json["meta_hide"],
     };
 }
 
@@ -152,5 +159,6 @@ export function PatchedApplicationRequestToJSONTyped(
         meta_publisher: value["metaPublisher"],
         policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
         group: value["group"],
+        meta_hide: value["metaHide"],
     };
 }
