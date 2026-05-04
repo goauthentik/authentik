@@ -197,17 +197,15 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         ?checked=${this.instance?.openInNewTab ?? false}
                         label=${msg("Open in new tab")}
                         help=${msg(
-                            "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
+                            "Whether the launch URL will open in a new browser tab or window from the user's application library.",
                         )}
                     >
                     </ak-switch-input>
                     <ak-switch-input
                         name="metaHide"
                         ?checked=${this.instance?.metaHide ?? false}
-                        label=${msg("Hide from My applications")}
-                        help=${msg(
-                            "If checked, this application will not be shown on the user's My applications page.",
-                        )}
+                        label=${msg("Hide from User Dashboard")}
+                        help=${msg("Whether this application will be shown on the User Dashboard.")}
                     >
                     </ak-switch-input>
                     <ak-file-search-input

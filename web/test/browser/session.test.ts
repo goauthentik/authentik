@@ -18,7 +18,7 @@ test.describe("Session management", () => {
             page.getByRole("heading", {
                 level: 1,
             }),
-        ).toHaveText("My applications", {
+        ).toHaveText("User Dashboard", {
             timeout: 10_000,
         });
     });
