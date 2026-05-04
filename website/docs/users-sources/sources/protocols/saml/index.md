@@ -94,14 +94,16 @@ Property mappings do not change the internal SAML source connection identifier, 
 
 The following variables are available to SAML source property mappings:
 
-- `root`: An XML `ETree` object containing data from the source.
-- `assertion`: An XML `Element` object containing the SAML assertion.
-- `name_id`: An XML `Element` object identifying the user.
+The parsed XML objects use Python's standard [`xml.etree.ElementTree`](https://docs.python.org/3/library/xml.etree.elementtree.html) API.
+
+- `root`: The parsed XML root containing data from the source.
+- `assertion`: The parsed XML element containing the SAML assertion.
+- `name_id`: The parsed XML element identifying the user.
 - `properties`: A Python dictionary containing the source's parsed SAML attributes and the results of any previously run mappings.
 
 ### Example
 
-This example maps common SAML attributes to authentik user fields. Replace the attribute names with the names sent by your IdP.
+This example maps common SAML attributes to authentik user fields. Replace the attribute names with the SAML attribute `Name` values sent by the external identity provider connected to this SAML source.
 
 ```python
 email = properties.get("email") or properties.get("urn:oid:0.9.2342.19200300.100.1.3")
