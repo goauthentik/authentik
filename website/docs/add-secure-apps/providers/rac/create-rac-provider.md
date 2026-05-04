@@ -82,6 +82,6 @@ The RAC provider requires the deployment of an [RAC Outpost](../../outposts/inde
 
 ## Access the remote machine
 
-To verify your configuration and access the remote machine, go to the **User interface** of your authentik instance. On the **My applications** page, click the **Remote Access** application to start a secure session on the remote machine in your web browser.
+To verify your configuration and access the remote machine, go to the **User interface** of your authentik instance. On the **User Dashboard**, click the **Remote Access** application to start a secure session on the remote machine in your web browser.
 
 If you defined multiple endpoints, click the endpoint for the remote machine that you want to access.

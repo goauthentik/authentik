@@ -121,7 +121,7 @@ If MFA is configured in Microsoft365, then you also need to create a property ma
             - Under **Property Mappings**, remove all the default **Selected User Property Mappings** and add the `IDPEmail` property mapping created in the previous section.
             - Set **Default NameID Property Mapping** to the `Microsoft Entra Immutable ID` property mapping created in the previous section.
             - Set **AuthnContextClassRef Property Mapping** to the `AuthnContextClassRef` property mapping that you created in the previous section.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
 
 3. Click **Submit** to save the new application and provider.
 
