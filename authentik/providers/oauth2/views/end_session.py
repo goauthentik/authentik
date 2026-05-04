@@ -30,6 +30,7 @@ from authentik.providers.oauth2.models import (
     AccessToken,
     JWTAlgorithms,
     OAuth2LogoutMethod,
+    OAuth2Provider,
     RedirectURIMatchingMode,
 )
 from authentik.providers.oauth2.tasks import send_backchannel_logout_request
@@ -42,6 +43,15 @@ class EndSessionView(PolicyAccessView):
     flow: Flow
     post_logout_redirect_uri: str | None
 
+    def resolve_provider_application(self):
+        self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
+        self.provider = self.application.get_provider()
+        if not self.provider:
+            raise Http404
+        self.flow = self.provider.invalidation_flow or self.request.brand.flow_invalidation
+        if not self.flow:
+            raise Http404
+
     def validate(self):
         # Parse end session parameters
         query_dict = self.request.POST if self.request.method == "POST" else self.request.GET
@@ -52,33 +62,27 @@ class EndSessionView(PolicyAccessView):
 
         # OIDC Certification: Verify id_token_hint. If invalid or missing, throw an error
         if id_token_hint:
+            # Load a fresh provider instance that's not part of the flow
+            # since it'll have the cryptography Certificate that can't be pickled
+            provider = OAuth2Provider.objects.get(pk=self.provider.pk)
+            key, alg = provider.jwt_key
+            if alg != JWTAlgorithms.HS256:
+                key = provider.signing_key.public_key
             try:
-                key, alg = self.provider.jwt_key
-                if alg != JWTAlgorithms.HS256:
-                    key = self.provider.signing_key.public_key
-                try:
-                    jwt_decode(
-                        id_token_hint,
-                        key,
-                        algorithms=[alg],
-                        audience=self.provider.client_id,
-                        issuer=self.provider.get_issuer(self.request),
-                        # ID Tokens are short-lived; a logout request arriving
-                        # after expiry is still legitimate and must succeed.
-                        options={"verify_exp": False},
-                    )
-                except PyJWTError:
-                    raise TokenError("invalid_request").with_cause(
-                        "id_token_hint_decode_failed"
-                    ) from None
-            finally:
-                # Drop cached cryptography key objects so the flow plan
-                # (pickled into the session cache) stays serializable.
-                signing_key = self.provider.signing_key
-                if signing_key is not None:
-                    signing_key._private_key = None
-                    signing_key._public_key = None
-                self.provider.__dict__.pop("jwt_key", None)
+                jwt_decode(
+                    id_token_hint,
+                    key,
+                    algorithms=[alg],
+                    audience=provider.client_id,
+                    issuer=provider.get_issuer(self.request),
+                    # ID Tokens are short-lived; a logout request arriving
+                    # after expiry is still legitimate and must succeed.
+                    options={"verify_exp": False},
+                )
+            except PyJWTError:
+                raise TokenError("invalid_request").with_cause(
+                    "id_token_hint_decode_failed"
+                ) from None
 
         # Validate post_logout_redirect_uri against registered URIs
         if request_redirect_uri:
@@ -107,15 +111,6 @@ class EndSessionView(PolicyAccessView):
             self.post_logout_redirect_uri = (
                 f"{self.post_logout_redirect_uri}{separator}state={quote(state, safe='')}"
             )
-
-    def resolve_provider_application(self):
-        self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
-        self.provider = self.application.get_provider()
-        if not self.provider:
-            raise Http404
-        self.flow = self.provider.invalidation_flow or self.request.brand.flow_invalidation
-        if not self.flow:
-            raise Http404
 
     # If IFrame provider logout happens when a saml provider has redirect
     # logout enabled, the flow won't make it back without this dispatch

@@ -61,10 +61,6 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
             },
             "consent": {},
         }
-        self.test_variant = {
-            "server_metadata": "discovery",
-            "client_registration": "static_client",
-        }
 
     def run_test(
         self, test_name: str, test_plan_config: dict[str, Any], test_variant: dict[str, Any]
