@@ -293,7 +293,11 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="failureResult" label=${msg("Failure result")}>
+            <ak-form-element-horizontal
+                name="failureResult"
+                label=${msg("Failure result")}
+                required
+            >
                 <ak-radio .options=${createPassFailOptions} .value=${this.instance?.failureResult}>
                 </ak-radio>
                 <p class="pf-c-form__helper-text">
