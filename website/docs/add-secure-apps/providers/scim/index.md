@@ -65,12 +65,23 @@ All selected mappings are applied in the order of their name, and are deeply mer
 
 ### Custom attributes and schemas
 
-To send attributes in a custom SCIM extension, the property mapping must return both the extension schema URN in `schemas` and the object for that schema. For example, to send a `github` attribute from a user's authentik attributes:
+To send attributes in a custom SCIM extension, create or edit a SCIM provider property mapping in **Customization** > **Property Mappings**, then add it to the SCIM provider's **User Property Mappings**.
+
+The property mapping must return both the extension schema URN in `schemas` and the object for that schema. For example, to send a standard work phone number and a custom `github` attribute from a user's authentik attributes, use the following code:
 
 ```python
+CUSTOM_SCHEMA = "urn:ietf:params:scim:schemas:extension:custom:2.0:User"
+
 return {
-    "schemas": ["urn:ietf:params:scim:schemas:extension:custom:2.0:User"],
-    "urn:ietf:params:scim:schemas:extension:custom:2.0:User": {
+    "schemas": [CUSTOM_SCHEMA],
+    "phoneNumbers": [
+        {
+            "primary": True,
+            "value": request.user.attributes.get("phone", ""),
+            "type": "work",
+        }
+    ],
+    CUSTOM_SCHEMA: {
         "github": request.user.attributes.get("github", ""),
     },
 }
