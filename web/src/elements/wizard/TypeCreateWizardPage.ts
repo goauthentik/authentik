@@ -263,7 +263,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             html`<form
                 ${ref(this.formRef)}
                 part="form type-create list"
-                class="pf-c-form pf-m-horizontal ak-m-content-center"
+                class="pf-c-form pf-m-horizontal"
                 role="radiogroup"
                 aria-label=${ifPresent(this.headline)}
             >
