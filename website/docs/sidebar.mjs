@@ -321,6 +321,7 @@ const items = [
                             id: "add-secure-apps/flows-stages/stages/index",
                         },
                         items: [
+                            "add-secure-apps/flows-stages/stages/account_lockdown/index",
                             "add-secure-apps/flows-stages/stages/authenticator_duo/index",
                             "add-secure-apps/flows-stages/stages/authenticator_email/index",
                             "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
@@ -876,6 +877,7 @@ const items = [
                     "endpoint-devices/device-compliance/device-reporting",
                     "endpoint-devices/device-compliance/device-compliance-policy",
                     "endpoint-devices/device-compliance/browser-extension",
+                    "endpoint-devices/device-compliance/fleet-conditional-access",
                 ],
             },
         ],
@@ -971,6 +973,7 @@ const items = [
         items: [
             "security/policy",
             "security/security-hardening",
+            "security/account-lockdown",
             {
                 //#endregion
 

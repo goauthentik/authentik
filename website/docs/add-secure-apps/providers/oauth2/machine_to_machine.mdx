@@ -26,6 +26,8 @@ All user account types, including internal users, external users, and service ac
 
 authentik treats a grant type of `password` the same as `client_credentials` to support applications that rely on a password grant. Scopes, if required, must be defined in the request and follow the same behavior as other OAuth requests.
 
+To include custom claims from scope mappings in the issued JWT, select the scope mappings on the OAuth2 provider and request their scope names in the token request with the `scope` parameter, for example `scope=profile custom-scope`.
+
 ### Request with username and app password
 
 **Example**:

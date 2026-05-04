@@ -7,7 +7,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/dialogs/ak-modal";
 import "#admin/applications/ApplicationForm";
-import "#admin/applications/ApplicationWizardHint";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -127,6 +126,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         return [
             html`<ak-app-icon
                 aria-label=${msg(str`Application icon for "${item.name}"`)}
+                role="img"
                 name=${item.name}
                 icon=${ifPresent(item.metaIconUrl)}
                 .iconThemedUrls=${item.metaIconThemedUrls}

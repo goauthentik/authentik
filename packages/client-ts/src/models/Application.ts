@@ -127,6 +127,12 @@ export interface Application {
      * @memberof Application
      */
     group?: string;
+    /**
+     * Hide this application from the user's My applications page.
+     * @type {boolean}
+     * @memberof Application
+     */
+    metaHide?: boolean;
 }
 
 /**
@@ -177,6 +183,7 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
                 ? undefined
                 : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
         group: json["group"] == null ? undefined : json["group"],
+        metaHide: json["meta_hide"] == null ? undefined : json["meta_hide"],
     };
 }
 
@@ -212,5 +219,6 @@ export function ApplicationToJSONTyped(
         meta_publisher: value["metaPublisher"],
         policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
         group: value["group"],
+        meta_hide: value["metaHide"],
     };
 }

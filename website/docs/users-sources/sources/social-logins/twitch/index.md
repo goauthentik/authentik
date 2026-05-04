@@ -1,5 +1,6 @@
 ---
-title: Twitch
+title: Log in with Twitch
+sidebar_label: Twitch
 tags:
     - source
     - twitch

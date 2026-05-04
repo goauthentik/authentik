@@ -36,6 +36,7 @@ type Brand struct {
 	FlowUnenrollment              NullableString `json:"flow_unenrollment,omitempty"`
 	FlowUserSettings              NullableString `json:"flow_user_settings,omitempty"`
 	FlowDeviceCode                NullableString `json:"flow_device_code,omitempty"`
+	FlowLockdown                  NullableString `json:"flow_lockdown,omitempty"`
 	// When set, external users will be redirected to this application after authenticating.
 	DefaultApplication NullableString `json:"default_application,omitempty"`
 	// Web Certificate used by the authentik Core webserver.
@@ -565,6 +566,49 @@ func (o *Brand) UnsetFlowDeviceCode() {
 	o.FlowDeviceCode.Unset()
 }
 
+// GetFlowLockdown returns the FlowLockdown field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Brand) GetFlowLockdown() string {
+	if o == nil || IsNil(o.FlowLockdown.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.FlowLockdown.Get()
+}
+
+// GetFlowLockdownOk returns a tuple with the FlowLockdown field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Brand) GetFlowLockdownOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FlowLockdown.Get(), o.FlowLockdown.IsSet()
+}
+
+// HasFlowLockdown returns a boolean if a field has been set.
+func (o *Brand) HasFlowLockdown() bool {
+	if o != nil && o.FlowLockdown.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFlowLockdown gets a reference to the given NullableString and assigns it to the FlowLockdown field.
+func (o *Brand) SetFlowLockdown(v string) {
+	o.FlowLockdown.Set(&v)
+}
+
+// SetFlowLockdownNil sets the value for FlowLockdown to be an explicit nil
+func (o *Brand) SetFlowLockdownNil() {
+	o.FlowLockdown.Set(nil)
+}
+
+// UnsetFlowLockdown ensures that no value is present for FlowLockdown, not even an explicit nil
+func (o *Brand) UnsetFlowLockdown() {
+	o.FlowLockdown.Unset()
+}
+
 // GetDefaultApplication returns the DefaultApplication field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Brand) GetDefaultApplication() string {
 	if o == nil || IsNil(o.DefaultApplication.Get()) {
@@ -763,6 +807,9 @@ func (o Brand) ToMap() (map[string]interface{}, error) {
 	if o.FlowDeviceCode.IsSet() {
 		toSerialize["flow_device_code"] = o.FlowDeviceCode.Get()
 	}
+	if o.FlowLockdown.IsSet() {
+		toSerialize["flow_lockdown"] = o.FlowLockdown.Get()
+	}
 	if o.DefaultApplication.IsSet() {
 		toSerialize["default_application"] = o.DefaultApplication.Get()
 	}
@@ -833,6 +880,7 @@ func (o *Brand) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_unenrollment")
 		delete(additionalProperties, "flow_user_settings")
 		delete(additionalProperties, "flow_device_code")
+		delete(additionalProperties, "flow_lockdown")
 		delete(additionalProperties, "default_application")
 		delete(additionalProperties, "web_certificate")
 		delete(additionalProperties, "client_certificates")
