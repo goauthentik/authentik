@@ -225,3 +225,26 @@ class TestStream(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
         )
         self.assertEqual(res.status_code, 404)
+
+    def test_stream_status_update(self):
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.post(
+            reverse(
+                "authentik_providers_ssf:stream-status",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            data={
+                "stream_id": str(stream.pk),
+                "status": StreamStatus.DISABLED,
+            },
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
+        )
+        self.assertEqual(res.status_code, 200)
+        stream.refresh_from_db()
+        self.assertJSONEqual(
+            res.content,
+            {
+                "stream_id": str(stream.pk),
+                "status": str(stream.status),
+            },
+        )
