@@ -125,7 +125,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-rust-install:  ## Install required Cargo tools (cargo-deny, cargo-machete, cargo-llvm-cov, nextest)
+rust-install:  ## Install required Cargo tools
 	$(CARGO) install --locked cargo-deny cargo-machete cargo-llvm-cov cargo-nextest
 
 install: node-install docs-install core-install rust-install  ## Install all requires dependencies for `node`, `docs`, `core`, and `rust`
