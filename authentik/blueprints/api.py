@@ -126,7 +126,7 @@ class BlueprintInstanceSerializer(ModelSerializer):
 
 def check_blueprint_perms(blueprint: Blueprint, user: User, explicit_action: str | None = None):
     """Check for individual permissions for each model in a blueprint"""
-    for entry in blueprint.entries:
+    for entry in blueprint.iter_entries():
         full_model = entry.get_model(blueprint)
         app, __, model = full_model.partition(".")
         perms = [

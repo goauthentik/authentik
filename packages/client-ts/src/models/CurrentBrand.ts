@@ -122,6 +122,12 @@ export interface CurrentBrand {
      * @type {string}
      * @memberof CurrentBrand
      */
+    flowLockdown?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof CurrentBrand
+     */
     readonly defaultLocale: string;
     /**
      *
@@ -177,6 +183,7 @@ export function CurrentBrandFromJSONTyped(json: any, ignoreDiscriminator: boolea
         flowUserSettings:
             json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
         flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
+        flowLockdown: json["flow_lockdown"] == null ? undefined : json["flow_lockdown"],
         defaultLocale: json["default_locale"],
         flags: CurrentBrandFlagsFromJSON(json["flags"]),
     };
@@ -213,6 +220,7 @@ export function CurrentBrandToJSONTyped(
         flow_unenrollment: value["flowUnenrollment"],
         flow_user_settings: value["flowUserSettings"],
         flow_device_code: value["flowDeviceCode"],
+        flow_lockdown: value["flowLockdown"],
         flags: CurrentBrandFlagsToJSON(value["flags"]),
     };
 }
