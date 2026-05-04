@@ -26,7 +26,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `ldap.company` is the FQDN of the LDAP outpost.
 - `dc=company,dc=com` is the Base DN of the LDAP outpost.
-- `ldap_bind_user` is the username of the desired LDAP Bind User.
+- `ldap_service_account` is the username of the LDAP service account.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -38,13 +38,13 @@ This documentation lists only the settings that you need to change from their de
 
 Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create the LDAP application, provider, service account, and outpost.
 
-The service account used as the Jellyfin LDAP bind user must be allowed to access the LDAP provider's application. If the application has policy, group, or user bindings, include the service account in those bindings.
+The LDAP service account must be allowed to access the LDAP provider's application. If the application has access restrictions, open the application in **Applications** > **Applications** and use the **Policy/Group/User Bindings** tab to allow the service account. For a user binding, bind the service account directly. For a group binding, add the service account to the bound group. For a policy binding, ensure the policy allows the service account.
 
-Jellyfin searches the LDAP directory during setup and login, so the bind user also needs the **Search full LDAP directory** permission on the LDAP provider. Assign this permission from **Applications** > **Providers**, select the LDAP provider, open the **Permissions** tab, and assign **Search full LDAP directory** to the bind user or a role containing the bind user.
+Jellyfin searches the LDAP directory during setup and login, so the LDAP service account also needs the **Search full LDAP directory** permission on the LDAP provider. Assign this permission from **Applications** > **Providers**, select the LDAP provider, open the **Permissions** tab, and assign **Search full LDAP directory** to the service account or a role containing the service account.
 
 ### Jellyfin configuration
 
-1. Use the LDAP service account configured in authentik as the Jellyfin LDAP bind user.
+1. Use the LDAP service account configured in authentik for Jellyfin's LDAP connection.
 2. Navigate to your Jellyfin installation and log in with the administrator account or currently configured local admin.
 3. Open the **Administrator dashboard** and go to the **Plugins** section.
 4. Click **Catalog** at the top of the page, and locate the "LDAP Authentication Plugin".
@@ -59,10 +59,10 @@ Jellyfin searches the LDAP directory during setup and login, so the bind user al
         - If using a certificate issued by a certificate authority, Jellyfin trusts, leave this unchecked.
         - If you're using a self-signed certificate, check this box.
     - `Allow password change`: Unchecked
-        - Since authentik already has a frontend for password resets, it's not necessary to include this in Jellyfin, especially since it requires bind users to have privileges.
+        - Since authentik already has a frontend for password resets, it's not necessary to include this in Jellyfin, especially since it requires the LDAP service account to have additional privileges.
     - `Password Reset URL`: Empty
-    - `LDAP Bind User`: Set this to a user you want to bind to in authentik. By default, the path will be `ou=users,dc=company,dc=com` so the LDAP Bind user will be `cn=ldap_bind_user,ou=users,dc=company,dc=com`.
-    - `LDAP Bind User Password`: The Password of the user. If using a Service account, this is the token.
+    - `LDAP Bind User`: Set this to the LDAP service account DN. By default, the path will be `ou=users,dc=company,dc=com` so the value will be `cn=ldap_service_account,ou=users,dc=company,dc=com`.
+    - `LDAP Bind User Password`: The password or token for the LDAP service account.
     - `LDAP Base DN for Searches`: the base DN for LDAP queries. To query all users, set this to `dc=company,dc=com`.
         - You can specify an OU if you divide your users up into different OUs and only want to query a specific OU.
 
