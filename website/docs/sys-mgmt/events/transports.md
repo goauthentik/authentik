@@ -70,7 +70,7 @@ return {
 }
 ```
 
-For failed login notifications, the attempted username is stored on the event context. If the GeoIP and ASN context processors are configured, their data is also available from the same context:
+For failed login notifications, the attempted username is stored in the event context. If the GeoIP and ASN context processors are configured, their data is also available in the event context:
 
 ```python
 event = notification.event
