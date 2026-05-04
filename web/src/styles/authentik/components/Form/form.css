@@ -20,6 +20,11 @@
     );
 }
 
+.pf-c-form__alert {
+    display: grid;
+    gap: var(--pf-global--spacer--form-element);
+}
+
 .pf-c-form.ak-m-content-center {
     --pf-c-form--GridGap: var(--pf-global--spacer--sm);
 
@@ -93,34 +98,34 @@ ak-form-element-horizontal:has(.pf-c-form__helper-text + ak-checkbox-group) {
 /* #region Fields */
 
 fieldset {
-    --ak-fieldset--BorderWidth: thin;
-    --ak-fieldset__legend--MarginInlineBase: var(--pf-global--spacer--sm);
-    --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--sm);
+    --ak-c-fieldset--BorderWidth: thin;
+    --ak-c-fieldset__legend--MarginInlineBase: var(--pf-global--spacer--sm);
+    --ak-c-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--sm);
 
-    border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BackgroundColor--light-100));
+    border-color: var(--ak-c-fieldset--BorderColor, var(--pf-global--BackgroundColor--light-100));
 
     @media (prefers-contrast: more) {
-        border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--200));
+        border-color: var(--ak-c-fieldset--BorderColor, var(--pf-global--BorderColor--200));
     }
 
     @media (prefers-contrast: less) {
-        border-color: var(--ak-fieldset--BorderColor, transparent);
+        border-color: var(--ak-c-fieldset--BorderColor, transparent);
     }
 
-    border-width: var(--ak-fieldset--BorderWidth);
+    border-width: var(--ak-c-fieldset--BorderWidth);
 
-    padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
+    padding: var(--ak-c-fieldset__legend--PaddingInlineBase) !important;
 
     & > legend {
         line-height: 1;
-        padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
+        padding: var(--ak-c-fieldset__legend--PaddingInlineBase) !important;
         margin-inline-start: var(
-            --ak-fieldset__legend--MarginInlineStart,
-            var(--ak-fieldset__legend--MarginInlineBase)
+            --ak-c-fieldset__legend--MarginInlineStart,
+            var(--ak-c-fieldset__legend--MarginInlineBase)
         ) !important;
         margin-inline-end: var(
             --ak-legend-margin-inline-end,
-            var(--ak-fieldset__legend--MarginInlineBase)
+            var(--ak-c-fieldset__legend--MarginInlineBase)
         ) !important;
     }
 
@@ -128,8 +133,8 @@ fieldset {
         border-width: 0;
 
         &:not(.pf-c-modal-box__footer) {
-            --ak-fieldset__legend--PaddingInlineBase: 0;
-            --ak-fieldset__legend--MarginInlineBase: 0;
+            --ak-c-fieldset__legend--PaddingInlineBase: 0;
+            --ak-c-fieldset__legend--MarginInlineBase: 0;
         }
     }
 
@@ -151,8 +156,8 @@ fieldset {
              */
             &:not([name="device-challenges"]) {
                 border-width: 0;
-                --ak-fieldset__legend--PaddingInlineBase: 0;
-                --ak-fieldset__legend--MarginInlineBase: 0;
+                --ak-c-fieldset__legend--PaddingInlineBase: 0;
+                --ak-c-fieldset__legend--MarginInlineBase: 0;
             }
         }
     }
@@ -164,12 +169,12 @@ fieldset {
     }
 
     &.pf-c-modal-box__footer {
-        --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--lg);
+        --ak-c-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--lg);
         --pf-c-modal-box__footer--c-button--MarginRight: 0;
 
         gap: var(--pf-global--spacer--sm);
         justify-content: end;
-        padding-block: calc(var(--ak-fieldset__legend--PaddingInlineBase) / 2);
+        padding-block: calc(var(--ak-c-fieldset__legend--PaddingInlineBase) / 2);
         border-inline: none;
         border-block-end: none;
 
@@ -414,16 +419,16 @@ ak-switch-input {
 
     fieldset {
         border-color: var(
-            --ak-fieldset--BorderColor,
+            --ak-c-fieldset--BorderColor,
             var(--pf-global--BackgroundColor--dark-transparent-200)
         );
 
         @media (prefers-contrast: more) {
-            border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--300));
+            border-color: var(--ak-c-fieldset--BorderColor, var(--pf-global--BorderColor--300));
         }
 
         @media (prefers-contrast: less) {
-            border-color: var(--ak-fieldset--BorderColor, transparent);
+            border-color: var(--ak-c-fieldset--BorderColor, transparent);
         }
     }
 

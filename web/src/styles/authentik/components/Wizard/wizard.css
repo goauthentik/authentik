@@ -17,7 +17,7 @@
 }
 
 .pf-c-wizard__main-body {
-    --ak-fieldset--BorderColor: var(--pf-global--BackgroundColor--150);
+    --ak-c-fieldset--BorderColor: var(--pf-global--BackgroundColor--150);
 
     gap: var(--pf-global--spacer--lg);
 
