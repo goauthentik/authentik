@@ -1,4 +1,4 @@
-﻿import "#components/ak-status-label";
+import "#components/ak-status-label";
 
 import { SlottedTemplateResult } from "#elements/types";
 

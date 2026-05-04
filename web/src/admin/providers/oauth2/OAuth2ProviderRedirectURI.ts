@@ -1,4 +1,4 @@
-﻿import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
+import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
 import { AKControlElement } from "#elements/ControlElement";
 import { LitPropertyRecord } from "#elements/types";
