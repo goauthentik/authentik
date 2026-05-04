@@ -10,7 +10,7 @@ You can apply these flows multiple times to stay updated, however this will disc
 The example flows provided below will **override** the default flows, please review the contents of the example flow before importing and consider exporting the affected existing flows first.
 :::
 
-These example flow blueprints are bundled with authentik. To import one, open the authentik Admin interface, navigate to **Flows and Stages > Flows**, click **Import**, select **Local path**, and choose the blueprint path shown below. You can also download the blueprint manually and import it with **File upload**.
+These example flow blueprints are bundled with authentik. To import one, open the authentik Admin interface, navigate to **Flows and Stages** > **Flows**, click **Import**, select **Local path**, and choose the blueprint path shown below. You can also download the blueprint manually and import it with **File upload**.
 
 ## Enrollment (2 Stage)
 
