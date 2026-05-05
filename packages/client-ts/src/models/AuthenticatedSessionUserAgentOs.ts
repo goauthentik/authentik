@@ -29,25 +29,25 @@ export interface AuthenticatedSessionUserAgentOs {
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentOs
      */
-    major: string;
+    major: string | null;
     /**
      *
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentOs
      */
-    minor: string;
+    minor: string | null;
     /**
      *
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentOs
      */
-    patch: string;
+    patch: string | null;
     /**
      *
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentOs
      */
-    patchMinor: string;
+    patchMinor: string | null;
 }
 
 /**
