@@ -11747,6 +11747,10 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
   <source>Require Flow token (flow can only be executed from a generated recovery link)</source>
   <target>Nécessite un jeton de flux (le flux ne peut être lancé que depuis un lien de récupération généré)</target>
 </trans-unit>
+<trans-unit id="s5ca66a541124edd6">
+  <source>Bind New Policy</source>
+  <target>Lier une nouvelle politique</target>
+</trans-unit>
 <trans-unit id="sb41bc87dec355a91">
   <source>Select the type of policy you want to create.</source>
   <target>Sélectionnez le type de politique que vous voulez créer.</target>
@@ -12152,10 +12156,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 <trans-unit id="s33bfd42437266a1f">
   <source>Leave empty to skip certificate validation, or select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate.</source>
   <target>Laisser vide pour ignorer la validation du certificat, ou sélectionner un certificat et sa paire de clés contenant la chaîne de certification du serveur LDAP pour valider le certificat distant.</target>
-</trans-unit>
-<trans-unit id="sdcd1a9744efdbd7e">
-  <source>Choose Policy Type</source>
-  <target>Choisir un type de politique</target>
 </trans-unit>
 </body>
 </file>
