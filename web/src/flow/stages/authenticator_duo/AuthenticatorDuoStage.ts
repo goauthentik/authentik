@@ -87,7 +87,7 @@ export class AuthenticatorDuoStage extends BaseStage<
                     </p>
                     <a href=${this.challenge.activationCode}>${msg("Duo activation")}</a>
 
-                    <fieldset class="pf-c-form__group pf-m-action">
+                    <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                         <legend class="sr-only">${msg("Form actions")}</legend>
                         <button
                             type="button"

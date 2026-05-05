@@ -433,9 +433,8 @@ export class IdentificationStage extends BaseStage<
         return html`<fieldset
             slot="footer"
             part="source-list"
-            role="group"
             name="login-sources"
-            class="pf-c-form__group"
+            class="ak-c-fieldset pf-c-form__group"
         >
             <legend class="sr-only">${msg("Login sources")}</legend>
             ${repeat(
@@ -467,7 +466,8 @@ export class IdentificationStage extends BaseStage<
         return html`<fieldset
             slot="footer-band"
             part="additional-actions"
-            class="pf-c-login__main-footer-band"
+            name="additional-actions"
+            class="ak-c-fieldset pf-c-login__main-footer-band"
         >
             <legend class="sr-only">${msg("Additional actions")}</legend>
             ${enrollUrl

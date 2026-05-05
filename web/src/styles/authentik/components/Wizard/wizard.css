@@ -44,6 +44,8 @@
 .pf-c-wizard__footer {
     justify-content: end;
     align-items: center;
+    /** Approximation of the height of navigation buttons to avoid excessive layout shifts when they are added or removed. */
+    min-height: calc(var(--pf-global--spacer--3xl) + (var(--pf-global--spacer--form-element) * 2));
 }
 
 .pf-c-wizard__nav-link {

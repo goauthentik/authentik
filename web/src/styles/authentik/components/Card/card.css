@@ -1,4 +1,4 @@
-.pf-c-card > fieldset {
+.pf-c-card > .ak-c-fieldset {
     margin-inline: var(--pf-global--spacer--md);
     margin-block-end: var(--pf-global--spacer--md);
 
