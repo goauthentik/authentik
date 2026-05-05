@@ -37189,6 +37189,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -51199,6 +51200,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -55981,6 +55983,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -56069,6 +56072,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
