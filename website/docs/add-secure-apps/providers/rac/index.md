@@ -2,7 +2,7 @@
 title: Remote Access Control (RAC) Provider
 ---
 
-The RAC provider allows users to access remote Windows, macOS, and Linux machines via [RDP](https://en.wikipedia.org/wiki/Remote_Desktop_Protocol)/[SSH](https://en.wikipedia.org/wiki/Secure_Shell)/[VNC](https://en.wikipedia.org/wiki/Virtual_Network_Computing). Just like other providers in authentik, the RAC provider is associated with an application that appears on the **User Dashboard**.
+The RAC provider allows users to access remote Windows, macOS, and Linux machines via [RDP](https://en.wikipedia.org/wiki/Remote_Desktop_Protocol)/[SSH](https://en.wikipedia.org/wiki/Secure_Shell)/[VNC](https://en.wikipedia.org/wiki/Virtual_Network_Computing). Just like other providers in authentik, the RAC provider is associated with an application that appears on a user's **My applications** page.
 
 For instructions on creating a RAC provider, refer to the [Create a Remote Access Control (RAC) provider](./create-rac-provider.md) documentation. Alternatively, watch our ["Remote Access Control (RAC) in authentik" video on YouTube](https://www.youtube.com/watch?v=9wahIBRV6Ts).
 

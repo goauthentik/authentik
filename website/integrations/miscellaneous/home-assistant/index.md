@@ -55,7 +55,7 @@ To support the integration of Home Assistant with authentik, you need to create 
         - **Redirect URIs**:
             - Strict: `http://hass.company:8123/auth/openid/callback`
 
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -108,7 +108,7 @@ To support the integration of Home Assistant using `hass-auth-headers` with auth
         - **External Host**: Set this to the external URL you will be accessing Home Assistant from.
         - **Internal Host**: `http://hass.company:8123`
 
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

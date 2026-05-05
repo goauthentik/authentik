@@ -6,7 +6,7 @@ Managing the applications that your team uses involves several tasks, from initi
 
 ### Create an application and provider pair
 
-To add an application to authentik and have it display on users' **User Dashboard**, follow these steps:
+To add an application to authentik and have it display on users' **My applications** page, follow these steps:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
@@ -19,7 +19,7 @@ To add an application to authentik and have it display on users' **User Dashboar
 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any additional required configurations.
 
-    - **Configure Bindings**: to manage which applications a user can view and access via their **User Dashboard**, you can optionally create a [binding](../bindings-overview/index.md) between the application and a specific policy, group, or user. Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [policy-driven authorization](#policy-driven-authorization), [using application entitlements](../applications/manage_apps.mdx#create-an-application-entitlement) and [hiding an application](#hide-applications).
+    - **Configure Bindings**: to manage which applications a user can view and access via their **My applications** page, you can optionally create a [binding](../bindings-overview/index.md) between the application and a specific policy, group, or user. Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [policy-driven authorization](#policy-driven-authorization), [using application entitlements](../applications/manage_apps.mdx#create-an-application-entitlement) and [hiding an application](#hide-applications).
 
 4. On the **Review and Submit Application** panel, review the configuration for the new application and its provider, and then click **Submit**.
 
@@ -103,12 +103,12 @@ return {
 
 ## Hide applications
 
-To hide an application without modifying its policy settings or removing it, you can use the **Hide from User Dashboard** option on the application. The application will no longer appear on the **User Dashboard**.
+To hide an application without modifying its policy settings or removing it, you can use the **Hide from My applications** option on the application. The application will no longer appear on the **My applications** page.
 
 Keep in mind that users still have access, so they can still authorize access when the login process is started from the application.
 
 :::info Hiding applications before 2026.5
-Before authentik 2026.5, an application was hidden by setting its **Launch URL** to `blank://blank`. Existing applications using that value are automatically migrated to using the **Hide from User Dashboard** option upon upgrading.
+Before authentik 2026.5, an application was hidden by setting its **Launch URL** to `blank://blank`. Existing applications using that value are automatically migrated to using the **Hide from My applications** option upon upgrading.
 :::
 
 ## Launch URLs

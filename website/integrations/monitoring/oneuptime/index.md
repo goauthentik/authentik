@@ -68,7 +68,7 @@ To support the integration of OneUptime with authentik, you need an application/
         - Under **Advanced protocol settings**:
             - Set the **Signing Certificate** to the same certificate that you downloaded earlier.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 3. Click **Submit** to save the new application and provider.
 
 :::info NameID mapping

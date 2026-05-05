@@ -41,7 +41,7 @@ To support the integration of GitHub Enterprise Server with authentik, you need 
         - Under **Advanced protocol settings**:
             - Select an available **Signing certificate**. Download this certificate because it is required later.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**. If you add the SCIM provider as a backchannel provider later, only users who can view this application are synchronized.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page. If you add the SCIM provider as a backchannel provider later, only users who can view this application are synchronized.
 
 3. Click **Submit** to save the new application and provider.
 
