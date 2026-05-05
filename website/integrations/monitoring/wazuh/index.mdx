@@ -62,6 +62,7 @@ To support the integration of Wazuh with authentik, you need to create a group, 
     - **Issuer**: `wazuh-saml`
     - **Service Provider Binding**: `Post`
     - Under **Advanced protocol settings**:
+        - **Signing Certificate**: select an existing certificate. If you do not already have one, create it under **System** > **Certificates** before configuring the provider.
         - **Property Mappings**: add the **Property Mapping** you created in the previous section.
         - **NameID Property Mapping**: select a property mapping that will be used for Wazuh usernames (e.g. `authentik default SAML Mapping: Name` or `authentik default SAML Mapping: Email`)
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -147,7 +148,7 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
     export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
     ```
 
-6. Edit the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file and include `wazuh_admin` as a `backend_role` in the appropriate section. The following example adds the role to the `all_access` section:
+6. Edit the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file and include `wazuh-admin` as a `backend_role` in the appropriate section. The following example adds the role to the `all_access` section:
 
     ```yaml showLineNumbers title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
     all_access:
