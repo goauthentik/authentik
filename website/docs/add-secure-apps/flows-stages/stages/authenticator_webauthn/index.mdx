@@ -20,7 +20,13 @@ Configure if the created authenticator is stored in the encrypted memory on the 
 
 #### Authenticator Attachment
 
-Configure if authentik will require either a removable device (like a YubiKey, Google Titan, etc) or a non-removable device (like Windows Hello, TouchID or password managers), or not send a requirement.
+Controls the [`authenticatorAttachment`](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions/authenticatorSelection#authenticatorattachment) parameter sent to the browser during WebAuthn registration. The available options are:
+
+- **No preference is sent**: The browser may offer any available authenticator (default).
+- **Platform**: A non-removable authenticator built into the device, such as Touch ID, Face ID, or Windows Hello.
+- **Cross-platform**: A "roaming" authenticator, such as a YubiKey or Google Titan.
+
+If [WebAuthn Hints](#webauthn-hints) are configured and this option is left unset, authentik infers a value from the selected hints for backward compatibility with older browsers.
 
 #### WebAuthn Hints
 
