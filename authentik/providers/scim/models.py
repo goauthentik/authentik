@@ -72,7 +72,8 @@ class SCIMAuthenticationMode(models.TextChoices):
     """SCIM authentication modes"""
 
     TOKEN = "token", _("Token")
-    OAUTH = "oauth", _("OAuth")
+    OAUTH_SILENT = "oauth_silent", _("OAuth (Silent)")
+    OAUTH_INTERACTIVE = "oauth_interactive", _("OAuth (interactive)")
 
 
 class SCIMCompatibilityMode(models.TextChoices):
@@ -144,7 +145,10 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     def scim_auth(self) -> AuthBase:
-        if self.auth_mode == SCIMAuthenticationMode.OAUTH:
+        if self.auth_mode in [
+            SCIMAuthenticationMode.OAUTH_SILENT,
+            SCIMAuthenticationMode.OAUTH_INTERACTIVE,
+        ]:
             try:
                 from authentik.enterprise.providers.scim.auth_oauth2 import SCIMOAuthAuth
 

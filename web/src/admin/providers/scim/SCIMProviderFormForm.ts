@@ -92,7 +92,8 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
         default:
         case SCIMAuthenticationModeEnum.Token:
             return renderAuthToken(provider, errors);
-        case SCIMAuthenticationModeEnum.Oauth:
+        case SCIMAuthenticationModeEnum.OauthSilent:
+        case SCIMAuthenticationModeEnum.OauthInteractive:
             return renderAuthOAuth(provider, errors);
     }
 }
@@ -160,11 +161,17 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                                 )}`,
                             },
                             {
-                                label: msg("OAuth"),
-                                value: SCIMAuthenticationModeEnum.Oauth,
-                                default: true,
+                                label: msg("OAuth (Silent)"),
+                                value: SCIMAuthenticationModeEnum.OauthSilent,
                                 description: html`${msg("Authenticate SCIM requests using OAuth.")}
                                     <ak-license-notice></ak-license-notice>`,
+                            },
+                            {
+                                label: msg("OAuth (Interactive)"),
+                                value: SCIMAuthenticationModeEnum.OauthInteractive,
+                                description: html`${msg(
+                                        "Authenticate SCIM requests using OAuth, interactively authorized.",
+                                    )} <ak-license-notice></ak-license-notice>`,
                             },
                         ]}
                     ></ak-radio>

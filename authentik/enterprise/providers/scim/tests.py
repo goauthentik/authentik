@@ -42,7 +42,7 @@ class SCIMOAuthTests(APITestCase):
         self.provider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            auth_mode=SCIMAuthenticationMode.OAUTH,
+            auth_mode=SCIMAuthenticationMode.OAUTH_SILENT,
             auth_oauth=self.source,
             auth_oauth_params={
                 "foo": "bar",
