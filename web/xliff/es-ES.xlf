@@ -1288,10 +1288,6 @@
   <source>Open in new tab</source>
   <target>Abrir en nueva pestaña</target>
 </trans-unit>
-<trans-unit id="s8655c52824caac63">
-  <source>If checked, the launch URL will open in a new browser tab or window from the user's application library.</source>
-  <target>Si está seleccionado, la URL de lanzamiento se abrirá en una nueva pestaña o ventana del navegador desde la biblioteca de aplicaciones del usuario.</target>
-</trans-unit>
 <trans-unit id="s909e876731a8febb">
   <source>Select all rows</source>
   <target>Seleccionar todas las filas</target>
@@ -1379,17 +1375,9 @@
   <source>Policy</source>
   <target>Política</target>
 </trans-unit>
-<trans-unit id="s6b85380416964890">
-  <source>Negate result</source>
-  <target>Negar el resultado</target>
-</trans-unit>
 <trans-unit id="s3bfa0258999fb629">
   <source>Negates the outcome of the binding. Messages are unaffected.</source>
   <target>Niega el resultado de la vinculación. Los mensajes no se ven afectados.</target>
-</trans-unit>
-<trans-unit id="s6b1ed7507f26cb4a">
-  <source>Failure result</source>
-  <target>Resultado fallido</target>
 </trans-unit>
 <trans-unit id="sfdfa5bb4ddd99d70">
   <source>Enterprise only</source>
@@ -6107,10 +6095,6 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
   <source>Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.</source>
   <target>Etapa utilizada para validar cualquier autenticador. Esta etapa se debe usar durante los flujos de autenticación o autorización.</target>
 </trans-unit>
-<trans-unit id="s73c13e5a6f5e38a3">
-  <source>Device classes</source>
-  <target>Clases de dispositivos</target>
-</trans-unit>
 <trans-unit id="sd8d9451f86502d1a">
   <source>Device classes which can be used to authenticate.</source>
   <target>Clases de dispositivos que se pueden usar para autenticarse.</target>
@@ -6352,10 +6336,6 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
 <trans-unit id="s4af8a3ce5a600855">
   <source>Let the user identify themselves with their username or Email address.</source>
   <target>Permite que el usuario se identifique con su nombre de usuario o dirección de correo electrónico.</target>
-</trans-unit>
-<trans-unit id="s592ab7d2bc1b8973">
-  <source>User fields</source>
-  <target>Campos de usuario</target>
 </trans-unit>
 <trans-unit id="s4cdae7635e757555">
   <source>Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.</source>
@@ -8566,20 +8546,12 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="s45915ee0293ce5d4">
   <source>Ungrouped</source>
 </trans-unit>
-<trans-unit id="s1cf2298d92c327a6">
-  <source>My Applications</source>
-  <target>Mis aplicaciones</target>
-</trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
 </trans-unit>
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
   <target>La búsqueda no arrojó resultados.</target>
-</trans-unit>
-<trans-unit id="s2656433a3b1f7e86">
-  <source>My applications</source>
-  <target>Mis aplicaciones</target>
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
@@ -10916,12 +10888,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="s71724d2ff6637203">
   <source>Altered behavior for usage with VMware vCenter.</source>
 </trans-unit>
-<trans-unit id="s9eda7101f63a8652">
-  <source>Hide from My applications</source>
-</trans-unit>
-<trans-unit id="s30f30e9c42594a33">
-  <source>If checked, this application will not be shown on the user's My applications page.</source>
-</trans-unit>
 <trans-unit id="s2ea2e39e4b470249">
   <source>EntityID/Issuer override</source>
 </trans-unit>
@@ -11054,6 +11020,33 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="sdcd1a9744efdbd7e">
   <source>Choose Policy Type</source>
+</trans-unit>
+<trans-unit id="sf4eb7c0c8e92e6b2">
+  <source>Whether the launch URL will open in a new browser tab or window from the user's application library.</source>
+</trans-unit>
+<trans-unit id="s8ab0176c9cf77b1a">
+  <source>Hide from User Dashboard</source>
+</trans-unit>
+<trans-unit id="s0b5847edb7150911">
+  <source>Whether this application will be shown on the User Dashboard.</source>
+</trans-unit>
+<trans-unit id="saa5ed8446baaba70">
+  <source>Negate Result</source>
+</trans-unit>
+<trans-unit id="s5387aa645962312a">
+  <source>Failure Result</source>
+</trans-unit>
+<trans-unit id="sea62de98f2e25e03">
+  <source>Device Classes</source>
+</trans-unit>
+<trans-unit id="s41938ae69656ef53">
+  <source>User Fields</source>
+</trans-unit>
+<trans-unit id="s977b2dff8b9def14">
+  <source>User Dashboard - Applications</source>
+</trans-unit>
+<trans-unit id="s190cbdd5b62e4746">
+  <source>User Dashboard</source>
 </trans-unit>
 </body>
 </file>

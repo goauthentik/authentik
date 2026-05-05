@@ -1321,10 +1321,6 @@
   <source>Open in new tab</source>
   <target>新しいタブで開く</target>
 </trans-unit>
-<trans-unit id="s8655c52824caac63">
-  <source>If checked, the launch URL will open in a new browser tab or window from the user's application library.</source>
-  <target>チェックすると、ユーザーのアプリライブラリから起動URLが新しいブラウザタブまたはウィンドウで開きます。</target>
-</trans-unit>
 <trans-unit id="s909e876731a8febb">
   <source>Select all rows</source>
   <target>すべての行を選択</target>
@@ -1409,17 +1405,9 @@
   <source>Policy</source>
   <target>ポリシー</target>
 </trans-unit>
-<trans-unit id="s6b85380416964890">
-  <source>Negate result</source>
-  <target>結果を反転</target>
-</trans-unit>
 <trans-unit id="s3bfa0258999fb629">
   <source>Negates the outcome of the binding. Messages are unaffected.</source>
   <target>バインディングの結果を反転します。メッセージには影響しません。</target>
-</trans-unit>
-<trans-unit id="s6b1ed7507f26cb4a">
-  <source>Failure result</source>
-  <target>失敗の結果</target>
 </trans-unit>
 <trans-unit id="sfdfa5bb4ddd99d70">
   <source>Enterprise only</source>
@@ -6278,10 +6266,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.</source>
   <target>あらゆる認証器を検証するために使用されるステージ。このステージは認証または認可フロー中に使用する必要があります。</target>
 </trans-unit>
-<trans-unit id="s73c13e5a6f5e38a3">
-  <source>Device classes</source>
-  <target>デバイスクラス</target>
-</trans-unit>
 <trans-unit id="sd8d9451f86502d1a">
   <source>Device classes which can be used to authenticate.</source>
   <target>認証に使用できるデバイスクラス。</target>
@@ -6525,10 +6509,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s4af8a3ce5a600855">
   <source>Let the user identify themselves with their username or Email address.</source>
   <target>ユーザーがユーザー名またはメールアドレスで自身を識別できるようにします。</target>
-</trans-unit>
-<trans-unit id="s592ab7d2bc1b8973">
-  <source>User fields</source>
-  <target>ユーザーフィールド</target>
 </trans-unit>
 <trans-unit id="s4cdae7635e757555">
   <source>Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.</source>
@@ -8792,10 +8772,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Ungrouped</source>
   <target>グループ化されていない</target>
 </trans-unit>
-<trans-unit id="s1cf2298d92c327a6">
-  <source>My Applications</source>
-  <target>自分のアプリ</target>
-</trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
   <target>アプリ名で検索….</target>
@@ -8803,10 +8779,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
   <target>検索は結果を返しませんでした。</target>
-</trans-unit>
-<trans-unit id="s2656433a3b1f7e86">
-  <source>My applications</source>
-  <target> 自分のアプリ</target>
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
@@ -11147,12 +11119,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s71724d2ff6637203">
   <source>Altered behavior for usage with VMware vCenter.</source>
 </trans-unit>
-<trans-unit id="s9eda7101f63a8652">
-  <source>Hide from My applications</source>
-</trans-unit>
-<trans-unit id="s30f30e9c42594a33">
-  <source>If checked, this application will not be shown on the user's My applications page.</source>
-</trans-unit>
 <trans-unit id="s2ea2e39e4b470249">
   <source>EntityID/Issuer override</source>
 </trans-unit>
@@ -11285,6 +11251,33 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdcd1a9744efdbd7e">
   <source>Choose Policy Type</source>
+</trans-unit>
+<trans-unit id="sf4eb7c0c8e92e6b2">
+  <source>Whether the launch URL will open in a new browser tab or window from the user's application library.</source>
+</trans-unit>
+<trans-unit id="s8ab0176c9cf77b1a">
+  <source>Hide from User Dashboard</source>
+</trans-unit>
+<trans-unit id="s0b5847edb7150911">
+  <source>Whether this application will be shown on the User Dashboard.</source>
+</trans-unit>
+<trans-unit id="saa5ed8446baaba70">
+  <source>Negate Result</source>
+</trans-unit>
+<trans-unit id="s5387aa645962312a">
+  <source>Failure Result</source>
+</trans-unit>
+<trans-unit id="sea62de98f2e25e03">
+  <source>Device Classes</source>
+</trans-unit>
+<trans-unit id="s41938ae69656ef53">
+  <source>User Fields</source>
+</trans-unit>
+<trans-unit id="s977b2dff8b9def14">
+  <source>User Dashboard - Applications</source>
+</trans-unit>
+<trans-unit id="s190cbdd5b62e4746">
+  <source>User Dashboard</source>
 </trans-unit>
 </body>
 </file>
