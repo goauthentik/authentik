@@ -7,6 +7,7 @@ type Config struct {
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
 	PostgreSQL     PostgreSQLConfig     `yaml:"postgresql" env:", prefix=AUTHENTIK_POSTGRESQL__"`
 	Outposts       OutpostConfig        `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
+	Tiles          TilesConfig          `yaml:"tiles" env:", prefix=AUTHENTIK_TILES__"`
 
 	// Config for core and embedded outpost
 	SecretKey string `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY, overwrite"`
@@ -102,6 +103,12 @@ type OutpostConfig struct {
 	ContainerImageBase     string `yaml:"container_image_base" env:"CONTAINER_IMAGE_BASE, overwrite"`
 	Discover               bool   `yaml:"discover" env:"DISCOVER, overwrite"`
 	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"DISABLE_EMBEDDED_OUTPOST, overwrite"`
+}
+
+type TilesConfig struct {
+	// Upstream URL the authentik server reverse-proxies /tiles/* requests to.
+	// When empty the /tiles/* route is not registered.
+	Upstream string `yaml:"upstream" env:"UPSTREAM, overwrite"`
 }
 
 type WebConfig struct {

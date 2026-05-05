@@ -1,0 +1,12 @@
+{
+    "extends": "@goauthentik/tsconfig/tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "out",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["out", "node_modules", "scripts"]
+}

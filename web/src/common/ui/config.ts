@@ -11,6 +11,7 @@ export const DefaultBrand = {
     brandingFaviconThemedUrls: null,
     brandingTitle: "authentik",
     brandingCustomCss: "",
+    brandingMapTiles: "/tiles/world/{z}/{x}/{y}.mvt",
     uiFooterLinks: [],
     uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",
