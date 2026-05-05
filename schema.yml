@@ -34608,10 +34608,12 @@ components:
               properties:
                 brand:
                   type: string
+                  nullable: true
                 family:
                   type: string
                 model:
                   type: string
+                  nullable: true
               required:
               - brand
               - family
@@ -34624,12 +34626,16 @@ components:
                   type: string
                 major:
                   type: string
+                  nullable: true
                 minor:
                   type: string
+                  nullable: true
                 patch:
                   type: string
+                  nullable: true
                 patch_minor:
                   type: string
+                  nullable: true
               required:
               - family
               - major
@@ -37183,6 +37189,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -51193,6 +51200,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -53633,7 +53641,7 @@ components:
           type: string
         redirect_uri_type:
           allOf:
-          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          - $ref: '#/components/schemas/RedirectURITypeEnum'
           default: authorization
       required:
       - matching_mode
@@ -53649,12 +53657,12 @@ components:
           minLength: 1
         redirect_uri_type:
           allOf:
-          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          - $ref: '#/components/schemas/RedirectURITypeEnum'
           default: authorization
       required:
       - matching_mode
       - url
-    RedirectUriTypeEnum:
+    RedirectURITypeEnum:
       enum:
       - authorization
       - logout
@@ -55975,6 +55983,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -56063,6 +56072,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff

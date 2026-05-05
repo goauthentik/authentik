@@ -52,10 +52,6 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
         ...AKModal.styles,
         PFAbout,
         css`
-            :host {
-                height: 100%;
-            }
-
             .pf-c-about-modal-box {
                 --pf-c-about-modal-box--BackgroundColor: var(--ak-c-dialog--BackgroundColor);
                 width: unset;

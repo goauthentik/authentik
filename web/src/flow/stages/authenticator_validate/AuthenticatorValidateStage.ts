@@ -267,7 +267,10 @@ export class AuthenticatorValidateStage
             },
         );
 
-        return html`<fieldset class="pf-c-form__group pf-m-action" name="device-challenges">
+        return html`<fieldset
+            class="ak-c-fieldset pf-c-form__group pf-m-action"
+            name="device-challenges"
+        >
             <legend class="pf-c-title">${msg("Select an authentication method")}</legend>
             ${deviceChallengeButtons}
         </fieldset>`;
@@ -300,7 +303,7 @@ export class AuthenticatorValidateStage
             },
         );
 
-        return html`<fieldset class="pf-c-form__group pf-m-action" name="stages">
+        return html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action" name="stages">
             <legend class="sr-only">${msg("Select a configuration stage")}</legend>
             ${stageButtons}
         </fieldset>`;

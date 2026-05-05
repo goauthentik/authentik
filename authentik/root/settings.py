@@ -187,6 +187,7 @@ SPECTACULAR_SETTINGS = {
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
+        "RedirectURITypeEnum": "authentik.providers.oauth2.models.RedirectURIType",
         "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
         "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",

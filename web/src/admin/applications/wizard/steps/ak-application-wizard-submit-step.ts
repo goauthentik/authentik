@@ -381,7 +381,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         return html`<h2 class="pf-c-wizard__main-title">
                     ${msg("Review the Application and Provider")}
                 </h2>
-                <fieldset>
+                <fieldset class="ak-c-fieldset" name="application-details">
                     <legend>${msg("Application Details")}</legend>
                     <dl class="pf-c-description-list">
                         <div class="pf-c-description-list__group">
@@ -419,7 +419,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
                 ${
                     renderer
-                        ? html`<fieldset>
+                        ? html`<fieldset class="ak-c-fieldset" name="provider-details">
                               <legend>${msg("Provider Details")}</legend>
                               ${renderer(provider)}
                           </fieldset>`

@@ -36,7 +36,7 @@ import {
     OAuth2Provider,
     OAuth2ProviderLogoutMethodEnum,
     RedirectURI,
-    RedirectUriTypeEnum,
+    RedirectURITypeEnum,
     SubModeEnum,
     ValidationError,
 } from "@goauthentik/api";
@@ -270,7 +270,7 @@ export function renderForm({
                         .newItem=${() => ({
                             matchingMode: MatchingModeEnum.Strict,
                             url: "",
-                            redirectUriType: RedirectUriTypeEnum.Authorization,
+                            redirectUriType: RedirectURITypeEnum.Authorization,
                         })}
                         .row=${(redirectURI: RedirectURI, idx: number) => {
                             return html`<ak-provider-oauth2-redirect-uri

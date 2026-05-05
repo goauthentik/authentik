@@ -20,6 +20,11 @@
     );
 }
 
+.pf-c-form__alert {
+    display: grid;
+    gap: var(--pf-global--spacer--form-element);
+}
+
 .pf-c-form.ak-m-content-center {
     --pf-c-form--GridGap: var(--pf-global--spacer--sm);
 
@@ -89,91 +94,6 @@ ak-form-element-horizontal:has(.pf-c-form__helper-text + ak-checkbox-group) {
         line-height: var(--pf-global--LineHeight--sm);
     }
 }
-
-/* #region Fields */
-
-fieldset {
-    --ak-fieldset--BorderWidth: thin;
-    --ak-fieldset__legend--MarginInlineBase: var(--pf-global--spacer--sm);
-    --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--sm);
-
-    border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BackgroundColor--light-100));
-
-    @media (prefers-contrast: more) {
-        border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--200));
-    }
-
-    @media (prefers-contrast: less) {
-        border-color: var(--ak-fieldset--BorderColor, transparent);
-    }
-
-    border-width: var(--ak-fieldset--BorderWidth);
-
-    padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
-
-    & > legend {
-        line-height: 1;
-        padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
-        margin-inline-start: var(
-            --ak-fieldset__legend--MarginInlineStart,
-            var(--ak-fieldset__legend--MarginInlineBase)
-        ) !important;
-        margin-inline-end: var(
-            --ak-legend-margin-inline-end,
-            var(--ak-fieldset__legend--MarginInlineBase)
-        ) !important;
-    }
-
-    &:has(legend.sr-only:not(.more-contrast-only)) {
-        border-width: 0;
-
-        &:not(.pf-c-modal-box__footer) {
-            --ak-fieldset__legend--PaddingInlineBase: 0;
-            --ak-fieldset__legend--MarginInlineBase: 0;
-        }
-    }
-
-    &.pf-c-form__group {
-        border-radius: var(--pf-global--BorderRadius--sm);
-    }
-
-    &.pf-c-form__group {
-        display: flex;
-        flex-wrap: wrap;
-
-        &.pf-m-action {
-            gap: var(--pf-global--spacer--md) var(--pf-global--spacer--sm);
-            margin-block-start: 0;
-        }
-    }
-
-    &.pf-c-login__main-footer-band {
-        & > *:last-child {
-            padding-block-end: var(--pf-c-login__main-footer-band-item--PaddingTop);
-        }
-    }
-
-    &.pf-c-modal-box__footer {
-        --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--lg);
-        --pf-c-modal-box__footer--c-button--MarginRight: 0;
-
-        gap: var(--pf-global--spacer--sm);
-        justify-content: end;
-        padding-block: calc(var(--ak-fieldset__legend--PaddingInlineBase) / 2);
-        border-inline: none;
-        border-block-end: none;
-
-        --pf-c-modal-box__footer--c-button--sm--MarginRight: var(
-            --pf-c-modal-box__footer--c-button--MarginRight
-        );
-
-        & > ak-spinner-button:not(:last-child) {
-            margin-right: var(--pf-c-modal-box__footer--c-button--MarginRight);
-        }
-    }
-}
-
-/* #endregion */
 
 /* #region Radio */
 
@@ -400,21 +320,6 @@ ak-switch-input {
 
     .pf-c-form__field-group {
         border-bottom: 0;
-    }
-
-    fieldset {
-        border-color: var(
-            --ak-fieldset--BorderColor,
-            var(--pf-global--BackgroundColor--dark-transparent-200)
-        );
-
-        @media (prefers-contrast: more) {
-            border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--300));
-        }
-
-        @media (prefers-contrast: less) {
-            border-color: var(--ak-fieldset--BorderColor, transparent);
-        }
     }
 
     /* #endregion */

@@ -29,6 +29,7 @@ class RefreshOtherFlowsAfterAuthentication(Flag[bool], key="flows_refresh_others
     default = False
     visibility = "public"
     description = _("Refresh other tabs after successful authentication.")
+    deprecated = True
 
 
 class ContinuousLogin(Flag[bool], key="flows_continuous_login"):

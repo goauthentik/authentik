@@ -296,8 +296,15 @@ export class IdentificationStage extends BaseStage<
         type: string,
         label: string,
         initialUserIdentification: string | null,
-        autocomplete: string,
+        passwordFields?: boolean,
     ) {
+        // When webauthn is enabled, add "webauthn" to autocomplete to enable passkey autofill
+        let autocomplete: AutoFill = type === "email" ? "email" : "username";
+
+        if (this.#webauthn.live) {
+            autocomplete = `${autocomplete} webauthn`;
+        }
+
         return html`<input
             ${ref(this.autofocusTarget.reference)}
             id=${id}
@@ -307,6 +314,9 @@ export class IdentificationStage extends BaseStage<
             autofocus
             autocomplete=${autocomplete}
             spellcheck="false"
+            inputmode=${type === "email" ? "email" : "text"}
+            autocapitalize="none"
+            enterkeyhint=${passwordFields ? "next" : "go"}
             class="pf-c-form-control"
             value=${initialUserIdentification ?? ""}
             required
@@ -345,19 +355,11 @@ export class IdentificationStage extends BaseStage<
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
 
-        // When webauthn is enabled, add "webauthn" to autocomplete to enable passkey autofill
-        const autocomplete: AutoFill = this.#webauthn.live ? "username webauthn" : "username";
-
-        console.debug(
-            "Rendering identification stage with fields:",
-            fields,
-            initialUserIdentification,
-        );
         // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
             <div class="pf-c-form__group">
                 ${AKLabel({ required: true, htmlFor: inputID }, label)}
-                ${this.renderUidField(inputID, type, label, initialUserIdentification, autocomplete)}
+                ${this.renderUidField(inputID, type, label, initialUserIdentification, passwordFields)}
                 ${rememberMeController?.renderToggleInput() ?? null}
                 ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
             </div>
@@ -433,9 +435,8 @@ export class IdentificationStage extends BaseStage<
         return html`<fieldset
             slot="footer"
             part="source-list"
-            role="group"
             name="login-sources"
-            class="pf-c-form__group"
+            class="ak-c-fieldset pf-c-form__group"
         >
             <legend class="sr-only">${msg("Login sources")}</legend>
             ${repeat(
@@ -467,7 +468,8 @@ export class IdentificationStage extends BaseStage<
         return html`<fieldset
             slot="footer-band"
             part="additional-actions"
-            class="pf-c-login__main-footer-band"
+            name="additional-actions"
+            class="ak-c-fieldset pf-c-login__main-footer-band"
         >
             <legend class="sr-only">${msg("Additional actions")}</legend>
             ${enrollUrl

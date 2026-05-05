@@ -707,7 +707,7 @@ export * from "./RedirectStageModeEnum";
 export * from "./RedirectStageRequest";
 export * from "./RedirectURI";
 export * from "./RedirectURIRequest";
-export * from "./RedirectUriTypeEnum";
+export * from "./RedirectURITypeEnum";
 export * from "./RelatedGroup";
 export * from "./RelatedRule";
 export * from "./Reputation";
