@@ -67,6 +67,7 @@ class SCIMOAuthAuth:
             user=self.user,
             defaults={
                 "access_token": access_token,
+                "refresh_token": token.get("refresh_token"),
                 "expires": now() + timedelta(seconds=expires_in),
             },
         )
