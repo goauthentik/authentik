@@ -132,7 +132,11 @@ ak-app-icon {
 
 [part="app-group-header"] {
     @media not (prefers-contrast: more) {
+<<<<<<< HEAD
         --ak-legend-padding-inline-base: 1rem;
+=======
+        --ak-c-fieldset__legend--PaddingInlineBase: 1rem;
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
         padding-block-start: 0 !important;
         padding-inline: 0 !important;
         margin-inline: 0 !important;

@@ -20,6 +20,23 @@
     );
 }
 
+<<<<<<< HEAD
+=======
+.pf-c-form__alert {
+    display: grid;
+    gap: var(--pf-global--spacer--form-element);
+}
+
+.pf-c-form.ak-m-content-center {
+    --pf-c-form--GridGap: var(--pf-global--spacer--sm);
+
+    flex: 1 1 auto;
+    align-self: self-start;
+    align-content: center;
+    width: 100%;
+}
+
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
 .pf-c-form__group {
     column-gap: var(--pf-global--spacer--md);
 }
@@ -73,6 +90,7 @@
     text-wrap: pretty;
 }
 
+<<<<<<< HEAD
 /* #region Fields */
 
 fieldset {
@@ -149,6 +167,181 @@ fieldset {
         & > ak-spinner-button:not(:last-child) {
             margin-right: var(--pf-c-modal-box__footer--c-button--MarginRight);
         }
+=======
+ak-form-element-horizontal:has(.pf-c-form__helper-text + ak-checkbox-group) {
+    .pf-c-form__helper-text {
+        margin-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+        line-height: var(--pf-global--LineHeight--sm);
+    }
+}
+
+/* #region Radio */
+
+.pf-c-radio {
+    align-content: start;
+}
+
+label.pf-c-radio {
+    --pf-c-radio--checkmark--BorderColor: var(--pf-global--BorderColor--300);
+    --pf-c-radio--checkmark--Color: transparent;
+    --pf-c-radio--BorderColor: transparent;
+
+    --pf-c-radio--checked--BackgroundColor: transparent;
+    --pf-c-radio--checked--BorderColor: var(--pf-global--active-color--300);
+    --pf-c-radio--checked--Hover--BorderColor: var(--pf-global--active-color--400);
+    --pf-c-radio--hover--BorderColor: var(--pf-global--active-color--200);
+    --pf-c-radio--disabled--BackgroundColor: var(--pf-global--BackgroundColor--150);
+    --pf-c-radio__description--Color: var(--pf-global--Color--300);
+
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s;
+
+    margin-block: 0;
+    padding-inline: var(--pf-global--spacer--md);
+    padding-block: var(--pf-global--spacer--sm);
+    cursor: pointer;
+    background-color: var(--pf-c-radio--BackgroundColor, transparent);
+    border-radius: var(--pf-global--BorderRadius--sm);
+    position: relative;
+
+    align-content: center;
+    display: grid;
+    grid-template-areas:
+        "input ."
+        "input .";
+    grid-template-columns: auto 1fr;
+    column-gap: var(--pf-global--spacer--md);
+    row-gap: 0;
+
+    .pf-c-radio__input {
+        grid-area: input;
+        align-self: center;
+        margin-block: 0;
+        margin-inline-end: var(--pf-global--spacer--xs);
+        margin-inline-start: var(--pf-global--spacer--sm);
+        appearance: none;
+        content: none;
+
+        width: 1.5em;
+        height: 1.5em;
+        padding: 0.25em;
+        border: 0.5px solid;
+        color: var(--pf-c-radio--checkmark--BorderColor, transparent);
+        border-radius: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+        background: color-mix(var(--pf-c-radio--checkmark--BorderColor), transparent 84%);
+        box-shadow: inset 0 0 1px
+            color-mix(var(--pf-c-radio--checkmark--BorderColor), var(--pf-global--BorderColor--200));
+
+        &::after {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+
+            content: "";
+            display: block;
+            line-height: 1;
+            color: var(--pf-c-radio--checkmark--Color);
+            transition: color 0.2s;
+
+            background: var(--pf-c-radio--checkmark--Color);
+            height: 100%;
+            width: 100%;
+            border-radius: 100%;
+            filter: drop-shadow(0 0 6px color-mix(currentColor, transparent 50%));
+        }
+    }
+
+    &:hover:has(.pf-c-radio__input:not(:disabled)) {
+        --pf-c-radio--BackgroundColor: color-mix(currentColor, transparent 98%);
+    }
+
+    &:has(.pf-c-radio__input:checked:not(:disabled)) {
+        --pf-c-radio--BorderColor: var(--pf-c-radio--checked--BorderColor);
+        --pf-c-radio--checkmark--BorderColor: var(--pf-global--active-color--300);
+        --pf-c-radio--checkmark--Color: var(--pf-c-radio--checked--BorderColor);
+    }
+
+    &:hover:has(.pf-c-radio__input:checked:not(:disabled)) {
+        --pf-c-radio--checkmark--BorderColor: var(--pf-c-radio--checked--Hover--BorderColor);
+        --pf-c-radio--checkmark--Color: var(--pf-c-radio--checked--Hover--BorderColor);
+    }
+
+    &:hover:not(:has(.pf-c-radio__input:checked)):not(:has(.pf-c-radio__input:disabled)) {
+        --pf-c-radio--checkmark--BorderColor: var(--pf-c-radio--hover--BorderColor);
+        --pf-c-radio--checkmark--Color: var(--pf-c-radio--hover--BorderColor);
+    }
+
+    &:has(.pf-c-radio__input:disabled) {
+        cursor: not-allowed;
+
+        --pf-c-radio--BackgroundColor: var(--pf-c-radio--disabled--BackgroundColor) !important;
+    }
+
+    .pf-c-radio__description {
+        margin-block-start: var(--pf-global--spacer--xs);
+    }
+
+    .pf-c-radio__label {
+        align-self: center;
+        font-weight: var(--pf-global--FontWeight--overpass--semi-bold);
+        font-family: var(--pf-global--FontFamily--redhat-updated--heading--sans-serif);
+    }
+
+    &:has(.pf-c-radio__input:last-child) .pf-c-radio__label {
+        grid-row: 1 / -1;
+    }
+}
+
+.pf-c-form__helper-radio:first-child {
+    margin-block-end: var(--pf-global--spacer--sm);
+    line-height: 1;
+}
+
+::part(radio-help) {
+    padding-block-start: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+    font-size: var(--pf-c-form__label--FontSize);
+    line-height: var(--pf-c-form__label--LineHeight);
+}
+
+/* #endregion */
+
+ak-switch-input {
+    ::part(group-control) {
+        grid-column: 1 / -1;
+    }
+
+    .pf-c-switch {
+        grid-template-columns: [label] auto [control] auto;
+        grid-template-rows: [primary] auto [secondary] auto;
+        justify-content: start;
+        padding-block: var(--pf-global--spacer--xs);
+        width: 100%;
+        column-gap: var(--pf-global--spacer--sm);
+    }
+
+    .pf-c-switch__label {
+        grid-area: primary / label;
+        justify-self: start;
+        font-weight: 500;
+    }
+
+    .pf-c-switch__input,
+    .pf-c-switch__toggle {
+        grid-area: primary / control;
+        justify-self: end;
+    }
+
+    .pf-c-form__helper-text {
+        grid-area: secondary / label / secondary / -1;
+        /* Fallback for browsers that do not support container queries. */
+        max-width: clamp(25cqi, 90%, 90ch);
+        max-width: clamp(25cqi, 90cqi, 90ch);
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
     }
 }
 
@@ -208,6 +401,7 @@ fieldset {
         border-bottom: 0;
     }
 
+<<<<<<< HEAD
     fieldset {
         --ak-fieldset-border-color: var(--pf-global--BackgroundColor--dark-transparent-200);
 
@@ -220,6 +414,8 @@ fieldset {
         }
     }
 
+=======
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
     /* #endregion */
 
     /* #region Radio */

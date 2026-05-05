@@ -77,6 +77,7 @@ export class ConfirmationForm extends ModalButton {
                     <slot class="pf-c-content" name="body"></slot>
                 </form>
             </section>
+<<<<<<< HEAD
             <footer class="pf-c-modal-box__footer">
                 ${this.nonSubmittable
                     ? nothing
@@ -88,6 +89,10 @@ export class ConfirmationForm extends ModalButton {
                           >
                               ${this.action} </ak-spinner-button
                           >&nbsp;`}
+=======
+            <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;

@@ -65,7 +65,12 @@ export class DeviceAddHowTo extends ModalButton {
                           })}
                       </ak-tabs>`}
             </div>
+<<<<<<< HEAD
             <footer class="pf-c-modal-box__footer pf-m-align-left">
+=======
+            <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
                 <button
                     class="pf-c-button pf-m-primary"
                     @click=${() => {

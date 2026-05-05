@@ -9,6 +9,7 @@
 @import "@patternfly/patternfly/utilities/Text/text.css";
 @import "./components/Drawer/drawer.css";
 @import "./components/Form/form.css";
+@import "./components/Fieldset/fieldset.css";
 @import "./components/Login/login.css";
 @import "./components/Icon/icon.css";
 @import "#elements/locale/ak-locale-select.css";

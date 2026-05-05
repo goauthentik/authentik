@@ -365,6 +365,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         const metaLaunchUrl = app.metaLaunchUrl?.trim();
 
+<<<<<<< HEAD
         return html`
             <div class="ak-wizard-main-content">
                 <ak-wizard-title>${msg("Review the Application and Provider")}</ak-wizard-title>
@@ -395,6 +396,55 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                     ? html` <h2 class="pf-c-title pf-m-xl pf-u-pt-xl">${msg("Provider")}</h2>
                           ${renderer(provider)}`
                     : nothing}
+=======
+        return html`<h2 class="pf-c-wizard__main-title">
+                    ${msg("Review the Application and Provider")}
+                </h2>
+                <fieldset class="ak-c-fieldset" name="application-details">
+                    <legend>${msg("Application Details")}</legend>
+                    <dl class="pf-c-description-list">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">${msg("Application Name")}</dt>
+                            <dt class="pf-c-description-list__description">${app.name}</dt>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">${msg("Group")}</dt>
+                            <dt class="pf-c-description-list__description">
+                                ${app.group || msg("-")}
+                            </dt>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                ${msg("Policy engine mode")}
+                            </dt>
+                            <dt class="pf-c-description-list__description">
+                                ${app.policyEngineMode?.toUpperCase()}
+                            </dt>
+                        </div>
+                        ${
+                            metaLaunchUrl
+                                ? html`<div class="pf-c-description-list__group">
+                                      <dt class="pf-c-description-list__term">
+                                          ${msg("Launch URL")}
+                                      </dt>
+                                      <dt class="pf-c-description-list__description">
+                                          ${metaLaunchUrl}
+                                      </dt>
+                                  </div>`
+                                : nothing
+                        }
+                    </dl>
+                </fieldset>
+
+                ${
+                    renderer
+                        ? html`<fieldset class="ak-c-fieldset" name="provider-details">
+                              <legend>${msg("Provider Details")}</legend>
+                              ${renderer(provider)}
+                          </fieldset>`
+                        : null
+                }
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
             </div>
         `;
     }

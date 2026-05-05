@@ -86,11 +86,24 @@ export class ConfigModal extends ModalButton {
                     ></ak-codemirror>
                 </ak-expand>
             </div>
+<<<<<<< HEAD
             <footer class="pf-c-modal-box__footer pf-m-align-left">
                 <ak-action-button class="pf-m-primary" .apiRequest=${this.#downloadConnectorConfig}>
                     ${msg("Download")}
                 </ak-action-button>
                 &nbsp;
+=======
+            <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+                <button
+                    class="pf-c-button pf-m-plain"
+                    @click=${() => {
+                        this.open = false;
+                    }}
+                >
+                    ${msg("Close")}
+                </button>
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
                 <ak-action-button
                     class="pf-m-secondary"
                     .apiRequest=${() => {

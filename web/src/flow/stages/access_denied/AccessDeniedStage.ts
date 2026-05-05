@@ -38,7 +38,7 @@ export class AccessDeniedStage extends BaseStage<
                         : nothing}
                 </ak-empty-state>
                 ${this.challenge?.flowInfo?.cancelUrl
-                    ? html`<fieldset class="pf-c-form__group pf-m-action">
+                    ? html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                           <legend class="sr-only">${msg("Form actions")}</legend>
                           <a
                               class="pf-c-button pf-m-primary pf-m-block"

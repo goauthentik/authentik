@@ -312,11 +312,124 @@ export class IdentificationStage extends BaseStage<
     protected override onSubmitFailure(): void {
         const captchaInput = this.#captchaInputRef.value;
 
+<<<<<<< HEAD
         if (captchaInput) {
             captchaInput.value = "";
         }
 
         this.captchaRefreshedAt = new Date();
+=======
+    #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
+        if (!this.host) return;
+        this.host.challenge = challenge;
+    };
+
+    protected renderRecoveryMessage() {
+        return html`
+            <p>${msg("Enter the email address or username associated with your account.")}</p>
+        `;
+    }
+
+    protected renderUidField(
+        id: string,
+        type: string,
+        label: string,
+        initialUserIdentification: string | null,
+        passwordFields?: boolean,
+    ) {
+        // When webauthn is enabled, add "webauthn" to autocomplete to enable passkey autofill
+        let autocomplete: AutoFill = type === "email" ? "email" : "username";
+
+        if (this.#webauthn.live) {
+            autocomplete = `${autocomplete} webauthn`;
+        }
+
+        return html`<input
+            ${ref(this.autofocusTarget.reference)}
+            id=${id}
+            type=${type}
+            name="uidField"
+            placeholder=${label}
+            autofocus
+            autocomplete=${autocomplete}
+            spellcheck="false"
+            inputmode=${type === "email" ? "email" : "text"}
+            autocapitalize="none"
+            enterkeyhint=${passwordFields ? "next" : "go"}
+            class="pf-c-form-control"
+            value=${initialUserIdentification ?? ""}
+            required
+        />`;
+    }
+
+    protected renderPasswordFields(challenge: IdentificationChallenge) {
+        const { allowShowPassword } = challenge;
+        return html`<ak-flow-input-password
+            .inputRef=${this.passwordFieldRef}
+            label=${msg("Password")}
+            input-id="ak-stage-identification-password"
+            class="pf-c-form__group"
+            .errors=${challenge.responseErrors?.password}
+            ?allow-show-password=${allowShowPassword}
+            prefill=${PasswordManagerPrefill.password ?? ""}
+        ></ak-flow-input-password> `;
+    }
+
+    protected renderInput(challenge: IdentificationChallenge) {
+        const { flowDesignation, passwordFields, passwordlessUrl, primaryAction, userFields } =
+            challenge;
+
+        const fields = (userFields || []).sort();
+        if (fields.length === 0) {
+            return html`<p>${msg("Select one of the options below to continue.")}</p>`;
+        }
+
+        const {
+            inputID,
+            defaultUserIdentification: initialUserIdentification,
+            rememberMeController,
+        } = this;
+
+        const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
+        const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
+        const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
+
+        // prettier-ignore
+        return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
+            <div class="pf-c-form__group">
+                ${AKLabel({ required: true, htmlFor: inputID }, label)}
+                ${this.renderUidField(inputID, type, label, initialUserIdentification, passwordFields)}
+                ${rememberMeController?.renderToggleInput() ?? null}
+                ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
+            </div>
+            ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
+            ${this.renderNonFieldErrors()}
+            ${this.#captcha.render()}
+            <div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
+                <button
+                    ?disabled=${this.#captcha.pending}
+                    type="submit"
+                    class="pf-c-button pf-m-primary pf-m-block"
+                >
+                    ${primaryAction}
+                </button>
+            </div>
+            ${passwordlessUrl ? html`<ak-divider>${msg("Or")}</ak-divider>` : nothing}`;
+    }
+
+    protected renderPrelude(prelude: string) {
+        return html`<p>${msg(str`Log in to continue to ${prelude}.`)}</p>`;
+    }
+
+    protected renderPasswordlessUrl(url: string) {
+        return html`<a
+            href=${url}
+            class="pf-c-button pf-m-secondary pf-m-block"
+            ouiaId="passwordless"
+        >
+            ${msg("Use a security key")}
+        </a> `;
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
     }
 
     //#region Render
@@ -377,14 +490,49 @@ export class IdentificationStage extends BaseStage<
               </div>`
             : null;
 
+<<<<<<< HEAD
         if (!enrollmentItem && !recoveryItem) {
+=======
+    protected renderLoginSources(sources: LoginSource[], showLabels: boolean) {
+        return html`<fieldset
+            slot="footer"
+            part="source-list"
+            name="login-sources"
+            class="ak-c-fieldset pf-c-form__group"
+        >
+            <legend class="sr-only">${msg("Login sources")}</legend>
+            ${repeat(
+                [...sources].sort(sortLoginSources),
+                (source, idx) => source.name + idx,
+                (source) => this.renderLoginSource(source, showLabels),
+            )}
+        </fieldset> `;
+    }
+
+    protected renderIdentificationStage(challenge: IdentificationChallenge) {
+        const { applicationPre, passwordlessUrl, showSourceLabels, sources = [] } = challenge;
+
+        return html`
+            <form class="pf-c-form" @submit=${this.submitForm}>
+                ${applicationPre ? this.renderPrelude(applicationPre) : nothing}
+                ${this.renderInput(challenge)}
+                ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
+            </form>
+            ${sources.length ? this.renderLoginSources(sources, showSourceLabels) : nothing}
+        `;
+    }
+
+    protected renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
+        if (!(enrollUrl || recoveryUrl)) {
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
             return nothing;
         }
 
         return html`<fieldset
             slot="footer-band"
             part="additional-actions"
-            class="pf-c-login__main-footer-band"
+            name="additional-actions"
+            class="ak-c-fieldset pf-c-login__main-footer-band"
         >
             <legend class="sr-only">${msg("Additional actions")}</legend>
             ${enrollmentItem} ${recoveryItem}

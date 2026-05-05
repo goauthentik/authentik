@@ -25,7 +25,7 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
                     <p>${msg("Check your Inbox for a verification email.")}</p>
                 </div>
 
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"

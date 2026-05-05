@@ -14,6 +14,7 @@
 @import "./components/Content/content.css";
 @import "./components/Table/table.css";
 @import "./components/Form/form.css";
+@import "./components/Fieldset/fieldset.css";
 @import "./components/Switch/switch.css";
 @import "./components/Select/select.css";
 @import "./components/Notification/notification.css";

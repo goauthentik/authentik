@@ -1,13 +1,21 @@
-.pf-c-card > fieldset {
+.pf-c-card > .ak-c-fieldset {
     margin-inline: var(--pf-global--spacer--md);
     margin-block-end: var(--pf-global--spacer--md);
 
     @media not (prefers-contrast: more) {
+<<<<<<< HEAD
         --ak-legend-margin-inline-start: calc(
             var(--pf-c-card--child--PaddingLeft) - var(--ak-legend-padding-inline-base)
         );
         --ak-legend-margin-inline-end: calc(
             var(--pf-c-card--child--PaddingRight) - var(--ak-legend-padding-inline-base)
+=======
+        --ak-c-fieldset__legend--MarginInlineStart: calc(
+            var(--pf-c-card--child--PaddingLeft) - var(--ak-c-fieldset__legend--PaddingInlineBase)
+        );
+        --ak-legend-margin-inline-end: calc(
+            var(--pf-c-card--child--PaddingRight) - var(--ak-c-fieldset__legend--PaddingInlineBase)
+>>>>>>> c75eed630 (web: remove native fieldset borders from action groups (#21334))
         );
 
         border-width: 0;
