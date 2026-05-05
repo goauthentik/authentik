@@ -43,7 +43,7 @@ hyper-unix-socket = "= 0.6.1"
 hyper-util = "= 0.1.20"
 ipnet = { version = "= 2.12.0", features = ["serde"] }
 json-subscriber = "= 0.2.8"
-metrics = "= 0.24.3"
+metrics = "= 0.24.5"
 metrics-exporter-prometheus = { version = "= 0.18.1", default-features = false }
 nix = { version = "= 0.31.2", features = ["hostname", "signal"] }
 notify = "= 8.2.0"
@@ -113,6 +113,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
 ] }
 url = "= 2.5.8"
 uuid = { version = "= 1.23.1", features = ["serde", "v4"] }
+which = "= 8.0.2"
 
 ak-axum = { package = "authentik-axum", version = "2026.5.0-rc1", path = "./packages/ak-axum" }
 ak-client = { package = "authentik-client", version = "2026.5.0-rc1", path = "./packages/client-rust" }
@@ -282,6 +283,7 @@ sqlx = { workspace = true, optional = true }
 tokio.workspace = true
 tracing.workspace = true
 uuid.workspace = true
+which.workspace = true
 
 [lints]
 workspace = true

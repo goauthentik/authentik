@@ -20,6 +20,7 @@ export const SSFStreamStatusEnum = {
     Enabled: "enabled",
     Paused: "paused",
     Disabled: "disabled",
+    DisabledDeleted: "disabled_deleted",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type SSFStreamStatusEnum = (typeof SSFStreamStatusEnum)[keyof typeof SSFStreamStatusEnum];

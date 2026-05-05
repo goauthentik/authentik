@@ -3,9 +3,12 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#components/ak-text-input";
+import "#components/ak-radio-input";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { RadioOption } from "#elements/forms/Radio";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -109,39 +112,37 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                         ?checked=${this.instance?.createUsersAsInactive ?? true}
                         help=${msg("Mark newly created users as inactive.")}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("User type")} name="userType">
-                        <ak-radio
-                            .options=${[
-                                {
-                                    label: msg("Internal"),
-                                    value: UserTypeEnum.Internal,
-                                    default: true,
-                                    description: html`${msg(
-                                        "Internal users might be users such as company employees, which will get access to the full Enterprise feature set.",
-                                    )}`,
-                                },
-                                {
-                                    label: msg("External"),
-                                    value: UserTypeEnum.External,
-                                    description: html`${msg(
-                                        "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
-                                    )}`,
-                                },
-                                {
-                                    label: msg("Service account"),
-                                    value: UserTypeEnum.ServiceAccount,
-                                    description: html`${msg(
-                                        "Service accounts should be used for machine-to-machine authentication or other automations.",
-                                    )}`,
-                                },
-                            ]}
-                            .value=${this.instance?.userType}
-                        >
-                        </ak-radio>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("User type used for newly created users.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-radio-input
+                        label=${msg("User type")}
+                        name="userType"
+                        help=${msg("User type used for newly created users.")}
+                        .options=${[
+                            {
+                                label: msg("Internal"),
+                                value: UserTypeEnum.Internal,
+                                default: true,
+                                description: html`${msg(
+                                    "Internal users might be users such as company employees, which will get access to the full Enterprise feature set.",
+                                )}`,
+                            },
+                            {
+                                label: msg("External"),
+                                value: UserTypeEnum.External,
+                                description: html`${msg(
+                                    "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
+                                )}`,
+                            },
+                            {
+                                label: msg("Service account"),
+                                value: UserTypeEnum.ServiceAccount,
+                                description: html`${msg(
+                                    "Service accounts should be used for machine-to-machine authentication or other automations.",
+                                )}`,
+                            },
+                        ] satisfies RadioOption<UserTypeEnum>[]}
+                        .value=${this.instance?.userType}
+                    >
+                    </ak-radio-input>
                     <ak-form-element-horizontal
                         label=${msg("User path template")}
                         name="userPathTemplate"

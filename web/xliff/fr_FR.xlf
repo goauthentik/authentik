@@ -3925,14 +3925,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>Application entitlements</source>
   <target>Droits applicatifs</target>
 </trans-unit>
-<trans-unit id="application.entitlements.preview.info">
-  <source>Application entitlements are in preview.</source>
-  <target>Les droits applicatifs sont en aperçu.</target>
-</trans-unit>
-<trans-unit id="preview.send-us-feedback">
-  <source>Send us feedback!</source>
-  <target>Envoyez-nous vos commentaires !</target>
-</trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
   <target>Ces droits peuvent être utilisés pour configurer les accès d&apos;un utilisateur au sein de cette application.</target>
@@ -4468,10 +4460,6 @@ doesn&apos;t pass when either or both of the selected options are equal or above
 <trans-unit id="s2221fef80f4753a2">
   <source>TLS Verification Certificate</source>
   <target>Certificat de vérification TLS</target>
-</trans-unit>
-<trans-unit id="sb8c13bd58191cea2">
-  <source>When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.</source>
-  <target>Lors de la connexion avec un serveur LDAP avec TLS, les certificats ne sont pas vérifiés par défaut. Spécifiez une paire de clés pour vérifier le certificat distant.</target>
 </trans-unit>
 <trans-unit id="s000ee3e634868b3c">
   <source>TLS Client authentication certificate</source>
@@ -12160,6 +12148,14 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 <trans-unit id="s36535ff645fd37f7">
   <source>Lock my account</source>
   <target>Bloquer mon compte</target>
+</trans-unit>
+<trans-unit id="s7abbf11fd03b3c12">
+  <source>Bind existing group/user</source>
+  <target>Lier le groupe/utilisateur existant</target>
+</trans-unit>
+<trans-unit id="s33bfd42437266a1f">
+  <source>Leave empty to skip certificate validation, or select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate.</source>
+  <target>Laisser vide pour ignorer la validation du certificat, ou sélectionner un certificat et sa paire de clés contenant la chaîne de certification du serveur LDAP pour valider le certificat distant.</target>
 </trans-unit>
 </body>
 </file>

@@ -63,7 +63,7 @@ Technitium DNS uses the `roles` claim to map SSO users to local groups. Create a
         - Select any available signing key.
         - Ensure that the `openid`, `email`, and `profile` scopes are selected. Remove the `email` scope if you prefer usernames to use the preferred username claim instead of the email address.
         - Under **Advanced protocol settings** > **Selected Scopes**, add the scope mapping that you created in the previous section.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
 
 3. Click **Submit** to save the new application and provider.
 
