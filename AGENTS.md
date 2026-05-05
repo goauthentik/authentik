@@ -25,9 +25,16 @@ something genuinely needs explaining. The `area` is wherever you worked, e.g.:
 When the user gives you a PR or issue for the bug being fixed, add a
 `Closes: #NNN` trailer on its own line — don't tack `(#NNN)` onto the subject.
 
-Keep internal references — private ticket URLs, customer names, and the like —
-out of *code*. Slack links and similar are fine in commit messages and PR
-descriptions when useful for context.
+**Never** include customer information or any potentially sensitive *content*
+taken from internal sources — verbatim or reworded — anywhere in the repo
+(code, comments, commit messages, PR descriptions, docs) unless explicitly
+allowed. This covers customer names, support ticket contents, quoted Slack
+messages, private incident details, and similar.
+
+Links are fine. A Slack permalink, a GitHub issue link, or an internal ticket
+URL in a commit message or PR description is good context — it's the
+sensitive *content* that must not be copied into the repo. When in doubt,
+leave the content out and link instead.
 
 A commit should be a finished, working unit. Don't commit half-done work.
 Before committing, run whatever applies:
