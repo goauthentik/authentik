@@ -18,4 +18,5 @@
 .empty-state-primary {
     display: flex;
     gap: var(--pf-global--spacer--sm);
+    justify-content: center;
 }

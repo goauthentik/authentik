@@ -56,7 +56,7 @@ To support the integration of Zammad with authentik, you need to create an appli
         - Set the **SLS Binding** to `Redirect`.
         - Set the **Logout Method** to `Front-channel (Iframe)`.
         - Under **Advanced protocol settings**, select an available **Signing certificate**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -104,7 +104,7 @@ To support the integration of Zammad with authentik, you need to create an appli
         - Set the **Redirect URIs/Origins** to `Strict` / `https://zammad.company/auth/openid_connect/callback`.
         - Select a **Signing Key**.
         - Under **Advanced protocol settings**, set **Subject mode** to **Based on the User's Email**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on the **User Dashboard**.
 
 3. Click **Submit** to save the new application and provider.
 

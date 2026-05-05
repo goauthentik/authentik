@@ -16,7 +16,7 @@ These example flow blueprints are bundled with authentik. To import one, open th
 
 Blueprint path: `example/flows-enrollment-2-stage.yaml`
 
-Flow: right-click [here](/blueprints/example/flows-enrollment-2-stage.yaml) and save the file.
+Flow: right-click <DownloadLink to="/blueprints/example/flows-enrollment-2-stage.yaml">here</DownloadLink> and save the file.
 
 Sign-up flow for new users, which prompts them for their username, email, password and name. No verification is done. Users are also immediately logged on after this flow.
 
@@ -24,7 +24,7 @@ Sign-up flow for new users, which prompts them for their username, email, passwo
 
 Blueprint path: `example/flows-enrollment-email-verification.yaml`
 
-Flow: right-click [here](/blueprints/example/flows-enrollment-email-verification.yaml) and save the file.
+Flow: right-click <DownloadLink to="/blueprints/example/flows-enrollment-email-verification.yaml">here</DownloadLink> and save the file.
 
 Same flow as above, with an extra email verification stage.
 
@@ -34,7 +34,7 @@ You'll probably have to adjust the Email stage and set your connection details.
 
 Blueprint path: `example/flows-login-2fa.yaml`
 
-Flow: right-click [here](/blueprints/example/flows-login-2fa.yaml) and save the file.
+Flow: right-click <DownloadLink to="/blueprints/example/flows-login-2fa.yaml">here</DownloadLink> and save the file.
 
 Login flow which follows the default pattern (username/email, then password), but also checks for the user's OTP token, if they have one configured.
 
@@ -44,7 +44,7 @@ You can force two-factor authentication by editing the _Not configured action_ i
 
 Blueprint path: `example/flows-login-conditional-captcha.yaml`
 
-Flow: right-click [here](/blueprints/example/flows-login-conditional-captcha.yaml) and save the file.
+Flow: right-click <DownloadLink to="/blueprints/example/flows-login-conditional-captcha.yaml">here</DownloadLink> and save the file.
 
 Login flow which conditionally shows the users a captcha, based on the reputation of their IP and Username.
 
@@ -54,17 +54,17 @@ By default, the captcha test keys are used. You can get a proper key [here](http
 
 Blueprint path: `example/flows-recovery-email-mfa-verification.yaml`
 
-Flow: right-click [here](/blueprints/example/flows-recovery-email-mfa-verification.yaml) and save the file.
+Flow: right-click <DownloadLink to="/blueprints/example/flows-recovery-email-mfa-verification.yaml">here</DownloadLink> and save the file.
 
 With this recovery flow, the user is sent an email after they've identified themselves. After they click on the link in the email, they will have to verify their configured MFA device, and are prompted for a new password and immediately logged on.
 
-There's also [a version](/blueprints/example/flows-recovery-email-verification.yaml) of this flow available without MFA validation at `example/flows-recovery-email-verification.yaml`, which is not recommended.
+There's also <DownloadLink to="/blueprints/example/flows-recovery-email-verification.yaml">a version</DownloadLink> of this flow available without MFA validation at `example/flows-recovery-email-verification.yaml`, which is not recommended.
 
 ## User deletion
 
 Blueprint path: `example/flows-unenrollment.yaml`
 
-Flow: right-click [here](/blueprints/example/flows-unenrollment.yaml) and save the file.
+Flow: right-click <DownloadLink to="/blueprints/example/flows-unenrollment.yaml">here</DownloadLink> and save the file.
 
 Flow for users to delete their account.
 

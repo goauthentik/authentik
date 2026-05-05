@@ -10986,9 +10986,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s83fc3142af4bc45f">
   <source>Require Flow token (flow can only be executed from a generated recovery link)</source>
 </trans-unit>
-<trans-unit id="s5ca66a541124edd6">
-  <source>Bind New Policy</source>
-</trans-unit>
 <trans-unit id="sb41bc87dec355a91">
   <source>Select the type of policy you want to create.</source>
 </trans-unit>
@@ -11295,6 +11292,9 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s33bfd42437266a1f">
   <source>Leave empty to skip certificate validation, or select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate.</source>
+</trans-unit>
+<trans-unit id="sdcd1a9744efdbd7e">
+  <source>Choose Policy Type</source>
 </trans-unit>
 </body>
 </file>

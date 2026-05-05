@@ -2,7 +2,7 @@
 title: Applications
 ---
 
-Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **My applications** page.
+Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **User Dashboard**.
 
 When a user logs into authentik, they see a list of the applications for which authentik is configured to provide authentication and authorization (the applications that they are authorized to use).
 
@@ -30,7 +30,7 @@ The following options can be configured:
 
     For a reference of all fields available, see [the API schema for the User object](https://api.goauthentik.io/reference/core-users-retrieve/).
 
-    Only apps with launch URLs that begin with `http://` or `https://`, or that use relative paths, appear on the user's **My applications** page. To keep an app accessible but remove it from that page, use the **Hide from My applications** option (see [Hide applications](./manage_apps.mdx#hide-applications)).
+    Only apps with launch URLs that begin with `http://` or `https://`, or that use relative paths, appear on the **User Dashboard**. To keep an app accessible but remove it from that page, use the **Hide from User Dashboard** option (see [Hide applications](./manage_apps.mdx#hide-applications)).
 
 - _Icon (URL)_: Optionally configure an icon for the application. You can select from files uploaded to the [Files](../../customize/files.md) library or enter an absolute URL.
 

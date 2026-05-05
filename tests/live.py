@@ -7,6 +7,7 @@ from channels.testing import ChannelsLiveServerTestCase
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
+from docker.types import Healthcheck
 from dramatiq import get_broker
 from structlog.stdlib import get_logger
 from yaml import safe_dump
@@ -106,7 +107,13 @@ class SSLLiveMixin(DockerTestCase):
                 "--api=true",
                 "--api.dashboard=true",
                 "--api.insecure=true",
+                "--ping=true",
             ],
+            healthcheck=Healthcheck(
+                test=["CMD", "traefik", "healthcheck", "--ping"],
+                interval=5 * 1_000 * 1_000_000,
+                start_period=1 * 1_000 * 1_000_000,
+            ),
             ports={
                 "9443": None,
             },
