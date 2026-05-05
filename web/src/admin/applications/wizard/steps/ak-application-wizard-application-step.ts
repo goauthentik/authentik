@@ -183,16 +183,16 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             ?checked=${app.openInNewTab ?? false}
                             label=${msg("Open in new tab")}
                             help=${msg(
-                                "Whether the launch URL will open in a new browser tab or window from the user's application library.",
+                                "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
                             )}
                         >
                         </ak-switch-input>
                         <ak-switch-input
                             name="metaHide"
                             ?checked=${app.metaHide ?? false}
-                            label=${msg("Hide from User Dashboard")}
+                            label=${msg("Hide from My applications")}
                             help=${msg(
-                                "Whether this application will be shown on the User Dashboard.",
+                                "If checked, this application will not be shown on the user's My applications page.",
                             )}
                         >
                         </ak-switch-input>
