@@ -22,11 +22,12 @@ function resolvePath(...args: string[]): string {
  * - Intercepts local links and scrolls to the target element.
  */
 export const MDXAnchor = ({
-    href,
+    href: initialHref,
     children,
     ...props
 }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
     const { publicDirectory } = useMDXModule();
+    let href = initialHref;
 
     if (href?.startsWith(".") && publicDirectory) {
         const nextPathname = resolvePath(publicDirectory, href);
