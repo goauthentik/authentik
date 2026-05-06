@@ -73,6 +73,10 @@ export class UserListPage extends WithLicenseSummary(
                 max-width: var(--pf-c-avatar--Width);
                 vertical-align: middle;
             }
+            .pf-c-card.tree .pf-c-card__body {
+                padding-left: 0;
+                padding-right: 0;
+            }
         `,
     ];
 
@@ -368,7 +372,7 @@ export class UserListPage extends WithLicenseSummary(
 
     protected renderSidebarBefore(): TemplateResult {
         return html`<aside aria-labelledby="sidebar-left-panel-header" class="pf-c-sidebar__panel">
-            <div class="pf-c-card">
+            <div class="pf-c-card tree">
                 <div
                     role="heading"
                     aria-level="2"
