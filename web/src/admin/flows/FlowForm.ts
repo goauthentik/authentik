@@ -14,14 +14,17 @@ import { DesignationToLabel, LayoutToLabel } from "#admin/flows/utils";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
+<<<<<<< HEAD
     AdminFileListUsageEnum,
+=======
+    AuthenticationEnum,
+>>>>>>> 1db6c3af8 (web: Fix Vendored Lex package. Add Unit Tests  (#22083))
     DeniedActionEnum,
     Flow,
     FlowDesignationEnum,
     FlowLayoutEnum,
     FlowsApi,
 } from "@goauthentik/api";
-import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
