@@ -130,7 +130,7 @@ export interface SCIMProvider {
      * @type {Date}
      * @memberof SCIMProvider
      */
-    readonly authOauthTokenCreated: Date | null;
+    readonly authOauthTokenLastUpdated: Date | null;
     /**
      *
      * @type {Date}
@@ -214,7 +214,7 @@ export function instanceOfSCIMProvider(value: object): value is SCIMProvider {
     if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
     if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
     if (!("url" in value) || value["url"] === undefined) return false;
-    if (!("authOauthTokenCreated" in value) || value["authOauthTokenCreated"] === undefined)
+    if (!("authOauthTokenLastUpdated" in value) || value["authOauthTokenLastUpdated"] === undefined)
         return false;
     if (!("authOauthTokenExpires" in value) || value["authOauthTokenExpires"] === undefined)
         return false;
@@ -254,10 +254,10 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
         authOauth: json["auth_oauth"] == null ? undefined : json["auth_oauth"],
         authOauthParams: json["auth_oauth_params"] == null ? undefined : json["auth_oauth_params"],
-        authOauthTokenCreated:
-            json["auth_oauth_token_created"] == null
+        authOauthTokenLastUpdated:
+            json["auth_oauth_token_last_updated"] == null
                 ? null
-                : new Date(json["auth_oauth_token_created"]),
+                : new Date(json["auth_oauth_token_last_updated"]),
         authOauthTokenExpires:
             json["auth_oauth_token_expires"] == null
                 ? null
@@ -297,7 +297,7 @@ export function SCIMProviderToJSONTyped(
         | "verbose_name"
         | "verbose_name_plural"
         | "meta_model_name"
-        | "auth_oauth_token_created"
+        | "auth_oauth_token_last_updated"
         | "auth_oauth_token_expires"
         | "auth_oauth_url_callback"
         | "auth_oauth_url_start"

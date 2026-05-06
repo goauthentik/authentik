@@ -13,6 +13,7 @@ import "#elements/buttons/ModalButton";
 import "#elements/sync/SyncStatusCard";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
+import "#elements/timestamp/ak-timestamp";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
@@ -20,7 +21,14 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { ModelEnum, ProvidersApi, SCIMProvider } from "@goauthentik/api";
+import renderDescriptionList from "#components/DescriptionList";
+
+import {
+    ModelEnum,
+    ProvidersApi,
+    SCIMAuthenticationModeEnum,
+    SCIMProvider,
+} from "@goauthentik/api";
 
 import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.md";
 
@@ -154,6 +162,42 @@ export class SCIMProviderViewPage extends AKElement {
         </main>`;
     }
 
+    renderSyncStatusExtra() {
+        if (
+            this.provider?.authMode !== SCIMAuthenticationModeEnum.OauthSilent &&
+            this.provider?.authMode !== SCIMAuthenticationModeEnum.OauthInteractive
+        )
+            return nothing;
+        return html`
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text"
+                        >${msg("OAuth Token last updated")}</span
+                    >
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-timestamp
+                            .timestamp=${this.provider.authOauthTokenLastUpdated}
+                        ></ak-timestamp>
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("OAuth Token expires")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-timestamp
+                            .timestamp=${this.provider.authOauthTokenExpires}
+                        ></ak-timestamp>
+                    </div>
+                </dd>
+            </div>
+        `;
+    }
+
     renderTabOverview(): SlottedTemplateResult {
         if (!this.provider) {
             return nothing;
@@ -168,91 +212,94 @@ export class SCIMProviderViewPage extends AKElement {
                 : nothing}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
-                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                 >
+                    <div class="pf-c-card__title">${msg("Info")}</div>
                     <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.name}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Assigned to application")}</span
+                        ${renderDescriptionList([
+                            [msg("Name"), this.provider.name],
+                            [
+                                msg("Assigned to application"),
+                                html`<ak-provider-related-application
+                                    mode="backchannel"
+                                    .provider=${this.provider}
+                                ></ak-provider-related-application>`,
+                            ],
+                            [
+                                msg("Dry-run"),
+                                html`<ak-status-label
+                                    ?good=${!this.provider.dryRun}
+                                    type="info"
+                                    good-label=${msg("No")}
+                                    bad-label=${msg("Yes")}
+                                ></ak-status-label>`,
+                            ],
+                            [msg("URL"), this.provider.url],
+                            [
+                                msg("Service Provider Config cache timeout"),
+                                this.provider.serviceProviderConfigCacheTimeout,
+                            ],
+                            [
+                                msg("Related actions"),
+                                html`<ak-forms-modal>
+                                    <span slot="submit">${msg("Save Changes")}</span>
+                                    <span slot="header">${msg("Update SCIM Provider")}</span>
+                                    <ak-provider-scim-form
+                                        slot="form"
+                                        .instancePk=${this.provider.pk}
                                     >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ak-provider-related-application
-                                            mode="backchannel"
-                                            .provider=${this.provider}
-                                        ></ak-provider-related-application>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Dry-run")}</span
+                                    </ak-provider-scim-form>
+                                    <button
+                                        slot="trigger"
+                                        class="pf-c-button pf-m-primary pf-m-block"
                                     >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ak-status-label
-                                            ?good=${!this.provider.dryRun}
-                                            type="info"
-                                            good-label=${msg("No")}
-                                            bad-label=${msg("Yes")}
-                                        ></ak-status-label>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("URL")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.url}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">
-                                        ${msg("Service Provider Config cache timeout")}
-                                    </span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.serviceProviderConfigCacheTimeout}
-                                    </div>
-                                </dd>
-                            </div>
-                        </dl>
-                    </div>
-                    <div class="pf-c-card__footer">
-                        <ak-forms-modal>
-                            <span slot="submit">${msg("Save Changes")}</span>
-                            <span slot="header">${msg("Update SCIM Provider")}</span>
-                            <ak-provider-scim-form slot="form" .instancePk=${this.provider.pk}>
-                            </ak-provider-scim-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
-                            </button>
-                        </ak-forms-modal>
+                                        ${msg("Edit")}
+                                    </button>
+                                </ak-forms-modal>`,
+                            ],
+                        ])}
                     </div>
                 </div>
-                <div
-                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
-                >
+                <div class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl">
+                    ${this.provider.authMode === SCIMAuthenticationModeEnum.OauthInteractive
+                        ? html`
+                              <div class="pf-c-card">
+                                  <div class="pf-c-card__body">
+                                      ${renderDescriptionList(
+                                          [
+                                              [
+                                                  msg("OAuth Status"),
+                                                  html`<ak-status-label
+                                                          ?good=${this.provider
+                                                              .authOauthTokenLastUpdated !== null}
+                                                          good-label=${msg("Authenticated")}
+                                                          bad-label=${msg("No token saved")}
+                                                      ></ak-status-label>
+                                                      <a
+                                                          class="pf-c-button pf-m-primary"
+                                                          href=${this.provider?.authOauthUrlStart ||
+                                                          ""}
+                                                          target="_blank"
+                                                          >${msg("(Re-)authenticate")}</a
+                                                      >`,
+                                              ],
+                                              [
+                                                  msg("OAuth Callback URL"),
+                                                  html`<input
+                                                      class="pf-c-form-control"
+                                                      readonly
+                                                      type="text"
+                                                      value="${this.provider.authOauthUrlCallback ||
+                                                      ""}"
+                                                  />`,
+                                              ],
+                                          ],
+                                          { horizontal: true },
+                                      )}
+                                  </div>
+                              </div>
+                          `
+                        : nothing}
                     <ak-sync-status-card
                         .fetch=${() => {
                             return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncStatusRetrieve(
@@ -261,7 +308,9 @@ export class SCIMProviderViewPage extends AKElement {
                                 },
                             );
                         }}
-                    ></ak-sync-status-card>
+                    >
+                        ${this.renderSyncStatusExtra()}
+                    </ak-sync-status-card>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                     <div class="pf-c-card">

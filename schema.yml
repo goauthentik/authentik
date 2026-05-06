@@ -55000,7 +55000,7 @@ components:
           type: object
           additionalProperties: {}
           description: Additional OAuth parameters, such as grant_type
-        auth_oauth_token_created:
+        auth_oauth_token_last_updated:
           type: string
           format: date-time
           nullable: true
@@ -55050,8 +55050,8 @@ components:
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - auth_oauth_token_created
       - auth_oauth_token_expires
+      - auth_oauth_token_last_updated
       - auth_oauth_url_callback
       - auth_oauth_url_start
       - component

@@ -18,9 +18,9 @@ class SCIMProviderSerializerMixin:
         ).first()
         return conn
 
-    def get_auth_oauth_token_created(self, instance: SCIMProvider) -> datetime | None:
+    def get_auth_oauth_token_last_updated(self, instance: SCIMProvider) -> datetime | None:
         conn = self._get_token(instance)
-        return conn.created if conn else None
+        return conn.last_updated if conn else None
 
     def get_auth_oauth_token_expires(self, instance: SCIMProvider) -> datetime | None:
         conn = self._get_token(instance)
