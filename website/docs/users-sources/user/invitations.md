@@ -18,7 +18,7 @@ You can also create a [policy](../../../customize/policies/) to see if the invit
 
 ## Use the invitation wizard
 
-The invitation wizard, available from the **Invitations** page in the Admin interface, walks you through creating an invitation and (optionally) the enrollment flow it binds to in a single guided process.
+The invitation wizard, available from the **Section it's under** > **Invitations** page in the Admin interface, walks you through creating an invitation and (optionally) the enrollment flow it binds to in a single guided process.
 
 ### Step 1. Open the wizard
 
