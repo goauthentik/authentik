@@ -55000,6 +55000,24 @@ components:
           type: object
           additionalProperties: {}
           description: Additional OAuth parameters, such as grant_type
+        auth_oauth_token_created:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        auth_oauth_token_expires:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        auth_oauth_url_callback:
+          type: string
+          nullable: true
+          readOnly: true
+        auth_oauth_url_start:
+          type: string
+          nullable: true
+          readOnly: true
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
@@ -55032,6 +55050,10 @@ components:
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
+      - auth_oauth_token_created
+      - auth_oauth_token_expires
+      - auth_oauth_url_callback
+      - auth_oauth_url_start
       - component
       - meta_model_name
       - name

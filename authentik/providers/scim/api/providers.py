@@ -1,5 +1,6 @@
 """SCIM Provider API Views"""
 
+from rest_framework.fields import DateTimeField, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
@@ -15,6 +16,11 @@ class SCIMProviderSerializer(
     ProviderSerializer,
 ):
     """SCIMProvider Serializer"""
+
+    auth_oauth_token_created = SerializerMethodField()
+    auth_oauth_token_expires = SerializerMethodField()
+    auth_oauth_url_callback = SerializerMethodField()
+    auth_oauth_url_start = SerializerMethodField()
 
     class Meta:
         model = SCIMProvider
@@ -35,6 +41,10 @@ class SCIMProviderSerializer(
             "auth_mode",
             "auth_oauth",
             "auth_oauth_params",
+            "auth_oauth_token_created",
+            "auth_oauth_token_expires",
+            "auth_oauth_url_callback",
+            "auth_oauth_url_start",
             "compatibility_mode",
             "service_provider_config_cache_timeout",
             "exclude_users_service_account",
