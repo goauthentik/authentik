@@ -6390,18 +6390,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
   <source>Authenticator Attachment</source>
   <target>Anexação do autenticador</target>
 </trans-unit>
-<trans-unit id="s502d2473587032e1">
-  <source>No preference is sent</source>
-  <target>Nenhuma preferência é enviada</target>
-</trans-unit>
-<trans-unit id="s60cc554fde2676cb">
-  <source>A non-removable authenticator, like TouchID or Windows Hello</source>
-  <target>Um autenticador não removível, como TouchID ou Windows Hello</target>
-</trans-unit>
-<trans-unit id="sdf1d8edef27236f0">
-  <source>A "roaming" authenticator, like a YubiKey</source>
-  <target>Um autenticador "itinerante", como um YubiKey</target>
-</trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
   <target>Máximo de tentativas de registro</target>
@@ -6736,10 +6724,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
 <trans-unit id="s59691290a232c687">
   <source>Selected policies are executed when the stage is submitted to validate the data.</source>
   <target>As políticas selecionadas são executadas quando o estágio é enviado para validar os dados.</target>
-</trans-unit>
-<trans-unit id="sc487e11d5987dbb4">
-  <source>Redirect the user to another flow, potentially with all gathered context</source>
-  <target>Redirecionar o usuário para outro fluxo, potencialmente com todo o contexto reunido</target>
 </trans-unit>
 <trans-unit id="sad9d5481474d4f5b">
   <source>Static</source>
@@ -11244,15 +11228,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="sdcd1a9744efdbd7e">
   <source>Choose Policy Type</source>
 </trans-unit>
-<trans-unit id="sf4eb7c0c8e92e6b2">
-  <source>Whether the launch URL will open in a new browser tab or window from the user's application library.</source>
-</trans-unit>
-<trans-unit id="s8ab0176c9cf77b1a">
-  <source>Hide from User Dashboard</source>
-</trans-unit>
-<trans-unit id="s0b5847edb7150911">
-  <source>Whether this application will be shown on the User Dashboard.</source>
-</trans-unit>
 <trans-unit id="saa5ed8446baaba70">
   <source>Negate Result</source>
 </trans-unit>
@@ -11265,11 +11240,140 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s41938ae69656ef53">
   <source>User Fields</source>
 </trans-unit>
-<trans-unit id="s977b2dff8b9def14">
-  <source>User Dashboard - Applications</source>
+<trans-unit id="s02b73793e5b4e1ba">
+  <source>This flag is deprecated.</source>
 </trans-unit>
-<trans-unit id="s190cbdd5b62e4746">
-  <source>User Dashboard</source>
+<trans-unit id="s8655c52824caac63">
+  <source>If checked, the launch URL will open in a new browser tab or window from the user's application library.</source>
+</trans-unit>
+<trans-unit id="s9eda7101f63a8652">
+  <source>Hide from My applications</source>
+</trans-unit>
+<trans-unit id="s30f30e9c42594a33">
+  <source>If checked, this application will not be shown on the user's My applications page.</source>
+</trans-unit>
+<trans-unit id="sc98037ccab57d329">
+  <source>No preference: the browser may offer any available authenticator</source>
+</trans-unit>
+<trans-unit id="s4611c85865abcba9">
+  <source>Platform: a non-removable authenticator built into the device, such as Touch ID, Face ID, or Windows Hello</source>
+</trans-unit>
+<trans-unit id="s0003d0e3fcdacabc">
+  <source>Cross-platform: a roaming authenticator, such as a YubiKey or Google Titan</source>
+</trans-unit>
+<trans-unit id="sc157c7dcb3d1b096">
+  <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as 'No preference', a value is inferred from the selected hints for backward compatibility with older browsers.</source>
+</trans-unit>
+<trans-unit id="s1baea1b8ac34d554">
+  <source>New Invitation</source>
+</trans-unit>
+<trans-unit id="s03eef6107e28d042">
+  <source>New Invitation options</source>
+</trans-unit>
+<trans-unit id="s0832ff81b9665e6f">
+  <source>Opens the new invitation wizard and binds the invitation to an existing enrollment flow.</source>
+</trans-unit>
+<trans-unit id="sc0819dc3d82d9320">
+  <source>with Existing Enrollment Flow...</source>
+</trans-unit>
+<trans-unit id="s79108cb25e7bf07b">
+  <source>Opens the new invitation wizard, which will create a new enrollment flow and invitation stage.</source>
+</trans-unit>
+<trans-unit id="sb7809157a3ccf613">
+  <source>with New Enrollment Flow and Invitation Stage...</source>
+</trans-unit>
+<trans-unit id="seb418067e7d6c6e2">
+  <source>Create a new invitation with an enrollment flow.</source>
+</trans-unit>
+<trans-unit id="sfd74a380e957d0d3">
+  <source>Enrollment Flow</source>
+</trans-unit>
+<trans-unit id="scc869d556216d748">
+  <source>Invitation Details</source>
+</trans-unit>
+<trans-unit id="se1fba44a9b284052">
+  <source>Invitation Link</source>
+</trans-unit>
+<trans-unit id="s967a2db7049dc90e">
+  <source><x id="0" equiv-text="${step}"/> failed</source>
+</trans-unit>
+<trans-unit id="s971d4cc0ecd106b7">
+  <source>Importing enrollment flow blueprint</source>
+</trans-unit>
+<trans-unit id="sf3b89a70e20af6c8">
+  <source>Blueprint validation failed</source>
+</trans-unit>
+<trans-unit id="sa04b7204708f4f74">
+  <source>Flow with slug "<x id="0" equiv-text="${slugToLookup}"/>" not found after import</source>
+</trans-unit>
+<trans-unit id="s3354be88ad29d171">
+  <source>Creating invitation</source>
+</trans-unit>
+<trans-unit id="s07f41353777196ea">
+  <source>The flow selected in the previous step. The invitation will be bound to this flow.</source>
+</trans-unit>
+<trans-unit id="s7209a11f97da9aff">
+  <source>No invitation available to send</source>
+</trans-unit>
+<trans-unit id="s2772d8285b905006">
+  <source>Failed to queue invitation emails</source>
+</trans-unit>
+<trans-unit id="s3b7910ab9c47a2e3">
+  <source>No enrollment flows with invitation stages found</source>
+</trans-unit>
+<trans-unit id="sa3ca03297e00591c">
+  <source>You can create a new enrollment flow and invitation stage right here, or cancel and bind an invitation stage to an existing flow manually.</source>
+</trans-unit>
+<trans-unit id="s06db43e56ca76be8">
+  <source>Create a new enrollment flow</source>
+</trans-unit>
+<trans-unit id="s8acc687c55e8ccbf">
+  <source>Only enrollment flows that have an invitation stage bound to them are listed here.</source>
+</trans-unit>
+<trans-unit id="s5b3bafd8ffe553ec">
+  <source>Flow name</source>
+</trans-unit>
+<trans-unit id="s699cd34b0dcb4c56">
+  <source>Name for the new enrollment flow.</source>
+</trans-unit>
+<trans-unit id="s8fb6d1bb698d32a0">
+  <source>Flow slug</source>
+</trans-unit>
+<trans-unit id="s0211c07612cf8c97">
+  <source>Invitation stage name</source>
+</trans-unit>
+<trans-unit id="s42b97ef63fb1a795">
+  <source>Name for the new invitation stage.</source>
+</trans-unit>
+<trans-unit id="saaa9fd0d3ebc35aa">
+  <source>Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.</source>
+</trans-unit>
+<trans-unit id="s726dff63487da085">
+  <source>Enrolled users are created as internal (e.g. employees). New users will be placed under users/internal.</source>
+</trans-unit>
+<trans-unit id="sc1358130ac327120">
+  <source>If enabled, the stage will jump to the next stage when no invitation is given. If disabled, the flow will be cancelled without a valid invitation.</source>
+</trans-unit>
+<trans-unit id="s09fdd952c6eaf7da">
+  <source>No invitation was created.</source>
+</trans-unit>
+<trans-unit id="s00febd85a4889bb1">
+  <source>Redirect the user to a static URL or another flow, optionally with all gathered context.</source>
+</trans-unit>
+<trans-unit id="sdbc1d47f0f0ed54d">
+  <source>The element could not be loaded. This may be due to a missing import or a version mismatch.</source>
+</trans-unit>
+<trans-unit id="scf8a3d48f9969535">
+  <source>An element could not be loaded. Please try refreshing the page or clearing your cache.</source>
+</trans-unit>
+<trans-unit id="se2f00b2619675217">
+  <source>Failed to load element</source>
+</trans-unit>
+<trans-unit id="s1cf2298d92c327a6">
+  <source>My Applications</source>
+</trans-unit>
+<trans-unit id="s2656433a3b1f7e86">
+  <source>My applications</source>
 </trans-unit>
 </body>
 </file>
