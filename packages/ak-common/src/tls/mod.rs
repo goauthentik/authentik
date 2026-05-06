@@ -7,6 +7,8 @@ use tracing::trace;
 
 use crate::config;
 
+pub mod self_signed;
+
 /// Dummy resolver for FIPS compliance check.
 #[derive(Debug)]
 struct EmptyCertResolver;

@@ -51,6 +51,10 @@ pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.29.0"
 pyo3-build-config = "= 0.29.0"
 rand = "= 0.10.1"
+rcgen = { version = "= 0.14.7", default-features = false, features = [
+  "aws_lc_rs",
+  "fips",
+] }
 regex = "= 1.12.4"
 reqwest = { version = "= 0.13.4", features = [
   "form",
@@ -276,6 +280,7 @@ ak-client = { workspace = true, optional = true }
 ak-common.workspace = true
 arc-swap.workspace = true
 argh.workspace = true
+axum-server.workspace = true
 axum.workspace = true
 color-eyre.workspace = true
 eyre.workspace = true
@@ -287,6 +292,7 @@ metrics.workspace = true
 nix.workspace = true
 pyo3 = { workspace = true, optional = true }
 rand.workspace = true
+rustls.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 serde_repr.workspace = true

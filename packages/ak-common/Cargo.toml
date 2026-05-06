@@ -27,6 +27,7 @@ ipnet.workspace = true
 json-subscriber.workspace = true
 notify.workspace = true
 pin-project-lite.workspace = true
+rcgen.workspace = true
 reqwest.workspace = true
 reqwest-middleware.workspace = true
 rustls.workspace = true

@@ -2,11 +2,17 @@ use std::{collections::HashMap, sync::Arc};
 
 use ak_axum::router::wrap_router;
 use ak_client::{apis::outposts_api::outposts_proxy_list, models::ProxyMode};
-use ak_common::{Tasks, api::fetch_all, config};
+use ak_common::{Tasks, api::fetch_all, config, tls};
 use arc_swap::ArcSwap;
 use argh::FromArgs;
 use axum::Router;
+use axum_server::tls_rustls::RustlsConfig;
 use eyre::Result;
+use rustls::{
+    ServerConfig,
+    server::{ClientHello, ResolvesServerCert},
+    sign::CertifiedKey,
+};
 use tracing::{debug, error, info, instrument, warn};
 
 use crate::outpost::{Outpost, OutpostController, proxy::application::Application};
@@ -23,9 +29,11 @@ mod handlers;
 )]
 pub(crate) struct Cli {}
 
+#[derive(Debug)]
 pub(crate) struct ProxyOutpost {
     controller: Arc<OutpostController>,
     apps: ArcSwap<HashMap<String, Arc<Application>>>,
+    default_cert: Arc<CertifiedKey>,
 }
 
 impl Outpost for ProxyOutpost {
@@ -38,14 +46,30 @@ impl Outpost for ProxyOutpost {
         Ok(Self {
             controller,
             apps: ArcSwap::from_pointee(HashMap::with_capacity(0)),
+            default_cert: Arc::new(tls::self_signed::generate_certifiedkey()?),
         })
     }
 
     fn start(self: Arc<Self>, tasks: &mut Tasks) -> Result<()> {
-        let router = build_router(self);
+        let router = build_router(Arc::clone(&self));
 
         for addr in config::get().listen.http.iter().copied() {
-            ak_axum::server::start_plain(tasks, "proxy-outpost", router.clone(), addr, false)?;
+            ak_axum::server::start_plain(tasks, "proxy-outpost", router.clone(), addr)?;
+        }
+
+        for addr in config::get().listen.https.iter().copied() {
+            let resolver = Arc::clone(&self);
+            let server_config = ServerConfig::builder()
+                .with_no_client_auth()
+                .with_cert_resolver(resolver);
+            let rustls_config = RustlsConfig::from_config(Arc::new(server_config));
+            ak_axum::server::start_tls(
+                tasks,
+                "proxy-outpost",
+                router.clone(),
+                addr,
+                rustls_config,
+            )?;
         }
 
         Ok(())
@@ -97,6 +121,7 @@ impl Outpost for ProxyOutpost {
         for provider in providers {
             let name = provider.name.clone();
             let Ok(application) = Application::new(self, provider)
+                .await
                 .inspect_err(|err| warn!(?err, "failed to setup application, skipping provider"))
             else {
                 continue;
@@ -115,6 +140,22 @@ impl Outpost for ProxyOutpost {
         // todo!()
         warn!(?_event, "removing session");
         Ok(())
+    }
+}
+
+impl ResolvesServerCert for ProxyOutpost {
+    fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
+        if let Some(server_name) = client_hello.server_name()
+            && let Some(app) = self.apps.load().get(server_name)
+            && let Some(cert) = &app.cert
+        {
+            return Some(Arc::clone(cert));
+        }
+        Some(Arc::clone(&self.default_cert))
+    }
+
+    fn only_raw_public_keys(&self) -> bool {
+        false
     }
 }
 

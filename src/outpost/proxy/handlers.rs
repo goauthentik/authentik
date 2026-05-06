@@ -1,5 +1,4 @@
 use std::sync::Arc;
-use tower::util::ServiceExt as _;
 
 use ak_axum::{error::Result, extract::host::Host};
 use axum::{
@@ -10,6 +9,7 @@ use axum::{
 use metrics::histogram;
 use serde_json::json;
 use tokio::time::Instant;
+use tower::util::ServiceExt as _;
 use tracing::{Instrument as _, field, info_span, instrument, trace, warn};
 
 use crate::outpost::proxy::ProxyOutpost;
