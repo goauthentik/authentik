@@ -433,7 +433,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
     protected renderIdentificationStage(challenge: IdentificationChallenge) {
         const { applicationPre, passwordlessUrl, showSourceLabels, sources = [] } = challenge;
 
-        return html`
+        return html` <div>
             ${light(
                 html`<form class="pf-c-form" @submit=${this.submitForm}>
                     ${applicationPre ? this.renderPrelude(applicationPre) : nothing} ${this.renderInput(challenge)}
@@ -441,7 +441,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                 </form>`
             )}
             ${sources.length ? this.renderLoginSources(sources, showSourceLabels) : nothing}
-        `;
+        </div>`;
     }
 
     protected renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
@@ -459,8 +459,10 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
             ${enrollUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
                       ${light(
-                          html`${msg("Need an account?")}
-                              <a href="${enrollUrl}" data-ouia-component-id="enroll">${msg("Sign up.")}</a>`
+                          html`<span
+                              >${msg("Need an account?")}
+                              <a href="${enrollUrl}" data-ouia-component-id="enroll">${msg("Sign up.")}</a></span
+                          >`
                       )};
                   </div>`
                 : nothing}
