@@ -70,7 +70,10 @@ const sortLoginSources = (a: LoginSource, b: LoginSource) =>
         .otherwise(() => 0);
 
 @customElement("ak-stage-identification")
-export class IdentificationStage extends BaseStage<IdentificationChallenge, IdentificationChallengeResponseRequest> {
+export class IdentificationStage extends BaseStage<
+    IdentificationChallenge,
+    IdentificationChallengeResponseRequest
+> {
     static styles = [
         PFAlert,
         PFInputGroup,
@@ -256,11 +259,13 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
             PasswordManagerPrefill.totp = el.value;
             // Because totp managers fill username, then password, then optionally,
             // we need to re-focus the uid_field here too
-            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uidField]").forEach((input) => {
-                // Because we assume only one input field exists that matches this
-                // call focus so the user can press enter
-                input.focus();
-            });
+            (this.shadowRoot || this)
+                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
+                .forEach((input) => {
+                    // Because we assume only one input field exists that matches this
+                    // call focus so the user can press enter
+                    input.focus();
+                });
         };
 
         this.#form.appendChild(totp);
@@ -282,7 +287,9 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
     };
 
     protected renderRecoveryMessage() {
-        return html` <p>${msg("Enter the email address or username associated with your account.")}</p> `;
+        return html`
+            <p>${msg("Enter the email address or username associated with your account.")}</p>
+        `;
     }
 
     protected renderUidField(
@@ -290,7 +297,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
         type: string,
         label: string,
         initialUserIdentification: string | null,
-        passwordFields?: boolean
+        passwordFields?: boolean,
     ) {
         // When webauthn is enabled, add "webauthn" to autocomplete to enable passkey autofill
         let autocomplete: AutoFill = type === "email" ? "email" : "username";
@@ -331,14 +338,19 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
     }
 
     protected renderInput(challenge: IdentificationChallenge) {
-        const { flowDesignation, passwordFields, passwordlessUrl, primaryAction, userFields } = challenge;
+        const { flowDesignation, passwordFields, passwordlessUrl, primaryAction, userFields } =
+            challenge;
 
         const fields = (userFields || []).sort();
         if (fields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
 
-        const { inputID, defaultUserIdentification: initialUserIdentification, rememberMeController } = this;
+        const {
+            inputID,
+            defaultUserIdentification: initialUserIdentification,
+            rememberMeController,
+        } = this;
 
         const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
@@ -372,7 +384,11 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
     }
 
     protected renderPasswordlessUrl(url: string) {
-        return html`<a href=${url} class="pf-c-button pf-m-secondary pf-m-block" data-ouia-component-id="passwordless">
+        return html`<a
+            href=${url}
+            class="pf-c-button pf-m-secondary pf-m-block"
+            data-ouia-component-id="passwordless"
+        >
             ${msg("Use a security key")}
         </a> `;
     }
@@ -411,7 +427,9 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
     }
 
     protected renderLoginSource(source: LoginSource, showLabels: boolean) {
-        return source.promoted ? this.renderPromotedSource(source) : this.renderDefaultSource(source, showLabels);
+        return source.promoted
+            ? this.renderPromotedSource(source)
+            : this.renderDefaultSource(source, showLabels);
     }
 
     protected renderLoginSources(sources: LoginSource[], showLabels: boolean) {
@@ -425,7 +443,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
             ${repeat(
                 [...sources].sort(sortLoginSources),
                 (source, idx) => source.name + idx,
-                (source) => this.renderLoginSource(source, showLabels)
+                (source) => this.renderLoginSource(source, showLabels),
             )}
         </fieldset> `;
     }
@@ -436,9 +454,10 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
         return html` <div>
             ${light(
                 html`<form class="pf-c-form" @submit=${this.submitForm}>
-                    ${applicationPre ? this.renderPrelude(applicationPre) : nothing} ${this.renderInput(challenge)}
+                    ${applicationPre ? this.renderPrelude(applicationPre) : nothing}
+                    ${this.renderInput(challenge)}
                     ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
-                </form>`
+                </form>`,
             )}
             ${sources.length ? this.renderLoginSources(sources, showSourceLabels) : nothing}
         </div>`;
@@ -461,8 +480,10 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                       ${light(
                           html`<span
                               >${msg("Need an account?")}
-                              <a href="${enrollUrl}" data-ouia-component-id="enroll">${msg("Sign up.")}</a></span
-                          >`
+                              <a href="${enrollUrl}" data-ouia-component-id="enroll"
+                                  >${msg("Sign up.")}</a
+                              ></span
+                          >`,
                       )};
                   </div>`
                 : nothing}
@@ -471,7 +492,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                       ${light(
                           html`<a href="${recoveryUrl}" data-ouia-component-id="recovery"
                               >${msg("Forgot username or password?")}</a
-                          >`
+                          >`,
                       )}
                   </div>`
                 : nothing}
