@@ -23,6 +23,7 @@ import { certificateProvider, certificateSelector } from "#admin/brands/Certific
 
 import {
     Application,
+    AuthenticationEnum,
     Brand,
     CoreApi,
     CoreApplicationsListRequest,
@@ -31,7 +32,6 @@ import {
     FlowsApi,
     UsageEnum,
 } from "@goauthentik/api";
-import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
 
 import YAML from "yaml";
 
