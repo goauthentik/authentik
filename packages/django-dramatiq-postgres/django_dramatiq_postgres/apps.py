@@ -42,7 +42,7 @@ class DjangoDramatiqPostgres(AppConfig):
             middleware: dramatiq.middleware.middleware.Middleware = middleware_class(
                 **middleware_kwargs,
             )
-            broker.add_middleware(middleware)  # type: ignore[no-untyped-call]
+            broker.add_middleware(middleware)
 
         dramatiq.set_broker(broker)
 
