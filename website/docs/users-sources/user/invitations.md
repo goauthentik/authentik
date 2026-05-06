@@ -28,7 +28,7 @@ The invitation wizard, available from the **Section it's under** > **Invitations
     - **with Existing Enrollment Flow...**: bind the new invitation to an enrollment flow you already have. Only enrollment flows that have an invitation stage bound to them are listed. This is also what the **New Invitation** button does by default.
     - **with New Enrollment Flow and Invitation Stage...**: create a new minimal enrollment flow, including an invitation stage, then bind the invitation to it. Use this option when you don't yet have an enrollment flow set up, or when you want a separate enrollment flow for an invitation.
 
-    :::info
+    :::info Automatic flow selection
     If you choose **with Existing Enrollment Flow...** and only one eligible flow exists, the wizard skips the flow selection step and takes you straight to the invitation details.
     :::
 
