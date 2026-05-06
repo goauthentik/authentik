@@ -8,6 +8,7 @@
 @import "@patternfly/patternfly/components/Spinner/spinner.css";
 @import "@patternfly/patternfly/components/InputGroup/input-group.css";
 @import "@patternfly/patternfly/components/FormControl/form-control.css";
+@import "@patternfly/patternfly/components/Form/form.css";   
 @import "@patternfly/patternfly/components/Button/button.css";
 @import "@patternfly/patternfly/components/Login/login.css";
 

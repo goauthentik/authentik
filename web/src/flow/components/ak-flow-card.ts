@@ -46,7 +46,7 @@ export class FlowCard extends AKElement {
                 <slot name="title"></slot>
             </h1>`;
         } else if (this.challenge?.flowInfo?.title) {
-            title = html`<h1 class="pf-c-title pf-m-3xl ak-m-clamped">${thi / us.challenge.flowInfo.title}</h1>`;
+            title = html`<h1 class="pf-c-title pf-m-3xl ak-m-clamped">${this.challenge.flowInfo.title}</h1>`;
         }
         const footer = this.findSlotted("footer") ? html`<slot name="footer"></slot>` : null;
         const footerBand = this.findSlotted("footer-band") ? html`<slot name="footer-band"></slot>` : null;
