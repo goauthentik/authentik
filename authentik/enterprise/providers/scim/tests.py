@@ -61,7 +61,7 @@ class SCIMOAuthTests(APITestCase):
             SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/group")
         )
 
-    def test_retrieve_token(self):
+    def test_retrieve_token_silent(self):
         """Test token retrieval"""
         with Mocker() as mocker:
             token = generate_id()
@@ -85,6 +85,44 @@ class SCIMOAuthTests(APITestCase):
             f"Basic {auth}",
         )
         self.assertEqual(mocker.request_history[0].body, "grant_type=password&foo=bar")
+
+    def test_retrieve_token_interactive(self):
+        """Test token retrieval"""
+        self.provider.auth_mode = SCIMAuthenticationMode.OAUTH_INTERACTIVE
+        self.provider.save()
+        refresh_token = generate_id()
+        access_token = generate_id()
+        UserOAuthSourceConnection.objects.create(
+            user=self.provider.auth_oauth_user,
+            source=self.source,
+            refresh_token=refresh_token,
+            access_token=access_token,
+        )
+        with Mocker() as mocker:
+            token = generate_id()
+            mocker.post("http://localhost/token", json={"access_token": token, "expires_in": 3600})
+            self.provider.scim_auth()
+        conn = UserOAuthSourceConnection.objects.filter(
+            source=self.source,
+            user=self.provider.auth_oauth_user,
+        ).first()
+        self.assertIsNotNone(conn)
+        self.assertTrue(conn.is_valid)
+        auth = (
+            b64encode(
+                b":".join((self.source.consumer_key.encode(), self.source.consumer_secret.encode()))
+            )
+            .strip()
+            .decode()
+        )
+        self.assertEqual(
+            mocker.request_history[0].headers["Authorization"],
+            f"Basic {auth}",
+        )
+        self.assertEqual(
+            mocker.request_history[0].body,
+            f"grant_type=refresh_token&refresh_token={refresh_token}&foo=bar",
+        )
 
     def test_existing_token(self):
         """Test existing token"""
