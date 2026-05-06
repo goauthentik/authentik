@@ -14,14 +14,6 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-def get_scim_provider(app_slug: str):
-    app = Application.objects.filter(slug=app_slug).first()
-    if not app:
-        return None
-    provider = SCIMProvider.objects.filter(backchannel_application=app)
-    return provider.first()
-
-
 class SCIMOAuthViewMixin:
     provider: SCIMProvider
 
@@ -32,8 +24,15 @@ class SCIMOAuthViewMixin:
             return super().get_client(source, **kwargs)
         return source_cls.client_class(source, self.request, **kwargs)
 
+    def _get_scim_provider(self, app_slug: str):
+        app = Application.objects.filter(slug=app_slug).first()
+        if not app:
+            return None
+        provider = SCIMProvider.objects.filter(backchannel_application=app)
+        return provider.first()
+
     def dispatch(self, request: HttpRequest, application_slug: str):
-        provider = get_scim_provider(application_slug)
+        provider = self._get_scim_provider(application_slug)
         if not provider or not provider.auth_oauth:
             return HttpResponseBadRequest()
         self.provider = provider
