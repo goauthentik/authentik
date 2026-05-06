@@ -14,7 +14,7 @@ For information about creating a stage, refer to our [documentation](../#create-
 
 By default, the email is sent to the currently pending user. To override this, you can set `email` in the plan's context to another email address, which will override the user's email address (the user won't be changed).
 
-For example, create this [expression policy](../../../../customize/policies/expression.mdx) and bind it to the email stage:
+For example, create this [expression policy](../../../../customize/policies/types/expression/index.mdx) and bind it to the email stage:
 
 ```python
 request.context["flow_plan"].context["email"] = "foo@bar.baz"

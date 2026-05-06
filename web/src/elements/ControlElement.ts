@@ -22,18 +22,9 @@ export abstract class AKControlElement<T = string | string[]>
     public abstract name: string | null;
 
     /**
-     * @deprecated Rename to `toJSON`
-     */
-    public json(): T {
-        throw new Error("Controllers using this protocol must override this method");
-    }
-
-    /**
      * Convert the value of the control to a JSON-serializable format.
      */
-    public toJSON(): T {
-        return this.json();
-    }
+    public abstract toJSON(): T;
 
     public get valid(): boolean {
         return true;

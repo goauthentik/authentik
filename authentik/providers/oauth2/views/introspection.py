@@ -11,7 +11,7 @@ from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenIntrospectionError
 from authentik.providers.oauth2.id_token import IDToken
-from authentik.providers.oauth2.models import AccessToken, ClientTypes, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, ClientType, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import TokenResponse, authenticate_provider
 
 LOGGER = get_logger()
@@ -45,7 +45,7 @@ class TokenIntrospectionParams:
         if not provider:
             LOGGER.info("Failed to authenticate introspection request")
             raise TokenIntrospectionError
-        if provider.client_type != ClientTypes.CONFIDENTIAL:
+        if provider.client_type != ClientType.CONFIDENTIAL:
             LOGGER.info("Introspection request from public provider, denying.")
             raise TokenIntrospectionError
 

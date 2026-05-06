@@ -350,7 +350,7 @@ export class SAMLProviderViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.issuer}
+                                        ${this.provider.issuerOverride}
                                     </div>
                                 </dd>
                             </div>
@@ -385,7 +385,7 @@ export class SAMLProviderViewPage extends AKElement {
                                               class="pf-c-form-control"
                                               readonly
                                               type="text"
-                                              value="${ifDefined(this.provider?.issuer)}"
+                                              value="${ifDefined(this.provider?.urlIssuer)}"
                                           />
                                       </div>
                                       <div class="pf-c-form__group">

@@ -14,7 +14,7 @@ from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
-    ClientTypes,
+    ClientType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -173,7 +173,7 @@ class TesOAuth2Introspection(OAuthTestCase):
 
     def test_introspect_provider_public(self):
         """Test introspect"""
-        self.provider.client_type = ClientTypes.PUBLIC
+        self.provider.client_type = ClientType.PUBLIC
         self.provider.save()
         token = AccessToken.objects.create(
             provider=self.provider,
@@ -208,7 +208,7 @@ class TesOAuth2Introspection(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
             signing_key=create_test_cert(),
-            client_type=ClientTypes.PUBLIC,
+            client_type=ClientType.PUBLIC,
         )
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=other_provider)
 

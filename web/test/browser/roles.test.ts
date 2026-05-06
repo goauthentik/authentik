@@ -106,5 +106,67 @@ test.describe("Roles", () => {
         });
     });
 
+    test("Edit role from view page", async ({ navigator, form, pointer, page }, testInfo) => {
+        const roleName = roleNames.get(testInfo.testId)!;
+
+        const { fill, search } = form;
+        const { click } = pointer;
+
+        const newRoleDialog = page.getByRole("dialog", { name: "New Role" });
+        const editRoleDialog = page.getByRole("dialog", { name: "Edit Role" });
+
+        await test.step("Create role", async () => {
+            await click("New Role", "button");
+
+            await expect(newRoleDialog, "Dialog opens").toBeVisible();
+
+            await fill(/^Role Name/, roleName, newRoleDialog);
+
+            await newRoleDialog.getByRole("button", { name: "Create Role" }).click();
+
+            await expect(newRoleDialog, "Dialog closes after creating role").toBeHidden();
+        });
+
+        await test.step("Navigate to role view page", async () => {
+            const $role = await search(roleName);
+
+            await expect($role, "Role is visible").toBeVisible();
+
+            const viewLink = $role.getByRole("link", { name: "view details" });
+            await expect(viewLink, "View details link is visible").toBeVisible();
+
+            const viewURL = await viewLink.evaluate((el: HTMLAnchorElement) => el.href);
+            await navigator.navigate(viewURL);
+        });
+
+        const updatedName = `${roleName} View Edited`;
+
+        await test.step("Edit role from view page", async () => {
+            await expect(editRoleDialog, "Edit dialog is initially closed").toBeHidden();
+
+            await click("Edit", "button");
+
+            await expect(editRoleDialog, "Edit dialog opens").toBeVisible();
+
+            const nameInput = editRoleDialog.getByRole("textbox", { name: /Role Name/ });
+
+            await expect(nameInput, "Name input is visible").toBeVisible();
+            await expect(nameInput, "Name is pre-filled").toHaveValue(roleName);
+
+            await nameInput.fill(updatedName);
+
+            await editRoleDialog.getByRole("button", { name: "Save Changes" }).click();
+
+            await expect(editRoleDialog, "Edit dialog closes after saving").toBeHidden();
+        });
+
+        await test.step("Verify role name updated on view page", async () => {
+            await expect(
+                page.getByText(updatedName),
+                "Updated role name is visible on view page",
+            ).toBeVisible();
+        });
+    });
+
     //#endregion
 });

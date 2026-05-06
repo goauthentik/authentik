@@ -23,7 +23,7 @@ export interface AuthenticatedSessionUserAgentDevice {
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentDevice
      */
-    brand: string;
+    brand: string | null;
     /**
      *
      * @type {string}
@@ -35,7 +35,7 @@ export interface AuthenticatedSessionUserAgentDevice {
      * @type {string}
      * @memberof AuthenticatedSessionUserAgentDevice
      */
-    model: string;
+    model: string | null;
 }
 
 /**

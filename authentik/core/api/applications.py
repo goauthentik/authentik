@@ -36,9 +36,13 @@ from authentik.rbac.filters import ObjectFilter
 LOGGER = get_logger()
 
 
-def user_app_cache_key(user_pk: str, page_number: int | None = None) -> str:
+def user_app_cache_key(
+    user_pk: str, page_number: int | None = None, only_with_launch_url: bool = False
+) -> str:
     """Cache key where application list for user is saved"""
     key = f"{CACHE_PREFIX}app_access/{user_pk}"
+    if only_with_launch_url:
+        key += "/launch"
     if page_number:
         key += f"/{page_number}"
     return key
@@ -116,6 +120,7 @@ class ApplicationSerializer(ModelSerializer):
             "meta_publisher",
             "policy_engine_mode",
             "group",
+            "meta_hide",
         ]
         extra_kwargs = {
             "backchannel_providers": {"required": False},
@@ -274,11 +279,17 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         if superuser_full_list and request.user.is_superuser:
             return super().list(request)
 
-        only_with_launch_url = str(
-            request.query_params.get("only_with_launch_url", "false")
-        ).lower()
+        only_with_launch_url = (
+            str(request.query_params.get("only_with_launch_url", "false")).lower()
+        ) == "true"
 
         queryset = self._filter_queryset_for_list(self.get_queryset())
+        queryset = queryset.exclude(meta_hide=True)
+        if only_with_launch_url:
+            # Pre-filter at DB level to skip expensive per-app policy evaluation
+            # for apps that can never appear in the launcher (no meta_launch_url
+            # and no provider, so no possible launch URL).
+            queryset = queryset.exclude(meta_launch_url="", provider__isnull=True)
         paginator: Pagination = self.paginator
         paginated_apps = paginator.paginate_queryset(queryset, request)
 
@@ -295,7 +306,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             except ValueError as exc:
                 raise ValidationError from exc
             allowed_applications = self._get_allowed_applications(paginated_apps, user=for_user)
-            allowed_applications = self._expand_applications(allowed_applications)
 
             serializer = self.get_serializer(allowed_applications, many=True)
             return self.get_paginated_response(serializer.data)
@@ -305,19 +315,26 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             allowed_applications = self._get_allowed_applications(paginated_apps)
         if should_cache:
             allowed_applications = cache.get(
-                user_app_cache_key(self.request.user.pk, paginator.page.number)
+                user_app_cache_key(
+                    self.request.user.pk, paginator.page.number, only_with_launch_url
+                )
             )
-            if not allowed_applications:
+            if allowed_applications:
+                # Re-fetch cached applications since pickled instances lose prefetched
+                # relationships, causing N+1 queries during serialization
+                allowed_applications = self._expand_applications(allowed_applications)
+            else:
                 LOGGER.debug("Caching allowed application list", page=paginator.page.number)
                 allowed_applications = self._get_allowed_applications(paginated_apps)
                 cache.set(
-                    user_app_cache_key(self.request.user.pk, paginator.page.number),
+                    user_app_cache_key(
+                        self.request.user.pk, paginator.page.number, only_with_launch_url
+                    ),
                     allowed_applications,
                     timeout=86400,
                 )
-        allowed_applications = self._expand_applications(allowed_applications)
 
-        if only_with_launch_url == "true":
+        if only_with_launch_url:
             allowed_applications = self._filter_applications_with_launch_url(allowed_applications)
 
         serializer = self.get_serializer(allowed_applications, many=True)

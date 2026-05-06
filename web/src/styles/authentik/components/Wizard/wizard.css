@@ -17,7 +17,7 @@
 }
 
 .pf-c-wizard__main-body {
-    --ak-fieldset--BorderColor: var(--pf-global--BackgroundColor--150);
+    --ak-c-fieldset--BorderColor: var(--pf-global--BackgroundColor--150);
 
     gap: var(--pf-global--spacer--lg);
 
@@ -44,6 +44,8 @@
 .pf-c-wizard__footer {
     justify-content: end;
     align-items: center;
+    /** Approximation of the height of navigation buttons to avoid excessive layout shifts when they are added or removed. */
+    min-height: calc(var(--pf-global--spacer--3xl) + (var(--pf-global--spacer--form-element) * 2));
 }
 
 .pf-c-wizard__nav-link {

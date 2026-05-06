@@ -26,7 +26,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `ldap.company` is the FQDN of the LDAP outpost.
 - `dc=company,dc=com` is the Base DN of the LDAP outpost.
-- `ldap_bind_user` is the username of the desired LDAP Bind User.
+- `ldap_service_account` is the username of the LDAP service account.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -36,13 +36,13 @@ This documentation lists only the settings that you need to change from their de
 
 ### authentik Configuration
 
-No additional authentik configuration is required. Follow the LDAP outpost instructions to create an LDAP outpost and configure access through it.
+Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create the LDAP application, provider, service account, and outpost. Complete the [service account creation](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#create-a-service-account) and [LDAP search permission](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#assign-the-ldap-search-permission-to-the-service-account) steps for the account Jellyfin uses to connect to LDAP.
+
+If access to the authentik LDAP application is restricted, allow the LDAP service account access via the application's [policy, group, or user bindings](/docs/add-secure-apps/applications/manage_apps/#use-bindings-to-control-access).
 
 ### Jellyfin configuration
 
-1. If you don't have one already, create an LDAP bind user before starting these steps.
-    - Ideally, this user doesn't have any permissions other than the ability to view other users. However, some functions do require an account with permissions.
-    - This user must be part of the group that is specified in the "Search group" in the LDAP outpost.
+1. Use the LDAP service account configured in authentik for Jellyfin's LDAP connection.
 2. Navigate to your Jellyfin installation and log in with the administrator account or currently configured local admin.
 3. Open the **Administrator dashboard** and go to the **Plugins** section.
 4. Click **Catalog** at the top of the page, and locate the "LDAP Authentication Plugin".
@@ -57,10 +57,10 @@ No additional authentik configuration is required. Follow the LDAP outpost instr
         - If using a certificate issued by a certificate authority, Jellyfin trusts, leave this unchecked.
         - If you're using a self-signed certificate, check this box.
     - `Allow password change`: Unchecked
-        - Since authentik already has a frontend for password resets, it's not necessary to include this in Jellyfin, especially since it requires bind users to have privileges.
+        - Since authentik already has a frontend for password resets, it's not necessary to include this in Jellyfin, especially since it requires the LDAP service account to have additional privileges.
     - `Password Reset URL`: Empty
-    - `LDAP Bind User`: Set this to a user you want to bind to in authentik. By default, the path will be `ou=users,dc=company,dc=com` so the LDAP Bind user will be `cn=ldap_bind_user,ou=users,dc=company,dc=com`.
-    - `LDAP Bind User Password`: The Password of the user. If using a Service account, this is the token.
+    - `LDAP Bind User`: Set this to the LDAP service account DN. By default, the path will be `ou=users,dc=company,dc=com` so the value will be `cn=ldap_service_account,ou=users,dc=company,dc=com`.
+    - `LDAP Bind User Password`: The password or token for the LDAP service account.
     - `LDAP Base DN for Searches`: the base DN for LDAP queries. To query all users, set this to `dc=company,dc=com`.
         - You can specify an OU if you divide your users up into different OUs and only want to query a specific OU.
 

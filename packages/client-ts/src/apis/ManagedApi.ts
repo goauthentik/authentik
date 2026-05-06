@@ -47,6 +47,7 @@ export interface ManagedBlueprintsDestroyRequest {
 export interface ManagedBlueprintsImportCreateRequest {
     file?: Blob;
     path?: string;
+    context?: string;
 }
 
 export interface ManagedBlueprintsListRequest {
@@ -367,6 +368,10 @@ export class ManagedApi extends runtime.BaseAPI {
 
         if (requestParameters["path"] != null) {
             formParams.append("path", requestParameters["path"] as any);
+        }
+
+        if (requestParameters["context"] != null) {
+            formParams.append("context", requestParameters["context"] as any);
         }
 
         let urlPath = `/managed/blueprints/import/`;

@@ -109,11 +109,11 @@ i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that requir
 aws-cfn:
 	cd lifecycle/aws && npm i && $(UV) run npm run aws-cfn
 
-run-server:  ## Run the main authentik server process
-	$(UV) run ak server
+run:  ## Run the main authentik server and worker processes
+	$(UV) run ak allinone
 
-run-worker:  ## Run the main authentik worker process
-	$(UV) run ak worker
+run-watch:  ## Run the authentik server and worker, with auto reloading
+	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs,go --no-meta --notify -- $(UV) run ak allinone
 
 core-i18n-extract:
 	$(UV) run ak makemessages \
@@ -205,10 +205,10 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	npx prettier --write diff.md
 
 gen-client-go:  ## Build and install the authentik API for Golang
-	make -C "${PWD}/packages/client-go" build
+	$(UV) run make -C "${PWD}/packages/client-go" build
 
 gen-client-rust:  ## Build and install the authentik API for Rust
-	make -C "${PWD}/packages/client-rust" build version=${NPM_VERSION}
+	$(UV) run make -C "${PWD}/packages/client-rust" build version=${NPM_VERSION}
 	make lint-fix-rust
 
 gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
