@@ -6,7 +6,7 @@ const drain = (lexer: Lexer): unknown[] => {
     const out: unknown[] = [];
     let token: unknown;
 
-    while (typeof (token = lexer.lex()) !== "undefined") {
+    while ((token = lexer.lex()) !== null) {
         out.push(token);
     }
     return out;
@@ -20,7 +20,7 @@ describe("Lexer", () => {
         });
 
         it("preserves multiline, ignoreCase, and unicode flags when re-compiling", () => {
-            const lexer = new Lexer(() => undefined);
+            const lexer = new Lexer(() => null);
             const seen: string[] = [];
 
             lexer.addRule(/^a/im, (m) => {
@@ -67,7 +67,7 @@ describe("Lexer", () => {
         it("tokenizes a simple expression", () => {
             const lexer = new Lexer();
             lexer
-                .addRule(/\s+/, () => undefined)
+                .addRule(/\s+/, () => null)
                 .addRule(/[a-zA-Z]+/, (m) => ({ type: "ident", value: m }))
                 .addRule(/\d+/, (m) => ({ type: "num", value: Number(m) }))
                 .addRule(/[+\-*/]/, (m) => ({ type: "op", value: m }));
@@ -82,22 +82,22 @@ describe("Lexer", () => {
             ]);
         });
 
-        it("skips matches whose action returns undefined", () => {
+        it("skips matches whose action returns null", () => {
             const lexer = new Lexer();
-            lexer.addRule(/\s+/, () => undefined).addRule(/\S+/, (m) => m);
+            lexer.addRule(/\s+/, () => null).addRule(/\S+/, (m) => m);
 
             lexer.setInput("   foo   bar   ");
             expect(drain(lexer)).toEqual(["foo", "bar"]);
         });
 
-        it("returns undefined once the input is exhausted", () => {
+        it("returns null once the input is exhausted", () => {
             const lexer = new Lexer();
             lexer.addRule(/./, (c) => c);
             lexer.setInput("a");
 
             expect(lexer.lex()).toBe("a");
-            expect(lexer.lex()).toBeUndefined();
-            expect(lexer.lex()).toBeUndefined();
+            expect(lexer.lex()).toBeNull();
+            expect(lexer.lex()).toBeNull();
         });
 
         it("passes capture groups to the action", () => {
@@ -157,7 +157,7 @@ describe("Lexer", () => {
             expect(lexer.lex()).toBe("A1");
             expect(lexer.lex()).toBe("A2");
             expect(lexer.lex()).toBe("A3");
-            expect(lexer.lex()).toBeUndefined();
+            expect(lexer.lex()).toBeNull();
         });
 
         it("drains the queue before scanning further input", () => {
@@ -225,13 +225,13 @@ describe("Lexer", () => {
             expect(defunct.mock.calls[0]?.[0]).toBe("@");
         });
 
-        it("ignores defunct return values that are undefined", () => {
-            const lexer = new Lexer((_chr) => undefined);
+        it("ignores defunct return values that are null", () => {
+            const lexer = new Lexer((_chr) => null);
             lexer.addRule(/a/, (m) => m);
 
             lexer.setInput("@@a");
             expect(lexer.lex()).toBe("a");
-            expect(lexer.lex()).toBeUndefined();
+            expect(lexer.lex()).toBeNull();
         });
 
         it("supports array returns from the defunct handler", () => {

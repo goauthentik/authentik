@@ -19,14 +19,14 @@
  * `index`, and `reject`.
  *
  * Return values:
- * - `undefined` — discard the match and continue scanning.
+ * - `null` (or `undefined` from an implicit return) — discard the match and continue scanning.
  * - a single token — yield it from {@link Lexer.lex}.
  * - an array of tokens — yield the first; queue the rest for subsequent calls.
  *
  * @callback LexerAction
  * @this {Lexer}
  * @param {...string} match
- * @returns {Token | Token[] | void}
+ * @returns {Token | Token[] | null | void}
  */
 
 /**
@@ -51,7 +51,7 @@
  * @callback DefunctHandler
  * @this {Lexer}
  * @param {string} chr The unexpected character.
- * @returns {Token | Token[] | void}
+ * @returns {Token | Token[] | null | void}
  */
 
 /**
@@ -152,12 +152,12 @@ export class Lexer {
     }
 
     /**
-     * Produce the next token from the input, or `undefined` once exhausted.
+     * Produce the next token from the input, or `null` once exhausted.
      *
-     * @returns {Token | undefined}
+     * @returns {Token | null}
      */
     lex() {
-        if (this.#tokens.length) return this.#tokens.shift();
+        if (this.#tokens.length) return /** @type {Token} */ (this.#tokens.shift());
 
         this.reject = true;
 
@@ -181,7 +181,7 @@ export class Lexer {
 
                 if (this.reject) {
                     this.index = result.index;
-                } else if (typeof token !== "undefined") {
+                } else if (token !== null && token !== undefined) {
                     if (Array.isArray(token)) {
                         this.#tokens = token.slice(1);
                         token = token[0];
@@ -197,7 +197,7 @@ export class Lexer {
                 if (this.reject) {
                     this.#remove = 0;
                     const token = this.#defunct.call(this, input.charAt(this.index++));
-                    if (typeof token !== "undefined") {
+                    if (token !== null && token !== undefined) {
                         if (Array.isArray(token)) {
                             this.#tokens = token.slice(1);
                             return token[0];
@@ -215,7 +215,7 @@ export class Lexer {
             }
         }
 
-        return undefined;
+        return null;
     }
 
     /**
