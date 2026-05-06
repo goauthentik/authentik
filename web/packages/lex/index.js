@@ -42,6 +42,7 @@
  * @property {RegExpExecArray} result
  * @property {LexerAction} action
  * @property {number} length
+ * @property {boolean} global Whether the producing rule was declared with the `g` flag.
  */
 
 /**
@@ -228,7 +229,6 @@ export class Lexer {
     #scan() {
         /** @type {LexerMatch[]} */
         const matches = [];
-        let index = 0;
 
         const state = this.state;
         const lastIndex = this.index;
@@ -248,17 +248,22 @@ export class Lexer {
                         result,
                         action: rule.action,
                         length: result[0].length,
+                        global: rule.global,
                     });
 
-                    if (rule.global) index = j;
-
-                    while (--j > index) {
+                    while (--j > 0) {
                         const k = j - 1;
+                        const cur = matches[j];
+                        const prev = matches[k];
 
-                        if (matches[j].length > matches[k].length) {
-                            const tmp = matches[j];
-                            matches[j] = matches[k];
-                            matches[k] = tmp;
+                        if (
+                            cur.length > prev.length ||
+                            (cur.length === prev.length && prev.global && !cur.global)
+                        ) {
+                            matches[j] = prev;
+                            matches[k] = cur;
+                        } else {
+                            break;
                         }
                     }
                 }

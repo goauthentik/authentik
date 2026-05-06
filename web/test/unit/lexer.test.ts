@@ -20,7 +20,7 @@ describe("Lexer", () => {
         });
 
         it("preserves multiline, ignoreCase, and unicode flags when re-compiling", () => {
-            const lexer = new Lexer();
+            const lexer = new Lexer(() => undefined);
             const seen: string[] = [];
 
             lexer.addRule(/^a/im, (m) => {
