@@ -5,6 +5,9 @@
 @import "@patternfly/patternfly/base/patternfly-pf-icons.css";
 
 @import "@patternfly/patternfly/components/Spinner/spinner.css";
+@import "@patternfly/patternfly/components/InputGroup/input-group.css";
+@import "@patternfly/patternfly/components/FormControl/form-control.css";
+@import "@patternfly/patternfly/components/Button/button.css";
 
 @import "#fonts/RedHat/faces.css";
 
@@ -24,6 +27,7 @@
 @import "#elements/locale/ak-locale-select.css";
 @import "#elements/locale/ak-locale-select.css";
 @import "#flow/FlowExecutor.css";
+@import "#flow/stages/identification/styles.css";
 
 /**
  * @file Static global styles for authentik.
