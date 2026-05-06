@@ -124,19 +124,22 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
                     order="order"
                     .columns=${COLUMNS}
                     .content=${[]}
-                ></ak-select-table>
-                <ak-empty-state icon="pf-icon-module"
-                    ><span>${msg("No bound policies.")}</span>
-                    <div slot="body">${msg("No policies are currently bound to this object.")}</div>
-                    <div slot="primary">
-                        <button
-                            @click=${() => this.onBindingEvent()}
-                            class="pf-c-button pf-m-primary"
-                        >
-                            ${msg("Bind policy/group/user")}
-                        </button>
-                    </div>
-                </ak-empty-state>
+                >
+                    <ak-empty-state slot="empty-table" icon="pf-icon-module"
+                        ><span>${msg("No bound policies.")}</span>
+                        <div slot="body">
+                            ${msg("No policies are currently bound to this object.")}
+                        </div>
+                        <div slot="primary">
+                            <button
+                                @click=${() => this.onBindingEvent()}
+                                class="pf-c-button pf-m-primary"
+                            >
+                                ${msg("Bind policy/group/user")}
+                            </button>
+                        </div>
+                    </ak-empty-state>
+                </ak-select-table>
             </div>`;
     }
 

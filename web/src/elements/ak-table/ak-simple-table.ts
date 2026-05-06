@@ -211,9 +211,11 @@ export class SimpleTable
         );
 
         return html`<tr role="presentation">
-            <td role="presentation" colspan=${columnCount}>
+            <td role="presentation" colspan=${columnCount + 1}>
                 <div class="pf-l-bullseye">
-                    <ak-empty-state><span>${message}</span></ak-empty-state>
+                    <slot name="empty-table">
+                        <ak-empty-state><span>${message}</span></ak-empty-state>
+                    </slot>
                 </div>
             </td>
         </tr>`;

@@ -996,7 +996,9 @@ export abstract class Table<T extends object, D = T>
      * A simple pagination display, shown at both the top and bottom of the page.
      */
     protected renderTablePagination(): SlottedTemplateResult {
-        if (!this.paginated) return nothing;
+        if (!this.paginated || !this.data || this.data?.pagination.totalPages < 2) {
+            return nothing;
+        }
 
         const handler = (page: number) => {
             this.page = page;

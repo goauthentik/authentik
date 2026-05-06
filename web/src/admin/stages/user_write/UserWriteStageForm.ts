@@ -19,10 +19,10 @@ import {
     CoreGroupsListRequest,
     Group,
     StagesApi,
+    UserCreationModeEnum,
     UserTypeEnum,
     UserWriteStage,
 } from "@goauthentik/api";
-import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum.js";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";

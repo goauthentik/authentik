@@ -36050,6 +36050,8 @@ components:
         path:
           type: string
           minLength: 1
+        context:
+          type: string
     Brand:
       type: object
       description: Brand Serializer
