@@ -28,14 +28,14 @@ class SCIMOAuthAuth:
 
     def retrieve_token(self, conn: UserOAuthSourceConnection | None) -> dict[str, Any]:
         source: OAuthSource = self.provider.auth_oauth
-        client: BaseOAuthClient = source.source_type.callback_view().get_client(source)
+        client: BaseOAuthClient = source.source_type.callback_view(request=None).get_client(source)
         access_token_url = source.source_type.access_token_url or ""
         if source.source_type.urls_customizable and source.access_token_url:
             access_token_url = source.access_token_url
         data = client.get_access_token_args(None, None)
-        if self.provider.auth_oauth == SCIMAuthenticationMode.OAUTH_SILENT:
+        if self.provider.auth_mode == SCIMAuthenticationMode.OAUTH_SILENT:
             data["grant_type"] = GRANT_TYPE_PASSWORD
-        elif self.provider.auth_oauth == SCIMAuthenticationMode.OAUTH_INTERACTIVE:
+        elif self.provider.auth_mode == SCIMAuthenticationMode.OAUTH_INTERACTIVE:
             data["grant_type"] = GRANT_TYPE_REFRESH_TOKEN
             if not conn:
                 raise SCIMOAuthException(None, "Could not refresh SCIM OAuth token")
