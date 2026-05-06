@@ -1,5 +1,7 @@
-from django.db.models import F
+from django.db.models import F, QuerySet
 from rest_framework.filters import OrderingFilter
+from rest_framework.request import Request
+from rest_framework.views import APIView
 
 
 class NullsAwareOrderingFilter(OrderingFilter):
@@ -10,10 +12,10 @@ class NullsAwareOrderingFilter(OrderingFilter):
     - descending → NULLs appear last   (nulls_last=True)
     """
 
-    def _nullable_field_names(self, queryset) -> set[str]:
+    def _nullable_field_names(self, queryset: QuerySet) -> set[str]:
         return {f.name for f in queryset.model._meta.get_fields() if hasattr(f, "null") and f.null}
 
-    def filter_queryset(self, request, queryset, view):
+    def filter_queryset(self, request: Request, queryset: QuerySet, view: APIView):
         queryset = super().filter_queryset(request, queryset, view)
         ordering = queryset.query.order_by
         if not ordering:
