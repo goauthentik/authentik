@@ -24,9 +24,9 @@ The invitation wizard, available from the **Invitations** page in the Admin inte
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Invitations**.
-3. Click the caret next to the **New Invitation** button to choose how the wizard should set up the enrollment flow:
+3. Click the caret (>) next to the **New Invitation** button and choose how the wizard should handle the invitation:
     - **with Existing Enrollment Flow...**: bind the new invitation to an enrollment flow you already have. Only enrollment flows that have an invitation stage bound to them are listed. This is also what the **New Invitation** button does by default.
-    - **with New Enrollment Flow and Invitation Stage...**: create a new minimal enrollment flow and invitation stage on the fly, then bind the invitation to them. Use this when you don't yet have an enrollment flow set up, or when you want a separate flow per invitation campaign.
+    - **with New Enrollment Flow and Invitation Stage...**: create a new minimal enrollment flow, including an invitation stage, then bind the invitation to it. Use this option when you don't yet have an enrollment flow set up, or when you want a separate enrollment flow for an invitation.
 
     :::info
     If you choose **with Existing Enrollment Flow...** and only one eligible flow exists, the wizard skips the flow selection step and takes you straight to the invitation details.
@@ -36,10 +36,10 @@ The invitation wizard, available from the **Invitations** page in the Admin inte
 
 - If you picked an existing flow, select it from the **Enrollment flow** drop-down and click **Next**.
 - If you are creating a new flow, fill in:
-    - **Flow name**: display name of the new enrollment flow. The slug is derived from this automatically and can be edited.
-    - **Flow slug**: URL slug for the flow.
+    - **Flow name**: display name of the new enrollment flow.
+    - **Flow slug**: the slug for the flow which is included in the URL.
     - **Invitation stage name**: name of the invitation stage that will be bound to the new flow.
-    - **User type**: choose **External** (e.g. customers, guests; users created under `users/external`) or **Internal** (e.g. employees; users created under `users/internal`).
+    - **User type**: the user type for users enrolled via this flow.
     - **Continue flow without invitation**: when enabled, the flow proceeds to the next stage even when no invitation token is supplied. When disabled, the flow is cancelled if a valid invitation is not provided.
 
 ### Step 3. Configure the invitation details
