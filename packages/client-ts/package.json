@@ -8,7 +8,8 @@
         "url": "https://github.com/goauthentik/authentik.git"
     },
     "scripts": {
-        "build": "tsc && tsc -p tsconfig.esm.json",
+        "clean": "tsc -b --clean tsconfig.json tsconfig.esm.json",
+        "build": "npm run clean && tsc -b tsconfig.json tsconfig.esm.json",
         "prepare": "npm run build"
     },
     "main": "./dist/index.js",
