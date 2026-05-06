@@ -196,7 +196,7 @@ export class Lexer {
             if (index < input.length) {
                 if (this.reject) {
                     this.#remove = 0;
-                    const token = this.#defunct.call(this, input.charAt(this.index++));
+                    const token = this.#defunct(input.charAt(this.index++));
                     if (token !== null && token !== undefined) {
                         if (Array.isArray(token)) {
                             this.#tokens = token.slice(1);
@@ -237,36 +237,35 @@ export class Lexer {
         for (const rule of this.#rules) {
             const start = rule.start;
             const states = start.length;
+            const eligible =
+                !states || start.indexOf(state) >= 0 || (state % 2 && states === 1 && !start[0]);
 
-            if (!states || start.indexOf(state) >= 0 || (state % 2 && states === 1 && !start[0])) {
-                const pattern = rule.pattern;
-                pattern.lastIndex = lastIndex;
-                const result = pattern.exec(input);
+            if (!eligible) continue;
 
-                if (result && result.index === lastIndex) {
-                    let j = matches.push({
-                        result,
-                        action: rule.action,
-                        length: result[0].length,
-                        global: rule.global,
-                    });
+            const pattern = rule.pattern;
+            pattern.lastIndex = lastIndex;
+            const result = pattern.exec(input);
 
-                    while (--j > 0) {
-                        const k = j - 1;
-                        const cur = matches[j];
-                        const prev = matches[k];
+            if (!result || result.index !== lastIndex) continue;
 
-                        if (
-                            cur.length > prev.length ||
-                            (cur.length === prev.length && prev.global && !cur.global)
-                        ) {
-                            matches[j] = prev;
-                            matches[k] = cur;
-                        } else {
-                            break;
-                        }
-                    }
-                }
+            let j = matches.push({
+                result,
+                action: rule.action,
+                length: result[0].length,
+                global: rule.global,
+            });
+
+            while (--j > 0) {
+                const k = j - 1;
+                const cur = matches[j];
+                const prev = matches[k];
+                const longer = cur.length > prev.length;
+                const tieFavorsCur = cur.length === prev.length && prev.global && !cur.global;
+
+                if (!longer && !tieFavorsCur) break;
+
+                matches[j] = prev;
+                matches[k] = cur;
             }
         }
 
