@@ -92,7 +92,7 @@ export class UserListPage extends WithLicenseSummary(
     public pageIcon = "pf-icon pf-icon-user";
 
     @property({ type: String })
-    public order = "last_login";
+    public order = "-last_login";
 
     @property({ type: String })
     public activePath: string;
