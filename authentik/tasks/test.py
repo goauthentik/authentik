@@ -78,17 +78,18 @@ def use_test_broker():
         actor.broker = broker
         actor.broker.declare_actor(actor)
 
-    for middleware_class, middleware_kwargs in Conf().middlewares:
-        middleware: Middleware = import_string(middleware_class)(
+    for middleware_class_path, middleware_kwargs in Conf().middlewares:
+        middleware_class = import_string(middleware_class_path)
+        if issubclass(middleware_class, Results):
+            middleware_kwargs["backend"] = import_string(Conf().result_backend)(
+                *Conf().result_backend_args,
+                **Conf().result_backend_kwargs,
+            )
+        middleware: Middleware = middleware_class(
             **middleware_kwargs,
         )
         if isinstance(middleware, Retries):
             middleware.max_retries = 0
-        if isinstance(middleware, Results):
-            middleware.backend = import_string(Conf().result_backend)(
-                *Conf().result_backend_args,
-                **Conf().result_backend_kwargs,
-            )
         broker.add_middleware(middleware)
 
     broker.start()
