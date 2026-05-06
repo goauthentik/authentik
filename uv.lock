@@ -1143,7 +1143,7 @@ requires-dist = [
     { name = "django", specifier = ">=4.2,<6.0" },
     { name = "django-pglock", specifier = ">=1.7,<2" },
     { name = "django-pgtrigger", specifier = ">=4,<5" },
-    { name = "dramatiq", specifier = ">=2.1.0,<2.2" },
+    { name = "dramatiq", specifier = ">=2,<3" },
     { name = "structlog", specifier = ">=25,<26" },
     { name = "tenacity", specifier = ">=9,<10" },
 ]
