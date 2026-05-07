@@ -88,7 +88,7 @@ See the [overview](../../property-mappings/index.md) for information on how prop
 
 SAML source property mappings customize the user and group properties created from a SAML assertion. authentik parses the assertion's `AttributeStatement` into the `properties` dictionary before custom mappings run, using each SAML attribute's `Name` as the dictionary key. Custom mappings can then translate those SAML attribute names to authentik user fields such as `username`, `email`, `name`, and `attributes`.
 
-Property mappings do not change the internal SAML source connection identifier, which is based on the assertion's NameID. To persist mapped user fields, ensure the source flow that runs for the user includes a [User Write stage](../../../../add-secure-apps/flows-stages/stages/user_write.md) before the user login stage. For existing users, this is the source's authentication flow; for new users, this is the source's enrollment flow.
+Property mappings do not change the internal SAML source connection identifier, which is based on the assertion's NameID. To persist mapped user fields, ensure the source flow that runs for the user includes a [User Write stage](../../../../add-secure-apps/flows-stages/stages/user_write/index.md) before the user login stage. For existing users, this is the source's authentication flow; for new users, this is the source's enrollment flow.
 
 ### Expression data
 
