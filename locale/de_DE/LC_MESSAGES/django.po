@@ -68,7 +68,7 @@ msgstr "Dateiname zu lang (max. {MAX_FILE_NAME_LENGTH} Zeichen)"
 #: authentik/admin/files/validation.py
 #, python-brace-format
 msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
-msgstr "Dateipfad zu lang (max. {MAX_FILE_NAME_LENGTH} Zeichen)"
+msgstr "Dateipfad zu lang (max. {MAX_PATH_COMPONENT_LENGTH} Zeichen)"
 
 #: authentik/admin/models.py
 msgid "Version history"

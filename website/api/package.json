@@ -48,9 +48,9 @@
         "typescript": "^6.0.2"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "1.7.11",
-        "@rspack/binding-linux-arm64-gnu": "1.7.11",
-        "@rspack/binding-linux-x64-gnu": "1.7.11",
+        "@rspack/binding-darwin-arm64": "2.0.0",
+        "@rspack/binding-linux-arm64-gnu": "2.0.0",
+        "@rspack/binding-linux-x64-gnu": "2.0.0",
         "@swc/core-darwin-arm64": "1.15.33",
         "@swc/core-linux-arm64-gnu": "1.15.33",
         "@swc/core-linux-x64-gnu": "1.15.33",
