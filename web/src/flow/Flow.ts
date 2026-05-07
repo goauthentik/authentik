@@ -42,24 +42,35 @@ const isContextualFlowInfo = (v: unknown): v is ContextualFlowInfo =>
     typeof v === "object" && v !== null;
 
 /**
- * An executor for authentik flows.
+ * The application shell for authentik flows and the Flow Executor.
  *
- * @attr {string} slug - The slug of the flow to execute.
- * @prop {ChallengeTypes | null} challenge - The current challenge to render.
+ * Provides the decorations and features that go around the executor: background, layout, locale
+ * selector, flow inspector button, headers, footers, and the iframe if provided.
+ *
+ * @attr {string} slug - The slug of the flow to execute. Prop-drilled to the executor.
+ * @attr {FlowLayoutEnum} data-layout - Page layout variant. Defaults to `globalAK().flow.layout` or
+ *     just `stacked`
+ *
+ * @slot footer - The page-level footer content.  Currently filled by `ak-brand-links`.
  *
  * @part main - The main container for the flow content.
+ * @part flow-executor - Wrapper around ak-flow-executor
  * @part content - The container for the stage content.
  * @part content-iframe - The iframe element when using a frame background layout.
  * @part footer - The footer container.
  * @part locale-select - The locale select component.
  * @part branding - The branding element, used for the background image in some layouts.
  * @part loading-overlay - The loading overlay element.
- * @part challenge-additional-actions - Container in stages which have additional actions.
- * @part challenge-footer-band - Container for the stage footer, used for additional actions in some stages.
  * @part locale-select-label - The label of the locale select component.
  * @part locale-select-select - The select element of the locale select component.
+ *
+ * NOTE: This is the application shell, the top-level component. From here, we invoke the
+ * flow-executor in-line in the template rendered, but use the `light()` directive to inject it into
+ * the Flow element's lightDOM, and a slot is emplaced where the flow-executor's part of the
+ * template would go. This enables password managers to traverse down into the flow and its stages
+ * without having to cross or know about shadowDOM boundaries.
+ *
  */
-
 @customElement("ak-flow")
 export class Flow extends WithBrandConfig(Interface) {
     //#region Static
@@ -264,7 +275,9 @@ export class Flow extends WithBrandConfig(Interface) {
                 <div class="pf-c-login__main-header pf-c-brand" part="branding">
                     ${this.renderHeader()}
                 </div>
-                ${loading ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing}
+                ${loading
+                    ? html`<ak-loading-overlay part="loading-overlay"></ak-loading-overlay>`
+                    : nothing}
                 <div part="flow-executor">
                     ${light(html`<ak-flow-executor slug=${this.slug}></ak-flow-executor>`)}
                 </div>
