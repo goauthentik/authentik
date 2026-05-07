@@ -1,8 +1,4 @@
-import "#elements/LoadingOverlay";
-import "#elements/locale/ak-locale-select";
-import "#flow/components/ak-brand-footer";
-import "#flow/components/ak-flow-card";
-import "#flow/inspector/FlowInspectorButton";
+import "#flow/stages/FlowErrorStage";
 import "#flow/tabs/broadcast";
 
 import { FlowIframeMessageController } from "./controllers/FlowIframeMessageController";
@@ -79,7 +75,6 @@ type ChallengeProps = LitPropertyRecord<BaseStage<NonNullable<ChallengeTypes>, o
  * @part footer - The footer container.
  * @part locale-select - The locale select component.
  * @part branding - The branding element, used for the background image in some layouts.
- * @part loading-overlay - The loading overlay element.
  * @part challenge-additional-actions - Container in stages which have additional actions.
  * @part challenge-footer-band - Container for the stage footer, used for additional actions in some stages.
  * @part locale-select-label - The label of the locale select component.

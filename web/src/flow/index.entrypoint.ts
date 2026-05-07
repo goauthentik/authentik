@@ -1,7 +1,7 @@
 import "#elements/messages/MessageContainer";
 import "#elements/ak-drawer/ak-drawer";
 import "#flow/Flow";
-import "#flow/FlowExecutor";
+import "#flow/components/ak-brand-links";
 // Statically import some stages to speed up load speed
 import "#flow/stages/access_denied/AccessDeniedStage";
 // Import webauthn-related stages to prevent issues on safari
