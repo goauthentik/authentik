@@ -2,7 +2,7 @@
 
 from base64 import b64encode
 from datetime import timedelta
-from unittest.mock import MagicMock, PropertyMock, patch
+from urllib.parse import parse_qs, urlencode, urlparse
 
 from django.urls import reverse
 from django.utils.timezone import now
@@ -11,17 +11,14 @@ from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
-from authentik.core.tests.utils import create_test_admin_user
-from authentik.enterprise.license import LicenseKey
-from authentik.enterprise.models import License
-from authentik.enterprise.tests.test_license import expiry_valid
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMAuthenticationMode, SCIMMapping, SCIMProvider
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.tenants.models import Tenant
+from tests.live import create_test_admin_user
 
 
-class SCIMOAuthTests(APITestCase):
+class TestSCIMOAuthToken(APITestCase):
     """SCIM User tests"""
 
     @apply_blueprint("system/providers-scim.yaml")
@@ -60,6 +57,7 @@ class SCIMOAuthTests(APITestCase):
         self.provider.property_mappings_group.add(
             SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/group")
         )
+        self.admin = create_test_admin_user()
 
     def test_retrieve_token_silent(self):
         """Test token retrieval"""
@@ -136,96 +134,54 @@ class SCIMOAuthTests(APITestCase):
             self.provider.scim_auth()
             self.assertEqual(len(mocker.request_history), 0)
 
-    @Mocker()
-    def test_user_create(self, mock: Mocker):
-        """Test user creation"""
-        scim_id = generate_id()
-        token = generate_id()
-        mock.post("http://localhost/token", json={"access_token": token, "expires_in": 3600})
-        mock.get(
-            "https://localhost/ServiceProviderConfig",
-            json={},
-        )
-        mock.post(
-            "https://localhost/Users",
-            json={
-                "id": scim_id,
-            },
-        )
-        uid = generate_id()
-        user = User.objects.create(
-            username=uid,
-            name=f"{uid} {uid}",
-            email=f"{uid}@goauthentik.io",
-        )
-        self.assertEqual(mock.call_count, 3)
-        self.assertEqual(mock.request_history[1].method, "GET")
-        self.assertEqual(mock.request_history[2].method, "POST")
-        self.assertJSONEqual(
-            mock.request_history[2].body,
-            {
-                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
-                "active": True,
-                "emails": [
-                    {
-                        "primary": True,
-                        "type": "other",
-                        "value": f"{uid}@goauthentik.io",
-                    }
-                ],
-                "externalId": user.uid,
-                "name": {
-                    "familyName": uid,
-                    "formatted": f"{uid} {uid}",
-                    "givenName": uid,
+    def test_interactive_start(self):
+        self.client.force_login(self.admin)
+        res = self.client.get(
+            reverse(
+                "authentik_enterprise_providers_scim:start",
+                kwargs={
+                    "application_slug": self.app.slug,
                 },
-                "displayName": f"{uid} {uid}",
-                "userName": uid,
-            },
-        )
-
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
             )
-        ),
-    )
-    def test_api_create(self):
-        License.objects.create(key=generate_id())
-        self.client.force_login(create_test_admin_user())
-        res = self.client.post(
-            reverse("authentik_api:scimprovider-list"),
-            {
-                "name": generate_id(),
-                "url": "http://localhost",
-                "auth_mode": "oauth_silent",
-                "auth_oauth": str(self.source.pk),
-            },
         )
-        self.assertEqual(res.status_code, 201)
+        self.assertEqual(res.status_code, 302)
+        query = parse_qs(urlparse(res.url).query)
+        self.assertEqual(query["client_id"], [self.source.consumer_key])
+        self.assertEqual(
+            query["redirect_uri"],
+            [f"http://testserver/application/scim/{self.app.slug}/oauth2/callback/"],
+        )
+        self.assertEqual(query["response_type"], ["code"])
 
-    @patch(
-        "authentik.enterprise.models.LicenseUsageStatus.is_valid",
-        PropertyMock(return_value=False),
-    )
-    def test_api_create_no_license(self):
-        self.client.force_login(create_test_admin_user())
-        res = self.client.post(
-            reverse("authentik_api:scimprovider-list"),
-            {
-                "name": generate_id(),
-                "url": "http://localhost",
-                "auth_mode": "oauth_silent",
-                "auth_oauth": str(self.source.pk),
-            },
+    def test_interactive_callback(self):
+        self.client.force_login(self.admin)
+        res = self.client.get(
+            reverse(
+                "authentik_enterprise_providers_scim:start",
+                kwargs={
+                    "application_slug": self.app.slug,
+                },
+            )
         )
-        self.assertEqual(res.status_code, 400)
-        self.assertJSONEqual(
-            res.content, {"auth_mode": ["Enterprise is required to use the OAuth mode."]}
-        )
+        self.assertEqual(res.status_code, 302)
+        query = parse_qs(urlparse(res.url).query)
+
+        with Mocker() as mock:
+            token = generate_id()
+            mock.post("http://localhost/token", json={"access_token": token, "expires_in": 3600})
+
+            res = self.client.get(
+                reverse(
+                    "authentik_enterprise_providers_scim:callback",
+                    kwargs={
+                        "application_slug": self.app.slug,
+                    },
+                )
+                + "?"
+                + urlencode({"state": query["state"][0], "code": generate_id()})
+            )
+            self.assertEqual(res.status_code, 302)
+
+        conn = UserOAuthSourceConnection.objects.filter(source=self.source).first()
+        self.assertIsNotNone(conn)
+        self.assertTrue(conn.is_valid)

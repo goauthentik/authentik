@@ -1,6 +1,7 @@
 from datetime import timedelta
 
-from django.http import HttpRequest, HttpResponseBadRequest
+from django.core.exceptions import PermissionDenied
+from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.timezone import now
@@ -15,6 +16,7 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
 class SCIMOAuthViewMixin:
+
     provider: SCIMProvider
 
     def get_client(self, source: OAuthSource, **kwargs) -> BaseOAuthClient:
@@ -32,9 +34,16 @@ class SCIMOAuthViewMixin:
         return provider.first()
 
     def dispatch(self, request: HttpRequest, application_slug: str):
+        if not request.user.is_authenticated:
+            raise PermissionDenied()
         provider = self._get_scim_provider(application_slug)
         if not provider or not provider.auth_oauth:
-            return HttpResponseBadRequest()
+            raise PermissionDenied()
+        if not request.user.has_perm(
+            "authentik_providers_scim.change_scimprovider",
+            provider,
+        ):
+            raise PermissionDenied()
         self.provider = provider
         return super().dispatch(request, source_slug=provider.auth_oauth.slug)
 
