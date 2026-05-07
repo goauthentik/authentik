@@ -43,7 +43,7 @@ import { spread } from "@open-wc/lit-helpers";
 import { observed } from "@patternfly/pfe-core/decorators/observed.js";
 import { match } from "ts-pattern";
 
-import { html } from "lit";
+import { html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -236,13 +236,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             });
     };
 
-    public override connectedCallback() {
-        super.connectedCallback();
-        this.refresh().then(() => {
-            window.dispatchEvent(new AKFlowAdvanceEvent());
-        });
-    }
-
     //#region Render Challenge
 
     protected async renderChallengeSpecialCases(challenge: ChallengeTypes) {
@@ -320,6 +313,13 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     }
 
     //#endregion
+
+    public override firstUpdated(changed: PropertyValues<this>) {
+        super.firstUpdated(changed);
+        this.refresh().then(() => {
+            window.dispatchEvent(new AKFlowAdvanceEvent());
+        });
+    }
 }
 
 declare global {

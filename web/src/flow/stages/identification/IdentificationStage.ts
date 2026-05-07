@@ -96,8 +96,6 @@ export class IdentificationStage extends BaseStage<
 
     protected passwordFieldRef = createRef<HTMLInputElement>();
 
-    #form?: HTMLFormElement;
-
     public defaultUserIdentification: string | null = null;
 
     protected rememberMeController: RememberMeController | null = null;
@@ -179,10 +177,6 @@ export class IdentificationStage extends BaseStage<
     }
 
     //#endregion
-
-    protected override onSubmitSuccess(): void {
-        this.#form?.remove();
-    }
 
     protected override onSubmitFailure(): void {
         this.#captcha.onFailure();
@@ -391,7 +385,7 @@ export class IdentificationStage extends BaseStage<
                                   >${msg("Sign up.")}</a
                               ></span
                           >`,
-                      )};
+                      )}
                   </div>`
                 : nothing}
             ${recoveryUrl
