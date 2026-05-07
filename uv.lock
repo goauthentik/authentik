@@ -1143,7 +1143,7 @@ requires-dist = [
     { name = "django", specifier = ">=4.2,<6.0" },
     { name = "django-pglock", specifier = ">=1.7,<2" },
     { name = "django-pgtrigger", specifier = ">=4,<5" },
-    { name = "dramatiq", specifier = ">=1.17,<1.18" },
+    { name = "dramatiq", specifier = ">=2,<3" },
     { name = "structlog", specifier = ">=25,<26" },
     { name = "tenacity", specifier = ">=9,<10" },
 ]
@@ -1381,14 +1381,11 @@ wheels = [
 
 [[package]]
 name = "dramatiq"
-version = "1.17.1"
+version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "prometheus-client" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c6/7a/6792ddc64a77d22bfd97261b751a7a76cf2f9d62edc59aafb679ac48b77d/dramatiq-1.17.1.tar.gz", hash = "sha256:2675d2f57e0d82db3a7d2a60f1f9c536365349db78c7f8d80a63e4c54697647a", size = 99071, upload-time = "2024-10-26T05:09:28.283Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/22/69/02b54e3fc4fe75721b322bc578054b4f03cec258ba614fa98a1a5bbe1efe/dramatiq-2.1.0.tar.gz", hash = "sha256:cf81550729de6cf64234b05bd63970645654aaf38967faa7a2b6e401384bb090", size = 105444, upload-time = "2026-03-03T11:22:10.067Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ee/36/925c7afd5db4f1a3f00676b9c3c58f31ff7ae29a347282d86c8d429280a5/dramatiq-1.17.1-py3-none-any.whl", hash = "sha256:951cdc334478dff8e5150bb02a6f7a947d215ee24b5aedaf738eff20e17913df", size = 120382, upload-time = "2024-10-26T05:09:26.436Z" },
+    { url = "https://files.pythonhosted.org/packages/c2/91/422960c8c415fd31ca1519d71d6f7e4bcabb2cdcc5872f784467e9fe7237/dramatiq-2.1.0-py3-none-any.whl", hash = "sha256:3ef940c2815722d3679aed79ef96c805f02fd33d4361529b2de30f01511ca44d", size = 125543, upload-time = "2026-03-03T11:22:08.664Z" },
 ]
 
 [[package]]

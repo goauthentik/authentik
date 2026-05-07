@@ -79,7 +79,7 @@ function prepare_debug {
     apt-get update
     apt-get install -y --no-install-recommends krb5-kdc krb5-user krb5-admin-server libkrb5-dev gcc
     source "${VENV_PATH}/bin/activate"
-    uv sync --active --frozen
+    uv sync --active --locked
     touch /unittest.xml
     chown authentik:authentik /unittest.xml
 }
