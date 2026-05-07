@@ -80,6 +80,10 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             [part*="type-create"]:not(:first-child) {
                 margin-block-start: var(--pf-global--spacer--md);
             }
+
+            :host([layout="list"]) {
+                justify-content: center;
+            }
         `,
     ];
 

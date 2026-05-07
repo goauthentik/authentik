@@ -62,23 +62,6 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                 display: block;
                 height: min(var(--ak-c-dialog--AspectRatioHeight), var(--ak-c-dialog--MaxHeight));
             }
-
-            .pf-c-wizard__main {
-                overscroll-behavior: contain;
-                display: flex;
-                flex-flow: column;
-            }
-
-            .pf-c-wizard__main,
-            .pf-c-wizard__main-body {
-                transform: translate3d(0, 0, 0);
-                will-change: transform;
-            }
-
-            .pf-c-wizard__main-body {
-                display: flex;
-                flex: 1 1 auto;
-            }
         `,
     ];
 
