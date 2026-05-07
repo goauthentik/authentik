@@ -63,7 +63,7 @@ ak-sidebar-item:active ak-sidebar-item::part(list-item) {
     }
 
     &:hover {
-        --BackgroundColor: var(--pf-global--BackgroundColor--400);
+        --BackgroundColor: var(--pf-global--BackgroundColor--200);
     }
 
     .icon {
