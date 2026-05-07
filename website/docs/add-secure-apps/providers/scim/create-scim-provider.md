@@ -4,14 +4,14 @@ title: Create a SCIM provider
 
 ## Create a SCIM provider with token authentication
 
-To create a provider along with a corresponding application, navigate to **Applications** > **Applications** and click **New Provider**. We recommend this combined approach for most common use cases. Alternatively, you can use the legacy method to solely create the provider by navigating to **Applications** > **Providers** and clicking **Create**.
+To create a provider along with a corresponding application, navigate to **Applications** > **Applications** and click **New Application**. We recommend this combined approach for most common use cases. Alternatively, you can use the legacy method to solely create the provider by navigating to **Applications** > **Providers** and clicking **New Provider**.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
 3. On the **Application** page, define the application settings, and then click **Next**.
 4. Select **SCIM** as the **Provider Type**, and then click **Next**.
 5. On the **Configure Provider** page, provide the configuration settings, and then click **Next**.
-6. On the **Configure Bindings** page, click **Next**
+6. On the **Configure Bindings** page, click **Next**.
 7. Click **Create** to create both the application and the provider.
 
 ### Set the SCIM provider as a backchannel provider for the application
@@ -47,8 +47,8 @@ If using OAuth (Interactive) mode, you will also need to:
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
 3. On the **Application** page, define the application settings, and then click **Next**.
 4. Select **SCIM** as the **Provider Type**, and then click **Next**.
-5. On the **Configure Provider** page, configure the required settings. Set **Authentication mode** to the desired OAuth option, select the **OAuth source** you created in the previous section, and then click Next.
-6. On the **Configure Bindings** page, click **Next**
+5. On the **Configure Provider** page, configure the required settings. Set **Authentication mode** to the desired OAuth option, select the **OAuth source** you created in the previous section, and then click **Next**.
+6. On the **Configure Bindings** page, click **Next**.
 7. Click **Create** to create both the application and the provider.
 
 ### Set the SCIM provider as a backchannel provider for the application
@@ -64,8 +64,8 @@ If using OAuth (Interactive) mode, you will also need to:
 If you selected **OAuth (Interactive)** as the **Authentication mode** for the SCIM provider, you will need to authorize the initial OAuth connection.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Proivders** and click the name of the new SCIM provider.
+2. Navigate to **Applications** > **Providers** and click the name of the new SCIM provider.
 3. Next to **OAuth Status**, click **(Re-)Authenticate**.
 4. You should be redirected to the SCIM endpoint that you are provisioning to for authentication.
-5. Once authenticated you should be redirected back to authentik. If successful, **OAuth Status** should now show as **Authenticated**.
-   This step is only required when initially configuring the SCIM provider. Subsequent authentications will be automatic.
+5. Once authenticated, you should be redirected back to authentik. If successful, **OAuth Status** should now show as **Authenticated**.
+   This step is only required when initially configuring the SCIM provider; subsequent authentications will be automatic.
