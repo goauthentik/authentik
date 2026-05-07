@@ -1,11 +1,13 @@
 import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "./ak-library-application-empty-list.js";
 
 import Styles from "./ak-library-impl.css";
 import AKLibraryApplicationListStyles from "./ApplicationList.css";
 import { AKLibraryApplicationList } from "./ApplicationList.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
+import { VIEW_MODE_STORAGE, ViewMode } from "./types.js";
 
 import { groupBy } from "#common/utils";
 
@@ -40,6 +42,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
+
+function readStoredViewMode(): ViewMode {
+    return VIEW_MODE_STORAGE.read<ViewMode>(ViewMode.Grid) === ViewMode.List
+        ? ViewMode.List
+        : ViewMode.Grid;
+}
 
 /**
  * List of Applications available
@@ -133,6 +141,9 @@ export class LibraryPage extends WithSession(AKElement) {
 
     @state()
     protected visibleApplications: Application[] = [];
+
+    @state()
+    protected viewMode: ViewMode = readStoredViewMode();
 
     /**
      * The active element to select when the user presses Enter outside of a form.
@@ -298,11 +309,74 @@ export class LibraryPage extends WithSession(AKElement) {
         return AKLibraryApplicationList({
             editable,
             layout: layout.type,
+            viewMode: this.viewMode,
             background: theme.cardBackground,
             selectedApp,
             groupedApps,
             targetRef: this.targetRef,
         });
+    }
+
+    #viewToggleListener = () => {
+        const next = this.viewMode === ViewMode.Grid ? ViewMode.List : ViewMode.Grid;
+        this.viewMode = next;
+        VIEW_MODE_STORAGE.write(next);
+    };
+
+    protected renderViewToggle() {
+        // Show the icon and tooltip for the mode the user will switch *to* on click.
+        const showsListMode = this.viewMode === ViewMode.Grid;
+        const tooltipContent = showsListMode
+            ? msg("Switch to list view", {
+                  id: "user.library.view-toggle.to-list",
+                  desc: "Tooltip on the library view toggle when grid view is active",
+              })
+            : msg("Switch to grid view", {
+                  id: "user.library.view-toggle.to-grid",
+                  desc: "Tooltip on the library view toggle when list view is active",
+              });
+
+        const icon = showsListMode
+            ? html`<svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="ak-c-vector-icon"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  viewBox="0 0 32 32"
+              >
+                  <path
+                      d="M10 6h18v2H10zM10 24h18v2H10zM10 15h18v2H10zM4 15h2v2H4zM4 6h2v2H4zM4 24h2v2H4z"
+                  />
+              </svg>`
+            : html`<svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="ak-c-vector-icon"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  viewBox="0 0 32 32"
+              >
+                  <path
+                      d="M12 4H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 8H6V6h6ZM26 4h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 8h-6V6h6ZM12 18H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2m0 8H6v-6h6ZM26 18h-6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2m0 8h-6v-6h6Z"
+                  />
+              </svg>`;
+
+        return html`<button
+            id="library-view-toggle-button"
+            class="pf-c-button pf-m-plain library-view-toggle"
+            part="view-toggle"
+            type="button"
+            aria-label=${tooltipContent}
+            aria-pressed=${this.viewMode === ViewMode.List}
+            @click=${this.#viewToggleListener}
+        >
+            <pf-tooltip
+                position="top"
+                content=${tooltipContent}
+                trigger="library-view-toggle-button"
+            >
+                ${icon}
+            </pf-tooltip>
+        </button>`;
     }
 
     protected renderSearch() {
@@ -429,9 +503,12 @@ export class LibraryPage extends WithSession(AKElement) {
     }
 
     protected override render() {
+        const hasApps = this.apps.some(appHasLaunchUrl);
+
         return html`<div class="pf-c-page__main">
             <div class="pf-c-page__header pf-c-content">
                 <h1 class="pf-c-page__title">${msg("Application Dashboard")}</h1>
+                ${hasApps ? this.renderViewToggle() : nothing}
                 ${this.searchEnabled ? this.renderSearch() : nothing}
             </div>
             <main
