@@ -1,4 +1,4 @@
-# AGENTS.mduuuu
+# AGENTS.md
 
 This is **authentik** — an open-source Identity Provider. The codebase spans a
 Django backend, Go outposts, Rust components, and a Lit/TS web UI, with pieces
