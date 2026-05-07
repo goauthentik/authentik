@@ -81,7 +81,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     renderSectionBefore() {
         return html`
-            <div class="pf-c-banner pf-m-info">
+            <div class="pf-c-banner pf-m-info ak-m-inset">
                 ${msg("Endpoint Devices are in preview.")}
                 <a href="mailto:hello+feature/platform@goauthentik.io"
                     >${msg("Send us feedback!")}</a
