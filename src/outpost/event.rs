@@ -91,12 +91,15 @@ async fn handle_event<O: Outpost>(
     controller: Arc<OutpostController>,
     outpost: Arc<O>,
     event: Event,
+    reload_offset: Option<Duration>,
 ) -> Result<()> {
     match event.instruction {
         EventKind::Ack | EventKind::Hello => {}
         EventKind::TriggerUpdate => {
             info!("received update trigger, refreshing outpost");
-            sleep(controller.reload_offset).await;
+            if let Some(reload_offset) = reload_offset {
+                sleep(reload_offset).await;
+            }
             controller.refresh().await?;
             debug!("outpost controller has been refreshed");
             outpost.refresh().await?;
@@ -187,7 +190,8 @@ async fn watch_events_inner<O: Outpost>(
                     Event {
                         instruction: EventKind::TriggerUpdate,
                         args: serde_json::Value::Null
-                    }
+                    },
+                    None,
                 ).await {
                     warn!(?err, "failed to refresh");
                 }
@@ -213,7 +217,8 @@ async fn watch_events_inner<O: Outpost>(
                         Event {
                             instruction: EventKind::TriggerUpdate,
                             args: serde_json::Value::Null
-                        }
+                        },
+                        None,
                     ).await {
                         warn!(?err, "failed to refresh");
                     }
@@ -235,6 +240,7 @@ async fn watch_events_inner<O: Outpost>(
                             Arc::clone(&controller),
                             Arc::clone(&outpost),
                             event,
+                            Some(controller.reload_offset),
                         ).await {
                             warn!(?err, "failed to handle event");
                         }
