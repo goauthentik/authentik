@@ -269,13 +269,12 @@ export class AdminInterface extends WithCapabilitiesConfig(
                         <i aria-hidden="true" class="fas fa-bars"></i>
                     </button>
 
-                    ${this.renderCommandPaletteButton()}
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 
-                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                    >${renderSidebarItems(this.entries)}
+                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}">
+                    ${this.renderCommandPaletteButton()} ${renderSidebarItems(this.entries)}
                     ${this.can(CapabilitiesEnum.IsEnterprise)
                         ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
                         : nothing}
@@ -321,36 +320,31 @@ export class AdminInterface extends WithCapabilitiesConfig(
             const primaryModifierKey = macOS ? "⌘" : "Ctrl";
 
             return html`<button
-                slot="nav-buttons"
+                slot="before-items"
+                part="command-palette-trigger"
                 @click=${this.commandPalette.showListener}
-                class="pf-c-button pf-m-plain command-palette-trigger"
+                type="button"
                 aria-label=${msg("Open Command Palette", {
-                    id: "command-palette-trigger-label",
+                    id: "command-palette-trigger-label-mobile",
                     desc: "Label for the button that opens the command palette",
                 })}
             >
-                <pf-tooltip position="top-end">
-                    <div slot="content" class="ak-tooltip__content--inline">
-                        ${msg("Open Command Palette", {
-                            id: "command-palette-trigger-tooltip",
-                            desc: "Tooltip for the button that opens the command palette",
-                        })}
-                        <div class="ak-c-kbd"><kbd>${primaryModifierKey}</kbd> + <kbd>K</kbd></div>
-                    </div>
-
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                        class="ak-c-vector-icon"
-                        role="img"
-                        viewBox="0 0 32 32"
-                    >
-                        <path
-                            d="M26 4.01H6a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-20a2 2 0 0 0-2-2m0 2v4H6v-4Zm-20 20v-14h20v14Z"
-                        />
-                        <path d="m10.76 16.18 2.82 2.83-2.82 2.83 1.41 1.41 4.24-4.24-4.24-4.24z" />
-                    </svg>
-                </pf-tooltip>
+                <svg
+                    class="icon"
+                    role="img"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 32 32"
+                >
+                    <path
+                        d="m29 27.586-7.552-7.552a11.018 11.018 0 1 0-1.414 1.414L27.586 29ZM4 13a9 9 0 1 1 9 9 9.01 9.01 0 0 1-9-9"
+                    />
+                </svg>
+                <div class="placeholder">${msg("Search...")}</div>
+                <div class="ak-c-kbd">
+                    <kbd>${primaryModifierKey}</kbd> <span class="ak-c-kbd__plus">+</span>
+                    <kbd>K</kbd>
+                </div>
             </button>`;
         });
     }
