@@ -23,15 +23,9 @@ from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 from dramatiq.broker import Broker, Consumer, MessageProxy
 from dramatiq.common import compute_backoff, current_millis, dq_name, q_name, xq_name
-<<<<<<< HEAD
-from dramatiq.errors import ConnectionError, QueueJoinTimeout
-=======
-from dramatiq.errors import BrokerConnectionError, DecodeError, QueueJoinTimeout
->>>>>>> b420e4fdb (packages/django-dramatiq-postgres/broker: avoid task processing stopping on decode error (#22110))
+from dramatiq.errors import ConnectionError, DecodeError, QueueJoinTimeout
 from dramatiq.message import Message
-from dramatiq.middleware import (
-    Middleware,
-)
+from dramatiq.middleware import Middleware
 from pglock.core import _cast_lock_id
 from psycopg import sql
 from psycopg.errors import AdminShutdown
