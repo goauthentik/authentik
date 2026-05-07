@@ -25,6 +25,7 @@ Before you begin, ensure you have the following tools installed. You can run the
 - [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
 - [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
 - [Make](https://www.gnu.org/software/make/) (3 or later)
+- [CMake](https://cmake.org/) (Latest stable release)
 
 ### Understanding the architecture
 
@@ -66,7 +67,8 @@ uv \
 postgresql \
 node@24 \
 golangci-lint \
-krb5
+krb5 \
+cmake
 ```
 
 </TabItem>
@@ -85,7 +87,8 @@ libxslt1-dev \
 libxmlsec1 \
 xmlsec1 \
 postgresql-server-dev-all \
-postgresql
+postgresql \
+cmake
 ```
 
 For other distributions (Red Hat, SUSE, Arch), adjust the package names as needed.
