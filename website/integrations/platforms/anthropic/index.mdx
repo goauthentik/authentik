@@ -76,7 +76,7 @@ Create SAML property mappings for the attributes that WorkOS expects from the id
             ```python
             return request.user.name.rsplit(" ", 1)[-1] if " " in request.user.name else " "
             ```
-    - **Groups mapping** _(required for JIT group mappings)_:
+    - **Entitlements mapping** _(required for JIT entitlement mappings)_:
         - **Name**: choose a descriptive name.
         - **SAML Attribute Name**: `groups`
         - **Friendly Name**: leave blank.
@@ -125,7 +125,7 @@ This guide expects that you have already reviewed Anthropic's SSO considerations
     - `email` to the email field.
     - `firstName` to the first name field.
     - `lastName` to the last name field.
-    - `groups` to the groups field for JIT group mappings.
+    - `groups` to the groups field for JIT entitlement mappings.
 
 ### Update the authentik provider
 
@@ -167,11 +167,11 @@ To provision users automatically, choose one of the options below:
 1. On the Anthropic identity settings page (**Organization and access** for Claude, **Identity and access** for Claude Console), find the **User provisioning** section.
 2. Select **Just-in-time (JIT)**.
 3. Confirm that all users who should be provisioned are assigned to the Anthropic application in authentik.
-4. To use JIT without group mappings, click **Save changes**. New users assigned to the authentik application are automatically created with the Anthropic User role when they first sign in.
+4. To use JIT without entitlement-based role or seat type mappings, click **Save changes**. New users assigned to the authentik application are automatically created with the Anthropic User role when they first sign in.
 
-#### Configure JIT group mappings
+#### Configure JIT entitlement mappings
 
-Use JIT group mappings only when Anthropic should assign roles or seat types from authentik. In this guide, the SAML `groups` attribute is populated from authentik application entitlements, so create the entitlements in authentik first, then map those entitlement names in Anthropic.
+Use JIT entitlement mappings only when Anthropic should assign roles or seat types from authentik. Anthropic expects these values in the SAML `groups` attribute; this guide populates that attribute from authentik application entitlements instead of global authentik groups. Create the entitlements in authentik first, then map those entitlement names in Anthropic.
 
 Anthropic documents the current role and seat type options in [Set up JIT or SCIM provisioning](https://support.claude.com/en/articles/13133195-set-up-jit-or-scim-provisioning). Create entitlement names for the Anthropic role and seat type mappings that apply to your plan:
 
@@ -193,25 +193,25 @@ Anthropic documents the current role and seat type options in [Set up JIT or SCI
 6. In the entitlements list, expand the entitlement that you created.
 7. Click **Bind existing Group/User**.
 8. Select **Group** or **User**, select the authentik group or user that should receive this Anthropic role or seat type, and click **Create**.
-9. Repeat these steps for each Anthropic role or seat type that you want to assign with group mappings.
+9. Repeat these steps for each Anthropic role or seat type that you want to assign with JIT entitlement mappings.
 
 ##### Map entitlements in Anthropic
 
 1. Return to the Anthropic JIT provisioning settings.
 2. Enable **group mappings** before saving the JIT provisioning configuration.
-3. Map each IdP group value from the SAML `groups` attribute to the appropriate Anthropic role or seat type.
+3. Map each entitlement value from the SAML `groups` attribute to the appropriate Anthropic role or seat type.
 4. Click **Save changes**.
 
 :::tip Entitlement names
-Each entitlement name is sent as an IdP group value. Use names that are easy to identify when you create the Anthropic group mappings.
+Each entitlement name is sent in the SAML `groups` attribute. Use names that are easy to identify when you create the Anthropic mappings.
 :::
 
-:::info Applying JIT group changes
-For JIT group mappings, role and seat type changes apply on the user's next login.
+:::info Applying JIT entitlement changes
+For JIT entitlement mappings, role and seat type changes apply on the user's next login.
 :::
 
 :::warning Keep administrator access
-Before saving group mappings, make sure at least one administrator has an entitlement mapped to an Owner role for Claude or an Admin role for Claude Console. Otherwise that administrator can lose elevated access.
+Before saving mappings, make sure at least one administrator has an entitlement mapped to an Owner role for Claude or an Admin role for Claude Console. Otherwise that administrator can lose elevated access.
 :::
 
   </TabItem>

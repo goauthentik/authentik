@@ -57,32 +57,12 @@ To support the integration of Anthropic Workload Identity Federation with authen
 Use the provider's client credentials flow to generate an OIDC token that you can inspect before creating the Anthropic federation rule.
 
 <Tabs
-  defaultValue="linux"
+  defaultValue="unix"
   values={[
-    { label: "Linux", value: "linux" },
-    { label: "macOS", value: "macos" },
+    { label: "Linux/macOS", value: "unix" },
     { label: "Windows", value: "windows" },
   ]}>
-  <TabItem value="linux">
-
-```bash showLineNumbers
-TOKEN_RESPONSE="$(curl --silent --show-error --fail \
-  --request POST https://authentik.company/application/o/token/ \
-  --header "Content-Type: application/x-www-form-urlencoded" \
-  --data-urlencode "grant_type=client_credentials" \
-  --data-urlencode "client_id=<Client ID from authentik>" \
-  --data-urlencode "client_secret=<Client Secret from authentik>" \
-  --data-urlencode "scope=openid profile")"
-
-printf '%s' "${TOKEN_RESPONSE}" > /tmp/authentik-anthropic-workload-identity-federation-token.json
-jq --raw-output '.id_token' /tmp/authentik-anthropic-workload-identity-federation-token.json \
-  > /tmp/authentik-anthropic-workload-identity-federation.jwt
-jq --raw-input 'split(".")[1] | gsub("-"; "+") | gsub("_"; "/") | @base64d | fromjson' \
-  /tmp/authentik-anthropic-workload-identity-federation.jwt
-```
-
-  </TabItem>
-  <TabItem value="macos">
+  <TabItem value="unix">
 
 ```bash showLineNumbers
 TOKEN_RESPONSE="$(curl --silent --show-error --fail \
