@@ -2,6 +2,8 @@ import "#elements/LoadingOverlay";
 
 import Styles from "./index.entrypoint.css";
 
+import { writeToClipboard } from "#common/clipboard";
+
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
 
@@ -155,22 +157,35 @@ export class RacInterface extends WithBrandConfig(Interface) {
             if (/^text\//.exec(mimetype)) {
                 const reader = new Guacamole.StringReader(stream);
                 let data = "";
+
                 reader.ontext = (text) => {
                     data += text;
                 };
+
                 reader.onend = () => {
-                    this._previousClipboardValue = data;
-                    navigator.clipboard.writeText(data);
+                    const trimmed = data.trim();
+                    // Some remote sessions (notably SSH) push empty clipboard
+                    // payloads that would otherwise clobber the user's local
+                    // clipboard, breaking subsequent paste attempts. Ignore
+                    // them so the local clipboard remains intact.
+                    if (!trimmed) {
+                        console.debug("authentik/rac: ignored empty remote clipboard payload");
+                        return;
+                    }
+                    this._previousClipboardValue = trimmed;
+                    writeToClipboard(trimmed);
                 };
             } else {
                 const reader = new Guacamole.BlobReader(stream, mimetype);
+
                 reader.onend = () => {
                     const blob = reader.getBlob();
-                    navigator.clipboard.write([
-                        new ClipboardItem({
-                            [blob.type]: blob,
-                        }),
-                    ]);
+
+                    const item = new ClipboardItem({
+                        [blob.type]: blob,
+                    });
+
+                    writeToClipboard(item);
                 };
             }
             console.debug("authentik/rac: updated clipboard from remote");

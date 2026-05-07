@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-23 00:25+0000\n"
+"POT-Creation-Date: 2026-05-06 00:27+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Lukas Nielsen, 2026\n"
 "Language-Team: German (Germany) (https://app.transifex.com/authentik/teams/119923/de_DE/)\n"
@@ -68,7 +68,7 @@ msgstr "Dateiname zu lang (max. {MAX_FILE_NAME_LENGTH} Zeichen)"
 #: authentik/admin/files/validation.py
 #, python-brace-format
 msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
-msgstr "Dateipfad zu lang (max. {MAX_PATH_COMPONENT_LENGTH} Zeichen)"
+msgstr "Dateipfad zu lang (max. {MAX_FILE_NAME_LENGTH} Zeichen)"
 
 #: authentik/admin/models.py
 msgid "Version history"
@@ -110,6 +110,14 @@ msgstr "Validierungsfehler"
 #: authentik/blueprints/api.py
 msgid "Blueprint file does not exist"
 msgstr "Vorlagendatei existiert nicht"
+
+#: authentik/blueprints/api.py
+msgid "Context must be valid JSON"
+msgstr ""
+
+#: authentik/blueprints/api.py
+msgid "Context must be a JSON object"
+msgstr ""
 
 #: authentik/blueprints/api.py
 msgid "Failed to validate blueprint"
@@ -256,6 +264,14 @@ msgstr ""
 "Wenn deaktiviert, werden alle Provider zurück gegeben. Wenn aktiviert, "
 "werden nur die backchannel Provider zurück gegeben. Zudem werden bei "
 "Deaktivierung die backchannel Provider ausgeschlossen."
+
+#: authentik/core/api/users.py
+msgid "Invalid password hash format. Must be a valid Django password hash."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Cannot set both password and password_hash. Use only one."
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -434,6 +450,10 @@ msgstr "Interner Anwendungsname, wird in URLs verwendet."
 #: authentik/core/models.py
 msgid "Open launch URL in a new browser tab or window."
 msgstr "Start-URL in einem neuen Browser-Fenster öffnen."
+
+#: authentik/core/models.py
+msgid "Hide this application from the user's My applications page."
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Application"
@@ -934,10 +954,6 @@ msgstr "Es muss entweder eine Prüfergruppe oder ein Prüfer festgelegt werden."
 msgid "Grace period must be shorter than the interval."
 msgstr "Die Nachfrist muss kürzer sein als das Intervall."
 
-#: authentik/enterprise/lifecycle/api/rules.py
-msgid "Only one type-wide rule for each object type is allowed."
-msgstr "Für jeden Objekttyp ist nur eine typweite Regel zulässig."
-
 #: authentik/enterprise/lifecycle/models.py
 msgid ""
 "Select which transports should be used to notify the reviewers. If none are "
@@ -968,10 +984,9 @@ msgid "Go to {self._get_model_name()}"
 msgstr "Gehe zu {self._get_model_name()}"
 
 #: authentik/enterprise/lifecycle/models.py
-msgid "Access review is due for {self.content_type.name} {str(self.object)}"
+msgid ""
+"Access review is due for {self.content_type.name.lower()} {object_label}"
 msgstr ""
-"Die Zugriffsüberprüfung für {self.content_type.name} {str(self.object)} "
-"steht an"
 
 #: authentik/enterprise/lifecycle/models.py
 msgid ""
@@ -988,8 +1003,8 @@ msgstr ""
 "erledigt"
 
 #: authentik/enterprise/lifecycle/tasks.py
-msgid "Dispatch tasks to validate lifecycle rules."
-msgstr "Aufgaben zur Überprüfung von Lebenszyklusregeln zuweisen."
+msgid "Dispatch tasks to apply lifecycle rules."
+msgstr ""
 
 #: authentik/enterprise/lifecycle/tasks.py
 msgid "Apply lifecycle rule."
@@ -1331,6 +1346,78 @@ msgstr "Download"
 #: authentik/enterprise/reports/tasks.py
 msgid "Generate data export."
 msgstr "Datenexport generieren."
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "User to lock. If omitted, locks the current user (self-service)."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Lockdown flow is not applicable."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Choose the target account, then return a flow link."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured or the flow is not applicable"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Permission denied (when targeting another user)"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Deactivate the user account (set is_active to False)"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Set an unusable password for the user"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Delete all active sessions for the user"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Revoke all tokens for the user (API, app password, recovery, verification, "
+"OAuth)"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Flow to redirect users to after self-service lockdown. This flow should not "
+"require authentication since the user's session is deleted."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stage"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stages"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "No target user specified for account lockdown"
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "You do not have permission to lock down this account."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Account lockdown failed for this account."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Self-service account lockdown requires a completion flow."
+msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
@@ -2777,8 +2864,10 @@ msgstr ""
 "Feld leer, wird keine Zielgruppenbeschränkung hinzugefügt."
 
 #: authentik/providers/saml/models.py
-msgid "Also known as EntityID"
-msgstr "Auch bekannt als EntityID"
+msgid ""
+"Also known as EntityID. Providing a value overrides the default issuer "
+"generated by authentik."
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid "SLS URL"
@@ -3001,6 +3090,10 @@ msgid "SAML NameID format"
 msgstr "SAML-NameID-Format"
 
 #: authentik/providers/saml/models.py
+msgid "SAML Issuer used for this session"
+msgstr ""
+
+#: authentik/providers/saml/models.py
 msgid "SAML Session"
 msgstr "SAML Sitzung"
 
@@ -3031,6 +3124,10 @@ msgstr "Salesforce"
 #: authentik/providers/scim/models.py
 msgid "Webex"
 msgstr "Webex"
+
+#: authentik/providers/scim/models.py
+msgid "vCenter"
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Group filters used to define sync-scope for groups."
@@ -4945,6 +5042,18 @@ msgstr ""
 #: authentik/stages/prompt/models.py
 msgid "Static: Static value, displayed as-is."
 msgstr "Statisch: Statischer Wert, wird so angezeigt, wie er ist."
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Info): Static alert box with info styling"
+msgstr ""
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Warning): Static alert box with warning styling"
+msgstr ""
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Danger): Static alert box with danger styling"
+msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "authentik: Selection of locales authentik supports"
