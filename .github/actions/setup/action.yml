@@ -49,7 +49,7 @@ runs:
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: uv sync --all-extras --dev --frozen
+      run: uv sync --all-extras --dev --locked
     - name: Setup rust (stable)
       if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
       uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1

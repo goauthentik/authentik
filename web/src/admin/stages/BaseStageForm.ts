@@ -1,6 +1,6 @@
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import type { Stage } from "@goauthentik/api/dist/models/Stage";
+import type { Stage } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 
