@@ -199,9 +199,12 @@ To provision users automatically, choose one of the options below:
 
 #### Configure JIT group mappings
 
-1. Enable **group mappings** before saving the JIT provisioning configuration.
-2. Map the IdP group values from the SAML `groups` attribute to the appropriate Anthropic roles and seat types.
-3. Click **Save changes**.
+Before configuring group mappings in Anthropic, create the authentik application entitlements for the IdP group values that Anthropic should receive.
+
+1. In authentik, create and bind the application entitlements described in [Create application entitlements for JIT group mappings](#create-application-entitlements-for-jit-group-mappings-optional).
+2. In Anthropic, enable **group mappings** before saving the JIT provisioning configuration.
+3. Map the IdP group values from the SAML `groups` attribute to the appropriate Anthropic roles and seat types.
+4. Click **Save changes**.
 
 The `groups` SAML attribute contains the application entitlement names from authentik. Create the Anthropic mappings from those entitlement names to the roles and seat types you want Anthropic to assign.
 
