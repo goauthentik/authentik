@@ -4,7 +4,7 @@ sidebar_label: NetBox
 support_level: community
 ---
 
-## What is NetBox
+## What is NetBox?
 
 > NetBox is the leading solution for modeling and documenting modern networks.
 >

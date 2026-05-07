@@ -4,7 +4,7 @@ sidebar_label: Jellyfin
 support_level: community
 ---
 
-## What is Jellyfin
+## What is Jellyfin?
 
 > Jellyfin is a free and open source media management and streaming platform for movies, TV shows, and music.
 >

@@ -8,7 +8,7 @@ support_level: community
 These instructions apply to all projects in the Frappe Family, including ERPNext.
 :::
 
-## What is Frappe
+## What is Frappe?
 
 > Frappe is a full stack, batteries-included, web framework written in Python and JavaScript.
 >

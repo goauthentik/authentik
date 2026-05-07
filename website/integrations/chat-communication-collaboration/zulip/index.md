@@ -4,7 +4,7 @@ sidebar_label: Zulip
 support_level: community
 ---
 
-## What is Zulip
+## What is Zulip?
 
 > Zulip is an open-source team chat application that organizes conversations into topic-based streams, enabling more structured and efficient communication compared to traditional linear chat platforms.
 >

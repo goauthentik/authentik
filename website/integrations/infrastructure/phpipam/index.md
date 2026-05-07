@@ -4,7 +4,7 @@ sidebar_label: phpIPAM
 support_level: community
 ---
 
-## What is phpIPAM
+## What is phpIPAM?
 
 > phpipam is an open-source web IP address management application (IPAM). Its goal is to provide light, modern and useful IP address management. It is php-based application with MySQL database backend, using jQuery libraries, ajax and HTML5/CSS3 features.
 >

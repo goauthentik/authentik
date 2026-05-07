@@ -4,7 +4,7 @@ sidebar_label: OneUptime
 support_level: community
 ---
 
-## What is OneUptime
+## What is OneUptime?
 
 > OneUptime is an open-source observability and incident management platform that provides infrastructure monitoring, incident management, status pages, and APM.
 >

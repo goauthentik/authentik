@@ -4,7 +4,7 @@ sidebar_label: OpenProject
 support_level: community
 ---
 
-## What is OpenProject
+## What is OpenProject?
 
 > OpenProject is a web-based project management software. Use OpenProject to manage your projects, tasks and goals. Collaborate via work packages and link them to your pull requests on Github.
 >

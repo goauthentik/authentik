@@ -4,7 +4,7 @@ sidebar_label: Technitium DNS
 support_level: community
 ---
 
-## What is Technitium DNS
+## What is Technitium DNS?
 
 > Technitium DNS Server is a free, open source, cross-platform, authoritative and recursive DNS server that can be self-hosted for privacy and security, software development, and testing on small to medium-sized networks.
 >
