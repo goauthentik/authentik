@@ -13,7 +13,7 @@ You can configure invitations either by:
 - [manually creating flows and stages](#manual-setup-without-blueprints) (for custom configurations).
 
 :::info
-You can also create a [policy](../../../customize/policies/) to see if the invitation was ever used.
+You can also create a [policy](../../../customize/policies/) to check whether the invitation was ever used.
 :::
 
 ## Use the invitation wizard
@@ -25,11 +25,11 @@ The invitation wizard, available from the **Directory** > **Invitations** page i
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Invitations**.
 3. Click the caret (>) next to the **New Invitation** button and choose how the wizard should handle the invitation:
-    - **with Existing Enrollment Flow...**: bind the new invitation to an enrollment flow you already have. Only enrollment flows that have an invitation stage bound to them are listed. This is also what the **New Invitation** button does by default.
-    - **with New Enrollment Flow and Invitation Stage...**: create a new minimal enrollment flow, including an invitation stage, then bind the invitation to it. Use this option when you don't yet have an enrollment flow set up, or when you want a separate enrollment flow for an invitation.
+    - **with Existing Enrollment Flow...**: bind the new invitation to an existing enrollment flow. Only enrollment flows that have an invitation stage bound to them are listed. This is also what the **New Invitation** button does by default.
+    - **with New Enrollment Flow and Invitation Stage...**: create a new minimal enrollment flow, including an invitation stage, then bind the invitation to it. Use this option when you do not yet have an enrollment flow set up, or when you want a separate enrollment flow for an invitation.
 
     :::info Automatic flow selection
-    If you choose **with Existing Enrollment Flow...** and only one eligible flow exists, the wizard skips the flow selection step and takes you straight to the invitation details.
+    If you choose **with Existing Enrollment Flow...** and only one eligible flow exists, the wizard skips the flow selection step and takes you directly to the invitation details.
     :::
 
 ### Step 2. Configure the enrollment flow
@@ -47,7 +47,7 @@ The invitation wizard, available from the **Directory** > **Invitations** page i
 - **Name**: provide a slug-style name for your invitation object (lowercase letters, numbers, and hyphens only).
 - **Expires**: select a date and time for when the invitation should expire. Defaults to 48 hours from now.
 - **Flow**: read-only; reflects the flow chosen in the previous step.
-- **Custom attributes**: (_optional_) YAML or JSON loaded into the flow's `prompt_data` context to pre-fill user information. Field keys must match the keys configured in the flow's [prompt stage](../../add-secure-apps/flows-stages/stages/prompt/index.md). See the [example custom attributes](#step-3-create-the-invitation-object) further down for sample payloads.
+- **Custom attributes**: (_optional_) YAML or JSON that is loaded into the flow's `prompt_data` context to pre-fill user information. Field keys must match the keys configured in the flow's [prompt stage](../../add-secure-apps/flows-stages/stages/prompt/index.md). See the [example custom attributes](#step-3-create-the-invitation-object) below for sample payloads.
 - **Single use**: when enabled, the invitation is deleted after the first successful enrollment.
 
 Click **Next** to create the invitation. If you chose **with New Enrollment Flow and Invitation Stage...**, the supporting blueprint is imported at this point as well.
@@ -65,7 +65,7 @@ After the invitation is created, the wizard's final step shows the **Link to use
     Click **Send** to queue the emails. They are sent asynchronously by the background worker. Check **System Tasks** for delivery status.
 
 :::note Email configuration required
-To send invitation emails, you must have email configured in authentik. Refer to the [Email configuration](../../install-config/email.mdx) documentation for details.
+To send invitation emails, you must have configured email in authentik. Refer to the [Email configuration](../../install-config/email.mdx) documentation for details.
 :::
 
 ## Use pre-built blueprints to configure invitations
