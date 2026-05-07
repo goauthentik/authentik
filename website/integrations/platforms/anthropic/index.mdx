@@ -36,7 +36,7 @@ Before requiring SSO, review Anthropic's [important SSO and provisioning conside
 
 ## authentik configuration
 
-To support the integration of Anthropic with authentik, create SAML property mappings, an application/provider pair, and application entitlements for JIT group-mapping values.
+To support the integration of Anthropic with authentik, create SAML property mappings and an application/provider pair.
 
 ### Create property mappings
 
@@ -102,34 +102,6 @@ Create SAML property mappings for the attributes that WorkOS expects from the id
             - Add the property mappings that you created earlier.
     - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page. When a SCIM provider is added as a backchannel provider later, only users who can view this application are synchronized.
 3. Click **Submit** to save the new application and provider.
-
-### Create application entitlements for JIT group mappings _(optional)_
-
-For JIT group mappings, use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to define the IdP group values that authentik sends in the SAML `groups` attribute. Anthropic documents the current role and seat type options in [Set up JIT or SCIM provisioning](https://support.claude.com/en/articles/13133195-set-up-jit-or-scim-provisioning).
-
-Create entitlement names for the Anthropic role and seat type mappings that apply to your plan:
-
-| Product                                           | Roles                                                                | Seat types               |
-| ------------------------------------------------- | -------------------------------------------------------------------- | ------------------------ |
-| Team plan                                         | Owner, Admin, User                                                   | Premium, Standard        |
-| Seat-based Enterprise plan                        | Owner, Admin, User, Custom roles                                     | Premium, Standard        |
-| Usage-based Enterprise plan (with two seat types) | Owner, Admin, User, Custom roles                                     | Chat, Chat + Claude Code |
-| Usage-based Enterprise plan (single seat type)    | Owner, Admin, User, Custom roles                                     | Enterprise               |
-| Console                                           | Admin, Developer, Limited Developer, Billing, Claude Code User, User | None                     |
-
-1. Open the Anthropic application that you just created in the authentik Admin interface.
-2. Click the **Application entitlements** tab.
-3. Click **New Entitlement**.
-4. In **Name**, enter the IdP group value that you want to map in Anthropic, such as `Claude Owner` or `Console Developer`.
-5. Leave **Attributes** empty unless you need to store additional metadata, then click **Create**.
-6. In the entitlements list, expand the entitlement that you created.
-7. Click **Bind existing Group/User**.
-8. Select **Group** or **User**, select the authentik group or user that should receive this Anthropic role or seat type, and click **Create**.
-9. Repeat these steps for each Anthropic role or seat type that you want to assign with group mappings.
-
-:::tip Entitlement names
-Each entitlement name is sent as an IdP group value. Use names that are easy to identify when you create the Anthropic group mappings.
-:::
 
 ### Copy the metadata URL
 
@@ -199,14 +171,40 @@ To provision users automatically, choose one of the options below:
 
 #### Configure JIT group mappings
 
-Before configuring group mappings in Anthropic, create the authentik application entitlements for the IdP group values that Anthropic should receive.
+Use JIT group mappings only when Anthropic should assign roles or seat types from authentik. In this guide, the SAML `groups` attribute is populated from authentik application entitlements, so create the entitlements in authentik first, then map those entitlement names in Anthropic.
 
-1. In authentik, create and bind the application entitlements described in [Create application entitlements for JIT group mappings](#create-application-entitlements-for-jit-group-mappings-optional).
-2. In Anthropic, enable **group mappings** before saving the JIT provisioning configuration.
-3. Map the IdP group values from the SAML `groups` attribute to the appropriate Anthropic roles and seat types.
+Anthropic documents the current role and seat type options in [Set up JIT or SCIM provisioning](https://support.claude.com/en/articles/13133195-set-up-jit-or-scim-provisioning). Create entitlement names for the Anthropic role and seat type mappings that apply to your plan:
+
+| Product                                           | Roles                                                                | Seat types               |
+| ------------------------------------------------- | -------------------------------------------------------------------- | ------------------------ |
+| Team plan                                         | Owner, Admin, User                                                   | Premium, Standard        |
+| Seat-based Enterprise plan                        | Owner, Admin, User, Custom roles                                     | Premium, Standard        |
+| Usage-based Enterprise plan (with two seat types) | Owner, Admin, User, Custom roles                                     | Chat, Chat + Claude Code |
+| Usage-based Enterprise plan (single seat type)    | Owner, Admin, User, Custom roles                                     | Enterprise               |
+| Console                                           | Admin, Developer, Limited Developer, Billing, Claude Code User, User | None                     |
+
+##### Create authentik entitlements
+
+1. In authentik, open the Anthropic application that you created earlier.
+2. Click the **Application entitlements** tab.
+3. Click **New Entitlement**.
+4. In **Name**, enter the IdP group value that you want to map in Anthropic, such as `Claude Owner` or `Console Developer`.
+5. Leave **Attributes** empty unless you need to store additional metadata, then click **Create**.
+6. In the entitlements list, expand the entitlement that you created.
+7. Click **Bind existing Group/User**.
+8. Select **Group** or **User**, select the authentik group or user that should receive this Anthropic role or seat type, and click **Create**.
+9. Repeat these steps for each Anthropic role or seat type that you want to assign with group mappings.
+
+##### Map entitlements in Anthropic
+
+1. Return to the Anthropic JIT provisioning settings.
+2. Enable **group mappings** before saving the JIT provisioning configuration.
+3. Map each IdP group value from the SAML `groups` attribute to the appropriate Anthropic role or seat type.
 4. Click **Save changes**.
 
-The `groups` SAML attribute contains the application entitlement names from authentik. Create the Anthropic mappings from those entitlement names to the roles and seat types you want Anthropic to assign.
+:::tip Entitlement names
+Each entitlement name is sent as an IdP group value. Use names that are easy to identify when you create the Anthropic group mappings.
+:::
 
 :::info Applying JIT group changes
 For JIT group mappings, role and seat type changes apply on the user's next login.
