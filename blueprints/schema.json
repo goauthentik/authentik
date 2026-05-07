@@ -14936,6 +14936,22 @@
                         "format": "uuid"
                     },
                     "title": "Webauthn allowed device types"
+                },
+                "email_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Email otp throttling factor"
+                },
+                "sms_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Sms otp throttling factor"
+                },
+                "totp_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Totp otp throttling factor"
+                },
+                "static_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Static otp throttling factor"
                 }
             },
             "required": []
