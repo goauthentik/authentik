@@ -298,7 +298,6 @@ serde_json.workspace = true
 serde_repr.workspace = true
 sqlx = { workspace = true, optional = true }
 time.workspace = true
-tokio-retry2.workspace = true
 tokio-tungstenite.workspace = true
 tokio.workspace = true
 tower.workspace = true

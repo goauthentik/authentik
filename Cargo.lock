@@ -293,6 +293,7 @@ dependencies = [
  "config",
  "console-subscriber",
  "eyre",
+ "futures",
  "glob",
  "ipnet",
  "json-subscriber",
@@ -317,6 +318,7 @@ dependencies = [
  "tracing-error",
  "tracing-subscriber",
  "url",
+ "uuid",
 ]
 
 [[package]]

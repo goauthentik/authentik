@@ -2,7 +2,12 @@ use std::{collections::HashMap, sync::Arc};
 
 use ak_axum::router::wrap_router;
 use ak_client::{apis::outposts_api::outposts_proxy_list, models::ProxyMode};
-use ak_common::{Tasks, api::fetch_all, config, tls};
+use ak_common::{
+    Tasks,
+    api::fetch_all,
+    config,
+    tls::{self, store::CertificateStore},
+};
 use arc_swap::ArcSwap;
 use argh::FromArgs;
 use axum::Router;
@@ -33,6 +38,7 @@ pub(crate) struct Cli {}
 pub(crate) struct ProxyOutpost {
     controller: Arc<OutpostController>,
     apps: ArcSwap<HashMap<String, Arc<Application>>>,
+    certificate_store: CertificateStore,
     default_cert: Arc<CertifiedKey>,
 }
 
@@ -46,6 +52,7 @@ impl Outpost for ProxyOutpost {
         Ok(Self {
             controller,
             apps: ArcSwap::from_pointee(HashMap::with_capacity(0)),
+            certificate_store: CertificateStore::new(),
             default_cert: Arc::new(tls::self_signed::generate_certifiedkey()?),
         })
     }
@@ -149,7 +156,7 @@ impl ResolvesServerCert for ProxyOutpost {
             && let Some(app) = self.apps.load().get(server_name)
             && let Some(cert) = &app.cert
         {
-            return Some(Arc::clone(cert));
+            return Some(Arc::clone(&cert.certified_key));
         }
         Some(Arc::clone(&self.default_cert))
     }
