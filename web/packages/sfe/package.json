@@ -28,7 +28,7 @@
         "globby": "16.2.0",
         "jquery": "^3.7.1",
         "lit-html": "^1.4.1",
-        "rollup": "^4.57.1",
+        "rollup": "^4.60.3",
         "weakmap-polyfill": "^2.0.4"
     },
     "optionalDependencies": {
