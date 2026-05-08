@@ -48,7 +48,7 @@ To create a service account:
 5. Click **Create**.
 6. Copy the generated username and password from the confirmation screen and store the password in a secure secret store.
 
-:::warning
+:::warning Store the generated password securely
 The generated password is the service account's initial app password. Treat it like any other secret. Anyone with this value can authenticate as the service account anywhere that app passwords are accepted.
 :::
 
