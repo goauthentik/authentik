@@ -133,6 +133,7 @@
         "@typescript-eslint/eslint-plugin": "^8.57.2",
         "@typescript-eslint/parser": "^8.57.2",
         "@typescript-eslint/utils": "^8.57.2",
+        "@typescript/native-preview": "^7.0.0-dev.20260421.2",
         "@vitest/browser": "^4.1.6",
         "@vitest/browser-playwright": "^4.1.6",
         "@webcomponents/webcomponentsjs": "^2.8.0",
@@ -259,10 +260,7 @@
             "command": "lit-analyzer src"
         },
         "lint:types": {
-            "command": "tsc -p .",
-            "env": {
-                "NODE_OPTIONS": "--max_old_space_size=8192"
-            },
+            "command": "tsgo -p .",
             "dependencies": [
                 "build-locales"
             ]
@@ -291,10 +289,7 @@
             }
         },
         "tsc": {
-            "command": "tsc -p .",
-            "env": {
-                "NODE_OPTIONS": "--max_old_space_size=8192"
-            },
+            "command": "tsgo -p .",
             "dependencies": [
                 "build-locales"
             ]
