@@ -284,6 +284,8 @@ jobs:
         job:
           - name: oidc_basic
             glob: tests/openid_conformance/test_oidc_basic.py
+          - name: oidc_config
+            glob: tests/openid_conformance/test_oidc_config.py
           - name: oidc_implicit
             glob: tests/openid_conformance/test_oidc_implicit.py
           - name: oidc_rp-initiated
