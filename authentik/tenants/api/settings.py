@@ -19,6 +19,21 @@ from authentik.tenants.models import Tenant
 
 class FlagJSONField(JSONDictField):
 
+<<<<<<< HEAD
+=======
+    def to_representation(self, value: dict) -> dict:
+        new_value = value.copy()
+        for flag in Flag.available(exclude_system=False):
+            _flag = flag()
+            # Exclude any system flags that aren't modifiable
+            if _flag.visibility == "system":
+                new_value.pop(_flag.key, None)
+            # Explicitly present unset flags as if they were set to default
+            if _flag.key not in value:
+                value[_flag.key] = _flag.default
+        return super().to_representation(new_value)
+
+>>>>>>> 9f613a333 (tenants/settings: present unset flags as `False` (#22162))
     def run_validators(self, value: dict):
         super().run_validators(value)
         for flag in Flag.available():
