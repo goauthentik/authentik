@@ -374,7 +374,7 @@ When creating test users, ensure that their role is set to Standard (or Student)
 
 ### 2. Test the authentication flow
 
-1. Confirm the test user is synchronized in authentik.
+1. Confirm that the test user is synchronized in authentik.
 2. Open a private browsing window and navigate to the [Apple Business Manager](https://business.apple.com/).
 3. In the email field, provide the email address assigned to the test user.
 
