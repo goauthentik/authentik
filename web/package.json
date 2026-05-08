@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/web",
-    "version": "2026.5.0-rc1",
+    "version": "2026.8.0-rc1",
     "license": "MIT",
     "private": true,
     "scripts": {
@@ -119,7 +119,7 @@
         "@patternfly/elements": "^4.4.0",
         "@patternfly/patternfly": "^4.224.2",
         "@playwright/test": "^1.59.1",
-        "@sentry/browser": "^10.50.0",
+        "@sentry/browser": "^10.51.0",
         "@storybook/addon-docs": "^10.3.6",
         "@storybook/addon-links": "^10.3.6",
         "@storybook/web-components": "^10.3.6",
@@ -142,7 +142,7 @@
         "chartjs-adapter-date-fns": "^3.0.0",
         "codemirror": "^6.0.2",
         "core-js": "^3.49.0",
-        "country-flag-icons": "^1.6.16",
+        "country-flag-icons": "^1.6.17",
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
         "dompurify": "^3.4.2",
@@ -154,7 +154,7 @@
         "globals": "^17.5.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
-        "knip": "^6.7.0",
+        "knip": "^6.9.0",
         "lex": "^2025.11.0",
         "lit": "^3.3.2",
         "lit-analyzer": "^2.0.3",
@@ -194,7 +194,7 @@
         "vitest": "^4.1.1",
         "webcomponent-qr-code": "^1.3.0",
         "wireit": "^0.14.12",
-        "yaml": "^2.8.3"
+        "yaml": "^2.8.4"
     },
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.28.0",

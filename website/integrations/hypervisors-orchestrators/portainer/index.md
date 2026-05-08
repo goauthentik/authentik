@@ -4,7 +4,7 @@ sidebar_label: Portainer
 support_level: community
 ---
 
-## What is Portainer
+## What is Portainer?
 
 > Portainer is a powerful, GUI-based Container-as-a-Service solution that helps organizations manage and deploy cloud-native applications easily and securely.
 >

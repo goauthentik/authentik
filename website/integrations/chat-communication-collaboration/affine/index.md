@@ -4,7 +4,7 @@ sidebar_label: AFFiNE
 support_level: community
 ---
 
-## What is AFFiNE
+## What is AFFiNE?
 
 > AFFiNE is an open-source platform that allows you to bring together documents, whiteboards, and databases. It is a reliable tool designed to create a professional workspace for your work. With AFFiNE, you can focus on practicality and efficiency, making it easier to collaborate on your projects.
 >

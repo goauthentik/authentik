@@ -28,12 +28,7 @@ class HttpHandler(BaseHTTPRequestHandler):
             _ = db_conn.cursor()
 
     def do_GET(self):
-        from django.db import (
-            DatabaseError,
-            InterfaceError,
-            OperationalError,
-            connections,
-        )
+        from django.db import DatabaseError, InterfaceError, OperationalError, connections
         from psycopg.errors import AdminShutdown
 
         from authentik.root.monitoring import monitoring_set
@@ -42,7 +37,6 @@ class HttpHandler(BaseHTTPRequestHandler):
             AdminShutdown,
             InterfaceError,
             DatabaseError,
-            ConnectionError,
             OperationalError,
         )
 

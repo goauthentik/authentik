@@ -20,12 +20,15 @@ from authentik.tenants.models import Tenant
 class FlagJSONField(JSONDictField):
 
     def to_representation(self, value: dict) -> dict:
-        """Exclude any system flags that aren't modifiable"""
         new_value = value.copy()
         for flag in Flag.available(exclude_system=False):
             _flag = flag()
+            # Exclude any system flags that aren't modifiable
             if _flag.visibility == "system":
                 new_value.pop(_flag.key, None)
+            # Explicitly present unset flags as if they were set to default
+            if _flag.key not in value:
+                value[_flag.key] = _flag.default
         return super().to_representation(new_value)
 
     def run_validators(self, value: dict):

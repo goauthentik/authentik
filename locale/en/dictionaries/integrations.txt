@@ -22,9 +22,12 @@ Gestionnaire
 ghec
 Gitea
 Gravitee
+HACS
 Homarr
 Informatique
+Jellyseerr
 Kimai
+Kiota
 Knoc
 Knocknoc
 Komodo
@@ -43,13 +46,16 @@ Organizr
 Packagify
 Palo
 Papra
+PhotoPrism
 pfSense
 phpipam
 Planka
 Plesk
+PostHog
 proftpd
 Qube
 Relatedly
+Seerr
 Sidero
 snipeit
 sonarqube
@@ -61,7 +67,6 @@ Vikunja
 Wazuh
 Wdio
 Weixin
-Kiota
 Wekan
 Xcreds
 Zammad

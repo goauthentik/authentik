@@ -4,7 +4,7 @@ sidebar_label: Gitea
 support_level: community
 ---
 
-## What is Gitea
+## What is Gitea?
 
 > Gitea is a community managed lightweight code hosting solution written in Go. It is published under the MIT license.
 >

@@ -7,7 +7,7 @@ support_level: community
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-## What is Zammad
+## What is Zammad?
 
 > Zammad is a web-based, open source user support/ticketing solution.
 > Download and install it on your own servers. For free.

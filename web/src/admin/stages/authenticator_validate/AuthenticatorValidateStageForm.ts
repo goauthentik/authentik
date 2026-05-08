@@ -232,6 +232,70 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         : nothing}
                 </div>
             </ak-form-group>
+            <ak-form-group label="${msg("Throttling settings")}">
+                <ak-form-element-horizontal
+                    label=${msg("Email OTP throttling factor")}
+                    required
+                    name="emailOtpThrottlingFactor"
+                >
+                    <input
+                        type="number"
+                        step="0.1"
+                        value=${this.instance?.emailOtpThrottlingFactor || 1}
+                        class="pf-c-form-control pf-m-monospace"
+                        autocomplete="off"
+                        spellcheck="false"
+                        required
+                    />
+                </ak-form-element-horizontal>
+
+                <ak-form-element-horizontal
+                    label=${msg("SMS OTP throttling factor")}
+                    required
+                    name="smsOtpThrottlingFactor"
+                >
+                    <input
+                        type="number"
+                        step="0.1"
+                        value=${this.instance?.smsOtpThrottlingFactor || 1}
+                        class="pf-c-form-control pf-m-monospace"
+                        autocomplete="off"
+                        spellcheck="false"
+                        required
+                    />
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("TOTP throttling factor")}
+                    required
+                    name="totpOtpThrottlingFactor"
+                >
+                    <input
+                        type="number"
+                        step="0.1"
+                        value=${this.instance?.totpOtpThrottlingFactor || 1}
+                        class="pf-c-form-control pf-m-monospace"
+                        autocomplete="off"
+                        spellcheck="false"
+                        required
+                    />
+                </ak-form-element-horizontal>
+
+                <ak-form-element-horizontal
+                    label=${msg("Static OTP throttling factor")}
+                    required
+                    name="staticOtpThrottlingFactor"
+                >
+                    <input
+                        type="number"
+                        step="0.1"
+                        value=${this.instance?.staticOtpThrottlingFactor || 1}
+                        class="pf-c-form-control pf-m-monospace"
+                        autocomplete="off"
+                        spellcheck="false"
+                        required
+                    />
+                </ak-form-element-horizontal>
+            </ak-form-group>
             <ak-form-group open label="${msg("WebAuthn-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal

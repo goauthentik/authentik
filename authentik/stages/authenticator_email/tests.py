@@ -8,6 +8,7 @@ from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.db.utils import IntegrityError
 from django.template.exceptions import TemplateDoesNotExist
+from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now
 
@@ -16,6 +17,7 @@ from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.email import mask_email
+from authentik.stages.authenticator.tests import ThrottlingTestMixin
 from authentik.stages.authenticator_email.api import (
     AuthenticatorEmailStageSerializer,
     EmailDeviceSerializer,
@@ -79,6 +81,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         self.assertFalse(self.device.verify_token("000000"))
 
         # Verify correct token (should clear token after verification)
+        self.device.throttle_reset(commit=False)
         self.assertTrue(self.device.verify_token(token))
         self.assertIsNone(self.device.token)
 
@@ -329,3 +332,27 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         # Test AuthenticatorEmailStage send method
         self.stage.send(self.device)
         self.assertEqual(len(mail.outbox), 1)
+
+
+class TestEmailDeviceThrottling(ThrottlingTestMixin, TestCase):
+    def setUp(self):
+        super().setUp()
+        flow = create_test_flow()
+        user = create_test_user()
+        stage = AuthenticatorEmailStage.objects.create(
+            name="email-authenticator-throttle",
+            use_global_settings=True,
+            from_address="test@authentik.local",
+            configure_flow=flow,
+            token_expiry="minutes=30",
+        )  # nosec
+        self.device = EmailDevice.objects.create(
+            user=user, stage=stage, email="throttle@authentik.local"
+        )
+        self.device.generate_token()
+
+    def valid_token(self):
+        return self.device.token
+
+    def invalid_token(self):
+        return "000000" if self.device.token != "000000" else "111111"

@@ -4,7 +4,7 @@ sidebar_label: Cloudflare
 support_level: community
 ---
 
-## What is Cloudflare
+## What is Cloudflare?
 
 > Cloudflare is a global cloud services provider that enhances the security, performance, and reliability of websites and applications through its content delivery network (CDN), DDoS protection, and web infrastructure solutions.
 >

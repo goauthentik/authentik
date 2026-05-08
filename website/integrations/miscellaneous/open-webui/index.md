@@ -4,7 +4,7 @@ sidebar_label: Open WebUI
 support_level: community
 ---
 
-## What is Open WebUI
+## What is Open WebUI?
 
 > Open WebUI is a simple, self-hosted AI platform that works entirely offline. It supports tools like Ollama and OpenAI-style APIs and has a built-in engine for RAG tasks.
 >
