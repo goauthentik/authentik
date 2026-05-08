@@ -66,13 +66,13 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because you will use it when configuring PostHog.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://posthog.company/complete/saml/`.
         - Set the **Audience** to `https://posthog.company`.
-        - Set the **Service Provider Binding** to `Post`.
+        - Set the **Service Provider Binding** to `POST`.
         - Under **Advanced protocol settings**:
             - Set the **Signing Certificate** to any available certificate.
             - Set **NameID Property Mapping** to `PostHog name_id`.
@@ -84,7 +84,7 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
 
 1. Log in to PostHog as an administrator.
 2. Navigate to **Organization settings** > **Authentication domains**.
-3. If your user email domain is not already listed, add it and complete PostHog's domain verification process.
+3. If your users' email domain is not already listed, add it and complete PostHog's domain verification process.
 4. Open the SAML configuration for the verified domain and configure the following settings:
     - **SAML ACS URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
     - **SAML Entity ID**: `https://authentik.company/application/saml/<application_slug>/`
