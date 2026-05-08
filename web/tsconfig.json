@@ -39,6 +39,7 @@
 
                     "aria-description",
                     "inert",
+                    "enterkeyhint",
 
                     //#endregion
 

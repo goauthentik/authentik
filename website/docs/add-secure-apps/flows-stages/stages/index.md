@@ -65,11 +65,14 @@ To bind a stage to a flow (which adds the stage as a "step" in the flow), follow
 2. In the Admin interface, navigate to **Flows and Stages > Flows**.
 3. In the list of flows, click the name of the flow to which you want to bind one or more stages.
 4. On the Flow page, click the **Stage Bindings** tab at the top.
-5. Here, you can decide if you want to create a new stage and bind it to the flow (**New Stage**), or if you want to select an existing stage and bind it to the flow (**Bind Existing Stage**).
+5. Here, you can either create a new stage and bind it to the flow with **New Stage**, or select an existing stage and bind it to the flow with **Bind Existing Stage**.
 
 ### Control access to a stage
 
-There are several ways use policy bindings to control access to a specific stage of a flow: - Bind a policy to a stage-binding. [See our policy documentation](../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding). - Bind a user or group to the stage. [See steps below](#bind-users-and-groups-to-a-flows-stage-binding).
+There are several ways to control access to a specific stage of a flow:
+
+- Bind a policy to a stage binding. [See our policy documentation](../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding).
+- Bind a user or group to the stage. [See steps below](#bind-users-and-groups-to-a-flows-stage-binding).
 
 ### Bind users and groups to a flow's stage binding
 

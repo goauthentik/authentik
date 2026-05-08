@@ -4,7 +4,7 @@ sidebar_label: Tailscale
 support_level: community
 ---
 
-## What is Tailscale
+## What is Tailscale?
 
 > Tailscale is a mesh VPN service that creates secure, encrypted, peer-to-peer connections between devices across different networks using the WireGuard protocol.
 >

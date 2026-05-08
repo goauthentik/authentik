@@ -187,6 +187,7 @@ SPECTACULAR_SETTINGS = {
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
+        "RedirectURITypeEnum": "authentik.providers.oauth2.models.RedirectURIType",
         "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
         "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
@@ -220,7 +221,7 @@ REST_FRAMEWORK = {
         "authentik.api.search.ql.QLSearch",
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.OrderingFilter",
+        "authentik.api.ordering.NullsAwareOrderingFilter",
     ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (

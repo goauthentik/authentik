@@ -4,7 +4,7 @@ sidebar_label: Slack
 support_level: authentik
 ---
 
-## What is Slack
+## What is Slack?
 
 > Slack is a platform for collaboration, with chat and real-time video capabilities. To learn more, visit https://slack.com.
 

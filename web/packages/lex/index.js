@@ -7,152 +7,186 @@
  */
 
 /**
- * @typedef {(this: Lexer, chr: string) => any} DefunctFunction
+ * A token produced by a {@link LexerAction}. The lexer is agnostic to the
+ * concrete token shape; consumers pick whatever representation suits them.
+ *
+ * @typedef {unknown} Token
  */
 
 /**
- * @typedef {(this: Lexer, ...args: RegExpExecArray) => string | string[] | undefined} RuleAction
+ * A rule action. Invoked with the regex match (full match followed by capture
+ * groups) bound to the owning {@link Lexer} so it can read or set `state`,
+ * `index`, and `reject`.
+ *
+ * Return values:
+ * - `null` (or `undefined` from an implicit return) — discard the match and continue scanning.
+ * - a single token — yield it from {@link Lexer.lex}.
+ * - an array of tokens — yield the first; queue the rest for subsequent calls.
+ *
+ * @callback LexerAction
+ * @this {Lexer}
+ * @param {...string} match
+ * @returns {Token | Token[] | null | void}
  */
 
 /**
- * @typedef {Object} Rule
- * @property {RegExp} pattern
- * @property {boolean} global
- * @property {RuleAction} action
- * @property {number[]} start
+ * @typedef {object} LexerRule
+ * @property {RegExp} pattern Sticky-compiled pattern used to probe the input.
+ * @property {boolean} global Whether the user-supplied pattern was global.
+ * @property {LexerAction} action
+ * @property {number[]} start States in which the rule is active. `[0]` is the default state; an empty array means "any state".
  */
 
 /**
- * @typedef {Object} Match
+ * @typedef {object} LexerMatch
  * @property {RegExpExecArray} result
- * @property {RuleAction} action
+ * @property {LexerAction} action
  * @property {number} length
+ * @property {boolean} global Whether the producing rule was declared with the `g` flag.
  */
+
+/**
+ * Handler invoked when no rule matches at the current position.
+ *
+ * @callback DefunctHandler
+ * @this {Lexer}
+ * @param {string} chr The unexpected character.
+ * @returns {Token | Token[] | null | void}
+ */
+
+/**
+ * @type {DefunctHandler}
+ */
+function defaultDefunct(chr) {
+    throw new Error(`Unexpected character at index ${this.index - 1}: ${chr}`);
+}
 
 /**
  * Lexer class for tokenizing input strings.
  */
 export class Lexer {
     /**
-     * @type {string[]}
-     */
-    tokens = [];
-    /**
-     * @type {Rule[]}
-     */
-    rules = [];
-    /**
-     * @type {number}
-     */
-    remove = 0;
-    /**
+     * Current lexer state. Rules whose `start` array contains this value (or
+     * is empty) are eligible to match. Odd-numbered states are also matched
+     * by rules declared with `start: [0]`, mirroring flex's inclusive states.
+     *
      * @type {number}
      */
     state = 0;
-    /**
-     * @type {number}
-     */
+
+    /** @type {number} */
     index = 0;
-    /**
-     * @type {string}
-     */
+
+    /** @type {string} */
     input = "";
 
     /**
-     * @param {DefunctFunction} [defunct]
+     * When set to `true` from inside an action, the current match is rolled
+     * back and the next-best match is tried instead.
+     *
+     * @type {boolean}
+     */
+    reject = false;
+
+    /** @type {LexerRule[]} */
+    #rules = [];
+
+    /** @type {Token[]} */
+    #tokens = [];
+
+    /** @type {number} */
+    #remove = 0;
+
+    /** @type {DefunctHandler} */
+    #defunct;
+
+    /**
+     * @param {DefunctHandler} [defunct] Optional handler for unexpected characters.
      */
     constructor(defunct) {
-        defunct ||= function (chr) {
-            throw new Error("Unexpected character at index " + (this.index - 1) + ": " + chr);
-        };
-
-        this.defunct = defunct;
+        this.#defunct = typeof defunct === "function" ? defunct : defaultDefunct;
     }
 
     /**
-     * Add a lexing rule.
+     * Register a tokenization rule.
      *
      * @param {RegExp} pattern
-     * @param {RuleAction} action
-     * @param {number[]} [start]
-     * @returns {Lexer}
+     * @param {LexerAction} action
+     * @param {number[]} [start] States in which the rule is active. Defaults to `[0]`.
+     * @returns {this}
      */
-    addRule = (pattern, action, start) => {
+    addRule(pattern, action, start) {
         const global = pattern.global;
 
         if (!global || !pattern.sticky) {
             let flags = "gy";
-
             if (pattern.multiline) flags += "m";
             if (pattern.ignoreCase) flags += "i";
             if (pattern.unicode) flags += "u";
             pattern = new RegExp(pattern.source, flags);
         }
 
-        if (!Array.isArray(start)) start = [0];
-
-        this.rules.push({
-            pattern: pattern,
-            global: global,
-            action: action,
-            start: start,
+        this.#rules.push({
+            pattern,
+            global,
+            action,
+            start: Array.isArray(start) ? start : [0],
         });
 
         return this;
-    };
+    }
 
     /**
-     * Set the input string for lexing.
+     * Reset the lexer and load a new input string.
      *
      * @param {string} input
-     * @returns {Lexer}
+     * @returns {this}
      */
-    setInput = (input) => {
-        this.remove = 0;
+    setInput(input) {
+        this.#remove = 0;
         this.state = 0;
         this.index = 0;
-        this.tokens.length = 0;
+        this.#tokens.length = 0;
         this.input = input;
         return this;
-    };
+    }
 
     /**
-     * Lex the next token from the input.
+     * Produce the next token from the input, or `null` once exhausted.
      *
-     * @returns {string | string[] | undefined}
+     * @returns {Token | null}
      */
-    lex = () => {
-        if (this.tokens.length) return this.tokens.shift();
+    lex() {
+        if (this.#tokens.length) return /** @type {Token} */ (this.#tokens.shift());
 
         this.reject = true;
 
         while (this.index <= this.input.length) {
-            const matches = this.scan().splice(this.remove);
+            const matches = this.#scan().splice(this.#remove);
             const index = this.index;
 
             while (matches.length) {
-                if (!this.reject) {
-                    break;
-                }
-                const match = matches.shift();
+                if (!this.reject) break;
 
-                if (!match) break;
-
-                const result = match.result;
-                const length = match.length;
+                const match = /** @type {LexerMatch} */ (matches.shift());
+                const { result, length } = match;
                 this.index += length;
                 this.reject = false;
-                this.remove++;
+                this.#remove++;
 
-                let token = match.action.apply(this, result);
+                let token = match.action.apply(
+                    this,
+                    /** @type {string[]} */ (/** @type {unknown} */ (result)),
+                );
 
                 if (this.reject) {
                     this.index = result.index;
-                } else if (Array.isArray(token)) {
-                    this.tokens = token.slice(1);
-                    token = token[0];
-                } else {
-                    if (length) this.remove = 0;
+                } else if (token !== null && token !== undefined) {
+                    if (Array.isArray(token)) {
+                        this.#tokens = token.slice(1);
+                        token = token[0];
+                    }
+                    if (length) this.#remove = 0;
                     return token;
                 }
             }
@@ -161,79 +195,82 @@ export class Lexer {
 
             if (index < input.length) {
                 if (this.reject) {
-                    this.remove = 0;
-                    const token = this.defunct(input.charAt(this.index++));
-                    if (typeof token !== "undefined") {
+                    this.#remove = 0;
+                    const token = this.#defunct(input.charAt(this.index++));
+                    if (token !== null && token !== undefined) {
                         if (Array.isArray(token)) {
-                            this.tokens = token.slice(1);
+                            this.#tokens = token.slice(1);
                             return token[0];
                         }
-
                         return token;
                     }
                 } else {
-                    if (this.index !== index) this.remove = 0;
+                    if (this.index !== index) this.#remove = 0;
                     this.reject = true;
                 }
-            } else if (matches.length) this.reject = true;
-            else break;
+            } else if (matches.length) {
+                this.reject = true;
+            } else {
+                break;
+            }
         }
-    };
+
+        return null;
+    }
 
     /**
-     * Scan the input for matches.
+     * Probe every state-eligible rule at the current position, returning the
+     * matches sorted by length (longest first), with global rules pinned
+     * after non-global ones to preserve flex's "longest non-global wins"
+     * tie-breaking.
      *
-     * @returns {Match[]}
+     * @returns {LexerMatch[]}
      */
-    scan = () => {
-        /**
-         * @type {Match[]}
-         */
+    #scan() {
+        /** @type {LexerMatch[]} */
         const matches = [];
-        let index = 0;
 
         const state = this.state;
         const lastIndex = this.index;
         const input = this.input;
 
-        for (let i = 0, length = this.rules.length; i < length; i++) {
-            const rule = this.rules[i];
+        for (const rule of this.#rules) {
             const start = rule.start;
             const states = start.length;
+            const eligible =
+                !states || start.indexOf(state) >= 0 || (state % 2 && states === 1 && !start[0]);
 
-            if (!states || start.indexOf(state) >= 0 || (state % 2 && states === 1 && !start[0])) {
-                const pattern = rule.pattern;
-                pattern.lastIndex = lastIndex;
-                const result = pattern.exec(input);
+            if (!eligible) continue;
 
-                if (!result || result.index !== lastIndex) {
-                    continue;
-                }
+            const pattern = rule.pattern;
+            pattern.lastIndex = lastIndex;
+            const result = pattern.exec(input);
 
-                let j = matches.push({
-                    result: result,
-                    action: rule.action,
-                    length: result[0].length,
-                });
+            if (!result || result.index !== lastIndex) continue;
 
-                if (rule.global) {
-                    index = j;
-                }
+            let j = matches.push({
+                result,
+                action: rule.action,
+                length: result[0].length,
+                global: rule.global,
+            });
 
-                while (--j > index) {
-                    const k = j - 1;
+            while (--j > 0) {
+                const k = j - 1;
+                const cur = matches[j];
+                const prev = matches[k];
+                const longer = cur.length > prev.length;
+                const tieFavorsCur = cur.length === prev.length && prev.global && !cur.global;
 
-                    if (matches[j].length > matches[k].length) {
-                        const temple = matches[j];
-                        matches[j] = matches[k];
-                        matches[k] = temple;
-                    }
-                }
+                if (!longer && !tieFavorsCur) break;
+
+                matches[j] = prev;
+                matches[k] = cur;
             }
         }
 
         return matches;
-    };
+    }
 }
 
 export default Lexer;

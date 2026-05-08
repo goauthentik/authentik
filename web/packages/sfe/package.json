@@ -20,7 +20,7 @@
         "@rollup/plugin-node-resolve": "^16.0.3",
         "@rollup/plugin-swc": "^0.4.0",
         "@swc/cli": "^0.8.1",
-        "@swc/core": "^1.15.32",
+        "@swc/core": "^1.15.33",
         "@webcomponents/template": "^1.5.1",
         "base64-js": "^1.5.1",
         "core-js": "^3.49.0",

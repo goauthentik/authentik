@@ -4,7 +4,7 @@ sidebar_label: Drupal
 support_level: community
 ---
 
-## What is Drupal
+## What is Drupal?
 
 > Drupal is a free and open-source content management system written in PHP and
 > paired with a database.

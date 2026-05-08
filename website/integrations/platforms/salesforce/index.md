@@ -4,7 +4,7 @@ sidebar_label: Salesforce
 support_level: community
 ---
 
-## What is Salesforce
+## What is Salesforce?
 
 > Salesforce is a cloud-based CRM platform that provides sales, service, marketing, and analytics applications.
 >

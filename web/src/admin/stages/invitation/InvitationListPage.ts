@@ -1,6 +1,8 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/stages/invitation/InvitationForm";
 import "#admin/stages/invitation/InvitationListLink";
+import "#admin/stages/invitation/wizard/InvitationWizard";
+import "#elements/buttons/Dropdown";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
@@ -9,7 +11,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -18,11 +20,12 @@ import { SlottedTemplateResult } from "#elements/types";
 import { setPageDetails } from "#components/ak-page-navbar";
 
 import { InvitationForm } from "#admin/stages/invitation/InvitationForm";
+import { InvitationWizard } from "#admin/stages/invitation/wizard/InvitationWizard";
 
 import { FlowDesignationEnum, Invitation, ModelEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, PropertyValues } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -139,7 +142,66 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(InvitationForm);
+        return html`${this.renderNewInvitationDropdown()}`;
+    }
+
+    protected renderNewInvitationDropdown(): TemplateResult {
+        return html`<ak-dropdown class="pf-c-dropdown">
+            <div class="pf-c-dropdown__toggle pf-m-primary pf-m-split-button pf-m-action">
+                <button
+                    class="pf-c-dropdown__toggle-button"
+                    type="button"
+                    ${modalInvoker(InvitationWizard, { mode: "existing" })}
+                >
+                    ${msg("New Invitation")}
+                </button>
+                <button
+                    class="pf-c-dropdown__toggle-button"
+                    type="button"
+                    id="new-invitation-toggle"
+                    aria-haspopup="menu"
+                    aria-controls="new-invitation-menu"
+                    tabindex="0"
+                    aria-label=${msg("New Invitation options")}
+                >
+                    <i class="fas fa-caret-down" aria-hidden="true"></i>
+                </button>
+            </div>
+            <menu
+                class="pf-c-dropdown__menu"
+                hidden
+                id="new-invitation-menu"
+                aria-labelledby="new-invitation-toggle"
+                tabindex="-1"
+            >
+                <li role="presentation">
+                    <button
+                        type="button"
+                        role="menuitem"
+                        class="pf-c-dropdown__menu-item"
+                        ${modalInvoker(InvitationWizard, { mode: "existing" })}
+                        aria-description=${msg(
+                            "Opens the new invitation wizard and binds the invitation to an existing enrollment flow.",
+                        )}
+                    >
+                        ${msg("with Existing Enrollment Flow...")}
+                    </button>
+                </li>
+                <li role="presentation">
+                    <button
+                        type="button"
+                        role="menuitem"
+                        class="pf-c-dropdown__menu-item"
+                        ${modalInvoker(InvitationWizard, { mode: "create" })}
+                        aria-description=${msg(
+                            "Opens the new invitation wizard, which will create a new enrollment flow and invitation stage.",
+                        )}
+                    >
+                        ${msg("with New Enrollment Flow and Invitation Stage...")}
+                    </button>
+                </li>
+            </menu>
+        </ak-dropdown>`;
     }
 
     protected override render(): SlottedTemplateResult {

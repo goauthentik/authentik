@@ -4,7 +4,7 @@ sidebar_label: SeaTable
 support_level: community
 ---
 
-## What is SeaTable
+## What is SeaTable?
 
 > SeaTable is a no-code database and app builder platform that provides a web-based, spreadsheet-like interface for organizing data, building apps, and automating workflows. It is designed to function as a collaborative database with features like tables, views, forms, and permissions.
 >

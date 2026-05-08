@@ -4,7 +4,7 @@ sidebar_label: GitHub Enterprise Cloud
 support_level: community
 ---
 
-## What is GitHub Enterprise Cloud
+## What is GitHub Enterprise Cloud?
 
 > GitHub Enterprise Cloud is a plan for large businesses or teams who collaborate on GitHub.com.
 >

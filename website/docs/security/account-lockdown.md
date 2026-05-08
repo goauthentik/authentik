@@ -48,7 +48,7 @@ Download the lockdown blueprint by running:
 wget https://goauthentik.io/blueprints/example/flow-default-account-lockdown.yaml
 ```
 
-Alternatively, use this [link](/blueprints/example/flow-default-account-lockdown.yaml) to view and save the file.
+Alternatively, use this <DownloadLink to="/blueprints/example/flow-default-account-lockdown.yaml">link</DownloadLink> to view and save the file.
 
 ### Step 2. Import the blueprint file
 

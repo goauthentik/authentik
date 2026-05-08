@@ -182,8 +182,31 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     /**
      * Actions to display at the end of the wizard.
      */
+    private _actions: WizardAction[] = [];
+
     @property({ attribute: false })
-    public actions: WizardAction[] = [];
+    public get actions(): WizardAction[] {
+        return this._actions;
+    }
+
+    public set actions(value: WizardAction[]) {
+        const oldValue = this._actions;
+        this._actions = value;
+
+        if (this._actions.length > 0) {
+            if (!this.querySelector(`[slot="ak-wizard-page-action"]`)) {
+                const actionPage = document.createElement("ak-wizard-page-action");
+                actionPage.slot = "ak-wizard-page-action";
+                actionPage.dataset.wizardmanaged = "true";
+                this.appendChild(actionPage);
+            }
+            if (!this.steps.includes("ak-wizard-page-action")) {
+                this.steps = [...this.steps, "ak-wizard-page-action"];
+            }
+        }
+
+        this.requestUpdate("actions", oldValue);
+    }
 
     @property({ attribute: false })
     public finalHandler?: () => Promise<void>;
@@ -530,12 +553,14 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
         return guard(
             [activeStepIndex, lastPage, canBack, cancelable, valid, childElementCount],
             () => {
+                const customLabel = this.activeStepElement?.formatNextLabel();
                 const nextLabel =
-                    lastPage && activeStepIndex > 0
+                    customLabel ??
+                    (lastPage && activeStepIndex > 0
                         ? this.cancelable
                             ? ButtonKindLabelRecord.create()
                             : ButtonKindLabelRecord.finish()
-                        : ButtonKindLabelRecord.next();
+                        : ButtonKindLabelRecord.next());
 
                 return [
                     cancelable

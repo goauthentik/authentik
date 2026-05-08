@@ -1,6 +1,6 @@
 //! Utilities to run an axum server.
 
-use std::{net, os::unix};
+use std::{net, os::unix, path::PathBuf};
 
 use ak_common::arbiter::{Arbiter, Tasks};
 use axum::Router;
@@ -21,26 +21,20 @@ async fn run_plain(
     name: &str,
     router: Router,
     addr: net::SocketAddr,
-    allow_failure: bool,
 ) -> Result<()> {
     info!(addr = addr.to_string(), "starting {name} server");
 
     let handle = Handle::new();
     arbiter.add_net_handle(handle.clone()).await;
 
-    let res = axum_server::Server::bind(addr)
+    axum_server::Server::bind(addr)
         .acceptor(CatchPanicAcceptor::new(
             ProxyProtocolAcceptor::new().acceptor(DefaultAcceptor::new()),
             arbiter.clone(),
         ))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<net::SocketAddr>())
-        .await;
-    if res.is_err() && allow_failure {
-        arbiter.shutdown().await;
-        return Ok(());
-    }
-    res?;
+        .await?;
 
     Ok(())
 }
@@ -49,21 +43,29 @@ async fn run_plain(
 ///
 /// `name` is only used for observability purposes and should describe which module is starting the
 /// server.
-///
-/// `allow_failure` allows the server to fail silently.
 pub fn start_plain(
     tasks: &mut Tasks,
     name: &'static str,
     router: Router,
     addr: net::SocketAddr,
-    allow_failure: bool,
 ) -> Result<()> {
     let arbiter = tasks.arbiter();
     tasks
         .build_task()
         .name(&format!("{}::run_plain({name}, {addr})", module_path!()))
-        .spawn(run_plain(arbiter, name, router, addr, allow_failure))?;
+        .spawn(run_plain(arbiter, name, router, addr))?;
     Ok(())
+}
+
+struct UnixSocketGuard(PathBuf);
+
+impl Drop for UnixSocketGuard {
+    fn drop(&mut self) {
+        trace!(path = ?self.0, "removing socket");
+        if let Err(err) = std::fs::remove_file(&self.0) {
+            trace!(?err, "failed to remove socket, ignoring");
+        }
+    }
 }
 
 pub(crate) async fn run_unix(
@@ -71,38 +73,29 @@ pub(crate) async fn run_unix(
     name: &str,
     router: Router,
     addr: unix::net::SocketAddr,
-    allow_failure: bool,
 ) -> Result<()> {
     info!(?addr, "starting {name} server");
 
     let handle = Handle::new();
     arbiter.add_unix_handle(handle.clone()).await;
 
-    if !allow_failure && let Some(path) = addr.as_pathname() {
+    let _guard = if let Some(path) = addr.as_pathname() {
         trace!(?addr, "removing socket");
         if let Err(err) = std::fs::remove_file(path) {
             trace!(?err, "failed to remove socket, ignoring");
         }
-    }
-    let res = axum_server::Server::bind(addr.clone())
+        Some(UnixSocketGuard(path.to_owned()))
+    } else {
+        None
+    };
+    axum_server::Server::bind(addr.clone())
         .acceptor(CatchPanicAcceptor::new(
             DefaultAcceptor::new(),
             arbiter.clone(),
         ))
         .handle(handle)
         .serve(router.into_make_service())
-        .await;
-    if !allow_failure && let Some(path) = addr.as_pathname() {
-        trace!(?addr, "removing socket");
-        if let Err(err) = std::fs::remove_file(path) {
-            trace!(?err, "failed to remove socket, ignoring");
-        }
-    }
-    if res.is_err() && allow_failure {
-        arbiter.shutdown().await;
-        return Ok(());
-    }
-    res?;
+        .await?;
 
     Ok(())
 }
@@ -111,20 +104,17 @@ pub(crate) async fn run_unix(
 ///
 /// `name` is only used for observability purposes and should describe which module is starting the
 /// server.
-///
-/// `allow_failure` allows the server to fail silently.
 pub fn start_unix(
     tasks: &mut Tasks,
     name: &'static str,
     router: Router,
     addr: unix::net::SocketAddr,
-    allow_failure: bool,
 ) -> Result<()> {
     let arbiter = tasks.arbiter();
     tasks
         .build_task()
         .name(&format!("{}::run_unix({name}, {addr:?})", module_path!()))
-        .spawn(run_unix(arbiter, name, router, addr, allow_failure))?;
+        .spawn(run_unix(arbiter, name, router, addr))?;
     Ok(())
 }
 

@@ -4,7 +4,7 @@ sidebar_label: Tandoor
 support_level: community
 ---
 
-## What is Tandoor
+## What is Tandoor?
 
 > Application for managing recipes, planning meals and building shopping lists.
 >

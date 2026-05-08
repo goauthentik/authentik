@@ -4,7 +4,7 @@ sidebar_label: Miniflux
 support_level: community
 ---
 
-## What is Miniflux
+## What is Miniflux?
 
 > Miniflux is a minimalist and opinionated RSS feed reader.
 >
