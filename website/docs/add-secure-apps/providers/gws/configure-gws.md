@@ -27,7 +27,7 @@ The main steps to configure your Google Workspace organization are:
 
 ### Create a service account
 
-1. After the new Admin SDK API is enabled (it might take a few minutes), return to the Google Cloud console home page by clicking on **Google Cloud** in the upper-left.
+1. After the new Admin SDK API is enabled (it might take a few minutes), return to the Google Cloud console home page by clicking on **Google Cloud** in the upper left.
 2. Use the search bar to find and navigate to the **IAM** page.
 3. On the **IAM** page, click **Service Accounts** in the left navigation pane.
 4. At the top of the **Service Accounts** page, click **Create Service Account**.
