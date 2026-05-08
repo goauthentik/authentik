@@ -4,6 +4,9 @@ sidebar_label: Absorb LMS
 support_level: community
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 ## What is Absorb LMS?
 
 > Absorb LMS is a cloud‑based learning management system used by organizations to deliver, track, and manage employee, partner, and customer training. It lets you create or import courses, assign them to different audiences, and report on learner progress and compliance from a centralized portal.
@@ -21,15 +24,19 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
+authentik can be integrated with Absorb LMS via OIDC or SAML, select your preferred option:
+
+<Tabs
+defaultValue="oidc"
+values={[
+{ label: "OIDC", value: "oidc" },
+{ label: "SAML", value: "saml" },
+]}>
+<TabItem value="oidc">
+
 ## authentik configuration
 
-To support the integration of Absorb LMS with authentik, you need to create an application/provider pair in authentik.
-
 ### Create an application and provider in authentik
-
-#### OAuth
-
-#### SAML
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -42,11 +49,46 @@ To support the integration of Absorb LMS with authentik, you need to create an a
 
 3. Click **Submit** to save the new application and provider.
 
-#### SCIM provisioning
+## Absorb LMS configuration
+
+1. Write first step here...
+
+2. Continue with steps....
+
+  </TabItem>
+  <TabItem value="saml">
+
+## authentik configuration
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+        - _If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/chat-communication-collaboration/owncloud/index.md) for a complex requirements example._
+    - **Choose a Provider type**: _If there is a specific provider type required, state that here._
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - _If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/chat-communication-collaboration/owncloud/index.md) for a complex requirements example._
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## Absorb LMS configuration
 
-Insert service configuration
+1. Write first step here...
+
+2. Continue with steps....
+
+  </TabItem>
+</Tabs>
+
+## SCIM provisioning _(optional)_
+
+authentik can also optionally be integrated with Absorb LMS via SCIM for user provisioning. This can be done in conjunction with the OIDC or SAML integration or without.
+
+### authentik SCIM configuration
+
+### Absorb LMS SCIM configuration
 
 1. Write first step here...
 
@@ -54,7 +96,7 @@ Insert service configuration
 
 ## Configuration verification
 
-Template sentence that you can typically use here: "To confirm that authentik is properly configured with Absorb LMS, log out and log back in via authentik."
+To confirm that authentik is properly configured with Absorb LMS, log out and log back in via authentik.
 
 If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.
 
