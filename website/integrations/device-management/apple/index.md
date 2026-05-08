@@ -15,7 +15,7 @@ authentik_preview: true
 
 ## What is Apple Business Manager?
 
-> Apple Business Manager is a web-based portal for IT administrators, managers, and procurement professionals to manage devices, and automate device enrollment.
+> Apple Business Manager is a web-based portal for IT administrators, managers, and procurement professionals to manage devices and automate device enrollment.
 >
 > Organizations using Apple Business Essentials can allow their users to authenticate into their Apple devices using their IdP credentials, typically their company email addresses.
 >
@@ -35,7 +35,7 @@ While this integration guide focuses on Business Manager, the instructions are a
 
 ## Authentication Flow
 
-This sequence diagram shows a high-level flow between the user's apple device, authentik, and Apple Business Manager.
+This sequence diagram shows a high-level flow between Apple device, authentik, and Apple Business Manager.
 
 ```mermaid
 sequenceDiagram
@@ -80,7 +80,7 @@ The following placeholders are used in this guide:
 
 ## authentik configuration
 
-The workflow to configure authentik as an identity provider for Apple Business Manager involves creating scope mappings, signing keys, a Shared Signals Framework provider, and a OIDC provider/application pair.
+The workflow to configure authentik as an identity provider for Apple Business Manager involves creating scope mappings, signing keys, a Shared Signals Framework provider, and an OIDC provider/application pair.
 
 Together, these components will handle the authentication flow and backchannel communication between authentik and Apple Business Manager.
 
@@ -140,9 +140,9 @@ Apple Business Manager requires that we create three scope mappings for our OIDC
 
 3. Click **Finish** and confirm that new scope mapping is listed in the **Property Mappings** overview.
 
-### 2. Create signing keys
+### 2. Create signing key
 
-You will need to create **Signing Key** to sign Security Event Tokens (SET).
+You will need to create a **Signing Key** to sign Security Event Tokens (SET).
 This key is used to both sign and verify the SETs that are sent between authentik and Apple Business Manager.
 
 You can either generate a new key or import an existing one.
@@ -224,7 +224,7 @@ While the OIDC provider handles the authentication flow, you'll need to create a
 
 The authentik user you will use to test the stream connection to Apple Business Manager must either have the role of superuser or have permission to add streams to the SSF provider.
 
-1. From authentik the Admin interface, navigate to **Applications > Providers** and click the Apple Business Manager SSF provider.
+1. From the authentik Admin interface, navigate to **Applications > Providers** and click the Apple Business Manager SSF provider.
 
 2. Click the **Permissions** tab, select **User Object Permissions**, and click **Assign to new user**.
 
@@ -326,8 +326,8 @@ You're now ready to configure federated authentication with authentik.
     - **Name**: `authentik`
     - **Client ID**: _`Your Client ID`_
     - **Client Secret**: _`Your Client Secret`_
-    - **SSF Config URL**: **_`Your SSF Config URL with 443 port`_**
-    - **OpenID Config URL**: **_`Your OpenID Config URL with 443 port`_**
+    - **SSF Config URL**: **_`Your SSF Config URL`_**
+    - **OpenID Config URL**: **_`Your OpenID Config URL`_**
 
 5. Click **Continue** to begin Apple's verification of your configuration.
 6. When prompted to authenticate through your authentik instance, provide your credentials and click **Log In**.
@@ -342,7 +342,8 @@ If the connection test fails, your configuration may be incorrect. Here are some
 - [x] Verify that the Client ID and Client Secret values are correct.
 - [x] Verify that scope mappings are created and all assigned to the OIDC provider.
 - [x] Verify that the SSF provider is assigned to the application.
-- [x] Ensure that the SSF Config URL and OpenID Configuration URL include the port number `443`.
+- [x] Ensure that the SSF Config URL and OpenID Configuration URL are accurate.
+- [x] Ensure that the OAuth and SSF providers both have signing keys set. Ideally the same certificate should be used for both.
 
 If you're still having issues, check your authentik instance's log for any errors that might have occurred during the authentication process. If Apple can reach your authentik instance, you should see logs indicating Apple's attempts to test the authentication flow.
 
@@ -373,9 +374,9 @@ When creating test users, ensure that their role is set to Standard (or Student)
 
 ### 2. Test the authentication flow
 
-1. Confirmed the test user in synchronized in authentik.
+1. Confirm the test user is synchronized in authentik.
 2. Open a private browsing window and navigate to the [Apple Business Manager](https://business.apple.com/).
-3. In the email field, provide the email address assigned to test user.
+3. In the email field, provide the email address assigned to the test user.
 
 4. Submit the form to trigger the authentication flow.
 
