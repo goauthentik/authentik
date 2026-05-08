@@ -50,7 +50,9 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
 
     protected override renderForm(): TemplateResult {
         return html`<span>
-                ${msg("Redirect the user to another flow, potentially with all gathered context")}
+                ${msg(
+                    "Redirect the user to a static URL or another flow, optionally with all gathered context.",
+                )}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

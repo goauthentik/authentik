@@ -86,6 +86,71 @@ For Helm deployments, ensure access to the following repository. In an air-gappe
 
 - https://charts.goauthentik.io
 
+## Upgrades
+
+Before upgrading an air-gapped deployment, review the [release notes](../../releases/) for the target version and mirror the required resources for that version into your internal registry or artifact repository. The air-gapped upgrade itself uses the same upgrade commands as a connected deployment, but those commands must reference the mirrored images and chart artifacts.
+
+<Tabs
+  defaultValue="docker-compose"
+  values={[
+    {label: 'Docker Compose', value: 'docker-compose'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}>
+  <TabItem value="docker-compose">
+
+On a system with internet access, download the target release's `compose.yml` file, then mirror the authentik server image that is referenced by that file. If you use managed outposts, mirror the matching outpost images as well.
+
+After transferring the updated `compose.yml` into the air-gapped environment, update your `.env` file to point to the mirrored authentik image repository and target tag:
+
+```shell
+AUTHENTIK_IMAGE=registry.company/authentik/server
+AUTHENTIK_TAG=2026.2.0
+AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=registry.company/authentik/%(type)s:%(version)s
+```
+
+Replace the registry path and version with your mirrored image location and target authentik version. If the air-gapped environment can pull from an internal registry, run the normal Docker Compose upgrade commands:
+
+```shell
+docker compose pull
+docker compose up -d
+```
+
+If you transfer images as archives instead of using an internal registry, load the images on the Docker host first, then run `docker compose up -d`.
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+On a system with internet access, pull the target authentik Helm chart and mirror the authentik server image and any outpost images you use.
+
+For example, `helm pull` creates the chart archive that you can transfer into the air-gapped environment:
+
+```shell
+helm repo update
+helm pull authentik/authentik --version <chart-version>
+```
+
+Transfer the resulting `authentik-<chart-version>.tgz` file into the air-gapped environment, then update your separate `values.yaml` file to point to the mirrored images:
+
+```yaml
+global:
+    image:
+        repository: registry.company/authentik/server
+        tag: 2026.2.0
+
+authentik:
+    outposts:
+        container_image_base: registry.company/authentik/%(type)s:%(version)s
+```
+
+Replace the registry path and version with your mirrored image location and target authentik version. Then upgrade from the local chart archive:
+
+```shell
+helm upgrade --install authentik ./authentik-<chart-version>.tgz -f values.yaml
+```
+
+  </TabItem>
+</Tabs>
+
 ## Network requirements
 
 ### Required ports

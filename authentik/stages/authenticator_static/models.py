@@ -3,7 +3,6 @@
 from base64 import b32encode
 from os import urandom
 
-from django.conf import settings
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -77,9 +76,6 @@ class StaticDevice(SerializerModel, ThrottlingMixin, Device):
         from authentik.stages.authenticator_static.api import StaticDeviceSerializer
 
         return StaticDeviceSerializer
-
-    def get_throttle_factor(self):
-        return getattr(settings, "OTP_STATIC_THROTTLE_FACTOR", 1)
 
     def verify_token(self, token):
         verify_allowed, _ = self.verify_is_allowed()

@@ -50,14 +50,19 @@ const items = [
             type: "doc",
             id: "enterprise/index",
         },
-        items: ["enterprise/get-started", "enterprise/manage-enterprise", "enterprise/entsupport"],
+        items: [
+            "enterprise/get-started",
+            "enterprise/enterprise-features",
+            "enterprise/manage-enterprise",
+            "enterprise/enterprise-support",
+        ],
     },
     {
         //#endregion
 
         //#region Installation and Configuration
         type: "category",
-        label: "Installation and Configuration ",
+        label: "Installation and Configuration",
         collapsed: true,
         link: {
             type: "doc",
@@ -316,6 +321,7 @@ const items = [
                             id: "add-secure-apps/flows-stages/stages/index",
                         },
                         items: [
+                            "add-secure-apps/flows-stages/stages/account_lockdown/index",
                             "add-secure-apps/flows-stages/stages/authenticator_duo/index",
                             "add-secure-apps/flows-stages/stages/authenticator_email/index",
                             "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
@@ -325,7 +331,8 @@ const items = [
                             "add-secure-apps/flows-stages/stages/authenticator_validate/index",
                             "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
                             "add-secure-apps/flows-stages/stages/captcha/index",
-                            "add-secure-apps/flows-stages/stages/deny",
+                            "add-secure-apps/flows-stages/stages/consent/index",
+                            "add-secure-apps/flows-stages/stages/deny/index",
                             "add-secure-apps/flows-stages/stages/email/index",
                             "add-secure-apps/flows-stages/stages/endpoint/index",
                             "add-secure-apps/flows-stages/stages/identification/index",
@@ -335,10 +342,10 @@ const items = [
                             "add-secure-apps/flows-stages/stages/prompt/index",
                             "add-secure-apps/flows-stages/stages/redirect/index",
                             "add-secure-apps/flows-stages/stages/source/index",
-                            "add-secure-apps/flows-stages/stages/user_delete",
+                            "add-secure-apps/flows-stages/stages/user_delete/index",
                             "add-secure-apps/flows-stages/stages/user_login/index",
-                            "add-secure-apps/flows-stages/stages/user_logout",
-                            "add-secure-apps/flows-stages/stages/user_write",
+                            "add-secure-apps/flows-stages/stages/user_logout/index",
+                            "add-secure-apps/flows-stages/stages/user_write/index",
                         ],
                     },
                 ],
@@ -413,21 +420,38 @@ const items = [
                 },
                 items: [
                     "customize/policies/working_with_policies",
+                    "customize/policies/bindings",
                     {
                         type: "category",
-                        label: "Expression Policies",
+                        label: "Policy Types",
                         link: {
                             type: "doc",
-                            id: "customize/policies/expression",
+                            id: "customize/policies/types/index",
                         },
                         items: [
-                            "customize/policies/expression/unique_email",
-                            "customize/policies/expression/managing_flow_context_keys",
-                            "customize/policies/expression/source_switch",
-                            "customize/policies/expression/whitelist_email",
+                            "customize/policies/types/event-matcher",
+                            {
+                                type: "category",
+                                label: "Expression Policies",
+                                link: {
+                                    type: "doc",
+                                    id: "customize/policies/types/expression/index",
+                                },
+                                items: [
+                                    "customize/policies/types/expression/reference",
+                                    "customize/policies/types/expression/unique_email",
+                                    "customize/policies/types/expression/managing_flow_context_keys",
+                                    "customize/policies/types/expression/source_switch",
+                                    "customize/policies/types/expression/whitelist_email",
+                                ],
+                            },
+                            "customize/policies/types/geoip",
+                            "customize/policies/types/password",
+                            "customize/policies/types/password-expiry",
+                            "customize/policies/types/password-uniqueness",
+                            "customize/policies/types/reputation",
                         ],
                     },
-                    "customize/policies/unique_password",
                 ],
             },
             {
@@ -471,6 +495,7 @@ const items = [
             },
             "customize/branding",
             "customize/files",
+            "customize/file-picker",
         ],
     },
     {
@@ -496,6 +521,7 @@ const items = [
                     "users-sources/user/user_ref",
                     "users-sources/user/invitations",
                     "users-sources/user/password_reset_on_login",
+                    "users-sources/user/user-interface",
                 ],
             },
             {
@@ -684,8 +710,16 @@ const items = [
                     id: "sys-mgmt/events/index",
                 },
                 items: [
-                    "sys-mgmt/events/notifications",
-                    "sys-mgmt/events/notification_rule_expression_policies",
+                    {
+                        type: "category",
+                        label: "Notification Rules",
+                        collapsed: true,
+                        link: {
+                            id: "sys-mgmt/events/notifications",
+                            type: "doc",
+                        },
+                        items: ["sys-mgmt/events/notification_rule_expression_policies"],
+                    },
                     "sys-mgmt/events/transports",
                     "sys-mgmt/events/logging-events",
                     "sys-mgmt/events/event-actions",
@@ -803,7 +837,10 @@ const items = [
                             type: "doc",
                             id: "endpoint-devices/authentik-agent/release-notes/index",
                         },
-                        items: ["endpoint-devices/authentik-agent/release-notes/v0.35"],
+                        items: [
+                            "endpoint-devices/authentik-agent/release-notes/v0.40",
+                            "endpoint-devices/authentik-agent/release-notes/v0.35",
+                        ],
                     },
                 ],
             },
@@ -834,11 +871,13 @@ const items = [
                         items: [
                             "endpoint-devices/device-compliance/connectors/authentik-agent",
                             "endpoint-devices/device-compliance/connectors/fleetdm",
+                            "endpoint-devices/device-compliance/connectors/google-chrome",
                         ],
                     },
                     "endpoint-devices/device-compliance/device-reporting",
                     "endpoint-devices/device-compliance/device-compliance-policy",
                     "endpoint-devices/device-compliance/browser-extension",
+                    "endpoint-devices/device-compliance/fleet-conditional-access",
                 ],
             },
         ],
@@ -934,6 +973,7 @@ const items = [
         items: [
             "security/policy",
             "security/security-hardening",
+            "security/account-lockdown",
             {
                 //#endregion
 
@@ -943,6 +983,7 @@ const items = [
                 items: [
                     "security/audits-and-certs/2023-06-cure53",
                     "security/audits-and-certs/2024-11-cobalt",
+                    "security/audits-and-certs/2025-09-includesec",
                 ],
             },
             {

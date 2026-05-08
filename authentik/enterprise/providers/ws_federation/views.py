@@ -1,6 +1,8 @@
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.utils.translation import gettext as _
+from django.views import View
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, AuthenticatedSession
@@ -159,4 +161,25 @@ class WSFedFlowFinalView(ChallengeStageView):
                 "url": sign_in_req.wreply,
                 "attrs": response,
             },
+        )
+
+
+class MetadataDownload(View):
+    """Redirect to metadata download"""
+
+    def dispatch(self, request: HttpRequest, application_slug: str) -> HttpResponse:
+        app = Application.objects.filter(slug=application_slug).with_provider().first()
+        if not app:
+            raise Http404
+        provider = app.get_provider()
+        if not provider:
+            raise Http404
+        return redirect(
+            reverse(
+                "authentik_api:wsfederationprovider-metadata",
+                kwargs={
+                    "pk": provider.pk,
+                },
+            )
+            + "?download"
         )

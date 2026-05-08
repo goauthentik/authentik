@@ -529,6 +529,7 @@ export class CaptchaStage
         const template = iframeTemplate(captchaElement, {
             challengeURL: challengeURL.toString(),
             theme: this.activeTheme,
+            scriptOnLoad: !(controller instanceof TurnstileController),
         });
 
         if (
@@ -558,6 +559,8 @@ export class CaptchaStage
         iframe.src = url;
     }
 }
+
+export default CaptchaStage;
 
 declare global {
     interface HTMLElementTagNameMap {

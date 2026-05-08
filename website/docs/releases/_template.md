@@ -14,7 +14,7 @@ slug: "/releases/xxxx.x"
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../install-config/upgrade.mdx).
 
 :::warning
-When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
+When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
 :::
 
 ### Docker Compose
@@ -22,7 +22,7 @@ When you upgrade, be aware that the version of the authentik instance and of any
 To upgrade, download the new docker-compose file and update the Docker stack with the new version, using these commands:
 
 ```shell
-wget -O docker-compose.yml https://goauthentik.io/version/xxxx.x/docker-compose.yml
+wget -O docker-compose.yml https://goauthentik.io/version/xxxx.x/lifecycle/container/compose.yml
 docker compose up -d
 ```
 

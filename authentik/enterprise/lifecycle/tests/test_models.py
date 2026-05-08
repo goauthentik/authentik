@@ -1,6 +1,8 @@
+import datetime as dt
 from datetime import timedelta
 from unittest.mock import patch
 
+from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
@@ -27,6 +29,11 @@ class TestLifecycleModels(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
 
     def _get_request(self):
         return self.factory.get("/")
@@ -319,7 +326,7 @@ class TestLifecycleModels(TestCase):
             content_type=content_type, object_id=str(app_one.pk), rule=rule_overdue
         )
         LifecycleIteration.objects.filter(pk=iteration.pk).update(
-            opened_on=(timezone.now().date() - timedelta(days=20))
+            opened_on=(timezone.now() - timedelta(days=20))
         )
 
         # Apply again to trigger overdue logic
@@ -383,7 +390,7 @@ class TestLifecycleModels(TestCase):
             content_type=content_type, object_id=str(app_overdue.pk), rule=rule_overdue
         )
         LifecycleIteration.objects.filter(pk=overdue_iteration.pk).update(
-            opened_on=(timezone.now().date() - timedelta(days=20))
+            opened_on=(timezone.now() - timedelta(days=20))
         )
 
         # Apply overdue rule to mark iteration as overdue
@@ -436,31 +443,6 @@ class TestLifecycleModels(TestCase):
         objects = list(rule.get_objects())
         self.assertIn(app_one, objects)
         self.assertIn(app_two, objects)
-
-    def test_rule_type_excludes_objects_with_specific_rules(self):
-        app_with_rule = Application.objects.create(name=generate_id(), slug=generate_id())
-        app_without_rule = Application.objects.create(name=generate_id(), slug=generate_id())
-        content_type = ContentType.objects.get_for_model(Application)
-
-        # Create a specific rule for app_with_rule
-        LifecycleRule.objects.create(
-            name=generate_id(),
-            content_type=content_type,
-            object_id=str(app_with_rule.pk),
-            interval="days=30",
-        )
-
-        # Create a type-level rule
-        type_rule = LifecycleRule.objects.create(
-            name=generate_id(),
-            content_type=content_type,
-            object_id=None,
-            interval="days=60",
-        )
-
-        objects = list(type_rule.get_objects())
-        self.assertNotIn(app_with_rule, objects)
-        self.assertIn(app_without_rule, objects)
 
     def test_rule_type_apply_creates_iterations_for_all_objects(self):
         app_one = Application.objects.create(name=generate_id(), slug=generate_id())
@@ -667,3 +649,250 @@ class TestLifecycleModels(TestCase):
         reviewers = list(rule.get_reviewers())
         self.assertIn(explicit_reviewer, reviewers)
         self.assertIn(group_member, reviewers)
+
+    def test_multiple_rules_same_object_create_separate_iterations(self):
+        """Two rules targeting the same object each create their own iteration."""
+        obj = Application.objects.create(name=generate_id(), slug=generate_id())
+        content_type = ContentType.objects.get_for_model(obj)
+
+        rule_one = self._create_rule_for_object(obj, interval="days=30", grace_period="days=10")
+        rule_two = self._create_rule_for_object(obj, interval="days=60", grace_period="days=20")
+
+        iterations = LifecycleIteration.objects.filter(
+            content_type=content_type, object_id=str(obj.pk)
+        )
+        self.assertEqual(iterations.count(), 2)
+
+        iter_one = iterations.get(rule=rule_one)
+        iter_two = iterations.get(rule=rule_two)
+        self.assertEqual(iter_one.state, ReviewState.PENDING)
+        self.assertEqual(iter_two.state, ReviewState.PENDING)
+        self.assertNotEqual(iter_one.pk, iter_two.pk)
+
+    def test_multiple_rules_same_object_reviewed_independently(self):
+        """Reviewing one rule's iteration does not affect the other rule's iteration."""
+        obj = Application.objects.create(name=generate_id(), slug=generate_id())
+        content_type = ContentType.objects.get_for_model(obj)
+
+        reviewer = create_test_user()
+
+        rule_one = self._create_rule_for_object(obj, min_reviewers=1)
+        rule_two = self._create_rule_for_object(obj, min_reviewers=1)
+
+        group = Group.objects.create(name=generate_id())
+        group.users.add(reviewer)
+        rule_one.reviewer_groups.add(group)
+        rule_two.reviewer_groups.add(group)
+
+        iter_one = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule_one
+        )
+        iter_two = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule_two
+        )
+
+        request = self._get_request()
+
+        # Review only rule_one's iteration
+        Review.objects.create(iteration=iter_one, reviewer=reviewer)
+        iter_one.on_review(request)
+
+        iter_one.refresh_from_db()
+        iter_two.refresh_from_db()
+        self.assertEqual(iter_one.state, ReviewState.REVIEWED)
+        self.assertEqual(iter_two.state, ReviewState.PENDING)
+
+    def test_type_rule_and_object_rule_both_create_iterations(self):
+        """A type-level rule and an object-level rule both create iterations for the same object."""
+        obj = Application.objects.create(name=generate_id(), slug=generate_id())
+        content_type = ContentType.objects.get_for_model(obj)
+
+        object_rule = self._create_rule_for_object(obj, interval="days=30")
+        type_rule = self._create_rule_for_type(Application, interval="days=60")
+
+        iterations = LifecycleIteration.objects.filter(
+            content_type=content_type, object_id=str(obj.pk)
+        )
+        self.assertEqual(iterations.count(), 2)
+        self.assertTrue(iterations.filter(rule=object_rule).exists())
+        self.assertTrue(iterations.filter(rule=type_rule).exists())
+
+
+class TestLifecycleDateBoundaries(TestCase):
+    """Verify that start_of_day normalization ensures correct overdue/due
+    detection regardless of exact task execution time within a day.
+
+    The daily task may run at any point during the day. The start_of_day
+    normalization in _get_newly_overdue_iterations and _get_newly_due_objects
+    ensures that the boundary is always at midnight, so millisecond variations
+    in task execution time do not affect results."""
+
+    @classmethod
+    def setUpTestData(cls):
+        config = apps.get_app_config("authentik_tasks_schedules")
+        config._on_startup_callback(None)
+
+    def _create_rule_and_iteration(self, grace_period="days=1", interval="days=365"):
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        content_type = ContentType.objects.get_for_model(Application)
+        rule = LifecycleRule.objects.create(
+            name=generate_id(),
+            content_type=content_type,
+            object_id=str(app.pk),
+            interval=interval,
+            grace_period=grace_period,
+        )
+        iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(app.pk), rule=rule
+        )
+        return app, rule, iteration
+
+    def test_overdue_iteration_opened_yesterday(self):
+        """grace_period=1 day: iteration opened yesterday at any time is overdue today."""
+        _, rule, iteration = self._create_rule_and_iteration(grace_period="days=1")
+        fixed_now = dt.datetime(2025, 6, 15, 14, 30, 0, tzinfo=dt.UTC)
+        for opened_on in [
+            dt.datetime(2025, 6, 14, 0, 0, 0, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 14, 12, 0, 0, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 14, 23, 59, 59, 999999, tzinfo=dt.UTC),
+        ]:
+            with self.subTest(opened_on=opened_on):
+                LifecycleIteration.objects.filter(pk=iteration.pk).update(
+                    opened_on=opened_on, state=ReviewState.PENDING
+                )
+                with patch("django.utils.timezone.now", return_value=fixed_now):
+                    self.assertIn(iteration, list(rule._get_newly_overdue_iterations()))
+
+    def test_not_overdue_iteration_opened_today(self):
+        """grace_period=1 day: iteration opened today at any time is NOT overdue."""
+        _, rule, iteration = self._create_rule_and_iteration(grace_period="days=1")
+        fixed_now = dt.datetime(2025, 6, 15, 14, 30, 0, tzinfo=dt.UTC)
+        for opened_on in [
+            dt.datetime(2025, 6, 15, 0, 0, 0, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 15, 14, 30, 0, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 15, 23, 59, 59, 999999, tzinfo=dt.UTC),
+        ]:
+            with self.subTest(opened_on=opened_on):
+                LifecycleIteration.objects.filter(pk=iteration.pk).update(
+                    opened_on=opened_on, state=ReviewState.PENDING
+                )
+                with patch("django.utils.timezone.now", return_value=fixed_now):
+                    self.assertNotIn(iteration, list(rule._get_newly_overdue_iterations()))
+
+    def test_overdue_independent_of_task_execution_time(self):
+        """Overdue detection gives the same result whether the task runs at 00:00:01 or 23:59:59."""
+        _, rule, iteration = self._create_rule_and_iteration(grace_period="days=1")
+        opened_on = dt.datetime(2025, 6, 14, 18, 0, 0, tzinfo=dt.UTC)
+        LifecycleIteration.objects.filter(pk=iteration.pk).update(
+            opened_on=opened_on, state=ReviewState.PENDING
+        )
+        for task_time in [
+            dt.datetime(2025, 6, 15, 0, 0, 1, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 15, 12, 0, 0, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 15, 23, 59, 59, tzinfo=dt.UTC),
+        ]:
+            with self.subTest(task_time=task_time):
+                with patch("django.utils.timezone.now", return_value=task_time):
+                    self.assertIn(iteration, list(rule._get_newly_overdue_iterations()))
+
+    def test_overdue_boundary_multi_day_grace_period(self):
+        """grace_period=30 days: overdue after 30 full days, not after 29."""
+        _, rule, iteration = self._create_rule_and_iteration(grace_period="days=30")
+        fixed_now = dt.datetime(2025, 6, 15, 14, 30, 0, tzinfo=dt.UTC)
+
+        # Opened 30 days ago (May 16), should go overdue
+        LifecycleIteration.objects.filter(pk=iteration.pk).update(
+            opened_on=dt.datetime(2025, 5, 16, 12, 0, 0, tzinfo=dt.UTC),
+            state=ReviewState.PENDING,
+        )
+        with patch("django.utils.timezone.now", return_value=fixed_now):
+            self.assertIn(iteration, list(rule._get_newly_overdue_iterations()))
+
+        # Opened 29 days ago (May 17), should NOT go overdue
+        LifecycleIteration.objects.filter(pk=iteration.pk).update(
+            opened_on=dt.datetime(2025, 5, 17, 12, 0, 0, tzinfo=dt.UTC),
+            state=ReviewState.PENDING,
+        )
+        with patch("django.utils.timezone.now", return_value=fixed_now):
+            self.assertNotIn(iteration, list(rule._get_newly_overdue_iterations()))
+
+    def test_due_object_iteration_opened_yesterday(self):
+        """interval=1 day: object with iteration opened yesterday is due for a new review."""
+        app, rule, iteration = self._create_rule_and_iteration(interval="days=1")
+        fixed_now = dt.datetime(2025, 6, 15, 14, 30, 0, tzinfo=dt.UTC)
+        for opened_on in [
+            dt.datetime(2025, 6, 14, 0, 0, 0, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 14, 12, 0, 0, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 14, 23, 59, 59, 999999, tzinfo=dt.UTC),
+        ]:
+            with self.subTest(opened_on=opened_on):
+                LifecycleIteration.objects.filter(pk=iteration.pk).update(opened_on=opened_on)
+                with patch("django.utils.timezone.now", return_value=fixed_now):
+                    self.assertIn(app, list(rule._get_newly_due_objects()))
+
+    def test_not_due_object_iteration_opened_today(self):
+        """interval=1 day: object with iteration opened today is NOT due."""
+        app, rule, iteration = self._create_rule_and_iteration(interval="days=1")
+        fixed_now = dt.datetime(2025, 6, 15, 14, 30, 0, tzinfo=dt.UTC)
+        for opened_on in [
+            dt.datetime(2025, 6, 15, 0, 0, 0, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 15, 14, 30, 0, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 15, 23, 59, 59, 999999, tzinfo=dt.UTC),
+        ]:
+            with self.subTest(opened_on=opened_on):
+                LifecycleIteration.objects.filter(pk=iteration.pk).update(opened_on=opened_on)
+                with patch("django.utils.timezone.now", return_value=fixed_now):
+                    self.assertNotIn(app, list(rule._get_newly_due_objects()))
+
+    def test_due_independent_of_task_execution_time(self):
+        """Due detection gives the same result whether the task runs at 00:00:01 or 23:59:59."""
+        app, rule, iteration = self._create_rule_and_iteration(interval="days=1")
+        opened_on = dt.datetime(2025, 6, 14, 18, 0, 0, tzinfo=dt.UTC)
+        LifecycleIteration.objects.filter(pk=iteration.pk).update(opened_on=opened_on)
+        for task_time in [
+            dt.datetime(2025, 6, 15, 0, 0, 1, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 15, 12, 0, 0, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 15, 23, 59, 59, tzinfo=dt.UTC),
+        ]:
+            with self.subTest(task_time=task_time):
+                with patch("django.utils.timezone.now", return_value=task_time):
+                    self.assertIn(app, list(rule._get_newly_due_objects()))
+
+    def test_due_boundary_multi_day_interval(self):
+        """interval=30 days: due after 30 full days, not after 29."""
+        app, rule, iteration = self._create_rule_and_iteration(interval="days=30")
+        fixed_now = dt.datetime(2025, 6, 15, 14, 30, 0, tzinfo=dt.UTC)
+
+        # Previous review opened 30 days ago (May 16), review is due for the object
+        LifecycleIteration.objects.filter(pk=iteration.pk).update(
+            opened_on=dt.datetime(2025, 5, 16, 12, 0, 0, tzinfo=dt.UTC)
+        )
+        with patch("django.utils.timezone.now", return_value=fixed_now):
+            self.assertIn(app, list(rule._get_newly_due_objects()))
+
+        # Previous review opened 29 days ago (May 17), new review is NOT due
+        LifecycleIteration.objects.filter(pk=iteration.pk).update(
+            opened_on=dt.datetime(2025, 5, 17, 12, 0, 0, tzinfo=dt.UTC)
+        )
+        with patch("django.utils.timezone.now", return_value=fixed_now):
+            self.assertNotIn(app, list(rule._get_newly_due_objects()))
+
+    def test_apply_overdue_at_boundary(self):
+        """apply() marks iteration overdue when grace period just expired,
+        regardless of what time the daily task runs."""
+        _, rule, iteration = self._create_rule_and_iteration(
+            grace_period="days=1", interval="days=365"
+        )
+        opened_on = dt.datetime(2025, 6, 14, 20, 0, 0, tzinfo=dt.UTC)
+        for task_time in [
+            dt.datetime(2025, 6, 15, 0, 0, 1, tzinfo=dt.UTC),
+            dt.datetime(2025, 6, 15, 23, 59, 59, tzinfo=dt.UTC),
+        ]:
+            with self.subTest(task_time=task_time):
+                LifecycleIteration.objects.filter(pk=iteration.pk).update(
+                    opened_on=opened_on, state=ReviewState.PENDING
+                )
+                with patch("django.utils.timezone.now", return_value=task_time):
+                    rule.apply()
+                iteration.refresh_from_db()
+                self.assertEqual(iteration.state, ReviewState.OVERDUE)

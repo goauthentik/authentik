@@ -8,7 +8,7 @@ import "#admin/admin-overview/cards/WorkerStatusCard";
 import "#admin/admin-overview/charts/AdminLoginAuthorizeChart";
 import "#admin/admin-overview/charts/OutpostStatusChart";
 import "#admin/admin-overview/charts/SyncStatusChart";
-import "#elements/cards/AggregatePromiseCard";
+import "#elements/cards/AggregateCard";
 import "#elements/cards/QuickActionsCard";
 
 import { formatUserDisplayName } from "#common/users";
@@ -103,7 +103,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
                     ${this.renderCards()}
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
-                    <ak-recent-events pageSize="6"></ak-recent-events>
+                    <ak-recent-events></ak-recent-events>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col">
                     <hr class="pf-c-divider" />

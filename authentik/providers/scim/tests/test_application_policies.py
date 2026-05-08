@@ -52,10 +52,10 @@ class SCIMApplicationPoliciesTests(TestCase):
                 email=f"{uid}@goauthentik.io",
             )
 
-        self.users[1].ak_groups.add(self.group1)
-        self.users[2].ak_groups.add(self.group2)
-        self.users[4].ak_groups.add(self.group1)
-        self.users[4].ak_groups.add(self.group2)
+        self.users[1].groups.add(self.group1)
+        self.users[2].groups.add(self.group2)
+        self.users[4].groups.add(self.group1)
+        self.users[4].groups.add(self.group2)
 
     def test_no_group_policy(self):
         """Test with no group policy set"""

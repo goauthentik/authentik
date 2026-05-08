@@ -4,7 +4,7 @@ sidebar_label: Vaultwarden
 support_level: community
 ---
 
-## What is Vaultwarden
+## What is Vaultwarden?
 
 > Vaultwarden is an alternative server implementation of the Bitwarden Client API, written in Rust and compatible with official Bitwarden clients, perfect for self-hosted deployment where running the official resource-heavy service might not be ideal.
 >
@@ -48,7 +48,7 @@ Vaultwarden either requires the email scope to return a true value for whether t
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -65,14 +65,14 @@ Vaultwarden either requires the email scope to return a true value for whether t
 
 ## Vaultwarden configuration
 
-To configure authentik with Vaultwarden, you must add the following environment variables to your Vaultwarden deployment:
+To configure Vaultwarden to use authentik, add the following environment variables to your Vaultwarden deployment:
 
 ```yaml
 SSO_ENABLED=true
 SSO_AUTHORITY=https://authentik.company/application/o/<application_slug>/
 SSO_CLIENT_ID=<client_id>
 SSO_CLIENT_SECRET=<client_secret>
-SSO_SCOPES="openid email profile offline_access"
+SSO_SCOPES=email profile offline_access
 SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION=false
 SSO_CLIENT_CACHE_EXPIRATION=0
 SSO_ONLY=false # Set to true to disable email+master password login and require SSO
@@ -81,7 +81,7 @@ SSO_SIGNUPS_MATCH_EMAIL=true # Match first SSO login to existing account by emai
 
 Then restart Vaultwarden to apply the changes.
 
-## References
+## Resources
 
 - [Vaultwarden Wiki - SSO using OpenID Connect](https://github.com/dani-garcia/vaultwarden/wiki/Enabling-SSO-support-using-OpenId-Connect)
 

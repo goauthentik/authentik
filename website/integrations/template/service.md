@@ -4,7 +4,7 @@ sidebar_label: Service Name
 support_level: community
 ---
 
-## What is Service-Name
+## What is Service-Name?
 
 > Insert a quick overview of what `<service-name>` is and what it does. Simply describe the product and what it is, how it is used, and do not include marketing or sales-oriented content.
 >
@@ -30,7 +30,7 @@ _Any specific info about this integration can go here._
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
         - _If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/chat-communication-collaboration/owncloud/index.md) for a complex requirements example._
     - **Choose a Provider type**: _If there is a specific provider type required, state that here._
@@ -54,7 +54,7 @@ Template sentence that you can typically use here: "To confirm that authentik is
 
 If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.
 
-## References
+## Resources
 
 List the external sources (official docs, community articles, blogs, videos) that were used to create this guide.
 

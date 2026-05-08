@@ -25,6 +25,17 @@ client_id=application_client_id&
 scope=openid email my-other-scope
 ```
 
+Alternatively the client id may be sent via the HTTP Authorization header:
+
+```http
+POST /application/o/device/ HTTP/1.1
+Host: authentik.company
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer YXBwbGljYXRpb25fY2xpZW50X2lkOg==
+
+scope=openid email my-other-scope
+```
+
 The response contains the following fields:
 
 - `device_code`: Device code, which is the code kept on the device
@@ -53,7 +64,7 @@ If the user _has_ finished the authentication and authorization, the response wi
 ### Create and apply a device code flow
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Flows** and click **Create**.
+2. Navigate to **Flows and Stages** > **Flows** and click **New Flow**.
 3. Set the following required configurations:
     - **Name**: provide a name (e.g. `default-device-code-flow`)
     - **Title**: provide a title (e.g. `Device code flow`)

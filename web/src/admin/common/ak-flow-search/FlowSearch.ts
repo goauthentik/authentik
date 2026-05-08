@@ -11,7 +11,7 @@ import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { RenderFlowOption } from "#admin/flows/utils";
 
 import type { Flow, FlowsInstancesListRequest } from "@goauthentik/api";
-import { FlowsApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import { FlowDesignationEnum, FlowsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -46,7 +46,7 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
      * @attr
      */
     @property({ type: String })
-    public flowType?: FlowsInstancesListDesignationEnum;
+    public flowType?: FlowDesignationEnum;
 
     /**
      * The id of the current flow, if any. For stages where the flow is already defined.

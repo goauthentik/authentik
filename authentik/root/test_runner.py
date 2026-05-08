@@ -69,8 +69,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         # Test-specific configuration
         test_config = {
-            "events.context_processors.geoip": "tests/GeoLite2-City-Test.mmdb",
-            "events.context_processors.asn": "tests/GeoLite2-ASN-Test.mmdb",
+            "events.context_processors.geoip": "tests/geoip/GeoLite2-City-Test.mmdb",
+            "events.context_processors.asn": "tests/geoip/GeoLite2-ASN-Test.mmdb",
             "blueprints_dir": "./blueprints",
             "outposts.container_image_base": f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
             "tenants.enabled": False,
@@ -89,7 +89,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         sentry_init()
         self.logger.debug("Test environment configured")
 
-        use_test_broker()
+        self.task_broker = use_test_broker()
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")
@@ -185,7 +185,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         self.logger.info("Running tests", test_files=self.args)
         with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
             try:
-                return pytest.main(self.args)
-            except Exception as e:  # noqa
-                self.logger.error("Error running tests", error=str(e), test_files=self.args)
+                ret = pytest.main(self.args)
+                self.task_broker.close()
+                return ret
+            except Exception as exc:  # noqa
+                self.logger.error("Error running tests", exc=exc, test_files=self.args)
                 return 1

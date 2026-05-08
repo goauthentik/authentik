@@ -27,6 +27,7 @@ export class FormFixture extends PageFixture {
             .filter({
                 hasNot: context.getByRole("presentation"),
             })
+            .and(context.locator(":not(button)"))
             .or(
                 context.getByRole("textbox", {
                     name: fieldName,
@@ -76,6 +77,8 @@ export class FormFixture extends PageFixture {
 
     /**
      * Search for a row containing the given text.
+     *
+     * @returns A locator for the row entry matching the query.
      */
     public search = async (
         query: string,
@@ -191,17 +194,17 @@ export class FormFixture extends PageFixture {
         // Find the search select input control and activate it.
         await control.click();
 
+        if (typeof pattern === "string") {
+            this.fill(control, pattern, parent);
+        }
+
         const button = this.page
             // ---
             .locator(`div[data-managed-for*="${fieldName}"] button`, {
                 hasText: pattern,
             });
 
-        if (!button) {
-            throw new Error(
-                `Unable to find an ak-search-select entry matching ${fieldLabel}:${pattern.toString()}`,
-            );
-        }
+        await expect(button, `Search select entry (${pattern}) should be visible`).toBeVisible();
 
         await button.click();
         await this.page.keyboard.press("Tab");

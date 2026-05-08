@@ -1,4 +1,5 @@
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
+import { AKEnterpriseRefreshEvent, AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
 import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
 import { getCookie } from "#common/utils";
@@ -104,19 +105,31 @@ export class LocaleMiddleware implements Middleware, Disposable {
 export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
     #requests: string[] = [];
     #counts = new Map<string, number>();
-    #logger = ConsoleLogger.prefix("repeated-requests-middleware");
+    #warnings = new Set<string>();
 
-    #navigationHandler = () => {
+    public clear = () => {
         this.#requests = [];
         this.#counts.clear();
+        this.#warnings.clear();
+    };
+
+    #timeoutId = -1;
+
+    public clearAfterIdle = () => {
+        clearTimeout(this.#timeoutId);
+        this.#timeoutId = window.setTimeout(this.clear, 1000);
     };
 
     constructor(protected readonly maxRequests: number = 10) {
-        window.addEventListener("hashchange", this.#navigationHandler);
+        window.addEventListener("hashchange", this.clear, { passive: true });
+        window.addEventListener(AKRefreshEvent.eventName, this.clear, { passive: true });
+        window.addEventListener(AKEnterpriseRefreshEvent.eventName, this.clear, { passive: true });
+
+        window.addEventListener("click", this.clearAfterIdle, { passive: true });
     }
 
     public [Symbol.dispose]() {
-        window.removeEventListener("hashchange", this.#navigationHandler);
+        window.removeEventListener("hashchange", this.clear);
     }
 
     public async pre(context: RequestContext): Promise<FetchParams | void> {
@@ -130,18 +143,22 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
         this.#counts.set(reqSig, count);
         this.#requests.push(reqSig);
 
-        if (count > 2) {
-            showMessage(
-                {
-                    level: MessageLevel.warning,
-                    message: "[Dev] Consecutive requests detected",
-                    description: html`${count} identical requests to
-                        <pre>${reqSig}</pre>`,
-                },
-                true,
-            );
+        if (count > 2 && !this.#warnings.has(reqSig)) {
+            this.#warnings.add(reqSig);
 
-            this.#logger.trace("Repeated request", reqSig);
+            const formattedURL = URL.canParse(reqSig) ? new URL(reqSig).pathname : reqSig;
+
+            requestAnimationFrame(() => {
+                showMessage(
+                    {
+                        level: MessageLevel.warning,
+                        message: "[Dev] Consecutive requests detected",
+                        description: html`${count} identical requests to
+                            <pre style="text-wrap: auto">${formattedURL}</pre>`,
+                    },
+                    true,
+                );
+            });
         }
 
         if (this.#requests.length > this.maxRequests) {
@@ -150,6 +167,7 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
 
             if (removedCount === 1) {
                 this.#counts.delete(removed);
+                this.#warnings.delete(removed);
             } else {
                 this.#counts.set(removed, removedCount - 1);
             }

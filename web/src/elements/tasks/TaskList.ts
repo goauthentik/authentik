@@ -1,4 +1,3 @@
-import "#admin/rbac/ObjectPermissionModal";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/events/LogViewer";
@@ -17,9 +16,9 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     GlobalTaskStatus,
     Task,
+    TaskAggregatedStatusEnum,
     TasksApi,
-    TasksTasksListAggregatedStatusEnum,
-    TasksTasksListStateEnum,
+    TaskStatusEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -48,7 +47,7 @@ export class TaskList extends Table<Task> {
     @property()
     relObjModel?: string;
     @property()
-    relObjId?: string;
+    relObjId?: string | number;
 
     @property({ type: Boolean })
     showOnlyStandalone: boolean = true;
@@ -76,14 +75,14 @@ export class TaskList extends Table<Task> {
                   : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
-                  TasksTasksListAggregatedStatusEnum.Queued,
-                  TasksTasksListAggregatedStatusEnum.Consumed,
-                  TasksTasksListAggregatedStatusEnum.Preprocess,
-                  TasksTasksListAggregatedStatusEnum.Running,
-                  TasksTasksListAggregatedStatusEnum.Postprocess,
-                  TasksTasksListAggregatedStatusEnum.Rejected,
-                  TasksTasksListAggregatedStatusEnum.Warning,
-                  TasksTasksListAggregatedStatusEnum.Error,
+                  TaskAggregatedStatusEnum.Queued,
+                  TaskAggregatedStatusEnum.Consumed,
+                  TaskAggregatedStatusEnum.Preprocess,
+                  TaskAggregatedStatusEnum.Running,
+                  TaskAggregatedStatusEnum.Postprocess,
+                  TaskAggregatedStatusEnum.Rejected,
+                  TaskAggregatedStatusEnum.Warning,
+                  TaskAggregatedStatusEnum.Error,
               ]
             : undefined;
         if (this.includeOverview) {
@@ -93,7 +92,7 @@ export class TaskList extends Table<Task> {
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
             relObjContentTypeModel: this.relObjModel,
-            relObjId: this.relObjId,
+            relObjId: this.relObjId ? this.relObjId.toString() : undefined,
             relObjIdIsnull,
             aggregatedStatus,
         });
@@ -181,8 +180,7 @@ export class TaskList extends Table<Task> {
             item.eta !== undefined ? Timestamp(item.eta) : nothing,
             Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
-            item.state === TasksTasksListStateEnum.Rejected ||
-            item.state === TasksTasksListStateEnum.Done
+            item.state === TaskStatusEnum.Rejected
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {
@@ -211,9 +209,9 @@ export class TaskList extends Table<Task> {
     renderExpanded(item: Task): TemplateResult {
         return html`<div class="pf-c-content">
             <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
-            <ak-log-viewer .logs=${item.logs}></ak-log-viewer>
+            <ak-log-viewer .items=${item.logs}></ak-log-viewer>
             <p class="pf-c-title pf-u-mt-xl pf-u-mb-md">${msg("Previous executions logs")}</p>
-            <ak-log-viewer .logs=${item.previousLogs}></ak-log-viewer>
+            <ak-log-viewer .items=${item.previousLogs}></ak-log-viewer>
         </div>`;
     }
 }

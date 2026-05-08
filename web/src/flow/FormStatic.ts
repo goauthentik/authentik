@@ -4,20 +4,8 @@ import { ifPresent } from "#elements/utils/attributes";
 import { isDefaultAvatar } from "#elements/utils/images";
 
 import Styles from "#flow/FormStatic.css";
-
-import {
-    AccessDeniedChallenge,
-    AuthenticatorDuoChallenge,
-    AuthenticatorEmailChallenge,
-    AuthenticatorStaticChallenge,
-    AuthenticatorTOTPChallenge,
-    AuthenticatorWebAuthnChallenge,
-    CaptchaChallenge,
-    ConsentChallenge,
-    PasswordChallenge,
-    SessionEndChallenge,
-    UserLoginChallenge,
-} from "@goauthentik/api";
+import { RememberMeStorage } from "#flow/stages/identification/controllers/RememberMeController";
+import { StageChallengeLike } from "#flow/types";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
@@ -66,26 +54,8 @@ export class AKFormStatic extends AKElement {
     }
 }
 
-/**
- * @internal
- */
-export type FormStaticChallenge =
-    | SessionEndChallenge
-    | AccessDeniedChallenge
-    | AuthenticatorDuoChallenge
-    | AuthenticatorEmailChallenge
-    | AuthenticatorStaticChallenge
-    | AuthenticatorTOTPChallenge
-    | AuthenticatorWebAuthnChallenge
-    | CaptchaChallenge
-    | ConsentChallenge
-    | PasswordChallenge
-    | UserLoginChallenge;
-
 export interface FlowUserDetailsProps {
-    challenge?: Partial<
-        Pick<FormStaticChallenge, "pendingUserAvatar" | "pendingUser" | "flowInfo">
-    > | null;
+    challenge?: StageChallengeLike | null;
 }
 
 export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
@@ -100,7 +70,9 @@ export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
                 ${flowInfo?.cancelUrl
                     ? html`
                           <div slot="link">
-                              <a href=${flowInfo.cancelUrl}>${msg("Not you?")}</a>
+                              <a href=${flowInfo.cancelUrl} @click=${RememberMeStorage.reset}
+                                  >${msg("Not you?")}</a
+                              >
                           </div>
                       `
                     : nothing}

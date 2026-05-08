@@ -4,7 +4,7 @@ sidebar_label: TrueNAS TrueCommand
 support_level: community
 ---
 
-## What is TrueNAS TrueCommand
+## What is TrueNAS TrueCommand?
 
 > TrueCommand is a ZFS-aware solution allowing you to set custom alerts on statistics like ARC usage or pool capacity and ensuring storage uptime and future planning. TrueCommand also identifies and pinpoints errors on drives or vdevs (RAID groups), saving you valuable time when resolving issues.
 >
@@ -62,7 +62,7 @@ To support the integration of TrueCommand with authentik, you need to create an 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
@@ -85,6 +85,6 @@ To support the integration of TrueCommand with authentik, you need to create an 
 - SAML Identity Provider URL: `Paste the Metadata URL from your clipboard.`
 - Click _Save_, then click _Configure_ again then select _Start the SAML service_, then click _Save_ to start the service.
 
-## Additional Resources
+## Resources
 
 - https://www.truenas.com/docs/truecommand/administration/settings/samlad/

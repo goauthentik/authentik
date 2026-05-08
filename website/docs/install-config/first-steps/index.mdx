@@ -38,7 +38,7 @@ You will get a `Not Found` error if the initial setup URL doesn't include the fo
 
 Other optional pre-installation configurations that you might have already completed include:
 
-- [Configured your global email address](../email/#global-email-settings).
+- [Configured your global email settings](../email/#configure-global-email-settings).
 - [Configured your PostgreSQL settings](../configuration/configuration.mdx#postgresql-settings) (read-replica, connections, etc.).
 - Configured a [reverse proxy](../reverse-proxy.md).
 - Configured your [media storage settings](../../install-config/configuration/configuration.mdx#media-storage-settings) or optionally [AWS S3 file storage](../../sys-mgmt/ops/storage-s3.md).
@@ -62,15 +62,15 @@ authentik supports integration with any application; refer to our [Integrations 
 <details>
     <summary>Why Grafana?</summary>
 
-We'll use Grafana as an example application in this guide as it is very common and straight forward to setup.
+We'll use Grafana as an example application in this guide as it is very common and straightforward to set up.
 
-For more configuration options and full details about integrating with Grafana, refer to our [full integration guide](/integrationsmonitoring/grafana/). The following steps require that you have [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/), and that you can access the authentik Admin interface.
+For more configuration options and full details about integrating with Grafana, refer to our [full integration guide](/integrations/monitoring/grafana/). The following steps require that you have [a Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/), and that you can access the authentik Admin interface.
 
 </details>
 
 ### 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-    **A.** In the Admin interface, navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+    **A.** In the Admin interface, navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
 
 :::tip About application and provider pairs
 Every application that you add to authentik requires a provider, which is used to configure the specific protocol between the application and authentik, for example OAuth2/OIDC, SAML, LDAP, or others.
@@ -83,13 +83,13 @@ Every application that you add to authentik requires a provider, which is used t
         - **Group**: select an optional group for the application; groups are used to visually separate applications. For example, you can choose to group applications that you use for coding from those you use for internal communication.
     - **Policy engine mode**: select **Any** for this tutorial; the mode determines how strictly policies are adhered to.
         - <strong className="tip">TIP</strong>: in authentik,
-          [policies](../../customize/policies/working_with_policies.md) are used in authentik to
-          fine-tune access to applications, flows, stages and many other authentik components. It is
-          not required to use a policy at all, though. The _policy engine mode_ setting of **Any**
-          means that as long as a single policy passes (or if there are no policies bound to the
-          application), then access to the application is granted. The mode **ALL** means that every
-          one of any policies bound to the application must pass in order for a user to have access
-          to the application.
+          [policies](../../customize/policies/bindings.md) are used in authentik to fine-tune access
+          to applications, flows, stages and many other authentik components. It is not required to
+          use a policy at all, though. The _policy engine mode_ setting of **Any** means that as
+          long as a single policy passes (or if there are no policies bound to the application),
+          then access to the application is granted. The mode **ALL** means that every one of any
+          policies bound to the application must pass in order for a user to have access to the
+          application.
     - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the **My Applications** page: an optional icon, the publisher of the application, and a brief description.
 
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -110,7 +110,7 @@ Every application that you add to authentik requires a provider, which is used t
     - **Logout URI**: set to `https://grafana.company/logout`.
     - **Logout Method**: set to `Front-channel`.
         - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the
-          default because most application (including Grafana) do not support back-channel logout.
+          default because most applications (including Grafana) do not support back-channel logout.
     - **Signing key**: select any available signing key.
         - <strong className="tip">TIP</strong>: authentik generates a key that you can use, called
           the `authentik Self-signed Certificate`, if you do not have a specific signing key for an
@@ -128,12 +128,12 @@ Every application that you add to authentik requires a provider, which is used t
 
 ### 2. Configure Grafana to use authentik as its IdP
 
-For some applications, you log into the application and configure settings there; with Grafana you simply edit your Grafana Docker Compose file. Here you add basic configuration settings as well as the **Client ID**, **Client Secret**, and the **Slug** values that you obtained when you configured the application and provider in authentik in Step 1. above.
+For some applications, you log in to the application and configure settings there; with Grafana you simply edit your Grafana Docker Compose file. Here you add basic configuration settings as well as the **Client ID**, **Client Secret**, and the **Slug** values that you obtained when you configured the application and provider in authentik in Step 1 above.
 
 **A.** In the Grafana Docker Compose file, set the following environment variables:
 
 :::tip Tips
-These values below are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/); for standalone or Helm Chart instances refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
+These values are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/); for standalone or Helm Chart instances refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
 
 Note that `authentik.company` is a placeholder that we use in our example settings; replace this with the domain that authentik is running on in your environment.
 :::
@@ -172,10 +172,10 @@ Now that you can access the authentik Admin interface, and you have added an app
     **B.** Fill in the **_required_** fields:
 
     - **Username**: This value must be unique across all users.
-    - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the default because most application
+    - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the default because most applications
           (including Grafana) do not support back-channel logout.
     - **Path**: The path where the user will be created. By default the new user is created in the `users` directory, but you can change that later by editing the user.
-        - <strong className="tip">TIP</strong>: Paths are basically directories, that are used to organize your users (for example HR vs Sales, etc.). Paths do not ipoact access; they are purely organizational. Note that the top-level **users** directory displays all users in that directory and all sub-directories.
+        - <strong className="tip">TIP</strong>: Paths are basically directories that are used to organize your users (for example HR vs Sales, etc.). Paths do not impact access; they are purely organizational. Note that the top-level **users** directory displays all users in that directory and all sub-directories.
 
     For information about the **_optional_** fields below, refer to our [documentation on managing users](../../users-sources/user/user_basic_operations.md#create-a-user).
 
@@ -184,7 +184,7 @@ Now that you can access the authentik Admin interface, and you have added an app
     - **Is active**: Define the newly created user account as active.
     - **Attributes**: You can leave this empty for this tutorial. This field can be used to store custom attributes for the user, in YAML or JSON format. These attributes can then be used within property mappings and policies.
 
-    **C.** Click **Create**.
+    **C.** Click **Create User**.
 
 ### 2. Verify that the new user was created
 
@@ -195,11 +195,13 @@ Now that you can access the authentik Admin interface, and you have added an app
 Now that you have added your first application, and a new user, here are some typical next steps:
 
 - Assign your new user to appropriate [groups](../../users-sources/user/user_basic_operations.md#add-a-user-to-a-group) and [roles](../../users-sources/user/user_basic_operations.md#add-a-user-to-a-role).
+- [Restrict access](../../add-secure-apps/applications/manage_apps.mdx#use-bindings-to-control-access) to an application. See more below about [using bindings to restrict access](#using-bindings-to-allow-or-restrict-access-to-applications).
+- Learn more about [Role Based Access Control (RBAC) in authentik](../../users-sources/access-control/index.mdx).
 - Configure federated or external [sources](../../users-sources/sources/index.md) (an existing source of user credentials and other user data).
 - Set up MFA
 - Define [property mappings](../../add-secure-apps/providers/property-mappings/index.md).
 - Create a [custom flow](../../add-secure-apps/flows-stages/flow/index.md#).
-- Install an [Enterprise license](../../enterprise/manage-enterprise.mdx#buy-a-license)
+- Install an [Enterprise license](../../enterprise/manage-enterprise.mdx#purchase-a-license)
 - [Create a policy](../../customize/policies/index.md) to control access, force MFA use, etc..
 
 ## Things to know and troubleshooting tips

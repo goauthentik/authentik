@@ -4,7 +4,7 @@ sidebar_label: Knocknoc
 support_level: community
 ---
 
-## What is Knocknoc
+## What is Knocknoc?
 
 > Knocknoc links your single-sign on experience to existing network access controls. It can dynamically orchestrate network access controls (e.g., managing firewall rules in real-time without exposing target machines) or function as an identity-aware gateway.
 >
@@ -50,7 +50,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
     - **Expression**:
 
     ```python
-    for group in user.ak_groups.all(): yield group.name
+    for group in user.groups.all(): yield group.name
     ```
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
@@ -70,7 +70,7 @@ This example sets the session duration to 540 minutes. Change the value to match
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.

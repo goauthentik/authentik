@@ -22,15 +22,15 @@ func (l *logrusLogger) LogMode(gormlogger.LogLevel) gormlogger.Interface {
 	return l
 }
 
-func (l *logrusLogger) Info(ctx context.Context, s string, args ...interface{}) {
+func (l *logrusLogger) Info(ctx context.Context, s string, args ...any) {
 	l.logger.WithContext(ctx).Infof(s, args...)
 }
 
-func (l *logrusLogger) Warn(ctx context.Context, s string, args ...interface{}) {
+func (l *logrusLogger) Warn(ctx context.Context, s string, args ...any) {
 	l.logger.WithContext(ctx).Warnf(s, args...)
 }
 
-func (l *logrusLogger) Error(ctx context.Context, s string, args ...interface{}) {
+func (l *logrusLogger) Error(ctx context.Context, s string, args ...any) {
 	l.logger.WithContext(ctx).Errorf(s, args...)
 }
 

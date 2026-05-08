@@ -7,7 +7,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/CodeMirror";
-import "#admin/common/ak-license-notice";
+import "#elements/LicenseNotice";
 import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
@@ -99,11 +99,14 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
 
 export interface SCIMProviderFormProps {
     update: () => void;
-    provider?: Partial<SCIMProvider>;
-    errors?: ValidationError;
+    provider?: Partial<SCIMProvider> | null;
+    errors?: ValidationError | null;
 }
 
-export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderFormProps) {
+export function renderForm({ provider, errors, update }: SCIMProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
     return html`
         <ak-text-input
             name="name"
@@ -198,6 +201,18 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                             value: CompatibilityModeEnum.Sfdc,
                             description: html`${msg("Altered behavior for usage with Salesforce.")}`,
                         },
+                        {
+                            label: msg("Webex"),
+                            value: CompatibilityModeEnum.Webex,
+                            description: html`${msg("Altered behavior for usage with Cisco Webex.")}`,
+                        },
+                        {
+                            label: msg("vCenter"),
+                            value: CompatibilityModeEnum.Vcenter,
+                            description: html`${msg(
+                                "Altered behavior for usage with VMware vCenter.",
+                            )}`,
+                        },
                     ]}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
@@ -228,7 +243,7 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                 ></ak-switch-input>
             </div>
         </ak-form-group>
-        <ak-form-group open label="${msg("User filtering")}">
+        <ak-form-group open label="${msg("Filtering")}">
             <div class="pf-c-form">
                 <ak-switch-input
                     name="excludeUsersServiceAccount"
@@ -295,7 +310,7 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                 <ak-number-input
                     label=${msg("Page size")}
                     required
-                    name="pageSize"
+                    name="syncPageSize"
                     value="${provider.syncPageSize ?? 100}"
                     help=${msg("Controls the number of objects synced in a single task.")}
                 ></ak-number-input>

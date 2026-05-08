@@ -4,7 +4,7 @@ sidebar_label: SharePoint Server SE
 support_level: community
 ---
 
-## What is Microsoft SharePoint
+## What is Microsoft SharePoint?
 
 > SharePoint is a proprietary, web-based collaborative platform that integrates natively with Microsoft 365.
 >
@@ -117,7 +117,10 @@ return {
     "unique_name": request.user.name,                                  # (Optional) Used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
     "preferred_username": request.user.username,                       # (Optional) The primary username that represents the user.
     "nickname": request.user.username,                                 # (Optional) Used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
-    "roles": [group.name for group in request.user.ak_groups.all()],   # The set of roles that were assigned to the user who is logging in.
+    "roles": [
+        entitlement.name
+        for entitlement in request.user.app_entitlements(provider.application)
+    ],                                                                 # The set of role entitlements that were assigned to the user who is logging in.
 }
 ```
 
@@ -151,6 +154,7 @@ From the authentik Admin Dashboard:
       The minimum is 15 minutes, otherwise SharePoint backend will consider the access token expired.
       :::
     - **Scopes**: select default email, SPopenid and SPprofile
+    - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
     - **Subject mode**: Based on the User's hashed ID
 5. Click **Finish**.
 
@@ -168,18 +172,34 @@ From the authentik Admin Dashboard:
     - (Optional) **Icon**: https://res-1.cdn.office.net/files/fabric-cdn-prod_20221209.001/assets/brand-icons/product/svg/sharepoint_48x1.svg
 4. Click **Create**.
 
+### Step 3b: Create application entitlements in authentik
+
+Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to define the values that authentik sends in the `roles` claim for this SharePoint Server SE application.
+
+From the authentik Admin Dashboard:
+
+1. Open **Applications > Applications** from the sidebar.
+2. Open the application `auth.applicationName`.
+3. Click the **Application entitlements** tab.
+4. Create the entitlements that SharePoint should receive in the `roles` claim.
+5. Open each entitlement and bind the users or groups that should receive it.
+
+:::tip Entitlement role names
+For this integration, entitlement names should exactly match the role values that your SharePoint configuration expects in the incoming `roles` claim. This keeps SharePoint-specific authorization scoped to the SharePoint application instead of relying on global authentik group names.
+:::
+
 ### Step 4: Setup OIDC authentication in SharePoint Server
 
 #### Pre-requisites
 
 ##### Update SharePoint farm properties
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 :::caution
 
 - Update placeholders
-- Read all script's comments
+- Read all script comments
 
 :::
 
@@ -214,7 +234,7 @@ $f.Farm.Update()
 
 Update the SharePoint farm to accept OAuth authentication over HTTP.
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
@@ -225,12 +245,12 @@ $c.update()
 
 #### Create SharePoint authentication provider
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 :::caution
 
 - Update placeholders
-- Read all script's comments.
+- Read all script comments.
 
 :::
 
@@ -250,7 +270,7 @@ $idClaim = New-SPClaimTypeMapping "http://schemas.microsoft.com/identity/claims/
 ## User claims mappings
 $claims = @(
     $idClaim
-    ## User Roles (Group membership)
+    ## User Roles (application entitlements sent in the roles claim)
     ,(New-SPClaimTypeMapping ([System.Security.Claims.ClaimTypes]::Role) -IncomingClaimTypeDisplayName "Role" -SameAsIncoming)
     ## User email
     ,(New-SPClaimTypeMapping ([System.Security.Claims.ClaimTypes]::Email) -IncomingClaimTypeDisplayName "Email" -SameAsIncoming)
@@ -277,14 +297,14 @@ From the Central Administration opened as a Farm Administrator:
 1. Open the **Application Management > Manage web applications** page.
 2. Select your web application `sp.webAppURL`.
 3. Click **Authentication Providers** from the ribbon bar.
-4. According to your environment, click on the target zone such as "Default".
-5. Update the authentication provider form as following:
+4. Click the target zone for your environment, such as "Default".
+5. Update the authentication provider form as follows:
     - Check **Trusted Identity Provider**
     - Check the newly created provider named `sp.issuerName`
     - (Optional) Set **Custom Sign In Page**: /\_trust/default.aspx
 6. Click **Save**.
 
-Repeat all steps for each target web applications that matches with `auth.providerRedirectURI`.
+Repeat these steps for each target web application that matches `auth.providerRedirectURI`.
 
 ## (Optional) SharePoint enhancements
 
@@ -300,12 +320,12 @@ Objectives:
 
 ### Step 1: Assign LDAPCP as claim provider for the identity token issuer
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 :::caution
 
 - Update placeholders
-- Read all script's comments
+- Read all script comments
 
 :::
 

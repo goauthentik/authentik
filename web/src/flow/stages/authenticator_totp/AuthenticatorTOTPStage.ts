@@ -175,7 +175,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
                     ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
                 </div>
 
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"
@@ -189,6 +189,8 @@ export class AuthenticatorTOTPStage extends BaseStage<
         </ak-flow-card>`;
     }
 }
+
+export default AuthenticatorTOTPStage;
 
 declare global {
     interface HTMLElementTagNameMap {

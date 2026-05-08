@@ -4,7 +4,7 @@ sidebar_label: OVHcloud
 support_level: community
 ---
 
-## What is OVHcloud
+## What is OVHcloud?
 
 > OVHcloud is a French cloud provider. They provide public and private cloud products, shared hosting, and dedicated servers in 140 countries.
 >
@@ -23,7 +23,7 @@ To support the integration of OVHcloud with authentik, you need to create an app
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: Select **SAML Provider** as the provider type.
     - **Configure the Provider**: Provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
@@ -61,7 +61,7 @@ To verify that authentik is properly integrated with OVHcloud, first log out of 
 
 You’ll be redirected to your authentik instance to complete authentication. Once successful, you’ll be logged in to OVHcloud.
 
-## References
+## Resources
 
 - [OVHcloud Help Center - User management & Federation](https://help.ovhcloud.com/csm/en-ie-documentation-manage-operate-user-federation?id=kb_browse_cat&kb_id=3d4a8129a884a950f07829d7d5c75243&kb_category=21734cbe50d47d90476b12dfd60b3542&spa=1)
 - [OVHcloud US Help Center - User management & Federation](https://support.us.ovhcloud.com/hc/en-us/sections/27230986868883-Federation)

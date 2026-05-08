@@ -18,10 +18,10 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 (.x being the latest patch release for each version)
 
-| Version    | Supported  |
-| ---------- | ---------- |
-| 2025.10.x  | ✅         |
-| 2025.12.x  | ✅         |
+| Version   | Supported |
+| --------- | --------- |
+| 2025.12.x | ✅        |
+| 2026.2.x  | ✅        |
 
 ## Reporting a Vulnerability
 
@@ -59,6 +59,40 @@ authentik reserves the right to reclassify CVSS as necessary. To determine sever
 | 4.0 – 6.9  | Medium   |
 | 7.0 – 8.9  | High     |
 | 9.0 – 10.0 | Critical |
+
+## Intended functionality
+
+The following capabilities are part of intentional system design and should not be reported as security vulnerabilities:
+
+- Expressions (property mappings/policies/prompts) can execute arbitrary Python code without safeguards.
+
+This is expected behavior. Any user with permission to create or modify objects containing expression fields can write code that is executed within authentik. If a vulnerability allows a user without the required permissions to write or modify code and have it executed, that would be a valid security report.
+
+However, the fact that expressions are executed as part of normal operations is not considered a privilege escalation or security vulnerability.
+
+- Blueprints can access all files on the filesystem.
+
+This access is intentional to allow legitimate configuration and deployment tasks. It does not represent a security problem by itself.
+
+- Importing blueprints allows arbitrary modification of application objects.
+
+This is intended functionality. This behavior reflects the privileged design of blueprint imports. It is "exploitable" when importing blueprints from untrusted sources without reviewing the blueprint beforehand. However, any method to create, modify or execute blueprints without the required permissions would be a valid security report.
+
+- Flow imports may contain objects other than flows (such as policies, users, groups, etc.)
+
+This is expected behavior as flow imports are blueprint files.
+
+- Prompt HTML is not escaped.
+
+Prompts intentionally allow raw HTML, including script tags, so they can be used to create interactive or customized user interface elements. Because of this, scripts within prompts may affect or interact with the surrounding page as designed.
+
+- Open redirects that do not include tokens or other sensitive information are not considered a security vulnerability.
+
+Redirects that only change navigation flow and do not expose session tokens, API keys, or other confidential data are considered acceptable and do not require reporting.
+
+- Outgoing network requests are not filtered.
+
+The destinations of outgoing network requests (HTTP, TCP, etc.) made by authentik to configurable endpoints through objects such as OAuth Sources, SSO Providers, and others are not validated. Depending on your threat model, these requests should be restricted at the network level using appropriate firewall or network policies.
 
 ## Disclosure process
 

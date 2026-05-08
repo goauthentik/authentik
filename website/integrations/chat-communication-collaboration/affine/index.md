@@ -4,7 +4,7 @@ sidebar_label: AFFiNE
 support_level: community
 ---
 
-## What is AFFiNE
+## What is AFFiNE?
 
 > AFFiNE is an open-source platform that allows you to bring together documents, whiteboards, and databases. It is a reliable tool designed to create a professional workspace for your work. With AFFiNE, you can focus on practicality and efficiency, making it easier to collaborate on your projects.
 >
@@ -28,7 +28,7 @@ To support the integration of AFFiNE with authentik, you need to create an appli
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.

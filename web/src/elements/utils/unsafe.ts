@@ -8,7 +8,7 @@ import {
 
 import { spread } from "@open-wc/lit-helpers";
 
-import { LitElement, nothing } from "lit";
+import { LitElement, nothing, PropertyDeclaration } from "lit";
 import { html as staticHTML, unsafeStatic } from "lit-html/static.js";
 import { guard } from "lit/directives/guard.js";
 
@@ -31,23 +31,102 @@ export function assertAKRegisteredElement(
  * Type predicate to determine if a given {@linkcode CustomElementConstructor}
  * extends {@linkcode AKElement}.
  */
-export function isAKElementConstructor(input: CustomElementConstructor): input is typeof AKElement {
+export function isAKElementConstructor(
+    input: CustomElementConstructor | ((...args: never[]) => SlottedTemplateResult),
+): input is typeof AKElement {
     return Object.prototype.isPrototypeOf.call(AKElement, input);
 }
 
-function getPrefix(type: unknown, isProperty: boolean) {
-    if (isProperty) {
-        return ".";
+export const Prefix = {
+    Property: ".",
+    BooleanAttribute: "?",
+    Attribute: "",
+} as const;
+
+export type Prefix = (typeof Prefix)[keyof typeof Prefix];
+
+type WrappedPropertyDeclaration = PropertyDeclaration<unknown, unknown> & { wrapped?: boolean };
+
+/**
+ * Given a Lit property declaration, determine the appropriate prefix for rendering the property as either a property or an attribute, based on the declaration's type and attribute configuration.
+ *
+ * @param propDeclaration The Lit property declaration to analyze.
+ * @returns The determined prefix for rendering the property.
+ */
+function resolvePrefix<T extends WrappedPropertyDeclaration>(propDeclaration: T): Prefix {
+    if (!propDeclaration.attribute) {
+        return Prefix.Property;
     }
 
-    switch (type) {
-        case String:
-            return "";
-        case Boolean:
-            return "?";
-        default:
-            return ".";
+    if ("wrapped" in propDeclaration && propDeclaration.wrapped && !propDeclaration.type) {
+        return Prefix.Attribute;
     }
+
+    switch (propDeclaration.type) {
+        case String:
+            return Prefix.Attribute;
+        case Boolean:
+            return Prefix.BooleanAttribute;
+        default:
+            return Prefix.Property;
+    }
+}
+
+/**
+ * Given a Lit property declaration, a resolved prefix, and the original property key,
+ * determine the appropriate name to use for rendering the property,
+ * taking into account any custom attribute name specified in the declaration.
+ */
+function resolvePropertyName<T extends WrappedPropertyDeclaration>(
+    propDeclaration: T,
+    prefix: Prefix,
+    key: string,
+): string {
+    if (prefix === Prefix.Property) {
+        return key;
+    }
+
+    if ("attribute" in propDeclaration && typeof propDeclaration.attribute === "string") {
+        return propDeclaration.attribute;
+    }
+
+    return key;
+}
+
+/**
+ * Given a Lit Element constructor and a record of properties,
+ * filter the properties to include only those that are declared in the constructor's
+ * `properties` or `observedAttributes`, and map them to their appropriate prefixed names for rendering.
+ *
+ * @param ElementConstructor The constructor of the Lit Element to analyze.
+ * @param props A record of properties to filter and map.
+ * @returns A new record containing only the properties that are declared in the constructor, with their appropriate prefixed names.
+ */
+export function mapElementProps(
+    ElementConstructor: typeof LitElement,
+    props?: Record<string, unknown>,
+): Record<string, unknown> {
+    const { elementProperties } = ElementConstructor;
+    const observedAttributes = new Set(ElementConstructor.observedAttributes);
+
+    const filteredProps: Record<string, unknown> = {};
+
+    for (const [propName, propValue] of Object.entries(props || {})) {
+        const propDeclaration = elementProperties.get(propName);
+
+        if (propDeclaration) {
+            const prefix = resolvePrefix(propDeclaration);
+            const name = resolvePropertyName(propDeclaration, prefix, propName);
+            filteredProps[`${prefix}${name}`] = propValue;
+            continue;
+        }
+
+        if (observedAttributes.has(propName) || propName in ElementConstructor.prototype) {
+            filteredProps[propName] = String(propValue);
+        }
+    }
+
+    return filteredProps;
 }
 
 /**
@@ -63,16 +142,19 @@ export function StrictUnsafe<T extends CustomElementTagName>(
     tagName: T,
     props?: LitPropertyRecord<HTMLElementTagNameMap[T]>,
 ): SlottedTemplateResult;
+
 export function StrictUnsafe<T extends AKElement>(
     tagName: string,
     props?: LitPropertyRecord<T>,
 ): SlottedTemplateResult;
+
 export function StrictUnsafe<T extends string>(
     tagName: string,
     props?: T extends CustomElementTagName
         ? LitPropertyRecord<HTMLElementTagNameMap[T]>
         : LitPropertyRecord<LitElement>,
 ): SlottedTemplateResult;
+
 export function StrictUnsafe<T extends string>(
     tagName: string,
     props?: T extends CustomElementTagName
@@ -98,24 +180,7 @@ export function StrictUnsafe<T extends string>(
             throw new TypeError(`Custom element ${tagName} is not an authentik element`);
         }
 
-        const { elementProperties } = ElementConstructor;
-        const observedAttributes = new Set(ElementConstructor.observedAttributes);
-
-        const filteredProps: Record<string, unknown> = {};
-
-        for (const [key, value] of Object.entries(props || {})) {
-            const propDeclaration = elementProperties.get(key);
-
-            if (propDeclaration) {
-                const prefix = getPrefix(propDeclaration.type, !propDeclaration.attribute);
-                filteredProps[`${prefix}${key}`] = value;
-                continue;
-            }
-
-            if (observedAttributes.has(key) || key in ElementConstructor.prototype) {
-                filteredProps[key] = String(value);
-            }
-        }
+        const filteredProps = mapElementProps(ElementConstructor, props);
 
         return staticHTML`<${unsafeStatic(tagName)} ${spread(filteredProps)}></${unsafeStatic(tagName)}>`;
     });

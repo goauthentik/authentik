@@ -1,4 +1,5 @@
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -29,6 +30,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-rule-form")
 export class RuleForm extends ModelForm<NotificationRule, string> {
+    public static verboseName = msg("Notification Rule");
+    public static verboseNamePlural = msg("Notification Rules");
+
     eventTransports?: PaginatedNotificationTransportList;
 
     loadInstance(pk: string): Promise<NotificationRule> {
@@ -62,23 +66,24 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+        return html` <ak-text-input
+                required
+                autocomplete="off"
+                name="name"
+                label=${msg("Rule Name")}
+                placeholder=${msg("Type a name for this rule...")}
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-form-element-horizontal label=${msg("Group")} name="destinationGroup">
                 <ak-search-select
+                    placeholder=${msg("Select a group...")}
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
                             ordering: "name",
                             includeUsers: false,
                         };
 
-                        if (query !== undefined) {
+                        if (typeof query !== "undefined") {
                             args.search = query;
                         }
 
@@ -99,7 +104,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 </p>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "If no group is selected and 'Send notification to event user' is disabled the rule is disabled. ",
+                        "If no group is selected and 'Send notification to event user' is disabled, the rule is disabled.",
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -108,7 +113,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 label=${msg("Send notification to event user")}
                 ?checked=${this.instance?.destinationEventUser ?? false}
                 help=${msg(
-                    "When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. ",
+                    "When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.",
                 )}
             >
             </ak-switch-input>

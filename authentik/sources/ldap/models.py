@@ -12,8 +12,15 @@ from django.db import connection, models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
+from ldap3.core.exceptions import (
+    LDAPAdminLimitExceededResult,
+    LDAPAttributeError,
+    LDAPException,
+    LDAPInsufficientAccessRightsResult,
+    LDAPSchemaError,
+)
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.core.models import (
     Group,
@@ -30,7 +37,9 @@ from authentik.tasks.schedules.common import ScheduleSpec
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
+"""Deprecated, don't use"""
 LDAP_DISTINGUISHED_NAME = "distinguishedName"
+LOGGER = get_logger()
 
 
 def flatten(value: Any) -> Any:
@@ -157,7 +166,7 @@ class LDAPSource(IncomingSyncSource):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPSourceSerializer
+        from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 
         return LDAPSourceSerializer
 
@@ -190,6 +199,7 @@ class LDAPSource(IncomingSyncSource):
 
     def update_properties_with_uniqueness_field(self, properties, dn, ldap, **kwargs):
         properties.setdefault("attributes", {})[LDAP_DISTINGUISHED_NAME] = dn
+        # TODO: Remove after 2026.5, still stored for legacy
         if self.object_uniqueness_field in ldap:
             properties["attributes"][LDAP_UNIQUENESS] = flatten(
                 ldap.get(self.object_uniqueness_field)
@@ -268,17 +278,27 @@ class LDAPSource(IncomingSyncSource):
         )
 
         if self.start_tls:
+            LOGGER.debug("Connection StartTLS", source=self)
             conn.start_tls(read_server_info=False)
         try:
             successful = conn.bind()
             if successful:
                 return conn
-        except (LDAPSchemaError, LDAPInsufficientAccessRightsResult) as exc:
-            # Schema error, so try connecting without schema info
+        except (
+            LDAPSchemaError,
+            LDAPInsufficientAccessRightsResult,
+            LDAPAdminLimitExceededResult,
+            LDAPAttributeError,
+        ) as exc:
+            # Schema error or rate limit during schema fetch, retry without schema info
             # See https://github.com/goauthentik/authentik/issues/4590
             # See also https://github.com/goauthentik/authentik/issues/3399
+            # LDAPAdminLimitExceededResult: Google Secure LDAP rate-limits schema queries
+            # LDAPAttributeError: Google Secure LDAP returns unsupported attrs in schema
             if server_kwargs.get("get_info", ALL) == NONE:
+                LOGGER.warning("Failed to connect after schema downgrade", source=self, exc=exc)
                 raise exc
+            LOGGER.warning("Downgrading connection to no schema info", source=self, exc=exc)
             server_kwargs["get_info"] = NONE
             return self.connection(server, server_kwargs, connection_kwargs)
         finally:
@@ -351,7 +371,7 @@ class LDAPSourcePropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPSourcePropertyMappingSerializer
+        from authentik.sources.ldap.api.property_mappings import LDAPSourcePropertyMappingSerializer
 
         return LDAPSourcePropertyMappingSerializer
 
@@ -372,7 +392,7 @@ class UserLDAPSourceConnection(UserSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import (
+        from authentik.sources.ldap.api.connections import (
             UserLDAPSourceConnectionSerializer,
         )
 
@@ -395,7 +415,7 @@ class GroupLDAPSourceConnection(GroupSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import (
+        from authentik.sources.ldap.api.connections import (
             GroupLDAPSourceConnectionSerializer,
         )
 

@@ -22,6 +22,7 @@ postgresql:
   port: 5432
   password: "env://POSTGRES_PASSWORD"
   sslmode: disable
+  conn_health_checks: false
   use_pool: False
   test:
     name: test_authentik
@@ -32,14 +33,21 @@ postgresql:
   #   host: replica1.example.com
 
 listen:
-  http: 0.0.0.0:9000
-  https: 0.0.0.0:9443
-  ldap: 0.0.0.0:3389
-  ldaps: 0.0.0.0:6636
-  radius: 0.0.0.0:1812
-  metrics: 0.0.0.0:9300
+  http:
+    - "[::]:9000"
+  https:
+    - "[::]:9443"
+  ldap:
+    - "[::]:3389"
+  ldaps:
+    - "[::]:6636"
+  radius:
+    - "[::]:1812"
+  metrics:
+    - "[::]:9300"
   debug: 0.0.0.0:9900
   debug_py: 0.0.0.0:9901
+  debug_tokio: "[::]:6669"
   trusted_proxy_cidrs:
     - 127.0.0.0/8
     - 10.0.0.0/8
@@ -66,6 +74,19 @@ log_level: info
 log:
   http_headers:
     - User-Agent
+  rust_log:
+    "console_subscriber": info
+    "h2": info
+    "hyper_util": warn
+    "mio": info
+    "notify": info
+    "reqwest": info
+    "runtime": info
+    "rustls": info
+    "sqlx": info
+    "sqlx_postgres": info
+    "tokio": info
+    "tungstenite": info
 
 sessions:
   unauthenticated_age: days=1
@@ -137,10 +158,13 @@ tenants:
 blueprints_dir: /blueprints
 
 web:
-  # No default here as it's set dynamically
-  # workers: 2
+  workers: 2
   threads: 4
   path: /
+  timeout_http_read_header: 5s
+  timeout_http_read: 30s
+  timeout_http_write: 60s
+  timeout_http_idle: 120s
 
 worker:
   processes: 1
@@ -162,6 +186,7 @@ storage:
     # region: "us-east-1"
     # use_ssl: True
     # endpoint: "https://s3.us-east-1.amazonaws.com"
+    # signature_version: "s3v4"
     # access_key: ""
     # secret_key: ""
     # bucket_name: "authentik-data"
@@ -178,3 +203,5 @@ storage:
   #   backend: file # or s3
   #   file: {}
   #   s3: {}
+
+skip_migrations: false

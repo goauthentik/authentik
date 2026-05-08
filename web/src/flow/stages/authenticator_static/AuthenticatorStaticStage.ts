@@ -66,7 +66,7 @@ export class AuthenticatorStaticStage extends BaseStage<
                 </ul>
                 <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
 
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"
@@ -80,6 +80,8 @@ export class AuthenticatorStaticStage extends BaseStage<
         </ak-flow-card>`;
     }
 }
+
+export default AuthenticatorStaticStage;
 
 declare global {
     interface HTMLElementTagNameMap {

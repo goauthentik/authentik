@@ -4,7 +4,7 @@ sidebar_label: Snipe-IT
 support_level: community
 ---
 
-## What is Snipe-IT
+## What is Snipe-IT?
 
 > A free open source IT asset/license management system.
 >
@@ -153,7 +153,7 @@ Configure Snipe-IT SAML settings by going to settings (the gear icon), and selec
 
 All other field can be left blank.
 
-## Additional Resources
+## Resources
 
 - https://snipe-it.readme.io/docs/ldap-sync-login
 - https://snipe-it.readme.io/docs/saml

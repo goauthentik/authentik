@@ -4,7 +4,7 @@ sidebar_label: Beszel
 support_level: community
 ---
 
-## What is Beszel
+## What is Beszel?
 
 > Beszel is a lightweight server monitoring platform that provides Docker statistics, historical data, and configurable alerts.
 > It features a user-friendly web interface, supports multi-user management, OAuth authentication, and offers a REST API for integration with other applications.
@@ -27,7 +27,15 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-The steps to configure authentik include creating an application and provider pair in authentik, obtaining the Client ID, Client Secret, and slug values, setting the redirect URI, and selecting a signing key.
+The steps to configure authentik include creating an email verification scope mapping, creating an application and provider pair in authentik, obtaining the Client ID and Client Secret values, setting the redirect URI, and selecting a signing key.
+
+### Create an email verification scope mapping in authentik
+
+Beszel requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Beszel to allow authentication.
+
+Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for instructions on how to create the required custom scope mapping.
+
+### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
@@ -35,9 +43,12 @@ The steps to configure authentik include creating an application and provider pa
 - **Application**: provide a descriptive name (`Beszel`), a slug (`beszel`), an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: OAuth2/OpenID
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID** and **Client Secret** values because they will be required later.
     - Set a `Strict` redirect URI to `https://beszel.company/api/oauth2-redirect`.
     - Select any available signing key.
+    - **Advanced protocol settings** > **Scopes**:
+        - Add `OAuth Mapping: OpenID 'email' with "email_verified"` to the **Selected Scopes**.
+        - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope.
 - **Configure Bindings** _(optional):_ you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user’s **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

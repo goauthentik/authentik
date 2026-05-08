@@ -144,6 +144,14 @@ AUTHENTIK_STORAGE__S3__ENDPOINT=https://s3.provider
 AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN=s3.provider/authentik-media
 ```
 
+If your provider only supports legacy S3 signatures, also set:
+
+```env
+AUTHENTIK_STORAGE__S3__SIGNATURE_VERSION=s3
+```
+
+By default, authentik uses signature version `s3v4`.
+
 The `AUTHENTIK_STORAGE__S3__ENDPOINT` setting controls how authentik communicates with the S3 provider. When set, it overrides region/`USE_SSL`.
 
 The `AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN` setting controls how media URLs are built for the web interface. It must include the bucket name and must not include a scheme.

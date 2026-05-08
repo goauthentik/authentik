@@ -11,7 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/securecookie"
 	"github.com/mitchellh/mapstructure"
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/packages/client-go"
 )
 
 type OAuthState struct {
@@ -106,7 +106,7 @@ func (a *Application) createState(r *http.Request, w http.ResponseWriter, fwd st
 
 func (a *Application) stateFromRequest(rw http.ResponseWriter, r *http.Request) *OAuthState {
 	stateJwt := r.URL.Query().Get("state")
-	token, err := jwt.Parse(stateJwt, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(stateJwt, func(token *jwt.Token) (any, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])

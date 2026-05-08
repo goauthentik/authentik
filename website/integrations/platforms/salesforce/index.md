@@ -4,7 +4,7 @@ sidebar_label: Salesforce
 support_level: community
 ---
 
-## What is Salesforce
+## What is Salesforce?
 
 > Salesforce is a cloud-based CRM platform that provides sales, service, marketing, and analytics applications.
 >
@@ -79,7 +79,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** as it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -161,7 +161,7 @@ You can configure Salesforce as an OAuth source to allow users to log in to auth
 If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth authentication:
 
 1. Navigate to **Setup** > **External Client App Manager**.
-2. Find your Connected App and click on it.
+2. Find your Connected App and open it.
 3. Click **Edit Policies**.
 4. Under **Client Credentials Flow**:
     - Set **Run As** to an admin user that has permissions to manage users.
@@ -170,7 +170,7 @@ If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth a
 #### Get the Consumer Key and Secret
 
 1. Navigate to **Setup** > **External Client App Manager**.
-2. Find your Connected App and click on it.
+2. Find your Connected App and open it.
 3. Under **Settings** > **OAuth Settings**, click **Consumer Key and Secret**.
 4. Copy the **Consumer Key** and **Consumer Secret**.
 
@@ -252,7 +252,7 @@ Salesforce requires specific SCIM attributes that are not included in the defaul
 4. In the **Backchannel Providers** field, select the SCIM provider you created.
 5. Click **Update** to save the application.
 
-## References
+## Resources
 
 - [Salesforce Help - Configure SSO with Salesforce as a SAML Service Provider](https://help.salesforce.com/s/articleView?id=sf.sso_saml.htm&type=5)
 - [Salesforce Help - Just-in-Time SAML Assertion Fields for Salesforce](https://help.salesforce.com/s/articleView?id=sf.sso_jit_requirements.htm&type=5)

@@ -18,7 +18,7 @@ This configurations requires:
 ## Create a new authorization flow
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Flows**, click **Create**, and enter the following required settings:
+2. Navigate to **Flows and Stages** > **Flows**, click **New Flow**, and enter the following required settings:
     - **Name**: Enter a descriptive name for the flow.
     - **Title**: Enter a title for the flow. This will be displayed to users when they're prompted for their credentials.
     - **Slug**: Enter a slug for the flow. This will be displayed in the flow URL.
@@ -29,15 +29,15 @@ This configurations requires:
 ## Create prompts
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Prompts**, click **Create**, and enter the following required settings:
+2. Navigate to **Flows and Stages** > **Prompts**, click **New Prompt**, and enter the following required settings:
     - **Name**: Enter a descriptive name for the prompt (e.g. `username`).
     - **Field Key**: `connection_settings.username`
     - **Label**: Enter a label for the field which will be displayed above it.
     - **Type**: `Text`
     - **Required**: Toggled on.
     - **Order**: `0`
-3. Click **Create** to save the prompt.
-4. On the **Prompts** page, click **Create** again, and enter the following required settings:
+3. Click **Create Prompt** to save the prompt.
+4. On the **Prompts** page, click **New Prompt** again, and enter the following required settings:
     - **Name**: Enter a descriptive name for the prompt (e.g. `password`).
     - **Field Key**: `connection_settings.password`
     - **Label**: Enter a label for the field which will be displayed above it.
@@ -55,7 +55,7 @@ You can optionally add other prompt fields such as `domain` (e.g. `connection_se
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows**.
 3. Click the name of the newly created authorization flow.
-4. Click on **Stage bindings**, click **Create and bind stage**, and enter the following required settings:
+4. Click on **Stage bindings**, click **New Stage**, and enter the following required settings:
     - **Select Type**: Select `Prompt stage` as the prompt type.
     - **Create Prompt Stage**:
         - **Name**: Enter a name for the prompt stage.

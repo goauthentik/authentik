@@ -19,13 +19,14 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
@@ -42,9 +43,12 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
+    static shadowRootOptions: ShadowRootInit = BaseStage.shadowRootOptions;
+
     static styles: CSSResult[] = [
         PFLogin,
         PFAlert,
+        PFContent,
         PFForm,
         PFFormControl,
         PFInputGroup,
@@ -59,6 +63,30 @@ export class PromptStage extends WithCapabilitiesConfig(
             }
         `,
     ];
+
+    protected isAlertPromptType(prompt: StagePrompt): boolean {
+        return (
+            prompt.type === PromptTypeEnum.AlertInfo ||
+            prompt.type === PromptTypeEnum.AlertWarning ||
+            prompt.type === PromptTypeEnum.AlertDanger
+        );
+    }
+
+    protected renderPromptAlert(
+        prompt: StagePrompt,
+        level: "info" | "warning" | "danger",
+        icon: string,
+    ): SlottedTemplateResult {
+        return html`<div class="pf-c-alert pf-m-${level} pf-m-inline">
+            <div class="pf-c-alert__icon">
+                <i class="fas fa-fw ${icon}" aria-hidden="true"></i>
+            </div>
+            ${prompt.label ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>` : null}
+            <div class="pf-c-alert__description pf-c-content">
+                ${unsafeHTML(prompt.initialValue)}
+            </div>
+        </div>`;
+    }
 
     protected renderPromptInner(prompt: StagePrompt): SlottedTemplateResult {
         const fieldId = `field-${prompt.fieldKey}`;
@@ -192,6 +220,12 @@ ${prompt.initialValue}</textarea
                 />`;
             case PromptTypeEnum.Static:
                 return html`<p>${unsafeHTML(prompt.initialValue)}</p>`;
+            case PromptTypeEnum.AlertInfo:
+                return this.renderPromptAlert(prompt, "info", "fa-info-circle");
+            case PromptTypeEnum.AlertWarning:
+                return this.renderPromptAlert(prompt, "warning", "fa-exclamation-triangle");
+            case PromptTypeEnum.AlertDanger:
+                return this.renderPromptAlert(prompt, "danger", "fa-exclamation-circle");
             case PromptTypeEnum.Dropdown:
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
@@ -232,9 +266,9 @@ ${prompt.initialValue}</textarea
         }
     }
 
-    protected renderPromptHelpText(prompt: StagePrompt) {
+    protected renderPromptHelpText(prompt: StagePrompt): SlottedTemplateResult {
         if (!prompt.subText) {
-            return nothing;
+            return null;
         }
 
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
@@ -245,7 +279,8 @@ ${prompt.initialValue}</textarea
         return !(
             prompt.type === PromptTypeEnum.Static ||
             prompt.type === PromptTypeEnum.Hidden ||
-            prompt.type === PromptTypeEnum.Separator
+            prompt.type === PromptTypeEnum.Separator ||
+            this.isAlertPromptType(prompt)
         );
     }
 
@@ -264,7 +299,7 @@ ${prompt.initialValue}</textarea
                 <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
                 ${prompt.required
                     ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
-                    : nothing}
+                    : null}
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }
@@ -287,7 +322,7 @@ ${prompt.initialValue}</textarea
     }
 
     protected renderContinue(): SlottedTemplateResult {
-        return html`<fieldset class="pf-c-form__group pf-m-action">
+        return html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
             <legend class="sr-only">${msg("Form actions")}</legend>
             <button name="continue" type="submit" class="pf-c-button pf-m-primary pf-m-block">
                 ${msg("Continue")}
@@ -306,6 +341,8 @@ ${prompt.initialValue}</textarea
         </ak-flow-card>`;
     }
 }
+
+export default PromptStage;
 
 declare global {
     interface HTMLElementTagNameMap {

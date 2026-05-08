@@ -5,8 +5,12 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
 
 import { Form } from "#elements/forms/Form";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { AKLabel } from "#components/ak-label";
 
 import {
     CoreApi,
@@ -21,21 +25,53 @@ import {
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-policy-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {
+    public static verboseName = msg("Policy");
+    public static verboseNamePlural = msg("Policies");
+    public static createLabel = msg("Test");
+
+    public override cancelable = true;
+
+    public override size = PFSize.XLarge;
+
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFDescriptionList,
+        css`
+            .ak-policy-test-log-messages {
+                width: 100%;
+            }
+        `,
+    ];
+
+    #api = new PoliciesApi(DEFAULT_CONFIG);
+
+    protected override formatSubmitLabel(submitLabel?: string | null): string {
+        return submitLabel || msg("Run Test");
+    }
+
     @property({ attribute: false })
-    public policy?: Policy;
+    public policy: Policy | null = null;
 
     @state()
     protected result: PolicyTestResult | null = null;
 
     @property({ attribute: false })
-    public request?: PolicyTestRequest;
+    public request: PolicyTestRequest | null = null;
+
+    public get verboseName(): string | null {
+        return this.policy?.verboseName || null;
+    }
+
+    public get verboseNamePlural(): string | null {
+        return this.policy?.verboseNamePlural || null;
+    }
 
     public override reset(): void {
         super.reset();
@@ -43,24 +79,23 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         this.result = null;
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
     }
 
-    async send(data: PolicyTestRequest): Promise<PolicyTestResult> {
+    protected override async send(data: PolicyTestRequest): Promise<PolicyTestResult> {
         this.request = data;
-        const result = await new PoliciesApi(DEFAULT_CONFIG).policiesAllTestCreate({
+
+        this.result = await this.#api.policiesAllTestCreate({
             policyUuid: this.policy?.pk || "",
             policyTestRequest: data,
         });
-        return (this.result = result);
+
+        return this.result;
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
-
-    renderResult(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Passing")}>
+    protected renderResult(): SlottedTemplateResult {
+        return html`<ak-form-element-horizontal label=${msg("Passing")}>
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
@@ -89,19 +124,19 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
 
             <ak-form-element-horizontal label=${msg("Log messages")}>
                 <div class="pf-c-form__group-label">
-                    <div class="c-form__horizontal-group">
+                    <div class="pf-c-form__horizontal-group ak-policy-test-log-messages">
                         <dl class="pf-c-description-list pf-m-horizontal">
-                            <ak-log-viewer .logs=${this.result?.logMessages}></ak-log-viewer>
+                            <ak-log-viewer .items=${this.result?.logMessages}></ak-log-viewer>
                         </dl>
                     </div>
                 </div>
-            </ak-form-element-horizontal>
-        `;
+            </ak-form-element-horizontal>`;
     }
 
-    protected override renderForm(): TemplateResult {
+    protected override renderForm(): SlottedTemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
+                    placeholder=${msg("Select a user...")}
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
@@ -127,14 +162,28 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Context")} name="context">
-                <ak-codemirror mode="yaml" value=${YAML.stringify(this.request?.context ?? {})}>
+
+            <ak-form-element-horizontal name="context">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "context",
+                    },
+                    msg("Context"),
+                )}
+                <ak-codemirror
+                    id="context"
+                    mode="yaml"
+                    value=${YAML.stringify(this.request?.context ?? {})}
+                >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : nothing}`;
+
+            ${this.result ? this.renderResult() : null}`;
     }
 }
 
