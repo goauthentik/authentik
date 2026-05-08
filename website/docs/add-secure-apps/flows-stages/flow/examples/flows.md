@@ -56,7 +56,7 @@ Blueprint path: `example/flows-recovery-email-mfa-verification.yaml`
 
 Flow: right-click <DownloadLink to="/blueprints/example/flows-recovery-email-mfa-verification.yaml">here</DownloadLink> and save the file.
 
-With this recovery flow, the user is sent an email after they've identified themselves. After they click on the link in the email, they will have to verify their configured MFA device, and are prompted for a new password and immediately logged on.
+With this recovery flow, the user is sent an email after they've identified themselves. After they click the link in the email, they must verify their configured MFA device, and are prompted for a new password and immediately logged in.
 
 There's also <DownloadLink to="/blueprints/example/flows-recovery-email-verification.yaml">a version</DownloadLink> of this flow available without MFA validation at `example/flows-recovery-email-verification.yaml`, which is not recommended.
 

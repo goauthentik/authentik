@@ -54,11 +54,11 @@ You may have different settings for some of the group and role mapping for advan
 
 In Rocket.chat, follow the procedure below:
 
-1. Log in as a System Administrator, click on your avatar, and choose _Administration_
+1. Log in as a System Administrator, click your avatar, and choose _Administration_
 
-2. Scroll down and click on _OAuth_
+2. Scroll down and click _OAuth_
 
-3. In the top right corner, click _Add custom oauth_
+3. In the top-right corner, click _Add custom OAuth_
 
 4. Give your new oauth the name of _Authentik_, then click _Send_
 
@@ -98,7 +98,7 @@ In Rocket.chat, follow the procedure below:
 
     ![](./rocketchat10.png)
 
-6. Click _Save changes_ in the top right corner of the screen
+6. Click _Save changes_ in the top-right corner of the screen
 
 ### Step 4 (Optional)
 

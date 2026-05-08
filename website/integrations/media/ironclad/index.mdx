@@ -100,13 +100,13 @@ Ironclad requires both a first and last name for each user, but by default, auth
 
 ## Download the metadata file
 
-1. Log into authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created Ironclad provider.
 3. Under **Metadata** click **Download**. This metadata file will be required in the next section.
 
 ## Complete Ironclad configuration
 
-1. Return to the Ironclad SAML configuration page and under **IdP Configuration XML** click on **Choose file**. Select the metadata file that you downloaded from authentik.
+1. Return to the Ironclad SAML configuration page and under **IdP Configuration XML**, click **Choose file**. Select the metadata file that you downloaded from authentik.
 2. Set **Entry point** to `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`.
 3. Click **Save**.
 

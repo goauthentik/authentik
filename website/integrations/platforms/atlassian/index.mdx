@@ -17,7 +17,7 @@ Atlassian Cloud has two types of users; **internal** and **external**.
 
 Internal users are defined by their email domain which needs to be a [verified domain in Atlassian Cloud](https://support.atlassian.com/user-management/docs/verify-a-domain-to-manage-accounts/). Internal users are able to utilise SSO without Atlassian Cloud credentials.
 
-[External users](https://support.atlassian.com/security-and-access-policies/docs/who-are-external-users/) are required to log into Atlassian Cloud using Atlassian Cloud credentials. They are then prompted for authentik credentials when accessing specific Atlassian Cloud apps like Jira.
+[External users](https://support.atlassian.com/security-and-access-policies/docs/who-are-external-users/) are required to log in to Atlassian Cloud using Atlassian Cloud credentials. They are then prompted for authentik credentials when accessing specific Atlassian Cloud apps like Jira.
 :::
 
 ## Preparation
@@ -53,7 +53,7 @@ To support the integration of Atlassian Cloud with authentik, you need to create
 
 ### Download the signing certificate
 
-1. Log into authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created Atlassian Cloud provider.
 3. Under **Download signing certificate** click the **Download** button. The contents of this certificate will be required in the next section.
 
@@ -89,7 +89,7 @@ To support the integration of Atlassian Cloud with authentik, you need to create
 
 1. Log in to the [Atlassian administrator portal](https://admin.atlassian.com) as an Atlassian Cloud organization admin.
 2. Navigate to **Security** > **Authentication policies**.
-3. Click **Add policy** at the top right.
+3. Click **Add policy** in the top-right corner.
 4. Select the `authentik` directory and provide a name for the policy.
 5. Edit the new policy and check `Enforce single sign-on`.
 6. Click **Update**.

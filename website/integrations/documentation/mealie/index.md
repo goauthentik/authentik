@@ -68,4 +68,4 @@ Restart the Mealie service for the changes to take effect.
 ## Configuration verification
 
 1. To confirm that authentik is properly configured with Mealie, log out and log back in via authentik.
-2. In Mealie click on the user profile icon in the top left. Then click on **Members**, confirm the admins set in your authentik group are an **Admin** in Mealie as expected.
+2. In Mealie, click the user profile icon in the top-left corner. Then click **Members**, and confirm that the admins set in your authentik group are an **Admin** in Mealie as expected.

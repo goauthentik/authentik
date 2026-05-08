@@ -51,6 +51,6 @@ Go back to the Provider sidebar and locate the Veeam Enterprise Manager. Click t
 
 ## Veeam Enterprise Manager configuration
 
-Back on Veeam Enterprise Manager, click on "Import from File", and select the XML file that you've downloaded from authentik. Make sure the "Enable SAML 2.0" checkbox is still enabled, and click save.
+Back on Veeam Enterprise Manager, click **Import from File**, and select the XML file that you downloaded from authentik. Make sure that the **Enable SAML 2.0** checkbox is still enabled, and click **Save**.
 
 To map Veeam Enterprise Manager permissions to an authentik user, create an External Group. In Veeam Enterprise Manager, navigate to **Configuration** > **Roles**, click **Add...**, and select **External Group**. Enter the name of an authentik group that the user is a member of.

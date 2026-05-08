@@ -45,17 +45,17 @@ After XCreds is installed on a target Mac you will need to configure it by creat
 
 [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator) is an open source macOS application used to create configuration policies. It is required to create a configuration policy for XCreds.
 
-1. Open the **ProfileCreator** application and click on the `+` icon in the top left corner to create a new configuration policy:
+1. Open the **ProfileCreator** application and click on the `+` icon in the top-left corner to create a new configuration policy:
     - Under **General** provide a descriptive Payload Display Name, Payload Description, and Payload Organization.
 
 2. Now you need to add an XCreds payload to the configuration policy. Click on the **Application Managed Preferences** icon in the left-hand column that looks like an `A` (third icon from the left, in the left-hand column).
-3. Select XCreds in the list and click the **Add** button in the top right corner of the screen.
+3. Select XCreds in the list and click the **Add** button in the top-right corner of the screen.
 4. Under **Disabled Keys** click the `+` icon next to the following keys and set the required configurations:
     - **Client ID**: the authentik Client ID
     - **Client Secret**: the authentik Client Secret
     - **Discovery URL**: the authentik OpenID configuration URL
     - **Redirect URI**: `https://127.0.0.1/xcreds`
-5. Click on the **Export Profile** icon at the top left of the screen and set the following required configurations:
+5. Click on the **Export Profile** icon at the top-left corner of the screen and set the following required configurations:
     - **Platform**: `macOS`
     - **Scope**: `System`
     - **Payload Content Type**: `Profile`
