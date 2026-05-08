@@ -40,6 +40,7 @@ export interface CurrentBrandFlags {
      * Refresh other tabs after successful authentication.
      * @type {boolean}
      * @memberof CurrentBrandFlags
+     * @deprecated
      */
     flowsRefreshOthers: boolean;
 }

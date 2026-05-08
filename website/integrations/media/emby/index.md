@@ -4,7 +4,7 @@ sidebar_label: Emby
 support_level: community
 ---
 
-## What is Emby
+## What is Emby?
 
 > Emby is a media management and streaming platform for movies, TV shows, and music that allows you to organize and stream your personal media collection.
 >

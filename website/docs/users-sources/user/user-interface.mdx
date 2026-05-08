@@ -45,9 +45,9 @@ This is where a users can add and configure a new MFA device for accessing authe
 
 - **Static tokens**: authentik generates 6 single-use tokens.
 - **TOTP device**: using your preferred authenticator, scan the QR code, enter the code from the authenticator into the authentik prompt, and then click **Continue**. For authenticators that do not support QR scanning, you can copy the secret and paste it into you authenticator.
-- **WebAuthn device**: this option uses the [WebAuthn/FIDO2/Passkeys Authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) to allow the user to create a passkey for the device.
+- **WebAuthn device**: this option uses the [WebAuthn/FIDO2/Passkeys Authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.md) to allow the user to create a passkey for the device.
 
-An authentik administrator can add additional MFA options for users, such as [Email](../../add-secure-apps/flows-stages/stages/authenticator_email/index.md), [SMS](../../add-secure-apps/flows-stages/stages/authenticator_sms/index.mdx), or [Duo](../../add-secure-apps/flows-stages/stages/authenticator_duo/index.mdx), by adding the stage for that authentication method to the flow.
+An authentik administrator can add additional MFA options for users, such as [Email](../../add-secure-apps/flows-stages/stages/authenticator_email/index.md), [SMS](../../add-secure-apps/flows-stages/stages/authenticator_sms/index.md), or [Duo](../../add-secure-apps/flows-stages/stages/authenticator_duo/index.md), by adding the stage for that authentication method to the flow.
 
 :::info LDAP providers and MFA
 Because LDAP does not natively support OTP, authentik supports [appending the OTP code to the password](../../add-secure-apps/providers/ldap/index.md#code-based-mfa-support) for situations where the protocol is LDAP and they are required to use MFA. If enabled, the user can enter the authenticator's code as part of the bind/authentication password, separated by a semicolon. For example, for the password `example-password` and the MFA code `123456`, the input in the password field must be `example-password;123456`.

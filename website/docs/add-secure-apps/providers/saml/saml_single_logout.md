@@ -79,5 +79,5 @@ These session records are used to generate proper SAML logout requests with the 
 ## Resources
 
 - [Single Logout (SLO) Overview](../single-logout/index.md)
-- [User Logout Stage](../../flows-stages/stages/user_logout.md)
+- [User Logout Stage](../../flows-stages/stages/user_logout/index.md)
 - [SAML Profiles 2.0 Specification](https://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf)

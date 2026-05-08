@@ -52,7 +52,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     ?allow-show-password=${!!this.challenge?.allowShowPassword}
                     prefill=${PasswordManagerPrefill.password ?? ""}
                 ></ak-flow-input-password>
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"
@@ -67,7 +67,8 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                 ? html`<fieldset
                       slot="footer-band"
                       part="additional-actions"
-                      class="pf-c-login__main-footer-band"
+                      name="additional-actions"
+                      class="ak-c-fieldset pf-c-login__main-footer-band"
                   >
                       <legend class="sr-only">${msg("Additional actions")}</legend>
                       <div class="pf-c-login__main-footer-band-item">

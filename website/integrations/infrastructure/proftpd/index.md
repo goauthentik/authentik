@@ -4,7 +4,7 @@ sidebar_label: ProFTPD
 support_level: community
 ---
 
-## What is ProFTPD
+## What is ProFTPD?
 
 > ProFTPD is a high-performance, extremely configurable, and most of all a secure FTP server, featuring Apache-like configuration and blazing performance.
 >

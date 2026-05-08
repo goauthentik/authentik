@@ -40,6 +40,7 @@ export interface PatchedSettingsRequestFlags {
      * Refresh other tabs after successful authentication.
      * @type {boolean}
      * @memberof PatchedSettingsRequestFlags
+     * @deprecated
      */
     flowsRefreshOthers: boolean;
 }

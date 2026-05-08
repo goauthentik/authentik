@@ -4,7 +4,7 @@ sidebar_label: Zabbix
 support_level: community
 ---
 
-## What is Zabbix
+## What is Zabbix?
 
 > Zabbix is the ultimate enterprise-level software designed for real-time monitoring of millions of metrics collected from tens of thousands of servers, virtual machines and network devices.
 >

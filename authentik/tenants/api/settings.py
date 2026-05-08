@@ -59,6 +59,8 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
             props[_flag.key] = build_basic_type(get_args(_flag.__orig_bases__[0])[0])
             if _flag.description:
                 props[_flag.key]["description"] = _flag.description
+            if _flag.deprecated:
+                props[_flag.key]["deprecated"] = _flag.deprecated
         return build_object_type(props, required=props.keys())
 
 

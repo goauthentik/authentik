@@ -4,7 +4,7 @@ sidebar_label: osTicket
 support_level: community
 ---
 
-## What is osTicket
+## What is osTicket?
 
 > osTicket is a web-based, open source user support/ticketing solution.
 >

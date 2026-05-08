@@ -4,7 +4,7 @@ sidebar_label: SharePoint Server SE
 support_level: community
 ---
 
-## What is Microsoft SharePoint
+## What is Microsoft SharePoint?
 
 > SharePoint is a proprietary, web-based collaborative platform that integrates natively with Microsoft 365.
 >

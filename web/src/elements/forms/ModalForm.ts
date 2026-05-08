@@ -218,7 +218,7 @@ export class ModalForm extends ModalButton {
     }
 
     protected renderActions(): SlottedTemplateResult {
-        return html`<fieldset class="pf-c-modal-box__footer">
+        return html`<fieldset class="ak-c-fieldset pf-c-modal-box__footer">
             <legend class="sr-only">${msg("Form actions")}</legend>
             <button
                 type="button"

@@ -4,7 +4,7 @@ sidebar_label: Semgrep
 support_level: community
 ---
 
-## What is Semgrep
+## What is Semgrep?
 
 > **Semgrep**: An application security solution that combines SAST, SCA, and secret detection.
 >

@@ -133,7 +133,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                 >
             </ak-empty-state>
             ${!this.authenticating || this.showBackButton
-                ? html`<fieldset class="pf-c-form__group pf-m-action">
+                ? html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                       <legend class="sr-only">${msg("Form actions")}</legend>
                       ${!this.authenticating
                           ? html`<button

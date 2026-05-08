@@ -229,6 +229,11 @@ source_docs/
 
 ### Golang ###
 /vendor/
+server
+proxy
+ldap
+rac
+radius
 
 ### Docker ###
 tests/openid_conformance/exports/*.zip

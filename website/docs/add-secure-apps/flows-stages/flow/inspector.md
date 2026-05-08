@@ -11,7 +11,7 @@ As shown in the screenshot below, the Flow Inspector displays to the right, besi
 ## Access the Flow Inspector
 
 :::warning
-Be aware that when running a flow with the Inspector enabled, the flow is still executed normally. This means that for example, a [User write](../stages/user_write.md) stage _will_ write user data.
+Be aware that when running a flow with the Inspector enabled, the flow is still executed normally. This means that for example, a [User write](../stages/user_write/index.md) stage _will_ write user data.
 :::
 
 The Inspector is accessible to users that have been granted the [permission](../../../users-sources/access-control/permissions.md) **Can inspect a Flow's execution**, either directly or through a role. Superusers can always inspect flow executions.

@@ -4,7 +4,7 @@ sidebar_label: GLPI
 support_level: community
 ---
 
-## What is GLPI
+## What is GLPI?
 
 > GLPI (Gestionnaire Libre de Parc Informatique) is an open-source IT asset management and service desk software. It helps organizations manage hardware, software, tickets, users, and IT services in a centralized environment.
 >

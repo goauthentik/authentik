@@ -4,7 +4,7 @@ sidebar_label: Rocket.chat
 support_level: community
 ---
 
-## What is Rocket.chat
+## What is Rocket.chat?
 
 > Rocket.Chat is an open-source fully customizable communications platform developed in JavaScript for organizations with high standards of data protection. It is licensed under the MIT License with some other licenses mixed in. See [Rocket.chat GitHub](https://github.com/RocketChat/Rocket.Chat/blob/develop/LICENSE) for licensing information.
 >

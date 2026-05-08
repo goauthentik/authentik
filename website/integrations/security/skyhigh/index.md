@@ -4,7 +4,7 @@ sidebar_label: Skyhigh Security
 support_level: community
 ---
 
-## What is Skyhigh Security
+## What is Skyhigh Security?
 
 > Skyhigh Security is a Security Services Edge (SSE), Cloud Access Security Broker (CASB), and Secure Web Gateway (SWG), and Private Access (PA / ZTNA) cloud provider.
 >

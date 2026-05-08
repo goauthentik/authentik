@@ -8,7 +8,7 @@ tags:
 authentik_preview: true
 ---
 
-## What is Fleet
+## What is Fleet?
 
 > Fleet is an open source device management (MDM) platform for vulnerability reporting, detection engineering, device health monitoring, posture-based access control, managing unused software licenses, and more.
 >
