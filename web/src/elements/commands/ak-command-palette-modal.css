@@ -12,7 +12,7 @@
     );
     --ak-c-command-palette__group--Color: var(--pf-global--palette--purple-100);
 
-    --ak-fieldset--BorderColor: transparent;
+    --ak-c-fieldset--BorderColor: transparent;
 
     --ak-c-command-palette__item--BackgroundColor: transparent;
     --ak-c-command-palette__item--Color: var(--pf-global--palette--purple-50);
@@ -37,7 +37,7 @@
     transform: translate3d(0, 0, 0); /* Fixes rendering artifacts. */
 
     @media (prefers-contrast: more) {
-        --ak-fieldset--BorderColor: var(--pf-global--palette--purple-500);
+        --ak-c-fieldset--BorderColor: var(--pf-global--palette--purple-500);
     }
 }
 
@@ -109,7 +109,7 @@
     transition-duration: 0.2s;
 
     legend {
-        --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--md);
+        --ak-c-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--md);
 
         cursor: pointer;
         color: var(--ak-c-command-palette__group--Color);

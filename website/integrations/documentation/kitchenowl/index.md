@@ -4,7 +4,7 @@ sidebar_label: KitchenOwl
 support_level: community
 ---
 
-## What is KitchenOwl
+## What is KitchenOwl?
 
 > KitchenOwl is a smart self-hosted grocery list and recipe manager. Easily add items to your shopping list before you go shopping. You can also create recipes and set up meal plans to help you organize your cooking.
 >

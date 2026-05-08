@@ -24,7 +24,7 @@ This default behaviour can be altered by enabling the **Evaluate when flow is pl
 
 ## Policies and permissions
 
-Flows can have [policies](../stages/index.md) assigned to them. These policies determine if the current user is allowed to see and use this flow.
+Flows can have [policies](../../../customize/policies/index.md) assigned to them. These policies determine if the current user is allowed to see and use this flow.
 
 Keep in mind that in certain circumstances, policies cannot match against users and groups as there is no authenticated user yet.
 

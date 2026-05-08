@@ -4,7 +4,7 @@ sidebar_label: Snipe-IT
 support_level: community
 ---
 
-## What is Snipe-IT
+## What is Snipe-IT?
 
 > A free open source IT asset/license management system.
 >

@@ -91,7 +91,7 @@ After you provision PostgreSQL externally, configure authentik to use it with th
 
 ## Email configuration (optional but recommended)
 
-It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
+It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.md) to send verification/recovery emails.
 
 For more information, refer to our [Email configuration](../email.mdx) documentation.
 

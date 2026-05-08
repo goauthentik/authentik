@@ -4,7 +4,7 @@ sidebar_label: Immich
 support_level: community
 ---
 
-## What is Immich
+## What is Immich?
 
 > Immich is a self-hosted backup solution for photos and videos on mobile devices.
 >

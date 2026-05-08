@@ -20,6 +20,14 @@
     }
 }
 
+/**
+ * P5 puts a line separating the entries, but this looks odd in our stacked usage. Specifying
+ * `.pf-m-stack` here also raises the specificity above the P4 default.
+ */
+.pf-m-stack label.pf-c-radio:not(:last-child) {
+    --pf-c-radio--BoxShadowColor: transparent;
+}
+
 .pf-c-radio__description {
     text-wrap: balance;
     text-wrap: pretty;

@@ -4,7 +4,7 @@ import { AKControlElement } from "#elements/ControlElement";
 import { LitPropertyRecord } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { MatchingModeEnum, RedirectURI, RedirectUriTypeEnum } from "@goauthentik/api";
+import { MatchingModeEnum, RedirectURI, RedirectURITypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -37,7 +37,7 @@ export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
     public redirectURI: RedirectURI = {
         matchingMode: MatchingModeEnum.Strict,
         url: "",
-        redirectUriType: RedirectUriTypeEnum.Authorization,
+        redirectUriType: RedirectURITypeEnum.Authorization,
     };
 
     @property({ type: String, useDefault: true })
@@ -89,15 +89,15 @@ export class OAuth2ProviderRedirectURI extends AKControlElement<RedirectURI> {
                 @change=${onChange}
             >
                 <option
-                    value="${RedirectUriTypeEnum.Authorization}"
+                    value="${RedirectURITypeEnum.Authorization}"
                     ?selected=${(this.redirectURI.redirectUriType ??
-                        RedirectUriTypeEnum.Authorization) === RedirectUriTypeEnum.Authorization}
+                        RedirectURITypeEnum.Authorization) === RedirectURITypeEnum.Authorization}
                 >
                     ${msg("Authorization")}
                 </option>
                 <option
-                    value="${RedirectUriTypeEnum.Logout}"
-                    ?selected=${this.redirectURI.redirectUriType === RedirectUriTypeEnum.Logout}
+                    value="${RedirectURITypeEnum.Logout}"
+                    ?selected=${this.redirectURI.redirectUriType === RedirectURITypeEnum.Logout}
                 >
                     ${msg("Post Logout")}
                 </option>

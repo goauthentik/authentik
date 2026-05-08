@@ -18,6 +18,7 @@ class Flag[T]:
         Literal["none"] | Literal["public"] | Literal["authenticated"] | Literal["system"]
     ) = "none"
     description: str | None = None
+    deprecated = False
 
     def __init_subclass__(cls, key: str, **kwargs):
         cls.__key = key

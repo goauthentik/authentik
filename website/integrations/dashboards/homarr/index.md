@@ -4,7 +4,7 @@ sidebar_label: Homarr
 support_level: community
 ---
 
-## What is Homarr
+## What is Homarr?
 
 > A sleek, modern dashboard that puts all of your apps and services at your fingertips. Control everything in one convenient location. Seamlessly integrates with the apps you've added, providing you with valuable information.
 >

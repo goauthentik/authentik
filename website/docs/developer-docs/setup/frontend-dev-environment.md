@@ -44,8 +44,8 @@ If you're focusing solely on frontend development, you can create a minimal deve
     services:
         server:
             volumes:
-                - ./web:/web
-                - ./local.env.yml:/local.env.yml
+                - ${PWD}/web:/web
+                - ${PWD}/local.env.yml:/local.env.yml
     ```
 
 4. From the repository root, run the frontend build script. This will install the npm packages needed to run the frontend project and start the project in watch mode.
@@ -58,7 +58,7 @@ If you're focusing solely on frontend development, you can create a minimal deve
 5. In a new terminal, navigate to the cloned repository root and start the backend containers with Docker Compose.
 
     ```shell
-    docker compose -f lifecycle/container/compose.yml up -d
+    docker compose -f lifecycle/container/compose.yml -f compose.override.yml up -d
     ```
 
 You can now access authentik on http://localhost:9000 (or https://localhost:9443).

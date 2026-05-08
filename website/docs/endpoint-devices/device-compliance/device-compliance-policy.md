@@ -52,7 +52,7 @@ If your goal is to only allow authentication via endpoint devices, this is achie
 
 ### Only allow authentication via a specific type of endpoint device
 
-If your goal is to only allow authentication via a specific type of endpoint device, this is achievable by adding an [Endpoint stage](../../add-secure-apps/flows-stages/stages/endpoint/index.md) and a [Deny stage](../../add-secure-apps/flows-stages/stages/deny.md) to your authentication flow.
+If your goal is to only allow authentication via a specific type of endpoint device, this is achievable by adding an [Endpoint stage](../../add-secure-apps/flows-stages/stages/endpoint/index.md) and a [Deny stage](../../add-secure-apps/flows-stages/stages/deny/index.md) to your authentication flow.
 
 The following example will only allow authentication via Apple devices.
 

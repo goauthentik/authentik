@@ -4,7 +4,7 @@ sidebar_label: Linkwarden
 support_level: community
 ---
 
-## What is Linkwarden
+## What is Linkwarden?
 
 > Linkwarden is an open-source collaborative bookmark manager used to collect, organize, and preserve webpages.
 >

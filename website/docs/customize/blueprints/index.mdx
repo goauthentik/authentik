@@ -27,12 +27,12 @@ authentik watches for file modification/creation events in the blueprint directo
 
 ### Imported flow
 
-You can apply an example flow, either by importing it from the **Flows** page, or by selecting it from the list of blueprints under **Customization > Blueprints** in the Admin interface and clicking **Apply**. After applying the flow, you can decide if you want to further customize the flow, or just use it as it is.
+You can apply an example flow by clicking **Import** on either the **Flows** page or the **Blueprints** page. Then, on the **Import Flow Blueprint** modal, select **Local path** to choose one of the example blueprints bundled with authentik, or select **File upload** to import a downloaded or exported `.yaml` file from your local file system. After applying the flow, you can decide if you want to further customize the flow, or just use it as it is.
 
-This YAML file is validated and applied directly after being uploaded, but is not monitored further, nor is it automatically applied on startup like blueprint instances.
+This YAML file is validated and applied directly after being uploaded or selected from an available local path, but is not monitored further, nor is it automatically applied on startup like blueprint instances.
 
 :::info
-Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merged version of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to _first_ delete the modified flow, and _then_ [apply the flow's blueprint](./working_with_blueprints.md#apply-a-new-flow) again.
+Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merged version of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to _first_ delete the modified flow, and _then_ [apply the flow's blueprint](./working_with_blueprints.md#import-and-apply-a-blueprint) again.
 :::
 
 :::warning Flow imports

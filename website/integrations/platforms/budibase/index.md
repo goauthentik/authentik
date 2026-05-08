@@ -4,7 +4,7 @@ sidebar_label: Budibase
 support_level: community
 ---
 
-## What is Budibase
+## What is Budibase?
 
 > Budibase is an open source low-code platform, and the easiest way to build internal tools that improve productivity.
 >

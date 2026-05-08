@@ -1,0 +1,275 @@
+---
+title: Integrate with Anthropic
+sidebar_label: Anthropic
+support_level: community
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Anthropic?
+
+> Anthropic is a public benefit corporation dedicated to securing AI's benefits and mitigating its risks.
+>
+> -- https://www.anthropic.com
+
+This guide configures authentik as the SAML identity provider for Claude and Claude Console user login, with optional JIT or SCIM provisioning.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `example.company` is the email domain that you verify in Claude or Claude Console.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info Workload authentication
+This guide covers user SSO and provisioning for Claude and Claude Console. API workload authentication is a separate flow; for that configuration, see [Integrate with Anthropic Workload Identity Federation](../anthropic-workload-identity-federation/).
+:::
+
+:::info Important SSO considerations
+Before requiring SSO, review Anthropic's [important SSO and provisioning considerations](https://support.claude.com/en/articles/10276682-important-considerations-before-enabling-single-sign-on-sso-and-jit-scim-provisioning) and [SSO setup guide](https://support.claude.com/en/articles/13132885-set-up-single-sign-on-sso). Domain verification, parent organization setup, and organization merges are Anthropic-side prerequisites and are outside the scope of this integration guide.
+:::
+
+## authentik configuration
+
+To support the integration of Anthropic with authentik, create SAML property mappings and an application/provider pair.
+
+### Create property mappings
+
+Create SAML property mappings for the attributes that WorkOS expects from the identity provider.
+
+1. Log in to authentik as an administrator.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create the following **SAML Provider Property Mapping** entries:
+    - **ID mapping:**
+        - **Name**: choose a descriptive name.
+        - **SAML Attribute Name**: `id`
+        - **Friendly Name**: leave blank.
+        - **Expression**:
+            ```python
+            return str(request.user.uuid)
+            ```
+    - **Email mapping:**
+        - **Name**: choose a descriptive name.
+        - **SAML Attribute Name**: `email`
+        - **Friendly Name**: leave blank.
+        - **Expression**:
+            ```python
+            return request.user.email
+            ```
+    - **First name mapping:**
+        - **Name**: choose a descriptive name.
+        - **SAML Attribute Name**: `firstName`
+        - **Friendly Name**: leave blank.
+        - **Expression**:
+            ```python
+            return request.user.name.split(" ", 1)[0] if request.user.name else request.user.username
+            ```
+    - **Last name mapping:**
+        - **Name**: choose a descriptive name.
+        - **SAML Attribute Name**: `lastName`
+        - **Friendly Name**: leave blank.
+        - **Expression**:
+            ```python
+            return request.user.name.rsplit(" ", 1)[-1] if " " in request.user.name else " "
+            ```
+    - **Entitlements mapping** _(required for JIT entitlement mappings)_:
+        - **Name**: choose a descriptive name.
+        - **SAML Attribute Name**: `groups`
+        - **Friendly Name**: leave blank.
+        - **Expression**:
+            ```python
+            for entitlement in request.user.app_entitlements(provider.application):
+                yield entitlement.name
+            ```
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name or accept the auto-provided name, the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to a temporary value. You will replace this after Anthropic provides the real ACS URL.
+        - Set the **Audience** to a temporary value. You will replace this after Anthropic provides the real SP Entity ID.
+        - Set the **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+            - Add the property mappings that you created earlier.
+    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page. When a SCIM provider is added as a backchannel provider later, only users who can view this application are synchronized.
+3. Click **Submit** to save the new application and provider.
+
+### Copy the metadata URL
+
+1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
+2. Under **Related objects** > **Metadata**, click **Copy download URL**. This metadata URL is required in the Anthropic setup flow.
+
+## Anthropic configuration
+
+This guide expects that you have already reviewed Anthropic's SSO considerations, verified `example.company`, completed any required parent organization setup or organization merge, and can access the Anthropic identity settings page. For Claude, log in as an Owner or Primary Owner and open [**Organization and access**](https://claude.ai/admin-settings/organization). For Claude Console, log in as an Admin and open [**Identity and access**](https://platform.claude.com/settings/identity).
+
+### Configure SSO
+
+1. In the **Authentication** section, click **Setup SSO** or **Manage SSO**.
+2. In the WorkOS setup flow, select SAML and use the custom SAML setup.
+3. Copy the following WorkOS service provider values. You will use these values to update the authentik provider:
+    - **ACS URL**
+    - **SP Entity ID**
+4. Paste the authentik metadata URL into the WorkOS identity provider metadata field.
+5. Map the SAML attributes as follows:
+    - `id` to the user ID field.
+    - `email` to the email field.
+    - `firstName` to the first name field.
+    - `lastName` to the last name field.
+    - `groups` to the groups field for JIT entitlement mappings.
+
+### Update the authentik provider
+
+1. Return to the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and open the SAML provider that you created earlier.
+3. Update the provider with the WorkOS values:
+    - **ACS URL**: set to the WorkOS **ACS URL**.
+    - **Audience**: set to the WorkOS **SP Entity ID**.
+4. Click **Update** to save the provider.
+
+### Test and enforce SSO
+
+1. Return to the WorkOS setup browser tab.
+2. On the WorkOS verification step, run the SSO test. The test redirects to authentik for authentication and then back to Anthropic.
+3. After the test succeeds, return to the identity settings page.
+4. Enable **Require SSO for Claude** or **Require SSO for Console**.
+
+:::warning Assign users before requiring SSO
+Do not require SSO until the users who need access are assigned to the Anthropic application in authentik. Users with verified-domain email addresses who are not assigned to the SSO application cannot sign in when SSO is required.
+:::
+
+## Provisioning options
+
+To provision users automatically, choose one of the options below:
+
+- **Just-in-time (JIT)**: users assigned to the authentik application are automatically provisioned when they first log in.
+- **SCIM directory sync**: users and groups are automatically provisioned and deprovisioned from authentik without waiting for user login. SCIM is available for Enterprise plans and eligible Claude Console organizations.
+
+<Tabs
+  defaultValue="jit"
+  values={[
+    { label: "JIT", value: "jit" },
+    { label: "SCIM", value: "scim" },
+  ]}>
+  <TabItem value="jit">
+
+### Configure JIT provisioning
+
+1. On the Anthropic identity settings page (**Organization and access** for Claude, **Identity and access** for Claude Console), find the **User provisioning** section.
+2. Select **Just-in-time (JIT)**.
+3. Confirm that all users who should be provisioned are assigned to the Anthropic application in authentik.
+4. To use JIT without entitlement-based role or seat type mappings, click **Save changes**. New users assigned to the authentik application are automatically created with the Anthropic User role when they first sign in.
+
+#### Configure JIT entitlement mappings
+
+Use JIT entitlement mappings only when Anthropic should assign roles or seat types from authentik. Anthropic expects these values in the SAML `groups` attribute; this guide populates that attribute from authentik application entitlements instead of global authentik groups. Create the entitlements in authentik first, then map those entitlement names in Anthropic.
+
+Anthropic documents the current role and seat type options in [Set up JIT or SCIM provisioning](https://support.claude.com/en/articles/13133195-set-up-jit-or-scim-provisioning). Create entitlement names for the Anthropic role and seat type mappings that apply to your plan:
+
+| Product                                           | Roles                                                                | Seat types               |
+| ------------------------------------------------- | -------------------------------------------------------------------- | ------------------------ |
+| Team plan                                         | Owner, Admin, User                                                   | Premium, Standard        |
+| Seat-based Enterprise plan                        | Owner, Admin, User, Custom roles                                     | Premium, Standard        |
+| Usage-based Enterprise plan (with two seat types) | Owner, Admin, User, Custom roles                                     | Chat, Chat + Claude Code |
+| Usage-based Enterprise plan (single seat type)    | Owner, Admin, User, Custom roles                                     | Enterprise               |
+| Console                                           | Admin, Developer, Limited Developer, Billing, Claude Code User, User | None                     |
+
+##### Create authentik entitlements
+
+1. In authentik, open the Anthropic application that you created earlier.
+2. Click the **Application entitlements** tab.
+3. Click **New Entitlement**.
+4. In **Name**, enter the IdP group value that you want to map in Anthropic, such as `Claude Owner` or `Console Developer`.
+5. Leave **Attributes** empty unless you need to store additional metadata, then click **Create**.
+6. In the entitlements list, expand the entitlement that you created.
+7. Click **Bind existing Group/User**.
+8. Select **Group** or **User**, select the authentik group or user that should receive this Anthropic role or seat type, and click **Create**.
+9. Repeat these steps for each Anthropic role or seat type that you want to assign with JIT entitlement mappings.
+
+##### Map entitlements in Anthropic
+
+1. Return to the Anthropic JIT provisioning settings.
+2. Enable **group mappings** before saving the JIT provisioning configuration.
+3. Map each entitlement value from the SAML `groups` attribute to the appropriate Anthropic role or seat type.
+4. Click **Save changes**.
+
+:::tip Entitlement names
+Each entitlement name is sent in the SAML `groups` attribute. Use names that are easy to identify when you create the Anthropic mappings.
+:::
+
+:::info Applying JIT entitlement changes
+For JIT entitlement mappings, role and seat type changes apply on the user's next login.
+:::
+
+:::warning Keep administrator access
+Before saving mappings, make sure at least one administrator has an entitlement mapped to an Owner role for Claude or an Admin role for Claude Console. Otherwise that administrator can lose elevated access.
+:::
+
+  </TabItem>
+  <TabItem value="scim">
+
+### Configure SCIM provisioning
+
+Use SCIM provisioning to automatically create, update, and remove users and groups in Claude or Claude Console from authentik.
+
+#### Create the SCIM connection in Anthropic
+
+1. On the Anthropic identity settings page (**Organization and access** for Claude, **Identity and access** for Claude Console), find the **User provisioning** section.
+2. Select **SCIM directory sync**.
+3. Click **Setup SCIM**. After a SCIM connection exists, the button is **Manage SCIM**.
+4. Follow the WorkOS setup flow until it provides the SCIM **Endpoint** and **Bearer Token**.
+5. Copy the endpoint and token. These values are required in authentik.
+
+#### Create the SCIM provider in authentik
+
+1. In the authentik Admin interface, navigate to **Applications** > **Providers** and click **Create**.
+2. Select **SCIM Provider** as the provider type and click **Next**.
+3. Configure the following settings:
+    - **Name**: provide a descriptive name.
+    - **URL**: enter the WorkOS SCIM **Endpoint**.
+    - **Token**: paste the WorkOS SCIM **Bearer Token**.
+    - **Authentication Mode**: select **Static token**.
+    - **Group filters** _(optional)_: select only the Anthropic-specific groups that should be synchronized.
+4. Click **Finish**.
+5. Navigate to **Applications** > **Applications** and open the Anthropic application.
+6. Add the SCIM provider to **Backchannel Providers**.
+7. Click **Update**.
+
+#### Test SCIM provisioning
+
+1. Open the SCIM provider in authentik and click **Run sync again**.
+2. Return to the Anthropic identity settings page.
+3. In **User provisioning**, open **Manage SCIM** and confirm that the expected users and groups appear in the directory.
+4. Enable SCIM directory sync and any group mappings only after the expected users and groups are present.
+
+:::info Applying SCIM group changes
+After changing SCIM group mappings, click **Sync now** in **User provisioning** > **Manage SCIM**, or wait for the next synchronization cycle.
+:::
+
+:::warning Verify SCIM assignments before enabling
+If SCIM or SCIM group mappings are enabled before users and groups are assigned correctly in authentik, Anthropic can remove users from the Claude or Claude Console organization.
+:::
+
+  </TabItem>
+</Tabs>
+
+## Configuration verification
+
+Sign out of Claude or Claude Console and start a new login. Choose **Continue with SSO**, enter an email address on the verified domain, and authenticate with authentik. After successful authentication, you should be redirected back to Claude or Claude Console.
+
+## Resources
+
+- [Anthropic Help Center - Important considerations before enabling SSO and JIT/SCIM provisioning](https://support.claude.com/en/articles/10276682-important-considerations-before-enabling-single-sign-on-sso-and-jit-scim-provisioning)
+- [Anthropic Help Center - Set up single sign-on (SSO)](https://support.claude.com/en/articles/13132885-set-up-single-sign-on-sso)
+- [Anthropic Help Center - Set up JIT or SCIM provisioning](https://support.claude.com/en/articles/13133195-set-up-jit-or-scim-provisioning)
+- [WorkOS documentation - SAML](https://workos.com/docs/integrations/saml)
+- [WorkOS documentation - SCIM](https://workos.com/docs/integrations/scim/1-set-up-your-directory-sync-endpoint)

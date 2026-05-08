@@ -4,7 +4,7 @@ sidebar_label: Pulse
 support_level: community
 ---
 
-## What is Pulse
+## What is Pulse?
 
 > Pulse is an open-source monitoring platform that provides real-time insight into Proxmox, Docker, and Kubernetes infrastructure.
 >

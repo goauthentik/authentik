@@ -4,7 +4,7 @@ sidebar_label: Terraform Cloud
 support_level: community
 ---
 
-## What is Terraform Cloud
+## What is Terraform Cloud?
 
 > Terraform Cloud is a managed SaaS platform by HashiCorp that enables teams to collaborate on infrastructure-as-code by running, storing state, enforcing policies, and automating workflows for Terraform configurations.
 >

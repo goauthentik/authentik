@@ -109,14 +109,11 @@ i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that requir
 aws-cfn:
 	cd lifecycle/aws && npm i && $(UV) run npm run aws-cfn
 
-run-server:  ## Run the main authentik server process
-	$(UV) run ak server
+run:  ## Run the main authentik server and worker processes
+	$(UV) run ak allinone
 
-run-worker:  ## Run the main authentik worker process
-	$(UV) run ak worker
-
-run-worker-watch:  ## Run the authentik worker, with auto reloading
-	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- $(UV) run ak worker
+run-watch:  ## Run the authentik server and worker, with auto reloading
+	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs,go --no-meta --notify -- $(UV) run ak allinone
 
 debug-attach:  ## Attach pdb to a running authentik Python worker (PEP 768). PID=<pid> to pick; SUDO=1 on macOS.
 	$(UV) run python scripts/debug_attach.py
@@ -166,7 +163,7 @@ endif
 	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION))
 	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml
 	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
-	$(SED_INPLACE) "s/version = \"${current_version}\"/version = \"$(version)\"" ${PWD}/Cargo.toml ${PWD}/Cargo.lock
+	$(SED_INPLACE) "s/version = \"${current_version}\"/version = \"$(version)\"/" ${PWD}/Cargo.toml ${PWD}/Cargo.lock
 	$(MAKE) gen-build gen-compose aws-cfn
 	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION

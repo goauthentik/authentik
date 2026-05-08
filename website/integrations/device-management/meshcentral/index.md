@@ -4,7 +4,7 @@ sidebar_label: MeshCentral
 support_level: community
 ---
 
-## What is MeshCentral
+## What is MeshCentral?
 
 > MeshCentral is a free, open source, web-based platform for remote device management.
 >

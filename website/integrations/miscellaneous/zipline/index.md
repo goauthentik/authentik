@@ -4,7 +4,7 @@ sidebar_label: Zipline
 support_level: community
 ---
 
-## What is Zipline
+## What is Zipline?
 
 > Zipline is a self-hostable file upload server designed for easy file sharing, supporting tools like ShareX and Flameshot, with features such as simplified setup and extensive customization options.
 >

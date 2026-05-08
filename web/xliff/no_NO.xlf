@@ -1326,10 +1326,6 @@
   <source>Open in new tab</source>
   <target>Åpne i ny fane</target>
 </trans-unit>
-<trans-unit id="s8655c52824caac63">
-  <source>If checked, the launch URL will open in a new browser tab or window from the user&apos;s application library.</source>
-  <target>Hvis krysset av, vil start-URL åpnes i en ny fane eller et nytt vindu fra brukerens applikasjonsbibliotek.</target>
-</trans-unit>
 <trans-unit id="s909e876731a8febb">
   <source>Select all rows</source>
   <target>Velg alle rader</target>
@@ -1414,17 +1410,9 @@
   <source>Policy</source>
   <target>Policy</target>
 </trans-unit>
-<trans-unit id="s6b85380416964890">
-  <source>Negate result</source>
-  <target>Inverter resultat</target>
-</trans-unit>
 <trans-unit id="s3bfa0258999fb629">
   <source>Negates the outcome of the binding. Messages are unaffected.</source>
   <target>Inverterer utfallet av bindingen. Meldinger påvirkes ikke.</target>
-</trans-unit>
-<trans-unit id="s6b1ed7507f26cb4a">
-  <source>Failure result</source>
-  <target>Feilresultat</target>
 </trans-unit>
 <trans-unit id="sfdfa5bb4ddd99d70">
   <source>Enterprise only</source>
@@ -2245,10 +2233,6 @@
 <trans-unit id="sb7a30abc1dcf6c36">
   <source>Issuer</source>
   <target>Utsteder</target>
-</trans-unit>
-<trans-unit id="sd4fd64791f73d37b">
-  <source>Also known as Entity ID.</source>
-  <target>Også kjent som Enhets-ID.</target>
 </trans-unit>
 <trans-unit id="sd5a4b41c6c883b03">
   <source>Audience</source>
@@ -3922,14 +3906,6 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <source>Application entitlements</source>
   <target>Applikasjonsrettigheter</target>
 </trans-unit>
-<trans-unit id="application.entitlements.preview.info">
-  <source>Application entitlements are in preview.</source>
-  <target>Applikasjonsrettigheter er i forhåndsvisning.</target>
-</trans-unit>
-<trans-unit id="preview.send-us-feedback">
-  <source>Send us feedback!</source>
-  <target>Send oss tilbakemelding!</target>
-</trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
   <target>Disse rettighetene kan brukes til å konfigurere brukertilgang i denne applikasjonen.</target>
@@ -4465,10 +4441,6 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 <trans-unit id="s2221fef80f4753a2">
   <source>TLS Verification Certificate</source>
   <target>TLS-verifiseringssertifikat</target>
-</trans-unit>
-<trans-unit id="sb8c13bd58191cea2">
-  <source>When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.</source>
-  <target>Ved tilkobling til en LDAP-server med TLS, sjekkes ikke sertifikater som standard. Spesifiser et nøkkelpar for å validere fjerneresertifikatet.</target>
 </trans-unit>
 <trans-unit id="s000ee3e634868b3c">
   <source>TLS Client authentication certificate</source>
@@ -5453,8 +5425,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <target>Aktiver</target>
 </trans-unit>
 <trans-unit id="s547b687213f48489">
-  <source>Update <x id="0" equiv-text="${user.name || user.username}"/>&apos;s password</source>
-  <target>Oppdater passordet til <x id="0" equiv-text="${user.name || user.username}"/></target>
+  <source>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>&apos;s password</source>
 </trans-unit>
 <trans-unit id="sce8d867ca5f35304">
   <source>Set password</source>
@@ -5535,10 +5506,6 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 <trans-unit id="sd65f96914ccbeb76">
   <source>User Search</source>
   <target>Brukersøk</target>
-</trans-unit>
-<trans-unit id="s3616cc78631f5893">
-  <source>Warning: You&apos;re about to delete the user you&apos;re logged in as (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Proceed at your own risk.</source>
-  <target>Advarsel: Du er i ferd med å slette brukeren du er logget inn som (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Fortsett på eget ansvar.</target>
 </trans-unit>
 <trans-unit id="s7c6c86d9a97ed706">
   <source>Show deactivated users</source>
@@ -6352,10 +6319,6 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <source>Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.</source>
   <target>Trinn brukt for å validere enhver autentisator. Dette trinnet bør brukes under autentiserings- eller autorisasjonsflyter.</target>
 </trans-unit>
-<trans-unit id="s73c13e5a6f5e38a3">
-  <source>Device classes</source>
-  <target>Enhetsklasser</target>
-</trans-unit>
 <trans-unit id="sd8d9451f86502d1a">
   <source>Device classes which can be used to authenticate.</source>
   <target>Enhetsklasser som kan brukes til å autentisere.</target>
@@ -6480,18 +6443,6 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <source>Authenticator Attachment</source>
   <target>Autentisatorvedlegg</target>
 </trans-unit>
-<trans-unit id="s502d2473587032e1">
-  <source>No preference is sent</source>
-  <target>Ingen preferanse sendes</target>
-</trans-unit>
-<trans-unit id="s60cc554fde2676cb">
-  <source>A non-removable authenticator, like TouchID or Windows Hello</source>
-  <target>En ikke-flyttbar autentisator, som TouchID eller Windows Hello</target>
-</trans-unit>
-<trans-unit id="sdf1d8edef27236f0">
-  <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
-  <target>En &quot;roaming&quot;-autentisator, som en YubiKey</target>
-</trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
   <target>Maksimalt antall registreringsforsøk</target>
@@ -6599,10 +6550,6 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 <trans-unit id="s4af8a3ce5a600855">
   <source>Let the user identify themselves with their username or Email address.</source>
   <target>La brukeren identifisere seg med sitt brukernavn eller e-postadresse.</target>
-</trans-unit>
-<trans-unit id="s592ab7d2bc1b8973">
-  <source>User fields</source>
-  <target>Brukerfelt</target>
 </trans-unit>
 <trans-unit id="s4cdae7635e757555">
   <source>Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.</source>
@@ -6831,10 +6778,6 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 <trans-unit id="s59691290a232c687">
   <source>Selected policies are executed when the stage is submitted to validate the data.</source>
   <target>Valgte policyer kjøres når trinnet sendes inn for å validere dataene.</target>
-</trans-unit>
-<trans-unit id="sc487e11d5987dbb4">
-  <source>Redirect the user to another flow, potentially with all gathered context</source>
-  <target>Omdiriger brukeren til en annen flyt, potensielt med all innhentet kontekst</target>
 </trans-unit>
 <trans-unit id="sad9d5481474d4f5b">
   <source>Static</source>
@@ -7459,10 +7402,6 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 <trans-unit id="s2e9d5ea88f02ae68">
   <source>Select the group of users which the alerts are sent to. </source>
   <target>Velg gruppen brukere varslene sendes til. </target>
-</trans-unit>
-<trans-unit id="se630f2ccd39bf9e6">
-  <source>If no group is selected and &apos;Send notification to event user&apos; is disabled the rule is disabled. </source>
-  <target>Hvis ingen gruppe er valgt og &apos;Send varsel til hendelsesbruker&apos; er deaktivert, er regelen deaktivert. </target>
 </trans-unit>
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
@@ -8876,10 +8815,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Ungrouped</source>
   <target>Ugruppert</target>
 </trans-unit>
-<trans-unit id="s1cf2298d92c327a6">
-  <source>My Applications</source>
-  <target>Mine applikasjoner</target>
-</trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
   <target>Søk etter en applikasjon ved navn...</target>
@@ -8887,10 +8822,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
   <target>Søket ga ingen resultater.</target>
-</trans-unit>
-<trans-unit id="s2656433a3b1f7e86">
-  <source>My applications</source>
-  <target>Mine applikasjoner</target>
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
@@ -9436,10 +9367,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 <trans-unit id="s567c5a6e42cc5036">
   <source>Maximum page size for API requests.</source>
   <target>Maksimal sidestørrelse for API-forespørsler.</target>
-</trans-unit>
-<trans-unit id="sed1058bca1c065f7">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled &apos;Send once&apos; in the notification transport. If no group is selected and &apos;Send notification to event user&apos; is disabled the rule is disabled. </source>
-  <target>Når aktivert, vil varsel bli sendt til brukeren som utløste hendelsen, i tillegg til eventuelle brukere i gruppen ovenfor. Hendelsesbrukeren vil alltid være den første brukeren, for å sende et varsel kun til hendelsesbrukeren, aktiver &apos;Send én gang&apos; i varslingstransporten. Hvis ingen gruppe er valgt og &apos;Send varsel til hendelsesbruker&apos; er deaktivert, er regelen deaktivert. </target>
 </trans-unit>
 <trans-unit id="s9864bd5cd7bb4bd0">
   <source>Local connection</source>
@@ -10141,17 +10068,9 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Reviewer groups</source>
   <target>Gjennomgangsgrupper</target>
 </trans-unit>
-<trans-unit id="s94c5d9fea467cdbb">
-  <source>Min reviewers</source>
-  <target>Min. antall gjennomgangspersoner</target>
-</trans-unit>
 <trans-unit id="s693370c05900a1c6">
   <source>Number of users from the selected reviewer groups that must approve the review.</source>
   <target>Antall brukere fra de valgte gjennomgangsgruppene som må godkjenne gjennomgangen.</target>
-</trans-unit>
-<trans-unit id="s20c950d20c8aec84">
-  <source>Min reviewers is per-group</source>
-  <target>Min. antall gjennomgangspersoner er per gruppe</target>
 </trans-unit>
 <trans-unit id="s74906f78877111cb">
   <source>Reviewers</source>
@@ -11215,10 +11134,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Search for a lifecycle rule by name or target...</source>
   <target>Søk etter en livssyklusregel ved navn eller mål...</target>
 </trans-unit>
-<trans-unit id="sb5ff45c4476cd097">
-  <source>Search tasks...</source>
-  <target>Søk i oppgaver...</target>
-</trans-unit>
 <trans-unit id="sfc53e352afbca881">
   <source>Review</source>
   <target>Gjennomgang</target>
@@ -11772,10 +11687,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Require Flow token (flow can only be executed from a generated recovery link)</source>
   <target>Krev flyt-token (flyt kan bare utføres fra en generert gjenopprettingslenke)</target>
 </trans-unit>
-<trans-unit id="s5ca66a541124edd6">
-  <source>Bind New Policy</source>
-  <target>Bind ny policy</target>
-</trans-unit>
 <trans-unit id="sb41bc87dec355a91">
   <source>Select the type of policy you want to create.</source>
   <target>Velg typen policy du ønsker å opprette.</target>
@@ -11851,10 +11762,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 <trans-unit id="form.headline.activation">
   <source>Review <x id="0" equiv-text="${this.verboseName}"/> Activation</source>
   <target>Se over aktivering av <x id="0" equiv-text="${this.verboseName}"/></target>
-</trans-unit>
-<trans-unit id="usedBy.associated-objects.label">
-  <source>Objects associated with this user</source>
-  <target>Objekter tilknyttet denne brukeren</target>
 </trans-unit>
 <trans-unit id="sa2ddb53b55f7432b">
   <source>Objects</source>
@@ -11964,6 +11871,319 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
   <target><x id="0" equiv-text="${verboseName}"/> er ikke tilknyttet noen objekter.</target>
   <note from="lit-localize">Zero: no objects use this entity.</note>
+</trans-unit>
+<trans-unit id="s78a13f8f08d3a317">
+  <source>Authorization Code</source>
+</trans-unit>
+<trans-unit id="s9765a1c7821ec626">
+  <source>Implicit</source>
+</trans-unit>
+<trans-unit id="s6032372e5812d743">
+  <source>Hybrid</source>
+</trans-unit>
+<trans-unit id="s4c21579d264ff019">
+  <source>Refresh token</source>
+</trans-unit>
+<trans-unit id="sec04243bf971ba5c">
+  <source>Client credentials</source>
+</trans-unit>
+<trans-unit id="sf6625f1c093feb17">
+  <source>Device-code</source>
+</trans-unit>
+<trans-unit id="sccb6f4a3d1fb9434">
+  <source>Grant Types</source>
+</trans-unit>
+<trans-unit id="s89c63fb4a8cb6d2b">
+  <source>Grant types this provider may use.</source>
+</trans-unit>
+<trans-unit id="s86a9472dc09ecf48">
+  <source>vCenter</source>
+</trans-unit>
+<trans-unit id="s71724d2ff6637203">
+  <source>Altered behavior for usage with VMware vCenter.</source>
+</trans-unit>
+<trans-unit id="s2ea2e39e4b470249">
+  <source>EntityID/Issuer override</source>
+</trans-unit>
+<trans-unit id="sf7aba95a8c43b7b1">
+  <source>Sets a custom EntityID/Issuer to override the authentik generated default.</source>
+</trans-unit>
+<trans-unit id="sa3a27a128ad87f31">
+  <source>Passwords</source>
+</trans-unit>
+<trans-unit id="s16d13ea527d7fe6b">
+  <source>Setting</source>
+</trans-unit>
+<trans-unit id="sfef81bb4077a56fd">
+  <source>Type a new password...</source>
+</trans-unit>
+<trans-unit id="sf9ec917e3e986bc1">
+  <source>When enabled, your username will be remembered on this device for future logins.</source>
+</trans-unit>
+<trans-unit id="form.submitting.no-entity">
+  <source><x id="0" equiv-text="${submittingVerb}"/>...</source>
+  <note from="lit-localize">The message shown while a form is being submitted, when no entity name is provided.</note>
+</trans-unit>
+<trans-unit id="sddfad4253602f965">
+  <source>Account lockdown flow</source>
+</trans-unit>
+<trans-unit id="sda9155d390bca7b4">
+  <source>Select an account lockdown flow...</source>
+</trans-unit>
+<trans-unit id="s77321fadb314f860">
+  <source>Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.</source>
+</trans-unit>
+<trans-unit id="sf4ccddbac7b6ec31">
+  <source>Account lockdown flows should require authentication so they can only be started from a signed-in session.</source>
+</trans-unit>
+<trans-unit id="sc9e81e2f575bcf24">
+  <source>If no group is selected and &apos;Send notification to event user&apos; is disabled, the rule is disabled.</source>
+</trans-unit>
+<trans-unit id="sd30f00ff2135589c">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled &apos;Send once&apos; in the notification transport.</source>
+</trans-unit>
+<trans-unit id="s1c0267488c33401b">
+  <source>Minimum reviewers</source>
+</trans-unit>
+<trans-unit id="sa80395e2be5324e4">
+  <source>Minimum reviewers is per-group</source>
+</trans-unit>
+<trans-unit id="se18d75eda2628862">
+  <source>The following reviews apply to this object:</source>
+</trans-unit>
+<trans-unit id="sea618ff863cfa3da">
+  <source>This object has no reviews yet.</source>
+</trans-unit>
+<trans-unit id="sea74bf2b70c27113">
+  <source>Rule</source>
+</trans-unit>
+<trans-unit id="s5ba577d0cda2bad2">
+  <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
+</trans-unit>
+<trans-unit id="sc2908875e6774352">
+  <source>Type a name for this stage...</source>
+</trans-unit>
+<trans-unit id="scf443deca2f466b6">
+  <source>Deactivate user</source>
+</trans-unit>
+<trans-unit id="s2abd586c2258eae4">
+  <source>Deactivate the user account (set is_active to False).</source>
+</trans-unit>
+<trans-unit id="s89db6a525bb42303">
+  <source>Set unusable password</source>
+</trans-unit>
+<trans-unit id="s52dc7e97dfbb99dd">
+  <source>Set an unusable password for the user.</source>
+</trans-unit>
+<trans-unit id="sb144fbff5de59af3">
+  <source>Delete sessions</source>
+</trans-unit>
+<trans-unit id="s20fb386bfce5e225">
+  <source>Delete all active sessions for the user.</source>
+</trans-unit>
+<trans-unit id="s6216c07f360073f7">
+  <source>Revoke tokens</source>
+</trans-unit>
+<trans-unit id="s334ebfb3605630b0">
+  <source>Revoke all tokens for the user (API, app password, recovery, verification).</source>
+</trans-unit>
+<trans-unit id="sdd3dfdd51bfbcd21">
+  <source>Self-service completion</source>
+</trans-unit>
+<trans-unit id="s0ef55fed99322c71">
+  <source>Configure what happens after a user locks their own account. Since all sessions are deleted, the user cannot continue in the current flow and will be redirected to a separate completion flow.</source>
+</trans-unit>
+<trans-unit id="sa42bdb7e1f7c8b75">
+  <source>Completion flow</source>
+</trans-unit>
+<trans-unit id="sf8f0cfd7ce5e081a">
+  <source>Select a completion flow...</source>
+</trans-unit>
+<trans-unit id="s7f8967e8077f2734">
+  <source>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user&apos;s session is deleted.</source>
+</trans-unit>
+<trans-unit id="se84707d40ed8f349">
+  <source>Alert (Info): Static alert box with info styling</source>
+</trans-unit>
+<trans-unit id="sb919fcbc8720c669">
+  <source>Alert (Warning): Static alert box with warning styling</source>
+</trans-unit>
+<trans-unit id="sa50b13d36ee4f763">
+  <source>Alert (Danger): Static alert box with danger styling</source>
+</trans-unit>
+<trans-unit id="s1c23a9eed1a415df">
+  <source>Warning: You are about to delete user <x id="0" equiv-text="${shouldShowWarning.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
+</trans-unit>
+<trans-unit id="s11064f3323dac957">
+  <source>Account Lockdown</source>
+</trans-unit>
+<trans-unit id="s01a8d45397ec133b">
+  <source>Security</source>
+</trans-unit>
+<trans-unit id="s5a1cd1f7b7a43204">
+  <source>If you suspect your account has been compromised, you can immediately lock it to prevent unauthorized access.</source>
+</trans-unit>
+<trans-unit id="s36535ff645fd37f7">
+  <source>Lock my account</source>
+</trans-unit>
+<trans-unit id="s7abbf11fd03b3c12">
+  <source>Bind existing group/user</source>
+</trans-unit>
+<trans-unit id="s33bfd42437266a1f">
+  <source>Leave empty to skip certificate validation, or select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate.</source>
+</trans-unit>
+<trans-unit id="sdcd1a9744efdbd7e">
+  <source>Choose Policy Type</source>
+</trans-unit>
+<trans-unit id="saa5ed8446baaba70">
+  <source>Negate Result</source>
+</trans-unit>
+<trans-unit id="s5387aa645962312a">
+  <source>Failure Result</source>
+</trans-unit>
+<trans-unit id="sea62de98f2e25e03">
+  <source>Device Classes</source>
+</trans-unit>
+<trans-unit id="s41938ae69656ef53">
+  <source>User Fields</source>
+</trans-unit>
+<trans-unit id="s02b73793e5b4e1ba">
+  <source>This flag is deprecated.</source>
+</trans-unit>
+<trans-unit id="s8655c52824caac63">
+  <source>If checked, the launch URL will open in a new browser tab or window from the user&apos;s application library.</source>
+  <target>Hvis krysset av, vil start-URL åpnes i en ny fane eller et nytt vindu fra brukerens applikasjonsbibliotek.</target>
+</trans-unit>
+<trans-unit id="s9eda7101f63a8652">
+  <source>Hide from My applications</source>
+</trans-unit>
+<trans-unit id="s30f30e9c42594a33">
+  <source>If checked, this application will not be shown on the user&apos;s My applications page.</source>
+</trans-unit>
+<trans-unit id="sc98037ccab57d329">
+  <source>No preference: the browser may offer any available authenticator</source>
+</trans-unit>
+<trans-unit id="s4611c85865abcba9">
+  <source>Platform: a non-removable authenticator built into the device, such as Touch ID, Face ID, or Windows Hello</source>
+</trans-unit>
+<trans-unit id="s0003d0e3fcdacabc">
+  <source>Cross-platform: a roaming authenticator, such as a YubiKey or Google Titan</source>
+</trans-unit>
+<trans-unit id="sc157c7dcb3d1b096">
+  <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as &apos;No preference&apos;, a value is inferred from the selected hints for backward compatibility with older browsers.</source>
+</trans-unit>
+<trans-unit id="s1baea1b8ac34d554">
+  <source>New Invitation</source>
+</trans-unit>
+<trans-unit id="s03eef6107e28d042">
+  <source>New Invitation options</source>
+</trans-unit>
+<trans-unit id="s0832ff81b9665e6f">
+  <source>Opens the new invitation wizard and binds the invitation to an existing enrollment flow.</source>
+</trans-unit>
+<trans-unit id="sc0819dc3d82d9320">
+  <source>with Existing Enrollment Flow...</source>
+</trans-unit>
+<trans-unit id="s79108cb25e7bf07b">
+  <source>Opens the new invitation wizard, which will create a new enrollment flow and invitation stage.</source>
+</trans-unit>
+<trans-unit id="sb7809157a3ccf613">
+  <source>with New Enrollment Flow and Invitation Stage...</source>
+</trans-unit>
+<trans-unit id="seb418067e7d6c6e2">
+  <source>Create a new invitation with an enrollment flow.</source>
+</trans-unit>
+<trans-unit id="sfd74a380e957d0d3">
+  <source>Enrollment Flow</source>
+</trans-unit>
+<trans-unit id="scc869d556216d748">
+  <source>Invitation Details</source>
+</trans-unit>
+<trans-unit id="se1fba44a9b284052">
+  <source>Invitation Link</source>
+</trans-unit>
+<trans-unit id="s967a2db7049dc90e">
+  <source><x id="0" equiv-text="${step}"/> failed</source>
+</trans-unit>
+<trans-unit id="s971d4cc0ecd106b7">
+  <source>Importing enrollment flow blueprint</source>
+</trans-unit>
+<trans-unit id="sf3b89a70e20af6c8">
+  <source>Blueprint validation failed</source>
+</trans-unit>
+<trans-unit id="sa04b7204708f4f74">
+  <source>Flow with slug &quot;<x id="0" equiv-text="${slugToLookup}"/>&quot; not found after import</source>
+</trans-unit>
+<trans-unit id="s3354be88ad29d171">
+  <source>Creating invitation</source>
+</trans-unit>
+<trans-unit id="s07f41353777196ea">
+  <source>The flow selected in the previous step. The invitation will be bound to this flow.</source>
+</trans-unit>
+<trans-unit id="s7209a11f97da9aff">
+  <source>No invitation available to send</source>
+</trans-unit>
+<trans-unit id="s2772d8285b905006">
+  <source>Failed to queue invitation emails</source>
+</trans-unit>
+<trans-unit id="s3b7910ab9c47a2e3">
+  <source>No enrollment flows with invitation stages found</source>
+</trans-unit>
+<trans-unit id="sa3ca03297e00591c">
+  <source>You can create a new enrollment flow and invitation stage right here, or cancel and bind an invitation stage to an existing flow manually.</source>
+</trans-unit>
+<trans-unit id="s06db43e56ca76be8">
+  <source>Create a new enrollment flow</source>
+</trans-unit>
+<trans-unit id="s8acc687c55e8ccbf">
+  <source>Only enrollment flows that have an invitation stage bound to them are listed here.</source>
+</trans-unit>
+<trans-unit id="s5b3bafd8ffe553ec">
+  <source>Flow name</source>
+</trans-unit>
+<trans-unit id="s699cd34b0dcb4c56">
+  <source>Name for the new enrollment flow.</source>
+</trans-unit>
+<trans-unit id="s8fb6d1bb698d32a0">
+  <source>Flow slug</source>
+</trans-unit>
+<trans-unit id="s0211c07612cf8c97">
+  <source>Invitation stage name</source>
+</trans-unit>
+<trans-unit id="s42b97ef63fb1a795">
+  <source>Name for the new invitation stage.</source>
+</trans-unit>
+<trans-unit id="saaa9fd0d3ebc35aa">
+  <source>Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.</source>
+</trans-unit>
+<trans-unit id="s726dff63487da085">
+  <source>Enrolled users are created as internal (e.g. employees). New users will be placed under users/internal.</source>
+</trans-unit>
+<trans-unit id="sc1358130ac327120">
+  <source>If enabled, the stage will jump to the next stage when no invitation is given. If disabled, the flow will be cancelled without a valid invitation.</source>
+</trans-unit>
+<trans-unit id="s09fdd952c6eaf7da">
+  <source>No invitation was created.</source>
+</trans-unit>
+<trans-unit id="s00febd85a4889bb1">
+  <source>Redirect the user to a static URL or another flow, optionally with all gathered context.</source>
+</trans-unit>
+<trans-unit id="sdbc1d47f0f0ed54d">
+  <source>The element could not be loaded. This may be due to a missing import or a version mismatch.</source>
+</trans-unit>
+<trans-unit id="scf8a3d48f9969535">
+  <source>An element could not be loaded. Please try refreshing the page or clearing your cache.</source>
+</trans-unit>
+<trans-unit id="se2f00b2619675217">
+  <source>Failed to load element</source>
+</trans-unit>
+<trans-unit id="s1cf2298d92c327a6">
+  <source>My Applications</source>
+  <target>Mine applikasjoner</target>
+</trans-unit>
+<trans-unit id="s2656433a3b1f7e86">
+  <source>My applications</source>
+  <target>Mine applikasjoner</target>
 </trans-unit>
 </body>
 </file>

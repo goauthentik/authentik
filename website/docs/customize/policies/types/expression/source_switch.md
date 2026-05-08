@@ -20,7 +20,7 @@ This is useful when different email domains should authenticate against differen
 
 ## Where to bind it
 
-Bind the expression to the stage binding immediately after the [Identification stage](../../../../add-secure-apps/flows-stages/stages/identification/index.mdx), or after whichever stage first collects the identifier you want to inspect.
+Bind the expression to the stage binding immediately after the [Identification stage](../../../../add-secure-apps/flows-stages/stages/identification/index.md), or after whichever stage first collects the identifier you want to inspect.
 
 For more background on binding policies to stages, see [Working with policies](../../working_with_policies.md#bind-a-policy-to-a-stage-binding).
 
