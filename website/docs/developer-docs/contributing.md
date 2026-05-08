@@ -126,7 +126,7 @@ This is documented in the [developer docs](./setup/frontend-dev-environment.md).
 
 Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
 
-Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [GitHub repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
+Please be sure to refer to our [Style guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [GitHub repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
 ### Pull requests
 
@@ -196,7 +196,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
 - Reference issues and pull requests liberally after the first line
 - Naming of commits within a PR does not need to adhere to the guidelines as we squash merge PRs
 
-### Python Style Guide
+### Python style guide
 
 All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
@@ -207,13 +207,13 @@ authentik runs on Python 3.14 at the time of writing this.
 - Ensure any database migrations work properly from the last stable version (this is checked via CI)
 - If your code changes central functions, make sure nothing else is broken.
 
-### Documentation Style Guide
+### Documentation style guide
 
-Refer to the full [Style Guide](../developer-docs/docs/style-guide.mdx) for details, but here are some important highlights:
+Refer to the full [Style guide](../developer-docs/docs/style-guide.mdx) for details, but here are some important highlights:
 
-- Our product name is authentik, with a lower-case "a" and a "k" on the end. Our company name is Authentik Security.
+- Our product name is authentik, with a lowercase "a" and a "k" on the end. Our company name is Authentik Security.
 
-- We use sentence style case in our titles and headings.
+- We use sentence case in our titles and headings.
 
 - We use **bold** text to name UI components, and _italic_ text for variables.
 
