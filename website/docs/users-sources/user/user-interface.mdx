@@ -39,12 +39,16 @@ When an administrator adds this stage to an authorization flow, the user logging
 
 For more information refer to our documentation on the [Consent stage](../../add-secure-apps/flows-stages/stages/consent/index.md).
 
-### MFA Devices
+### Credentials
 
-This is where a users can add and configure a new MFA device for accessing authentik. The three default options for MFA are:
+The **Credentials** tab is where you can add and configure a new MFA device for accessing authentik, create access tokens and App passwords.
+
+#### MFA Devices
+
+This is where users can add and configure MFA devices for accessing authentik. The three default options for MFA are:
 
 - **Static tokens**: authentik generates 6 single-use tokens.
-- **TOTP device**: using your preferred authenticator, scan the QR code, enter the code from the authenticator into the authentik prompt, and then click **Continue**. For authenticators that do not support QR scanning, you can copy the secret and paste it into you authenticator.
+- **TOTP device**: using your preferred authenticator, scan the QR code, enter the code from the authenticator into the authentik prompt, and then click **Continue**. For authenticators that do not support QR scanning, you can copy the secret and paste it into your authenticator.
 - **WebAuthn device**: this option uses the [WebAuthn/FIDO2/Passkeys Authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.md) to allow the user to create a passkey for the device.
 
 An authentik administrator can add additional MFA options for users, such as [Email](../../add-secure-apps/flows-stages/stages/authenticator_email/index.md), [SMS](../../add-secure-apps/flows-stages/stages/authenticator_sms/index.md), or [Duo](../../add-secure-apps/flows-stages/stages/authenticator_duo/index.md), by adding the stage for that authentication method to the flow.
@@ -53,12 +57,11 @@ An authentik administrator can add additional MFA options for users, such as [Em
 Because LDAP does not natively support OTP, authentik supports [appending the OTP code to the password](../../add-secure-apps/providers/ldap/index.md#code-based-mfa-support) for situations where the protocol is LDAP and they are required to use MFA. If enabled, the user can enter the authenticator's code as part of the bind/authentication password, separated by a semicolon. For example, for the password `example-password` and the MFA code `123456`, the input in the password field must be `example-password;123456`.
 :::
 
+#### Tokens and app passwords
+
+- **Tokens**: users can create access tokens for authorization, allowing a client application to access an API or other protected resource.
+- **App passwords**: app passwords can be used as a secondary form of authentication. For example, in situations where MFA is not natively supported for the protocol that the application uses, the app password behaves as the user's regular password.
+
 ### Connected services
 
 If an authentik administrator adds a [source](../sources/index.md) to the instance, such as GitHub, Discord, Google Workspace or Microsoft Entra ID, then users will see a list of those sources here and can choose to log in (**Connect**) using credentials from that source, or **Disconnect** form the service. Note that SCIM and LDAP sources are not displayed.
-
-### Tokens and App passwords
-
-**Tokens**: Users can create a set of 6 token to use as standard _access tokens_ for authorization, allowing a client application to access an API or other protected resource.
-
-**App password** an App password can be used as a secondary form of authentication. For example, in situations where MFA is not natively supported for the protocol that the application uses, the App passwords behaves as the user's regular password.
