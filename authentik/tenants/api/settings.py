@@ -19,6 +19,12 @@ from authentik.tenants.models import Tenant
 
 class FlagJSONField(JSONDictField):
 
+    def to_internal_value(self, data: str):
+        flags =  super().to_internal_value(data)
+        for flag in Flag.available(visibility="system", exclude_system=False):
+            flags[flag().key] = flag.get()
+        return flags
+
     def to_representation(self, value: dict) -> dict:
         """Exclude any system flags that aren't modifiable"""
         new_value = value.copy()
@@ -30,12 +36,9 @@ class FlagJSONField(JSONDictField):
 
     def run_validators(self, value: dict):
         super().run_validators(value)
-        for flag in Flag.available(exclude_system=False):
+        for flag in Flag.available():
             _flag = flag()
             if _flag.key not in value:
-                continue
-            if _flag.visibility == "system":
-                value.pop(_flag.key, None)
                 continue
             flag_value = value.get(_flag.key)
             flag_type = get_args(_flag.__orig_bases__[0])[0]
