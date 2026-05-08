@@ -1,20 +1,20 @@
 ---
-title: Integrate with Service Name
-sidebar_label: Service Name
+title: Integrate with Absorb LMS
+sidebar_label: Absorb LMS
 support_level: community
 ---
 
-## What is Service-Name
+## What is Absorb LMS?
 
-> Insert a quick overview of what `<service-name>` is and what it does. Simply describe the product and what it is, how it is used, and do not include marketing or sales-oriented content.
+> Absorb LMS is a cloud‑based learning management system used by organizations to deliver, track, and manage employee, partner, and customer training. It lets you create or import courses, assign them to different audiences, and report on learner progress and compliance from a centralized portal.
 >
-> -- https://service.xyz
+> -- https://www.absorblms.com/
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `service.company` is the FQDN of the `<service-name>` installation. (Remove this for SaaS)
+- `company.myabsorb.com` is the FQDN of the Absorb LMS deployment.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -23,11 +23,13 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of `<service-name>` with authentik, you need to create an application/provider pair in authentik.
-
-_Any specific info about this integration can go here._
+To support the integration of Absorb LMS with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
+
+#### OAuth
+
+#### SAML
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -40,7 +42,9 @@ _Any specific info about this integration can go here._
 
 3. Click **Submit** to save the new application and provider.
 
-## Service configuration
+#### SCIM provisioning
+
+## Absorb LMS configuration
 
 Insert service configuration
 
@@ -50,13 +54,15 @@ Insert service configuration
 
 ## Configuration verification
 
-Template sentence that you can typically use here: "To confirm that authentik is properly configured with `<service-name>`, log out and log back in via authentik."
+Template sentence that you can typically use here: "To confirm that authentik is properly configured with Absorb LMS, log out and log back in via authentik."
 
 If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.
 
 ## Resources
 
 List the external sources (official docs, community articles, blogs, videos) that were used to create this guide.
+
+company.myabsorb.com/admin/login
 
 ```text
 - [Bitwarden Help - OIDC Configuration](https://bitwarden.com/help/configure-sso-oidc/)
