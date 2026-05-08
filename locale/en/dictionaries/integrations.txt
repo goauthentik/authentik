@@ -24,7 +24,9 @@ Gitea
 Gravitee
 Homarr
 Informatique
+Jellyseerr
 Kimai
+Kiota
 Knoc
 Knocknoc
 Komodo
@@ -50,9 +52,11 @@ Plesk
 proftpd
 Qube
 Relatedly
+Seerr
 Sidero
 snipeit
 sonarqube
+Technitium
 Terrakube
 Ueberauth
 Veeam
@@ -60,7 +64,6 @@ Vikunja
 Wazuh
 Wdio
 Weixin
-Kiota
 Wekan
 Xcreds
 Zammad
