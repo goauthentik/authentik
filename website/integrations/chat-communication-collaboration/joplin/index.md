@@ -4,7 +4,7 @@ sidebar_label: Joplin
 support_level: community
 ---
 
-## What is Joplin Server
+## What is Joplin Server?
 
 > Joplin is an open source note-taking app. Capture your thoughts and securely access them from any device.
 >

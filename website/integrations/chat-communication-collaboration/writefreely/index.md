@@ -4,7 +4,7 @@ sidebar_label: Writefreely
 support_level: community
 ---
 
-## What is Writefreely
+## What is Writefreely?
 
 > An open source platform for building a writing space on the web.
 >

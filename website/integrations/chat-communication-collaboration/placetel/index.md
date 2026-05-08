@@ -4,7 +4,7 @@ sidebar_label: Placetel
 support_level: community
 ---
 
-## What is Placetel
+## What is Placetel?
 
 > Placetel is a German cloud communications provider, specializing in VoIP-based telephony, unified communications (UCaaS), and collaboration tools for businesses.
 >

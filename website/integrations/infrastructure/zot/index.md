@@ -4,7 +4,7 @@ sidebar_label: Zot
 support_level: community
 ---
 
-## What is Zot
+## What is Zot?
 
 > Zot is an OCI-native container registry for distributing container images and OCI artifacts.
 >

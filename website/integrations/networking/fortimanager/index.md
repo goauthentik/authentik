@@ -4,7 +4,7 @@ sidebar_label: FortiManager
 support_level: community
 ---
 
-## What is FortiManager
+## What is FortiManager?
 
 > FortiManager is an enterprise solution that enables centralized network management, ensures compliance with best practices, and automates workflows to enhance breach protection.
 >

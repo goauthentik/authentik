@@ -4,7 +4,7 @@ sidebar_label: ArgoCD
 support_level: community
 ---
 
-## What is ArgoCD
+## What is ArgoCD?
 
 > Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes.
 >

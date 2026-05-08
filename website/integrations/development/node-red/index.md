@@ -4,7 +4,7 @@ sidebar_label: Node-RED
 support_level: community
 ---
 
-## What is Node-RED
+## What is Node-RED?
 
 > Node-RED is a programming tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 >

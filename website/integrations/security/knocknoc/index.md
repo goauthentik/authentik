@@ -4,7 +4,7 @@ sidebar_label: Knocknoc
 support_level: community
 ---
 
-## What is Knocknoc
+## What is Knocknoc?
 
 > Knocknoc links your single-sign on experience to existing network access controls. It can dynamically orchestrate network access controls (e.g., managing firewall rules in real-time without exposing target machines) or function as an identity-aware gateway.
 >

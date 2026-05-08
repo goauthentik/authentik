@@ -5,7 +5,7 @@ support_level: community
 toc_max_heading_level: 5
 ---
 
-## What is Microsoft365
+## What is Microsoft365?
 
 > Microsoft 365 is the cloud productivity platform that delivers Office applications, Teams collaboration, and identity services from Microsoft's global infrastructure.
 >

@@ -4,7 +4,7 @@ sidebar_label: Zoom
 support_level: community
 ---
 
-## What is Zoom
+## What is Zoom?
 
 > Zoom is a video conferencing and collaboration platform. It allows users to hold online meetings, webinars, chats, and calls over the internet.
 >

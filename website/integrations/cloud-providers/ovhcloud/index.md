@@ -4,7 +4,7 @@ sidebar_label: OVHcloud
 support_level: community
 ---
 
-## What is OVHcloud
+## What is OVHcloud?
 
 > OVHcloud is a French cloud provider. They provide public and private cloud products, shared hosting, and dedicated servers in 140 countries.
 >

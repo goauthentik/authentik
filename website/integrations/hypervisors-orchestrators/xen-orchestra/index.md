@@ -4,7 +4,7 @@ sidebar_label: Xen Orchestra
 support_level: community
 ---
 
-## What is Xen Orchestra
+## What is Xen Orchestra?
 
 > Xen Orchestra provides a user friendly web interface for every Xen based hypervisor (XenServer, xcp-ng, etc.).
 >
