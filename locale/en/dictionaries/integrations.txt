@@ -5,6 +5,7 @@ Authy
 Beszel
 Bitnami
 Budibase
+christiaangoossens
 Doki
 Doku
 dokuwiki
@@ -22,6 +23,7 @@ Gestionnaire
 ghec
 Gitea
 Gravitee
+HACS
 Homarr
 Informatique
 Kimai
