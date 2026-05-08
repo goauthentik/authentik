@@ -100,7 +100,7 @@ In Rocket.chat, follow the procedure below:
 
 6. Click _Save changes_ in the top-right corner of the screen
 
-### Step 4 (Optional)
+### Step 4 (optional)
 
 :::info
 By default, Rocket.chat will attempt to use two-factor authentication with any new user coming in to the system and allows users to change their information

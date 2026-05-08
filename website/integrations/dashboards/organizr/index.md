@@ -31,7 +31,7 @@ Create a new user account _(or reuse an existing)_ for organizr to use for LDAP 
 _Optionally_, create a new group like `organizr users` to scope access to the organizr application.
 :::
 
-## authentik Configuration
+## authentik configuration
 
 1. Create a new Proxy Provider for `https://organizr.company`
    ![](./organizr1.png)
@@ -47,7 +47,7 @@ _Optionally_, create a new group like `organizr users` to scope access to the or
 ![](./organizr5.png)
 ::: 3. Add the Application to the authentik Embedded Outpost.
 
-## organizr Configuration
+## organizr configuration
 
 :::caution
 Ensure any local usernames/email addresses in organizr do not conflict with usernames/email addresses in authentik.
@@ -61,7 +61,7 @@ Auth Proxy Header Name for Email: `X-authentik-email`
 Logout URL: `/outpost.goauthentik.io/sign_out`
 ![](./organizr6.png)
 
-2. Setup Authentication in organizr _system settings_ > _main_ > _Authentication_
+2. Set up authentication in organizr _system settings_ > _main_ > _Authentication_
 
 Authentication Type: `Organizr DB + Backend`
 Authentication Backend: `Ldap`

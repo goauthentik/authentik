@@ -140,7 +140,7 @@ Users who are assigned none of the defined entitlements will be denied login acc
 In contrast, users assigned the `gitadmin` entitlement will have full administrative privileges, while users assigned the `gitrestricted` entitlement will have limited access.
 :::
 
-### Helm Chart Configuration
+### Helm chart configuration
 
 authentik authentication can be configured automatically in Kubernetes deployments using its [Helm chart](https://gitea.com/gitea/helm-chart/).
 
