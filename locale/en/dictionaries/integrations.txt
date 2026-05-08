@@ -44,6 +44,7 @@ Organizr
 Packagify
 Palo
 Papra
+PhotoPrism
 pfSense
 phpipam
 Planka
