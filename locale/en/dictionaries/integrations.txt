@@ -5,7 +5,6 @@ Authy
 Beszel
 Bitnami
 Budibase
-christiaangoossens
 Doki
 Doku
 dokuwiki
