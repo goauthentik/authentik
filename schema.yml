@@ -43829,6 +43829,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/Group'
           readOnly: true
+          nullable: true
         destination_event_user:
           type: boolean
           description: When enabled, notification will be sent to user the user that

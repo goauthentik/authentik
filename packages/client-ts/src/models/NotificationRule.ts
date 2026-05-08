@@ -58,7 +58,7 @@ export interface NotificationRule {
      * @type {Group}
      * @memberof NotificationRule
      */
-    readonly destinationGroupObj: Group;
+    readonly destinationGroupObj: Group | null;
     /**
      * When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
      * @type {boolean}
