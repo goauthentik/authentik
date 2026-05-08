@@ -8,6 +8,8 @@ from kubernetes.client import ApiextensionsV1Api, CustomObjectsApi
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
+from authentik.outposts.controllers.k8s.service import MetricsServiceReconciler
+from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
 
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
@@ -55,6 +57,10 @@ class PrometheusServiceMonitor:
     metadata: PrometheusServiceMonitorMetadata
     spec: PrometheusServiceMonitorSpec
 
+    def to_dict(self):
+        """`to_dict` to conform to how the kubernetes client converts objects to dicts"""
+        return asdict(self)
+
 
 CRD_NAME = "servicemonitors.monitoring.coreos.com"
 CRD_GROUP = "monitoring.coreos.com"
@@ -73,6 +79,11 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
     @staticmethod
     def reconciler_name() -> str:
         return "prometheus servicemonitor"
+
+    def reconcile(self, current: PrometheusServiceMonitor, reference: PrometheusServiceMonitor):
+        if current.spec.selector.matchLabels != reference.spec.selector.matchLabels:
+            raise NeedsUpdate()
+        super().reconcile(current, reference)
 
     @property
     def noop(self) -> bool:
@@ -108,7 +119,9 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
                     )
                 ],
                 selector=PrometheusServiceMonitorSpecSelector(
-                    matchLabels=self.get_object_meta(name=self.name).labels,
+                    matchLabels=MetricsServiceReconciler(self.controller)
+                    .get_object_meta(name=self.name)
+                    .labels,
                 ),
             ),
         )

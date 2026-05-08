@@ -4,7 +4,7 @@ sidebar_label: Roundcube
 support_level: community
 ---
 
-## What is Roundcube
+## What is Roundcube?
 
 > Roundcube is a browser-based multilingual IMAP client with an application-like user interface. It provides the full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking.
 >
@@ -53,7 +53,7 @@ To support the integration of Roundcube with authentik, you need to create an ap
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.

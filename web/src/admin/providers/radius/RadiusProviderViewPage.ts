@@ -1,7 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/radius/RadiusProviderForm";
-import "#admin/rbac/ObjectPermissionsPage";
-import "#components/events/ObjectChangelog";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
@@ -13,11 +13,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    ProvidersApi,
-    RadiusProvider,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { ModelEnum, ProvidersApi, RadiusProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -137,7 +133,7 @@ export class RadiusProviderViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-card__footer">
                                     <ak-forms-modal>
-                                        <span slot="submit">${msg("Update")}</span>
+                                        <span slot="submit">${msg("Save Changes")}</span>
                                         <span slot="header">
                                             ${msg("Update Radius Provider")}
                                         </span>
@@ -164,24 +160,20 @@ export class RadiusProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider.pk || ""}
-                                targetModelApp="authentik_providers_radius"
-                                targetModelName="radiusprovider"
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider.pk || ""}
+                            targetModelName=${ModelEnum.AuthentikProvidersRadiusRadiusprovider}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersRadiusRadiusprovider}
+                    model=${ModelEnum.AuthentikProvidersRadiusRadiusprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

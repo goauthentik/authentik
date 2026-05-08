@@ -4,7 +4,7 @@ sidebar_label: Slack
 support_level: authentik
 ---
 
-## What is Slack
+## What is Slack?
 
 > Slack is a platform for collaboration, with chat and real-time video capabilities. To learn more, visit https://slack.com.
 
@@ -45,7 +45,7 @@ To support the integration of Slack with authentik, you need to create an applic
 #### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.

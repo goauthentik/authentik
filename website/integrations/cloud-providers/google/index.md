@@ -4,7 +4,7 @@ sidebar_label: Google Workspace
 support_level: authentik
 ---
 
-## What is Google Workspace
+## What is Google Workspace?
 
 > Google Workspace is a collection of cloud computing, productivity and collaboration tools, software and products developed and marketed by Google.
 >

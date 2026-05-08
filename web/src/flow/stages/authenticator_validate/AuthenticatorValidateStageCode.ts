@@ -30,7 +30,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
 
         return html`<form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
-            <fieldset class="pf-c-form__group">
+            <fieldset class="ak-c-fieldset pf-c-form__group">
                 <legend class="sr-only">${msg("Authentication code")}</legend>
                 ${AKLabel(
                     {
@@ -62,7 +62,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                 ${AKFormErrors({ errors: this.challenge?.responseErrors?.code })}
             </fieldset>
 
-            <fieldset class="pf-c-form__group pf-m-action">
+            <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <button name="continue" type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${msg("Continue")}

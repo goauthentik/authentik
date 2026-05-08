@@ -16,6 +16,7 @@ type Config struct {
 	Listen ListenConfig `yaml:"listen" env:", prefix=AUTHENTIK_LISTEN__"`
 	Web    WebConfig    `yaml:"web" env:", prefix=AUTHENTIK_WEB__"`
 	Log    LogConfig    `yaml:"log" env:", prefix=AUTHENTIK_LOG__"`
+	LDAP   LDAPConfig   `yaml:"ldap" env:", prefix=AUTHENTIK_LDAP__"`
 
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
@@ -50,12 +51,12 @@ type PostgreSQLConfig struct {
 }
 
 type ListenConfig struct {
-	HTTP              string   `yaml:"http" env:"HTTP, overwrite"`
-	HTTPS             string   `yaml:"https" env:"HTTPS, overwrite"`
-	LDAP              string   `yaml:"ldap" env:"LDAP, overwrite"`
-	LDAPS             string   `yaml:"ldaps" env:"LDAPS, overwrite"`
-	Radius            string   `yaml:"radius" env:"RADIUS, overwrite"`
-	Metrics           string   `yaml:"metrics" env:"METRICS, overwrite"`
+	HTTP              []string `yaml:"http" env:"HTTP, overwrite"`
+	HTTPS             []string `yaml:"https" env:"HTTPS, overwrite"`
+	LDAP              []string `yaml:"ldap" env:"LDAP, overwrite"`
+	LDAPS             []string `yaml:"ldaps" env:"LDAPS, overwrite"`
+	Radius            []string `yaml:"radius" env:"RADIUS, overwrite"`
+	Metrics           []string `yaml:"metrics" env:"METRICS, overwrite"`
 	Debug             string   `yaml:"debug" env:"DEBUG, overwrite"`
 	TrustedProxyCIDRs []string `yaml:"trusted_proxy_cidrs" env:"TRUSTED_PROXY_CIDRS, overwrite"`
 }
@@ -113,4 +114,8 @@ type WebConfig struct {
 
 type LogConfig struct {
 	HttpHeaders []string `yaml:"http_headers" env:"HTTP_HEADERS, overwrite"`
+}
+
+type LDAPConfig struct {
+	PageSize int `yaml:"page_size" env:"PAGE_SIZE, overwrite"`
 }

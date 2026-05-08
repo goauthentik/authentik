@@ -4,7 +4,7 @@ sidebar_label: organizr
 support_level: community
 ---
 
-## What is organizr
+## What is organizr?
 
 > Organizr allows you to setup "Tabs" that will be loaded all in one webpage.
 >

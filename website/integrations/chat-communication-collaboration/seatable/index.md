@@ -4,7 +4,7 @@ sidebar_label: SeaTable
 support_level: community
 ---
 
-## What is SeaTable
+## What is SeaTable?
 
 > SeaTable is a no-code database and app builder platform that provides a web-based, spreadsheet-like interface for organizing data, building apps, and automating workflows. It is designed to function as a collaborative database with features like tables, views, forms, and permissions.
 >
@@ -32,7 +32,7 @@ To support the integration of SeaTable with authentik, you need to create an app
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
         - Set the **Launch URL** to `https://seatable.company/sso/`.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.

@@ -4,7 +4,7 @@ sidebar_label: DokuWiki
 support_level: community
 ---
 
-## What is DokuWiki
+## What is DokuWiki?
 
 > DokuWiki is an open source wiki application licensed under GPLv2 and written in the PHP programming language. It works on plain text files and thus does not need a database. Its syntax is similar to the one used by MediaWiki and it is often recommended as a more lightweight, easier to customize alternative to MediaWiki.
 >
@@ -28,7 +28,7 @@ To support the integration of DokuWiki with authentik, you need to create an app
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - _(Optional)_ Under **UI Settings**, set the **Launch URL** to `https://dokuwiki.company/doku.php?id=start&oauthlogin=generic`. This will allow you to log in directly to DokuWiki from the authentik applications dashboard and skip the DokuWiki OAuth Login button.

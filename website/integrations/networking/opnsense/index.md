@@ -4,7 +4,7 @@ sidebar_label: OPNsense
 support_level: community
 ---
 
-## What is OPNsense
+## What is OPNsense?
 
 > OPNsense is a free and Open-Source FreeBSD-based firewall and routing software. It is licensed under an Open Source Initiative approved license.
 >

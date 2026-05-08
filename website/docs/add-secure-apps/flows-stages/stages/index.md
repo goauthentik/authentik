@@ -41,7 +41,7 @@ To create a stage, follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Flows and Stages > Stages**.
-3. Click **Create**, define the stage using the configuration settings, and then click **Finish**.
+3. Click **New Stage**, select the stage type, define the stage using the configuration settings, and then click **Create Stage**.
 
 After creating the stage, you can then use bindings to determine whether or not the stage will be implemented in the flow.
 
@@ -65,11 +65,14 @@ To bind a stage to a flow (which adds the stage as a "step" in the flow), follow
 2. In the Admin interface, navigate to **Flows and Stages > Flows**.
 3. In the list of flows, click the name of the flow to which you want to bind one or more stages.
 4. On the Flow page, click the **Stage Bindings** tab at the top.
-5. Here, you can decide if you want to create a new stage and bind it to the flow (**Create and bind Stage**), or if you want to select an existing stage and bind it to the flow (**Bind existing stage**).
+5. Here, you can either create a new stage and bind it to the flow with **New Stage**, or select an existing stage and bind it to the flow with **Bind Existing Stage**.
 
 ### Control access to a stage
 
-There are several ways use policy bindings to control access to a specific stage of a flow: - Bind a policy to a stage-binding. [See our policy documentation](../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding). - Bind a user or group to the stage. [See steps below](#bind-users-and-groups-to-a-flows-stage-binding).
+There are several ways to control access to a specific stage of a flow:
+
+- Bind a policy to a stage binding. [See our policy documentation](../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding).
+- Bind a user or group to the stage. [See steps below](#bind-users-and-groups-to-a-flows-stage-binding).
 
 ### Bind users and groups to a flow's stage binding
 
@@ -88,6 +91,6 @@ To bind a user or a group to a stage binding for a specific flow, follow these s
 6. In the expanded area, click **Bind existing policy/group/user**.
 7. In the **Create Binding** box, select either the tab for **Group** or **User**.
 8. In the drop-down list, select the group or user.
-9. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the box.
+9. Optionally, configure additional settings for the binding, and then click **Create Stage Binding** to create the binding and close the box.
 
 Learn more about the different types of [bindings](../../bindings-overview/index.md) in authentik and [working with them](../../bindings-overview/work-with-bindings.md).
