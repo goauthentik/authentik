@@ -40,7 +40,7 @@ Login flow which follows the default pattern (username/email, then password), bu
 
 You can force two-factor authentication by editing the _Not configured action_ in the Authenticator Validation Stage.
 
-## Login with conditional Captcha
+## Log in with conditional CAPTCHA
 
 Blueprint path: `example/flows-login-conditional-captcha.yaml`
 

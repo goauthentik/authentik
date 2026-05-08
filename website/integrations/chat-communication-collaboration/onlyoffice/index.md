@@ -51,4 +51,4 @@ Under _Attribute Mapping_, set the following values
 - _Last Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
 - _Email_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 
-Click save and a new SSO button will appear on the OnlyOffice login page.
+Click **Save** and a new SSO button appears on the OnlyOffice login page.

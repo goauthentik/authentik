@@ -130,11 +130,11 @@ In older versions of Apache Guacamole, the `openid-enabled=true`, `extension-pri
   </TabItem>
 </Tabs>
 
-### Self Signed Certificates
+### Self-signed certificates
 
 When using a self-signed certificate, it is necessary to incorporate the certificate of the corresponding Certificate Authority into both the `/etc/ssl/certs/ca-certificates.crt` file and the `/opt/java/openjdk/lib/security/cacerts` keystore on your Apache Guacamole host. This ensures that the self-signed certificate is trusted by both the system and the Java runtime environment used by Guacamole.
 
-#### Adding Certificate Authority certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`
+#### Add a certificate authority certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`
 
 :::info
 This section depends on the operating system hosting Apache Guacamole.
@@ -158,7 +158,7 @@ This section depends on the operating system hosting Apache Guacamole.
     update-ca-certificates.sh
     ```
 
-#### Adding Certificate Authority certificate to `/opt/java/openjdk/lib/security/cacerts`
+#### Add a certificate authority certificate to `/opt/java/openjdk/lib/security/cacerts`
 
 1. To export the certificate of the Certificate Authority, use the following command on the Certificate Authority host:
 

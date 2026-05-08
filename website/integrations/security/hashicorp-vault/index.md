@@ -49,7 +49,7 @@ To support the integration of Hashicorp Vault with authentik, you need to create
 Enable the oidc auth method
 `vault auth enable oidc`
 
-Configure the oidc auth method, oidc discovery url is the OpenID Configuration Issuer in your provider
+Configure the OIDC auth method. The OIDC discovery URL is the OpenID Configuration Issuer in your provider.
 
 ```
 vault write auth/oidc/config \

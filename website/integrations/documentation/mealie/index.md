@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Mealie?
 
-> Mealie is a self hosted recipe manager and meal planner. Easily add recipes by providing the url and Mealie will automatically import the relevant data or add a family recipe with the UI editor.
+> Mealie is a self-hosted recipe manager and meal planner. Easily add recipes by providing the URL and Mealie will automatically import the relevant data or add a family recipe with the UI editor.
 >
 > -- https://mealie.io/
 

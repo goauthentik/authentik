@@ -109,7 +109,7 @@ In this example, every user shares a single folder. If you want to have separate
 
 Additionally, note that each file will have Linux user and group ID `1000`. Beforehand, make sure that the respective Linux user exists (usually the first Linux user created receives ID `1000`). Check `/etc/passwd` and create a user if necessary.
 
-If you do not set `LDAPForceDefaultUID`/`LDAPForceDefaultGID`, Authentik's `uidNumber` field will be used. If you do not set `LDAPGenerateHomedir`, Authentik's `homeDirectory` field will be used (`/home/$username`). For more information about default attributes provided by Authentik, refer to the [LDAP Provider documentation](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap).
+If you do not set `LDAPForceDefaultUID`/`LDAPForceDefaultGID`, authentik's `uidNumber` field will be used. If you do not set `LDAPGenerateHomedir`, authentik's `homeDirectory` field will be used (`/home/$username`). For more information about default attributes provided by authentik, refer to the [LDAP Provider documentation](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap).
 
 Make sure to read ProFTPD's [available LDAP options](http://www.proftpd.org/docs/contrib/mod_ldap.html).
 
