@@ -52,8 +52,8 @@ export class ModalForm extends ModalButton {
 
     //#region Properties
 
-    @property({ type: Boolean })
-    public closeAfterSuccessfulSubmit = true;
+    @property({ type: Boolean, attribute: "keep-open-after-submit" })
+    public keepOpenAfterSubmit = false;
 
     @property({ type: Boolean })
     public showSubmitButton = true;
@@ -98,7 +98,7 @@ export class ModalForm extends ModalButton {
 
         return formPromise
             .then(() => {
-                if (this.closeAfterSuccessfulSubmit) {
+                if (!this.keepOpenAfterSubmit) {
                     this.open = false;
                     form?.reset();
 
@@ -138,7 +138,7 @@ export class ModalForm extends ModalButton {
     protected refreshListener = (e: Event): void => {
         // if the modal should stay open after successful submit, prevent EVENT_REFRESH from bubbling
         // to the parent components (which would cause table refreshes that destroy the modal)
-        if (!this.closeAfterSuccessfulSubmit) {
+        if (this.keepOpenAfterSubmit) {
             e.stopPropagation();
         }
     };
