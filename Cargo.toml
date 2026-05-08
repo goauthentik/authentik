@@ -67,7 +67,7 @@ reqwest-middleware = { version = "= 0.5.1", features = [
   "rustls",
 ] }
 rustls = { version = "= 0.23.40", features = ["fips"] }
-sentry = { version = "= 0.48.0", default-features = false, features = [
+sentry = { version = "= 0.48.1", default-features = false, features = [
   "backtrace",
   "contexts",
   "debug-images",
