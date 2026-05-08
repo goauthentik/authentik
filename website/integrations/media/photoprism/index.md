@@ -64,7 +64,7 @@ Restart PhotoPrism after changing these settings.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with PhotoPrism, log out of PhotoPrism and log back in with the **authentik** OIDC login option. You should be redirected to authentik for authentication and then redirected back to PhotoPrism.
+To confirm that authentik is properly configured with PhotoPrism, log out of PhotoPrism and log back in using the **authentik** OIDC login option. You should be redirected to authentik for authentication and then redirected back to PhotoPrism.
 
 ## Resources
 
