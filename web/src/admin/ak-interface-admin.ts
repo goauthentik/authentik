@@ -135,7 +135,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
         WebsocketClient.connect();
 
-        this.#sidebarMatcher = window.matchMedia("(width >= 1200px)");
+        this.#sidebarMatcher = window.matchMedia("(width > 1210px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
 

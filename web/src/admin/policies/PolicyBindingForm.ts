@@ -272,7 +272,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
             </ak-switch-input>
             <ak-switch-input
                 name="negate"
-                label=${msg("Negate result")}
+                label=${msg("Negate Result")}
                 ?checked=${this.instance?.negate ?? false}
                 help=${msg("Negates the outcome of the binding. Messages are unaffected.")}
             >
@@ -293,7 +293,11 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="failureResult" label=${msg("Failure result")}>
+            <ak-form-element-horizontal
+                name="failureResult"
+                label=${msg("Failure Result")}
+                required
+            >
                 <ak-radio .options=${createPassFailOptions} .value=${this.instance?.failureResult}>
                 </ak-radio>
                 <p class="pf-c-form__helper-text">

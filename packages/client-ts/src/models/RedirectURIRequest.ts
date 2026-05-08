@@ -14,8 +14,8 @@
 
 import type { MatchingModeEnum } from "./MatchingModeEnum";
 import { MatchingModeEnumFromJSON, MatchingModeEnumToJSON } from "./MatchingModeEnum";
-import type { RedirectUriTypeEnum } from "./RedirectUriTypeEnum";
-import { RedirectUriTypeEnumFromJSON, RedirectUriTypeEnumToJSON } from "./RedirectUriTypeEnum";
+import type { RedirectURITypeEnum } from "./RedirectURITypeEnum";
+import { RedirectURITypeEnumFromJSON, RedirectURITypeEnumToJSON } from "./RedirectURITypeEnum";
 
 /**
  * A single allowed redirect URI entry
@@ -37,10 +37,10 @@ export interface RedirectURIRequest {
     url: string;
     /**
      *
-     * @type {RedirectUriTypeEnum}
+     * @type {RedirectURITypeEnum}
      * @memberof RedirectURIRequest
      */
-    redirectUriType?: RedirectUriTypeEnum;
+    redirectUriType?: RedirectURITypeEnum;
 }
 
 /**
@@ -69,7 +69,7 @@ export function RedirectURIRequestFromJSONTyped(
         redirectUriType:
             json["redirect_uri_type"] == null
                 ? undefined
-                : RedirectUriTypeEnumFromJSON(json["redirect_uri_type"]),
+                : RedirectURITypeEnumFromJSON(json["redirect_uri_type"]),
     };
 }
 
@@ -88,6 +88,6 @@ export function RedirectURIRequestToJSONTyped(
     return {
         matching_mode: MatchingModeEnumToJSON(value["matchingMode"]),
         url: value["url"],
-        redirect_uri_type: RedirectUriTypeEnumToJSON(value["redirectUriType"]),
+        redirect_uri_type: RedirectURITypeEnumToJSON(value["redirectUriType"]),
     };
 }

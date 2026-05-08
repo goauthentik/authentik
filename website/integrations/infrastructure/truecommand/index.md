@@ -4,7 +4,7 @@ sidebar_label: TrueNAS TrueCommand
 support_level: community
 ---
 
-## What is TrueNAS TrueCommand
+## What is TrueNAS TrueCommand?
 
 > TrueCommand is a ZFS-aware solution allowing you to set custom alerts on statistics like ARC usage or pool capacity and ensuring storage uptime and future planning. TrueCommand also identifies and pinpoints errors on drives or vdevs (RAID groups), saving you valuable time when resolving issues.
 >

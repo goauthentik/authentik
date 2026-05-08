@@ -4,7 +4,7 @@ sidebar_label: Glitchtip
 support_level: community
 ---
 
-## What is Glitchtip
+## What is Glitchtip?
 
 > Bugs are inevitable in web development. The important thing is to catch them when they appear. With GlitchTip, you can rest easy knowing that if your web app throws an error or goes down, you will be notified immediately. GlitchTip combines error tracking and uptime monitoring in one open-source package to keep you and your team fully up-to-date on the status of your projects.
 >

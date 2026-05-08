@@ -33,4 +33,11 @@ settings:
 
 #### `settings.locale`
 
-The locale which can be configured in the user settings by default. This can be used to preset locales for groups of users, but still let them choose their own preferred locale.
+The locale used by the interface. Set this on the default brand to configure the language instance-wide, or on user and group attributes to configure defaults for specific users or group memberships. Users can still choose their own preferred locale in user settings.
+
+**Example**:
+
+```yaml
+settings:
+    locale: en
+```

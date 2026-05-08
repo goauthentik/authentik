@@ -4,7 +4,7 @@ sidebar_label: OnlyOffice
 support_level: community
 ---
 
-## What is OnlyOffice
+## What is OnlyOffice?
 
 > OnlyOffice, stylized as ONLYOFFICE, is a free software office suite developed by Ascensio System SIA, a company headquartered in Riga, Latvia. It features online document editors, platform for document management, corporate communication, mail and project management tools
 >

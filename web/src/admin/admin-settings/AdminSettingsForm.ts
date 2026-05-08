@@ -8,6 +8,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "./AdminSettingsFooterLinks.js";
+import "#elements/Alert";
 
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
@@ -287,6 +288,9 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                         help=${msg(
                             "When enabled, other flow tabs in a session will refresh upon a successful authentication.",
                         )}
+                        .bighelp=${html`<ak-alert class="pf-c-radio__description" inline plain>
+                            ${msg("This flag is deprecated.")}
+                        </ak-alert>`}
                     >
                     </ak-switch-input>
                     <ak-switch-input

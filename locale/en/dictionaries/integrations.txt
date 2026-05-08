@@ -19,6 +19,7 @@ Forti
 Fortigate
 Gatus
 Gestionnaire
+ghec
 Gitea
 Gravitee
 Homarr
@@ -52,6 +53,7 @@ Relatedly
 Sidero
 snipeit
 sonarqube
+Technitium
 Terrakube
 Ueberauth
 Veeam

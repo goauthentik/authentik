@@ -4,7 +4,7 @@ sidebar_label: Tautulli
 support_level: community
 ---
 
-## What is Tautulli
+## What is Tautulli?
 
 > Tautulli is an application that you can run alongside your Plex Media Server to monitor activity and track various statistics. These statistics include what has been watched, who watched it, when and where they watched it, and how it was watched.
 >

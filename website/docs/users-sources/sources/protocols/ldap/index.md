@@ -17,7 +17,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 - **Enabled**: Toggle this option on to allow authentik to use the defined LDAP source.
 - **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Toggle off (default setting) if you do not want to store the hashed passwords in authentik.
 - **Sync users**: Enable or disable user synchronization between authentik and the LDAP source.
-- **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP.
+- **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP. This requires authentik to receive the raw password; [hashed-password imports](../../../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) are not written back to LDAP.
 - **Sync groups**: Enable/disable group synchronization between authentik and the LDAP source.
 - **Delete Not Found Objects**: :ak-version[2025.6] This option synchronizes user and group deletions from LDAP sources to authentik. User deletion requires enabling **Sync users** and group deletion requires enabling **Sync groups**.
 
@@ -27,11 +27,15 @@ To create or edit a source in authentik, open the Admin interface and navigate t
     - **Enable StartTLS**: Enables StartTLS functionality. To use LDAPS instead, use port `636`.
     - **Use Server URI for SNI verification**: this setting is required for servers using TLS 1.3+
 
-- **TLS Verification Certificate**: Specify a keypair to validate the remote certificate.
+- **TLS Verification Certificate**: Select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate. Leave this field empty to skip certificate validation for LDAPS and StartTLS connections. Leaving it empty does not use the container or operating system trust store.
 - **TLS Client authentication certificate**: Client certificate keypair to authenticate against the LDAP Server's Certificate.
 - **Bind CN**: CN of the bind user. This can also be a UPN in the format of `user@domain.tld`.
 - **Bind Password**: Password used during the bind process.
 - **Base DN**: Base DN (distinguished name) used for all LDAP queries.
+
+:::note TLS handshake failures
+If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enable StartTLS**, and **Use Server URI for SNI verification** match the server configuration. You can also configure `AUTHENTIK_LDAP__TLS__CIPHERS` if the server requires a specific cipher suite.
+:::
 
 #### LDAP Attribute mapping
 

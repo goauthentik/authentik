@@ -16,12 +16,10 @@ import type { ContentTypeEnum } from "./ContentTypeEnum";
 import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum";
 import type { LifecycleIterationStateEnum } from "./LifecycleIterationStateEnum";
 import { LifecycleIterationStateEnumFromJSON } from "./LifecycleIterationStateEnum";
+import type { RelatedRule } from "./RelatedRule";
+import { RelatedRuleFromJSON } from "./RelatedRule";
 import type { Review } from "./Review";
 import { ReviewFromJSON } from "./Review";
-import type { ReviewerGroup } from "./ReviewerGroup";
-import { ReviewerGroupFromJSON } from "./ReviewerGroup";
-import type { ReviewerUser } from "./ReviewerUser";
-import { ReviewerUserFromJSON } from "./ReviewerUser";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -92,28 +90,16 @@ export interface LifecycleIteration {
     readonly reviews: Array<Review>;
     /**
      *
+     * @type {RelatedRule}
+     * @memberof LifecycleIteration
+     */
+    readonly rule: RelatedRule;
+    /**
+     *
      * @type {boolean}
      * @memberof LifecycleIteration
      */
     readonly userCanReview: boolean;
-    /**
-     *
-     * @type {Array<ReviewerGroup>}
-     * @memberof LifecycleIteration
-     */
-    readonly reviewerGroups: Array<ReviewerGroup>;
-    /**
-     *
-     * @type {number}
-     * @memberof LifecycleIteration
-     */
-    readonly minReviewers: number;
-    /**
-     *
-     * @type {Array<ReviewerUser>}
-     * @memberof LifecycleIteration
-     */
-    readonly reviewers: Array<ReviewerUser>;
 }
 
 /**
@@ -130,10 +116,8 @@ export function instanceOfLifecycleIteration(value: object): value is LifecycleI
     if (!("gracePeriodEnd" in value) || value["gracePeriodEnd"] === undefined) return false;
     if (!("nextReviewDate" in value) || value["nextReviewDate"] === undefined) return false;
     if (!("reviews" in value) || value["reviews"] === undefined) return false;
+    if (!("rule" in value) || value["rule"] === undefined) return false;
     if (!("userCanReview" in value) || value["userCanReview"] === undefined) return false;
-    if (!("reviewerGroups" in value) || value["reviewerGroups"] === undefined) return false;
-    if (!("minReviewers" in value) || value["minReviewers"] === undefined) return false;
-    if (!("reviewers" in value) || value["reviewers"] === undefined) return false;
     return true;
 }
 
@@ -159,10 +143,8 @@ export function LifecycleIterationFromJSONTyped(
         gracePeriodEnd: new Date(json["grace_period_end"]),
         nextReviewDate: new Date(json["next_review_date"]),
         reviews: (json["reviews"] as Array<any>).map(ReviewFromJSON),
+        rule: RelatedRuleFromJSON(json["rule"]),
         userCanReview: json["user_can_review"],
-        reviewerGroups: (json["reviewer_groups"] as Array<any>).map(ReviewerGroupFromJSON),
-        minReviewers: json["min_reviewers"],
-        reviewers: (json["reviewers"] as Array<any>).map(ReviewerUserFromJSON),
     };
 }
 
@@ -182,10 +164,8 @@ export function LifecycleIterationToJSONTyped(
         | "grace_period_end"
         | "next_review_date"
         | "reviews"
+        | "rule"
         | "user_can_review"
-        | "reviewer_groups"
-        | "min_reviewers"
-        | "reviewers"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

@@ -996,7 +996,9 @@ export abstract class Table<T extends object, D = T>
      * A simple pagination display, shown at both the top and bottom of the page.
      */
     protected renderTablePagination(): SlottedTemplateResult {
-        if (!this.paginated) return nothing;
+        if (!this.paginated || !this.data || this.data?.pagination.totalPages < 2) {
+            return nothing;
+        }
 
         const handler = (page: number) => {
             this.page = page;
@@ -1054,7 +1056,12 @@ export abstract class Table<T extends object, D = T>
                     <thead aria-label=${msg("Column actions")}>
                         <tr class="pf-c-table__header-row">
                             ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
-                            ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
+                            ${this.expandable
+                                ? html`<th
+                                      class="pf-c-table__toggle pf-m-pressable"
+                                      aria-hidden="true"
+                                  ></th>`
+                                : nothing}
                             ${this.columns.map((column, idx) => {
                                 const [label, orderBy, ariaLabel] = column;
                                 const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;

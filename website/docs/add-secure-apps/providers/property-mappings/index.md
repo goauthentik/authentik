@@ -4,6 +4,15 @@ title: Provider property mappings
 
 Property mappings allow you to pass information to external applications. For example, pass the current user's groups as a SAML parameter.
 
+## Create a custom provider property mapping
+
+If the default provider mappings are not enough, create a custom provider property mapping and assign it to the provider that should use it.
+
+1. In authentik, open the Admin interface, and then navigate to **Customization** > **Property Mappings**.
+2. Click **Create**, select the provider property mapping type for your provider, and then click **Next**.
+3. Configure the property mapping. Most provider property mappings use an **Expression** field for the Python code that returns the mapped data.
+4. In the provider configuration, select the newly created property mapping in the appropriate property mapping field, such as **User Property Mappings** or **Group Property Mappings**.
+
 ## SAML property mappings
 
 SAML property mappings allow you embed information into the SAML authentication request. This information can then be used by the application to, for example, assign permissions to the object.

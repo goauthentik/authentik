@@ -4,7 +4,7 @@ sidebar_label: macmon NAC
 support_level: community
 ---
 
-## What is macmon NAC
+## What is macmon NAC?
 
 > macmon NAC is a network access control platform that provides visibility, policy enforcement, and automated responses for devices connecting to your network.
 >

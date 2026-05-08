@@ -2,21 +2,45 @@
 title: authentik bindings
 ---
 
-A binding is, simply put, a connection between two components. The use of a binding adds additional functionality to one the existing components; for example, a policy binding can cause a new stage to be presented within a flow to a specific user or group.
+A binding is a connection between two components. In practice, a binding adds behavior to an existing authentik object by telling authentik where to evaluate a policy, user, or group, or where to insert a stage into a flow.
 
-A policy answers a question like "should this pass?" A binding decides where authentik asks that question.
+A policy answers the question "should this pass?" A binding decides where authentik asks that question.
 
 :::info
 For information about creating and managing bindings, refer to [Work with bindings](./work-with-bindings.md).
 :::
 
-Bindings are an important part of authentik; the majority of configuration options are defined in bindings.
+Bindings are used throughout authentik. Many access and execution decisions are configured through bindings. The two binding types that you will work with most often are:
 
-It's important to remember that bindings are instantiated objects themselves, and conceptually can be considered as a "connector" between two components. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the second binding. Note that stage-bindings are the only type of binding that you can add (or splice) another binding to.
+- **Policy bindings**, which attach a policy, user, or group to an object that supports bindings.
+- **Flow-stage bindings**, which attach a stage to a flow in a specific order.
 
-## Relations with bindings
+## Types of bindings
 
-This diagram shows the relationships that bindings have between components. The primary components are _policy_, _user_, and _group_; these three objects can be bound to an application, application entitlement, flow, flow-stage binding, source, device, device access group, notification rule, or endpoint.
+The two most common types of bindings in authentik are policy bindings and flow-stage bindings. They solve different problems:
+
+- Use a policy binding when you want to control whether a target is allowed, denied, or shown.
+- Use a flow-stage binding when you want to place a stage into a flow and decide when it should run.
+
+## Where bindings are used
+
+The policy binding system is shared by several authentik objects. As of the current implementation, you can bind policies, users, and groups to these targets:
+
+- flows
+- flow-stage bindings
+- applications
+- application entitlements
+- sources
+- devices
+- device access groups
+- notification rules
+- RAC endpoints
+
+Stages themselves are not policy binding targets. A stage is attached to a flow through a flow-stage binding, so when you bind a policy to a stage in a flow, you are binding it to that flow-stage binding.
+
+Because of this, the same stage can be reused in multiple flows, and each flow can apply different policies to that stage.
+
+## Relationships
 
 ```mermaid
 
@@ -73,45 +97,76 @@ flowchart TD
     policy_binding --> flow_stage_binding
 ```
 
-## Types of bindings
+## Policy bindings
 
-The two most common types of bindings in authentik are:
+A policy binding attaches one of the following to a target:
 
-- policy bindings (which can also bind to users and groups)
-- flow-stage bindings
+- a policy object
+- a user
+- a group
 
-### Policy bindings
+User and group bindings are simple membership checks. A user binding passes when the current user matches that user. A group binding passes when the current user is a member of that group.
 
-A _policy binding_ connects a specific policy (a policy object) to a flow or stage binding. With the policy binding, the flow (or specifically the stage within the flow) will now have additional content (i.e. the rules of the policy).
+This is useful when you want a direct allow or deny rule without creating a separate policy object.
 
-With policy bindings, you can also bind groups and users to another component (an application, a source, a flow, etc.). For example you can bind a specific group to an application, and then only that group (and/or other groups also bound to it, depending on the [policy engine mode](../applications/manage_apps.mdx#use-bindings-to-control-access)), can access the application.
+Policy bindings are commonly used with applications, sources, flows, flow-stage bindings, and [application entitlements](../applications/manage_apps.mdx#application-entitlements). For example, you can bind a group directly to an application so that only members of that group can view and launch it.
 
-When you bind a policy to a stage binding, this task is done _per flow_, and does not carry across to other flows that use this same stage. That is, you will need to go to the **Stage Bindings** tab for the specific flow, and add a policy to the stage.
+Bindings are evaluated according to the target's **Policy engine mode**:
 
-Bindings are also used for [Application Entitlements](../../add-secure-apps/applications/manage_apps.mdx#application-entitlements), where you can bind specific users or groups to an application as a way to manage who has access to certain areas _within an application_.
+- `Any`: the target passes when any binding passes.
+- `All`: the target passes only when every binding passes.
 
-:::info
-Be aware that any policy binding bound directly to the entire flow (not to a stage within the flow) are evaluated _before_ the flow executes, so if the user has not been identified, the flow will not be accessible. This is due to bindings relying on user information that isn't available yet.
-:::
+authentik evaluates enabled bindings in ascending order. The order is most noticeable when you are reading logs or combining multiple policies that return messages.
 
-### Flow-stage bindings
+Bindings also support these options:
 
-:::info
-Be aware that depending on context, user and group policy bindings are not evaluated (i.e. ignored). For example, if you are not authenticated or if authentik has not yet identified the user, a policy binding that depends on knowing who the user is cannot be evaluated.
-:::
+- **Negate**, which flips the pass or fail result of the binding.
+- **Timeout**, which limits how long authentik waits for policy execution.
+- **Failure result**, which controls whether a policy error is treated as pass or fail.
 
-Flow-stage bindings (also called stage bindings) are analyzed by authentik's Flow Plan, which starts with the flow, then assesses all of the bound policies, and then runs them in order to build out the plan.
+Policy bindings attached directly to a flow are evaluated before the flow starts. In authentication and enrollment flows, that usually means that user- and group-based checks on the flow itself cannot pass until the user has already been identified elsewhere.
 
-A _flow-stage binding_ connects a stage to a flow in a specified order, so that the stage is executed at the desired point within the flow.
+If a target has no applicable bindings, authentik treats the result as passing by default.
 
-For example, you can create a binding for a specific group, and then [bind that to a stage binding](../flows-stages/stages/index.md#bind-users-and-groups-to-a-flows-stage-binding), with the result that everyone in that group now will see that stage (and any policies bound to that stage) as part of their flow. Or more specifically, and going one step deeper, you can also _bind a binding to a binding_.
+## Flow-stage bindings
 
-Flow-stage bindings can have policy bindings bound to them; this can be used to conditionally run or skip stages within a flow. There are two settings in a flow-stage binding that configure _when_ these policies are executed:
+A flow-stage binding attaches a stage to a flow and defines the order in which that stage runs.
 
-- **Evaluate when flow is planned**
-  Policies are evaluated when authentik creates a flow plan that contains a reference to all of the stages that the user will need to go through to complete the flow. In this case, user-specific attributes are only available if the user is already authenticated before beginning the flow.
+Flow-stage bindings are also called stage bindings. authentik uses them while building the flow plan that determines which stages a user will see and in what order.
 
-- **Evaluate when the stage is run**
-  Policies bound to a flow-stage binding are evaluated before the stage is run (i.e. after the flow has started but before the stage is reached in the flow). Therefore, the context with which policy bindings to the flow-stage binding are evaluated reflects the current state of the flow.
+This matters because stages are reusable objects. The same stage can appear in multiple flows, but each flow-stage binding can have its own policies, users, groups, order, and evaluation settings. When you bind a policy to a stage in a specific flow, you are binding it to that flow-stage binding, not to the reusable stage definition itself.
 
-    For example, when configuring an authentication flow with an identification stage bound to it, and a user bound to a Captcha flow-stage binding, with this setting (**Evaluate when stage is run**) enabled authentik can check against the user who has identified themselves previously.
+### When authentik evaluates stage-binding policies
+
+Flow-stage bindings have two evaluation settings:
+
+- **Evaluate when flow is planned**: authentik evaluates the binding while it is building the flow plan. If the binding does not pass at planning time, the stage is not added to the plan.
+- **Evaluate when the stage is run**: authentik adds the stage to the flow plan, then evaluates the binding again immediately before the stage is shown. If the binding no longer passes, authentik removes that stage from the flow plan.
+
+The second option is useful when the decision depends on context that is only available later in the flow. For example, after an identification stage completes, a subsequent stage binding can assess the identified user and then trigger a CAPTCHA or Deny stage as needed.
+
+In other words:
+
+- use **Evaluate when flow is planned** when the decision can already be made before the user reaches the stage
+- use **Evaluate when the stage is run** when the decision depends on flow context that is created by an earlier stage
+
+## What to remember
+
+- Stages are attached to flows through flow-stage bindings.
+- Policies, users, and groups can all be bound through the same policy binding system.
+- The same stage can behave differently in different flows because each flow-stage binding has its own settings and bindings.
+- A policy bound directly to a flow is evaluated earlier than a policy bound to a flow-stage binding.
+
+## Common examples
+
+### Restrict an application
+
+By default, applications are accessible to all users. Bind a group or policy to an application when you want to limit access to specific users.
+
+### Run a stage only for some users
+
+Bind a policy, user, or group to the flow-stage binding when a stage should appear only for certain users in that flow. For example, only require an MFA stage for certain users.
+
+### Scope access inside an application
+
+Use [application entitlements](../applications/manage_apps.mdx#application-entitlements) when you need to control access to parts of an application after the user already has access to the application itself. For example, control which users have access to certain administrator functions within an application.

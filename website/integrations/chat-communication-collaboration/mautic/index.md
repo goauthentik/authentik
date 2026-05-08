@@ -4,7 +4,7 @@ sidebar_label: Mautic
 support_level: community
 ---
 
-## What is Mautic
+## What is Mautic?
 
 > Mautic provides free and open source marketing automation software available to everyone. Free email marketing and lead management software.
 >

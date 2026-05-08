@@ -38,6 +38,9 @@ const (
 	PROMPTTYPEENUM_SEPARATOR           PromptTypeEnum = "separator"
 	PROMPTTYPEENUM_HIDDEN              PromptTypeEnum = "hidden"
 	PROMPTTYPEENUM_STATIC              PromptTypeEnum = "static"
+	PROMPTTYPEENUM_ALERT_INFO          PromptTypeEnum = "alert_info"
+	PROMPTTYPEENUM_ALERT_WARNING       PromptTypeEnum = "alert_warning"
+	PROMPTTYPEENUM_ALERT_DANGER        PromptTypeEnum = "alert_danger"
 	PROMPTTYPEENUM_AK_LOCALE           PromptTypeEnum = "ak-locale"
 )
 
@@ -60,6 +63,9 @@ var AllowedPromptTypeEnumEnumValues = []PromptTypeEnum{
 	"separator",
 	"hidden",
 	"static",
+	"alert_info",
+	"alert_warning",
+	"alert_danger",
 	"ak-locale",
 }
 

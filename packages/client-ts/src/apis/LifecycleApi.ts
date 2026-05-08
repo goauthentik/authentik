@@ -40,9 +40,12 @@ export interface LifecycleIterationsCreateRequest {
     lifecycleIterationRequest: LifecycleIterationRequest;
 }
 
-export interface LifecycleIterationsLatestRetrieveRequest {
+export interface LifecycleIterationsListLatestRequest {
     contentType: string;
     objectId: string;
+    ordering?: string;
+    search?: string;
+    userIsReviewer?: boolean;
 }
 
 export interface LifecycleIterationsListOpenRequest {
@@ -157,26 +160,38 @@ export class LifecycleApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for lifecycleIterationsLatestRetrieve without sending the request
+     * Creates request options for lifecycleIterationsListLatest without sending the request
      */
-    async lifecycleIterationsLatestRetrieveRequestOpts(
-        requestParameters: LifecycleIterationsLatestRetrieveRequest,
+    async lifecycleIterationsListLatestRequestOpts(
+        requestParameters: LifecycleIterationsListLatestRequest,
     ): Promise<runtime.RequestOpts> {
         if (requestParameters["contentType"] == null) {
             throw new runtime.RequiredError(
                 "contentType",
-                'Required parameter "contentType" was null or undefined when calling lifecycleIterationsLatestRetrieve().',
+                'Required parameter "contentType" was null or undefined when calling lifecycleIterationsListLatest().',
             );
         }
 
         if (requestParameters["objectId"] == null) {
             throw new runtime.RequiredError(
                 "objectId",
-                'Required parameter "objectId" was null or undefined when calling lifecycleIterationsLatestRetrieve().',
+                'Required parameter "objectId" was null or undefined when calling lifecycleIterationsListLatest().',
             );
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["userIsReviewer"] != null) {
+            queryParameters["user_is_reviewer"] = requestParameters["userIsReviewer"];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -210,27 +225,27 @@ export class LifecycleApi extends runtime.BaseAPI {
     /**
      * Mixin to validate that a valid enterprise license exists before allowing to save the object
      */
-    async lifecycleIterationsLatestRetrieveRaw(
-        requestParameters: LifecycleIterationsLatestRetrieveRequest,
+    async lifecycleIterationsListLatestRaw(
+        requestParameters: LifecycleIterationsListLatestRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<LifecycleIteration>> {
+    ): Promise<runtime.ApiResponse<Array<LifecycleIteration>>> {
         const requestOptions =
-            await this.lifecycleIterationsLatestRetrieveRequestOpts(requestParameters);
+            await this.lifecycleIterationsListLatestRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) =>
-            LifecycleIterationFromJSON(jsonValue),
+            jsonValue.map(LifecycleIterationFromJSON),
         );
     }
 
     /**
      * Mixin to validate that a valid enterprise license exists before allowing to save the object
      */
-    async lifecycleIterationsLatestRetrieve(
-        requestParameters: LifecycleIterationsLatestRetrieveRequest,
+    async lifecycleIterationsListLatest(
+        requestParameters: LifecycleIterationsListLatestRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<LifecycleIteration> {
-        const response = await this.lifecycleIterationsLatestRetrieveRaw(
+    ): Promise<Array<LifecycleIteration>> {
+        const response = await this.lifecycleIterationsListLatestRaw(
             requestParameters,
             initOverrides,
         );

@@ -4,7 +4,7 @@ sidebar_label: Plesk
 support_level: community
 ---
 
-## What is Plesk
+## What is Plesk?
 
 > Plesk is a web hosting platform with a control panel that helps manage servers, applications, and websites through a comprehensive graphical user interface. It provides tools for web professionals, IT administrators, and hosting companies to simplify the process of hosting and managing websites.
 >

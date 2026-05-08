@@ -4,7 +4,7 @@ sidebar_label: Omni
 support_level: community
 ---
 
-## What is Omni
+## What is Omni?
 
 > Omni manages Kubernetes on bare metal, virtual machines, or in a cloud.
 >

@@ -4,7 +4,7 @@ sidebar_label: Firezone
 support_level: community
 ---
 
-## What is Firezone
+## What is Firezone?
 
 > Firezone is an open-source remote access platform built on WireGuard®, a modern VPN protocol that's 4-6x faster than OpenVPN.
 >

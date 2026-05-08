@@ -4,7 +4,7 @@ sidebar_label: Calibre-Web
 support_level: community
 ---
 
-## What is Calibre-Web
+## What is Calibre-Web?
 
 > Calibre-Web is a web app that offers an interface for browsing, reading, and downloading eBooks using a valid Calibre database.
 >

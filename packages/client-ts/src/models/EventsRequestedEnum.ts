@@ -19,8 +19,20 @@
 export const EventsRequestedEnum = {
     HttpsSchemasOpenidNetSeceventCaepEventTypeSessionRevoked:
         "https://schemas.openid.net/secevent/caep/event-type/session-revoked",
+    HttpsSchemasOpenidNetSeceventCaepEventTypeTokenClaimsChange:
+        "https://schemas.openid.net/secevent/caep/event-type/token-claims-change",
     HttpsSchemasOpenidNetSeceventCaepEventTypeCredentialChange:
         "https://schemas.openid.net/secevent/caep/event-type/credential-change",
+    HttpsSchemasOpenidNetSeceventCaepEventTypeAssuranceLevelChange:
+        "https://schemas.openid.net/secevent/caep/event-type/assurance-level-change",
+    HttpsSchemasOpenidNetSeceventCaepEventTypeDeviceComplianceChange:
+        "https://schemas.openid.net/secevent/caep/event-type/device-compliance-change",
+    HttpsSchemasOpenidNetSeceventCaepEventTypeSessionEstablished:
+        "https://schemas.openid.net/secevent/caep/event-type/session-established",
+    HttpsSchemasOpenidNetSeceventCaepEventTypeSessionPresented:
+        "https://schemas.openid.net/secevent/caep/event-type/session-presented",
+    HttpsSchemasOpenidNetSeceventCaepEventTypeRiskLevelChange:
+        "https://schemas.openid.net/secevent/caep/event-type/risk-level-change",
     HttpsSchemasOpenidNetSeceventSsfEventTypeVerification:
         "https://schemas.openid.net/secevent/ssf/event-type/verification",
     UnknownDefaultOpenApi: "11184809",

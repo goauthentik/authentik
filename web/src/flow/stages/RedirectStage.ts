@@ -118,7 +118,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                     <p>${msg("You're about to be redirected to the following URL.")}</p>
                     <code>${this.getURL()}</code>
                 </div>
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <a
                         type="submit"
