@@ -28,7 +28,7 @@ class FlagJSONField(JSONDictField):
                 new_value.pop(_flag.key, None)
             # Explicitly present unset flags as if they were set to False
             if _flag.key not in value:
-                value[_flag.key] = False
+                value[_flag.key] = _flag.default
         return super().to_representation(new_value)
 
     def run_validators(self, value: dict):
