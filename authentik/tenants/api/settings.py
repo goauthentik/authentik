@@ -20,7 +20,7 @@ from authentik.tenants.models import Tenant
 class FlagJSONField(JSONDictField):
 
     def to_internal_value(self, data: str):
-        flags =  super().to_internal_value(data)
+        flags = super().to_internal_value(data)
         for flag in Flag.available(visibility="system", exclude_system=False):
             flags[flag().key] = flag.get()
         return flags
