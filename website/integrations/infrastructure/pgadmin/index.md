@@ -43,7 +43,7 @@ To support the integration of pgAdmin with authentik, you need to create an appl
 
 3. Click **Submit** to save the new application and provider.
 
-## pgAdmin OAuth Configuration
+## pgAdmin OAuth configuration
 
 To configure OAuth in pgAdmin, you can either use the `config_local.py` file or set environment variables if you are deploying pgAdmin in a containerized setup.
 

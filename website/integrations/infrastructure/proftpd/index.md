@@ -10,7 +10,7 @@ support_level: community
 >
 > -- From http://www.proftpd.org
 
-This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/generic_setup) for setting up the LDAP provider.
+This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [LDAP provider generic setup](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/generic_setup) for setting up the LDAP provider.
 
 ## Preparation
 
@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik Configuration
+## authentik configuration
 
 ### Step 1 - Service account
 

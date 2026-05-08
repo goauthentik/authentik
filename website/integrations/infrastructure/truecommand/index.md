@@ -32,7 +32,7 @@ To support the integration of TrueCommand with authentik, you need to create an 
 ### Create property mappings
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create create three or five **SAML Provider Property Mapping**s, depending on your setup, with the following settings:
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create three or five **SAML Provider Property Mapping**s, depending on your setup, with the following settings:
     - **Username Mapping:**
         - **Name**: Choose a descriptive name
         - **SAML Attribute Name**: `unique_name`

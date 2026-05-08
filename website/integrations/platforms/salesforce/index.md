@@ -102,14 +102,14 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 
 ## Salesforce configuration
 
-### Enable SAML Single Sign-On
+### Enable SAML single sign-on
 
 1. Log in to your Salesforce organization as an administrator.
 2. Navigate to **Setup** > **Identity** > **Single Sign-On Settings**.
 3. Click **Edit** and enable **SAML Enabled**.
 4. Click **Save**.
 
-### Create a new SAML Single Sign-On configuration
+### Create a new SAML single sign-on configuration
 
 1. On the **Single Sign-On Settings** page, under **SAML Single Sign-On Settings**, click **New**.
 2. Enter the following values:
@@ -131,7 +131,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 3. Select **Standard** for the provisioning type.
 4. Click **Save**.
 
-## Salesforce as an OAuth Source
+## Salesforce as an OAuth source
 
 You can configure Salesforce as an OAuth source to allow users to log in to authentik using their Salesforce credentials. Optionally, this can be used alongside [SCIM provisioning](#scim-provisioning-optional) to keep your Salesforce users in sync with your authentik users.
 
@@ -156,7 +156,7 @@ You can configure Salesforce as an OAuth source to allow users to log in to auth
     - Check **Require Proof Key for Code Exchange (PKCE) Extension for Supported Authorization Flows**.
 6. Click **Save**.
 
-#### Configure Client Credentials Flow _(required for SCIM with OAuth)_
+#### Configure client credentials flow _(required for SCIM with OAuth)_
 
 If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth authentication:
 
@@ -176,7 +176,7 @@ If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth a
 
 ### authentik configuration
 
-#### Create an OAuth Source
+#### Create an OAuth source
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login** and click **Create**.
