@@ -124,7 +124,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
     - **Identity Provider Login URL**: Enter the **SSO URL (Post)** from your authentik provider: `https://authentik.company/application/saml/<slug>/sso/binding/post/`
 3. Click **Save**.
 
-### Enable Just-in-Time provisioning
+### Enable just-in-time provisioning
 
 1. On the SAML Single Sign-On configuration page that you just created, click **Edit**.
 2. Under **Just-in-Time User Provisioning**, check **User Provisioning Enabled**.
@@ -137,7 +137,7 @@ You can configure Salesforce as an OAuth source to allow users to log in to auth
 
 ### Salesforce configuration
 
-#### Create a Connected App
+#### Create a connected app
 
 1. Log in to your Salesforce organization as an administrator.
 2. Navigate to **Setup** and search for **App Manager**.
@@ -167,7 +167,7 @@ If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth a
     - Set **Run As** to an admin user that has permissions to manage users.
 5. Click **Save**.
 
-#### Get the Consumer Key and Secret
+#### Get the consumer key and secret
 
 1. Navigate to **Setup** > **External Client App Manager**.
 2. Find your Connected App and open it.

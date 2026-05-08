@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://www.skyhighsecurity.com/en-us/about.html
 
-## Multiple Integration Points
+## Multiple integration points
 
 Skyhigh has multiple points for SAML integration:
 

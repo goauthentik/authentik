@@ -71,7 +71,7 @@ vault write auth/oidc/role/reader \
       policies="reader"
 ```
 
-## External Groups
+## External groups
 
 If you wish to manage group membership in HashiCorp Vault via authentik, you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
 
