@@ -4,7 +4,7 @@ sidebar_label: ownCloud
 support_level: community
 ---
 
-## What is ownCloud
+## What is ownCloud?
 
 > ownCloud is a free and open-source software project for content collaboration and sharing and syncing of files.
 >

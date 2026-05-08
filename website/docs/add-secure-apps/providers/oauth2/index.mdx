@@ -66,6 +66,12 @@ sequenceDiagram
 Due to how the OAuth2 provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke` as these would conflict with the global OAuth2 endpoints.
 :::
 
+### Cross-provider token introspection and revocation
+
+The token introspection and revocation endpoints are global OAuth2 endpoints, but access to tokens is still scoped by provider. A client can introspect or revoke tokens issued by the same OAuth2 provider that authenticated the request.
+
+For cross-provider introspection or revocation, authenticate the request with a confidential provider. Then, on the provider that issues the token, select the authenticating provider under **Federated OAuth2/OpenID Providers**. This allows the authenticating provider to introspect and revoke tokens issued by the federated provider.
+
 ### Additional configuration options with Redirect URIs
 
 When using an OAuth 2.0 provider in authentik, the OP must validate the provided redirect URI by the RP. An authentik admin can configure a list in the **Redirect URI** field on the Provider.

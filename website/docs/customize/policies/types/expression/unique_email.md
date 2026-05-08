@@ -8,7 +8,7 @@ tags:
 
 By default, authentik does not require email addresses to be unique. If you want to enforce uniqueness, use an [expression policy](./index.mdx) during enrollment or profile-edit flows.
 
-Bind the policy before the [User write stage](../../../../add-secure-apps/flows-stages/stages/user_write.md), or attach it directly to the [Prompt stage](../../../../add-secure-apps/flows-stages/stages/prompt/index.md) that collects the email address.
+Bind the policy before the [User write stage](../../../../add-secure-apps/flows-stages/stages/user_write/index.md), or attach it directly to the [Prompt stage](../../../../add-secure-apps/flows-stages/stages/prompt/index.md) that collects the email address.
 
 ## Example expression
 

@@ -4,7 +4,7 @@ sidebar_label: YouTrack
 support_level: community
 ---
 
-## What is YouTrack
+## What is YouTrack?
 
 > YouTrack is a proprietary, commercial browser-based bug tracker, issue tracking system, and project management software developed by JetBrains.
 >

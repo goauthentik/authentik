@@ -4,7 +4,7 @@ sidebar_label: KnowBe4
 support_level: community
 ---
 
-## What is KnowBe4
+## What is KnowBe4?
 
 > KnowBe4 is a security awareness and phishing simulation platform that helps organizations train employees to recognize and respond to social engineering attacks.
 >

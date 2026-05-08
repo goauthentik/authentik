@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-01 03:47+0000\n"
+"POT-Creation-Date: 2026-05-06 00:27+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Sp P, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/authentik/teams/119923/fr_FR/)\n"
@@ -115,6 +115,14 @@ msgstr "Erreur de Validation"
 #: authentik/blueprints/api.py
 msgid "Blueprint file does not exist"
 msgstr "Le fichier de plan n'existe pas"
+
+#: authentik/blueprints/api.py
+msgid "Context must be valid JSON"
+msgstr ""
+
+#: authentik/blueprints/api.py
+msgid "Context must be a JSON object"
+msgstr ""
 
 #: authentik/blueprints/api.py
 msgid "Failed to validate blueprint"

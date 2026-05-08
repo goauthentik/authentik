@@ -1,0 +1,185 @@
+---
+title: Integrate with Anthropic Workload Identity Federation
+sidebar_label: Anthropic Workload Identity Federation
+support_level: community
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Anthropic Workload Identity Federation?
+
+> Workload Identity Federation (WIF) lets your workloads authenticate to the Claude API using short-lived OpenID Connect (OIDC) tokens issued by an identity provider you already operate.
+>
+> -- https://platform.claude.com/docs/en/manage-claude/workload-identity-federation
+
+This guide configures authentik as the OIDC issuer for Anthropic Workload Identity Federation.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info User login
+This guide covers API workload authentication. To configure SAML user login for Claude and Claude Console, see [Integrate with Anthropic](../anthropic/).
+:::
+
+:::info Public issuer required
+Anthropic must be able to fetch the authentik OpenID configuration and JSON Web Key Set (JWKS) over public HTTPS on port 443. If your authentik instance is not publicly reachable, configure Anthropic with an inline JWKS instead of discovery.
+:::
+
+## authentik configuration
+
+To support the integration of Anthropic Workload Identity Federation with authentik, you need to create an application/provider pair in authentik that issues signed OIDC tokens to your workload.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a descriptive name and configure the following required settings.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Under **Grant Types**, select **Client credentials**.
+        - Leave **Redirect URIs/Origins** empty.
+        - Set **Access Token Validity** to the amount of time that the authentik-issued token should remain valid.
+        - Under **Advanced protocol settings**, select a **Signing Key**.
+    - **Configure Bindings** _(optional)_: leave bindings empty for the initial setup. After the first token request creates the generated authentik service account, you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) if you need to restrict access to this application.
+3. Click **Submit** to save the new application and provider.
+
+### Generate and inspect a sample JWT
+
+Use the provider's client credentials flow to generate an OIDC token that you can inspect before creating the Anthropic federation rule.
+
+<Tabs
+  defaultValue="unix"
+  values={[
+    { label: "Linux/macOS", value: "unix" },
+    { label: "Windows", value: "windows" },
+  ]}>
+  <TabItem value="unix">
+
+```bash showLineNumbers
+TOKEN_RESPONSE="$(curl --silent --show-error --fail \
+  --request POST https://authentik.company/application/o/token/ \
+  --header "Content-Type: application/x-www-form-urlencoded" \
+  --data-urlencode "grant_type=client_credentials" \
+  --data-urlencode "client_id=<Client ID from authentik>" \
+  --data-urlencode "client_secret=<Client Secret from authentik>" \
+  --data-urlencode "scope=openid profile")"
+
+printf '%s' "${TOKEN_RESPONSE}" > /tmp/authentik-anthropic-workload-identity-federation-token.json
+jq --raw-output '.id_token' /tmp/authentik-anthropic-workload-identity-federation-token.json \
+  > /tmp/authentik-anthropic-workload-identity-federation.jwt
+jq --raw-input 'split(".")[1] | gsub("-"; "+") | gsub("_"; "/") | @base64d | fromjson' \
+  /tmp/authentik-anthropic-workload-identity-federation.jwt
+```
+
+  </TabItem>
+  <TabItem value="windows">
+
+```powershell showLineNumbers
+$body = @{
+    grant_type = "client_credentials"
+    client_id = "<Client ID from authentik>"
+    client_secret = "<Client Secret from authentik>"
+    scope = "openid profile"
+}
+
+$response = Invoke-RestMethod `
+    -Method Post `
+    -Uri "https://authentik.company/application/o/token/" `
+    -ContentType "application/x-www-form-urlencoded" `
+    -Body $body
+
+$response | ConvertTo-Json -Depth 10 | Set-Content "$env:TEMP\authentik-anthropic-workload-identity-federation-token.json"
+$response.id_token | Set-Content "$env:TEMP\authentik-anthropic-workload-identity-federation.jwt"
+
+$payload = $response.id_token.Split(".")[1].Replace("-", "+").Replace("_", "/")
+$padding = (4 - ($payload.Length % 4)) % 4
+$payload = $payload + ("=" * $padding)
+[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($payload)) |
+    ConvertFrom-Json |
+    ConvertTo-Json -Depth 10
+```
+
+  </TabItem>
+</Tabs>
+
+:::info Generated authentik service account
+The first client credentials token request creates a generated authentik service account for the provider. This account is the `sub` claim in the sample JWT and is separate from the Anthropic service account that you create in Claude Console.
+:::
+
+Confirm that the decoded JWT contains these claims:
+
+- `iss`: `https://authentik.company/application/o/<application_slug>/`
+- `sub`: the generated authentik service account username, usually `ak-<provider_name>-client_credentials`.
+- `aud`: the **Client ID** from authentik.
+- `exp`: a future timestamp.
+
+## Anthropic configuration
+
+To support the integration of authentik with Anthropic Workload Identity Federation, configure authentik as an OIDC issuer in the Claude Console.
+
+### Create a federation issuer
+
+1. Log in to the Claude Console as an Anthropic organization administrator.
+2. Navigate to **Settings** > **Workload identity**.
+3. On the **Issuers** tab, click **Create issuer**.
+4. Configure the issuer:
+    - **Name**: enter a descriptive name.
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **JWKS source**: select **discovery**.
+    - **Discovery base**: if the field is shown, set it to `https://authentik.company/application/o/<application_slug>` without a trailing slash.
+5. Save the issuer.
+
+### Create a service account
+
+1. In the Claude Console, navigate to **Settings** > **Service accounts**.
+2. Click **Create service account**.
+3. Provide a name and optional description for the workload identity.
+4. Add the service account to the workspace that the workload should use.
+5. Note the service account ID. The ID starts with `svac_`.
+
+### Create a federation rule
+
+1. In the Claude Console, navigate to **Settings** > **Workload identity**.
+2. Open the **Federation rules** tab and click **Create rule**.
+3. Configure the rule:
+    - **Name**: enter a descriptive name.
+    - **Issuer**: select the authentik issuer that you created earlier.
+    - **Match type**: select **Static**.
+    - **Subject prefix**: enter the exact `sub` claim from the sample JWT.
+    - **Audience**: enter the **Client ID** from authentik.
+    - **Target service account**: select the Anthropic service account that the workload should act as.
+    - **OAuth scope**: select `workspace:developer`.
+    - **Token lifetime**: choose the Anthropic token lifetime for the workload.
+4. Save the rule and note the rule ID. The ID starts with `fdrl_`.
+
+:::warning Use specific federation matches
+Use a specific subject and audience for the federation rule. A broad subject prefix can allow more authentik-issued tokens to act as the Anthropic service account than intended.
+:::
+
+## Workload configuration
+
+The authentik configuration above gives your workload a way to obtain an upstream OIDC JWT. Configure the workload with Anthropic's [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation) and [WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference) docs, using the authentik-issued JWT as the identity token file.
+
+Use the same authentik token request from [Generate and inspect a sample JWT](#generate-and-inspect-a-sample-jwt) to refresh the identity token file before the authentik token expires. For authentik client credentials options, see [Machine-to-Machine authentication](/docs/add-secure-apps/providers/oauth2/machine_to_machine/).
+
+Keep authentik client credentials in your platform's secret store. When migrating an existing workload, remove `ANTHROPIC_API_KEY` and `ANTHROPIC_AUTH_TOKEN` wherever they are set because Anthropic gives them precedence over federation credentials.
+
+## Configuration verification
+
+1. Decode the authentik-issued JWT and confirm that `iss`, `sub`, `aud`, and `exp` match the Anthropic issuer and federation rule.
+2. Start the workload without `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` set.
+3. If the Anthropic SDK or CLI reports `invalid_grant`, compare the decoded JWT with the Anthropic issuer and rule. The `iss` value must exactly match the issuer URL, including the trailing slash.
+
+## Resources
+
+- [Anthropic documentation - Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation)
+- [Anthropic documentation - WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference)

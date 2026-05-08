@@ -4,7 +4,7 @@ sidebar_label: FortiGate Admin Login
 support_level: community
 ---
 
-## What is FortiGate
+## What is FortiGate?
 
 > FortiGate is a firewall from Fortinet. It is an NGFW with layer 7 inspection and can become part of a Fortinet security fabric.
 >

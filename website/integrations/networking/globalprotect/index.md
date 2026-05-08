@@ -4,7 +4,7 @@ sidebar_label: GlobalProtect
 support_level: community
 ---
 
-## What is GlobalProtect
+## What is GlobalProtect?
 
 > GlobalProtect enables you to use Palo Alto Networks next-gen firewalls or Prisma Access to secure your mobile workforce.
 >

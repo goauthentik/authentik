@@ -4,7 +4,7 @@ sidebar_label: GitHub Enterprise Server
 support_level: community
 ---
 
-## What is GitHub Enterprise Server
+## What is GitHub Enterprise Server?
 
 > GitHub Enterprise Server is a self-hosted platform for software development within your enterprise.
 >

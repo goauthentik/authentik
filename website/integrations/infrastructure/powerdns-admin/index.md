@@ -4,7 +4,7 @@ sidebar_label: PowerDNS-Admin
 support_level: community
 ---
 
-## What is PowerDNS-Admin
+## What is PowerDNS-Admin?
 
 > A PowerDNS web interface with advanced features.
 >

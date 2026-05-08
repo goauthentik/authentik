@@ -4,7 +4,7 @@ sidebar_label: HashiCorp Cloud Platform
 support_level: community
 ---
 
-## What is HashiCorp Cloud
+## What is HashiCorp Cloud?
 
 > HashiCorp Cloud Platform is a fully managed platform for Terraform, Vault, Consul, and more.
 >
