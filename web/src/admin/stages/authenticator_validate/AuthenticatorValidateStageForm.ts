@@ -1,5 +1,4 @@
 import "#elements/ak-checkbox-group/ak-checkbox-group";
-import "#elements/Alert";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
@@ -362,14 +361,6 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                 "Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.",
                             )}
                         </p>
-                        <ak-alert inline>
-                            ${
-                                /* TODO: Remove this after 2024.6..or maybe later? */
-                                msg(
-                                    "This restriction only applies to devices created in authentik 2024.4 or later.",
-                                )
-                            }
-                        </ak-alert>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
