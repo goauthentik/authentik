@@ -71,7 +71,7 @@ The name of the oidc_provider (e.g. `authentik`) needs to match the name on the 
 :::
 
 :::info
-If a `Not Found` error is displayed after the login, you might need to set the web_root to `/` (see https://github.com/semaphoreui/semaphore/issues/2681):
+If a `Not Found` error is displayed after login, you might need to set `web_root` to `/` (see https://github.com/semaphoreui/semaphore/issues/2681):
 
 ```
 SEMAPHORE_WEB_ROOT: /
@@ -84,9 +84,9 @@ More information on this can be found in the Semaphore documentation https://doc
 ## Test the login
 
 - Open a browser of your choice and open the URL `https://semaphore.company`.
-- Click on the SSO-Login button.
-- You should be redirected to authentik (with the login flows you created) and then authentik should redirect you back to `https://semaphore.company` URL.
-- If you are redirected back to the `https://semaphore.company` URL you did everything correctly.
+- Click the SSO login button.
+- You should be redirected to authentik (with the login flows you created) and then authentik should redirect you back to `https://semaphore.company`.
+- If you are redirected back to `https://semaphore.company`, you did everything correctly.
 
 :::info
 Users are created upon logging in with authentik. They will not have the rights to create anything initially. These permissions must be assigned later by the local administrator created during the first login to the Semaphore UI.

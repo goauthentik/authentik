@@ -68,7 +68,7 @@ To configure Synology DSM to utilize authentik as an OpenID Connect 1.0 Provider
 
 **Error `not privilege`**
 
-The log in process could fail with a `not privilege` error, when the SSO pop-up is blocked. Allowing pop-ups in the browser configuration resolves this (see https://github.com/authelia/authelia/discussions/6902#discussioncomment-9756400).
+The login process could fail with a `not privilege` error when the SSO pop-up is blocked. Allowing pop-ups in the browser configuration resolves this (see https://github.com/authelia/authelia/discussions/6902#discussioncomment-9756400).
 
 This error can also happen when you have multiple Redirect URI entries, but only the last one is used when trying to log on from any of the URLs. For example, if using the Application portal, each service has its own URL.
 The DSM tries to match the right redirect URI based on the Host and HTTPS headers. This is why you should not add #/signin at the end of your redirect URIs.
