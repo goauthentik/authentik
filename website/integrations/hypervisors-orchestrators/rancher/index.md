@@ -4,7 +4,7 @@ sidebar_label: Rancher
 support_level: authentik
 ---
 
-## What is Rancher
+## What is Rancher?
 
 > An enterprise platform for managing Kubernetes Everywhere
 > Rancher is a platform built to address the needs of the DevOps teams deploying applications with Kubernetes, and the IT staff responsible for delivering an enterprise-critical service.

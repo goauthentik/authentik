@@ -45,8 +45,8 @@ const statusToDetails = new Map<P4Disposition, [string, string]>([
 export class AkStatusLabel extends AKElement {
     static styles = [PFLabel, Styles];
 
-    @property({ type: Boolean })
-    public good: boolean | null = null;
+    @property({ type: Boolean, reflect: true })
+    public good: boolean = false;
 
     @property({ type: String, attribute: "good-label" })
     public goodLabel = msg("Yes");

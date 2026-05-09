@@ -4,7 +4,7 @@ sidebar_label: Gravitee
 support_level: community
 ---
 
-## What is Gravitee
+## What is Gravitee?
 
 > Gravitee.io API Management is a flexible, lightweight and blazing-fast Open Source solution that helps your organization control who, when and how users access your APIs.
 >

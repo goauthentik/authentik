@@ -24,10 +24,10 @@ class SSFView(APIView):
 
 
 class SSFStreamView(SSFView):
-    def get_object(self, any_status=False) -> Stream:
-        streams = Stream.objects.filter(provider=self.provider)
-        if not any_status:
-            streams = streams.filter(status__in=[StreamStatus.ENABLED, StreamStatus.PAUSED])
+    def get_object(self) -> Stream:
+        streams = Stream.objects.filter(provider=self.provider).exclude(
+            status=StreamStatus.DISABLED_DELETED
+        )
         if "stream_id" in self.request.query_params:
             streams = streams.filter(pk=self.request.query_params["stream_id"])
         if "stream_id" in self.request.data:

@@ -4,7 +4,7 @@ sidebar_label: Sentry
 support_level: authentik
 ---
 
-## What is Sentry
+## What is Sentry?
 
 > Sentry provides self-hosted and cloud-based error monitoring that helps all software teams discover, triage, and prioritize errors in real-time.
 > One million developers at over fifty thousand companies already ship better software faster with Sentry. Won’t you join them?

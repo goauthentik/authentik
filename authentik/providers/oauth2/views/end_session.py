@@ -5,6 +5,8 @@ from urllib.parse import quote, urlparse
 
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
+from jwt import PyJWTError
+from jwt import decode as jwt_decode
 
 from authentik.common.oauth.constants import (
     FORBIDDEN_URI_SCHEMES,
@@ -21,11 +23,14 @@ from authentik.flows.planner import (
 from authentik.flows.stage import SessionEndStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
-from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.policies.views import PolicyAccessView
 from authentik.providers.iframe_logout import IframeLogoutStageView
+from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
+    JWTAlgorithms,
     OAuth2LogoutMethod,
+    OAuth2Provider,
     RedirectURIMatchingMode,
 )
 from authentik.providers.oauth2.tasks import send_backchannel_logout_request
@@ -47,21 +52,45 @@ class EndSessionView(PolicyAccessView):
         if not self.flow:
             raise Http404
 
+    def validate(self):
         # Parse end session parameters
         query_dict = self.request.POST if self.request.method == "POST" else self.request.GET
         state = query_dict.get("state")
         request_redirect_uri = query_dict.get("post_logout_redirect_uri")
+        id_token_hint = query_dict.get("id_token_hint")
         self.post_logout_redirect_uri = None
+
+        # OIDC Certification: Verify id_token_hint. If invalid or missing, throw an error
+        if id_token_hint:
+            # Load a fresh provider instance that's not part of the flow
+            # since it'll have the cryptography Certificate that can't be pickled
+            provider = OAuth2Provider.objects.get(pk=self.provider.pk)
+            key, alg = provider.jwt_key
+            if alg != JWTAlgorithms.HS256:
+                key = provider.signing_key.public_key
+            try:
+                jwt_decode(
+                    id_token_hint,
+                    key,
+                    algorithms=[alg],
+                    audience=provider.client_id,
+                    issuer=provider.get_issuer(self.request),
+                    # ID Tokens are short-lived; a logout request arriving
+                    # after expiry is still legitimate and must succeed.
+                    options={"verify_exp": False},
+                )
+            except PyJWTError:
+                raise TokenError("invalid_request").with_cause(
+                    "id_token_hint_decode_failed"
+                ) from None
 
         # Validate post_logout_redirect_uri against registered URIs
         if request_redirect_uri:
+            # OIDC Certification: id_token_hint required with post_logout_redirect_uri
+            if not id_token_hint:
+                raise TokenError("invalid_request").with_cause("id_token_hint_missing")
             if urlparse(request_redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
-                raise RequestValidationError(
-                    bad_request_message(
-                        self.request,
-                        "Forbidden URI scheme in post_logout_redirect_uri",
-                    )
-                )
+                raise TokenError("invalid_request").with_cause("post_logout_redirect_uri")
             for allowed in self.provider.post_logout_redirect_uris:
                 if allowed.matching_mode == RedirectURIMatchingMode.STRICT:
                     if request_redirect_uri == allowed.url:
@@ -71,6 +100,10 @@ class EndSessionView(PolicyAccessView):
                     if fullmatch(allowed.url, request_redirect_uri):
                         self.post_logout_redirect_uri = request_redirect_uri
                         break
+            # OIDC Certification: OP MUST NOT perform post-logout redirection
+            # if the supplied URI does not exactly match a registered one
+            if self.post_logout_redirect_uri is None:
+                raise TokenError("invalid_request").with_cause("invalid_post_logout_redirect_uri")
 
         # Append state to the redirect URI if both are present
         if self.post_logout_redirect_uri and state:
@@ -91,50 +124,43 @@ class EndSessionView(PolicyAccessView):
                 "<html><body>Logout successful</body></html>", content_type="text/html", status=200
             )
 
-        # Otherwise, continue with normal policy checks
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Dispatch the flow planner for the invalidation flow"""
+        try:
+            self.validate()
+        except TokenError as exc:
+            return bad_request_message(
+                self.request,
+                exc.description,
+            )
         planner = FlowPlanner(self.flow)
         planner.allow_empty_flows = True
 
-        # Build flow context with logout parameters
         context = {
             PLAN_CONTEXT_APPLICATION: self.application,
         }
 
-        # Get session info for logout notifications and token invalidation
         auth_session = AuthenticatedSession.from_request(request, request.user)
 
-        # Add validated redirect URI (with state appended) to context if available
         if self.post_logout_redirect_uri:
             context[PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI] = self.post_logout_redirect_uri
-            # Invalidate tokens for this provider/session (RP-initiated logout:
-            # user stays logged into authentik, only this provider's tokens are revoked)
-            if request.user.is_authenticated and auth_session:
-                AccessToken.objects.filter(
-                    user=request.user,
-                    provider=self.provider,
-                    session=auth_session,
-                ).delete()
+
         session_key = (
             auth_session.session.session_key if auth_session and auth_session.session else None
         )
 
-        # Handle frontchannel logout
         frontchannel_logout_url = None
         if self.provider.logout_method == OAuth2LogoutMethod.FRONTCHANNEL:
             frontchannel_logout_url = build_frontchannel_logout_url(
                 self.provider, request, session_key
             )
 
-        # Handle backchannel logout
         if (
             self.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
             and self.provider.logout_uri
         ):
-            # Find access token to get iss and sub for the logout token
             access_token = AccessToken.objects.filter(
                 user=request.user,
                 provider=self.provider,
@@ -163,9 +189,16 @@ class EndSessionView(PolicyAccessView):
                 }
             ]
 
+        access_tokens = AccessToken.objects.filter(
+            user=request.user,
+            provider=self.provider,
+        )
+        if auth_session:
+            access_tokens = access_tokens.filter(session=auth_session)
+        access_tokens.delete()
+
         plan = planner.plan(request, context)
 
-        # Inject iframe logout stage if frontchannel logout is configured
         if frontchannel_logout_url:
             plan.insert_stage(in_memory_stage(IframeLogoutStageView))
 

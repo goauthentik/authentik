@@ -18,7 +18,7 @@ import {
     RACProvider,
     RadiusProvider,
     RedirectURI,
-    RedirectUriTypeEnum,
+    RedirectURITypeEnum,
     SAMLProvider,
     SCIMProvider,
     WSFederationProvider,
@@ -87,7 +87,7 @@ function formatRedirectUris(uris: RedirectURI[] = []) {
                           (${uri.matchingMode === MatchingModeEnum.Strict
                               ? msg("strict")
                               : msg("regexp")},
-                          ${uri.redirectUriType === RedirectUriTypeEnum.Logout
+                          ${uri.redirectUriType === RedirectURITypeEnum.Logout
                               ? msg("post logout")
                               : msg("authorization")})
                       </li>`,

@@ -8,7 +8,7 @@ support_level: community
 These instructions apply to all projects in the \*arr Family. If you use multiple of these projects, you can assign them to the same Outpost.
 :::
 
-## What is Sonarr
+## What is Sonarr?
 
 > Sonarr is a PVR for Usenet and BitTorrent users. It can monitor multiple RSS feeds for new episodes of your favorite shows and will grab, sort and rename them. It can also be configured to automatically upgrade the quality of files already downloaded when a better quality format becomes available.
 >

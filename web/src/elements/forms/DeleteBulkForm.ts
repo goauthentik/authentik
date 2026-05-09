@@ -119,7 +119,7 @@ export class DeleteBulkForm<T> extends ModalButton {
                 >
                 </ak-used-by-table>
             </section>
-            <fieldset class="pf-c-modal-box__footer">
+            <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${async () => {

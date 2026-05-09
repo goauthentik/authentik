@@ -53,6 +53,16 @@ class TestEndSessionView(OAuthTestCase):
         self.brand.flow_invalidation = self.invalidation_flow
         self.brand.save()
 
+    def _id_token_hint(self, host: str) -> str:
+        """Issue a valid id_token_hint for the test provider under the given host."""
+        return self.provider.encode(
+            {
+                "iss": f"http://{host}/application/o/{self.app.slug}/",
+                "aud": self.provider.client_id,
+                "sub": str(self.user.pk),
+            }
+        )
+
     def test_post_logout_redirect_uri_strict_match(self):
         """Test strict URI matching redirects to flow"""
         self.client.force_login(self.user)
@@ -61,7 +71,10 @@ class TestEndSessionView(OAuthTestCase):
                 "authentik_providers_oauth2:end-session",
                 kwargs={"application_slug": self.app.slug},
             ),
-            {"post_logout_redirect_uri": "http://testserver/logout"},
+            {
+                "post_logout_redirect_uri": "http://testserver/logout",
+                "id_token_hint": self._id_token_hint(self.brand.domain),
+            },
             HTTP_HOST=self.brand.domain,
         )
         # Should redirect to the invalidation flow
@@ -69,7 +82,12 @@ class TestEndSessionView(OAuthTestCase):
         self.assertIn(self.invalidation_flow.slug, response.url)
 
     def test_post_logout_redirect_uri_strict_no_match(self):
-        """Test strict URI not matching still proceeds with flow (no redirect URI in context)"""
+        """Test strict URI not matching returns an error and does not start logout flow.
+
+        Required by OIDC RP-Initiated Logout 1.0: on an unregistered
+        post_logout_redirect_uri, the OP MUST NOT redirect and MUST NOT proceed with
+        logout that targets the RP.
+        """
         self.client.force_login(self.user)
         invalid_uri = "http://testserver/other"
         response = self.client.get(
@@ -77,12 +95,14 @@ class TestEndSessionView(OAuthTestCase):
                 "authentik_providers_oauth2:end-session",
                 kwargs={"application_slug": self.app.slug},
             ),
-            {"post_logout_redirect_uri": invalid_uri},
+            {
+                "post_logout_redirect_uri": invalid_uri,
+                "id_token_hint": self._id_token_hint(self.brand.domain),
+            },
             HTTP_HOST=self.brand.domain,
         )
-        # Should still redirect to flow, but invalid URI should not be in response
-        self.assertEqual(response.status_code, 302)
-        self.assertNotIn(invalid_uri, response.url)
+        self.assertEqual(response.status_code, 400)
+        self.assertNotIn(invalid_uri, response.content.decode())
 
     def test_post_logout_redirect_uri_regex_match(self):
         """Test regex URI matching redirects to flow"""
@@ -92,7 +112,10 @@ class TestEndSessionView(OAuthTestCase):
                 "authentik_providers_oauth2:end-session",
                 kwargs={"application_slug": self.app.slug},
             ),
-            {"post_logout_redirect_uri": "https://app.example.com/logout"},
+            {
+                "post_logout_redirect_uri": "https://app.example.com/logout",
+                "id_token_hint": self._id_token_hint(self.brand.domain),
+            },
             HTTP_HOST=self.brand.domain,
         )
         # Should redirect to the invalidation flow
@@ -100,7 +123,7 @@ class TestEndSessionView(OAuthTestCase):
         self.assertIn(self.invalidation_flow.slug, response.url)
 
     def test_post_logout_redirect_uri_regex_no_match(self):
-        """Test regex URI not matching"""
+        """Test regex URI not matching returns an error and does not start logout flow."""
         self.client.force_login(self.user)
         invalid_uri = "https://malicious.com/logout"
         response = self.client.get(
@@ -108,12 +131,14 @@ class TestEndSessionView(OAuthTestCase):
                 "authentik_providers_oauth2:end-session",
                 kwargs={"application_slug": self.app.slug},
             ),
-            {"post_logout_redirect_uri": invalid_uri},
+            {
+                "post_logout_redirect_uri": invalid_uri,
+                "id_token_hint": self._id_token_hint(self.brand.domain),
+            },
             HTTP_HOST=self.brand.domain,
         )
-        # Should still proceed to flow, but invalid URI should not be in response
-        self.assertEqual(response.status_code, 302)
-        self.assertNotIn(invalid_uri, response.url)
+        self.assertEqual(response.status_code, 400)
+        self.assertNotIn(invalid_uri, response.content.decode())
 
     def test_state_parameter_appended_to_uri(self):
         """Test state parameter is appended to validated redirect URI"""
@@ -123,6 +148,7 @@ class TestEndSessionView(OAuthTestCase):
             {
                 "post_logout_redirect_uri": "http://testserver/logout",
                 "state": "test-state-123",
+                "id_token_hint": self._id_token_hint("testserver"),
             },
         )
         request.user = self.user
@@ -132,6 +158,7 @@ class TestEndSessionView(OAuthTestCase):
         view.request = request
         view.kwargs = {"application_slug": self.app.slug}
         view.resolve_provider_application()
+        view.validate()
 
         self.assertIn("state=test-state-123", view.post_logout_redirect_uri)
 
@@ -146,6 +173,7 @@ class TestEndSessionView(OAuthTestCase):
             {
                 "post_logout_redirect_uri": "http://testserver/logout",
                 "state": "xyz789",
+                "id_token_hint": self._id_token_hint(self.brand.domain),
             },
             HTTP_HOST=self.brand.domain,
         )

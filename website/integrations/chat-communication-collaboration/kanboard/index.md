@@ -4,7 +4,7 @@ sidebar_label: Kanboard
 support_level: community
 ---
 
-## What is Kanboard
+## What is Kanboard?
 
 > Kanboard is a free and open source Kanban project management software.
 >

@@ -1,0 +1,102 @@
+.ak-c-fieldset {
+    --ak-c-fieldset--BorderWidth: thin;
+
+    --ak-c-fieldset--RowGap: var(--pf-global--spacer--md);
+    --ak-c-fieldset--ColumnGap: var(--pf-global--spacer--sm);
+
+    --ak-c-fieldset__legend--MarginInlineBase: var(--pf-global--spacer--sm);
+    --ak-c-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--sm);
+
+    border-color: var(--ak-c-fieldset--BorderColor, var(--pf-global--BackgroundColor--light-100));
+    border-width: var(--ak-c-fieldset--BorderWidth);
+    padding: var(--ak-c-fieldset__legend--PaddingInlineBase) !important;
+
+    @media (prefers-contrast: more) {
+        border-color: var(--ak-c-fieldset--BorderColor, var(--pf-global--BorderColor--200));
+    }
+
+    @media (prefers-contrast: less) {
+        border-color: var(--ak-c-fieldset--BorderColor, transparent);
+    }
+}
+
+.ak-c-fieldset > legend {
+    line-height: 1;
+    padding: var(--ak-c-fieldset__legend--PaddingInlineBase) !important;
+    margin-inline-start: var(
+        --ak-c-fieldset__legend--MarginInlineStart,
+        var(--ak-c-fieldset__legend--MarginInlineBase)
+    ) !important;
+    margin-inline-end: var(
+        --ak-legend-margin-inline-end,
+        var(--ak-c-fieldset__legend--MarginInlineBase)
+    ) !important;
+}
+
+.ak-c-fieldset:has(legend.sr-only:not(.more-contrast-only)) {
+    border-width: 0;
+
+    &:not(.pf-c-modal-box__footer) {
+        --ak-c-fieldset__legend--PaddingInlineBase: 0;
+        --ak-c-fieldset__legend--MarginInlineBase: 0;
+    }
+}
+
+.ak-c-fieldset.pf-c-form__group {
+    border-radius: var(--pf-global--BorderRadius--sm);
+}
+
+.ak-c-fieldset.pf-c-form__group {
+    display: flex;
+    flex-wrap: wrap;
+
+    &.pf-m-action {
+        --ak-c-fieldset__legend--PaddingInlineBase: 0;
+        --ak-c-fieldset__legend--MarginInlineBase: 0;
+        --ak-c-fieldset--BorderWidth: 0;
+
+        row-gap: var(--ak-c-fieldset--RowGap);
+        column-gap: var(--ak-c-fieldset--ColumnGap);
+        margin-block-start: 0;
+    }
+}
+
+.ak-c-fieldset.pf-c-login__main-footer-band > *:last-child {
+    padding-block-end: var(--pf-c-login__main-footer-band-item--PaddingTop);
+}
+
+/* TODO: Remove after ak-modal migration. */
+.ak-c-fieldset.pf-c-modal-box__footer {
+    --ak-c-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--lg);
+
+    --pf-c-modal-box__footer--c-button--MarginRight: 0;
+    --pf-c-modal-box__footer--c-button--sm--MarginRight: var(
+        --pf-c-modal-box__footer--c-button--MarginRight
+    );
+
+    gap: var(--pf-global--spacer--sm);
+    justify-content: end;
+    padding-block: calc(var(--ak-c-fieldset__legend--PaddingInlineBase) / 2);
+    border-inline: none;
+    border-block-end: none;
+
+    & > ak-spinner-button:not(:last-child) {
+        margin-right: var(--pf-c-modal-box__footer--c-button--MarginRight);
+    }
+}
+
+[data-theme="dark"] .ak-c-fieldset,
+:host([theme="dark"]) .ak-c-fieldset {
+    border-color: var(
+        --ak-c-fieldset--BorderColor,
+        var(--pf-global--BackgroundColor--dark-transparent-200)
+    );
+
+    @media (prefers-contrast: more) {
+        border-color: var(--ak-c-fieldset--BorderColor, var(--pf-global--BorderColor--300));
+    }
+
+    @media (prefers-contrast: less) {
+        border-color: var(--ak-c-fieldset--BorderColor, transparent);
+    }
+}

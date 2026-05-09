@@ -77,6 +77,8 @@ export class FormFixture extends PageFixture {
 
     /**
      * Search for a row containing the given text.
+     *
+     * @returns A locator for the row entry matching the query.
      */
     public search = async (
         query: string,

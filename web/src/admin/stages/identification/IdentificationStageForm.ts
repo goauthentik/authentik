@@ -11,6 +11,8 @@ import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpe
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
@@ -87,7 +89,22 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("User fields")} name="userFields">
+                    <ak-form-element-horizontal name="userFields">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userFields",
+                            },
+                            msg("User Fields"),
+                        )}
+
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.",
+                            )}
+                        </p>
+
                         <ak-checkbox-group
                             class="user-field-select"
                             .options=${userSelectFields}
@@ -95,11 +112,6 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 .map(({ name }) => name)
                                 .filter((name) => this.isUserFieldSelected(name))}
                         ></ak-checkbox-group>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.",
-                            )}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Password stage")} name="passwordStage">
                         <ak-search-select

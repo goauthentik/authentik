@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.5.0-rc1
+API version: 2026.8.0-rc1
 Contact: hello@goauthentik.io
 */
 
@@ -41,7 +41,7 @@ var (
 	queryDescape    = strings.NewReplacer("%5B", "[", "%5D", "]")
 )
 
-// APIClient manages communication with the authentik API v2026.5.0-rc1
+// APIClient manages communication with the authentik API v2026.8.0-rc1
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration

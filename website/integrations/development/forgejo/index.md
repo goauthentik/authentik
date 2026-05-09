@@ -4,7 +4,7 @@ sidebar_label: Forgejo
 support_level: community
 ---
 
-## What is Forgejo
+## What is Forgejo?
 
 > Forgejo is a lightweight, self‑hosted alternative to GitHub/GitLab, with a strong emphasis on community governance and open development.
 >

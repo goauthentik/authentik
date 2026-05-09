@@ -4,7 +4,7 @@ sidebar_label: Seerr
 support_level: community
 ---
 
-## What is Seerr
+## What is Seerr?
 
 > Seerr (previously Jellyseerr) is a free and open source application for managing requests in your media library. It integrates with media servers like Jellyfin, Plex, and Emby, and services such as Sonarr and Radarr.
 >

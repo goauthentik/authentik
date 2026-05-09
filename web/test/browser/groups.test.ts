@@ -179,7 +179,7 @@ test.describe("Groups", () => {
         });
     });
 
-    test("Edit group from view page", async ({ navigator, form, pointer, page }, testInfo) => {
+    test("Edit group from view page", async ({ form, pointer, page }, testInfo) => {
         const groupName = groupNames.get(testInfo.testId)!;
 
         const { fill, search } = form;

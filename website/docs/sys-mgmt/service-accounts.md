@@ -45,7 +45,7 @@ Service account tokens have the following properties:
 
 - **Expiration**: By default, tokens expire after 360 days but can be configured to be non-expiring.
 - **Custom Expiration Date**: You can set a specific expiration date when creating the service account.
-- **Revocation**: Tokens can be revoked at any time by deleting them or generating new ones.
+- **Revocation**: Tokens can be revoked at any time by deleting them or generating new ones. OAuth2 access tokens associated with service accounts can also be introspected or revoked through the OAuth2 provider endpoints when the authenticating provider is the issuing provider or is configured for [cross-provider token introspection and revocation](../add-secure-apps/providers/oauth2/index.mdx#cross-provider-token-introspection-and-revocation).
 - **Automatic Rotation**: When a token expires, it's automatically rotated to maintain security.
 
 ## Managing Service Account Tokens

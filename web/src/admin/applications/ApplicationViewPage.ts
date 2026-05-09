@@ -322,30 +322,6 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     id="page-app-entitlements"
                     aria-label="${msg("Application entitlements")}"
                 >
-                    <div
-                        slot="header"
-                        class="pf-c-banner pf-m-info"
-                        role="status"
-                        aria-live="polite"
-                    >
-                        <div class="pf-l-flex pf-m-space-items-sm">
-                            <div class="pf-l-flex__item">
-                                <i class="fas fa-info-circle" aria-hidden="true"></i>
-                            </div>
-                            <div class="pf-l-flex__item">
-                                ${msg("Application entitlements are in preview.", {
-                                    id: "application.entitlements.preview.info",
-                                })}
-                            </div>
-                            <div class="pf-l-flex__item">
-                                <a href="mailto:hello+feature/app-ent@goauthentik.io"
-                                    >${msg("Send us feedback!", {
-                                        id: "preview.send-us-feedback",
-                                    })}</a
-                                >
-                            </div>
-                        </div>
-                    </div>
                     <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <div class="pf-c-card">
                             <div class="pf-c-card__title">

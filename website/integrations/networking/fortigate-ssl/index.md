@@ -4,7 +4,7 @@ sidebar_label: FortiGate SSLVPN
 support_level: community
 ---
 
-## What is FortiGate SSLVPN
+## What is FortiGate SSLVPN?
 
 > FortiGate is a firewall from Fortinet. It is an NGFW with layer 7 inspection and can become part of a Fortinet security fabric.
 >
