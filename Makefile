@@ -73,7 +73,7 @@ rust-test:  ## Run the Rust tests
 	$(CARGO) nextest run --workspace
 
 test: ## Run the server tests and produce a coverage report (locally)
-	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@ all,$(MAKECMDGOALS)),authentik)
+	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
 	$(UV) run coverage combine
 	$(UV) run coverage html
 	$(UV) run coverage report
