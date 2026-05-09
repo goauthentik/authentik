@@ -25,9 +25,9 @@ You will need one or more existing groups in authentik to assign roles in Veeam 
 
 ## Veeam Enterprise Manager pre-configuration
 
-Log in to your Veeam Enterprise Manager. Navigate to the Configuration in the top-right. On the left sidebar, select Settings. Select the SAML Authentication tab.
+Log in to your Veeam Enterprise Manager. Navigate to **Configuration** in the top-right corner. In the left sidebar, select **Settings**, then select the **SAML Authentication** tab.
 
-Check the checkbox called "Enable SAML 2.0". Further down the page, click the "Download" button to download the metadata.
+Select the **Enable SAML 2.0** checkbox. Further down the page, click **Download** to download the metadata.
 
 ## authentik configuration
 
@@ -47,10 +47,10 @@ To support the integration of Veeam Enterprise Manager with authentik, you need 
 
 3. Click **Submit** to save the new application and provider.
 
-Go back to the Provider sidebar and locate the Veeam Enterprise Manager. Click the Download Metadata button.
+Go back to the Provider sidebar and locate the Veeam Enterprise Manager. Click the **Download Metadata** button.
 
 ## Veeam Enterprise Manager configuration
 
-Back on Veeam Enterprise Manager, click on "Import from File", and select the XML file that you've downloaded from authentik. Make sure the "Enable SAML 2.0" checkbox is still enabled, and click save.
+Back on Veeam Enterprise Manager, click **Import from File**, and select the XML file that you downloaded from authentik. Make sure that the **Enable SAML 2.0** checkbox is still enabled, and click **Save**.
 
-To map Veeam Enterprise Manager permissions to an authentik user, create an External Group. In Veeam Enterprise Manager, navigate to **Configuration** > **Roles**, click **Add...**, and select **External Group**. Enter the name of an authentik group that the user is a member of.
+To map Veeam Enterprise Manager permissions to an authentik user, create an external group. In Veeam Enterprise Manager, navigate to **Configuration** > **Roles**, click **Add...**, and select **External Group**. Enter the name of an authentik group that the user is a member of.

@@ -87,7 +87,7 @@ Change the following fields
 
 When enabling SSL, authentik will send a certificate to pfSense. This certificate has to be signed by a certificate authority trusted by pfSense. In this setup we will create our own certificate authority in pfSense and create a certificate that will be used by authentik.
 
-### Step 1 - Certificate Authority
+### Step 1 - certificate authority
 
 In pfSense, create a certificate authority under _System/Cert. Manager_ and click the `+ Add` button.
 
@@ -95,7 +95,7 @@ In pfSense, create a certificate authority under _System/Cert. Manager_ and clic
 - Method: Create an internal Certificate Authority
 - Common Name : `pfSense CA`
 
-### Step 2 - Server Certificate
+### Step 2 - server certificate
 
 In pfSense, create a server certificate under _System/Cert. Manager_. Go to the _Certificates_ tab then click the `+ Add` button.
 

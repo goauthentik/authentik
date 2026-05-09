@@ -1,6 +1,6 @@
 ---
-title: Integrate with Hashicorp Vault
-sidebar_label: Hashicorp Vault
+title: Integrate with HashiCorp Vault
+sidebar_label: HashiCorp Vault
 support_level: authentik
 ---
 
@@ -11,7 +11,7 @@ support_level: authentik
 > -- https://vaultproject.io
 
 :::info
-This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ between versions. This guide does not cover vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in-depth vault guide
+This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ between versions. This guide does not cover Vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in-depth Vault guide
 :::
 
 ## Preparation
@@ -27,7 +27,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Hashicorp Vault with authentik, you need to create an application/provider pair in authentik.
+To support the integration of HashiCorp Vault with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
@@ -44,12 +44,12 @@ To support the integration of Hashicorp Vault with authentik, you need to create
 
 3. Click **Submit** to save the new application and provider.
 
-## Hashicorp Vault configuration
+## HashiCorp Vault configuration
 
-Enable the oidc auth method
+Enable the OIDC auth method.
 `vault auth enable oidc`
 
-Configure the oidc auth method, oidc discovery url is the OpenID Configuration Issuer in your provider
+Configure the OIDC auth method. The OIDC discovery URL is the OpenID Configuration Issuer in your provider.
 
 ```
 vault write auth/oidc/config \
@@ -59,7 +59,7 @@ vault write auth/oidc/config \
          default_role="reader"
 ```
 
-Create the reader role
+Create the reader role.
 
 ```
 vault write auth/oidc/role/reader \
@@ -71,9 +71,9 @@ vault write auth/oidc/role/reader \
       policies="reader"
 ```
 
-## External Groups
+## External groups
 
-If you wish to manage group membership in Hashicorp Vault via Authentik you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
+If you wish to manage group membership in HashiCorp Vault via authentik, you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
 
 :::info
 This assumes that the steps above have already been completed and tested.

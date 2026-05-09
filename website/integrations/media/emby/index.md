@@ -66,7 +66,7 @@ Create a dedicated service account for Emby LDAP authentication by following the
 ## Emby configuration
 
 1. Access your Emby server and log in using the administrator account or the currently configured local administrator credentials.
-2. Click the **cog icon** (settings) located at the top right corner of the screen to access the dashboard settings.
+2. Click the **cog icon** (settings) located at the top-right corner of the screen to access the dashboard settings.
 3. Navigate to the **Plugins** section and click **Catalog** at the top of the page.
 4. Find and install the "LDAP Authentication" plugin. Restart Emby if prompted to complete the installation.
 5. After installation, return to the plugins section and click on the "LDAP Authentication" plugin to open its settings.
@@ -84,7 +84,7 @@ Create a dedicated service account for Emby LDAP authentication by following the
 
 7. Click **Save** to apply your configuration.
 
-## Configuration Verification
+## Configuration verification
 
 Log out of Emby and attempt to log back in using your LDAP credentials from authentik. Logging in with an email address isn't supported, therefore use your **username**.
 

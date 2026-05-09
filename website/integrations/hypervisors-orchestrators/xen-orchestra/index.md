@@ -51,7 +51,7 @@ Xen Orchestra allows the configuration of the OpenID Connect authentication in t
 All of the URLs mentioned below can be copied & pasted from authentik (**Applications > Providers** > _the provider created earlier_).
 
 1. Navigate to Settings > Plugins
-2. Scroll to **auth-oidc** and click on the **+** icon on the right hand side.
+2. Scroll to **auth-oidc** and click on the **+** icon on the right side.
 3. Configure the auth-oidc plugin with the following configuration values:
 
 - Set the `Auto-discovery URL` to `https://authentik.company/application/o/xenorchestra/.well-known/openid-configuration`.

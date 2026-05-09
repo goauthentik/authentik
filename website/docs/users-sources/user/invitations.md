@@ -259,7 +259,7 @@ Possible causes:
 - Flow slug doesn't match the invitation's configured flow
 - Invitation stage is not bound to the flow
 
-### Pre-filled Data Not Appearing
+### Pre-filled data not appearing
 
 Possible causes:
 

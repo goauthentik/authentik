@@ -111,7 +111,7 @@ We will also presume that two application entitlements have been created in auth
         }
         ```
 
-        In the expression above, we filter on the entitlement names `Portainer Admins` and `Portainer Users`. You can use any entitlements that exist on the Portainer application. Ensure that the names entered here exactly match those setup in authentik, as they are case-sensitive.
+        In the expression above, we filter on the entitlement names `Portainer Admins` and `Portainer Users`. You can use any entitlements that exist on the Portainer application. Ensure that the names entered here exactly match those set up in authentik, as they are case-sensitive.
 
 3. Click **Finish**.
 4. Navigate to **Applications** > **Providers**.
