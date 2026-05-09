@@ -123,7 +123,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
     - **Identity Provider Login URL**: Enter the **SSO URL (Post)** from your authentik provider: `https://authentik.company/application/saml/<slug>/sso/binding/post/`
 3. Click **Save**.
 
-### Enable just-in-time provisioning
+### Enable Just-in-Time provisioning
 
 1. On the SAML Single Sign-On configuration page that you just created, click **Edit**.
 2. Under **Just-in-Time User Provisioning**, check **User Provisioning Enabled**.
