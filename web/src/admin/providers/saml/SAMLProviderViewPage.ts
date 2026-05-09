@@ -152,6 +152,22 @@ export class SAMLProviderViewPage extends AKElement {
         }
     }
 
+    renderLogoutMethod(): string {
+        if (!this.provider?.slsUrl) {
+            return "-";
+        }
+        switch (this.provider.logoutMethod) {
+            case "frontchannel_iframe":
+                return msg("Front-channel (Iframe)");
+            case "frontchannel_native":
+                return msg("Front-channel (Native)");
+            case "backchannel":
+                return msg("Back-channel (POST)");
+            default:
+                return this.provider.logoutMethod ?? "-";
+        }
+    }
+
     renderRelatedObjects(): TemplateResult {
         const relatedObjects = [];
         if (this.provider?.assignedApplicationName) {
@@ -321,18 +337,6 @@ export class SAMLProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text">${msg(
-                                        "ACS URL",
-                                    )}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.acsUrl}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
                                         "Audience",
                                     )}</span>
                                 </dt>
@@ -345,12 +349,36 @@ export class SAMLProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text">${msg(
-                                        "Issuer",
+                                        "ACS URL",
                                     )}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.issuerOverride}
+                                        ${this.provider.acsUrl}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">${msg(
+                                        "SLS URL",
+                                    )}</span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.slsUrl || "-"}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">${msg(
+                                        "Logout Method",
+                                    )}</span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.renderLogoutMethod()}
                                     </div>
                                 </dd>
                             </div>
