@@ -10,26 +10,44 @@
     --pf-c-wizard__close--Right: var(--ak-c-wizard__header--InlineSpacer);
     --pf-c-wizard__close--Top: var(--ak-c-wizard__header--BlockSpacer);
 
-    --ak-c-wizard__footer--BlockSpacer: clamp(0.25em, var(--pf-global--spacer--xl), 3cqb);
+    --ak-c-wizard__footer--BlockSpacer: clamp(0.25em, var(--pf-global--spacer--xl), 2cqb);
     --pf-c-wizard__footer--PaddingTop: var(--ak-c-wizard__footer--BlockSpacer);
     --pf-c-wizard__footer--PaddingBottom: var(--ak-c-wizard__footer--BlockSpacer);
     --pf-c-wizard__footer--child--MarginBottom: 0;
 }
 
+.pf-c-wizard__main {
+    overscroll-behavior: contain;
+    display: flex;
+    flex-flow: column;
+    height: min(var(--ak-c-dialog--MaxHeight), 100cqi);
+}
+
 .pf-c-wizard__main-body {
     --ak-c-fieldset--BorderColor: var(--pf-global--BackgroundColor--150);
 
+    display: flex;
+    flex: 1 1 auto;
     gap: var(--pf-global--spacer--lg);
 
-    fieldset {
-        .pf-c-description-list {
-            margin-inline: var(--pf-global--spacer--sm);
-        }
+    .ak-c-fieldset .pf-c-description-list {
+        margin-inline: var(--pf-global--spacer--sm);
     }
+
+    & > .pf-c-form {
+        place-content: start;
+    }
+}
+
+.pf-c-wizard__main,
+.pf-c-wizard__main-body {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 .pf-c-wizard__main-title {
     width: 100%;
+    flex: 0 0 auto;
     font-family: var(--pf-global--FontFamily--heading--sans-serif);
     font-size: var(--pf-global--FontSize--md);
     font-weight: var(--pf-global--FontWeight--bold);
