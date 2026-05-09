@@ -180,6 +180,12 @@ export interface SAMLSource {
      */
     issuer?: string;
     /**
+     * Get the resolved Issuer, falling back to the metadata URL when unset
+     * @type {string}
+     * @memberof SAMLSource
+     */
+    readonly urlIssuer: string;
+    /**
      * URL that the initial Login request is sent to.
      * @type {string}
      * @memberof SAMLSource
@@ -281,6 +287,7 @@ export function instanceOfSAMLSource(value: object): value is SAMLSource {
     if (!("iconThemedUrls" in value) || value["iconThemedUrls"] === undefined) return false;
     if (!("preAuthenticationFlow" in value) || value["preAuthenticationFlow"] === undefined)
         return false;
+    if (!("urlIssuer" in value) || value["urlIssuer"] === undefined) return false;
     if (!("ssoUrl" in value) || value["ssoUrl"] === undefined) return false;
     return true;
 }
@@ -330,6 +337,7 @@ export function SAMLSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
                 : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
         preAuthenticationFlow: json["pre_authentication_flow"],
         issuer: json["issuer"] == null ? undefined : json["issuer"],
+        urlIssuer: json["url_issuer"],
         ssoUrl: json["sso_url"],
         sloUrl: json["slo_url"] == null ? undefined : json["slo_url"],
         allowIdpInitiated:
@@ -378,6 +386,7 @@ export function SAMLSourceToJSONTyped(
         | "managed"
         | "icon_url"
         | "icon_themed_urls"
+        | "url_issuer"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

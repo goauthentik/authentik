@@ -256,7 +256,7 @@ class SAMLSource(Source):
 
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
-        if self.issuer is None:
+        if not self.issuer:
             return self.build_full_url(request, view="metadata")
         return self.issuer
 
