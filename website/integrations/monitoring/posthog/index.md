@@ -87,7 +87,7 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
 3. If your users' email domain is not already listed, add it and complete PostHog's domain verification process.
 4. Open the SAML configuration for the verified domain and configure the following settings:
     - **SAML ACS URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-    - **SAML Entity ID**: `https://authentik.company/application/saml/<application_slug>/`
+    - **SAML Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **SAML X.509 Certificate**: paste the public certificate from the signing certificate that you selected for the authentik SAML provider.
 5. Save the SAML configuration.
 

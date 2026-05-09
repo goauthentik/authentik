@@ -34,7 +34,6 @@ Create a SAML provider with the following parameters:
 
 - ACS URL: `https://rancher.company/v1-saml/adfs/saml/acs`
 - Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
-- Issuer: `authentik`
 - Service Provider Binding: `Post`
 - Property mappings: Select all default mappings and the mapping you've created above.
 - Signing Certificate: Select the authentik self-signed certificate.

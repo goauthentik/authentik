@@ -46,7 +46,6 @@ To support the integration of AppFlowy with authentik, you need to create a cert
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - **ACS URL**: `https://appflowy.company/gotrue/sso/saml/acs`
-        - **Issuer**: `authentik`
         - **Service Provider Binding**: `Post`
         - **Audience**: `https://appflowy.company/gotrue/sso/saml/metadata`
         - Under **Advanced protocol settings**:
@@ -149,7 +148,7 @@ GOTRUE_SAML_ENABLED=true
 
 AUTH_SAML_ENTRY_POINT="https://authentik.company/application/saml/<application_slug>/sso/binding/post"
 
-AUTH_SAML_ISSUER="authentik"
+AUTH_SAML_ISSUER="https://authentik.company/application/saml/<application_slug>/metadata/"
 AUTH_SAML_CALLBACK_URL="https://appflowy.company/gotrue/sso/saml/acs"
 AUTH_SAML_DEFAULT_REDIRECT_URL="https://appflowy.company/app"
 

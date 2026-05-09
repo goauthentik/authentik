@@ -77,7 +77,6 @@ This example sets the session duration to 540 minutes. Change the value to match
 - **Configure Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
   **Protocol Settings**:
     - **ACS URL**: `https://knocknoc.company/api/saml/acs`
-    - **Issuer**: `https://authentik.company`
     - **Service Provider Binding**: `Post`
     - **Audience**: `https://knocknoc.company/api/saml/metadata`
     - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `Authentik default SAML Mapping: Username`.

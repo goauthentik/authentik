@@ -84,7 +84,6 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://company.my.salesforce.com?so=XXXXXXXXX`, replacing `XXXXXXXXX` with your Salesforce Organization ID.
-        - Set the **Issuer** to a unique identifier (e.g., `https://authentik.company`).
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Select an available **Signing Certificate**.
@@ -114,7 +113,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 1. On the **Single Sign-On Settings** page, under **SAML Single Sign-On Settings**, click **New**.
 2. Enter the following values:
     - **Name**: `authentik`
-    - **Issuer**: Enter the same issuer value you configured in authentik (e.g., `https://authentik.company`).
+    - **Issuer**: `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - **Identity Provider Certificate**: Upload the signing certificate that you downloaded from authentik.
     - **Request Signing Certificate**: Select the default certificate or leave as-is.
     - **Request Signature Method**: `RSA-SHA256`

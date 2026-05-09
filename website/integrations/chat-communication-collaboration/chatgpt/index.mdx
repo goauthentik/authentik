@@ -117,7 +117,7 @@ ChatGPT only enables the **Manage SSO** wizard after you verify ownership of you
 3. Complete the Custom SAML wizard:
     - **Provide an Identity Provider Name**: enter a descriptive name (e.g. `authentik`).
     - **Provide your SAML Configuration**:
-        - **Entity ID**: `authentik`
+        - **Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
         - **Sign-in URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
         - **Sign-out URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
         - **X.509 Certificate**: paste the contents of your certificate file.
