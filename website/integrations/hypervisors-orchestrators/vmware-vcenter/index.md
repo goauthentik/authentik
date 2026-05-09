@@ -83,7 +83,7 @@ To support the integration of vCenter with authentik, you need to create an appl
 9. Return to vCenter.
     - Navigate to **Administration > Access Control > Global Permissions**.
     - Click **Add**.
-    - Select the Domain created above from the dropdown.
+    - Select the domain created above from the drop-down list.
     - Enter the name of the group to which you want to assign permissions.
     - Select the role.
 

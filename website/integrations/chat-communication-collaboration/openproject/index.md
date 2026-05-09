@@ -6,7 +6,7 @@ support_level: community
 
 ## What is OpenProject?
 
-> OpenProject is a web-based project management software. Use OpenProject to manage your projects, tasks and goals. Collaborate via work packages and link them to your pull requests on Github.
+> OpenProject is a web-based project management software. Use OpenProject to manage your projects, tasks and goals. Collaborate via work packages and link them to your pull requests on GitHub.
 >
 > -- https://www.openproject.org/
 
@@ -75,7 +75,7 @@ OpenProject requires a first and last name for each user. By default authentik o
 
 To support the integration of authentik with OpenProject, you need to configure authentication in the OpenProject administration interface.
 
-1. Log in to OpenProject as an administrator, click on your profile icon at the top right and then **Administration**.
+1. Log in to OpenProject as an administrator, click your profile icon in the top-right corner, and then click **Administration**.
 2. Navigate to **Authentication** > **OpenID providers**.
 3. Provide a display name (e.g. `Authentik`) and click **Save**.
 4. Click on **I have a discover endpoint URL** and enter:

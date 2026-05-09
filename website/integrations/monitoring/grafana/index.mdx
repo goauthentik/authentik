@@ -211,11 +211,11 @@ If `Grafana Admins` is not present, Grafana checks for `Grafana Editors`. If tha
 
 For more information on role mappings, see [Grafana's docs](https://grafana.com/docs/grafana/latest/auth/generic-oauth/#role-mapping).
 
-### Grafana Configuration Considerations
+### Grafana configuration considerations
 
 To ensure redirects work correctly in Grafana, make sure the `root_url` in your configuration accurately reflects how users access Grafana through your reverse proxy. For example, if your Grafana instance is behind a proxy and accessed at `https://grafana.company`, set `root_url` to `https://grafana.company`. This ensures that OAuth and other redirects use the correct URL, such as `https://grafana.company/login/generic_oauth`, instead of defaulting to something like `localhost:3000`.
 
-If you get `user does not belong to org` error when trying to log into grafana for the first time via OAuth, check if you have an organization with the ID of `1`, if not, then you have to add the following to your grafana config:
+If you get a `user does not belong to org` error when trying to log in to Grafana for the first time with OAuth, check whether you have an organization with the ID of `1`. If not, add the following to your Grafana configuration:
 
 ```ini
 [users]

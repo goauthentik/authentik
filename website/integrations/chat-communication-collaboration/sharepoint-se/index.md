@@ -66,7 +66,7 @@ These guidelines use the following placeholders for the overall setup:
 
 ## authentik configuration
 
-### Step 1: Create authentik OpenID Property Mappings
+### Step 1: Create authentik OpenID property mappings
 
 SharePoint requires additional properties within the OpenID and profile scopes in order to operate OIDC properly and map incoming authentik OID claims with Microsoft claims.
 
@@ -114,9 +114,9 @@ From the authentik Admin Dashboard:
 return {
     "name": request.user.name,                                         # The name claim provides a human-readable value that identifies the subject of the token.
     "given_name": request.user.name,                                   # Interoperability with Microsoft Entra ID
-    "unique_name": request.user.name,                                  # (Optional) Used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
+    "unique_name": request.user.name,                                  # (Optional) Used for troubleshooting within JWT tokens or to set up SharePoint like ADFS
     "preferred_username": request.user.username,                       # (Optional) The primary username that represents the user.
-    "nickname": request.user.username,                                 # (Optional) Used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
+    "nickname": request.user.username,                                 # (Optional) Used for troubleshooting within JWT tokens or to set up SharePoint like ADFS
     "roles": [
         entitlement.name
         for entitlement in request.user.app_entitlements(provider.application)
@@ -126,7 +126,7 @@ return {
 
 5. Click **Finish**.
 
-### Step 2: Create authentik Open ID Connect Provider
+### Step 2: Create authentik OpenID Connect provider
 
 From the authentik Admin Dashboard:
 
@@ -188,9 +188,9 @@ From the authentik Admin Dashboard:
 For this integration, entitlement names should exactly match the role values that your SharePoint configuration expects in the incoming `roles` claim. This keeps SharePoint-specific authorization scoped to the SharePoint application instead of relying on global authentik group names.
 :::
 
-### Step 4: Setup OIDC authentication in SharePoint Server
+### Step 4: Set up OIDC authentication in SharePoint Server
 
-#### Pre-requisites
+#### Prerequisites
 
 ##### Update SharePoint farm properties
 
@@ -206,7 +206,7 @@ Update the following PowerShell script for your environment, then run it on a Sh
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
 
-# Setup farm properties to work with OIDC
+# Set up farm properties to work with OIDC
 $cert = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -Provider 'Microsoft Enhanced RSA and AES Cryptographic Provider' -Subject "CN=SharePoint Cookie Cert"
 $rsaCert = [System.Security.Cryptography.X509Certificates.RSACertificateExtensions]::GetRSAPrivateKey($cert)
 $fileName = $rsaCert.key.UniqueName
@@ -264,7 +264,7 @@ $trustedTokenIssuerName = "sp.issuerName"
 $trustedTokenIssuerDescription = "sp.issuerDesc"
 
 # OIDC Claims Mapping
-## Identity claim: oid => defined within the Authentik scope mapping
+## Identity claim: oid => defined within the authentik scope mapping
 $idClaim = New-SPClaimTypeMapping "http://schemas.microsoft.com/identity/claims/objectidentifier" -IncomingClaimTypeDisplayName "oid" -SameAsIncoming
 
 ## User claims mappings
@@ -353,7 +353,7 @@ From the SharePoint Central Administration opened as a Farm Administrator:
 | http://schemas.microsoft.com/ws/2008/06/identity/claims/role  | Group       | group      | cn                      |                           | DisplayName           |
 | LDAP attribute linked to the main mapping for object Group    | Group       | group      | uid                     |                           | SPGroupID             |
 
-### Step 3: Create an authentik LDAP Outpost
+### Step 3: Create an authentik LDAP outpost
 
 From the authentik Admin Dashboard:
 
@@ -391,6 +391,6 @@ From the SharePoint Central Administration opened as a Farm Administrator:
     - **LDAP attribute**: uid
 7. Display of user identifier results:
     - Tick **Show the value of another LDAP attribute**: sn
-8. Click on "**OK**"
+8. Click **OK**.
 
 _Note: The `ldap.outpostURI` should be the IP, hostname, or FQDN of the LDAP Outpost service deployed accessible by your SharePoint farm_.

@@ -43,7 +43,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 
 ## Gitea configuration
 
-1. Log in to Gitea as an administrator, then click on your profile icon at the top right and select **Site Administration**.
+1. Log in to Gitea as an administrator, then click your profile icon in the top-right corner and select **Site Administration**.
 2. Select the **Authentication Sources** tab and then click on **Add Authentication Source**.
 3. Set the following required configurations:
     - **Authentication Name**: `authentik` (This must match the name used in the **Redirect URI** in the previous section)
@@ -125,7 +125,7 @@ Users who are assigned none of these entitlements will not be able to log in to 
 For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must be set. More information on configuration variables is available in the [Gitea Configuration Cheat Sheet](https://docs.gitea.com/administration/config-cheat-sheet).
 :::
 
-1. Log in to Gitea as an admin. Click on your profile icon at the top right > **Site Administration**.
+1. Log in to Gitea as an admin. Click your profile icon in the top-right corner, and then click **Site Administration**.
 2. Select the **Authentication Sources** tab and edit the **authentik** Authentication Source.
 3. Set the following configurations:
     - **Additional Scopes**: `email profile gitea`
@@ -140,7 +140,7 @@ Users who are assigned none of the defined entitlements will be denied login acc
 In contrast, users assigned the `gitadmin` entitlement will have full administrative privileges, while users assigned the `gitrestricted` entitlement will have limited access.
 :::
 
-### Helm Chart Configuration
+### Helm chart configuration
 
 authentik authentication can be configured automatically in Kubernetes deployments using its [Helm chart](https://gitea.com/gitea/helm-chart/).
 

@@ -24,7 +24,6 @@ This documentation lists only the settings that you need to change from their de
 Create a SAML provider with the following parameters:
 
 - ACS URL: `https://pdns-admin.company/saml/authorized`
-- Issuer: `https://authentik.company`
 - Service Provider Binding: `Post`
 - Audience: `pdns-admin`
 - Signing Keypair: Select any certificate you have.

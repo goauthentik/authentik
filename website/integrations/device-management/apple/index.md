@@ -33,7 +33,7 @@ While this integration guide focuses on Business Manager, the instructions are a
 
 :::
 
-## Authentication Flow
+## Authentication flow
 
 This sequence diagram shows a high-level flow between the user's apple device, authentik, and Apple Business Manager.
 
@@ -80,7 +80,7 @@ The following placeholders are used in this guide:
 
 ## authentik configuration
 
-The workflow to configure authentik as an identity provider for Apple Business Manager involves creating scope mappings, signing keys, a Shared Signals Framework provider, and a OIDC provider/application pair.
+The workflow to configure authentik as an identity provider for Apple Business Manager involves creating scope mappings, signing keys, a Shared Signals Framework provider, and an OIDC provider/application pair.
 
 Together, these components will handle the authentication flow and backchannel communication between authentik and Apple Business Manager.
 
@@ -214,7 +214,7 @@ While the OIDC provider handles the authentication flow, you'll need to create a
 
 3. Click **Finish** and confirm that the new SSF provider is listed in the overview.
 
-    :::tip A Blank SSF Config URL is expected
+    :::tip A blank SSF Config URL is expected
 
     Keep in mind the **SSF Config URL** will be blank until the SSF provider is assigned to an application as a backchannel provider. We'll return to collect this URL after creating the application.
 
