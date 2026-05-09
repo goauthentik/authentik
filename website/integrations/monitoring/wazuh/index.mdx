@@ -59,7 +59,7 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 - **Choose a Provider type**: Select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **ACS URL**: `https://wazuh-dashboard.company/_opendistro/_security/saml/acs`
-    - **Issuer**: `wazuh-saml`
+    - **Audience**: `wazuh-saml`
     - **Service Provider Binding**: `Post`
     - Under **Advanced protocol settings**:
         - **Signing Certificate**: select an existing certificate. If you do not already have one, create it under **System** > **Certificates** before configuring the provider.
@@ -126,7 +126,7 @@ The file `wazuh_authentik_meta.xml` serves as a placeholder for your SAML Metada
                 config:
                     idp:
                         metadata_file: "/etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml"
-                        entity_id: "wazuh-saml"
+                        entity_id: "https://authentik.company/application/saml/<application_slug>/metadata/"
                     sp:
                         entity_id: "wazuh-saml"
                     kibana_url: "https://wazuh-dashboard.company/"

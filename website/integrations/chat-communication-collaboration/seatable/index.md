@@ -38,7 +38,6 @@ To support the integration of SeaTable with authentik, you need to create an app
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://seatable.company/saml/acs/`.
-        - Set the **Issuer** to `https://seatable.company`.
         - Set the **Service Provider Binding** to `Post`.
         - Set the **Audience** to `https://seatable.company/saml/metadata/`.
         - Under **Advanced protocol settings**, set an available **Signing certificate**.
@@ -88,7 +87,7 @@ Add the following block to your SeaTable configuration file:
 
 ```python title="/opt/seatable-server/seatable/conf/dtable_web_settings.py"
 ENABLE_SAML = True
-SAML_PROVIDER_IDENTIFIER = 'authentik'
+SAML_PROVIDER_IDENTIFIER = 'https://authentik.company/application/saml/<application_slug>/metadata/'
 SAML_REMOTE_METADATA_URL = '<metadata_effective_url>'
 SAML_ATTRIBUTE_MAP = {
     'http://schemas.goauthentik.io/2021/02/saml/uid': 'uid',

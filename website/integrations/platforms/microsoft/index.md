@@ -113,7 +113,6 @@ If MFA is configured in Microsoft365, then you also need to create a property ma
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://login.microsoftonline.com/login.srf`.
-        - Set the **Issuer** to `https://authentik.company/application/saml/<application_slug>/metadata/`.
         - Set the **Service Provider Binding** to `Post`.
         - Set the **Audience** to `urn:federation:MicrosoftOnline`.
         - Under **Advanced protocol settings**:

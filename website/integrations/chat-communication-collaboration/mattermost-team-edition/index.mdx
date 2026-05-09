@@ -160,7 +160,6 @@ To support the integration of Mattermost with authentik via SAML, you need to up
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
         - Set the **ACS URL** to `https://mattermost.company/login/sso/saml`.
-        - Set the **Issuer** to `authentik`.
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Set the **Signing Certificate** to any available authentik certificate (e.g., the default self-signed certificate).
@@ -185,7 +184,7 @@ To support the integration of Mattermost with authentik via SAML, you need to up
 3. Configure the following settings:
     - Enable **Enable Login With SAML 2.0**.
     - Set **SAML SSO URL** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
-    - Set **Identity Provider Issuer URL** to `authentik`.
+    - Set **Identity Provider Issuer URL** to `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - Set **Identity Provider Public Certificate** to the contents of the authentik signing certificate you downloaded.
     - Enable **Verify Signature**.
     - Set **Service Provider Login URL** to `https://mattermost.company/login/sso/saml`.

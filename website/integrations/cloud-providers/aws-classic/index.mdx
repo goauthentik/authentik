@@ -110,7 +110,6 @@ To support the integration of AWS with authentik via the Classic IAM method, you
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
         - Set the **ACS URL** to `https://signin.aws.amazon.com/saml`
-        - Set the **Issuer** to `urn:amazon:webservices`
         - Set the **Audience** to `urn:amazon:webservices`
         - Set **Service Provider Binding** to `Post`
         - Under **Advanced protocol settings**, select an available **Signing Certificate**, ensure both **Signing Assertions** and **Signing Responses** are enabled, then add, under **Property Mappings**, both property mappings you created in the previous section.

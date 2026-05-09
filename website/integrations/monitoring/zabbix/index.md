@@ -36,7 +36,6 @@ To support the integration of Zabbix with authentik, you need to create an appli
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://zabbix.company/index_sso.php?acs`.
-    - Set the **Issuer** to `zabbix`.
     - Set the **Service Provider Binding** to `Post`.
     - Set the **Single Logout Service** to `https://zabbix.company/index_sso.php?sls`.
     - Set the **SLS Binding** to `Redirect`.
@@ -52,7 +51,7 @@ Navigate to `https://zabbix.company/zabbix/zabbix.php?action=authentication.edit
 
 Check the box to enable SAML authentication.
 
-Set the Field `IdP entity ID` to `zabbix`.
+Set the Field `IdP entity ID` to `https://authentik.company/application/saml/zabbix/metadata/`.
 
 Set the Field `SSO service URL` to `https://authentik.company/application/saml/zabbix/sso/binding/redirect/`.
 

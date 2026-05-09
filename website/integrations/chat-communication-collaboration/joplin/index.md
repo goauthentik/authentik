@@ -57,7 +57,6 @@ To support the integration of Joplin with authentik, you need to create property
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://joplin.company/api/saml`.
-    - Set the **Issuer** to `authentik`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate** and ensure **Sign assertions** and **Sign responses** are enabled.
     - Under **Property mappings**, add the two property mappings created in the previous section.

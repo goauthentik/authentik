@@ -71,7 +71,7 @@ Because Mautic requires a first name and last name attribute, create two [SAML p
     - **Configure the Provider**:
         - Set the **Name** to `mautic-provider`
         - Set the **ACS URL** to `https://mautic.company/s/saml/login_check`
-        - Set the **Issuer** to `mautic.company`
+        - Set the **Audience** to `mautic.company`
         - Set the **Service Provider Binding** to `Post`
         - Under **Advanced protocol settings**, select an available **Signing certificate**, check **Sign assertions** and **Sign responses**, and add the two **Property Mappings** you created in the previous section.
 3. Click **Submit** to save the new application and provider.
@@ -91,7 +91,7 @@ When running behind an SSL-terminating reverse proxy (e.g. traefik): In **Config
 
 In **Configuration > User/Authentication Settings**, set the following values:
 
-- **Entity ID for the IDP**: `https://mautic.company`
+- **Entity ID for the IDP**: `https://authentik.company/application/saml/<application_slug>/metadata/`
 - **Identity provider metadata file**: The `mautic-provider\_authentik_meta.xml` file
 - **Default role for created users**: Choose one to enable creating users.
 - **Email**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` (as per provider > preview in authentik)

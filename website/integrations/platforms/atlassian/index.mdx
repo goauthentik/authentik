@@ -65,7 +65,7 @@ To support the integration of Atlassian Cloud with authentik, you need to create
 4. Provide a **Directory name** e.g authentik and click **Add**.
 5. Click **Set up SAML single sign-on** and then **Next**.
 6. Set the following required configurations:
-    - **Identity provider Entity ID**: `authentik`
+    - **Identity provider Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **Identity provider SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
     - **Public x509 certificate**: enter the contents of the certificate that was downloaded in the previous section.
 7. Click **Add**.

@@ -45,7 +45,6 @@ resource "authentik_provider_saml" "provider_sonar-qube" {
     authorization_flow  = data.authentik_flow.default-provider-authorization-implicit-consent.id
 
     acs_url    = "https://sonarqube.company/oauth2/callback/saml"
-    issuer     = "https://authentik.company/"
     sp_binding = "post"
     audience   = "https://sonarqube.company/saml2/metadata"
 
@@ -68,7 +67,7 @@ Input these Values
 
 - Application ID: https://sonarqube.company/saml2/metadata
 - Provider Name: authentik
-- Provider ID: https://authentik.company/
+- Provider ID: https://authentik.company/application/saml/sonarqube/metadata/
 - SAML login url: https://authentik.company/application/saml/sonarqube/sso/binding/redirect/
 - Identity provider certificate: Download it from authentik
 - SAML user login attribute: http://schemas.goauthentik.io/2021/02/saml/username

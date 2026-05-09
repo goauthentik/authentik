@@ -36,7 +36,6 @@ To support the integration of GitHub Enterprise Server with authentik, you need 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set **ACS URL** to `https://github.company/saml/consume`.
         - Set **Audience** to `https://github.company`.
-        - Set **Issuer** to `https://github.company`.
         - Set **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Select an available **Signing certificate**. Download this certificate because it is required later.
@@ -98,7 +97,7 @@ To support the integration of GitHub Enterprise Server with authentik, you need 
 4. Configure the following settings:
     - Select **SAML**.
     - **Sign on URL**: enter the **SSO URL (Redirect)** from the SAML provider that you created in authentik.
-    - **Issuer**: enter the **Issuer** that you configured in authentik.
+    - **Issuer**: `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - **Signature method** and **Digest method**: select the methods that match the authentik SAML provider settings.
     - **Validation certificate**: upload the signing certificate that you downloaded from authentik.
     - If you plan to use SCIM, select **Allow creation of accounts with built-in authentication** and **Disable administrator demotion/promotion**.

@@ -49,7 +49,6 @@ To support the integration of Zammad with authentik, you need to create an appli
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://zammad.company/auth/saml/callback`.
-        - Set the **Issuer** to `https://zammad.company/auth/saml/metadata`.
         - Set the **Audience** to `https://zammad.company/auth/saml/metadata`.
         - Set the **Service Provider Binding** to `Post`.
         - Set the **SLS URL** to `https://zammad.company/auth/saml/slo`.

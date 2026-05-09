@@ -84,7 +84,7 @@ To support the integration of Stripe with authentik, you need to create a group,
 4. Once your domain is verified, click on the 3 dots next to the domain name, and click **Manage SSO Settings**.
 5. Enter the following settings:
     - **Identity Provider URL**: `https://auth.domain.com/application/saml/stripe/sso/binding/redirect/`
-    - **Issuer ID**: `authentik`
+    - **Issuer ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **Identity Provider Certificate**: Paste in the contents of your authentik signing certificate.
 
 6. Click **Continue**.

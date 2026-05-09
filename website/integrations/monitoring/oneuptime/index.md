@@ -63,7 +63,7 @@ To support the integration of OneUptime with authentik, you need an application/
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
         - Set the **ACS URL** to the **Reply URL (Assertion Consumer Service URL)** from OneUptime.
-        - Set the **Issuer** to the **Identifier (Entity ID)** from OneUptime.
+        - Set the **Audience** to the **Identifier (Entity ID)** from OneUptime.
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Set the **Signing Certificate** to the same certificate that you downloaded earlier.
