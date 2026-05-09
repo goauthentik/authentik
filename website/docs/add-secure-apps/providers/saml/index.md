@@ -47,7 +47,7 @@ The **EntityID/Issuer override** field (under **Advanced protocol settings** on 
 
 :::info Existing deployments
 
-This field was previously named **Issuer**. Existing values were preserved during the rename — your integration still works without changes. Don't clear the override unless you also update the SP-side **IdP Entity ID** / **IdP Issuer** field to authentik's metadata URL.
+This field was previously named **Issuer**. Existing values were preserved during the rename. Don't clear the override unless you also update the SP-side **IdP Entity ID** / **IdP Issuer** field to authentik's metadata URL.
 
 :::
 
