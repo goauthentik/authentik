@@ -101,14 +101,14 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 
 ## Salesforce configuration
 
-### Enable SAML single sign-on
+### Enable SAML Single Sign-On
 
 1. Log in to your Salesforce organization as an administrator.
 2. Navigate to **Setup** > **Identity** > **Single Sign-On Settings**.
 3. Click **Edit** and enable **SAML Enabled**.
 4. Click **Save**.
 
-### Create a new SAML single sign-on configuration
+### Create a new SAML Single Sign-On configuration
 
 1. On the **Single Sign-On Settings** page, under **SAML Single Sign-On Settings**, click **New**.
 2. Enter the following values:
