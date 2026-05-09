@@ -9,6 +9,8 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
+import { logoutMethodLabel } from "./SAMLProviderOptions.js";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { MessageLevel } from "#common/messages";
@@ -156,16 +158,7 @@ export class SAMLProviderViewPage extends AKElement {
         if (!this.provider?.slsUrl) {
             return "-";
         }
-        switch (this.provider.logoutMethod) {
-            case "frontchannel_iframe":
-                return msg("Front-channel (Iframe)");
-            case "frontchannel_native":
-                return msg("Front-channel (Native)");
-            case "backchannel":
-                return msg("Back-channel (POST)");
-            default:
-                return this.provider.logoutMethod ?? "-";
-        }
+        return logoutMethodLabel(this.provider.logoutMethod) || "-";
     }
 
     renderRelatedObjects(): TemplateResult {
