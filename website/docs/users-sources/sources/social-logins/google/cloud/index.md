@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 To integrate Google with authentik, you need to create a new project and OAuth credentials in the Google Developer Console.
 
 1. Log in to the [Google Developer Console](https://console.developers.google.com/).
-2. Click on **GLogin** in the top-left and then **New Project**.
+2. Click on **GLogin** in the top left and then **New Project**.
 
 ![](./googledeveloper1.png)
 
