@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `kimai.company` is the FQDN of the Kimai installation.
 - `authentik.company` is the FQDN of the authentik installation.
-- `admin.group` is the authentik group to make an admin in Kimai.
+- `admin.group` is the authentik group to make an administrator in Kimai.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
