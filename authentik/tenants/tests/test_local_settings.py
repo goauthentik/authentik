@@ -85,10 +85,30 @@ class TestLocalSettingsAPI(APITestCase):
                 "flags": {"tenants_test_flag_sys": 123},
             },
         )
-        print(response.content)
         self.assertEqual(response.status_code, 200)
         self.tenant.refresh_from_db()
-        self.assertEqual(self.tenant.flags, {})
+        self.assertEqual(self.tenant.flags, {"setup": False, "tenants_test_flag_sys": False})
+
+    def test_settings_flags_system_empty_put(self):
+        """Test settings API"""
+        self.tenant.flags = {}
+        self.tenant.save()
+
+        class _TestFlag(Flag[bool], key="tenants_test_flag_sys"):
+
+            default = False
+            visibility = "system"
+
+        self.client.force_login(self.local_admin)
+        response = self.client.patch(
+            reverse("authentik_api:tenant_settings"),
+            data={
+                "flags": {},
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.tenant.refresh_from_db()
+        self.assertEqual(self.tenant.flags, {"setup": False, "tenants_test_flag_sys": False})
 
     def test_command(self):
         self.tenant.flags = {}
