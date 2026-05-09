@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/authentik",
-    "version": "2026.5.0-rc1",
+    "version": "2026.8.0-rc1",
     "private": true,
     "scripts": {
         "lint": "run-s lint:spellcheck lint:lockfile",

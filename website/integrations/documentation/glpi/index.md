@@ -108,7 +108,7 @@ To support the integration of GLPI with authentik, you need to create property m
 1. Log in to GLPI as an administrator and navigate to **Setup** > **samlSSO**.
 2. Click on the **authentik** samlSSO instance and configure the following settings:
     - On the **Identity Provider** tab:
-        - Set the **Entity ID** to `authentik`
+        - Set the **Entity ID** to `https://authentik.company/application/saml/<application_slug>/metadata/`
         - Set the **SSO URL** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
         - Set the **SLO URL** to `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`.
         - Set **X509 certificate** to the contents of the certificate file that you downloaded from authentik.

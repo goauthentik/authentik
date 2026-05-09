@@ -67,7 +67,7 @@ If SSO misconfiguration locks you out and you enabled **Allow Admins w/MFA to By
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created KnowBe4 provider.
 3. Update the following fields:
     - Set the **ACS URL** to the **SSO Callback (ACS) URL** from KnowBe4.
-    - Set the **Issuer** and **Audience** to the **Entity ID** from KnowBe4.
+    - Set the **Audience** to the **Entity ID** from KnowBe4.
 4. Click **Update**.
 
 ## Configuration verification

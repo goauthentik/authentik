@@ -102,7 +102,7 @@ Omada can't handle a user being in multiple roles. Therefore, ensure that a user
         - **ACS URL**:
             - For Cloud Controllers: `https://aps1-omada-account.tplinkcloud.com/sso/saml/login/`
             - For Software/Hardware Controllers: `https://<controller_ip_address>:8043/sso/saml/login`
-        - **Issuer**:
+        - **Audience**:
             - For Cloud Controllers: `https://omada.tplinkcloud.com/`
             - For Software and Hardware Controllers: `https://<controller_ip_address>:8043`
         - Set the **Service Provider Binding** to `Post`.
@@ -178,9 +178,8 @@ Run the following command:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon next to the newly created Omada Controller provider.
-3. Set **Issuer** to the **Entity ID** value from Omada Controller.
-4. Under **Advanced protocol settings**, set **Default relay state** to the encoded value from the previous section.
-5. Click **Update** to save your changes.
+3. Under **Advanced protocol settings**, set **Default relay state** to the encoded value from the previous section.
+4. Click **Update** to save your changes.
 
 ## Configuration verification
 

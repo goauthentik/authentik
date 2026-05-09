@@ -46,7 +46,6 @@ Use the values for your EMU deployment when configuring authentik:
 | ------------ | ------------------------------------------------- |
 | **ACS URL**  | `https://github.com/enterprises/foo/saml/consume` |
 | **Audience** | `https://github.com/enterprises/foo`              |
-| **Issuer**   | `https://github.com/enterprises/foo`              |
 | **SCIM URL** | `https://api.github.com/scim/v2/enterprises/foo`  |
 
 </TabItem>
@@ -56,7 +55,6 @@ Use the values for your EMU deployment when configuring authentik:
 | ------------ | -------------------------------------------------- |
 | **ACS URL**  | `https://foo.ghe.com/enterprises/foo/saml/consume` |
 | **Audience** | `https://foo.ghe.com/enterprises/foo`              |
-| **Issuer**   | `https://foo.ghe.com/enterprises/foo`              |
 | **SCIM URL** | `https://api.foo.ghe.com/scim/v2/enterprises/foo`  |
 
 </TabItem>
@@ -155,7 +153,6 @@ To support the integration of GitHub Enterprise EMU with authentik, you need to 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set **ACS URL** to the ACS URL for your EMU deployment.
         - Set **Audience** to the audience value for your EMU deployment.
-        - Set **Issuer** to the issuer value for your EMU deployment.
         - Set **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Add the `GitHub EMU full name` and `GitHub EMU emails` property mappings.
@@ -197,7 +194,7 @@ When GitHub provisions your managed enterprise, GitHub sends an email inviting y
 6. Under **SAML single sign-on**, select **Add SAML configuration**.
 7. Configure the following settings:
     - **Sign on URL**: enter the **SSO URL (Redirect)** from the SAML provider that you created in authentik.
-    - **Issuer**: enter the **Issuer** that you configured in authentik.
+    - **Issuer**: `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - **Public certificate**: paste the full signing certificate that you downloaded from authentik.
     - **Signature method** and **Digest method**: select the methods that match the authentik SAML provider settings.
 8. Click **Test SAML configuration**.

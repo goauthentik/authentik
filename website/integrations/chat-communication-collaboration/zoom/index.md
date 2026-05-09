@@ -37,7 +37,6 @@ To support the integration of Zoom with authentik, you need to create an applica
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
         - Set the **ACS URL** to `https://company.zoom.us/saml/SSO`.
-        - Set the **Issuer** to `authentik`.
         - Set the **Service Provider Binding** to `Post`.
         - Set the **SLS URL** to `https://company.zoom.us/saml/SingleLogout`.
         - Set the **SLS Binding** to `Redirect`.
@@ -73,7 +72,7 @@ This documentation does not cover the configuration of multiple vanity URLs. For
     - **Sign-out page URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/post/`
     - **Identity Provider Certificate**: Set the contents of the certificate downloaded in the previous step.
     - **Service Provider (SP) Entity ID**: `company.zoom.us`
-    - **Issuer (IDP Entity ID)**: `company.zoom.us`
+    - **Issuer (IDP Entity ID)**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **Binding**: `HTTP-POST`
     - **Signature Hash Algorithm**: `SHA256`
     - **Security options**: Select `Sign SAML request`

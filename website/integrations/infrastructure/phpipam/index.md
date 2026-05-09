@@ -144,7 +144,6 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     - Authorization flow: `default-provider-authorization-explicit-consent`
     - Protocol Settings:
         - ACS URL: https://phpipam.company/saml2/
-        - Issuer: https://authentik.company
         - Service Provider Binding: Post
         - Audience: https://phpipam.company/
     - Advanced Protocol Settings:
@@ -186,7 +185,7 @@ Select Create New > SAML2 Authentication
 - Use advanced settings: Off
 - Client ID: https://phpipam.company/
 - Strict Mode: Off
-- IdP issuer: https://authentik.company
+- IdP issuer: https://authentik.company/application/saml/*application_name*/metadata/
 - IdP login URL: https://authentik.company/application/saml/*application_name*/sso/binding/redirect/
 - IdP logout URL: https://authentik.company/application/saml/*application_name*/slo/binding/redirect/
 - IdP X.509 public cert: This will be the `.pem` contents of the cert used as the signing certificate

@@ -53,7 +53,6 @@ To support the integration of AWS with authentik using SAML, you need to create 
     - **Choose a Provider type**: select **SAML Provider from metadata** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
         - Upload the **Service Provider metadata** file from AWS.
-        - Set **Issuer** to the FQDN of your authentik deployment (e.g. `https://authentik.company`).
         - Set **Service Provider Binding** to `Post`.
         - Under **Advanced Protocol Settings**:
             - Set an available signing certificate.

@@ -35,6 +35,22 @@ You can [import SP SAML metadata](./create-saml-provider.md#create-a-saml-provid
 
 You can [export SAML metadata from an authentik SAML provider](./create-saml-provider.md#export-authentik-saml-provider-metadata) to an SP to automatically provide important endpoint and certificate information to the SP.
 
+## EntityID/Issuer override
+
+By default, authentik uses the SAML provider's metadata URL as the IdP `<Issuer>` / `<EntityID>` value:
+
+```
+https://authentik.company/application/saml/<application_slug>/metadata/
+```
+
+The **EntityID/Issuer override** field (under **Advanced protocol settings** on a SAML provider) replaces this default with a custom value. Set it only in the rare case when the Service Provider requires a specific IdP issuer string that doesn't match the metadata URL.
+
+:::info Existing deployments
+
+This field was previously named **Issuer**. Existing values were preserved during the rename. Don't clear the override unless you also update the SP-side **IdP Entity ID** / **IdP Issuer** field to authentik's metadata URL.
+
+:::
+
 ## Certificates
 
 Certificates are vital for trust and security during SAML authentication and are used for several purposes.

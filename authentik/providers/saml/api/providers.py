@@ -61,6 +61,11 @@ class SAMLProviderSerializer(ProviderSerializer):
     url_download_metadata = SerializerMethodField()
     url_issuer = SerializerMethodField()
 
+    # Unified SAML endpoint (primary)
+    url_unified = SerializerMethodField()
+    url_unified_init = SerializerMethodField()
+
+    # Legacy endpoints (for backward compatibility)
     url_sso_post = SerializerMethodField()
     url_sso_redirect = SerializerMethodField()
     url_sso_init = SerializerMethodField()
@@ -100,12 +105,42 @@ class SAMLProviderSerializer(ProviderSerializer):
         try:
             return request.build_absolute_uri(
                 reverse(
-                    "authentik_providers_saml:base",
+                    "authentik_providers_saml:metadata-download",
                     kwargs={"application_slug": instance.application.slug},
                 )
             )
         except Provider.application.RelatedObjectDoesNotExist:
             return DEFAULT_ISSUER
+
+    def get_url_unified(self, instance: SAMLProvider) -> str:
+        """Get unified SAML endpoint URL (handles SSO and SLO)"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:base",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return "-"
+
+    def get_url_unified_init(self, instance: SAMLProvider) -> str:
+        """Get IdP-initiated SAML URL"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:init",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return "-"
 
     def get_url_sso_post(self, instance: SAMLProvider) -> str:
         """Get SSO Post URL"""
@@ -243,6 +278,8 @@ class SAMLProviderSerializer(ProviderSerializer):
             "default_name_id_policy",
             "url_download_metadata",
             "url_issuer",
+            "url_unified",
+            "url_unified_init",
             "url_sso_post",
             "url_sso_redirect",
             "url_sso_init",
