@@ -22,7 +22,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## HashiCorp Cloud preparation
 
-Log in at https://portal.cloud.hashicorp.com. Navigate to the _Settings_ entry in the sidebar, then _SSO_. Enable SSO and configure domain verification for the domain your users' email addresses use.
+Log in at https://portal.cloud.hashicorp.com. Navigate to the _Settings_ entry in the sidebar, then _SSO_. Enable SSO and configure domain verification for the domain that your users' email addresses use.
 
 Under _Initiate SAML integration_, copy _SSO Sign-On URL_ and _Entity ID_.
 
