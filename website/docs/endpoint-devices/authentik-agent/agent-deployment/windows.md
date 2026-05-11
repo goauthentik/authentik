@@ -11,7 +11,7 @@ authentik_version: "2025.12.0"
 - SSH to Linux hosts using authentik credentials, see [SSH authentication](../../authentik-agent/device-authentication/ssh-authentication.mdx).
 - Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx).
 
-:::warning Supported Windows Versions
+:::warning Supported Windows versions
 The authentik Agent is currently only tested on Windows 11 and Windows Server 2022. Other versions may work but are untested.
 :::
 
@@ -23,7 +23,7 @@ It currently only supports local login; RDP login is not supported.
 
 :::warning
 
-- When WCP is enabled, the password of the Windows user account that's used to login is set to a random string.
+- When WCP is enabled, the password of the Windows user account that's used to log in is set to a random string.
 - WCP can cause issues with user encrypted directories.
 - Support with Active Directory has not been confirmed yet.
 - Offline login is currently not supported.

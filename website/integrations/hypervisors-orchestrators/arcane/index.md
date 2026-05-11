@@ -4,7 +4,7 @@ sidebar_label: Arcane
 support_level: community
 ---
 
-## What is Arcane
+## What is Arcane?
 
 > Modern Docker Management, Designed for Everyone.
 >

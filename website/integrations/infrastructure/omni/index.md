@@ -4,7 +4,7 @@ sidebar_label: Omni
 support_level: community
 ---
 
-## What is Omni
+## What is Omni?
 
 > Omni manages Kubernetes on bare metal, virtual machines, or in a cloud.
 >
@@ -45,7 +45,6 @@ To support the integration of Omni with authentik, you need to create a property
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **ACS URL**: `https://omni.company/saml/acs`
-    - **Service Provider Binding**: `Post`
     - **Audience**: `https://omni.company/saml/metadata`
     - **Signing Certificate**: select a signing certificate, either the `authentik Self-signed Certificate` or generate a certificate via **System** > **Certificate**
     - **Sign assertions**: `true`

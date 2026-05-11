@@ -4,7 +4,7 @@ sidebar_label: mailcow
 support_level: community
 ---
 
-## What is mailcow
+## What is mailcow?
 
 > mailcow is a Dockerized, open-source groupware and email suite based on Docker. It relies on many well-known and long-used components, which, when combined, result in a comprehensive email server solution.
 >

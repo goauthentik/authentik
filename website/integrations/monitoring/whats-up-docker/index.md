@@ -4,7 +4,7 @@ sidebar_label: What's Up Docker
 support_level: community
 ---
 
-## What is What's Up Docker
+## What is What's Up Docker?
 
 > What's Up Docker (WUD) is an easy-to-use tool that alerts you whenever a new version of your Docker containers is released.
 >

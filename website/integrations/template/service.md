@@ -4,7 +4,7 @@ sidebar_label: Service Name
 support_level: community
 ---
 
-## What is Service-Name
+## What is Service-Name?
 
 > Insert a quick overview of what `<service-name>` is and what it does. Simply describe the product and what it is, how it is used, and do not include marketing or sales-oriented content.
 >
