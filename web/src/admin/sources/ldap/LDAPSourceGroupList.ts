@@ -41,7 +41,7 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Connect")}</span>
                 <span slot="header">${msg("Connect Group")}</span>
                 <ak-source-ldap-group-form .source=${this.source} slot="form">

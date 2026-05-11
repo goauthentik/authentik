@@ -4,7 +4,7 @@ sidebar_label: DigitalOcean
 support_level: community
 ---
 
-## What is DigitalOcean
+## What is DigitalOcean?
 
 > DigitalOcean is a cloud infrastructure provider that offers developers simple, scalable virtual servers (droplets), managed databases, and other cloud services to deploy and manage applications efficiently.
 >

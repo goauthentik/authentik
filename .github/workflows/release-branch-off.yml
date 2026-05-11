@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       next_version:
-        description: Next major version (for example, if releasing 2042.2, this is 2042.4)
+        description: Next version (for example, if you're currently releasing 2026.5, then enter 2026.8)
         required: true
         type: string
 
@@ -68,10 +68,14 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          dependencies: "system,python,go,node,runtime,rust-nightly"
       - name: Run migrations
         run: make migrate
       - name: Bump version
         run: "make bump version=${{ inputs.next_version }}.0-rc1"
+      - name: Re-generate API Clients
+        run: make gen
       - name: Create pull request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
         with:

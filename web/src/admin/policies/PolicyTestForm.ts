@@ -123,13 +123,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
             </ak-form-element-horizontal>
 
             <ak-form-element-horizontal label=${msg("Log messages")}>
-                <div class="pf-c-form__group-label">
-                    <div class="pf-c-form__horizontal-group ak-policy-test-log-messages">
-                        <dl class="pf-c-description-list pf-m-horizontal">
-                            <ak-log-viewer .items=${this.result?.logMessages}></ak-log-viewer>
-                        </dl>
-                    </div>
-                </div>
+                <ak-log-viewer .items=${this.result?.logMessages}></ak-log-viewer>
             </ak-form-element-horizontal>`;
     }
 
