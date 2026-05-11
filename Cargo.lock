@@ -171,7 +171,7 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "authentik"
-version = "2026.5.0-rc1"
+version = "2026.8.0-rc1"
 dependencies = [
  "arc-swap",
  "argh",
@@ -196,7 +196,7 @@ dependencies = [
 
 [[package]]
 name = "authentik-axum"
-version = "2026.5.0-rc1"
+version = "2026.8.0-rc1"
 dependencies = [
  "authentik-common",
  "axum",
@@ -216,7 +216,7 @@ dependencies = [
 
 [[package]]
 name = "authentik-client"
-version = "2026.5.0-rc1"
+version = "2026.8.0-rc1"
 dependencies = [
  "aws-lc-rs",
  "reqwest",
@@ -232,7 +232,7 @@ dependencies = [
 
 [[package]]
 name = "authentik-common"
-version = "2026.5.0-rc1"
+version = "2026.8.0-rc1"
 dependencies = [
  "arc-swap",
  "authentik-client",
@@ -1745,16 +1745,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "iri-string"
-version = "0.7.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8e7418f59cc01c88316161279a7f665217ae316b388e58a0d10e29f54f1e5eb"
-dependencies = [
- "memchr",
- "serde",
-]
-
-[[package]]
 name = "is_terminal_polyfill"
 version = "1.70.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3203,9 +3193,9 @@ checksum = "d767eb0aabc880b29956c35734170f26ed551a859dbd361d140cdbeca61ab1e2"
 
 [[package]]
 name = "sentry"
-version = "0.48.0"
+version = "0.48.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e8ac94aab850a23d7507307cc505332ed2bafd36c65930dfc5c43610f9e9b477"
+checksum = "b93b3e19f45495ddd41d8222a152c48c84f6ba45abe9c69e2527e9cdea29bb5b"
 dependencies = [
  "cfg_aliases",
  "httpdate",
@@ -3400,9 +3390,9 @@ dependencies = [
 
 [[package]]
 name = "serde_with"
-version = "3.18.0"
+version = "3.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd5414fad8e6907dbdd5bc441a50ae8d6e26151a03b1de04d89a5576de61d01f"
+checksum = "f05839ce67618e14a09b286535c0d9c94e85ef25469b0e13cb4f844e5593eb19"
 dependencies = [
  "base64 0.22.1",
  "chrono",
@@ -4082,21 +4072,21 @@ dependencies = [
 
 [[package]]
 name = "tower-http"
-version = "0.6.8"
+version = "0.6.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d4e6559d53cc268e5031cd8429d05415bc4cb4aefc4aa5d6cc35fbf5b924a1f8"
+checksum = "68d6fdd9f81c2819c9a8b0e0cd91660e7746a8e6ea2ba7c6b2b057985f6bcb51"
 dependencies = [
  "bitflags 2.11.0",
  "bytes",
  "futures-util",
  "http",
  "http-body",
- "iri-string",
  "pin-project-lite",
  "tokio",
  "tower",
  "tower-layer",
  "tower-service",
+ "url",
 ]
 
 [[package]]

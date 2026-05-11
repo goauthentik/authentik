@@ -4,7 +4,7 @@ sidebar_label: Cloudflare Access
 support_level: community
 ---
 
-## What is Cloudflare Access
+## What is Cloudflare Access?
 
 > Cloudflare Access is a secure, cloud-based zero-trust solution for managing and authenticating user access to internal applications and resources.
 >

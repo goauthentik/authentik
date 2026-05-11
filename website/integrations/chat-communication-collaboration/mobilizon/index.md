@@ -4,7 +4,7 @@ sidebar_label: Mobilizon
 support_level: community
 ---
 
-## What is Mobilizon
+## What is Mobilizon?
 
 > Gather, organize and mobilize yourselves with a convivial, ethical, and emancipating tool. https://joinmobilizon.org
 >

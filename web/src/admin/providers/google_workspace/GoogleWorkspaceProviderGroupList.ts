@@ -31,7 +31,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     clearOnRefresh = true;
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form

@@ -4,7 +4,7 @@ sidebar_label: Zipline
 support_level: community
 ---
 
-## What is Zipline
+## What is Zipline?
 
 > Zipline is a self-hostable file upload server designed for easy file sharing, supporting tools like ShareX and Flameshot, with features such as simplified setup and extensive customization options.
 >
@@ -61,4 +61,4 @@ To support the integration of Zipline with authentik, you need to create an appl
 
 ## Configuration verification
 
-To verify integration with authentik, log out of Zipline by clicking your user icon in the top right and selecting **Logout**. A new button should now appear on the login page, allowing you to sign in with authentik.
+To verify integration with authentik, log out of Zipline by clicking your user icon in the top-right corner and selecting **Logout**. A new button should now appear on the login page, allowing you to sign in with authentik.

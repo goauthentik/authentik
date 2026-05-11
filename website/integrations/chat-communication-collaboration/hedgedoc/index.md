@@ -4,7 +4,7 @@ sidebar_label: HedgeDoc
 support_level: community
 ---
 
-## What is HedgeDoc
+## What is HedgeDoc?
 
 > HedgeDoc lets you create real-time collaborative markdown notes.
 >

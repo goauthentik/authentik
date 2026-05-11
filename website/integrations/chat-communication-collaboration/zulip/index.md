@@ -4,7 +4,7 @@ sidebar_label: Zulip
 support_level: community
 ---
 
-## What is Zulip
+## What is Zulip?
 
 > Zulip is an open-source team chat application that organizes conversations into topic-based streams, enabling more structured and efficient communication compared to traditional linear chat platforms.
 >
@@ -34,8 +34,6 @@ To support the integration of Zulip with authentik, you need to create an applic
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://zulip.company/complete/saml/`.
-    - Set the **Issuer** to `https://authentik.company`.
-    - Set the **Service Provider Binding** to `Post`.
     - Set the **SLS URL** to `https://zulip.company/complete/saml/`.
     - Set the **SLS Binding** to `Redirect`.
     - Set the **Logout Method** to `Front-channel (Iframe)`.
@@ -67,8 +65,8 @@ SOCIAL_AUTH_SAML_ENABLED_IDPS: Dict[str, Any] = {
     "authentik": {
 
 	    # KEEP OTHER SETTINGS AS DEFAULT OR CONFIGURE THEM ACCORDING TO YOUR PREFERENCES
-        "entity_id": "https://authentik.company",
-        "url": "https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/",
+        "entity_id": "https://authentik.company/application/saml/<application_slug>/metadata/",
+        "url": "https://authentik.company/application/saml/<application_slug>/",
         "display_name": "authentik SAML",
     },
 }
