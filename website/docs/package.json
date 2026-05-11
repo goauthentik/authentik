@@ -32,7 +32,7 @@
         "prism-react-renderer": "^2.4.1",
         "react": "^19.2.6",
         "react-before-after-slider-component": "^1.1.8",
-        "react-dom": "^19.2.5",
+        "react-dom": "^19.2.6",
         "typescript": "^6.0.2",
         "unist-util-visit": "^5.0.0"
     },
