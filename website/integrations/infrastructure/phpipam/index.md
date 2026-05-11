@@ -144,7 +144,6 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     - Authorization flow: `default-provider-authorization-explicit-consent`
     - Protocol Settings:
         - ACS URL: https://phpipam.company/saml2/
-        - Service Provider Binding: Post
         - Audience: https://phpipam.company/
     - Advanced Protocol Settings:
         - Signing Certificate: authentik: Self-signed Certificate

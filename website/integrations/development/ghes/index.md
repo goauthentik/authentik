@@ -36,7 +36,6 @@ To support the integration of GitHub Enterprise Server with authentik, you need 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set **ACS URL** to `https://github.company/saml/consume`.
         - Set **Audience** to `https://github.company`.
-        - Set **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Select an available **Signing certificate**. Download this certificate because it is required later.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`.

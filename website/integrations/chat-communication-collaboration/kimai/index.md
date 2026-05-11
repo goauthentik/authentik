@@ -34,7 +34,6 @@ To support the integration of Kimai with authentik, you need to create an applic
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://kimai.company/auth/saml/acs`.
-        - Set the **Service Provider Binding** to `Post`.
         - Set the **Audience** to `https://kimai.company/auth/saml`.
         - Under **Advanced protocol settings**:
             - Select an available **Signing certificate**.

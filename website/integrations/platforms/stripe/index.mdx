@@ -60,7 +60,6 @@ To support the integration of Stripe with authentik, you need to create a group,
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://dashboard.stripe.com/login/saml/consume`.
         - Set the **Audience** to `https://dashboard.stripe.com/saml/metadata`.
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Set an available **Signing certificate**.
             - Add the previously created `Stripe Role` property mapping to **Selected User Property Mappings**.
