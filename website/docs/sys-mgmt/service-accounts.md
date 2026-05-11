@@ -36,7 +36,7 @@ To create a service account:
     - **Expiring**: If selected, the token will expire and be automatically rotated upon expiration.
     - **Expires on**: Sets the expiration date (defaults to 1 year from the creation date).
 4. Click **Next**.
-5. View the confirmation screen that shows the username and generated password (token). Make sure to copy this information somewhere secure as you'll need it for authentication. If you need the token later, navigate to the **Directory -> Tokens and App passwords** and copy the one for your service account.
+    View the confirmation screen that shows the username and generated password (token). Make sure to copy this information somewhere secure as you'll need it for authentication. If you need the token later, navigate to the **Directory -> Tokens and App passwords** and copy the one for your service account.
 6. Click **Close**.
 
 ## Token properties
