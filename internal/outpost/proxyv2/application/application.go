@@ -23,7 +23,6 @@ import (
 	"github.com/jellydator/ttlcache/v3"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
@@ -31,6 +30,7 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/templates"
 	"goauthentik.io/internal/outpost/proxyv2/types"
 	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
 	"golang.org/x/oauth2"
 )
 

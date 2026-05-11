@@ -4,7 +4,7 @@ sidebar_label: Placetel
 support_level: community
 ---
 
-## What is Placetel
+## What is Placetel?
 
 > Placetel is a German cloud communications provider, specializing in VoIP-based telephony, unified communications (UCaaS), and collaboration tools for businesses.
 >
@@ -28,14 +28,12 @@ To support the integration of Placetel with authentik, you need to create an app
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** value as it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://accounts.webex.placetel.de/users/saml/auth`.
-        - Set the **Entity ID** to `authentik`.
         - Set the **SLS URL** to `https://accounts.webex.placetel.de/users/saml/idp_sign_out`.
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, set an available **Signing Certificate** and ensure that **Sign assertions** and **Sign responses** are toggled.
         - Ensure that **Encryption Certificate** is empty.
         - Remove all **Property Mappings** except for `authentik default SAML Mapping: Email`.
@@ -55,12 +53,12 @@ To support the integration of Placetel with authentik, you need to create an app
 To integrate Placetel with authentik, you will need to setup SSO in the Placetel portal.
 
 1. Log in to the [Placetel portal](https://accounts.webex.placetel.de) as an Administrator.
-2. Click the "Organization Name" in the bottom left corner, and select **Settings**.
+2. Click the "Organization Name" in the bottom-left corner, and select **Settings**.
 3. Scroll to the bottom of the page. Next to the **Single Sign On (SSO/SAML)** section heading, select **Edit**.
 4. In the **Import** section, click on **Choose File** and upload the **SAML Metadata** file that you've just downloaded from authentik.
 5. In the **Settings** section, enter the following values:
     - **SP Entity ID**: `https://web.placetel.de`
-    - **IDP Entity ID**: `authentik.company`
+    - **IDP Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **Domains**: `company.tld`
 6. Ensure that **Activate Single Sign On** is unchecked for now.
 7. Click **Save settings**.

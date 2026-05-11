@@ -3,6 +3,7 @@ import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -16,10 +17,9 @@ import {
     AuthenticatorAttachmentEnum,
     AuthenticatorWebAuthnStage,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
-    ResidentKeyRequirementEnum,
     StagesApi,
     UserVerificationEnum,
     WebAuthnHintEnum,
@@ -130,20 +130,20 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                                     label: msg(
                                         "Required: The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Required,
+                                    value: UserVerificationEnum.Required,
                                     default: true,
                                 },
                                 {
                                     label: msg(
                                         "Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Preferred,
+                                    value: UserVerificationEnum.Preferred,
                                 },
                                 {
                                     label: msg(
                                         "Discouraged: The authenticator should not create a dedicated credential",
                                     ),
-                                    value: ResidentKeyRequirementEnum.Discouraged,
+                                    value: UserVerificationEnum.Discouraged,
                                 },
                             ]}
                             .value=${this.instance?.residentKeyRequirement}
@@ -158,24 +158,33 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                         <ak-radio
                             .options=${[
                                 {
-                                    label: msg("No preference is sent"),
+                                    label: msg(
+                                        "No preference: the browser may offer any available authenticator",
+                                    ),
                                     value: null,
                                     default: true,
                                 },
                                 {
                                     label: msg(
-                                        "A non-removable authenticator, like TouchID or Windows Hello",
+                                        "Platform: a non-removable authenticator built into the device, such as Touch ID, Face ID, or Windows Hello",
                                     ),
                                     value: AuthenticatorAttachmentEnum.Platform,
                                 },
                                 {
-                                    label: msg('A "roaming" authenticator, like a YubiKey'),
+                                    label: msg(
+                                        "Cross-platform: a roaming authenticator, such as a YubiKey or Google Titan",
+                                    ),
                                     value: AuthenticatorAttachmentEnum.CrossPlatform,
                                 },
                             ]}
                             .value=${this.instance?.authenticatorAttachment}
                         >
                         </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as 'No preference', a value is inferred from the selected hints for backward compatibility with older browsers.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Hints")} name="hints">
                         <ak-dual-select-provider
@@ -206,6 +215,14 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             "Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.",
                         )}
                     ></ak-number-input>
+                    <ak-switch-input
+                        name="preventDuplicateDevices"
+                        label=${msg("Prevent duplicate devices")}
+                        ?checked=${this.instance?.preventDuplicateDevices ?? true}
+                        help=${msg(
+                            "When enabled, any unique authenticator can only be registered once.",
+                        )}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Device type restrictions")}
                         name="deviceTypeRestrictions"
@@ -244,8 +261,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

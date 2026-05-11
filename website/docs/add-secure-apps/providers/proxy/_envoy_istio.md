@@ -20,7 +20,7 @@ spec:
                   headersToUpstreamOnAllow:
                       - set-cookie
                       - x-authentik-*
-                      # Add authorization headers to the allow list if you need proxy providers which
+                      # Add the 'authorization' header to headersToUpstreamOnAllow if you need proxy providers which
                       # send a custom HTTP-Basic Authentication header based on values from authentik
                       # - authorization
                   includeRequestHeadersInCheck:

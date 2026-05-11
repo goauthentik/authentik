@@ -44,14 +44,14 @@ jobs:
         with:
           image-name: ghcr.io/goauthentik/docs
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
         id: push
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
           file: website/Dockerfile
@@ -84,10 +84,10 @@ jobs:
           - rac
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v5
         with:
           node-version-file: web/package.json
           cache: "npm"
@@ -103,23 +103,19 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
         with:
           image-name: ghcr.io/goauthentik/${{ matrix.type }},authentik/${{ matrix.type }}
-      - name: Generate API Clients
-        run: |
-          make gen-client-ts
-          make gen-client-go
       - name: Docker Login Registry
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           username: ${{ secrets.DOCKER_CORP_USERNAME }}
           password: ${{ secrets.DOCKER_CORP_PASSWORD }}
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         id: push
         with:
           push: true
@@ -152,10 +148,10 @@ jobs:
         goarch: [amd64, arm64]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v5
         with:
           node-version-file: web/package.json
           cache: "npm"
@@ -164,10 +160,6 @@ jobs:
         working-directory: web/
         run: |
           npm ci
-      - name: Generate API Clients
-        run: |
-          make gen-client-ts
-          make gen-client-go
       - name: Build web
         working-directory: web/
         run: |
@@ -199,7 +191,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
+      - uses: aws-actions/configure-aws-credentials@d979d5b3a71173a29b74b5b88418bfda9437d885 # v6.1.1
         with:
           role-to-assume: "arn:aws:iam::016170277896:role/github_goauthentik_authentik"
           aws-region: ${{ env.AWS_REGION }}
@@ -244,7 +236,7 @@ jobs:
           container=$(docker container create ${{ steps.ev.outputs.imageMainName }})
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
-        uses: getsentry/action-release@dab6548b3c03c4717878099e43782cf5be654289 # v3
+        uses: getsentry/action-release@5657c9e888b4e2cc85f4d29143ea4131fde4a73a # v3
         continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

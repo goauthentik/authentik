@@ -1,6 +1,5 @@
 """authentik core signals"""
 
-from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
@@ -24,7 +23,10 @@ from authentik.root.ws.consumer import build_device_group
 
 # Arguments: user: User, password: str
 password_changed = Signal()
-# Arguments: credentials: dict[str, any], request: HttpRequest, stage: Stage
+# Arguments: user: User, request: HttpRequest | None
+password_hash_changed = Signal()
+# Arguments: credentials: dict[str, any], request: HttpRequest,
+#            stage: Stage, context: dict[str, any]
 login_failed = Signal()
 
 LOGGER = get_logger()
@@ -56,7 +58,7 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     layer = get_channel_layer()
     device_cookie = request.COOKIES.get("authentik_device")
     if device_cookie:
-        async_to_sync(layer.group_send)(
+        layer.group_send_blocking(
             build_device_group(device_cookie),
             {"type": "event.session.authenticated"},
         )

@@ -1,4 +1,5 @@
 import "#elements/CodeMirror/ak-codemirror";
+import "#components/ak-text-input";
 
 import { docLink } from "#common/global";
 
@@ -20,6 +21,9 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
 > {
     protected docLink: string | URL = "/add-secure-apps/providers/property-mappings/expression";
 
+    public static override verboseName = msg("Property Mapping");
+    public static override verboseNamePlural = msg("Property Mappings");
+
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated mapping.")
@@ -31,14 +35,15 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+        return html`<ak-text-input
+                label=${msg("Mapping Name")}
+                placeholder=${msg("Type a name for this mapping...")}
+                autocomplete="off"
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            >
+            </ak-text-input>
             ${this.renderExtraFields()}
             <ak-form-element-horizontal label=${msg("Expression")} required name="expression">
                 <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
