@@ -64,7 +64,7 @@ To support the integration of Slack with authentik, you need to create an applic
 1. Log in to the Slack Admin Dashboard.
 2. Navigate to the **Configure SAML Authentication** page.
 3. Enter the following values:
-    - **SAML 2.0 Endpoint (HTTP)**: copy/paste in the **SSO URL (Redirect)** URL from the provider that you created in authentik. **Example**: `https://_authentik.company_/applications/saml/slack/sso/binding/redirect/`
+    - **SAML 2.0 Endpoint (HTTP)**: copy/paste in the **SAML Endpoint** URL from the provider that you created in authentik. **Example**: `https://_authentik.company_/application/saml/slack/`
     - **Identity Provider Issuer**: set to `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **Public Certificate**: add the certificate, which you can download from the authentik provider, under **Download signing certificate**.
 4. Optionally, configure the other settings and customize the Sign in button label.

@@ -186,8 +186,8 @@ Select Create New > SAML2 Authentication
 - Client ID: https://phpipam.company/
 - Strict Mode: Off
 - IDP Issuer: https://authentik.company/application/saml/*application_name*/metadata/
-- IDP Login url: https://authentik.company/application/saml/*application_name*/sso/binding/redirect/
-- IDP Logout url: https://authentik.company/application/saml/*application_name*/slo/binding/redirect/
+- IDP Login url: https://authentik.company/application/saml/*application_name*/
+- IDP Logout url: https://authentik.company/application/saml/*application_name*/
 - IDP X.509 public cert: This will be the `.pem` contents of the cert used as the signing certificate
     1. To get this cert, access the authentik installation at authentik.company
     2. Select Applications > Providers > phpipam-saml

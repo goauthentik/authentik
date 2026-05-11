@@ -33,7 +33,7 @@ Create a SAML provider with the following parameters:
 
 Under _Advanced protocol settings_, set the option _NameID Property Mapping_ to the default E-mail property mapping called _authentik default SAML Mapping: Email_. Also make sure a _Signing Certificate_ is selected in the same section.
 
-Copy the values of _SSO URL (Redirect)_ and _SLO URL (Redirect)_ fields from the provider page.
+Copy the value of the _SAML Endpoint_ field from the provider page.
 
 Click the _Download_ button next to the _Download signing certificate_ label.
 
@@ -47,9 +47,9 @@ Open the _Third-party SSO profile for your organization_ section.
 
 Check the checkbox _Set up SSO with third-party identity provider_.
 
-Set the value of _Sign-in page URL_ to the copied _SSO URL (Redirect)_ from above.
+Set the value of _Sign-in page URL_ to the copied _SAML Endpoint_ from above.
 
-Set the value of _Sign-out page URL_ to the copied _SLO URL (Redirect)_ from above.
+Set the value of _Sign-out page URL_ to the same _SAML Endpoint_ value (the unified endpoint handles both SSO and SLO).
 
 For _Verification certificate_, upload the certificate that you downloaded previously.
 

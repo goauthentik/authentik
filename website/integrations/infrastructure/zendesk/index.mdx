@@ -104,9 +104,9 @@ To support the integration of Zendesk with authentik, you need to create an appl
 1. Log in to Zendesk as an administrator.
 2. Navigate to **Security** > **Single sign-on (SSO)** > **Create SSO configuration** and click **SAML**.
     - **Configuration name**: authentik
-    - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
+    - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **Certificate fingerprint**: Paste the **Certificate Fingerprint (SHA256)** copied from authentik.
-    - **Remote logout URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+    - **Remote logout URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **Show button when users sign in**: enabled
     - **Button value**: `authentik`
 

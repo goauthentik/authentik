@@ -309,10 +309,10 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
 
 5. In the **Identity Provider Data** section, set:
     - **Identifier of the IdP entity**: `https://authentik.company/application/saml/<application_slug>/metadata/`
-    - **URL Target of the IdP where the SP will send the Authentication Request Message**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+    - **URL Target of the IdP where the SP will send the Authentication Request Message**: `https://authentik.company/application/saml/<application_slug>/`
 
     Under _Show optional Identity Provider settings_:
-    - **URL Location of the IdP where the SP will send the SLO Request**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+    - **URL Location of the IdP where the SP will send the SLO Request**: `https://authentik.company/application/saml/<application_slug>/`
     - **X.509 certificate of the IdP**: paste the contents of your certificate file
 
 6. In the **Attribute mapping** section, set:

@@ -67,7 +67,7 @@ SOCIAL_AUTH_SAML_ENABLED_IDPS: Dict[str, Any] = {
 
 	    # KEEP OTHER SETTINGS AS DEFAULT OR CONFIGURE THEM ACCORDING TO YOUR PREFERENCES
         "entity_id": "https://authentik.company/application/saml/<application_slug>/metadata/",
-        "url": "https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/",
+        "url": "https://authentik.company/application/saml/<application_slug>/",
         "display_name": "authentik SAML",
     },
 }

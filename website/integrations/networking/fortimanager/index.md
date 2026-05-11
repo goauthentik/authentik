@@ -48,7 +48,7 @@ To support the integration of FortiManager with authentik, you need to create an
 5. By default, FortiManager creates a new user if one does not exist. Set the **Default Admin Profile** to assign the desired permissions to new users. A `no_permissions` profile is created by default for this purpose.
 6. Set the **IdP Type** field to **Custom**.
 7. For the **IdP Entity ID** field, enter: `https://authentik.company/application/saml/<application_slug>/metadata/`
-8. Set the **IdP Login URL** to: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+8. Set the **IdP Login URL** to: `https://authentik.company/application/saml/<application_slug>/`
 9. Set the **IdP Logout URL** to: `https://authentik.company/`
 10. In the **IdP Certificate** field, import your authentik certificate (either self-signed or valid).
 

@@ -53,7 +53,7 @@ To support the integration of KnowBe4 with authentik, you need to create an appl
     - **Disable non-SAML Logins for All Users**
     - **Allow Admins w/MFA to Bypass SAML Login**
     - **Allow Account Creation from SAML Login**
-    - **IdP SSO Target URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+    - **IdP SSO Target URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **IdP Cert Fingerprint**: Set to the SHA-256 thumbprint of the authentik signing certificate.
 4. Take note of the **Entity ID** and **SSO Callback (ACS) URL**. They will be required in the next section.
 

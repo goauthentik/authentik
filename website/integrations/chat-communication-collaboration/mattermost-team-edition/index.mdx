@@ -183,7 +183,7 @@ To support the integration of Mattermost with authentik via SAML, you need to up
 2. Navigate to **Channels** > **System Console** > **Authentication** > **SAML 2.0**.
 3. Configure the following settings:
     - Enable **Enable Login With SAML 2.0**.
-    - Set **SAML SSO URL** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
+    - Set **SAML SSO URL** to `https://authentik.company/application/saml/<application_slug>/`.
     - Set **Identity Provider Issuer URL** to `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - Set **Identity Provider Public Certificate** to the contents of the authentik signing certificate you downloaded.
     - Enable **Verify Signature**.

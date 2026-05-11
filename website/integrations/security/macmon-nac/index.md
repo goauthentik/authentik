@@ -61,7 +61,7 @@ To support the integration of macmon NAC with authentik, you need to create an a
     - **SP Entity ID**: `https://macmon.company/login/?acs`.
     - **IdP Issuer (Entity ID)**: `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - **IdP certificate**: paste the contents of the authentik signing certificate, removing the `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` lines.
-    - **IdP SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/init/`.
+    - **IdP SSO URL**: `https://authentik.company/application/saml/<application_slug>/init/`.
     - **Name ID format**: `E-mail address`.
 4. Save the identity store configuration.
 

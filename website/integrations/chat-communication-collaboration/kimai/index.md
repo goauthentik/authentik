@@ -89,11 +89,11 @@ kimai:
             idp:
                 entityId: "https://authentik.company/application/saml/<application_slug>/metadata/"
                 singleSignOnService:
-                    url: "https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/"
+                    url: "https://authentik.company/application/saml/<application_slug>/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # the "single logout" feature was not yet tested, if you want to help, please let me know!
                 singleLogoutService:
-                    url: "https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/"
+                    url: "https://authentik.company/application/saml/<application_slug>/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # Signing certificate from *Advanced protocol settings*
                 x509cert: "|

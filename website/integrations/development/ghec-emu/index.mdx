@@ -193,7 +193,7 @@ When GitHub provisions your managed enterprise, GitHub sends an email inviting y
 5. Under **Open SCIM Configuration**, select **Enable open SCIM configuration**.
 6. Under **SAML single sign-on**, select **Add SAML configuration**.
 7. Configure the following settings:
-    - **Sign on URL**: enter the **SSO URL (Redirect)** from the SAML provider that you created in authentik.
+    - **Sign on URL**: enter the **SAML Endpoint** from the SAML provider that you created in authentik.
     - **Issuer**: `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - **Public certificate**: paste the full signing certificate that you downloaded from authentik.
     - **Signature method** and **Digest method**: select the methods that match the authentik SAML provider settings.

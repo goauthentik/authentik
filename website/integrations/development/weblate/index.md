@@ -90,7 +90,7 @@ Variables to set
 
 - ENABLE_HTTPS: `1`
 - SAML_IDP_ENTITY_ID: `https://authentik.company/application/saml/<application_slug>/metadata/`
-- SAML_IDP_URL: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+- SAML_IDP_URL: `https://authentik.company/application/saml/<application_slug>/`
 - SAML_IDP_X509CERT: `MIIFDjCCAvagAwIBAgIRAJV8hH0wGkhGvbhhDKppWIYwDQYJKoZIhvcNAQELBQAw....F9lT9hHwHhsnA=`
 
 The `SAML_IDP_X509CERT` is the certificate in the SAML Metadata `X509Certificate` key.

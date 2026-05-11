@@ -54,7 +54,7 @@ To support the integration of GitHub Enterprise Cloud with authentik, you need t
 4. In the left sidebar, under **Security**, click **Authentication security**.
 5. Under **SAML single sign-on**, select **Enable SAML authentication**.
 6. Configure the following settings:
-    - **Sign on URL**: enter the **SSO URL (Redirect)** from the SAML provider that you created in authentik.
+    - **Sign on URL**: enter the **SAML Endpoint** from the SAML provider that you created in authentik.
     - **Issuer**: `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - **Public certificate**: paste the full signing certificate that you downloaded from authentik.
     - **Signature method** and **Digest method**: select the methods that match the authentik SAML provider settings.

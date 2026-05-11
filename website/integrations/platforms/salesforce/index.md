@@ -120,7 +120,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
     - **SAML Identity Type**: Select **Assertion contains the Federation ID from the User object**.
     - **SAML Identity Location**: Select **Identity is in the NameIdentifier element of the Subject statement**.
     - **Service Provider Initiated Request Binding**: `HTTP POST`
-    - **Identity Provider Login URL**: Enter the **SSO URL (Post)** from your authentik provider: `https://authentik.company/application/saml/<slug>/sso/binding/post/`
+    - **Identity Provider Login URL**: Enter the **SAML Endpoint** from your authentik provider: `https://authentik.company/application/saml/<slug>/`
 3. Click **Save**.
 
 ### Enable Just-in-Time provisioning

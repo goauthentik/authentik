@@ -194,11 +194,11 @@ Connect-MgGraph -Scopes "Domain.ReadWrite.All", "Directory.AccessAsUser.All", "U
 
 # 2. Define all variables
 $domain = "domain.company"
-$PassiveLogOnUri = "https://authentik.company/application/saml/<application_slug>/sso/binding/post/"
-$LogOffUri = "https://authentik.company/application/saml/<application_slug>/slo/binding/post/"
+$PassiveLogOnUri = "https://authentik.company/application/saml/<application_slug>/"
+$LogOffUri = "https://authentik.company/application/saml/<application_slug>/"
 $IssuerUri = "https://authentik.company/application/saml/<application_slug>/metadata/"
 $MetadataExchangeUri = $IssuerUri
-$ActiveSignInUri = "https://authentik.company/application/saml/<application_slug>/sso/binding/post"
+$ActiveSignInUri = "https://authentik.company/application/saml/<application_slug>/"
 $SigningCert = Get-Content "C:\path\to\authentik_certificate.cer" -Raw
 $DisplayName = $domain
 $FederatedIdpMfaBehavior = "acceptIfMfaDoneByFederatedIdp"

@@ -120,7 +120,7 @@ To support the integration of authentik with Elastic Cloud, you need to claim yo
 1. Log in to Elastic Cloud as an administrator. Click your organization menu in the top-right corner, select **Organization**, and click **Security** in the bottom-left corner. From there, click **Configure SSO**.
 2. Configure the following settings:
     - **Identity Provider Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
-    - **Identity Provider SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
+    - **Identity Provider SSO URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **Public x509 certificate**: Paste the contents of the authentik signing certificate in PEM format.
     - **Login identifier prefix**: the slug used for the Elastic Cloud SSO URL suffix (for example, `mycorp-authentik-sso` in `cloud.elastic.co/sso/login/mycorp-authentik-sso`). Use lowercase letters, numbers, and hyphens.
 3. Click **Save configuration**.

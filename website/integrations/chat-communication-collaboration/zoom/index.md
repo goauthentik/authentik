@@ -68,8 +68,8 @@ This documentation does not cover the configuration of multiple vanity URLs. For
 2. In the navigation menu, click **Advanced**, then **Single Sign-On**.
 3. Select the vanity URL you wish to configure with SAML SSO. If you only have one vanity URL, additional options will not be shown.
 4. Configure the following required settings:
-    - **Sign-in page URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
-    - **Sign-out page URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/post/`
+    - **Sign-in page URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Sign-out page URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **Identity Provider Certificate**: Set the contents of the certificate downloaded in the previous step.
     - **Service Provider (SP) Entity ID**: `company.zoom.us`
     - **Issuer (IDP Entity ID)**: `https://authentik.company/application/saml/<application_slug>/metadata/`
