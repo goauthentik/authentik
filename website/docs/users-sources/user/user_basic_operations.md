@@ -14,14 +14,16 @@ The following topics are for the basic management of users: how to create, modif
 2. In the **User folders** area, select the folder where you want to create a user.
 3. Click **New User**, and then select either **Internal User** or **External User**.
 4. Fill in the required fields:
+
 - **Username**: This value must be unique across your user folders.
 - **Display Name** (_optional_): The display name of the user.
 - **Email** (_optional_): The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.md) and, if configured, to receive [notifications](../../sys-mgmt/events/notifications.md).
 - **Active** (_optional_): Define if the newly created user account is active. Selected by default.
 - **Path**: The path where the user will be created. It will be automatically populated with the folder you selected in the previous step.
 - **Attributes**: Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
+
 6. Click **Create**
-You should see a confirmation pop-up on the top-right of the screen that the user has been created, and see the new user in the user list. You can directly click the username if you want to [modify your user](./user_basic_operations.md#modify-a-user).
+   You should see a confirmation pop-up on the top-right of the screen that the user has been created, and see the new user in the user list. You can directly click the username if you want to [modify your user](./user_basic_operations.md#modify-a-user).
 
 :::info
 To create a super-user, you need to add the user to a group that has super-user permissions. For more information, refer to [Create a Group](../groups/manage_groups.mdx#create-a-group).
