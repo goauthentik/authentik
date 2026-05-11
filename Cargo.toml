@@ -102,7 +102,7 @@ tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 tower = "= 0.5.3"
-tower-http = { version = "= 0.6.8", features = ["timeout"] }
+tower-http = { version = "= 0.6.10", features = ["timeout"] }
 tracing = "= 0.1.44"
 tracing-error = "= 0.2.1"
 tracing-subscriber = { version = "= 0.3.23", features = [
