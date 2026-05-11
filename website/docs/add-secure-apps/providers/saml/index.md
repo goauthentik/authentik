@@ -21,7 +21,7 @@ Endpoint URLs specify where and how the messages are sent according to that bind
 | Metadata Download         | `/application/saml/<application_slug>/metadata/` |
 
 :::info Legacy endpoints
-The previous binding-specific endpoints (`/sso/binding/redirect/`, `/sso/binding/post/`, `/sso/binding/init/`, `/slo/binding/redirect/`, `/slo/binding/post/`) remain available for backward compatibility. New integrations should use the unified endpoint above.
+The previous binding-specific endpoints (`/sso/binding/redirect/`, `/sso/binding/post/`, `/sso/binding/init/`, `/slo/binding/redirect/`, `/slo/binding/post/`) remain available for backward compatibility.
 :::
 
 ## SAML metadata
