@@ -75,6 +75,13 @@ export class ServiceAccountResultPage extends WizardPage<UserWizardState> {
         this.host.cancelable = false;
     };
 
+<<<<<<< HEAD
+=======
+    public formatNextLabel(): SlottedTemplateResult | null {
+        return ButtonKindLabelRecord.close();
+    }
+
+>>>>>>> f8cfd319fd (web/admin: fix user wizard close button (#22222))
     public override nextCallback = async (): Promise<boolean> => true;
 
     protected override render(): SlottedTemplateResult {
