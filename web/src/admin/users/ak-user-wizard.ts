@@ -11,6 +11,8 @@ import { CreateWizard } from "#elements/wizard/CreateWizard";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 import { WizardPage } from "#elements/wizard/WizardPage";
 
+import { ButtonKindLabelRecord } from "#components/ak-wizard/shared";
+
 import { UserForm } from "#admin/users/UserForm";
 
 import { TypeCreate, UserServiceAccountResponse, UserTypeEnum } from "@goauthentik/api";
@@ -57,7 +59,7 @@ export interface UserWizardState {
 export class ServiceAccountResultPage extends WizardPage<UserWizardState> {
     public static styles: CSSResult[] = [PFForm, PFFormControl];
 
-    public override headline = msg("Review Credentials");
+    public override headline = msg("View Credentials");
 
     @state()
     protected result: UserServiceAccountResponse | null = null;
@@ -74,6 +76,10 @@ export class ServiceAccountResultPage extends WizardPage<UserWizardState> {
         this.host.valid = true;
         this.host.cancelable = false;
     };
+
+    public formatNextLabel(): SlottedTemplateResult | null {
+        return ButtonKindLabelRecord.close;
+    }
 
     public override nextCallback = async (): Promise<boolean> => true;
 
