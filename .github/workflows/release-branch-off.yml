@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       next_version:
-        description: Next major version (for example, if releasing 2042.2, this is 2042.4)
+        description: Next version (for example, if you're currently releasing 2026.5, then enter 2026.8)
         required: true
         type: string
 

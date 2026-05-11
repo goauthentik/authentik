@@ -78,7 +78,7 @@ export class ServiceAccountResultPage extends WizardPage<UserWizardState> {
     };
 
     public formatNextLabel(): SlottedTemplateResult | null {
-        return ButtonKindLabelRecord.close;
+        return ButtonKindLabelRecord.close();
     }
 
     public override nextCallback = async (): Promise<boolean> => true;

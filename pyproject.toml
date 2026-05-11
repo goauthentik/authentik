@@ -50,7 +50,7 @@ dependencies = [
   "paramiko==4.0.0",
   "psycopg[c,pool]==3.3.4",
   "pydantic-scim==0.0.8",
-  "pydantic==2.13.3",
+  "pydantic==2.13.4",
   "pyjwt==2.11.0",
   "pyrad==2.5.4",
   "python-kadmin-rs==0.7.1",
