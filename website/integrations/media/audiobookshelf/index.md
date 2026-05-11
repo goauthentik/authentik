@@ -34,8 +34,8 @@ To support the integration of Audiobookshelf with authentik, you need to create 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Add two `Strict` redirect URIs:
-            - `https://audiobookshelf.company/auth/openid/callback`
-            - `https://audiobookshelf.company/auth/openid/mobile-redirect`
+            - `https://audiobookshelf.company/audiobookshelf/auth/openid/callback`
+            - `https://audiobookshelf.company/audiobookshelf/auth/openid/mobile-redirect`
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
