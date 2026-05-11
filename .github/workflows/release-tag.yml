@@ -86,6 +86,8 @@ jobs:
         run: make migrate
       - name: Bump version
         run: "make bump version=${{ inputs.version }}"
+      - name: Re-generate API Clients
+        run: make gen
       - name: Commit and push
         run: |
           # ID from https://api.github.com/users/authentik-automation[bot]
