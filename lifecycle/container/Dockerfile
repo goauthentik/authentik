@@ -228,8 +228,7 @@ RUN apt-get update && \
     # Required for runtime
     apt-get install -y --no-install-recommends \
     libpq5 libmaxminddb0 ca-certificates \
-    krb5-multidev libkrb5-3 libkdb5-10 libkadm5clnt-mit12 \
-    heimdal-multidev libkadm5clnt7t64-heimdal \
+    libkadm5clnt-mit12 libkadm5clnt7t64-heimdal \
     libltdl7 libxslt1.1 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
