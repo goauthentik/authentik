@@ -16,17 +16,17 @@ authentik_version: "2025.12.0"
 ## How it works
 
 - authentik Agent is integrated with the Pluggable Authentication Modules (PAM) framework on the Linux device.
-- The end user logs in via the usual Linux login screen but are prompted for their authentik credentials.
+- The end user logs in via the usual Linux login screen and is prompted for their authentik credentials.
 - The Agent authenticates the credentials against the authentik server and the user is logged in.
 
 ## How to log in to a Linux device
 
 :::note
-When configured correctly, when logging in you should see a prompt for **authentik Password** rather than just **Password**.
+When configured correctly, when you log in you should see a prompt for **authentik Password** rather than just **Password**.
 :::
 
 1. On the Linux login screen, you enter your authentik credentials.
-2. Once authenticated, you will be logged in to the Linux device.
+2. After you authenticate, you are logged in to the Linux device.
 
 ## Configure device access
 
@@ -47,5 +47,5 @@ You can also assign a device access group during enrollment by selecting a **Dev
 
 ## Known issues
 
-- Only Webauthn MFA is supported.
+- Only WebAuthn MFA is supported.
 - On non-Debian Linux distributions, you currently need to [manually configure NSS and PAM](../../agent-deployment/linux.mdx#configure-device-login-on-non-debian-systems).

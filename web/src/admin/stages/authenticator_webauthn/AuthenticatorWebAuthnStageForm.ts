@@ -158,24 +158,33 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                         <ak-radio
                             .options=${[
                                 {
-                                    label: msg("No preference is sent"),
+                                    label: msg(
+                                        "No preference: the browser may offer any available authenticator",
+                                    ),
                                     value: null,
                                     default: true,
                                 },
                                 {
                                     label: msg(
-                                        "A non-removable authenticator, like TouchID or Windows Hello",
+                                        "Platform: a non-removable authenticator built into the device, such as Touch ID, Face ID, or Windows Hello",
                                     ),
                                     value: AuthenticatorAttachmentEnum.Platform,
                                 },
                                 {
-                                    label: msg('A "roaming" authenticator, like a YubiKey'),
+                                    label: msg(
+                                        "Cross-platform: a roaming authenticator, such as a YubiKey or Google Titan",
+                                    ),
                                     value: AuthenticatorAttachmentEnum.CrossPlatform,
                                 },
                             ]}
                             .value=${this.instance?.authenticatorAttachment}
                         >
                         </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as 'No preference', a value is inferred from the selected hints for backward compatibility with older browsers.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Hints")} name="hints">
                         <ak-dual-select-provider

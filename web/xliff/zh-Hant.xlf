@@ -1199,10 +1199,6 @@
   <source>Open in new tab</source>
   <target>另開新分頁</target>
 </trans-unit>
-<trans-unit id="s8655c52824caac63">
-  <source>If checked, the launch URL will open in a new browser tab or window from the user's application library.</source>
-  <target>如果勾選此項，將從使用者的應用程式庫中，在瀏覽器新的分頁或視窗中打開啟動的網址。</target>
-</trans-unit>
 <trans-unit id="s909e876731a8febb">
   <source>Select all rows</source>
   <target>選擇所有列</target>
@@ -1275,17 +1271,9 @@
   <source>Policy</source>
   <target>政策</target>
 </trans-unit>
-<trans-unit id="s6b85380416964890">
-  <source>Negate result</source>
-  <target>反向结果</target>
-</trans-unit>
 <trans-unit id="s3bfa0258999fb629">
   <source>Negates the outcome of the binding. Messages are unaffected.</source>
   <target>反轉附加的結果。訊息不受影響。</target>
-</trans-unit>
-<trans-unit id="s6b1ed7507f26cb4a">
-  <source>Failure result</source>
-  <target>失敗的結果</target>
 </trans-unit>
 <trans-unit id="sfdfa5bb4ddd99d70">
   <source>Enterprise only</source>
@@ -3488,12 +3476,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sc6479479c936939f">
   <source>Application entitlements</source>
 </trans-unit>
-<trans-unit id="application.entitlements.preview.info">
-  <source>Application entitlements are in preview.</source>
-</trans-unit>
-<trans-unit id="preview.send-us-feedback">
-  <source>Send us feedback!</source>
-</trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
 </trans-unit>
@@ -3934,10 +3916,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s2221fef80f4753a2">
   <source>TLS Verification Certificate</source>
   <target>TLS 驗證憑證</target>
-</trans-unit>
-<trans-unit id="sb8c13bd58191cea2">
-  <source>When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.</source>
-  <target>使用 TLS 連線到 LDAP 時，預設不檢查憑證，選擇金鑰對來驗證遠端憑證。</target>
 </trans-unit>
 <trans-unit id="s000ee3e634868b3c">
   <source>TLS Client authentication certificate</source>
@@ -4839,7 +4817,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>啟用</target>
 </trans-unit>
 <trans-unit id="s547b687213f48489">
-  <source>Update <x id="0" equiv-text="${user.name || user.username}"/>'s password</source>
+  <source>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>'s password</source>
 </trans-unit>
 <trans-unit id="sce8d867ca5f35304">
   <source>Set password</source>
@@ -4911,9 +4889,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sd65f96914ccbeb76">
   <source>User Search</source>
-</trans-unit>
-<trans-unit id="s3616cc78631f5893">
-  <source>Warning: You're about to delete the user you're logged in as (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Proceed at your own risk.</source>
 </trans-unit>
 <trans-unit id="s7c6c86d9a97ed706">
   <source>Show deactivated users</source>
@@ -5682,10 +5657,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.</source>
   <target>用於驗證任何身分認證器的階段。此階段應用於身分認證或授權流程。</target>
 </trans-unit>
-<trans-unit id="s73c13e5a6f5e38a3">
-  <source>Device classes</source>
-  <target>裝置類別</target>
-</trans-unit>
 <trans-unit id="sd8d9451f86502d1a">
   <source>Device classes which can be used to authenticate.</source>
   <target>可用於身分認證的類別。</target>
@@ -5801,18 +5772,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Authenticator Attachment</source>
   <target>身分認證器外接裝置</target>
 </trans-unit>
-<trans-unit id="s502d2473587032e1">
-  <source>No preference is sent</source>
-  <target>不傳送建議選項</target>
-</trans-unit>
-<trans-unit id="s60cc554fde2676cb">
-  <source>A non-removable authenticator, like TouchID or Windows Hello</source>
-  <target>不可移除的身分認證器，例如 TouchID 或 Windows Hello</target>
-</trans-unit>
-<trans-unit id="sdf1d8edef27236f0">
-  <source>A "roaming" authenticator, like a YubiKey</source>
-  <target>外接式的身分認證器，例如 YubiKey</target>
-</trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
 </trans-unit>
@@ -5909,10 +5868,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s4af8a3ce5a600855">
   <source>Let the user identify themselves with their username or Email address.</source>
   <target>讓使用者利用使用者名稱或電子郵件來標示自己。</target>
-</trans-unit>
-<trans-unit id="s592ab7d2bc1b8973">
-  <source>User fields</source>
-  <target>使用者欄位</target>
 </trans-unit>
 <trans-unit id="s4cdae7635e757555">
   <source>Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.</source>
@@ -6118,9 +6073,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s59691290a232c687">
   <source>Selected policies are executed when the stage is submitted to validate the data.</source>
   <target>當階段提交時，將執行所選政策以驗證資料。</target>
-</trans-unit>
-<trans-unit id="sc487e11d5987dbb4">
-  <source>Redirect the user to another flow, potentially with all gathered context</source>
 </trans-unit>
 <trans-unit id="sad9d5481474d4f5b">
   <source>Static</source>
@@ -6695,9 +6647,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s2e9d5ea88f02ae68">
   <source>Select the group of users which the alerts are sent to. </source>
-</trans-unit>
-<trans-unit id="se630f2ccd39bf9e6">
-  <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
 </trans-unit>
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
@@ -7921,19 +7870,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s45915ee0293ce5d4">
   <source>Ungrouped</source>
 </trans-unit>
-<trans-unit id="s1cf2298d92c327a6">
-  <source>My Applications</source>
-  <target>我的應用程式</target>
-</trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
 </trans-unit>
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
-</trans-unit>
-<trans-unit id="s2656433a3b1f7e86">
-  <source>My applications</source>
-  <target>我的應用程式</target>
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
@@ -8356,9 +8297,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s567c5a6e42cc5036">
   <source>Maximum page size for API requests.</source>
-</trans-unit>
-<trans-unit id="sed1058bca1c065f7">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
 </trans-unit>
 <trans-unit id="s9864bd5cd7bb4bd0">
   <source>Local connection</source>
@@ -8885,14 +8823,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1b5d2f91633b74d6">
   <source>Reviewer groups</source>
 </trans-unit>
-<trans-unit id="s94c5d9fea467cdbb">
-  <source>Min reviewers</source>
-</trans-unit>
 <trans-unit id="s693370c05900a1c6">
   <source>Number of users from the selected reviewer groups that must approve the review.</source>
-</trans-unit>
-<trans-unit id="s20c950d20c8aec84">
-  <source>Min reviewers is per-group</source>
 </trans-unit>
 <trans-unit id="s74906f78877111cb">
   <source>Reviewers</source>
@@ -9691,9 +9623,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6e89acb429653073">
   <source>Search for a lifecycle rule by name or target...</source>
 </trans-unit>
-<trans-unit id="sb5ff45c4476cd097">
-  <source>Search tasks...</source>
-</trans-unit>
 <trans-unit id="sfc53e352afbca881">
   <source>Review</source>
 </trans-unit>
@@ -10110,9 +10039,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s83fc3142af4bc45f">
   <source>Require Flow token (flow can only be executed from a generated recovery link)</source>
 </trans-unit>
-<trans-unit id="s5ca66a541124edd6">
-  <source>Bind New Policy</source>
-</trans-unit>
 <trans-unit id="sb41bc87dec355a91">
   <source>Select the type of policy you want to create.</source>
 </trans-unit>
@@ -10169,9 +10095,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="form.headline.activation">
   <source>Review <x id="0" equiv-text="${this.verboseName}"/> Activation</source>
-</trans-unit>
-<trans-unit id="usedBy.associated-objects.label">
-  <source>Objects associated with this user</source>
 </trans-unit>
 <trans-unit id="sa2ddb53b55f7432b">
   <source>Objects</source>
@@ -10287,17 +10210,285 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s71724d2ff6637203">
   <source>Altered behavior for usage with VMware vCenter.</source>
 </trans-unit>
+<trans-unit id="s2ea2e39e4b470249">
+  <source>EntityID/Issuer override</source>
+</trans-unit>
+<trans-unit id="sf7aba95a8c43b7b1">
+  <source>Sets a custom EntityID/Issuer to override the authentik generated default.</source>
+</trans-unit>
+<trans-unit id="sa3a27a128ad87f31">
+  <source>Passwords</source>
+</trans-unit>
+<trans-unit id="s16d13ea527d7fe6b">
+  <source>Setting</source>
+</trans-unit>
+<trans-unit id="sfef81bb4077a56fd">
+  <source>Type a new password...</source>
+</trans-unit>
+<trans-unit id="sf9ec917e3e986bc1">
+  <source>When enabled, your username will be remembered on this device for future logins.</source>
+</trans-unit>
+<trans-unit id="form.submitting.no-entity">
+  <source><x id="0" equiv-text="${submittingVerb}"/>...</source>
+  <note from="lit-localize">The message shown while a form is being submitted, when no entity name is provided.</note>
+</trans-unit>
+<trans-unit id="sddfad4253602f965">
+  <source>Account lockdown flow</source>
+</trans-unit>
+<trans-unit id="sda9155d390bca7b4">
+  <source>Select an account lockdown flow...</source>
+</trans-unit>
+<trans-unit id="s77321fadb314f860">
+  <source>Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.</source>
+</trans-unit>
+<trans-unit id="sf4ccddbac7b6ec31">
+  <source>Account lockdown flows should require authentication so they can only be started from a signed-in session.</source>
+</trans-unit>
+<trans-unit id="sc9e81e2f575bcf24">
+  <source>If no group is selected and 'Send notification to event user' is disabled, the rule is disabled.</source>
+</trans-unit>
+<trans-unit id="sd30f00ff2135589c">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+</trans-unit>
+<trans-unit id="s1c0267488c33401b">
+  <source>Minimum reviewers</source>
+</trans-unit>
+<trans-unit id="sa80395e2be5324e4">
+  <source>Minimum reviewers is per-group</source>
+</trans-unit>
+<trans-unit id="se18d75eda2628862">
+  <source>The following reviews apply to this object:</source>
+</trans-unit>
+<trans-unit id="sea618ff863cfa3da">
+  <source>This object has no reviews yet.</source>
+</trans-unit>
+<trans-unit id="sea74bf2b70c27113">
+  <source>Rule</source>
+</trans-unit>
+<trans-unit id="s5ba577d0cda2bad2">
+  <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
+</trans-unit>
+<trans-unit id="sc2908875e6774352">
+  <source>Type a name for this stage...</source>
+</trans-unit>
+<trans-unit id="scf443deca2f466b6">
+  <source>Deactivate user</source>
+</trans-unit>
+<trans-unit id="s2abd586c2258eae4">
+  <source>Deactivate the user account (set is_active to False).</source>
+</trans-unit>
+<trans-unit id="s89db6a525bb42303">
+  <source>Set unusable password</source>
+</trans-unit>
+<trans-unit id="s52dc7e97dfbb99dd">
+  <source>Set an unusable password for the user.</source>
+</trans-unit>
+<trans-unit id="sb144fbff5de59af3">
+  <source>Delete sessions</source>
+</trans-unit>
+<trans-unit id="s20fb386bfce5e225">
+  <source>Delete all active sessions for the user.</source>
+</trans-unit>
+<trans-unit id="s6216c07f360073f7">
+  <source>Revoke tokens</source>
+</trans-unit>
+<trans-unit id="s334ebfb3605630b0">
+  <source>Revoke all tokens for the user (API, app password, recovery, verification).</source>
+</trans-unit>
+<trans-unit id="sdd3dfdd51bfbcd21">
+  <source>Self-service completion</source>
+</trans-unit>
+<trans-unit id="s0ef55fed99322c71">
+  <source>Configure what happens after a user locks their own account. Since all sessions are deleted, the user cannot continue in the current flow and will be redirected to a separate completion flow.</source>
+</trans-unit>
+<trans-unit id="sa42bdb7e1f7c8b75">
+  <source>Completion flow</source>
+</trans-unit>
+<trans-unit id="sf8f0cfd7ce5e081a">
+  <source>Select a completion flow...</source>
+</trans-unit>
+<trans-unit id="s7f8967e8077f2734">
+  <source>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted.</source>
+</trans-unit>
+<trans-unit id="se84707d40ed8f349">
+  <source>Alert (Info): Static alert box with info styling</source>
+</trans-unit>
+<trans-unit id="sb919fcbc8720c669">
+  <source>Alert (Warning): Static alert box with warning styling</source>
+</trans-unit>
+<trans-unit id="sa50b13d36ee4f763">
+  <source>Alert (Danger): Static alert box with danger styling</source>
+</trans-unit>
+<trans-unit id="s1c23a9eed1a415df">
+  <source>Warning: You are about to delete user <x id="0" equiv-text="${shouldShowWarning.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
+</trans-unit>
+<trans-unit id="s11064f3323dac957">
+  <source>Account Lockdown</source>
+</trans-unit>
+<trans-unit id="s01a8d45397ec133b">
+  <source>Security</source>
+</trans-unit>
+<trans-unit id="s5a1cd1f7b7a43204">
+  <source>If you suspect your account has been compromised, you can immediately lock it to prevent unauthorized access.</source>
+</trans-unit>
+<trans-unit id="s36535ff645fd37f7">
+  <source>Lock my account</source>
+</trans-unit>
+<trans-unit id="s7abbf11fd03b3c12">
+  <source>Bind existing group/user</source>
+</trans-unit>
+<trans-unit id="s33bfd42437266a1f">
+  <source>Leave empty to skip certificate validation, or select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate.</source>
+</trans-unit>
+<trans-unit id="sdcd1a9744efdbd7e">
+  <source>Choose Policy Type</source>
+</trans-unit>
+<trans-unit id="saa5ed8446baaba70">
+  <source>Negate Result</source>
+</trans-unit>
+<trans-unit id="s5387aa645962312a">
+  <source>Failure Result</source>
+</trans-unit>
+<trans-unit id="sea62de98f2e25e03">
+  <source>Device Classes</source>
+</trans-unit>
+<trans-unit id="s41938ae69656ef53">
+  <source>User Fields</source>
+</trans-unit>
+<trans-unit id="s02b73793e5b4e1ba">
+  <source>This flag is deprecated.</source>
+</trans-unit>
+<trans-unit id="s8655c52824caac63">
+  <source>If checked, the launch URL will open in a new browser tab or window from the user's application library.</source>
+</trans-unit>
 <trans-unit id="s9eda7101f63a8652">
   <source>Hide from My applications</source>
 </trans-unit>
 <trans-unit id="s30f30e9c42594a33">
   <source>If checked, this application will not be shown on the user's My applications page.</source>
 </trans-unit>
-<trans-unit id="s2ea2e39e4b470249">
-  <source>EntityID/Issuer override</source>
+<trans-unit id="sc98037ccab57d329">
+  <source>No preference: the browser may offer any available authenticator</source>
 </trans-unit>
-<trans-unit id="sf7aba95a8c43b7b1">
-  <source>Sets a custom EntityID/Issuer to override the authentik generated default.</source>
+<trans-unit id="s4611c85865abcba9">
+  <source>Platform: a non-removable authenticator built into the device, such as Touch ID, Face ID, or Windows Hello</source>
+</trans-unit>
+<trans-unit id="s0003d0e3fcdacabc">
+  <source>Cross-platform: a roaming authenticator, such as a YubiKey or Google Titan</source>
+</trans-unit>
+<trans-unit id="sc157c7dcb3d1b096">
+  <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as 'No preference', a value is inferred from the selected hints for backward compatibility with older browsers.</source>
+</trans-unit>
+<trans-unit id="s1baea1b8ac34d554">
+  <source>New Invitation</source>
+</trans-unit>
+<trans-unit id="s03eef6107e28d042">
+  <source>New Invitation options</source>
+</trans-unit>
+<trans-unit id="s0832ff81b9665e6f">
+  <source>Opens the new invitation wizard and binds the invitation to an existing enrollment flow.</source>
+</trans-unit>
+<trans-unit id="sc0819dc3d82d9320">
+  <source>with Existing Enrollment Flow...</source>
+</trans-unit>
+<trans-unit id="s79108cb25e7bf07b">
+  <source>Opens the new invitation wizard, which will create a new enrollment flow and invitation stage.</source>
+</trans-unit>
+<trans-unit id="sb7809157a3ccf613">
+  <source>with New Enrollment Flow and Invitation Stage...</source>
+</trans-unit>
+<trans-unit id="seb418067e7d6c6e2">
+  <source>Create a new invitation with an enrollment flow.</source>
+</trans-unit>
+<trans-unit id="sfd74a380e957d0d3">
+  <source>Enrollment Flow</source>
+</trans-unit>
+<trans-unit id="scc869d556216d748">
+  <source>Invitation Details</source>
+</trans-unit>
+<trans-unit id="se1fba44a9b284052">
+  <source>Invitation Link</source>
+</trans-unit>
+<trans-unit id="s967a2db7049dc90e">
+  <source><x id="0" equiv-text="${step}"/> failed</source>
+</trans-unit>
+<trans-unit id="s971d4cc0ecd106b7">
+  <source>Importing enrollment flow blueprint</source>
+</trans-unit>
+<trans-unit id="sf3b89a70e20af6c8">
+  <source>Blueprint validation failed</source>
+</trans-unit>
+<trans-unit id="sa04b7204708f4f74">
+  <source>Flow with slug "<x id="0" equiv-text="${slugToLookup}"/>" not found after import</source>
+</trans-unit>
+<trans-unit id="s3354be88ad29d171">
+  <source>Creating invitation</source>
+</trans-unit>
+<trans-unit id="s07f41353777196ea">
+  <source>The flow selected in the previous step. The invitation will be bound to this flow.</source>
+</trans-unit>
+<trans-unit id="s7209a11f97da9aff">
+  <source>No invitation available to send</source>
+</trans-unit>
+<trans-unit id="s2772d8285b905006">
+  <source>Failed to queue invitation emails</source>
+</trans-unit>
+<trans-unit id="s3b7910ab9c47a2e3">
+  <source>No enrollment flows with invitation stages found</source>
+</trans-unit>
+<trans-unit id="sa3ca03297e00591c">
+  <source>You can create a new enrollment flow and invitation stage right here, or cancel and bind an invitation stage to an existing flow manually.</source>
+</trans-unit>
+<trans-unit id="s06db43e56ca76be8">
+  <source>Create a new enrollment flow</source>
+</trans-unit>
+<trans-unit id="s8acc687c55e8ccbf">
+  <source>Only enrollment flows that have an invitation stage bound to them are listed here.</source>
+</trans-unit>
+<trans-unit id="s5b3bafd8ffe553ec">
+  <source>Flow name</source>
+</trans-unit>
+<trans-unit id="s699cd34b0dcb4c56">
+  <source>Name for the new enrollment flow.</source>
+</trans-unit>
+<trans-unit id="s8fb6d1bb698d32a0">
+  <source>Flow slug</source>
+</trans-unit>
+<trans-unit id="s0211c07612cf8c97">
+  <source>Invitation stage name</source>
+</trans-unit>
+<trans-unit id="s42b97ef63fb1a795">
+  <source>Name for the new invitation stage.</source>
+</trans-unit>
+<trans-unit id="saaa9fd0d3ebc35aa">
+  <source>Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.</source>
+</trans-unit>
+<trans-unit id="s726dff63487da085">
+  <source>Enrolled users are created as internal (e.g. employees). New users will be placed under users/internal.</source>
+</trans-unit>
+<trans-unit id="sc1358130ac327120">
+  <source>If enabled, the stage will jump to the next stage when no invitation is given. If disabled, the flow will be cancelled without a valid invitation.</source>
+</trans-unit>
+<trans-unit id="s09fdd952c6eaf7da">
+  <source>No invitation was created.</source>
+</trans-unit>
+<trans-unit id="s00febd85a4889bb1">
+  <source>Redirect the user to a static URL or another flow, optionally with all gathered context.</source>
+</trans-unit>
+<trans-unit id="sdbc1d47f0f0ed54d">
+  <source>The element could not be loaded. This may be due to a missing import or a version mismatch.</source>
+</trans-unit>
+<trans-unit id="scf8a3d48f9969535">
+  <source>An element could not be loaded. Please try refreshing the page or clearing your cache.</source>
+</trans-unit>
+<trans-unit id="se2f00b2619675217">
+  <source>Failed to load element</source>
+</trans-unit>
+<trans-unit id="s1cf2298d92c327a6">
+  <source>My Applications</source>
+</trans-unit>
+<trans-unit id="s2656433a3b1f7e86">
+  <source>My applications</source>
 </trans-unit>
 </body>
 </file>

@@ -22,6 +22,7 @@ import { formatUserDisplayName } from "#common/users";
 import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -56,8 +57,8 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithBrandConfig(
-    WithCapabilitiesConfig(WithSession(TablePage<User>)),
+export class UserListPage extends WithLicenseSummary(
+    WithBrandConfig(WithCapabilitiesConfig(WithSession(TablePage<User>))),
 ) {
     static styles: CSSResult[] = [
         ...TablePage.styles,
@@ -71,6 +72,10 @@ export class UserListPage extends WithBrandConfig(
                 max-height: var(--pf-c-avatar--Height);
                 max-width: var(--pf-c-avatar--Width);
                 vertical-align: middle;
+            }
+            .pf-c-card.tree .pf-c-card__body {
+                padding-left: 0;
+                padding-right: 0;
             }
         `,
     ];
@@ -91,7 +96,7 @@ export class UserListPage extends WithBrandConfig(
     public pageIcon = "pf-icon pf-icon-user";
 
     @property({ type: String })
-    public order = "last_login";
+    public order = "-last_login";
 
     @property({ type: String })
     public activePath: string;
@@ -195,7 +200,7 @@ export class UserListPage extends WithBrandConfig(
                               </div>
                               <h4 class="pf-c-alert__title">
                                   ${msg(
-                                      str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
+                                      str`Warning: You are about to delete user ${shouldShowWarning.username}, but you are currently logged in as this user. Proceed at your own risk.`,
                                   )}
                               </h4>
                           </div>
@@ -367,7 +372,7 @@ export class UserListPage extends WithBrandConfig(
 
     protected renderSidebarBefore(): TemplateResult {
         return html`<aside aria-labelledby="sidebar-left-panel-header" class="pf-c-sidebar__panel">
-            <div class="pf-c-card">
+            <div class="pf-c-card tree">
                 <div
                     role="heading"
                     aria-level="2"

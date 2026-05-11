@@ -29,9 +29,9 @@ Keys prefixed with `goauthentik.io` are used internally by authentik and are sub
 
 #### `pending_user` ([User object](../../../../users-sources/user/user_ref.mdx#object-properties))
 
-`pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../../stages/identification/index.mdx).
+`pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../../stages/identification/index.md).
 
-Stages that require a user, such as the [Password stage](../../stages/password/index.md), the [Authenticator validation stage](../../stages/authenticator_validate/index.mdx), and others will use this value if it is set, and fall back to the request's user when possible.
+Stages that require a user, such as the [Password stage](../../stages/password/index.md), the [Authenticator validation stage](../../stages/authenticator_validate/index.md), and others will use this value if it is set, and fall back to the request's user when possible.
 
 #### `prompt_data` (Dictionary)
 
@@ -45,7 +45,7 @@ Stages that require a user, such as the [Password stage](../../stages/password/i
 }
 ```
 
-This data can be modified with policies. The data is also used by stages like [User write](../../stages/user_write.md), which takes data in `prompt_data` and writes it to `pending_user`.
+This data can be modified with policies. The data is also used by stages like [User write](../../stages/user_write/index.md), which takes data in `prompt_data` and writes it to `pending_user`.
 
 #### `redirect` (string)
 
@@ -75,7 +75,7 @@ This key is set to `True` when the flow is executed from an "SSO" context. For e
 
 #### `is_restored` (Token object)
 
-This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution. This field is also used by the [Source stage](../../stages/source/index.md) when returning back to the initial flow the Source stage was run on.
+This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.md) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution. This field is also used by the [Source stage](../../stages/source/index.md) when returning back to the initial flow the Source stage was run on.
 
 #### `is_redirected` (Flow object)
 
@@ -153,7 +153,7 @@ Set by the [Password stage](../../stages/password/index.md) after successfully a
 
 ##### `auth_method` (string)
 
-Set by the [Password stage](../../stages/password/index.md), the [Authenticator validation stage](../../stages/authenticator_validate/index.mdx), the [OAuth2 Provider](../../../providers/oauth2/index.mdx), and the API authentication depending on which method was used to authenticate.
+Set by the [Password stage](../../stages/password/index.md), the [Authenticator validation stage](../../stages/authenticator_validate/index.md), the [OAuth2 Provider](../../../providers/oauth2/index.mdx), and the API authentication depending on which method was used to authenticate.
 
 Possible options:
 

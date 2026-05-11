@@ -158,6 +158,18 @@ export function redirectToAuthFlow(nextPathname = "/flows/-/default/authenticati
 }
 
 /**
+ * Start account lockdown and follow the returned flow link.
+ */
+export async function startAccountLockdown(user?: number): Promise<void> {
+    const response = await new CoreApi(DEFAULT_CONFIG).coreUsersAccountLockdownCreate({
+        userAccountLockdownRequest: user !== undefined ? { user } : {},
+    });
+    if (response.link) {
+        window.location.assign(response.link);
+    }
+}
+
+/**
  * Retrieve the current user session.
  *
  * This is a memoized function, so it will only make one request per page load.

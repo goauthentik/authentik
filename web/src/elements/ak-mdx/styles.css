@@ -74,6 +74,10 @@ svg[id^="mermaid-svg-"] {
     }
 }
 
+ak-alert + :is(h2, p) {
+    padding-top: var(--pf-global--spacer--md);
+}
+
 /* #region Dark Theme */
 
 :host([theme="dark"]) {

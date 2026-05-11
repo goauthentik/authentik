@@ -4,7 +4,7 @@ sidebar_label: Paperless-ng
 support_level: community
 ---
 
-## What is Paperless-ng
+## What is Paperless-ng?
 
 > Paperless-ng is an application that indexes your scanned documents and allows you to easily search for documents and store metadata alongside your documents. It was a fork from the original Paperless that is no longer maintained.
 >

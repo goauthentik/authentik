@@ -321,6 +321,7 @@ const items = [
                             id: "add-secure-apps/flows-stages/stages/index",
                         },
                         items: [
+                            "add-secure-apps/flows-stages/stages/account_lockdown/index",
                             "add-secure-apps/flows-stages/stages/authenticator_duo/index",
                             "add-secure-apps/flows-stages/stages/authenticator_email/index",
                             "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
@@ -331,7 +332,7 @@ const items = [
                             "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
                             "add-secure-apps/flows-stages/stages/captcha/index",
                             "add-secure-apps/flows-stages/stages/consent/index",
-                            "add-secure-apps/flows-stages/stages/deny",
+                            "add-secure-apps/flows-stages/stages/deny/index",
                             "add-secure-apps/flows-stages/stages/email/index",
                             "add-secure-apps/flows-stages/stages/endpoint/index",
                             "add-secure-apps/flows-stages/stages/identification/index",
@@ -341,10 +342,10 @@ const items = [
                             "add-secure-apps/flows-stages/stages/prompt/index",
                             "add-secure-apps/flows-stages/stages/redirect/index",
                             "add-secure-apps/flows-stages/stages/source/index",
-                            "add-secure-apps/flows-stages/stages/user_delete",
+                            "add-secure-apps/flows-stages/stages/user_delete/index",
                             "add-secure-apps/flows-stages/stages/user_login/index",
-                            "add-secure-apps/flows-stages/stages/user_logout",
-                            "add-secure-apps/flows-stages/stages/user_write",
+                            "add-secure-apps/flows-stages/stages/user_logout/index",
+                            "add-secure-apps/flows-stages/stages/user_write/index",
                         ],
                     },
                 ],
@@ -972,6 +973,7 @@ const items = [
         items: [
             "security/policy",
             "security/security-hardening",
+            "security/account-lockdown",
             {
                 //#endregion
 

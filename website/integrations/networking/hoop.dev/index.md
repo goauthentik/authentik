@@ -4,7 +4,7 @@ sidebar_label: Hoop.dev
 support_level: community
 ---
 
-## What is Hoop.dev
+## What is Hoop.dev?
 
 > Hoop.dev is an access gateway for databases and servers with AI-powered automations that eliminate cumbersome access policies and break-glass workflows without compromising security.
 >

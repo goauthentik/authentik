@@ -1,6 +1,5 @@
 """authentik core signals"""
 
-from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
@@ -59,7 +58,7 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     layer = get_channel_layer()
     device_cookie = request.COOKIES.get("authentik_device")
     if device_cookie:
-        async_to_sync(layer.group_send)(
+        layer.group_send_blocking(
             build_device_group(device_cookie),
             {"type": "event.session.authenticated"},
         )

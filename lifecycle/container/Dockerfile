@@ -200,7 +200,7 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=packages/django-postgres-cache,src=packages/django-postgres-cache \
     --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     --mount=type=cache,id=uv-python-deps-$TARGETARCH$TARGETVARIANT,target=/root/.cache/uv \
-    uv sync --frozen --no-install-project --no-dev
+    uv sync --locked --no-install-project --no-dev
 
 # Stage: Run
 FROM python-base AS final-image

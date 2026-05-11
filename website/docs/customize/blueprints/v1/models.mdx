@@ -181,13 +181,15 @@ For example:
 
 ### Required fields
 
-Each PolicyBinding entry must have **exactly one** of the following set in `attrs`:
+Each PolicyBinding entry must provide **exactly one** of the following fields. These are commonly set in `attrs`, but can also be used in `identifiers` when they are part of the lookup for an existing binding:
 
 - `policy`: Reference to a Policy object
 - `group`: Reference to a Group object
 - `user`: Reference to a User object
 
 Setting none or multiple in a single binding will cause validation errors. However, you can create multiple separate bindings to the same target with different `order` values.
+
+Policy bindings do not have a `name` field. To identify an existing binding, use fields that exist on the binding, such as `target` with `order`, or `target` with the bound `policy`, `group`, or `user`.
 
 Example with multiple bindings to the same application:
 

@@ -26,6 +26,8 @@ var healthcheckCmd = &cobra.Command{
 		exitCode := 1
 		log.WithField("mode", mode).Debug("checking health")
 		switch strings.ToLower(mode) {
+		case "allinone":
+			fallthrough
 		case "server":
 			exitCode = check(fmt.Sprintf("http://localhost%s-/health/live/", config.Get().Web.Path))
 		case "worker":
