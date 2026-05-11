@@ -2,7 +2,7 @@
 
 from base64 import b64encode
 from datetime import timedelta
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import PropertyMock, patch
 
 from django.urls import reverse
 from django.utils.timezone import now
@@ -12,9 +12,7 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.enterprise.license import LicenseKey
-from authentik.enterprise.models import License
-from authentik.enterprise.tests.test_license import expiry_valid
+from authentik.enterprise.tests import enterprise_test
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMAuthenticationMode, SCIMMapping, SCIMProvider
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
@@ -146,20 +144,8 @@ class SCIMOAuthTests(APITestCase):
             },
         )
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     def test_api_create(self):
-        License.objects.create(key=generate_id())
         self.client.force_login(create_test_admin_user())
         res = self.client.post(
             reverse("authentik_api:scimprovider-list"),
