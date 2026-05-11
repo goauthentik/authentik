@@ -31,7 +31,6 @@ To support the integration of OVHcloud with authentik, you need to create an app
             - `https://www.ovhcloud.com/eu/auth/saml/acs` for EU region.
             - `https://www.ovhcloud.com/ca/auth/saml/acs` for CA region.
             - `https://us.ovhcloud.com/auth/` for US region.
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, set an available **Signing certificate**.
 
     - **Configure Bindings** _(optional)_: You can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.

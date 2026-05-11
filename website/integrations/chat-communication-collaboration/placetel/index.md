@@ -34,7 +34,6 @@ To support the integration of Placetel with authentik, you need to create an app
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://accounts.webex.placetel.de/users/saml/auth`.
         - Set the **SLS URL** to `https://accounts.webex.placetel.de/users/saml/idp_sign_out`.
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, set an available **Signing Certificate** and ensure that **Sign assertions** and **Sign responses** are toggled.
         - Ensure that **Encryption Certificate** is empty.
         - Remove all **Property Mappings** except for `authentik default SAML Mapping: Email`.

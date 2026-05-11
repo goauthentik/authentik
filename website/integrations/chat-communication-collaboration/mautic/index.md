@@ -72,7 +72,6 @@ Because Mautic requires a first name and last name attribute, create two [SAML p
         - Set the **Name** to `mautic-provider`
         - Set the **ACS URL** to `https://mautic.company/s/saml/login_check`
         - Set the **Audience** to `mautic.company`
-        - Set the **Service Provider Binding** to `Post`
         - Under **Advanced protocol settings**, select an available **Signing certificate**, check **Sign assertions** and **Sign responses**, and add the two **Property Mappings** you created in the previous section.
 3. Click **Submit** to save the new application and provider.
 4. Go to **Applications** > **Providers** and click on `mautic-provider`.

@@ -72,7 +72,6 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://posthog.company/complete/saml/`.
         - Set the **Audience** to `https://posthog.company`.
-        - Set the **Service Provider Binding** to `POST`.
         - Under **Advanced protocol settings**:
             - Set the **Signing Certificate** to any available certificate.
             - Set **NameID Property Mapping** to `PostHog name_id`.
