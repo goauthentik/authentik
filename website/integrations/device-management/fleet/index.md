@@ -16,7 +16,7 @@ authentik_preview: true
 
 ## Preparation
 
-By the end of this integration, your users will be able to log into Fleet using their authentik credentials.
+By the end of this integration, your users will be able to log in to Fleet using their authentik credentials.
 
 Your authentik and Fleet instances must both be running and accessible on an HTTPS domain.
 
@@ -55,9 +55,6 @@ The workflow to configure authentik as a single sign-on provider for Fleet invol
             You will also need to configure Fleet with additional settings to enable the EULA. For more information, refer to Fleet's [end user authentication guide](https://fleetdm.com/docs/using-fleet/mdm-macos-setup-experience#end-user-authentication-and-eula).
             :::
 
-        - **Issuer**: `authentik`
-          This value is used to identify authentik as the identity provider to Fleet. It can be any string, but it must be unique and used consistently across both authentik and Fleet configurations.
-        - **Service Provider Binding**: `Post`
         - **Audience**: `https://fleet.company`
         - **Advanced protocol settings**:
           (Any fields that can be left as their default values are omitted from the list below).
@@ -88,7 +85,7 @@ With these prerequisites in place, authentik is now configured to act as a singl
 
 3. Check the box next to **Enable single sign-on** and use the following values:
     - **Identity provider name**: `authentik`
-    - **Entity ID**: `authentik`
+    - **Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
 
     - **Metadata/Metadata URL**
 

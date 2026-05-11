@@ -160,8 +160,6 @@ To support the integration of Mattermost with authentik via SAML, you need to up
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
         - Set the **ACS URL** to `https://mattermost.company/login/sso/saml`.
-        - Set the **Issuer** to `authentik`.
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Set the **Signing Certificate** to any available authentik certificate (e.g., the default self-signed certificate).
             - Enable **Sign assertions**.
@@ -184,8 +182,8 @@ To support the integration of Mattermost with authentik via SAML, you need to up
 2. Navigate to **Channels** > **System Console** > **Authentication** > **SAML 2.0**.
 3. Configure the following settings:
     - Enable **Enable Login With SAML 2.0**.
-    - Set **SAML SSO URL** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
-    - Set **Identity Provider Issuer URL** to `authentik`.
+    - Set **SAML SSO URL** to `https://authentik.company/application/saml/<application_slug>/`.
+    - Set **Identity Provider Issuer URL** to `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - Set **Identity Provider Public Certificate** to the contents of the authentik signing certificate you downloaded.
     - Enable **Verify Signature**.
     - Set **Service Provider Login URL** to `https://mattermost.company/login/sso/saml`.
@@ -213,7 +211,7 @@ To verify the integration of authentik with Mattermost, log out and attempt to l
 
 ## Resources
 
-- [Mattermost on Github](https://github.com/mattermost/mattermost)
+- [Mattermost on GitHub](https://github.com/mattermost/mattermost)
 - [Mattermost GitLab Authentication documentation](https://docs.mattermost.com/configure/authentication-configuration-settings.html#gitlab-oauth-2-0-settings)
 - [Mattermost SAML Configuration documentation](https://docs.mattermost.com/configure/authentication-configuration-settings.html#saml-2-0)
 - [Related blog post, in German, explaining the OIDC technique](https://ayedo.de/posts/mattermost-self-hosted-sso-mit-authentik/)

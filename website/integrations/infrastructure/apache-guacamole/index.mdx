@@ -44,7 +44,7 @@ To support the integration of Apache Guacamole with authentik, you need to creat
 
 3. Click **Submit** to save the new application and provider.
 
-## Apache Guacamole Configuration
+## Apache Guacamole configuration
 
 It is recommended to create an admin account in Guacamole before configuring Single Sign-On to simplify the process. Create a user in Guacamole using the same username as in authentik and grant them admin permissions. This step is important to avoid losing access to the Guacamole admin settings, as you may need to revert your changes without it.
 
@@ -130,11 +130,11 @@ In older versions of Apache Guacamole, the `openid-enabled=true`, `extension-pri
   </TabItem>
 </Tabs>
 
-### Self Signed Certificates
+### Self-signed certificates
 
 When using a self-signed certificate, it is necessary to incorporate the certificate of the corresponding Certificate Authority into both the `/etc/ssl/certs/ca-certificates.crt` file and the `/opt/java/openjdk/lib/security/cacerts` keystore on your Apache Guacamole host. This ensures that the self-signed certificate is trusted by both the system and the Java runtime environment used by Guacamole.
 
-#### Adding Certificate Authority certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`
+#### Add a certificate authority certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`
 
 :::info
 This section depends on the operating system hosting Apache Guacamole.
@@ -151,14 +151,14 @@ This section depends on the operating system hosting Apache Guacamole.
 
 ##### For _Synology_ systems:
 
-1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/syno/etc/security-profile/ca-bundle-profile/ca-certificates/` directory on the Synology host. Ensure that the filetype is `.crt`.
+1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/syno/etc/security-profile/ca-bundle-profile/ca-certificates/` directory on the Synology host. Ensure that the file type is `.crt`.
 2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
 
     ```shell
     update-ca-certificates.sh
     ```
 
-#### Adding Certificate Authority certificate to `/opt/java/openjdk/lib/security/cacerts`
+#### Add a certificate authority certificate to `/opt/java/openjdk/lib/security/cacerts`
 
 1. To export the certificate of the Certificate Authority, use the following command on the Certificate Authority host:
 
@@ -182,7 +182,7 @@ More information on the keytool command can be found in the [Oracle documentatio
 
 ## Configuration verification
 
-To verify that authentik is correctly configured with Apache Guacamole, log out and log back in through authentik. You should notice a new button appearing at the bottom left of the login page.
+To verify that authentik is correctly configured with Apache Guacamole, log out and log back in through authentik. You should notice a new button appearing at the bottom-left corner of the login page.
 
 ## Resources
 

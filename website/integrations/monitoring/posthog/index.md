@@ -72,7 +72,6 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://posthog.company/complete/saml/`.
         - Set the **Audience** to `https://posthog.company`.
-        - Set the **Service Provider Binding** to `POST`.
         - Under **Advanced protocol settings**:
             - Set the **Signing Certificate** to any available certificate.
             - Set **NameID Property Mapping** to `PostHog name_id`.
@@ -86,8 +85,8 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
 2. Navigate to **Organization settings** > **Authentication domains**.
 3. If your users' email domain is not already listed, add it and complete PostHog's domain verification process.
 4. Open the SAML configuration for the verified domain and configure the following settings:
-    - **SAML ACS URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-    - **SAML Entity ID**: `https://authentik.company/application/saml/<application_slug>/`
+    - **SAML ACS URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **SAML Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **SAML X.509 Certificate**: paste the public certificate from the signing certificate that you selected for the authentik SAML provider.
 5. Save the SAML configuration.
 

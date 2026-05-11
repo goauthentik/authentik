@@ -64,7 +64,7 @@ To support the integration of Zendesk with authentik, you need to create an appl
     - **Scopes**: `openid profile email`
     - **Issuer**: `https://authentik.company/application/o/<application_slug>/`
     - **Authentication mode**: `PKCE`
-    - **Issuer url**: `https://authentik.company/application/o/<application_slug>/`
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
     - **Show button when users sign in**: enabled
     - **Button text**: `authentik`
 
@@ -87,14 +87,12 @@ To support the integration of Zendesk with authentik, you need to create an appl
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **slug** value because it will be required later.
     - Set the **ACS URL** to `https://company.zendesk.com/access/saml/`.
-    - Set the **Issuer** to `https://authentik.company`.
-    - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, set **Signing Certificate** to use any available certificate.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### Copy the Certificate Fingerprint (SHA256)
+### Copy the certificate fingerprint (SHA256)
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Go to **System** > **Certificates** and click the **>** symbol next to the certificate pair you selected in the previous step.
@@ -105,9 +103,9 @@ To support the integration of Zendesk with authentik, you need to create an appl
 1. Log in to Zendesk as an administrator.
 2. Navigate to **Security** > **Single sign-on (SSO)** > **Create SSO configuration** and click **SAML**.
     - **Configuration name**: authentik
-    - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
+    - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **Certificate fingerprint**: Paste the **Certificate Fingerprint (SHA256)** copied from authentik.
-    - **Remote logout URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+    - **Remote logout URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **Show button when users sign in**: enabled
     - **Button value**: `authentik`
 

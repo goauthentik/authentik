@@ -218,9 +218,7 @@ If you require [server side encryption](https://docs.nextcloud.com/server/latest
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://nextcloud.company/apps/user_saml/saml/acs`.
-        - Set the **Issuer** to `https://authentik.company`.
         - Set the **Audience** to `https://nextcloud.company/apps/user_saml/saml/metadata`.
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, set an available **Signing certificate**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -297,9 +295,9 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
 
 ## Nextcloud configuration
 
-1. Log in to Nextcloud as an administrator and navigate to **Apps** by clicking your profile picture in the top right corner.
+1. Log in to Nextcloud as an administrator and navigate to **Apps** by clicking your profile picture in the top-right corner.
 2. Under **App bundles**, install the **SSO & SAML authentication** bundle.
-3. Click your profile picture in the top right corner and select **Administrative settings**. Under **SSO & SAML authentication**, click **Use built-in SAML authentication**.
+3. Click your profile picture in the top-right corner and select **Administrative settings**. Under **SSO & SAML authentication**, click **Use built-in SAML authentication**.
 4. In the **General** section, set:
     - **Attribute to map the UID to**: `http://schemas.goauthentik.io/2021/02/saml/uid`
     - **Optional display name**: `authentik`
@@ -309,11 +307,11 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
     :::
 
 5. In the **Identity Provider Data** section, set:
-    - **Identifier of the IdP entity**: `https://authentik.company`
-    - **URL Target of the IdP where the SP will send the Authentication Request Message**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+    - **Identifier of the IdP entity**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **URL Target of the IdP where the SP will send the Authentication Request Message**: `https://authentik.company/application/saml/<application_slug>/`
 
     Under _Show optional Identity Provider settings_:
-    - **URL Location of the IdP where the SP will send the SLO Request**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+    - **URL Location of the IdP where the SP will send the SLO Request**: `https://authentik.company/application/saml/<application_slug>/`
     - **X.509 certificate of the IdP**: paste the contents of your certificate file
 
 6. In the **Attribute mapping** section, set:
@@ -382,11 +380,11 @@ This documentation lists only the settings that you need to change from their de
     - On the **LDAP/AD integration** tab:
         - Uncheck **LDAP/AD Username**.
         - Set **Other Attributes** to `cn`.
-        - Click **Expert** in the top right corner and enter these settings:
+        - Click **Expert** in the top-right corner and enter these settings:
             - **Internal Username Attribute**: `uid`
             - **UUID Attribute for Users**: `uid`
             - **UUID Attribute for Groups**: `gidNumber`
-        - Click **Advanced** in the top right corner and enter these settings:
+        - Click **Advanced** in the top-right corner and enter these settings:
             - Under **Connection Settings**:
                 - **Configuration Active**: checked
             - Under **Directory Settings**:

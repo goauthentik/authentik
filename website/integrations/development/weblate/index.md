@@ -73,8 +73,6 @@ To support the integration of Weblate with authentik, you need to create an appl
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://weblate.company/accounts/complete/saml/`.
     - Set the **Audience** to `https://weblate.company/accounts/metadata/saml/`.
-    - Set the **Issuer** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
-    - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**. Then, under **Property mappings**, add the ones you just created.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -90,13 +88,13 @@ The variables below need to be set, depending on if you deploy in a container or
 Variables to set
 
 - ENABLE_HTTPS: `1`
-- SAML_IDP_ENTITY_ID: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-- SAML_IDP_URL: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+- SAML_IDP_ENTITY_ID: `https://authentik.company/application/saml/<application_slug>/metadata/`
+- SAML_IDP_URL: `https://authentik.company/application/saml/<application_slug>/`
 - SAML_IDP_X509CERT: `MIIFDjCCAvagAwIBAgIRAJV8hH0wGkhGvbhhDKppWIYwDQYJKoZIhvcNAQELBQAw....F9lT9hHwHhsnA=`
 
 The `SAML_IDP_X509CERT` is the certificate in the SAML Metadata `X509Certificate` key.
 
-Should you wish to only allow registration and login through Authentik, you should set the following variables as well.
+Should you wish to only allow registration and login through authentik, you should set the following variables as well.
 
 - REGISTRATION_OPEN: `0`
 - REGISTRATION_ALLOW_BACKENDS: `saml`

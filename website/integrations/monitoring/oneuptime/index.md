@@ -42,7 +42,7 @@ OneUptime currently supports the RSA-based SAML signature methods `RSA-SHA1`, `R
 2. Navigate to **Project Settings** > **Authentication** > **SSO**.
 3. Click **Create SSO** and configure the following settings:
     - **Name**: enter a descriptive name, such as `authentik`.
-    - **Sign On URL**: set to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
+    - **Sign On URL**: set to `https://authentik.company/application/saml/<application_slug>/`.
     - **Issuer**: set to `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - **Public Certificate**: paste the certificate that you downloaded from authentik, including the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines.
     - **Signature Method**: select `RSA-SHA256`.
@@ -63,8 +63,7 @@ To support the integration of OneUptime with authentik, you need an application/
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
         - Set the **ACS URL** to the **Reply URL (Assertion Consumer Service URL)** from OneUptime.
-        - Set the **Issuer** to the **Identifier (Entity ID)** from OneUptime.
-        - Set the **Service Provider Binding** to `Post`.
+        - Set the **Audience** to the **Identifier (Entity ID)** from OneUptime.
         - Under **Advanced protocol settings**:
             - Set the **Signing Certificate** to the same certificate that you downloaded earlier.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.

@@ -39,9 +39,7 @@ This documentation lists only the settings that you need to change from their de
 8. Download the generated certificate, as you will need it later.
 9. Create a new SAML provider under **Applications** > **Providers** using the following settings:
     - **ACS URL**: `https://semgrep.dev/api/auth/saml/devcompany/`
-    - **Issuer**: `https://authentik.company`
     - **Audience**: `semgrep-dev`
-    - **Service Provider Binding**: `Post`
     - **Signing Keypair**: Choose the RSA certificate you generated earlier.
     - **Property mappings**: `semgrep-name` and `semgrep-email`
 10. Create a new application under **Applications** > **Applications**, pick a name and a slug, and assign the provider that you just created.
@@ -49,14 +47,14 @@ This documentation lists only the settings that you need to change from their de
 ## Semgrep configuration
 
 1. Log in to Semgrep Cloud platform as an administrator.
-2. Click **Settings** on bottom left corner.
+2. Click **Settings** in the bottom-left corner.
 3. Navigate to **Access** > **Login methods**.
 4. Locate the Single sign-on entry, click **Add SSO configuration**, and select **SAML2 SSO** from the drop-down.
 5. Fill in the following:
     - **Display name**: Anything you like.
     - **Email domain**: `company`
-    - **IdP SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
-    - **IdP Issuer ID**: `https://authentik.company`
+    - **IdP SSO URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **IdP Issuer ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **Upload/paste certificate**: Downloaded from the previous step.
 
 ## Verification

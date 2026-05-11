@@ -110,9 +110,7 @@ To support the integration of AWS with authentik via the Classic IAM method, you
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
         - Set the **ACS URL** to `https://signin.aws.amazon.com/saml`
-        - Set the **Issuer** to `urn:amazon:webservices`
         - Set the **Audience** to `urn:amazon:webservices`
-        - Set **Service Provider Binding** to `Post`
         - Under **Advanced protocol settings**, select an available **Signing Certificate**, ensure both **Signing Assertions** and **Signing Responses** are enabled, then add, under **Property Mappings**, both property mappings you created in the previous section.
         - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -138,7 +136,7 @@ For this integration, the entitlement name should match the AWS IAM role name ex
 
 ### Download metadata file
 
-1. Log into authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created AWS provider.
 3. Under **Related objects** > **Metadata**, click **Download**. This metadata file will be required in the next section.
 

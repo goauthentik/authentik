@@ -14,9 +14,9 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `kimai.company` is the FQDN of the Kimai Install
-- `authentik.company` is the FQDN of the authentik Install
-- `admin.group` is the authentik group to be made Admin in Kimai
+- `kimai.company` is the FQDN of the Kimai installation.
+- `authentik.company` is the FQDN of the authentik installation.
+- `admin.group` is the authentik group to make an administrator in Kimai.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -34,12 +34,10 @@ To support the integration of Kimai with authentik, you need to create an applic
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://kimai.company/auth/saml/acs`.
-        - Set the **Issuer** to `https://authentik.company`.
-        - Set the **Service Provider Binding** to `Post`.
         - Set the **Audience** to `https://kimai.company/auth/saml`.
         - Under **Advanced protocol settings**:
             - Select an available **Signing certificate**.
-            - Set **NameID Property Mapping** to `authentik default SAML MApping: Email`.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
             - Set **Default NameID Policy** to `Email Address`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -51,7 +49,7 @@ To support the integration of Kimai with authentik, you need to create an applic
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
 3. Under **Related objects** > **Download signing certificate**, click on **Download**. This is your certificate file and its contents will be required in the next section.
 
-## Kimai Configuration
+## Kimai configuration
 
 Paste the following block in your `local.yaml` file, after replacing the placeholder values from above. The file is usually located in `/opt/kimai/config/packages/local.yaml`.
 
@@ -69,7 +67,7 @@ The value for `x509cert` is the content of the certificate file downloaded in th
 kimai:
     saml:
         activate: true
-        title: Login with authentik
+        title: Log in with authentik
         mapping:
             - {
                   saml: $http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress,
@@ -85,16 +83,16 @@ kimai:
                 # Insert your roles here (ROLE_USER is added automatically)
                 - { saml: admin.group, kimai: ROLE_ADMIN }
         connection:
-            # You SAML provider
+            # Your SAML provider
             # Your authentik instance, replace https://authentik.company with your authentik URL
             idp:
-                entityId: "https://authentik.company/"
+                entityId: "https://authentik.company/application/saml/<application_slug>/metadata/"
                 singleSignOnService:
-                    url: "https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/"
+                    url: "https://authentik.company/application/saml/<application_slug>/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # the "single logout" feature was not yet tested, if you want to help, please let me know!
                 singleLogoutService:
-                    url: "https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/"
+                    url: "https://authentik.company/application/saml/<application_slug>/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # Signing certificate from *Advanced protocol settings*
                 x509cert: "|

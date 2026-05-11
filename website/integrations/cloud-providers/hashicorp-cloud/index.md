@@ -22,15 +22,15 @@ This documentation lists only the settings that you need to change from their de
 
 ## HashiCorp Cloud preparation
 
-Login in under https://portal.cloud.hashicorp.com. Navigate to the _Settings_ entry in the sidebar, then _SSO_. Enable SSO and configure domain verification for the domain your users email have.
+Log in at https://portal.cloud.hashicorp.com. Navigate to the _Settings_ entry in the sidebar, then _SSO_. Enable SSO and configure domain verification for the domain that your users' email addresses use.
 
 Under _Initiate SAML integration_, copy _SSO Sign-On URL_ and _Entity ID_.
 
-## authentik Configuration
+## authentik configuration
 
 To support the integration of HashiCorp Cloud with authentik, you need to create an application/provider pair in authentik.
 
-### Create an Application and Provider in authentik
+### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application**.
@@ -38,14 +38,13 @@ To support the integration of HashiCorp Cloud with authentik, you need to create
     - **Choose a Provider type**: Select **SAML Provider**.
     - **Configure the Provider**:
         - Set the **ACS URL** to the value of `SSO Sign-On URL` in the **HashiCorp Cloud preparation** section.
-        - Set the **Issuer** and **Audience** to the value of `Entity ID` in the **HashiCorp Cloud preparation** section.
-        - Set the **Service Provider Binding** to `Post`.
+        - Set the **Audience** to the value of `Entity ID` in the **HashiCorp Cloud preparation** section.
         - Under **Advanced protocol settings**, select an available **Signing certificate**.
 3. Click **Submit** to save the new application and provider.
 
 ## HashiCorp Cloud configuration
 
-Open the Application's page in authentik and click on the provider name. Copy the value of _SSO URL (Redirect)_ and paste it into the _SAML IDP Single Sign-On URL_ field in the HashiCorp Cloud settings.
+Open the Application's page in authentik and click on the provider name. Copy the value of _SAML Endpoint_ and paste it into the _SAML IDP Single Sign-On URL_ field in the HashiCorp Cloud settings.
 
 Download the certificate, open it in a text editor, and paste the contents into _SAML IDP Certificate_ in the HashiCorp Cloud settings.
 
