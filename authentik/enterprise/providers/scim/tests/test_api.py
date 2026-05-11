@@ -46,7 +46,7 @@ class TestSCIMOAuthAPI(APITestCase):
             {
                 "name": generate_id(),
                 "url": "http://localhost",
-                "auth_mode": "oauth_silent",
+                "auth_mode": "oauth",
                 "auth_oauth": str(self.source.pk),
             },
         )
@@ -63,7 +63,7 @@ class TestSCIMOAuthAPI(APITestCase):
             {
                 "name": generate_id(),
                 "url": "http://localhost",
-                "auth_mode": "oauth_silent",
+                "auth_mode": "oauth",
                 "auth_oauth": str(self.source.pk),
             },
         )

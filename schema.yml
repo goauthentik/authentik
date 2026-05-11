@@ -54864,7 +54864,7 @@ components:
     SCIMAuthenticationModeEnum:
       enum:
       - token
-      - oauth_silent
+      - oauth
       - oauth_interactive
       type: string
     SCIMMapping:

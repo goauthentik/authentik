@@ -72,7 +72,7 @@ class SCIMAuthenticationMode(models.TextChoices):
     """SCIM authentication modes"""
 
     TOKEN = "token", _("Token")
-    OAUTH_SILENT = "oauth_silent", _("OAuth (Silent)")
+    OAUTH_SILENT = "oauth", _("OAuth (Silent)")
     OAUTH_INTERACTIVE = "oauth_interactive", _("OAuth (interactive)")
 
 

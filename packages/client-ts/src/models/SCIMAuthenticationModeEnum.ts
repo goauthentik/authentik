@@ -18,7 +18,7 @@
  */
 export const SCIMAuthenticationModeEnum = {
     Token: "token",
-    OauthSilent: "oauth_silent",
+    Oauth: "oauth",
     OauthInteractive: "oauth_interactive",
     UnknownDefaultOpenApi: "11184809",
 } as const;
