@@ -27,6 +27,7 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/types"
+	"goauthentik.io/internal/utils"
 )
 
 // PostgresStore stores gorilla sessions in PostgreSQL using GORM
@@ -119,7 +120,8 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 		case "disable":
 			connConfig.TLSConfig = nil
 		case "require", "verify-ca", "verify-full":
-			tlsConfig := &tls.Config{}
+			tlsConfig := utils.GetTLSConfig()
+			tlsConfig.InsecureSkipVerify = false // default, will be changed below
 
 			// Load root CA certificate if provided
 			if cfg.SSLRootCert != "" {

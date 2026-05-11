@@ -17,6 +17,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
+	"goauthentik.io/internal/utils"
 )
 
 func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string, query url.Values) *url.URL {
@@ -58,9 +59,9 @@ func (ac *APIController) initEvent(outpostUUID string, attempt int) error {
 		akURL.Scheme = "http"
 		akURL.Host = "localhost"
 	} else {
-		dialer.TLSClientConfig = &tls.Config{
-			InsecureSkipVerify: config.Get().AuthentikInsecure,
-		}
+		tlsConfig := utils.GetTLSConfig()
+		tlsConfig.InsecureSkipVerify = config.Get().AuthentikInsecure
+		dialer.TLSClientConfig = tlsConfig
 	}
 
 	wsu := ac.getWebsocketURL(akURL, outpostUUID, query).String()

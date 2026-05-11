@@ -99,9 +99,11 @@ type ErrorReportingConfig struct {
 }
 
 type OutpostConfig struct {
-	ContainerImageBase     string `yaml:"container_image_base" env:"CONTAINER_IMAGE_BASE, overwrite"`
-	Discover               bool   `yaml:"discover" env:"DISCOVER, overwrite"`
-	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"DISABLE_EMBEDDED_OUTPOST, overwrite"`
+	ContainerImageBase     string   `yaml:"container_image_base" env:"CONTAINER_IMAGE_BASE, overwrite"`
+	Discover               bool     `yaml:"discover" env:"DISCOVER, overwrite"`
+	DisableEmbeddedOutpost bool     `yaml:"disable_embedded_outpost" env:"DISABLE_EMBEDDED_OUTPOST, overwrite"`
+	TLSMinVersion          string   `yaml:"tls_min_version" env:"TLS_MIN_VERSION"`
+	TLSCiphers             []string `yaml:"tls_ciphers" env:"TLS_CIPHERS"`
 }
 
 type WebConfig struct {

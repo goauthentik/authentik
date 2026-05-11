@@ -15,6 +15,7 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/utils"
 )
 
 const guacAddr = "0.0.0.0:4822"
@@ -64,12 +65,13 @@ func (c *Connection) initSocket(forChannel string) error {
 		"User-Agent":    []string{constants.UserAgentOutpost()},
 	}
 
+	tlsConfig := utils.GetTLSConfig()
+	tlsConfig.InsecureSkipVerify = config.Get().AuthentikInsecure
+
 	dialer := websocket.Dialer{
 		Proxy:            http.ProxyFromEnvironment,
 		HandshakeTimeout: 10 * time.Second,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: config.Get().AuthentikInsecure,
-		},
+		TLSClientConfig:  tlsConfig,
 	}
 
 	url := fmt.Sprintf(pathTemplate, scheme, c.ac.Client.GetConfig().Host, forChannel)
