@@ -74,7 +74,7 @@ To configure Zabbix to verify responses from authentik:
 
 Zabbix uses an SP private key to sign its SAML AuthN requests. Generate a dedicated self-signed pair for Zabbix:
 
-1. On the Zabbix host, generate the SP key and certificate:
+1. Generate the SP key and certificate:
 
     ```bash
     openssl req -new -x509 -days 3650 -nodes \
