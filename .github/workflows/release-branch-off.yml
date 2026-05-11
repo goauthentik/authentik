@@ -68,6 +68,8 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          dependencies: "system,python,go,node,runtime,rust-nightly"
       - name: Run migrations
         run: make migrate
       - name: Bump version
