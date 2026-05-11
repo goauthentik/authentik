@@ -3,64 +3,103 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
 
 import { Form } from "#elements/forms/Form";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { AKLabel } from "#components/ak-label";
 
 import {
     CoreApi,
     CoreGroupsListRequest,
     CoreUsersListRequest,
     Group,
+    ModelEnum,
     PropertyMapping,
     PropertymappingsApi,
     PropertyMappingTestRequest,
     PropertyMappingTestResult,
-    RbacPermissionsAssignedByRolesListModelEnum,
     User,
 } from "@goauthentik/api";
 
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-property-mapping-test-form")
-export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
-    @property({ attribute: false })
-    mapping?: PropertyMapping;
+export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
+    public static verboseName = msg("Property Mapping");
+    public static verboseNamePlural = msg("Property Mappings");
+    public static createLabel = msg("Test");
+
+    public override cancelable = true;
+    public override size = PFSize.XLarge;
+
+    #api = new PropertymappingsApi(DEFAULT_CONFIG);
+
+    protected override formatSubmitLabel(submitLabel?: string | null): string {
+        return submitLabel || msg("Run Test");
+    }
 
     @property({ attribute: false })
-    result?: PropertyMappingTestResult;
+    public mapping: PropertyMapping | null = null;
 
     @property({ attribute: false })
-    request?: PropertyMappingTestRequest;
+    public result: PropertyMappingTestResult | null = null;
 
-    getSuccessMessage(): string {
+    @property({ attribute: false })
+    public request: PropertyMappingTestRequest | null = null;
+
+    public override getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
     }
 
-    async send(data: PropertyMappingTestRequest): Promise<PropertyMappingTestResult> {
+    protected override async send(
+        data: PropertyMappingTestRequest,
+    ): Promise<PropertyMappingTestResult> {
         this.request = data;
-        const result = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTestCreate({
+
+        this.result = await this.#api.propertymappingsAllTestCreate({
             pmUuid: this.mapping?.pk || "",
             propertyMappingTestRequest: data,
             formatResult: true,
         });
-        return (this.result = result);
+
+        return this.result;
     }
 
-    renderResult(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Result")}>
+    public get verboseName(): string | null {
+        return this.mapping?.verboseName || null;
+    }
+
+    public get verboseNamePlural(): string | null {
+        return this.mapping?.verboseNamePlural || null;
+    }
+
+    protected renderResult(): SlottedTemplateResult {
+        return html`<ak-form-element-horizontal>
             ${this.result?.successful
-                ? html`<ak-codemirror
-                      mode="javascript"
-                      readonly
-                      value="${ifDefined(this.result?.result)}"
-                  >
-                  </ak-codemirror>`
-                : html` <div class="pf-c-form__group-label">
+                ? html`${AKLabel(
+                          {
+                              slot: "label",
+                              className: "pf-c-form__group-label",
+                              htmlFor: "result",
+                          },
+                          msg("Result"),
+                      )}
+
+                      <ak-codemirror
+                          id="result"
+                          mode="javascript"
+                          readonly
+                          value="${ifDefined(this.result?.result)}"
+                      >
+                      </ak-codemirror>`
+                : html`<div class="pf-c-form__group-label">
                       <div class="c-form__horizontal-group">
                           <span class="pf-c-form__label-text">
                               <pre>${this.result?.result}</pre>
@@ -70,15 +109,26 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         </ak-form-element-horizontal>`;
     }
 
-    renderExampleButtons() {
-        return this.mapping?.metaModelName ===
-            RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
-            ? html`<p>${msg("Example context data")}</p>
-                  ${this.renderExampleLDAP()}`
-            : nothing;
+    protected renderExampleButtons(): SlottedTemplateResult {
+        if (
+            this.mapping?.metaModelName !== ModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
+        ) {
+            return null;
+        }
+
+        return html`<div class="pf-c-form__group">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                },
+                msg("Example Context Data"),
+            )}
+            <p class="pf-c-form__helper-text">${this.renderExampleLDAP()}</p>
+        </div>`;
     }
 
-    renderExampleLDAP(): TemplateResult {
+    protected renderExampleLDAP(): SlottedTemplateResult {
         return html`
             <button
                 type="button"
@@ -127,9 +177,10 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         `;
     }
 
-    protected override renderForm(): TemplateResult {
+    protected override renderForm(): SlottedTemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} name="user">
                 <ak-search-select
+                    placeholder=${msg("Select a user...")}
                     blankable
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
@@ -144,7 +195,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
                     .renderElement=${(user: User): string => {
                         return user.username;
                     }}
-                    .renderDescription=${(user: User): TemplateResult => {
+                    .renderDescription=${(user: User): SlottedTemplateResult => {
                         return html`${user.name}`;
                     }}
                     .value=${(user: User | undefined): number | undefined => {
@@ -158,6 +209,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Group")} name="group">
                 <ak-search-select
+                    placeholder=${msg("Select a group...")}
                     blankable
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
@@ -181,17 +233,30 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Context")} name="context">
-                <ak-codemirror mode="yaml" value=${YAML.stringify(this.request?.context ?? {})}>
+            ${this.renderExampleButtons()}
+
+            <ak-form-element-horizontal name="context">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "context",
+                    },
+                    msg("Context"),
+                )}
+                <ak-codemirror
+                    id="context"
+                    mode="yaml"
+                    value=${YAML.stringify(this.request?.context ?? {})}
+                >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">${this.renderExampleButtons()}</p>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : nothing}`;
+            ${this.result ? this.renderResult() : null}`;
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-test-form": PolicyTestForm;
+        "ak-property-mapping-test-form": PropertyMappingTestForm;
     }
 }

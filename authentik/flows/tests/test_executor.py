@@ -1,5 +1,6 @@
 """flow views tests"""
 
+from datetime import timedelta
 from unittest.mock import MagicMock, PropertyMock, patch
 from urllib.parse import urlencode
 
@@ -7,6 +8,7 @@ from django.http import HttpRequest, HttpResponse
 from django.test import override_settings
 from django.test.client import RequestFactory
 from django.urls import reverse
+from django.utils.timezone import now
 from rest_framework.exceptions import ParseError
 
 from authentik.core.models import Group, User
@@ -17,6 +19,7 @@ from authentik.flows.models import (
     FlowDeniedAction,
     FlowDesignation,
     FlowStageBinding,
+    FlowToken,
     InvalidResponseAction,
 )
 from authentik.flows.planner import FlowPlan, FlowPlanner
@@ -24,6 +27,7 @@ from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageVie
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import (
     NEXT_ARG_NAME,
+    QS_KEY_TOKEN,
     QS_QUERY,
     SESSION_KEY_PLAN,
     FlowExecutorView,
@@ -739,4 +743,78 @@ class TestFlowExecutor(FlowTestCase):
                 "layout": "stacked",
                 "title": flow.title,
             },
+        )
+
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_expired_flow_token(self):
+        """Test that an expired flow token shows an appropriate error message"""
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_TOKEN,
+        )
+        user = create_test_user()
+        plan = FlowPlan(flow_pk=flow.pk.hex, bindings=[], markers=[])
+
+        token = FlowToken.objects.create(
+            user=user,
+            identifier=generate_id(),
+            flow=flow,
+            _plan=FlowToken.pickle(plan),
+            expires=now() - timedelta(hours=1),
+        )
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.get(
+            url + f"?{urlencode({QS_QUERY: urlencode({QS_KEY_TOKEN: token.key})})}"
+        )
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-access-denied",
+            error_message="This link is invalid or has expired. Please request a new one.",
+        )
+
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_invalid_flow_token_require_token(self):
+        """Test that an invalid/nonexistent token on a REQUIRE_TOKEN flow shows error"""
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_TOKEN,
+        )
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.get(
+            url + f"?{urlencode({QS_QUERY: urlencode({QS_KEY_TOKEN: 'invalid-token'})})}"
+        )
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-access-denied",
+            error_message="This link is invalid or has expired. Please request a new one.",
+        )
+
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_no_token_require_token(self):
+        """Test that accessing a REQUIRE_TOKEN flow without any token shows error"""
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_TOKEN,
+        )
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+        response = self.client.get(url)
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-access-denied",
+            error_message="This link is invalid or has expired. Please request a new one.",
         )

@@ -20,10 +20,15 @@ class TestBrands(APITestCase):
 
     def setUp(self):
         super().setUp()
-        self.default_flags = {}
-        for flag in Flag.available(visibility="public"):
-            self.default_flags[flag().key] = flag.get()
         Brand.objects.all().delete()
+
+    @property
+    def default_flags(self) -> dict[str, object]:
+        """Get current public flags.
+
+        Some tests define temporary Flag subclasses, so this can't be cached in setUp.
+        """
+        return {flag().key: flag.get() for flag in Flag.available(visibility="public")}
 
     def test_current_brand(self):
         """Test Current brand API"""

@@ -55,7 +55,7 @@ export const CheckboxGroup = () => {
             Values sent in event: ${event.detail.join(", ")}
         </p>
         <p>
-            Values present as data-ak-control: <kbd>${JSON.stringify(target.json(), null)}</kbd>
+            Values present as data-ak-control: <kbd>${JSON.stringify(target.toJSON(), null)}</kbd>
         </p>
     `;
     };

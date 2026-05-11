@@ -2,17 +2,24 @@
 title: Endpoint stage
 ---
 
-This stage integrates with the [Endpoint Device](../../../../endpoint-devices/index.mdx) functionality and allows authentik to verify whether the device executing a flow is registered.
+The Endpoint stage checks whether the current browser or device is known to authentik's Endpoint Devices system and injects device facts into flow context.
 
-The Endpoint stage fetches [device facts](../../../../endpoint-devices/device-compliance/device-reporting.md#device-facts) via a configured [connector](../../../../endpoint-devices/device-compliance/connectors/index.mdx) and injects them into the flow context. These device facts can be used by other stages and policies to make device compliance decisions.
+## Overview
 
-## Connector
+This stage integrates with [Endpoint Devices](../../../../endpoint-devices/index.mdx). It can associate the current session with a managed endpoint and make device facts available to policies and later stages.
 
-Select the [connector](../../../../endpoint-devices/device-compliance/connectors/index.mdx) that the Endpoint stage will use to obtain device facts.
+## Configuration options
 
-## Mode
+- **Connector**: which endpoint connector should be used to gather device information.
+- **Mode**: whether endpoint verification is optional or required.
 
-Select whether the presence of a registered endpoint device is required for the stage to succeed.
+## Flow integration
 
-- If the mode is set to required, and device verification fails, the user is not able to proceed with the flow.
-- If the mode is set to optional, authentik will attempt to verify the device, and if it doesn't receive a response within the specified `challenge_idle_timeout`, authentik will continue without attaching a device to the flow.
+Use this stage in authentication or authorization flows where device posture should influence access decisions.
+
+The device facts gathered by this stage can then be consumed by policies or by later flow logic.
+
+## Notes
+
+- In **required** mode, the flow fails if the device cannot be verified.
+- In **optional** mode, authentik attempts verification and can continue without attaching a device if verification does not complete in time.

@@ -1,13 +1,14 @@
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
 import { MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { showMessage } from "#elements/messages/MessageContainer";
 
-import { AdminApi, AdminFileListUsageEnum } from "@goauthentik/api";
+import { AdminApi, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -47,7 +48,7 @@ function getFileExtension(fileName: string): string {
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
     @property({ type: String, useDefault: true })
-    public usage: AdminFileListUsageEnum = AdminFileListUsageEnum.Media;
+    public usage: UsageEnum = UsageEnum.Media;
 
     @state()
     protected selectedFile: File | null = null;
@@ -127,6 +128,13 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                         ${msg(
                             "Optionally rename the file (without extension). Leave empty to keep the original filename.",
                         )}
+                        <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href=${docLink("/customize/file-picker/")}
+                        >
+                            ${msg("See documentation for path rules and theme-aware names.")}
+                        </a>
                     </p>
                 </ak-form-element-horizontal>
             </form>

@@ -42,7 +42,7 @@ We recommend using a certificate generated outside of authentik. A privately iss
 
 To download a certificate for SAML configuration:
 
-1. Log into authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider.
 3. Click the **Download** button found under **Download signing certificate**. The contents of this certificate will be required when configuring the service provider.
 
@@ -104,6 +104,9 @@ authentik uses the following rules to import certificates:
 - **Certbot convention**: Files named `fullchain.pem` or `privkey.pem` will use their parent folder's name
     - Files in paths containing `archive` are ignored (to better support certbot setups)
 
+- **[Kubernetes TLS Secrets](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod)**: Files named `tls.crt` or `tls.key` will use their parent folder's name
+    - Files named `tls-combined.pem`, `ca.crt`, or `key.der` are ignored (to better support [cert-manager setups](https://cert-manager.io/docs/usage/certificate/#additional-certificate-output-formats))
+
 - **Flexible organization**: Files can use any directory structure and extension
 
 #### Directory structure example
@@ -119,6 +122,10 @@ certs/
 ├── foo.bar
 │   ├── fullchain.pem
 │   └── privkey.pem
+├── foo.baz
+│   ├── key.der
+│   ├── tls.crt
+│   └── tls.key
 ├── foo.key
 └── foo.pem
 ```

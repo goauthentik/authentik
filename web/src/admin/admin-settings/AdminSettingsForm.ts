@@ -8,17 +8,19 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "./AdminSettingsFooterLinks.js";
+import "#elements/Alert";
 
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { Form } from "#elements/forms/Form";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -56,7 +58,20 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         return result;
     }
 
-    protected override renderForm(): TemplateResult {
+    public override submitLabel = msg("Save changes");
+
+    public override renderHeader() {
+        return html`<div class="ak-c-form__header">
+            <h2 class="pf-c-title pf-m-2xl sr-only">${msg("Edit Settings")}</h2>
+            <div part="form-actions">${this.renderSubmitButton()}</div>
+        </div>`;
+    }
+
+    public override renderActions(): SlottedTemplateResult {
+        return null;
+    }
+
+    protected override renderForm(): SlottedTemplateResult {
         const { settings } = this;
 
         return html`
@@ -273,6 +288,18 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                         help=${msg(
                             "When enabled, other flow tabs in a session will refresh upon a successful authentication.",
                         )}
+                        .bighelp=${html`<ak-alert class="pf-c-radio__description" inline plain>
+                            ${msg("This flag is deprecated.")}
+                        </ak-alert>`}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.coreDefaultAppAccess"
+                        ?checked=${settings?.flags.coreDefaultAppAccess ?? true}
+                        label=${msg("Require policies for application access")}
+                        help=${msg(
+                            "Configure if applications without any policy/group/user bindings should be accessible to any user.",
+                        )}
                     >
                     </ak-switch-input>
                     <ak-switch-input
@@ -288,6 +315,9 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                         name="flags.flowsContinuousLogin"
                         ?checked=${settings?.flags.flowsContinuousLogin ?? false}
                         label=${msg("Continuous Login")}
+                        help=${msg(
+                            "Upon successful authentication, re-start authentication in other open tabs.",
+                        )}
                     >
                     </ak-switch-input>
                 </div>
