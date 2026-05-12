@@ -332,7 +332,8 @@
             "typescript": "$typescript"
         },
         "@mrmarble/djangoql-completion": {
-            "lex": "$lex"
+            "lex": "$lex",
+            "lodash": "^4.18.1"
         },
         "@typescript-eslint/eslint-plugin": {
             "typescript": "$typescript"
@@ -357,6 +358,9 @@
         },
         "typescript-eslint": {
             "typescript": "$typescript"
+        },
+        "wireit": {
+            "brace-expansion": "^1.1.14"
         }
     }
 }
