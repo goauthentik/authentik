@@ -9,7 +9,6 @@
         "build:integrations": "npm run build -w integrations",
         "check-types": "tsc -b",
         "docusaurus": "docusaurus",
-        "preinstall": "npm ci --prefix ..",
         "lint": "eslint --fix .",
         "lint:lockfile": "echo 'Skipping lockfile linting'",
         "lint-check": "eslint --max-warnings 0 .",
