@@ -215,10 +215,9 @@ class ResponseProcessor:
         user has an attribute that refers to our Source for cleanup. The user is also deleted
         on logout and periodically."""
         # Create a temporary User
-        name_id = self._get_name_id()
-        username = name_id.text
+        name_id_el, name_id = self._get_name_id()
         # trim username to ensure it is max 150 chars
-        username = f"ak-{username[: USERNAME_MAX_LENGTH - 14]}-transient"
+        username = f"ak-{name_id[: USERNAME_MAX_LENGTH - 14]}-transient"
         expiry = mktime(
             (now() + timedelta_from_string(self._source.temporary_user_delete_after)).timetuple()
         )
@@ -234,20 +233,18 @@ class ResponseProcessor:
             },
             path=self._source.get_user_path(),
         )
-        LOGGER.debug("Created temporary user for NameID Transient", username=name_id.text)
+        LOGGER.debug("Created temporary user for NameID Transient", username=name_id)
         user.set_unusable_password()
         user.save()
-        UserSAMLSourceConnection.objects.create(
-            source=self._source, user=user, identifier=name_id.text
-        )
+        UserSAMLSourceConnection.objects.create(source=self._source, user=user, identifier=name_id)
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
-            identifier=str(name_id.text),
+            identifier=str(name_id),
             user_info={
                 "root": self._root,
                 "assertion": self.get_assertion(),
-                "name_id": name_id,
+                "name_id": name_id_el,
             },
             policy_context={},
         )
@@ -258,7 +255,7 @@ class ResponseProcessor:
             return self._assertion
         return self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
 
-    def _get_name_id(self) -> Element:
+    def _get_name_id(self) -> tuple[Element, str]:
         """Get NameID Element"""
         assertion = self.get_assertion()
         if assertion is None:
@@ -269,12 +266,11 @@ class ResponseProcessor:
         name_id = subject.find(f"{{{NS_SAML_ASSERTION}}}NameID")
         if name_id is None:
             raise ValueError("NameID element not found")
-        return name_id
+        return name_id, "".join(name_id.itertext())
 
     def _get_name_id_filter(self) -> dict[str, str]:
         """Returns the subject's NameID as a Filter for the `User`"""
-        name_id_el = self._get_name_id()
-        name_id = name_id_el.text
+        name_id_el, name_id = self._get_name_id()
         if not name_id:
             raise UnsupportedNameIDFormat("Subject's NameID is empty.")
         _format = name_id_el.attrib["Format"]
@@ -295,26 +291,26 @@ class ResponseProcessor:
 
     def prepare_flow_manager(self) -> SourceFlowManager:
         """Prepare flow plan depending on whether or not the user exists"""
-        name_id = self._get_name_id()
+        name_id_el, name_id = self._get_name_id()
         # Sanity check, show a warning if NameIDPolicy doesn't match what we go
-        if self._source.name_id_policy != name_id.attrib["Format"]:
+        if self._source.name_id_policy != name_id_el.attrib["Format"]:
             LOGGER.warning(
                 "NameID from IdP doesn't match our policy",
                 expected=self._source.name_id_policy,
-                got=name_id.attrib["Format"],
+                got=name_id_el.attrib["Format"],
             )
         # transient NameIDs are handled separately as they don't have to go through flows.
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+        if name_id_el.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient()
 
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
-            identifier=str(name_id.text),
+            identifier=str(name_id),
             user_info={
                 "root": self._root,
                 "assertion": self.get_assertion(),
-                "name_id": name_id,
+                "name_id": name_id_el,
             },
             policy_context={
                 "saml_response": etree.tostring(self._root),
