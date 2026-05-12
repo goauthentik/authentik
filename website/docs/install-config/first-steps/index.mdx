@@ -167,13 +167,10 @@ Now that you can access the authentik Admin interface, and you have added an app
 
 ### 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-    **A.** Navigate to **Directory > Users**, and click **New User**.
+    **A.** Navigate to **Directory > Users**, click **New User**, and then select **Internal User**..
 
-    **B.** Fill in the **_required_** fields:
+    **B.** Fill in all **_required_** fields:
 
-- In the **User folders** area, select the folder where you want to create a user.
-- Click **New User**, and then select **Internal User**.
-- Fill in the following fields:
     - **Username**: This value must be unique across all users.
     - **Display Name** (_optional_): The display name of the user.
     - **Email** (_optional_): The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.md), as an alternative method to log in, by services to request an email address, and if configured, to receive [notifications](../../sys-mgmt/events/notifications.md).
@@ -183,7 +180,7 @@ Now that you can access the authentik Admin interface, and you have added an app
           users (for example HR vs Sales, etc.). Paths do not impact access; they are purely
           organizational. Note that the top-level **users** folder displays all users in that folder
           and all sub-folders.
-    - **Attributes**: [Custom attributes](../../users-sources/user/user_ref.mdx) for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
+    - **Attributes** (_optional_): [Custom attributes](../../users-sources/user/user_ref.mdx) for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 
 C. Click **Create**.
 
