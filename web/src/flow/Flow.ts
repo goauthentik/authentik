@@ -5,7 +5,7 @@ import "#flow/FlowExecutor";
 import "#flow/tabs/broadcast";
 
 import { FlowWebsocketClientController } from "./controllers/FlowWebsocketClientController";
-import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
+import Styles from "./Flow.styles";
 
 import { globalAK } from "#common/global";
 import { applyBackgroundImageProperty } from "#common/theme";
@@ -25,16 +25,9 @@ import { ConsoleLogger } from "#logger/browser";
 import { ContextualFlowInfo, FlowLayoutEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 /// <reference types="../../types/lit.d.ts" />
 
@@ -78,15 +71,7 @@ export class Flow extends WithBrandConfig(Interface) {
     public static readonly DefaultLayout: FlowLayoutEnum =
         globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
 
-    static styles: CSSResult[] = [
-        PFLogin,
-        PFDrawer,
-        PFButton,
-        PFTitle,
-        PFList,
-        PFBackgroundImage,
-        Styles,
-    ];
+    static styles = [Styles];
 
     //#endregion
 
@@ -242,47 +227,39 @@ export class Flow extends WithBrandConfig(Interface) {
 
     protected renderFooter() {
         return guard([this.layout], () => {
-            return html`<footer
-                aria-label=${msg("Site footer")}
-                name="site-footer"
-                part="footer"
-                class="pf-c-login__footer ${this.layout === FlowLayoutEnum.Stacked
-                    ? "pf-m-dark"
-                    : ""}"
-            >
-                <slot name="footer"></slot>
-            </footer>`;
+            return html``;
         });
     }
 
     protected override render(): SlottedTemplateResult {
         const { loading } = this;
 
-        return html`<ak-locale-select
-                part="locale-select"
-                exportparts="label:locale-select-label,select:locale-select-select"
-                class="pf-m-dark"
-            ></ak-locale-select>
-            <ak-flow-inspector-button></ak-flow-inspector-button>
-            ${this.renderFrameBackground()}
-            <header class="pf-c-login__header"></header>
-            <main
-                data-layout=${this.layout}
-                class="pf-c-login__main"
-                aria-label=${msg("Authentication form")}
-                part="main"
-            >
-                <div class="pf-c-login__main-header pf-c-brand" part="branding">
-                    ${this.renderHeader()}
-                </div>
-                ${loading
-                    ? html`<ak-loading-overlay part="loading-overlay"></ak-loading-overlay>`
-                    : nothing}
-                <div part="flow-executor">
-                    ${light(html`<ak-flow-executor slug=${this.slug}></ak-flow-executor>`)}
-                </div>
-            </main>
-            ${this.renderFooter()}`;
+        return html` ${this.renderFrameBackground()}
+            <div class="ak-c-v2-flow__panel" part="panel">
+                <div class="ak-c-v2-flow__spacer" part="head-spacer"></div>
+                <main
+                    data-layout=${this.layout}
+                    class="ak-c-v2-flow__card"
+                    aria-label=${msg("Authentication form")}
+                    part="main"
+                >
+                    <div class="ak-c-v2-flow__header" part="branding">${this.renderHeader()}</div>
+                    ${loading
+                        ? html`<ak-loading-overlay part="loading-overlay"></ak-loading-overlay>`
+                        : nothing}
+                    <div class="ak-c-v2-flow__executor" part="flow-executor">
+                        ${light(html`<ak-flow-executor slug=${this.slug}></ak-flow-executor>`)}
+                    </div>
+                </main>
+                <footer
+                    aria-label=${msg("Site footer")}
+                    name="site-footer"
+                    part="footer"
+                    class="ak-v2-c-flow__footer"
+                >
+                    <slot name="footer"></slot>
+                </footer>
+            </div>`;
     }
 
     //#endregion

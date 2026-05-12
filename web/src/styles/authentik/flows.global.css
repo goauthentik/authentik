@@ -30,6 +30,7 @@
 @import "#elements/locale/ak-locale-select.css";
 @import "#elements/locale/ak-locale-select.css";
 @import "#flow/FlowExecutor.css";
+@import "#flow/Flow.root.css";
 @import "#flow/stages/identification/styles.css";
 @import "./components/Form/form.css";
 

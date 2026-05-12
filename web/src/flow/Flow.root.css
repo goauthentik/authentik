@@ -1,0 +1,21 @@
+:root {
+    --ak-v2-c-flow--Color: var(--ak-v2-global--PrimaryText, #151515);
+    --ak-v2-c-flow--Gutter: var(--ak-v2-global--spacer--xl);
+    --ak-v2-c-flow--VerticalOffest: 18vh;
+
+    --ak-v2-c-flow__card--BackgroundColor: var(--ak-v2-global--ContentSurface, #fff);
+    --ak-v2-c-flow__card--BorderRadius: var(--ak-v2-global--BorderRadius--sm);
+    --ak-v2-c-flow__card--BoxShadow: var(--ak-v2-global--BoxShadow--md);
+    --ak-v2-c-flow__card--Gap: var(--ak-v2-global--spacer-lg);
+    --ak-v2-c-flow__card--InlineSize: min(28rem, 100%);
+    --ak-v2-c-flow__card--MinBlockSize: 32rem;
+    --ak-v2-c-flow__card--Padding: var(--ak-v2-global--spacer-xl);
+
+    --ak-v2-c-flow__footer--Gap: var(--ak-v2-global--spacer-sm);
+
+    --ak-flow-sidebar-inline-size: clamp(20rem, 32vw, 32rem);
+
+    /* Translucent band that reads against a photographic background. */
+    --ak-v2-c-flow__footer--Background: var(--ak-v2-global--BackgroundColor--over-photo-filter);
+    --ak-v2-c-flow__footer--Color: var(--ak-v2-global--SecondaryReverseColor);
+}
