@@ -73,9 +73,9 @@ export class FlowInspectorButton extends WithCapabilitiesConfig(AKElement) {
         const drawer = document.getElementById("flow-drawer");
         if (changed.has("open") && drawer) {
             if (this.open) {
-                drawer.setAttribute("open", "");
+                drawer.setAttribute("expanded", "");
             } else {
-                drawer.removeAttribute("open");
+                drawer.removeAttribute("expanded");
             }
         }
     }
