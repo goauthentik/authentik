@@ -10,6 +10,7 @@ from authentik.brands.models import Brand
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     AuthenticatedSession,
+    Group,
     Session,
     Token,
     User,
@@ -740,3 +741,53 @@ class TestUsersAPI(APITestCase):
             response.content,
             {"name": ["This field must be unique."]},
         )
+
+
+class TestUsersAPIGroupValidation(APITestCase):
+    """Test that PATCH /api/v3/core/users/{pk}/ enforces group permission checks."""
+
+    def setUp(self) -> None:
+        self.actor = create_test_user()
+        self.target = create_test_user()
+
+    def _patch(self, data: dict):
+        self.client.force_login(self.actor)
+        return self.client.patch(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.target.pk}),
+            data=data,
+            content_type="application/json",
+        )
+
+    def test_patch_superuser_group_no_perm(self):
+        """Assigning a superuser group without enable_group_superuser must be rejected."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        group = Group.objects.create(name=generate_id(), is_superuser=True)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 400)
+
+    def test_patch_superuser_group_with_perm(self):
+        """Assigning a superuser group with enable_group_superuser must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        self.actor.assign_perms_to_managed_role("authentik_core.enable_group_superuser")
+        group = Group.objects.create(name=generate_id(), is_superuser=True)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+
+    def test_patch_non_superuser_group_no_perm(self):
+        """Assigning a non-superuser group without special permission must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        group = Group.objects.create(name=generate_id(), is_superuser=False)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+
+    def test_patch_existing_superuser_group_no_perm(self):
+        """Keeping an existing superuser group membership without the permission must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        group = Group.objects.create(name=generate_id(), is_superuser=True)
+        self.target.ak_groups.add(group)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
