@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+#
+# Run a command inside an ephemeral Linux container via Apple's
+# `container` runtime (macOS 15+, Apple Silicon). Each invocation is a
+# fresh container with the repo mounted read-write at /work; nothing
+# outside the repo, the npm cache, or /tmp is visible.
+#
+# Examples:
+#   scripts/container-sandbox npm ci
+#   CONTAINER_NETWORK=none scripts/container-sandbox npm test
+#   CONTAINER_IMAGE=node:22-bookworm scripts/container-sandbox sh -c '...'
+#
+# This is an opt-in defense-in-depth wrapper for macOS contributors. The
+# .npmrc at the repo root is the primary defense; the container adds
+# real kernel-level isolation on top.
+#
+# Install requirements:
+#   brew install container        (macOS 15+, Apple Silicon only)
+#
+# Caveats:
+#   - The container is Linux, not Darwin. node_modules installed inside
+#     will contain linux-arm64 binaries (esbuild, chromedriver, etc.).
+#     If you also want to run the dev server on the host, you'll need a
+#     second native install. Pick one workflow per session.
+#   - Image is pinned to a tag, not a digest, for ergonomics. For
+#     stronger supply-chain guarantees, set CONTAINER_IMAGE to a digest.
+
+set -euo pipefail
+
+if [[ "$(uname -s)" != "Darwin" ]]; then
+    echo "container-sandbox is macOS-only. On Linux, run installs natively or use podman/bwrap." >&2
+    exit 1
+fi
+
+if ! command -v container >/dev/null 2>&1; then
+    cat >&2 <<'EOM'
+`container` not found.
+
+Apple's container runtime is available on macOS 15+ (Apple Silicon only):
+    brew install container
+
+Once installed, retry this command.
+EOM
+    exit 1
+fi
+
+if [[ $# -lt 1 ]]; then
+    echo "Usage: $0 <command> [args...]" >&2
+    exit 64
+fi
+
+image="${CONTAINER_IMAGE:-node:22-bookworm}"
+network="${CONTAINER_NETWORK:-default}"
+
+network_args=()
+case "$network" in
+    none)
+        network_args=(--network none)
+        ;;
+    default|host|"")
+        ;;
+    *)
+        network_args=(--network "$network")
+        ;;
+esac
+
+echo "==========================="
+echo "Container: $image  network=$network"
+echo "==========================="
+
+exec container run \
+    --rm \
+    "${network_args[@]}" \
+    -v "${PWD}:/work" \
+    -w /work \
+    "$image" \
+    "$@"

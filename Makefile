@@ -242,6 +242,19 @@ node-install: root-node-install  ## Install the necessary libraries to build Nod
 	npm ci --prefix web
 	npm rebuild --prefix web --ignore-scripts=false --foreground-scripts $(TRUSTED_INSTALL_SCRIPTS)
 
+node-install-containerized:  ## Run node-install inside an Apple container (macOS 15+, Apple Silicon)
+ifeq ($(UNAME_S),Darwin)
+	./scripts/container-sandbox sh -c '\
+		npm ci && \
+		npm ci --prefix web && \
+		npm rebuild --prefix web --ignore-scripts=false --foreground-scripts $(TRUSTED_INSTALL_SCRIPTS) \
+	'
+else
+	@echo "node-install-containerized is macOS-only (uses Apple's container runtime)." >&2
+	@echo "Falling back to plain node-install." >&2
+	$(MAKE) node-install
+endif
+
 #########################
 ## Web
 #########################
