@@ -8,11 +8,64 @@ Invitations are another way to create a user, by inviting someone to join your a
 
 You can configure invitations either by:
 
-- using [pre-built blueprints](#use-pre-built-blueprints-to-configure-invitations) (recommended for quick setup).
+- using the [invitation wizard](#use-the-invitation-wizard) (recommended; creates the enrollment flow and the invitation in one guided process).
+- using [pre-built blueprints](#use-pre-built-blueprints-to-configure-invitations) (good for showcasing multiple flow variations).
 - [manually creating flows and stages](#manual-setup-without-blueprints) (for custom configurations).
 
 :::info
-You can also create a [policy](../../../customize/policies/) to see if the invitation was ever used.
+You can also create a [policy](../../../customize/policies/) to check whether the invitation was ever used.
+:::
+
+## Use the invitation wizard
+
+The invitation wizard, available from the **Directory** > **Invitations** page in the Admin interface, walks you through creating an invitation and (optionally) the enrollment flow it binds to in a single guided process.
+
+### Step 1. Open the wizard
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Invitations**.
+3. Click the caret (>) next to the **New Invitation** button and choose how the wizard should handle the invitation:
+    - **with Existing Enrollment Flow...**: bind the new invitation to an existing enrollment flow. Only enrollment flows that have an invitation stage bound to them are listed. This is also what the **New Invitation** button does by default.
+    - **with New Enrollment Flow and Invitation Stage...**: create a new minimal enrollment flow, including an invitation stage, then bind the invitation to it. Use this option when you do not yet have an enrollment flow set up, or when you want a separate enrollment flow for an invitation.
+
+    :::info Automatic flow selection
+    If you choose **with Existing Enrollment Flow...** and only one eligible flow exists, the wizard skips the flow selection step and takes you directly to the invitation details.
+    :::
+
+### Step 2. Configure the enrollment flow
+
+- If you picked an existing flow, select it from the **Enrollment flow** drop-down and click **Next**.
+- If you are creating a new flow, fill in:
+    - **Flow name**: display name of the new enrollment flow.
+    - **Flow slug**: the slug for the flow which is included in the URL.
+    - **Invitation stage name**: name of the invitation stage that will be bound to the new flow.
+    - **User type**: the user type for users enrolled via this flow.
+    - **Continue flow without invitation**: when enabled, the flow proceeds to the next stage even when no invitation token is supplied. When disabled, the flow is cancelled if a valid invitation is not provided.
+
+### Step 3. Configure the invitation details
+
+- **Name**: provide a slug-style name for your invitation object (lowercase letters, numbers, and hyphens only).
+- **Expires**: select a date and time for when the invitation should expire. Defaults to 48 hours from now.
+- **Flow**: read-only; reflects the flow chosen in the previous step.
+- **Custom attributes**: (_optional_) YAML or JSON that is loaded into the flow's `prompt_data` context to pre-fill user information. Field keys must match the keys configured in the flow's [prompt stage](../../add-secure-apps/flows-stages/stages/prompt/index.md). See the [example custom attributes](#step-3-create-the-invitation-object) below for sample payloads.
+- **Single use**: when enabled, the invitation is deleted after the first successful enrollment.
+
+Click **Next** to create the invitation. If you chose **with New Enrollment Flow and Invitation Stage...**, the supporting blueprint is imported at this point as well.
+
+### Step 4. Share the invitation
+
+After the invitation is created, the wizard's final step shows the **Link to use the invitation**. From there you can:
+
+- Click **Copy Link** to copy the invitation URL to your clipboard.
+- Click **Send via Email** to open the email step inside the wizard. Enter:
+    - **To**: one email per line, or comma/semicolon separated. Each recipient receives a separate email.
+    - **CC** / **BCC**: (_optional_) recipients for carbon and blind carbon copies.
+    - **Template**: the email template to use (the default `Invitation` template is recommended).
+
+    Click **Send** to queue the emails. They are sent asynchronously by the background worker. Check **System Tasks** for delivery status.
+
+:::note Email configuration required
+To send invitation emails, you must have configured email in authentik. Refer to the [Email configuration](../../install-config/email.mdx) documentation for details.
 :::
 
 ## Use pre-built blueprints to configure invitations
