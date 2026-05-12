@@ -3,6 +3,7 @@
 from base64 import b64encode
 
 from django.test import TestCase
+from freezegun import freeze_time
 
 from authentik.core.tests.utils import RequestFactory, create_test_cert, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
@@ -46,6 +47,7 @@ class TestResponseProcessor(TestCase):
         ):
             ResponseProcessor(self.source, request).parse()
 
+    @freeze_time("2022-10-14T14:15:00")
     def test_success(self):
         """Test success"""
         request = self.factory.post(
@@ -72,6 +74,7 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+    @freeze_time("2022-10-14T14:16:40Z")
     def test_success_with_status_message_and_detail(self):
         """Test success with StatusMessage and StatusDetail present (should not raise error)"""
         request = self.factory.post(
@@ -88,6 +91,7 @@ class TestResponseProcessor(TestCase):
         sfm = parser.prepare_flow_manager()
         self.assertEqual(sfm.user_properties["username"], "jens@goauthentik.io")
 
+    @freeze_time("2022-10-14T14:16:40Z")
     def test_error_with_message_and_detail(self):
         """Test error status with StatusMessage and StatusDetail includes both in error"""
         request = self.factory.post(
@@ -105,6 +109,7 @@ class TestResponseProcessor(TestCase):
         self.assertIn("User account is disabled", str(ctx.exception))
         self.assertIn("Authentication failed", str(ctx.exception))
 
+    @freeze_time("2024-08-07T15:48:09.325Z")
     def test_encrypted_correct(self):
         """Test encrypted"""
         key = load_fixture("fixtures/encrypted-key.pem")
@@ -142,6 +147,7 @@ class TestResponseProcessor(TestCase):
         with self.assertRaises(InvalidEncryption):
             parser.parse()
 
+    @freeze_time("2022-10-14T14:16:40Z")
     def test_verification_assertion(self):
         """Test verifying signature inside assertion"""
         key = load_fixture("fixtures/signature_cert.pem")
@@ -164,6 +170,7 @@ class TestResponseProcessor(TestCase):
         parser = ResponseProcessor(self.source, request)
         parser.parse()
 
+    @freeze_time("2014-07-17T01:02:18Z")
     def test_verification_assertion_duplicate(self):
         """Test verifying signature inside assertion, where the response has another assertion
         before our signed assertion"""
@@ -189,6 +196,7 @@ class TestResponseProcessor(TestCase):
         self.assertNotEqual(parser._get_name_id().text, "bad")
         self.assertEqual(parser._get_name_id().text, "_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7")
 
+    @freeze_time("2014-07-17T01:02:18Z")
     def test_verification_response(self):
         """Test verifying signature inside response"""
         key = load_fixture("fixtures/signature_cert.pem")
@@ -211,6 +219,7 @@ class TestResponseProcessor(TestCase):
         parser = ResponseProcessor(self.source, request)
         parser.parse()
 
+    @freeze_time("2024-01-18T06:20:48Z")
     def test_verification_response_and_assertion(self):
         """Test verifying signature inside response and assertion"""
         key = load_fixture("fixtures/signature_cert.pem")
@@ -257,6 +266,7 @@ class TestResponseProcessor(TestCase):
         with self.assertRaisesMessage(InvalidSignature, ""):
             parser.parse()
 
+    @freeze_time("2022-10-14T14:15:00")
     def test_verification_no_signature(self):
         """Test rejecting response without signature when signed_assertion is True"""
         key = load_fixture("fixtures/signature_cert.pem")
