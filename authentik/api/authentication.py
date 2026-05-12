@@ -42,11 +42,29 @@ def validate_auth(header: bytes, format="bearer") -> str | None:
     return auth_credentials
 
 
-class IPCUser(AnonymousUser):
+class VirtualUser(AnonymousUser):
+    is_active = True
+
+    @property
+    def type(self):
+        return UserTypes.INTERNAL_SERVICE_ACCOUNT
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    def all_roles(self):
+        return []
+
+
+class IPCUser(VirtualUser):
     """'Virtual' user for IPC communication between authentik core and the authentik router"""
 
     username = "authentik:system"
-    is_active = True
     is_superuser = True
 
     @property
@@ -61,17 +79,6 @@ class IPCUser(AnonymousUser):
 
     def has_module_perms(self, module):
         return True
-
-    @property
-    def is_anonymous(self):
-        return False
-
-    @property
-    def is_authenticated(self):
-        return True
-
-    def all_roles(self):
-        return []
 
 
 class TokenAuthentication(BaseAuthentication):
