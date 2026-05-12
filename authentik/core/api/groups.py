@@ -246,6 +246,25 @@ class GroupSerializer(ModelSerializer):
                 )
         return superuser
 
+    def validate_users(self, users: list) -> list:
+        """Require add_user_to_group permission when adding new members via group PATCH."""
+        request: Request = self.context.get("request", None)
+        if not request:
+            return users
+        if not self.instance:
+            return users
+        # BulkManyRelatedField returns raw PKs, not model instances
+        current_user_pks = set(self.instance.users.values_list("pk", flat=True))
+        new_users = [u for u in users if u not in current_user_pks]
+        if not new_users:
+            return users
+        has_perm = request.user.has_perm(
+            "authentik_core.add_user_to_group"
+        ) or request.user.has_perm("authentik_core.add_user_to_group", self.instance)
+        if not has_perm:
+            raise ValidationError(_("User does not have permission to add members to this group."))
+        return users
+
     class Meta:
         model = Group
         fields = [
