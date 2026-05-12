@@ -228,9 +228,19 @@ gen-dev-config:  ## Generate a local development config file
 ## Node.js
 #########################
 
-node-install:  ## Install the necessary libraries to build Node.js packages
+# Packages whose install/postinstall scripts are required for correct
+# operation (binary downloads, native bindings). The root .npmrc sets
+# `ignore-scripts=true` to block dependency lifecycle scripts by default;
+# this list is rebuilt explicitly with scripts re-enabled. Audit any
+# additions: each entry runs arbitrary code at install time.
+TRUSTED_INSTALL_SCRIPTS := esbuild chromedriver tree-sitter tree-sitter-json
+
+root-node-install:
 	npm ci
+
+node-install: root-node-install  ## Install the necessary libraries to build Node.js packages
 	npm ci --prefix web
+	npm rebuild --prefix web --ignore-scripts=false --foreground-scripts $(TRUSTED_INSTALL_SCRIPTS)
 
 #########################
 ## Web
@@ -268,7 +278,7 @@ web-i18n-extract:
 
 docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Authentik docs source code, lint the code, and compile it
 
-docs-install:
+docs-install: node-install
 	npm ci --prefix website
 
 docs-lint-fix: lint-spellcheck
