@@ -244,6 +244,23 @@ class UserSerializer(ModelSerializer):
             raise ValidationError("Setting a user to internal service account is not allowed.")
         return user_type
 
+    def validate_groups(self, groups: list) -> list:
+        """Require enable_group_superuser permission when adding a user to a superuser group."""
+        request: Request = self.context.get("request", None)
+        if not request:
+            return groups
+        current_groups = set(self.instance.ak_groups.all()) if self.instance else set()
+        for group in groups:
+            if not group.is_superuser:
+                continue
+            if group in current_groups:
+                continue
+            if not request.user.has_perm("authentik_core.enable_group_superuser"):
+                raise ValidationError(
+                    _("User does not have permission to add members to a superuser group.")
+                )
+        return groups
+
     def validate(self, attrs: dict) -> dict:
         if self.instance and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
             raise ValidationError("Can't modify internal service account users")
