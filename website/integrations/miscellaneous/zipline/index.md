@@ -61,4 +61,4 @@ To support the integration of Zipline with authentik, you need to create an appl
 
 ## Configuration verification
 
-To verify integration with authentik, log out of Zipline by clicking your user icon in the top right and selecting **Logout**. A new button should now appear on the login page, allowing you to sign in with authentik.
+To verify integration with authentik, log out of Zipline by clicking your user icon in the top-right corner and selecting **Logout**. A new button should now appear on the login page, allowing you to sign in with authentik.

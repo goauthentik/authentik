@@ -6,7 +6,7 @@ support_level: community
 
 ## What is AFFiNE?
 
-> AFFiNE is an open-source platform that allows you to bring together documents, whiteboards, and databases. It is a reliable tool designed to create a professional workspace for your work. With AFFiNE, you can focus on practicality and efficiency, making it easier to collaborate on your projects.
+> AFFiNE is an open-source, self-hostable workspace for documents, whiteboards, and databases.
 >
 > -- https://affine.pro/
 
@@ -29,28 +29,26 @@ To support the integration of AFFiNE with authentik, you need to create an appli
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Create a `Strict` redirect URI and set to `https://affine.company/oauth/callback`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Add one `Strict` redirect URI and set it to `https://affine.company/oauth/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## AFFiNE configuration
 
 1. Log in to AFFiNE as an administrator.
-2. Navigate to the Admin Panel of your instance by clicking on your profile picture.
-3. Navigate to **Settings** > **OAuth**.
-4. Under **OIDC OAuth provider config**, set the following JSON data:
+2. Click your profile picture and navigate to **Admin Panel** > **Settings** > **OAuth**.
+3. Under **OIDC OAuth provider config**, set the following JSON data:
 
 ```json
 {
     "args": {},
-    "issuer": "https://authentik.company/application/o/<application_slug>/",
+    "issuer": "https://authentik.company/application/o/<application_slug>",
     "clientId": "<Client ID from authentik>",
     "clientSecret": "<Client Secret from authentik>"
 }
@@ -60,8 +58,9 @@ To support the integration of AFFiNE with authentik, you need to create an appli
 
 ## Configuration verification
 
-To verify the integration of authentik with AFFiNE, log out of AFFiNE, then on the login page click on **Continue with OIDC**. You should be redirected to authentik, and once authenticated, logged in to AFFiNE.
+To confirm that authentik is properly configured with AFFiNE, open AFFiNE and log in using the **Continue with OIDC** login option. You should be redirected to authentik for authentication and then redirected back to AFFiNE.
 
 ## Resources
 
-- [AFFiNE Docs - OAuth 2.0 ](https://docs.affine.pro/self-host-affine/administer/oauth-2-0#oidc)
+- [AFFiNE OAuth 2.0 documentation](https://docs.affine.pro/self-host-affine/administer/oauth-2-0#oidc)
+- [AFFiNE OIDC provider source](https://github.com/toeverything/AFFiNE/blob/canary/packages/backend/server/src/plugins/oauth/providers/oidc.ts)

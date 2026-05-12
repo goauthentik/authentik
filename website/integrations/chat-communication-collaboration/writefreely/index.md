@@ -44,7 +44,7 @@ To support the integration of Writefreely with authentik, you need to create an 
 
 3. Click **Submit** to save the new application and provider.
 
-## Writefreely Setup
+## Writefreely setup
 
 ### Database
 

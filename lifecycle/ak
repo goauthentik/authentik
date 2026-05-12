@@ -38,6 +38,10 @@ function run_authentik {
             echo cargo run -- "$@"
         fi
         ;;
+    manage)
+        shift 1
+        echo python -m manage "$@"
+        ;;
     *)
         echo "$@"
         ;;

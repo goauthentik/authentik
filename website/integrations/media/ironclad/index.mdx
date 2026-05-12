@@ -67,7 +67,6 @@ Ironclad requires both a first and last name for each user, but by default, auth
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Temporarily set the **ACS URL** to `https://temp.temp`
-        - Set **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Set an available **Signing certificate**.
             - Toggle off **Sign assertions**.
@@ -100,14 +99,14 @@ Ironclad requires both a first and last name for each user, but by default, auth
 
 ## Download the metadata file
 
-1. Log into authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created Ironclad provider.
 3. Under **Metadata** click **Download**. This metadata file will be required in the next section.
 
 ## Complete Ironclad configuration
 
-1. Return to the Ironclad SAML configuration page and under **IdP Configuration XML** click on **Choose file**. Select the metadata file that you downloaded from authentik.
-2. Set **Entry point** to `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`.
+1. Return to the Ironclad SAML configuration page and under **IdP Configuration XML**, click **Choose file**. Select the metadata file that you downloaded from authentik.
+2. Set **Entry point** to `https://authentik.company/application/saml/<application-slug>/`.
 3. Click **Save**.
 
 :::info

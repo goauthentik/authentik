@@ -36,7 +36,6 @@ To support the integration of YouTrack with authentik, you need to create an app
     - Take note of the **slug** value as it will be required later.
     - Set the **ACS URL** to `https://placeholder.com`. You will replace this after YouTrack provides the real ACS URL.
     - Set the **Audience** to `https://placeholder.com`. You will replace this after YouTrack provides the real SP entity ID.
-    - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, set an available signing key and make sure **Sign assertions** is toggled.
     - Then, also under **Advanced protocol settings**, make sure **NameID Property Mapping** is set to `authentik default SAML Mapping: username`. Make sure the [Allow users to change username](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) setting is disabled to prevent authentication issues.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -54,7 +53,7 @@ To support the integration of YouTrack with authentik, you need to create an app
 2. Click **New module**, then select **SAML 2.0**.
 3. Fill out the form with the following information:
     - **Name**: Set an appropriate name (e.g. `authentik`)
-    - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+    - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **IdP entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **Certificate fingerprint**: Set to the SHA-256 fingerprint retrieved in the previous step.
 4. Click **Create** to submit the form and take note of the **ACS URL** and **SP entity ID** that YouTrack generates.

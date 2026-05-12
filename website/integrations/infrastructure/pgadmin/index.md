@@ -43,7 +43,7 @@ To support the integration of pgAdmin with authentik, you need to create an appl
 
 3. Click **Submit** to save the new application and provider.
 
-## pgAdmin OAuth Configuration
+## pgAdmin OAuth configuration
 
 To configure OAuth in pgAdmin, you can either use the `config_local.py` file or set environment variables if you are deploying pgAdmin in a containerized setup.
 
@@ -79,7 +79,7 @@ To configure OAuth in pgAdmin, you can either use the `config_local.py` file or 
     You must restart pgAdmin every time you make changes to `config_local.py`.
     :::
 
-### Using Environment Variables for Containerized Deployments
+### Use environment variables for containerized deployments
 
 For deployments using Docker or Kubernetes, you can configure OAuth using the following environment variables:
 
@@ -91,7 +91,7 @@ PGADMIN_CONFIG_OAUTH2_AUTO_CREATE_USER=True
 PGADMIN_CONFIG_OAUTH2_CONFIG="[{'OAUTH2_NAME':'authentik','OAUTH2_DISPLAY_NAME':'Login with authentik','OAUTH2_CLIENT_ID':'<Client ID from authentik>','OAUTH2_CLIENT_SECRET':'<Client secret from authentik>','OAUTH2_TOKEN_URL':'https://authentik.company/application/o/token/','OAUTH2_AUTHORIZATION_URL':'https://authentik.company/application/o/authorize/','OAUTH2_API_BASE_URL':'https://authentik.company/','OAUTH2_USERINFO_ENDPOINT':'https://authentik.company/application/o/userinfo/','OAUTH2_SERVER_METADATA_URL':'https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration','OAUTH2_SCOPE':'openid email profile','OAUTH2_ICON':'<Fontawesome icon key (e.g., fa-key)>','OAUTH2_BUTTON_COLOR':'<Hexadecimal color code for the login button>'}]"
 ```
 
-### General Notes
+### General notes
 
 - To **only allow OAuth2 login**, set:
 

@@ -45,13 +45,12 @@ To support the integration of FortiGate with authentik, you need to create an ap
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://fgt.company/saml/?acs`.
     - Set the **Audience** to `https://fgt.company/metadata`.
-    - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, add the **Property Mapping** you created in the previous section, then select an available **Signing Certificate**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-## FortiGate Configuration
+## FortiGate configuration
 
 To integrate FortiGate with authentik, navigate to `https://fortigate.company/ng/system/certificate` and import the certificate you configured in the previous section.
 
@@ -68,8 +67,8 @@ Under **IdP Details**, set the following values:
 - **SP entity ID**: `https`
 - **IdP Type**: `Custom`
 - **IdP entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
-- **IdP Login URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-- **IdP Logout URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+- **IdP Login URL**: `https://authentik.company/application/saml/<application_slug>/`
+- **IdP Logout URL**: `https://authentik.company/application/saml/<application_slug>/`
 
 FortiGate creates a new user by default if one does not exist, so you will need to set the Default Admin Profile to the permissions you want any new users to have. (I have created a `no_permissions` profile to assign by default.)
 
@@ -77,8 +76,8 @@ Under `SP Details` set the **SP entity ID** to `https`. Note it for later use (t
 
 - Set `IdP Type` to `Custom`
 - Set `IdP entity ID` to `https://authentik.company/application/saml/<application_slug>/metadata/`
-- Set `IdP Login URL` to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-- Set `IdP Logout URL` to `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+- Set `IdP Login URL` to `https://authentik.company/application/saml/<application_slug>/`
+- Set `IdP Logout URL` to `https://authentik.company/application/saml/<application_slug>/`
 - Set `IdP Certificate` to `ak.cert`
 
 ## Troubleshooting
