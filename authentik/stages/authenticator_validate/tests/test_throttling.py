@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.urls.base import reverse
-from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding
@@ -15,7 +14,8 @@ from authentik.stages.authenticator_sms.models import (
     SMSDevice,
     SMSProviders,
 )
-from authentik.stages.authenticator_validate.challenge import validate_challenge_code
+from authentik.stages.authenticator_validate.challenge import ChallengeValidationError, FlowContext
+from authentik.stages.authenticator_validate.challenge.email import EmailChallenger
 from authentik.stages.authenticator_validate.models import (
     AuthenticatorValidateStage,
     DeviceClasses,
@@ -118,8 +118,9 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         stage = self._validate_stage(email_otp_throttling_factor=3)
         device = self._email_device()
         device.generate_token()
-        with self.assertRaises(ValidationError):
-            validate_challenge_code("000000", self._stage_view(stage), self.user)
+        challenger = EmailChallenger(self.request_factory.get("/"), stage, FlowContext())
+        with self.assertRaises(ChallengeValidationError):
+            challenger.validate(EmailDevice.objects.filter(pk=device.pk), {}, "000000")
         device.refresh_from_db()
         self.assertEqual(device.throttling_failure_count, 1)
         # verify_is_allowed must compute the delay using factor=3 (3 * 2^0 = 3s).
@@ -135,10 +136,12 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         device = self._email_device()
         device.generate_token()
         token = device.token
+        challenger = EmailChallenger(self.request_factory.get("/"), stage, FlowContext())
         for _ in range(10):
-            with self.assertRaises(ValidationError):
-                validate_challenge_code("000000", self._stage_view(stage), self.user)
-        matched = validate_challenge_code(token, self._stage_view(stage), self.user)
+            with self.assertRaises(ChallengeValidationError):
+                challenger.validate(EmailDevice.objects.filter(pk=device.pk), {}, "000000")
+        device.refresh_from_db()
+        matched = challenger.validate(EmailDevice.objects.filter(pk=device.pk), {}, token)
         self.assertEqual(matched.pk, device.pk)
 
     def test_lockout_persists_across_calls(self):
@@ -150,11 +153,12 @@ class ValidateChallengeCodeThrottlingTests(FlowTestCase):
         device.generate_token()
         token = device.token
         invalid_token = "000000" if token != "000000" else "111111"  # nosec
-        with self.assertRaises(ValidationError):
-            validate_challenge_code(invalid_token, self._stage_view(stage), self.user)
+        challenger = EmailChallenger(self.request_factory.get("/"), stage, FlowContext())
+        with self.assertRaises(ChallengeValidationError):
+            challenger.validate(EmailDevice.objects.filter(pk=device.pk), {}, invalid_token)
         # Immediately try with the correct token: lockout still active, attempt must be rejected.
-        with self.assertRaises(ValidationError):
-            validate_challenge_code(token, self._stage_view(stage), self.user)
+        with self.assertRaises(ChallengeValidationError):
+            challenger.validate(EmailDevice.objects.filter(pk=device.pk), {}, token)
         device.refresh_from_db()
         # Token wasn't consumed (verification never ran), and counter didn't get incremented.
         self.assertEqual(device.token, token)
@@ -193,18 +197,15 @@ class ValidateStageThrottlingFlowTests(FlowTestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
+        return response.json()["device_challenges"][0]["uid"]
 
-    def _select_email(self, device: EmailDevice):
-        self.client.post(
+    def _initiate(self, challenge_uid: str):
+        return self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {
                 "component": "ak-stage-authenticator-validate",
-                "selected_challenge": {
-                    "device_class": "email",
-                    "device_uid": str(device.pk),
-                    "challenge": {},
-                    "last_used": None,
-                },
+                "challenge_uid": challenge_uid,
+                "action": "initiate",
             },
         )
 
@@ -217,15 +218,19 @@ class ValidateStageThrottlingFlowTests(FlowTestCase):
             stage=self.email_stage,
             email="throttle-flow@authentik.local",
         )
-        self._identify()
-        self._select_email(device)
+        challenge_uid = self._identify()
+        self._initiate(challenge_uid)
         # Server generated and stored the token - grab it from DB.
         device.refresh_from_db()
         token = device.token
         # First attempt: bad code - must increment the DB counter.
         self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"component": "ak-stage-authenticator-validate", "code": "000000"},
+            {
+                "component": "ak-stage-authenticator-validate",
+                "challenge_uid": challenge_uid,
+                "code": "000000",
+            },
         )
         device.refresh_from_db()
         self.assertEqual(device.throttling_failure_count, 1)
@@ -233,7 +238,11 @@ class ValidateStageThrottlingFlowTests(FlowTestCase):
         # Second attempt with the correct token - still blocked.
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"component": "ak-stage-authenticator-validate", "code": token},
+            {
+                "component": "ak-stage-authenticator-validate",
+                "challenge_uid": challenge_uid,
+                "code": token,
+            },
         )
         self.assertStageResponse(
             response,

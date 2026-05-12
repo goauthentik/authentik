@@ -12,9 +12,14 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id, generate_key
+from authentik.stages.authenticator.oath import TOTP
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
-from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDigits
+from authentik.stages.authenticator_static.models import AuthenticatorStaticStage, StaticDevice
+from authentik.stages.authenticator_totp.models import (
+    AuthenticatorTOTPStage,
+    TOTPDevice,
+    TOTPDigits,
+)
 from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_validate.stage import PLAN_CONTEXT_DEVICE_CHALLENGES
@@ -157,12 +162,14 @@ class AuthenticatorValidateStageTests(FlowTestCase):
                 "device_uid": "1",
                 "challenge": {},
                 "last_used": now(),
+                "uid": "test-challenge-1",
             },
             {
                 "device_class": DeviceClasses.TOTP,
                 "device_uid": "2",
                 "challenge": {},
                 "last_used": now(),
+                "uid": "test-challenge-2",
             },
         ]
         session[SESSION_KEY_PLAN] = plan
@@ -170,34 +177,18 @@ class AuthenticatorValidateStageTests(FlowTestCase):
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            data={
-                "selected_challenge": {
-                    "device_class": DeviceClasses.WEBAUTHN,
-                    "device_uid": "quox",
-                    "challenge": {},
-                    "last_used": None,
-                }
-            },
+            data={"challenge_uid": "unknown-challenge"},
         )
         self.assertStageResponse(
             response,
             flow,
-            response_errors={
-                "selected_challenge": [{"string": "invalid challenge selected", "code": "invalid"}]
-            },
+            response_errors={"challenge_uid": [{"string": "Invalid challenge", "code": "invalid"}]},
             component="ak-stage-authenticator-validate",
         )
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            data={
-                "selected_challenge": {
-                    "device_class": "static",
-                    "device_uid": "1",
-                    "challenge": {},
-                    "last_used": None,
-                },
-            },
+            data={"challenge_uid": "test-challenge-1", "action": "initiate"},
         )
         self.assertStageResponse(
             response,
@@ -250,12 +241,97 @@ class AuthenticatorValidateStageTests(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
         self.assertEqual(response.status_code, 200)
-
+        challenge_uid = response.json()["device_challenges"][0]["uid"]
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            {"duo": duo_device.pk},
+            {
+                "duo": duo_device.pk,
+                "challenge_uid": challenge_uid,
+            },
             follow=True,
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_cross_class_response_is_rejected(self):
+        """A code from one device class must not validate against another
+        class's challenge_uid."""
+        ident_stage = IdentificationStage.objects.create(
+            name=generate_id(),
+            user_fields=[UserFields.USERNAME],
+        )
+        validate_stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            device_classes=[DeviceClasses.STATIC, DeviceClasses.TOTP],
+            static_otp_throttling_factor=0,
+            totp_otp_throttling_factor=0,
+        )
+        flow = create_test_flow()
+        FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=validate_stage, order=1)
+
+        static_device = StaticDevice.objects.create(user=self.user, confirmed=True)
+        static_token = generate_id(length=16)
+        static_device.token_set.create(token=static_token)
+
+        totp_device = TOTPDevice.objects.create(user=self.user, confirmed=True, digits=6)
+        totp_code = TOTP(totp_device.bin_key).token()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        challenges = {c["device_class"]: c["uid"] for c in response.json()["device_challenges"]}
+        static_uid = challenges[DeviceClasses.STATIC.value]
+        totp_uid = challenges[DeviceClasses.TOTP.value]
+
+        # TOTP code submitted under Static challenge_uid: rejected.
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {
+                "component": "ak-stage-authenticator-validate",
+                "code": totp_code,
+                "challenge_uid": static_uid,
+            },
+        )
+        self.assertStageResponse(
+            response,
+            flow=flow,
+            component="ak-stage-authenticator-validate",
+            response_errors={"code": [{"code": "invalid", "string": "Invalid Token."}]},
+        )
+
+        # Static token submitted under TOTP challenge_uid: rejected.
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {
+                "component": "ak-stage-authenticator-validate",
+                "code": static_token,
+                "challenge_uid": totp_uid,
+            },
+        )
+        self.assertStageResponse(
+            response,
+            flow=flow,
+            component="ak-stage-authenticator-validate",
+            response_errors={
+                "code": [
+                    {
+                        "code": "invalid",
+                        "string": (
+                            "Invalid Token. Please ensure the time on your device "
+                            "is accurate and try again."
+                        ),
+                    }
+                ]
+            },
+        )
+
+        # The static token was not consumed by either attempt.
+        self.assertTrue(static_device.token_set.filter(token=static_token).exists())

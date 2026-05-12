@@ -38,36 +38,6 @@ def verify_token(user, device_id, token):
     return verified
 
 
-def match_token(user, token):
-    """
-    Attempts to verify a :term:`token` on every device attached to the given
-    user until one of them succeeds.
-
-    .. warning::
-
-        This originally existed for more convenient integration with the admin
-        site. Its use is no longer recommended and it is not guaranteed to
-        interact well with more recent features (such as throttling). Tokens
-        should always be verified against specific devices.
-
-    :param user: The user supplying the token.
-    :type user: :class:`~django.contrib.auth.models.User`
-
-    :param str token: An OTP token to verify.
-
-    :returns: The device that accepted ``token``, if any.
-    :rtype: :class:`~authentik.stages.authenticator.models.Device` or ``None``
-    """
-    with transaction.atomic():
-        for device in devices_for_user(user, for_verify=True):
-            if device.verify_token(token):
-                break
-        else:
-            device = None
-
-    return device
-
-
 def devices_for_user(user: User, confirmed: bool | None = True, for_verify: bool = False):
     """
     Return an iterable of all devices registered to the given user.

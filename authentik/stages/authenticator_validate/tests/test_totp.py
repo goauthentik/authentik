@@ -7,21 +7,16 @@ from time import sleep
 from django.test.client import RequestFactory
 from django.urls.base import reverse
 from jwt import encode
-from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
-from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.root.install_id import get_install_id
 from authentik.stages.authenticator.oath import TOTP
 from authentik.stages.authenticator_totp.models import TOTPDevice
-from authentik.stages.authenticator_validate.challenge import (
-    get_challenge_for_device,
-    validate_challenge_code,
-)
+from authentik.stages.authenticator_validate.challenge import ChallengeValidationError, FlowContext
+from authentik.stages.authenticator_validate.challenge.totp import TOTPChallenger
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_validate.stage import COOKIE_NAME_MFA
 from authentik.stages.identification.models import IdentificationStage, UserFields
@@ -106,12 +101,13 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
+        challenge_uid = response.json()["device_challenges"][0]["uid"]
         # Verify token once here to set last_t etc
         totp = TOTP(device.bin_key)
         sleep(1)
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"code": str(totp.token())},
+            {"code": str(totp.token()), "challenge_uid": challenge_uid},
         )
         self.assertIn(COOKIE_NAME_MFA, response.cookies)
         self.assertStageResponse(response, component="xak-flow-redirect", to="/")
@@ -146,12 +142,16 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
+        challenge_uid = response.json()["device_challenges"][0]["uid"]
         # Verify token once here to set last_t etc
         totp = TOTP(device.bin_key)
         sleep(1)
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"code": str(totp.token())},
+            {
+                "code": str(totp.token()),
+                "challenge_uid": challenge_uid,
+            },
         )
         self.assertIn(COOKIE_NAME_MFA, response.cookies)
         self.assertStageResponse(response, component="xak-flow-redirect", to="/")
@@ -295,8 +295,12 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
             not_configured_action=NotConfiguredAction.CONFIGURE,
             device_classes=[DeviceClasses.TOTP],
         )
-        self.assertEqual(get_challenge_for_device(request, stage, totp_device), {})
-        with self.assertRaises(ValidationError):
-            validate_challenge_code(
-                "1234", StageView(FlowExecutorView(current_stage=stage), request=request), self.user
-            )
+
+        challenger = TOTPChallenger(request, stage, FlowContext())
+        challenges = challenger.make_device_challenges(self.user)
+        self.assertEqual(len(challenges), 1)
+        challenge = challenges[0]
+        challenge.is_valid()
+        self.assertEqual(challenge.data["challenge"], {})
+        with self.assertRaises(ChallengeValidationError):
+            challenger.validate(TOTPDevice.objects.filter(pk=totp_device.pk), {}, "1234")

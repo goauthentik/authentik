@@ -11,7 +11,7 @@ from freezegun import freeze_time
 
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
-from authentik.stages.authenticator import match_token, user_has_device, verify_token
+from authentik.stages.authenticator import user_has_device, verify_token
 from authentik.stages.authenticator.models import Device, VerifyNotAllowed
 
 
@@ -159,16 +159,6 @@ class APITestCase(TestCase):
         verified = verify_token(self.alice, device.persistent_id, self.valid)
         self.assertIsNotNone(verified)
 
-    def test_match_token(self):
-        """Test match_token"""
-        verified = match_token(self.alice, "bogus")
-        self.assertIsNone(verified)
-
-        self.alice.staticdevice_set.get().throttle_reset()
-
-        verified = match_token(self.alice, self.valid)
-        self.assertEqual(verified, self.alice.staticdevice_set.first())
-
 
 class ConcurrencyTestCase(TransactionTestCase):
     """Test concurrent verifications"""
@@ -204,34 +194,6 @@ class ConcurrencyTestCase(TransactionTestCase):
 
         device = self.alice.staticdevice_set.get()
         threads = [VerifyThread(device.user, device.persistent_id, self.valid) for _ in range(10)]
-        for thread in threads:
-            thread.start()
-        for thread in threads:
-            thread.join()
-
-        self.assertEqual(sum(1 for t in threads if t.verified is not None), 1)
-
-    def test_match_token(self):
-        """Test match_token in a thread"""
-
-        class VerifyThread(Thread):
-            """Verifier thread"""
-
-            __test__ = False
-
-            def __init__(self, user, token):
-                super().__init__()
-
-                self.user = user
-                self.token = token
-
-                self.verified = None
-
-            def run(self):
-                self.verified = match_token(self.user, self.token)
-                connection.close()
-
-        threads = [VerifyThread(self.alice, self.valid) for _ in range(10)]
         for thread in threads:
             thread.start()
         for thread in threads:

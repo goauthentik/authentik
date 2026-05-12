@@ -55,7 +55,7 @@ class TestIdentificationStagePasskey(FlowTestCase):
         self.client.get(url)
 
         with patch(
-            "authentik.stages.identification.stage.validate_challenge_webauthn",
+            "authentik.stages.authenticator_validate.challenge.webauthn.WebAuthnChallenger.validate",
             return_value=self.device,
         ):
             response = self.client.post(

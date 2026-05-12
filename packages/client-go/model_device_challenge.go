@@ -26,6 +26,7 @@ type DeviceChallenge struct {
 	DeviceUid            string                 `json:"device_uid"`
 	Challenge            map[string]interface{} `json:"challenge"`
 	LastUsed             NullableTime           `json:"last_used"`
+	Uid                  string                 `json:"uid"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -35,12 +36,13 @@ type _DeviceChallenge DeviceChallenge
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDeviceChallenge(deviceClass DeviceClassesEnum, deviceUid string, challenge map[string]interface{}, lastUsed NullableTime) *DeviceChallenge {
+func NewDeviceChallenge(deviceClass DeviceClassesEnum, deviceUid string, challenge map[string]interface{}, lastUsed NullableTime, uid string) *DeviceChallenge {
 	this := DeviceChallenge{}
 	this.DeviceClass = deviceClass
 	this.DeviceUid = deviceUid
 	this.Challenge = challenge
 	this.LastUsed = lastUsed
+	this.Uid = uid
 	return &this
 }
 
@@ -150,6 +152,30 @@ func (o *DeviceChallenge) SetLastUsed(v time.Time) {
 	o.LastUsed.Set(&v)
 }
 
+// GetUid returns the Uid field value
+func (o *DeviceChallenge) GetUid() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Uid
+}
+
+// GetUidOk returns a tuple with the Uid field value
+// and a boolean to check if the value has been set.
+func (o *DeviceChallenge) GetUidOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Uid, true
+}
+
+// SetUid sets field value
+func (o *DeviceChallenge) SetUid(v string) {
+	o.Uid = v
+}
+
 func (o DeviceChallenge) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -164,6 +190,7 @@ func (o DeviceChallenge) ToMap() (map[string]interface{}, error) {
 	toSerialize["device_uid"] = o.DeviceUid
 	toSerialize["challenge"] = o.Challenge
 	toSerialize["last_used"] = o.LastUsed.Get()
+	toSerialize["uid"] = o.Uid
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -181,6 +208,7 @@ func (o *DeviceChallenge) UnmarshalJSON(data []byte) (err error) {
 		"device_uid",
 		"challenge",
 		"last_used",
+		"uid",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -214,6 +242,7 @@ func (o *DeviceChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "device_uid")
 		delete(additionalProperties, "challenge")
 		delete(additionalProperties, "last_used")
+		delete(additionalProperties, "uid")
 		o.AdditionalProperties = additionalProperties
 	}
 

@@ -262,7 +262,6 @@ class SideChannelDevice(Device):
 
         """
         _now = timezone.now()
-
         if (self.token is not None) and (token == self.token) and (_now < self.valid_until):
             self.token = None
             self.valid_until = _now
