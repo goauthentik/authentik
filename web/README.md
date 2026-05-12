@@ -24,6 +24,40 @@ New dependencies that ship install scripts must be audited and added to `TRUSTED
 in the repo-root `Makefile`. Each entry is arbitrary code that runs at install time, so the list
 is intentionally small.
 
+## Optional: containerized installs (macOS)
+
+If you're on **macOS 15+ on Apple Silicon** and want kernel-level isolation on top of
+`ignore-scripts`, run:
+
+```bash
+make node-install-containerized
+```
+
+This runs the install inside an ephemeral Linux microVM via Apple's [`container`
+runtime](https://github.com/apple/container). The container sees the repo at `/work` and nothing
+else — no `~/.ssh`, no `~/.aws`, no Keychain, no other process on your machine. If a transitive
+dependency does something unexpected during install, the blast radius is the container's lifetime.
+
+Install once:
+
+```bash
+brew install container
+```
+
+**Workflow tradeoff:** the container is Linux, not Darwin. `node_modules` installed inside will
+contain `linux-arm64` binaries (esbuild, chromedriver, tree-sitter, …). If you also want to run
+the dev server natively on macOS for IDE integration, you'll need a second native install via
+`make node-install`. Pick one workflow per session — they share a `node_modules` directory and
+overwrite each other.
+
+For finer-grained control:
+
+- `CONTAINER_NETWORK=none scripts/container-sandbox npm test` — drop network for test runs
+- `CONTAINER_IMAGE=node:22-bookworm@sha256:... make node-install-containerized` — pin by digest
+
+This path is opt-in. The default `make node-install` is portable and identical across platforms.
+The `.npmrc` baseline applies in both cases.
+
 # The Theory of the authentik UI
 
 In Peter Naur's 1985 essay [Programming as Theory
