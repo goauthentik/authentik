@@ -28,7 +28,7 @@ To support the integration of NetBird with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -91,7 +91,7 @@ To configure NetBird to use authentik, add the following environment variables t
 NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
 NETBIRD_USE_AUTH0=false
 NETBIRD_AUTH_CLIENT_ID="<Your Client ID>"
-NETBIRD_AUTH_SUPPORTED_SCOPES="openid profile email offline_access api"
+NETBIRD_AUTH_SUPPORTED_SCOPES="openid profile email offline_access goauthentik.io/api"
 NETBIRD_AUTH_AUDIENCE="<Your Client ID>"
 NETBIRD_AUTH_DEVICE_AUTH_CLIENT_ID="<Your Client ID>"
 NETBIRD_AUTH_DEVICE_AUTH_AUDIENCE="<Your Client ID>"

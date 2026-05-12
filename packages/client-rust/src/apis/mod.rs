@@ -121,30 +121,11 @@ impl From<&str> for ContentType {
     }
 }
 
-pub mod admin_api;
-pub mod authenticators_api;
 pub mod core_api;
 pub mod crypto_api;
-pub mod endpoints_api;
-pub mod enterprise_api;
 pub mod events_api;
 pub mod flows_api;
-pub mod lifecycle_api;
-pub mod managed_api;
-pub mod oauth2_api;
 pub mod outposts_api;
-pub mod policies_api;
-pub mod propertymappings_api;
-pub mod providers_api;
-pub mod rac_api;
-pub mod rbac_api;
-pub mod reports_api;
 pub mod root_api;
-pub mod schema_api;
-pub mod sources_api;
-pub mod ssf_api;
-pub mod stages_api;
-pub mod tasks_api;
-pub mod tenants_api;
 
 pub mod configuration;

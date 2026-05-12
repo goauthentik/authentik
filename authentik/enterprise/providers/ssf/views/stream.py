@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 from django.urls import reverse
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
@@ -106,7 +106,11 @@ class StreamResponseSerializer(PassiveSerializer):
         }
 
     def get_events_supported(self, instance: Stream) -> list[str]:
-        return [x.value for x in EventTypes]
+        return [
+            EventTypes.CAEP_SESSION_REVOKED,
+            EventTypes.CAEP_CREDENTIAL_CHANGE,
+            EventTypes.SET_VERIFICATION,
+        ]
 
 
 class StreamView(SSFStreamView):
@@ -128,10 +132,9 @@ class StreamView(SSFStreamView):
         LOGGER.info("Sending verification event", stream=instance)
         send_ssf_events(
             EventTypes.SET_VERIFICATION,
-            {
-                "state": None,
-            },
+            {},
             stream_filter={"pk": instance.uuid},
+            request=request,
             sub_id={"format": "opaque", "id": str(instance.uuid)},
         )
         response = StreamResponseSerializer(instance=instance, context={"request": request}).data
@@ -159,7 +162,9 @@ class StreamView(SSFStreamView):
 
     def delete(self, request: Request, *args, **kwargs) -> Response:
         stream = self.get_object()
-        stream.status = StreamStatus.DISABLED
+        if stream.status == StreamStatus.DISABLED_DELETED:
+            raise Http404
+        stream.status = StreamStatus.DISABLED_DELETED
         stream.save()
         return Response(status=204)
 
@@ -175,6 +180,7 @@ class StreamVerifyView(SSFStreamView):
                 "state": state,
             },
             stream_filter={"pk": stream.uuid},
+            request=request,
             sub_id={"format": "opaque", "id": str(stream.uuid)},
         )
         return Response(status=204)
@@ -182,8 +188,25 @@ class StreamVerifyView(SSFStreamView):
 
 class StreamStatusView(SSFStreamView):
 
+    class StreamStatusSerializer(PassiveSerializer):
+        stream_id = CharField()
+        status = ChoiceField(choices=StreamStatus.choices)
+
     def get(self, request: Request, *args, **kwargs):
-        stream = self.get_object(any_status=True)
+        stream = self.get_object()
+        return Response(
+            {
+                "stream_id": str(stream.pk),
+                "status": str(stream.status),
+            }
+        )
+
+    def post(self, request: Request, *args, **kwargs):
+        stream = self.get_object()
+        serializer = self.StreamStatusSerializer(stream, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        stream.status = serializer.validated_data["status"]
+        stream.save()
         return Response(
             {
                 "stream_id": str(stream.pk),

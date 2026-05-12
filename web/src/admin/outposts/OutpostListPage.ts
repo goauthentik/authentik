@@ -7,6 +7,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -26,7 +27,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class OutpostListPage extends TablePage<Outpost> {
     protected override searchEnabled = true;
 
-    public override searchPlaceholder = msg("Search outposts...");
+    public override searchPlaceholder = msg(
+        "Search outposts by name, type or assigned integration...",
+    );
     public override pageTitle = msg("Outposts");
     public override pageDescription = msg(
         "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
@@ -70,19 +73,6 @@ export class OutpostListPage extends TablePage<Outpost> {
     @property({ type: String })
     public order = "name";
 
-    protected openEditModal = (event: Event) => {
-        const button = event.currentTarget as HTMLButtonElement;
-        const instancePk = button.dataset.instancePk!;
-        const managed = button.dataset.managed === "true";
-
-        const form = new OutpostForm();
-
-        form.instancePk = instancePk;
-        form.embedded = managed;
-
-        return form.showModal();
-    };
-
     protected renderItemProviders(item: Outpost) {
         if (item.providers.length < 1) {
             return html`-`;
@@ -116,17 +106,11 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`<ak-outpost-health-simple
                 outpostId=${ifDefined(item.pk)}
             ></ak-outpost-health-simple>`,
-            html`<button
-                class="pf-c-button pf-m-plain"
-                aria-label=${msg(str`Edit ${item.name}`)}
-                data-instance-pk=${item.pk}
-                data-managed=${item.managed === embeddedOutpostManaged}
-                @click=${this.openEditModal}
-            >
-                <pf-tooltip position="top" content=${msg("Edit")}>
-                    <i class="fas fa-edit" aria-hidden="true"></i>
-                </pf-tooltip>
-            </button>`,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(OutpostForm, item.pk, item.name, {
+                    embedded: item.managed === embeddedOutpostManaged,
+                })}
+            </div>`,
         ];
     }
 

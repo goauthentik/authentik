@@ -39,9 +39,9 @@ If your goal is to only allow authentication via endpoint devices, this is achie
 #### Create an Endpoint stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages > Flows**.
+2. Navigate to **Flows and Stages > Flows**.
 3. Select the authentication flow that you want to modify.
-4. Open the **Stage Bindings** tab and click **Create and bind stage**.
+4. Open the **Stage Bindings** tab and click **New Stage**.
 5. Select Endpoint stage as the stage type, click **Next**, and configure the following settings:
     - **Name**: provide a name for the stage
     - **Connector**: select a connector for the stage to fetch device facts from (e.g. `authentik agent`)
@@ -52,16 +52,16 @@ If your goal is to only allow authentication via endpoint devices, this is achie
 
 ### Only allow authentication via a specific type of endpoint device
 
-If your goal is to only allow authentication via a specific type of endpoint device, this is achievable by adding an [Endpoint stage](../../add-secure-apps/flows-stages/stages/endpoint/index.md) and a [Deny stage](../../add-secure-apps/flows-stages/stages/deny.md) to your authentication flow.
+If your goal is to only allow authentication via a specific type of endpoint device, this is achievable by adding an [Endpoint stage](../../add-secure-apps/flows-stages/stages/endpoint/index.md) and a [Deny stage](../../add-secure-apps/flows-stages/stages/deny/index.md) to your authentication flow.
 
 The following example will only allow authentication via Apple devices.
 
 #### Create an Endpoint stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages > Flows**.
+2. Navigate to **Flows and Stages > Flows**.
 3. Select the authentication flow that you want to modify.
-4. Open the **Stage Bindings** tab and click **Create and bind stage**.
+4. Open the **Stage Bindings** tab and click **New Stage**.
 5. Select Endpoint stage as the stage type, click **Next**, and configure the following settings:
     - **Name**: provide a name for the stage
     - **Connector**: select a connector for the stage to fetch device facts from (e.g. `authentik agent`)
@@ -72,7 +72,7 @@ The following example will only allow authentication via Apple devices.
 
 #### Create a Deny stage
 
-9. On the **Stage Bindings** tab, click **Create and bind stage**.
+9. On the **Stage Bindings** tab, click **New Stage**.
 10. Select **Deny Stage** as the stage type and configure the following settings:
     - **Name**: provide a name for the stage
     - **Deny message**: provide a message explaining why access was denied

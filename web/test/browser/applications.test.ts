@@ -37,7 +37,7 @@ test.describe("Applications", () => {
 
         //#region Create provider
 
-        const providerDialog = page.getByRole("dialog", { name: "New provider" });
+        const providerDialog = page.getByRole("dialog", { name: "New Provider Wizard" });
 
         await test.step("Create OAuth2 provider", async () => {
             await expect(providerDialog, "Provider dialog is initially closed").toBeHidden();
@@ -48,14 +48,13 @@ test.describe("Applications", () => {
 
             await series(
                 [click, "OAuth2/OpenID", "option"],
-                [click, "Next"],
-                [fill, "Provider name", providerName],
+                [fill, "Provider Name", providerName],
                 [
                     selectSearchValue,
-                    "Authorization flow",
+                    "Authorization Flow",
                     /default-provider-authorization-explicit-consent/,
                 ],
-                [click, "Finish"],
+                [click, "Create"],
             );
 
             await expect(providerDialog, "Provider dialog closes after creation").toBeHidden();
@@ -77,23 +76,23 @@ test.describe("Applications", () => {
 
         const appDialog = page.getByRole("dialog", { name: "New Application" });
 
-        // await test.step("Create application", async () => {
-        await expect(appDialog, "Application dialog is initially closed").toBeHidden();
+        await test.step("Create application", async () => {
+            await expect(appDialog, "Application dialog is initially closed").toBeHidden();
 
-        await click("New Application", "button");
-        await click("With Existing Provider...", "menuitem");
+            await click("New Application options", "button");
+            await click("With Existing Provider...", "menuitem");
 
-        await expect(appDialog, "Application dialog opens").toBeVisible();
+            await expect(appDialog, "Application dialog opens").toBeVisible();
 
-        await series(
-            [fill, /^Application Name/, appName, appDialog],
-            [selectSearchValue, "Provider", providerName, appDialog],
-        );
+            await series(
+                [fill, /^Application Name/, appName, appDialog],
+                [selectSearchValue, "Provider", providerName, appDialog],
+            );
 
-        await appDialog.getByRole("button", { name: "Create Application" }).click();
+            await appDialog.getByRole("button", { name: "Create Application" }).click();
 
-        await expect(appDialog, "Application dialog closes after creation").toBeHidden();
-        // });
+            await expect(appDialog, "Application dialog closes after creation").toBeHidden();
+        });
 
         await test.step("Verify application creation", async () => {
             const $app = await search(appName);
@@ -128,7 +127,6 @@ test.describe("Applications", () => {
             await expect(wizardDialog, "Wizard is initially closed").toBeHidden();
 
             await click("New Application", "button");
-            await click("With New Provider...", "menuitem");
 
             await expect(wizardDialog, "Wizard opens").toBeVisible();
         });
@@ -157,7 +155,7 @@ test.describe("Applications", () => {
 
             await series([
                 selectSearchValue,
-                "Authorization flow",
+                "Authorization Flow",
                 /default-provider-authorization-explicit-consent/,
                 wizardDialog,
             ]);
@@ -174,9 +172,11 @@ test.describe("Applications", () => {
 
             await expect(
                 wizardDialog.getByRole("heading", { name: "Your application has been saved" }),
-            ).toBeVisible();
+            ).toBeVisible({
+                timeout: 10_000,
+            });
 
-            await click("Close", "button", wizardDialog);
+            await click("Finish", "button", wizardDialog);
         });
 
         await test.step("Verify application creation", async () => {

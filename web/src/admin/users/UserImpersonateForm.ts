@@ -3,8 +3,8 @@ import "#components/ak-text-input";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIMessage, MessageLevel } from "#common/messages";
 
+import { asInstanceInvoker } from "#elements/dialogs";
 import { Form } from "#elements/forms/Form";
-import { asEditModalInvoker } from "#elements/modals/utils";
 
 import { AdminApi, CoreApi, ImpersonationRequest } from "@goauthentik/api";
 
@@ -14,7 +14,7 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-user-impersonate-form")
 export class UserImpersonateForm extends Form<ImpersonationRequest> {
-    public static asEditModalInvoker = asEditModalInvoker;
+    public static asInstanceInvoker = asInstanceInvoker;
     public override submitLabel = msg("Impersonate");
     public override headline = msg("Impersonate User");
 

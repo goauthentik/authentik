@@ -3,6 +3,7 @@ import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -270,16 +271,16 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-oauth-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
@@ -470,7 +471,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search

@@ -75,11 +75,12 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     public override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.valid) {
-                this.handleEnabling({
+                this.dispatchNavigationEvent({
                     disabled: ["bindings", "submit"],
                 });
                 return;
             }
+
             const payload = {
                 provider: {
                     ...this.formValues,
@@ -87,21 +88,22 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
                 },
                 errors: omitKeys(this.wizard.errors, "provider"),
             };
-            this.handleUpdate(payload, button.destination, {
-                enable: ["bindings", "submit"],
+
+            return this.dispatchEvents({
+                update: payload,
+                destination: button.destination,
+                details: { enable: ["bindings", "submit"] },
             });
-            return;
         }
-        super.handleButton(button);
+
+        return super.handleButton(button);
     }
 
-    get buttons(): WizardButton[] {
-        return [
-            { kind: "cancel" },
-            { kind: "back", destination: "provider-choice" },
-            { kind: "next", destination: "bindings" },
-        ];
-    }
+    protected buttons: WizardButton[] = [
+        { kind: "cancel" },
+        { kind: "back", destination: "provider-choice" },
+        { kind: "next", destination: "bindings" },
+    ];
 
     renderMain() {
         if (!this.wizard.providerModel) {

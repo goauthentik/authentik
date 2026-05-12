@@ -14,6 +14,7 @@ import { ModalOrchestrationController } from "#elements/controllers/ModalOrchest
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { BrandingContext } from "#elements/mixins/branding";
 import { AuthentikConfigContext } from "#elements/mixins/config";
+import { applyScrollbarClass } from "#elements/utils/scrollbars";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
 
@@ -43,11 +44,12 @@ export abstract class Interface extends AKElement {
     constructor() {
         super();
 
-        this.logger = ConsoleLogger.prefix(this.tagName.toLowerCase());
+        this.logger = ConsoleLogger.prefix(this.localName);
 
         const { config, brand, locale } = globalAK();
 
         createUIThemeEffect(applyDocumentTheme);
+        applyScrollbarClass(this.ownerDocument);
 
         this.addController(new LocaleContextController(this, locale));
         this.addController(new ConfigContextController(this, config), AuthentikConfigContext);

@@ -4,7 +4,7 @@ sidebar_label: KnowBe4
 support_level: community
 ---
 
-## What is KnowBe4
+## What is KnowBe4?
 
 > KnowBe4 is a security awareness and phishing simulation platform that helps organizations train employees to recognize and respond to social engineering attacks.
 >
@@ -27,12 +27,11 @@ To support the integration of KnowBe4 with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** value because it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Temporarily set the **ACS URL** to `https://temp.temp`
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, select any available signing certificate.
     - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to control which users see the KnowBe4 application on the **My Applications** page.
 
@@ -53,7 +52,7 @@ To support the integration of KnowBe4 with authentik, you need to create an appl
     - **Disable non-SAML Logins for All Users**
     - **Allow Admins w/MFA to Bypass SAML Login**
     - **Allow Account Creation from SAML Login**
-    - **IdP SSO Target URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+    - **IdP SSO Target URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **IdP Cert Fingerprint**: Set to the SHA-256 thumbprint of the authentik signing certificate.
 4. Take note of the **Entity ID** and **SSO Callback (ACS) URL**. They will be required in the next section.
 
@@ -67,7 +66,7 @@ If SSO misconfiguration locks you out and you enabled **Allow Admins w/MFA to By
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created KnowBe4 provider.
 3. Update the following fields:
     - Set the **ACS URL** to the **SSO Callback (ACS) URL** from KnowBe4.
-    - Set the **Issuer** and **Audience** to the **Entity ID** from KnowBe4.
+    - Set the **Audience** to the **Entity ID** from KnowBe4.
 4. Click **Update**.
 
 ## Configuration verification

@@ -14,6 +14,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
+import "#elements/ak-checkbox-group/ak-checkbox-group";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
@@ -29,12 +30,13 @@ import { AKLabel } from "#components/ak-label";
 import {
     ClientTypeEnum,
     FlowDesignationEnum,
+    GrantTypesEnum,
     IssuerModeEnum,
     MatchingModeEnum,
     OAuth2Provider,
     OAuth2ProviderLogoutMethodEnum,
     RedirectURI,
-    RedirectUriTypeEnum,
+    RedirectURITypeEnum,
     SubModeEnum,
     ValidationError,
 } from "@goauthentik/api";
@@ -131,12 +133,33 @@ const redirectUriHelpMessages: string[] = [
     ),
 ];
 
+const grantTypes = [
+    [GrantTypesEnum.AuthorizationCode, msg("Authorization Code")],
+    [GrantTypesEnum.Implicit, msg("Implicit")],
+    [GrantTypesEnum.Hybrid, msg("Hybrid")],
+    [GrantTypesEnum.RefreshToken, msg("Refresh token")],
+    [GrantTypesEnum.ClientCredentials, msg("Client credentials")],
+    [GrantTypesEnum.Password, msg("Password")],
+    [GrantTypesEnum.UrnIetfParamsOauthGrantTypeDeviceCode, msg("Device-code")],
+];
+
+const defaultGrantTypes = [
+    // TODO: Clean up defaults after 2026
+    GrantTypesEnum.AuthorizationCode,
+    GrantTypesEnum.Implicit,
+    GrantTypesEnum.Hybrid,
+    GrantTypesEnum.RefreshToken,
+    GrantTypesEnum.ClientCredentials,
+    GrantTypesEnum.Password,
+    GrantTypesEnum.UrnIetfParamsOauthGrantTypeDeviceCode,
+];
+
 type ShowClientSecret = (show: boolean) => void;
 type ShowLogoutMethod = (show: boolean) => void;
 
 export interface OAuth2ProviderFormProps {
-    provider?: Partial<OAuth2Provider>;
-    errors?: ValidationError;
+    provider?: Partial<OAuth2Provider> | null;
+    errors?: ValidationError | null;
     showClientSecret?: boolean;
     showClientSecretCallback?: ShowClientSecret;
     showLogoutMethod: boolean;
@@ -144,13 +167,15 @@ export interface OAuth2ProviderFormProps {
 }
 
 export function renderForm({
-    provider = {},
-    errors = {},
+    provider,
+    errors,
     showClientSecret = false,
     showClientSecretCallback = (_show) => undefined,
     showLogoutMethod = false,
     showLogoutMethodCallback = (_show) => undefined,
 }: OAuth2ProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
     return html` <ak-text-input
             name="name"
             placeholder=${msg("Type a provider name...")}
@@ -169,12 +194,12 @@ export function renderForm({
                     htmlFor: "authorizationFlow",
                     required: true,
                 },
-                msg("Authorization flow"),
+                msg("Authorization Flow"),
             )}
 
             <ak-flow-search
                 id="authorizationFlow"
-                label=${msg("Authorization flow")}
+                label=${msg("Authorization Flow")}
                 placeholder=${msg("Select an authorization flow...")}
                 flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
@@ -189,7 +214,7 @@ export function renderForm({
             <div class="pf-c-form">
                 <ak-radio-input
                     name="clientType"
-                    label=${msg("Client type")}
+                    label=${msg("Client Type")}
                     .value=${provider.clientType}
                     required
                     @change=${(ev: CustomEvent<{ value: ClientTypeEnum }>) => {
@@ -216,6 +241,26 @@ export function renderForm({
                     ?hidden=${!showClientSecret}
                 >
                 </ak-hidden-text-input>
+                <ak-form-element-horizontal label=${msg("Grant Types")} required name="grantTypes">
+                    <ak-checkbox-group
+                        name="users"
+                        class="user-field-select"
+                        .options=${grantTypes}
+                        .value=${grantTypes
+                            .map((grantType) => grantType[0])
+                            .filter(
+                                (type) =>
+                                    (provider?.grantTypes || defaultGrantTypes).filter(
+                                        (isField) => {
+                                            return type === isField;
+                                        },
+                                    ).length > 0,
+                            )}
+                    ></ak-checkbox-group>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Grant types this provider may use.")}
+                    </p>
+                </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Redirect URIs/Origins (RegEx)")}
                     name="redirectUris"
@@ -225,7 +270,7 @@ export function renderForm({
                         .newItem=${() => ({
                             matchingMode: MatchingModeEnum.Strict,
                             url: "",
-                            redirectUriType: RedirectUriTypeEnum.Authorization,
+                            redirectUriType: RedirectURITypeEnum.Authorization,
                         })}
                         .row=${(redirectURI: RedirectURI, idx: number) => {
                             return html`<ak-provider-oauth2-redirect-uri
@@ -289,10 +334,10 @@ export function renderForm({
             <div class="pf-c-form">
                 <ak-form-element-horizontal
                     name="authenticationFlow"
-                    label=${msg("Authentication flow")}
+                    label=${msg("Authentication Flow")}
                 >
                     <ak-flow-search
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         placeholder=${msg("Select an authentication flow...")}
                         flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
@@ -304,12 +349,12 @@ export function renderForm({
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
+                    label=${msg("Invalidation Flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
-                        label=${msg("Invalidation flow")}
+                        label=${msg("Invalidation Flow")}
                         placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
@@ -327,7 +372,7 @@ export function renderForm({
             <div class="pf-c-form">
                 <ak-text-input
                     name="accessCodeValidity"
-                    label=${msg("Access code validity")}
+                    label=${msg("Access Code Validity")}
                     input-hint="code"
                     required
                     value="${provider.accessCodeValidity ?? "minutes=1"}"
@@ -339,7 +384,7 @@ export function renderForm({
                 </ak-text-input>
                 <ak-text-input
                     name="accessTokenValidity"
-                    label=${msg("Access Token validity")}
+                    label=${msg("Access Token Validity")}
                     value="${provider.accessTokenValidity ?? "minutes=5"}"
                     input-hint="code"
                     required
@@ -352,7 +397,7 @@ export function renderForm({
 
                 <ak-text-input
                     name="refreshTokenValidity"
-                    label=${msg("Refresh Token validity")}
+                    label=${msg("Refresh Token Validity")}
                     value="${provider.refreshTokenValidity ?? "days=30"}"
                     input-hint="code"
                     required
@@ -364,7 +409,7 @@ export function renderForm({
                 </ak-text-input>
                 <ak-text-input
                     name="refreshTokenThreshold"
-                    label=${msg("Refresh Token threshold")}
+                    label=${msg("Refresh Token Threshold")}
                     value="${provider?.refreshTokenThreshold ?? "hours=1"}"
                     input-hint="code"
                     required
@@ -409,7 +454,7 @@ export function renderForm({
 
                 <ak-radio-input
                     name="subMode"
-                    label=${msg("Subject mode")}
+                    label=${msg("Subject Mode")}
                     required
                     .options=${subjectModeOptions}
                     .value=${provider.subMode}

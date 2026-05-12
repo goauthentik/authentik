@@ -37,7 +37,7 @@ export class GroupMemberSelectTable extends Table<User> {
     public override searchPlaceholder = msg("Search for users by username or display name...");
     public override searchLabel = msg("Search Users");
     public override label = msg("Select Users");
-    public overridesupportsQL = true;
+    public override supportsQL = true;
 
     public override checkbox = true;
     public override checkboxChip = true;

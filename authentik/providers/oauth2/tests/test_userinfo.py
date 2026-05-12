@@ -40,7 +40,7 @@ class TestUserinfo(OAuthTestCase):
         self.app.provider = self.provider
         self.app.save()
         self.user = create_test_admin_user()
-        self.token: AccessToken = AccessToken.objects.create(
+        self.token = AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),

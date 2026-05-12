@@ -12,7 +12,7 @@ This applies to:
 - **System** > **Brands** > **Default flow background**
 - **Flows and Stages** > **Flows** > **Background**
 - **Applications** > **Applications** > **Icon**
-- **Applications** > **Create application** wizard > **Icon**
+- **Applications** > **New Application** wizard > **Icon**
 - **Directory** > **Federation and Social login** > source **Icon** fields for SAML, OAuth, Plex, and Kerberos sources
 
 ## Accepted values
@@ -61,6 +61,7 @@ The `%(theme)s` placeholder is supported in all current Admin UI fields that use
 
 When uploading a file in **Customization** > **Files**, or when typing a relative media path manually, use these rules:
 
+- If a file exists at `/data/media/public/branding/logo.svg`, enter `branding/logo.svg` in the picker field - without a leading slash. Do not enter `/data/media/public/branding/logo.svg` or `/branding/logo.svg`.
 - Files uploaded through **Customization** > **Files** are always served through a temporary protected URL
 - On S3 storage, authentik generates a presigned S3 URL
 - On local file storage, authentik generates an authentik `/files/...` URL with a unique signed token

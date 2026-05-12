@@ -6,43 +6,49 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
+import { InitialPermissionsForm } from "#admin/rbac/ak-initial-permissions-form";
+
 import { InitialPermissions, RbacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, HTMLTemplateResult, PropertyValues, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { html, PropertyValues } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-initial-permissions-list")
 export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
-    checkbox = true;
-    clearOnRefresh = true;
     protected override searchEnabled = true;
-    public pageTitle = msg("Initial Permissions");
-    public pageDescription = msg("Set initial permissions for newly created objects.");
-    public pageIcon = "fa fa-lock";
 
-    @property()
-    order = "name";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override searchPlaceholder = msg("Search for initial permissions by name...");
+    protected override emptyStateMessage = msg("Create an initial permission to get started.");
 
-    async apiEndpoint(): Promise<PaginatedResponse<InitialPermissions>> {
+    public override pageTitle = msg("Initial Permissions");
+    public override pageDescription = msg("Set initial permissions for newly created objects.");
+    public override pageIcon = "fa fa-lock";
+
+    public override order = "name";
+
+    protected override async apiEndpoint(): Promise<PaginatedResponse<InitialPermissions>> {
         return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    protected columns: TableColumn[] = [
+    protected override columns: TableColumn[] = [
         // ---
         [msg("Name"), "name"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Initial Permissions")}
@@ -64,55 +70,33 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
         </ak-forms-delete-bulk>`;
     }
 
-    render(): HTMLTemplateResult {
-        return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+    protected override render(): SlottedTemplateResult {
+        return html`<section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <div class="pf-c-card">${this.renderTable()}</div>
         </section>`;
     }
 
-    row(item: InitialPermissions): SlottedTemplateResult[] {
+    protected override row(item: InitialPermissions): SlottedTemplateResult[] {
         return [
-            html`${item.name}`,
-            html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Save Changes")}</span>
-                    <span slot="header">${msg("Update Initial Permissions")}</span>
-                    <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
-                    </ak-initial-permissions-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+            item.name,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(InitialPermissionsForm, item.pk)}
             </div>`,
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Initial Permissions")}</span>
-                <ak-initial-permissions-form slot="form"> </ak-initial-permissions-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(InitialPermissionsForm);
     }
 
-    updated(changed: PropertyValues<this>) {
+    public override updated(changed: PropertyValues<this>) {
         super.updated(changed);
+
         setPageDetails({
             icon: this.pageIcon,
             header: this.pageTitle,
             description: this.pageDescription,
         });
-    }
-}
-
-declare global {
-    interface HTMLElementTagNameMap {
-        "initial-permissions-list": InitialPermissionsListPage;
     }
 }
 

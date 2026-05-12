@@ -14,6 +14,7 @@ pyproject.toml                          @goauthentik/backend
 uv.lock                                 @goauthentik/backend
 Cargo.toml                              @goauthentik/backend
 Cargo.lock                              @goauthentik/backend
+build.rs                                @goauthentik/backend
 go.mod                                  @goauthentik/backend
 go.sum                                  @goauthentik/backend
 .cargo/                                 @goauthentik/backend

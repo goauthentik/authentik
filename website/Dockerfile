@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.9.0-trixie@sha256:f57f0c76da32cc5ea0d50d209cc53fa37fb69954cf61407ec38e8f8591373fdf AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.9.0-trixie@sha256:7a99c607c2a73ea54f8c554d10bc790569fb7d1173638d5a9f56a23923fe2f87 AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -36,6 +36,15 @@ COPY ./SECURITY.md /work/
 
 RUN corepack npm run build
 
-FROM docker.io/library/nginx:1.29-trixie@sha256:e2e661b80dbd37ae1e1562ad0d3050ea8273ffef2da096b97ba0428be20100e8
+FROM docker.io/library/nginx:1.29-trixie@sha256:1881968aff6f7cdcc4b888c00a11f4ce241ad7ec957e0cb4a9e19e93a3ff87ea
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="authentik product documentation" \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.title="authentik docs image" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc."
+
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html

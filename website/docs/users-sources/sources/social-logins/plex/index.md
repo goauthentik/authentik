@@ -1,5 +1,6 @@
 ---
-title: Plex
+title: Log in with Plex
+sidebar_label: Plex
 tags:
     - source
     - plex
@@ -16,7 +17,7 @@ None
 To support the integration of Plex with authentik, you need to create a Plex source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **Plex Source** as the source type.
     - **Create Plex Source**: provide a name, a slug, and set the following required configurations:
         - **Icon**: Optional icon or image shown for the source. See [File picker values](../../../../customize/file-picker.md).

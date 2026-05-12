@@ -1,6 +1,5 @@
 import "#elements/EmptyState";
 
-import { updateURLParams } from "#elements/router/RouteMatch";
 import { Table } from "#elements/table/Table";
 import Styles from "#elements/table/TablePage.css";
 import { SlottedTemplateResult } from "#elements/types";
@@ -62,41 +61,25 @@ export abstract class TablePage<T extends object> extends Table<T> {
      * Render content before the sidebar.
      * @abstract
      */
-    protected renderSidebarBefore?(): TemplateResult;
+    protected renderSidebarBefore?(): SlottedTemplateResult;
 
     /**
      * Render content after the sidebar.
      * @abstract
      */
-    protected renderSidebarAfter?(): TemplateResult;
+    protected renderSidebarAfter?(): SlottedTemplateResult;
 
     /**
      * Render content before the main section.
      * @abstract
      */
-    protected renderSectionBefore?(): TemplateResult;
+    protected renderSectionBefore?(): SlottedTemplateResult;
 
     /**
      * Render content after the main section.
      * @abstract
      */
-    protected renderSectionAfter?(): TemplateResult;
-
-    //#endregion
-
-    //#region Protected methods
-
-    protected clearSearch = () => {
-        this.search = "";
-
-        this.requestUpdate();
-
-        updateURLParams({
-            search: "",
-        });
-
-        return this.fetch();
-    };
+    protected renderSectionAfter?(): SlottedTemplateResult;
 
     //#endregion
 
@@ -105,7 +88,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
     /**
      * Render the empty state.
      */
-    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected renderEmpty(inner?: TemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
@@ -114,7 +97,9 @@ export abstract class TablePage<T extends object> extends Table<T> {
                       <div slot="body">
                           ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
                       </div>
-                      <div slot="primary">${this.renderObjectCreate()}</div>
+                      <div slot="primary" class="empty-state-primary">
+                          ${this.renderObjectCreate()}
+                      </div>
                   </ak-empty-state>`}
         `);
     }
@@ -123,15 +108,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
         if (!this.search) {
             return nothing;
         }
-        return html`<button
-            @click=${() => {
-                this.search = "";
-                this.requestUpdate();
-                this.fetch();
-                this.page = 1;
-            }}
-            class="pf-c-button pf-m-link"
-        >
+        return html`<button @click=${this.clearSearch} class="pf-c-button pf-m-link">
             ${msg("Clear search")}
         </button>`;
     }

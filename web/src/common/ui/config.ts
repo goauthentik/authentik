@@ -93,7 +93,7 @@ export const DefaultUIConfig = {
     },
     locale: "",
     defaults: {
-        userPath: "users",
+        userPath: "",
     },
 } as const satisfies UIConfig;
 

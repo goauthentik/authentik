@@ -10,36 +10,40 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { intentToLabel } from "#common/labels";
 
+import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { TokenForm } from "#admin/tokens/TokenForm";
+
 import { CoreApi, IntentEnum, ModelEnum, Token } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { html, nothing } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
     protected override searchEnabled = true;
-    public pageTitle = msg("Tokens");
-    public pageDescription = msg(
+    public override pageTitle = msg("Tokens");
+    public override pageDescription = msg(
         "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.",
     );
-    public pageIcon = "pf-icon pf-icon-security";
+    public override pageIcon = "pf-icon pf-icon-security";
+    public override searchPlaceholder = msg("Search for a token identifier, user, or intent...");
 
     protected override rowLabel(item: Token): string | null {
         return item.identifier;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override order = "expires";
 
-    @property()
-    order = "expires";
-
-    async apiEndpoint(): Promise<PaginatedResponse<Token>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Token>> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensList(await this.defaultEndpointConfig());
     }
 
@@ -52,7 +56,7 @@ export class TokenListPage extends TablePage<Token> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Token(s)")}
@@ -77,18 +81,11 @@ export class TokenListPage extends TablePage<Token> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("New Token")}</span>
-                <ak-token-form slot="form"> </ak-token-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>
-        `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(TokenForm);
     }
 
-    row(item: Token): SlottedTemplateResult[] {
+    protected override row(item: Token): SlottedTemplateResult[] {
         return [
             html`<div>${item.identifier}</div>
                 ${item.managed
@@ -98,19 +95,10 @@ export class TokenListPage extends TablePage<Token> {
             html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
             Timestamp(item.expires && item.expiring ? item.expires : null),
             html`${intentToLabel(item.intent ?? IntentEnum.Api)}`,
-            html`
+            html`<div class="ak-c-table__actions">
                 ${!item.managed
-                    ? html`<ak-forms-modal>
-                          <span slot="submit">${msg("Save Changes")}</span>
-                          <span slot="header">${msg("Update Token")}</span>
-                          <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
-                          <button slot="trigger" class="pf-c-button pf-m-plain">
-                              <pf-tooltip position="top" content=${msg("Edit")}>
-                                  <i class="fas fa-edit" aria-hidden="true"></i>
-                              </pf-tooltip>
-                          </button>
-                      </ak-forms-modal>`
-                    : html` <button class="pf-c-button pf-m-plain" disabled>
+                    ? IconEditButton(TokenForm, item.identifier, item.identifier)
+                    : html`<button class="pf-c-button pf-m-plain" disabled type="button">
                           <pf-tooltip
                               position="top"
                               content=${msg("Editing is disabled for managed tokens")}
@@ -118,20 +106,12 @@ export class TokenListPage extends TablePage<Token> {
                               <i class="fas fa-edit" aria-hidden="true"></i>
                           </pf-tooltip>
                       </button>`}
-                <ak-rbac-object-permission-modal
-                    model=${ModelEnum.AuthentikCoreToken}
-                    objectPk=${item.pk}
-                >
-                </ak-rbac-object-permission-modal>
-                <ak-token-copy-button
-                    class="pf-c-button pf-m-plain"
-                    identifier="${item.identifier}"
-                >
-                    <pf-tooltip position="top" content=${msg("Copy token")}>
-                        <i class="fas fa-copy" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </ak-token-copy-button>
-            `,
+                ${IconPermissionButton(item.identifier, {
+                    model: ModelEnum.AuthentikCoreToken,
+                    objectPk: item.pk,
+                })}
+                ${IconTokenCopyButton(item.identifier)}
+            </div>`,
         ];
     }
 }

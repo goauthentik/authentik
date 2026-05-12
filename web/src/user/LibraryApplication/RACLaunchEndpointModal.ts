@@ -1,19 +1,32 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { AKModal } from "#elements/modals/ak-modal";
+import { AKModal } from "#elements/dialogs/ak-modal";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { Application, Endpoint, RacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { html } from "lit-html";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-library-rac-endpoint-launch")
 export class RACLaunchEndpointLaunch extends Table<Endpoint> {
-    public override clickable = true;
     protected override searchEnabled = true;
+
+    public override searchPlaceholder = msg("Search for an endpoint by name...");
+    public override emptyStateMessage = msg("No endpoints found for this application.");
+    public override rowClassNames = "pf-m-hoverable";
+    public cancelable = true;
+
+    @property({ attribute: false })
+    public app: Application | null = null;
+
+    public renderHeader(): SlottedTemplateResult {
+        return html`<h1 part="form-header" class="pf-c-title pf-m-2xl">
+            ${msg("Launch Endpoint")}
+        </h1>`;
+    }
 
     protected override rowClickListener(item: Endpoint, event?: InputEvent | PointerEvent) {
         if (!item.launchUrl) {
@@ -25,10 +38,7 @@ export class RACLaunchEndpointLaunch extends Table<Endpoint> {
         window.open(item.launchUrl, target);
     }
 
-    @property({ attribute: false })
-    public app?: Application;
-
-    async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         const endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({
             ...(await this.defaultEndpointConfig()),
             provider: this.app?.provider || 0,
@@ -49,8 +59,11 @@ export class RACLaunchEndpointLaunch extends Table<Endpoint> {
         [msg("Name")],
     ];
 
-    row(item: Endpoint): SlottedTemplateResult[] {
-        return [html`${item.name}`];
+    protected override row(item: Endpoint): SlottedTemplateResult[] {
+        return [
+            // ---
+            item.name,
+        ];
     }
 }
 

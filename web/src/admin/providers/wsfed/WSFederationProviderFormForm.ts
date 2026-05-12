@@ -99,7 +99,7 @@ export function renderForm({
         ></ak-text-input>
         <ak-form-element-horizontal
             name="authorizationFlow"
-            label=${msg("Authorization flow")}
+            label=${msg("Authorization Flow")}
             required
         >
             <ak-flow-search
@@ -139,7 +139,7 @@ export function renderForm({
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Authentication flow")}
+                    label=${msg("Authentication Flow")}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
@@ -153,7 +153,7 @@ export function renderForm({
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
+                    label=${msg("Invalidation Flow")}
                     name="invalidationFlow"
                     required
                 >

@@ -54,7 +54,7 @@ test.describe("Users", () => {
         const { fill } = form;
         const { click } = pointer;
 
-        const dialog = page.getByRole("dialog", { name: "New User" });
+        const dialog = page.getByRole("dialog", { name: "New User Wizard" });
 
         await expect(dialog, "Dialog is initially closed").toBeHidden();
 
@@ -62,13 +62,18 @@ test.describe("Users", () => {
 
         await expect(dialog, "Dialog opens").toBeVisible();
 
+        await test.step("Select user type", async () => {
+            await dialog.getByRole("radio", { name: "Internal" }).click({ force: true });
+        });
+
         await series(
             [fill, /^Username/, username, dialog],
             [fill, /^Display Name/, displayName, dialog],
             [fill, /^Email Address/, `${username}@example.com`, dialog],
+            [fill, /^Path/, "users", dialog],
         );
 
-        await dialog.getByRole("button", { name: "Create User" }).click();
+        await dialog.getByRole("button", { name: "Create" }).click();
 
         await expect(dialog, "Dialog closes after creating user").toBeHidden();
     });
@@ -79,24 +84,30 @@ test.describe("Users", () => {
         const { fill } = form;
         const { click } = pointer;
 
-        const dialog = page.getByRole("dialog", { name: "New Service Account" });
+        const dialog = page.getByRole("dialog", { name: "New User Wizard" });
 
         await expect(dialog, "Dialog is initially closed").toBeHidden();
 
-        await click("New Service Account", "button");
+        await click("New User", "button");
 
         await expect(dialog, "Dialog opens").toBeVisible();
+
+        await test.step("Select user type", async () => {
+            await dialog.getByRole("radio", { name: "Service Account" }).click({ force: true });
+        });
 
         await series(
             // ---
             [fill, /^Username/, username, dialog],
         );
 
-        await dialog.getByRole("button", { name: "Create Service Account" }).click();
+        await dialog.getByRole("button", { name: "Next" }).click();
 
-        await expect(dialog, "Dialog is open after creating service account").toBeVisible();
+        await expect(dialog, "Credentials page is visible").toBeVisible();
 
-        await click("Close", "button", dialog);
+        await dialog.getByRole("button", { name: "Finish" }).click();
+
+        await expect(dialog, "Dialog closes after creating service account").toBeHidden();
 
         const userPathsTree = page.getByRole("tree", { name: "User paths" });
         await expect(userPathsTree, "User paths tree is visible").toBeVisible();
@@ -132,7 +143,7 @@ test.describe("Impersonation", () => {
         const { fill, search } = form;
         const { click } = pointer;
 
-        const createDialog = page.getByRole("dialog", { name: "New User" });
+        const createDialog = page.getByRole("dialog", { name: "New User Wizard" });
         const impersonateDialog = page.getByRole("dialog", { name: "Impersonate User" });
 
         await test.step("Create user", async () => {
@@ -140,15 +151,20 @@ test.describe("Impersonation", () => {
 
             await expect(createDialog, "Create dialog opens").toBeVisible();
 
+            await test.step("Select user type", async () => {
+                await createDialog.getByRole("radio", { name: "Internal" }).click({ force: true });
+            });
+
             await series(
                 [fill, /^Username/, username, createDialog],
                 [fill, /^Display Name/, displayName, createDialog],
                 [fill, /^Email Address/, `${username}@example.com`, createDialog],
+                [fill, /^Path/, "users", createDialog],
             );
 
-            await createDialog.getByRole("button", { name: "Create User" }).click();
+            await createDialog.getByRole("button", { name: "Create" }).click();
 
-            await createDialog.waitFor({ state: "hidden" });
+            await createDialog.waitFor({ state: "hidden", timeout: 10_000 });
             await expect(createDialog, "Create dialog closes").toBeHidden();
         });
 
@@ -169,7 +185,9 @@ test.describe("Impersonation", () => {
 
             await impersonateDialog.getByRole("button", { name: "Impersonate" }).click();
 
-            await navigator.waitForPathname("if/user/#/library");
+            await navigator.waitForPathname("if/user/#/library", {
+                timeout: 10_000,
+            });
         });
 
         await test.step("Confirm impersonation", async () => {
