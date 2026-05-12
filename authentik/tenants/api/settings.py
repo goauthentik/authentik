@@ -21,7 +21,7 @@ class FlagJSONField(JSONDictField):
 
     def to_representation(self, value: dict) -> dict:
         new_value = value.copy()
-        for flag in Flag.available(exclude_system=False):
+        for flag in Flag.available():
             _flag = flag()
             # Explicitly present unset flags as if they were set to default
             if _flag.key not in value:
