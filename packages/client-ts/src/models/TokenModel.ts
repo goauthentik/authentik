@@ -12,8 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { OAuth2Provider } from "./OAuth2Provider";
-import { OAuth2ProviderFromJSON, OAuth2ProviderToJSON } from "./OAuth2Provider";
+import type { Provider } from "./Provider";
+import { ProviderFromJSON, ProviderToJSON } from "./Provider";
 import type { User } from "./User";
 import { UserFromJSON, UserToJSON } from "./User";
 
@@ -31,10 +31,10 @@ export interface TokenModel {
     readonly pk: number;
     /**
      *
-     * @type {OAuth2Provider}
+     * @type {Provider}
      * @memberof TokenModel
      */
-    provider: OAuth2Provider;
+    provider: Provider;
     /**
      *
      * @type {User}
@@ -96,7 +96,7 @@ export function TokenModelFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         pk: json["pk"],
-        provider: OAuth2ProviderFromJSON(json["provider"]),
+        provider: ProviderFromJSON(json["provider"]),
         user: UserFromJSON(json["user"]),
         isExpired: json["is_expired"],
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
@@ -119,7 +119,7 @@ export function TokenModelToJSONTyped(
     }
 
     return {
-        provider: OAuth2ProviderToJSON(value["provider"]),
+        provider: ProviderToJSON(value["provider"]),
         user: UserToJSON(value["user"]),
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
         scope: value["scope"],
