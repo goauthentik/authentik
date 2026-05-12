@@ -130,7 +130,7 @@ func (c *Config) fromEnv() error {
 
 func (c *Config) walkScheme(v interface{}) {
 	rv := reflect.ValueOf(v)
-	if rv.Kind() != reflect.Ptr || rv.IsNil() {
+	if rv.Kind() != reflect.Pointer || rv.IsNil() {
 		return
 	}
 
