@@ -1,6 +1,7 @@
 """authentik saml source processor"""
 
 from base64 import b64decode
+from datetime import UTC, datetime
 from time import mktime
 from typing import TYPE_CHECKING
 
@@ -40,6 +41,7 @@ from authentik.sources.saml.exceptions import (
     InvalidSignature,
     MismatchedRequestID,
     MissingSAMLResponse,
+    SAMLException,
     UnsupportedNameIDFormat,
 )
 from authentik.sources.saml.models import (
@@ -95,6 +97,7 @@ class ResponseProcessor:
 
         self._verify_request_id()
         self._verify_status()
+        self._verify_conditions()
 
     def _decrypt_response(self):
         """Decrypt SAMLResponse EncryptedAssertion Element"""
@@ -125,6 +128,20 @@ class ResponseProcessor:
             decrypted_assertion,
         )
         self._assertion = decrypted_assertion
+
+    def _verify_conditions(self):
+        conditions = self.get_assertion().find(f"{{{NS_SAML_ASSERTION}}}Conditions")
+        if conditions is None:
+            return
+        _now = now()
+        before = conditions.attrib.get("NotBefore")
+        if before:
+            if datetime.fromisoformat(before).replace(tzinfo=UTC) > _now:
+                raise SAMLException("Assertion is not valid yet or expired.")
+        on_or_after = conditions.attrib.get("NotOnOrAfter")
+        if on_or_after:
+            if datetime.fromisoformat(on_or_after).replace(tzinfo=UTC) < _now:
+                raise SAMLException("Assertion is not valid yet or expired.")
 
     def _verify_signature(self, signature_node: _Element):
         """Verify a single signature node"""
