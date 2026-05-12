@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.db.models import Model
 from django.http import HttpRequest
 from django.utils.timezone import now
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
@@ -9,7 +10,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
-from authentik.api.authentication import IPCUser, validate_auth
+from authentik.api.authentication import VirtualUser, validate_auth
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import User
 from authentik.crypto.apps import MANAGED_KEY
@@ -25,8 +26,18 @@ LOGGER = get_logger()
 PLATFORM_ISSUER = "goauthentik.io/platform"
 
 
-class DeviceUser(IPCUser):
+class DeviceUser(VirtualUser):
+
     username = "authentik:endpoints:device"
+
+    def has_perm(self, perm: str, obj: Model | None = None) -> bool:
+        print(perm)
+        if perm in [
+            "authentik_core.view_user",
+            "authentik_core.view_group",
+        ]:
+            return True
+        return False
 
 
 class AgentEnrollmentAuth(BaseAuthentication):
