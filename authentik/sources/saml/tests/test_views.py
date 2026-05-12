@@ -4,6 +4,7 @@ from base64 import b64encode
 
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
+from freezegun import freeze_time
 
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.planner import PLAN_CONTEXT_REDIRECT, FlowPlan
@@ -26,6 +27,7 @@ class TestViews(TestCase):
             pre_authentication_flow=create_test_flow(),
         )
 
+    @freeze_time("2022-10-14T14:15:00")
     def test_enroll(self):
         """Enroll"""
         flow = create_test_flow()
@@ -52,6 +54,7 @@ class TestViews(TestCase):
         plan: FlowPlan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertIsNotNone(plan)
 
+    @freeze_time("2022-10-14T14:15:00")
     def test_enroll_redirect(self):
         """Enroll when attempting to access a provider"""
         initial_redirect = f"http://{generate_id()}"
