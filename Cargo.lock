@@ -237,7 +237,6 @@ dependencies = [
  "sqlx",
  "time",
  "tokio",
- "tokio-retry2",
  "tokio-tungstenite",
  "tower",
  "tracing",

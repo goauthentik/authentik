@@ -171,12 +171,8 @@ impl ProxyOutpost {
     fn lookup_app(&self, host: &str) -> Option<Arc<Application>> {
         let apps = self.apps.load();
 
-        // If we only have a single app, host name switching doesn't matter.
-        if apps.len() == 1
-            && let Some(app) = apps.values().next()
-        {
-            debug!(app = app.provider.name, "found a single app, using it");
-            return Some(Arc::clone(app));
+        if apps.is_empty() {
+            return None;
         }
 
         if let Some(app) = apps.get(host) {

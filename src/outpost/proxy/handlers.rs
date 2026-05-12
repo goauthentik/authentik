@@ -10,7 +10,7 @@ use metrics::histogram;
 use serde_json::json;
 use tokio::time::Instant;
 use tower::util::ServiceExt as _;
-use tracing::{Instrument as _, field, info_span, instrument, trace, warn};
+use tracing::{Instrument as _, debug, field, info_span, instrument, trace, warn};
 
 use crate::outpost::proxy::ProxyOutpost;
 
@@ -42,7 +42,18 @@ pub(super) async fn default(
     let span = info_span!("proxy outpost request", user = field::Empty);
     let start = Instant::now();
 
-    let Some(app) = outpost.lookup_app(&host) else {
+    let app = outpost.lookup_app(&host).or_else(|| {
+        // If we only have a single app, host name switching doesn't matter.
+        let apps = outpost.apps.load();
+        if apps.len() == 1
+            && let Some(app) = apps.values().next()
+        {
+            debug!(app = app.provider.name, "found a single app, using it");
+            return Some(Arc::clone(app));
+        }
+        None
+    });
+    let Some(app) = app else {
         trace!(headers = ?request.headers(), "tracing headers for no hostname match");
         warn!("no app for hostname");
         return Ok(Response::builder()
