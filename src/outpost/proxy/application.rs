@@ -30,7 +30,8 @@ impl Application {
         }
         let external_host = external_url.authority();
 
-        // TODO: extract this to a certificate store to avoid re-fetching the certificate every time
+        let _old_app = outpost.apps.load().get(external_host);
+
         let cert = if let Some(Some(kp_uuid)) = provider.certificate {
             Some(
                 outpost
@@ -48,10 +49,12 @@ impl Application {
             redirect_url
         };
 
+        let router = Router::new();
+
         Ok(Self {
             host: external_host.to_owned(),
             provider,
-            router: Router::new(),
+            router,
             cert,
         })
     }
