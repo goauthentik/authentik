@@ -110,17 +110,6 @@ func (a *Application) getTraefikForwardUrl(r *http.Request) (*url.URL, error) {
 
 // getNginxForwardUrl See https://github.com/kubernetes/ingress-nginx/blob/main/rootfs/etc/nginx/template/nginx.tmpl
 func (a *Application) getNginxForwardUrl(r *http.Request) (*url.URL, error) {
-	ou := r.Header.Get("X-Original-URI")
-	if ou != "" {
-		// Turn this full URL into a relative URL
-		u := &url.URL{
-			Host:   "",
-			Scheme: "",
-			Path:   ou,
-		}
-		a.log.WithField("url", u.String()).Info("building forward URL from X-Original-URI")
-		return u, nil
-	}
 	h := r.Header.Get("X-Original-URL")
 	if len(h) < 1 {
 		return nil, errors.New("no forward URL found")
