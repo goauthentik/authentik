@@ -3,6 +3,7 @@
 from json import dumps, loads
 from tempfile import NamedTemporaryFile, mkdtemp
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from yaml import dump
@@ -140,6 +141,20 @@ class TestBlueprintsV1API(APITestCase):
                 format="multipart",
             )
         self.assertEqual(res.status_code, 200)
+
+    def test_api_import_invalid_blueprint_returns_result_payload(self):
+        """Invalid blueprint content returns a result payload instead of a 400 response."""
+        file = SimpleUploadedFile("invalid-blueprint.yaml", b'{"version": 3}')
+
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-import-"),
+            data={"file": file},
+            format="multipart",
+        )
+
+        self.assertEqual(res.status_code, 200)
+        self.assertFalse(res.json()["success"])
+        self.assertGreater(len(res.json()["logs"]), 0)
 
     def test_api_import_unknown_path(self):
         """Path not in available blueprints is rejected (covers api.py:56)."""

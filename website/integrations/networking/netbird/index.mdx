@@ -1,0 +1,207 @@
+---
+title: Integrate with NetBird
+sidebar_label: NetBird
+support_level: community
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is NetBird
+
+> NetBird is an open source, zero trust networking platform that allows you to create secure private networks for your organization or home.
+>
+> -- https://netbird.io
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `netbird.company` is the FQDN of the NetBird installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## Configuration methods
+
+NetBird can use authentik in two ways:
+
+- **Management setup**: add authentik as an external identity provider while keeping NetBird's embedded IdP and local users.
+- **Standalone setup**: replace NetBird's embedded IdP with authentik.
+
+<Tabs
+  defaultValue="management"
+  values={[
+    { label: "Management setup", value: "management" },
+    { label: "Standalone setup", value: "standalone" },
+  ]}>
+  <TabItem value="management">
+
+## authentik configuration
+
+To support adding authentik as an external identity provider in NetBird, you need to create an application/provider pair and application entitlements in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Leave **Redirect URIs/Origins** empty. NetBird generates the redirect URI in a later step.
+        - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Create application entitlements
+
+Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to define which NetBird groups can be assigned to authentik users.
+
+1. Open the NetBird application in authentik.
+2. Click the **Application entitlements** tab.
+3. Create one entitlement for each NetBird group you want to assign to users.
+4. Open each entitlement and bind the users or groups that should receive it.
+
+Name each entitlement exactly as the NetBird group value that NetBird should sync. This keeps NetBird-specific authorization scoped to the NetBird application instead of relying on global authentik group names.
+
+## NetBird configuration
+
+1. Log in to the NetBird Management Dashboard as an administrator.
+2. Navigate to **Settings** > **Identity Providers** and click **Add Identity Provider**.
+3. Configure the following settings:
+    - **Type**: select **authentik** if available; otherwise select **Generic OIDC**.
+    - **Name**: `authentik`
+    - **Client ID**: enter the client ID from authentik.
+    - **Client Secret**: enter the client secret from authentik.
+    - **Issuer**: `https://authentik.company/application/o/<application_slug>/`
+4. Copy the redirect URL shown by NetBird. Do not complete the provider setup yet.
+5. Return to authentik, navigate to **Applications** > **Providers**, and edit the NetBird provider.
+6. Under **Redirect URIs/Origins**, add the redirect URL from NetBird as a `Strict` redirect.
+7. Click **Update**.
+8. Return to NetBird and complete the identity provider setup.
+
+### Configure entitlement sync
+
+NetBird can sync group membership from a JWT claim. Use the `entitlements` claim so NetBird receives the application entitlements assigned to the user.
+
+1. In authentik, edit the NetBird provider.
+2. Under **Advanced protocol settings**, enable **Include claims in id_token**.
+3. Ensure the `entitlements` scope is selected.
+4. In NetBird, enable JWT group sync and set the JWT claim to `entitlements`.
+
+  </TabItem>
+  <TabItem value="standalone">
+
+## authentik configuration
+
+To support replacing NetBird's embedded IdP with authentik, you need to create an application/provider pair, a service account, and a device code flow.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** value because it will be required later.
+        - Set **Client type** to `Public`.
+        - Add a `Strict` redirect URI to `http://localhost:53000`.
+        - Add a `Regex` redirect URI to `https://netbird.company/.*`.
+        - Select any available signing key.
+        - Under **Advanced protocol settings**, set **Access Code Validity** to `minutes=10`.
+        - Under **Advanced protocol settings**, set **Subject Mode** to `Based on the User's ID`.
+        - Under **Advanced protocol settings**, add the `authentik default OAuth Mapping: OpenID 'offline_access'`, `authentik default OAuth Mapping: OpenID 'entitlements'`, and `authentik default OAuth Mapping: authentik API access` scopes to **Selected Scopes**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+:::warning Signing key required to maintain security
+It is important to set a signing key to secure the provider because this is a `Public` client.
+:::
+
+:::info NetBird service account requires access to application
+If access to the NetBird application is restricted with bindings, the NetBird service account must be allowed by those bindings. Otherwise, NetBird can return a 401 error after login.
+:::
+
+### Set up a service account
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Users** and click **Create a service account**.
+3. Set the **Username** to `NetBird` and disable the **Create group** option.
+4. Click **Create**.
+5. Navigate to **Directory** > **Tokens and App passwords** and click **Create**.
+6. Set **User** to the NetBird service account, create an app password, and copy the generated password because it will be required later.
+
+### Make the service account an administrator
+
+NetBird requires the service account to have full administrative access to the authentik instance.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **authentik Admins**.
+3. Switch to the **Users** tab, click **Add existing user**, and select the NetBird service account.
+
+### Create and apply a device code flow
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Flows** and click **Create**.
+3. Set the following required configurations:
+    - **Name**: provide a name, such as `default-device-code-flow`.
+    - **Title**: provide a title, such as `Device code flow`.
+    - **Slug**: provide a slug, such as `default-device-code-flow`.
+    - **Designation**: `Stage Configuration`
+    - **Authentication**: `Require authentication`
+4. Click **Create**.
+5. Navigate to **System** > **Brands** and click the **Edit** icon on the default brand.
+6. Under **Default flows**, set **Device code flow** to the newly created device code flow and click **Update**.
+
+## NetBird configuration
+
+To configure NetBird to use authentik as its standalone IdP, add the following environment variables to your NetBird deployment:
+
+```yaml showLineNumbers title="setup.env"
+NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
+NETBIRD_USE_AUTH0=false
+NETBIRD_AUTH_CLIENT_ID="<Your Client ID>"
+NETBIRD_AUTH_SUPPORTED_SCOPES="openid profile email offline_access entitlements goauthentik.io/api"
+NETBIRD_AUTH_AUDIENCE="<Your Client ID>"
+NETBIRD_AUTH_DEVICE_AUTH_CLIENT_ID="<Your Client ID>"
+NETBIRD_AUTH_DEVICE_AUTH_AUDIENCE="<Your Client ID>"
+NETBIRD_MGMT_IDP="authentik"
+NETBIRD_IDP_MGMT_CLIENT_ID="<Your Client ID>"
+NETBIRD_IDP_MGMT_EXTRA_USERNAME="NetBird"
+NETBIRD_IDP_MGMT_EXTRA_PASSWORD="<Your Service Account app password>"
+NETBIRD_AUTH_REDIRECT_URI="/auth"
+NETBIRD_AUTH_SILENT_REDIRECT_URI="/silent-auth"
+
+# Needs disabling due to issue with IdP. Learn more at https://github.com/netbirdio/netbird/issues/3654
+NETBIRD_AUTH_PKCE_DISABLE_PROMPT_LOGIN=true
+```
+
+Restart the NetBird service for the changes to take effect. If using Docker, redeploy the NetBird container for the changes to take effect.
+
+  </TabItem>
+</Tabs>
+
+## Configuration verification
+
+To confirm that authentik is properly configured with NetBird, log out and log back in via authentik.
+
+## Troubleshooting
+
+When accessing NetBird through a reverse proxy, you might encounter a loop where the `/peers` URL continuously reloads. To resolve this, set the following variables accordingly:
+
+```yaml title="setup.env"
+NETBIRD_MGMT_API_PORT=443
+NETBIRD_SIGNAL_PORT=443
+```
+
+Run the `configure.sh` script for the change to take effect.
+
+## Resources
+
+- [NetBird docs - authentik with NetBird self-hosted](https://docs.netbird.io/selfhosted/identity-providers/authentik)
+- [NetBird docs - authentik SSO with NetBird self-hosted advanced setup](https://docs.netbird.io/selfhosted/identity-providers/advanced/authentik)

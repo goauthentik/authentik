@@ -37,7 +37,7 @@ After creating the application you need to customize its login settings.
 
 Next, you need to obtain the **App ID** and **App Secret** for the Facebook app. These will be required when creating the source in authentik.
 
-10. Go back to the Dashboard, and in the bottom left of the navigation pane, click **App settings** > **Basic**.
+10. Go back to the Dashboard, and in the bottom-left of the navigation pane, click **App settings** > **Basic**.
 11. Take note of the **App ID** and the **App secret** values.
 
 Finally, you need to publish the Facebook app.

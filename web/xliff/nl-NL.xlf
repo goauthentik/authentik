@@ -3274,25 +3274,9 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
   <source>EntityID/Issuer</source>
   <target>EntityID/Uitgever</target>
 </trans-unit>
-<trans-unit id="scd2984ee5552643a">
-  <source>SSO URL (Post)</source>
-  <target>SSO-URL (Post)</target>
-</trans-unit>
-<trans-unit id="saa79b47f60c66458">
-  <source>SSO URL (Redirect)</source>
-  <target>SSO-URL (Omleiding)</target>
-</trans-unit>
 <trans-unit id="s2da51a6287118ba8">
   <source>SSO URL (IdP-initiated Login)</source>
   <target>SSO-URL (IdP-geïnitieerde login)</target>
-</trans-unit>
-<trans-unit id="s0a57e911e457302b">
-  <source>SLO URL (Post)</source>
-  <target>SLO-URL (Post)</target>
-</trans-unit>
-<trans-unit id="s1e7308bb1ca323e1">
-  <source>SLO URL (Redirect)</source>
-  <target>SLO-URL (Omleiding)</target>
 </trans-unit>
 <trans-unit id="sd2c58d7c6dddc515">
   <source>SAML Metadata</source>
@@ -10437,6 +10421,30 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s2656433a3b1f7e86">
   <source>My applications</source>
+</trans-unit>
+<trans-unit id="sac974f7c36f0c5c1">
+  <source>SAML Endpoint</source>
+</trans-unit>
+<trans-unit id="sfb0aa7e424580866">
+  <source>SAML provider endpoint. Use this URL for SP configuration.</source>
+</trans-unit>
+<trans-unit id="s2be14ff0704995c7">
+  <source>Throttling settings</source>
+</trans-unit>
+<trans-unit id="s05b71dc850552880">
+  <source>Email OTP throttling factor</source>
+</trans-unit>
+<trans-unit id="s55c0221c9247ad7d">
+  <source>SMS OTP throttling factor</source>
+</trans-unit>
+<trans-unit id="sd63868fff5022ef6">
+  <source>TOTP throttling factor</source>
+</trans-unit>
+<trans-unit id="s89361efde7c66054">
+  <source>Static OTP throttling factor</source>
+</trans-unit>
+<trans-unit id="s3162a5abea92514e">
+  <source>View Credentials</source>
 </trans-unit>
 </body>
 </file>

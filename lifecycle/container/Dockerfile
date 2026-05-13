@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:735dd688da64d22ebd9dd374b3e7e5a874635668fd2a6ec20ca1f99264294086 AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:4f2b45e32dc7d2caf66b6dbd59fac50e32f8077769efe0ef4d4c3f114672537d AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -228,8 +228,7 @@ RUN apt-get update && \
     # Required for runtime
     apt-get install -y --no-install-recommends \
     libpq5 libmaxminddb0 ca-certificates \
-    krb5-multidev libkrb5-3 libkdb5-10 libkadm5clnt-mit12 \
-    heimdal-multidev libkadm5clnt7t64-heimdal \
+    libkadm5clnt-mit12 libkadm5clnt7t64-heimdal \
     libltdl7 libxslt1.1 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
