@@ -172,7 +172,6 @@ To configure authentik as a SCIM provider for Absorb LMS, you will need to creat
     - **Expression**:
 
         ```python showLineNumbers
-        # Some implementations require givenName and familyName to be set
         givenName, familyName = request.user.name, " "
         formatted = request.user.name + " "
         # This default sets givenName to the name before the first space
@@ -206,8 +205,8 @@ To configure authentik as a SCIM provider for Absorb LMS, you will need to creat
             "phoneNumbers": [
                 {
                     "primary": True,
-                    #enter the name of the attribute that you've stored
-                    #the user's phone number under e.g. "phone"
+                    # Enter the name of the attribute that you've stored
+                    # the user's phone number under e.g. "phone"
                     "value": request.user.attributes.get("phone"),
                     "type": "work",
                 }
