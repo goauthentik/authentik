@@ -76,6 +76,8 @@ class SCIMOAuthAuth:
                 "access_token": access_token,
                 "refresh_token": token.get("refresh_token"),
                 "expires": now() + timedelta(seconds=expires_in),
+                # When using `update_or_create`, `last_updated` is not updated
+                "last_updated": now(),
             },
         )
         return token
