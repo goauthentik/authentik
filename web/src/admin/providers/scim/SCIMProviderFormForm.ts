@@ -92,7 +92,7 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
         default:
         case SCIMAuthenticationModeEnum.Token:
             return renderAuthToken(provider, errors);
-        case SCIMAuthenticationModeEnum.OauthSilent:
+        case SCIMAuthenticationModeEnum.Oauth:
         case SCIMAuthenticationModeEnum.OauthInteractive:
             return renderAuthOAuth(provider, errors);
     }
@@ -162,7 +162,7 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                             },
                             {
                                 label: msg("OAuth (Silent)"),
-                                value: SCIMAuthenticationModeEnum.OauthSilent,
+                                value: SCIMAuthenticationModeEnum.Oauth,
                                 description: html`${msg("Authenticate SCIM requests using OAuth.")}
                                     <ak-license-notice></ak-license-notice>`,
                             },

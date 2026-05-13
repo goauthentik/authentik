@@ -108,7 +108,7 @@ class Migration(migrations.Migration):
             field=models.TextField(
                 choices=[
                     ("token", "Token"),
-                    ("oauth_silent", "OAuth (Silent)"),
+                    ("oauth", "OAuth (Silent)"),
                     ("oauth_interactive", "OAuth (interactive)"),
                 ],
                 default="token",

@@ -164,7 +164,7 @@ export class SCIMProviderViewPage extends AKElement {
 
     renderSyncStatusExtra() {
         if (
-            this.provider?.authMode !== SCIMAuthenticationModeEnum.OauthSilent &&
+            this.provider?.authMode !== SCIMAuthenticationModeEnum.Oauth &&
             this.provider?.authMode !== SCIMAuthenticationModeEnum.OauthInteractive
         )
             return nothing;
@@ -178,7 +178,7 @@ export class SCIMProviderViewPage extends AKElement {
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         <ak-timestamp
-                            .timestamp=${this.provider.authOauthTokenLastUpdated}
+                            .timestamp=${this.provider?.authOauthTokenLastUpdated}
                         ></ak-timestamp>
                     </div>
                 </dd>
@@ -190,7 +190,7 @@ export class SCIMProviderViewPage extends AKElement {
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         <ak-timestamp
-                            .timestamp=${this.provider.authOauthTokenExpires}
+                            .timestamp=${this.provider?.authOauthTokenExpires}
                         ></ak-timestamp>
                     </div>
                 </dd>
