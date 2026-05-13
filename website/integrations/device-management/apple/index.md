@@ -57,10 +57,6 @@ In short, Apple Business Manager recognizes the email domain as a federated iden
 
 ## Preparation
 
-The following placeholders are used in this guide:
-
-- `authentik.company` is the FQDN of the authentik installation.
-
 By the end of this integration, your users will be able to enroll their Apple devices using their authentik credentials.
 
 You'll need to have an authentik instance running and accessible on an HTTPS domain, and an Apple Business Manager user with the role of Administrator or People Manager.
