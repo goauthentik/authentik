@@ -48,7 +48,8 @@ class ApplicationEntitlementViewSet(UsedByMixin, ModelViewSet):
     search_fields = [
         "pbm_uuid",
         "name",
-        "app",
+        "app__name",
+        "app__slug",
         "attributes",
     ]
     filterset_fields = [

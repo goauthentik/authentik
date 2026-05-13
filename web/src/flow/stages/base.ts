@@ -55,7 +55,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
     @intersectionObserver()
     public visible = false;
 
-    protected autofocusTarget = new FocusTarget();
+    protected autofocusTarget = new FocusTarget<HTMLInputElement>();
     focus = this.autofocusTarget.focus;
 
     #visibilityListener = () => {

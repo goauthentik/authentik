@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from django.db import DatabaseError, close_old_connections, connections
 from dramatiq.actor import Actor
-from dramatiq.broker import Broker
+from dramatiq.broker import Broker, MessageProxy
 from dramatiq.common import current_millis
 from dramatiq.message import Message
 from dramatiq.middleware.middleware import Middleware
@@ -79,7 +79,7 @@ class DbConnectionMiddleware(Middleware):
 
 
 class TaskStateBeforeMiddleware(Middleware):
-    def before_process_message(self, broker: PostgresBroker, message: Message[Any]) -> None:
+    def before_process_message(self, broker: PostgresBroker, message: Message[Any]) -> None:  # type: ignore[override]
         broker.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -90,7 +90,7 @@ class TaskStateBeforeMiddleware(Middleware):
 
 
 class TaskStateAfterMiddleware(Middleware):
-    def before_process_message(self, broker: PostgresBroker, message: Message[Any]) -> None:
+    def before_process_message(self, broker: PostgresBroker, message: MessageProxy) -> None:  # type: ignore[override]
         broker.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -99,7 +99,7 @@ class TaskStateAfterMiddleware(Middleware):
             state=TaskState.RUNNING,
         )
 
-    def after_skip_message(self, broker: PostgresBroker, message: Message[Any]) -> None:
+    def after_skip_message(self, broker: PostgresBroker, message: MessageProxy) -> None:  # type: ignore[override]
         broker.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -110,11 +110,11 @@ class TaskStateAfterMiddleware(Middleware):
 
     def after_process_message(
         self,
-        broker: PostgresBroker,
-        message: Message[Any],
+        broker: PostgresBroker,  # type: ignore[override]
+        message: MessageProxy,
         *,
         result: Any | None = None,
-        exception: Exception | None = None,
+        exception: BaseException | None = None,
     ) -> None:
         self.after_skip_message(broker, message)
 
@@ -147,7 +147,7 @@ class CurrentTask(Middleware):
             raise CurrentTaskNotFound()
         return task[-1]
 
-    def before_process_message(self, broker: Broker, message: Message[Any]) -> None:
+    def before_process_message(self, broker: Broker, message: MessageProxy) -> None:
         tasks = self._TASKS.get()
         if tasks is None:
             tasks = []
@@ -157,10 +157,10 @@ class CurrentTask(Middleware):
     def after_process_message(
         self,
         broker: Broker,
-        message: Message[Any],
+        message: MessageProxy,
         *,
         result: Any | None = None,
-        exception: Exception | None = None,
+        exception: BaseException | None = None,
     ) -> None:
         tasks: list[TaskBase] | None = self._TASKS.get()
         if tasks is None or len(tasks) == 0:
@@ -194,7 +194,7 @@ class CurrentTask(Middleware):
                 pass
         self._TASKS.set(tasks[:-1])
 
-    def after_skip_message(self, broker: Broker, message: Message[Any]) -> None:
+    def after_skip_message(self, broker: Broker, message: MessageProxy) -> None:
         self.after_process_message(broker, message)
 
 
@@ -236,7 +236,7 @@ class MetricsMiddleware(Middleware):
         self.message_start_times: dict[str, int] = {}
 
     @property
-    def forks(self) -> list[Callable[[], None]]:
+    def forks(self) -> list[Callable[[], int]]:
         from django_dramatiq_postgres.forks import worker_metrics
 
         return [worker_metrics]
@@ -310,41 +310,41 @@ class MetricsMiddleware(Middleware):
         # TODO: worker_id
         multiprocess.mark_process_dead(os.getpid())  # type: ignore[no-untyped-call]
 
-    def _make_labels(self, message: Message[Any]) -> list[str]:
+    def _make_labels(self, message: MessageProxy | Message[Any]) -> list[str]:
         return [message.queue_name, message.actor_name]
 
-    def after_nack(self, broker: Broker, message: Message[Any]) -> None:
+    def after_nack(self, broker: Broker, message: MessageProxy) -> None:
         self.total_rejected_messages.labels(*self._make_labels(message)).inc()
 
     def after_enqueue(self, broker: Broker, message: Message[Any], delay: int) -> None:
         if "retries" in message.options:
             self.total_retried_messages.labels(*self._make_labels(message)).inc()
 
-    def before_delay_message(self, broker: Broker, message: Message[Any]) -> None:
+    def before_delay_message(self, broker: Broker, message: MessageProxy) -> None:
         self.delayed_messages.add(message.message_id)
         self.in_progress_delayed_messages.labels(*self._make_labels(message)).inc()
 
-    def before_process_message(self, broker: Broker, message: Message[Any]) -> None:
+    def before_process_message(self, broker: Broker, message: MessageProxy) -> None:
         labels = self._make_labels(message)
         if message.message_id in self.delayed_messages:
             self.delayed_messages.remove(message.message_id)
             self.in_progress_delayed_messages.labels(*labels).dec()
 
         self.in_progress_messages.labels(*labels).inc()
-        self.message_start_times[message.message_id] = current_millis()  # type: ignore[no-untyped-call]
+        self.message_start_times[message.message_id] = current_millis()
 
     def after_process_message(
         self,
         broker: Broker,
-        message: Message[Any],
+        message: MessageProxy,
         *,
         result: Any | None = None,
-        exception: Exception | None = None,
+        exception: BaseException | None = None,
     ) -> None:
         labels = self._make_labels(message)
 
-        message_start_time = self.message_start_times.pop(message.message_id, current_millis())  # type: ignore[no-untyped-call]
-        message_duration = current_millis() - message_start_time  # type: ignore[no-untyped-call]
+        message_start_time = self.message_start_times.pop(message.message_id, current_millis())
+        message_duration = current_millis() - message_start_time
         self.messages_durations.labels(*labels).observe(message_duration)
 
         self.in_progress_messages.labels(*labels).dec()

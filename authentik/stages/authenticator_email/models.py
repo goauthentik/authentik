@@ -14,7 +14,7 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.stages.authenticator.models import SideChannelDevice
+from authentik.stages.authenticator.models import SideChannelDevice, ThrottlingMixin
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 
@@ -116,7 +116,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         verbose_name_plural = _("Email Authenticator Setup Stages")
 
 
-class EmailDevice(SerializerModel, SideChannelDevice):
+class EmailDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
     """Email Device"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
@@ -129,6 +129,20 @@ class EmailDevice(SerializerModel, SideChannelDevice):
         from authentik.stages.authenticator_email.api import EmailDeviceSerializer
 
         return EmailDeviceSerializer
+
+    def verify_token(self, token: str) -> bool:
+        verify_allowed, _ = self.verify_is_allowed()
+        if verify_allowed:
+            verified = super().verify_token(token)
+
+            if verified:
+                self.throttle_reset()
+            else:
+                self.throttle_increment()
+        else:
+            verified = False
+
+        return verified
 
     def _compose_email(self) -> TemplateEmailMessage:
         try:

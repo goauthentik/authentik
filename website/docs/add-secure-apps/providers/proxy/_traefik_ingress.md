@@ -23,6 +23,9 @@ spec:
             - X-authentik-meta-provider
             - X-authentik-meta-app
             - X-authentik-meta-version
+            # Add the 'authorization' header to authResponseHeaders if you need proxy providers which
+            # send a custom HTTP-Basic Authentication header based on values from authentik
+            # - authorization
 ```
 
 :::info

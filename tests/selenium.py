@@ -5,10 +5,8 @@ from json import JSONDecodeError, dumps, loads
 from pathlib import Path
 from tempfile import gettempdir
 from time import sleep
-from urllib.parse import urlencode
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.urls import reverse
 from docker.models.containers import Container
 from requests import RequestException
 from selenium import webdriver
@@ -130,13 +128,6 @@ class SeleniumTestMixin(E2ETestMixin):
                 f"URL {self.driver.current_url} doesn't match expected URL {desired_url}. "
                 f"HTML: {self.driver.page_source[:1000]}"
             ) from exc
-
-    def url(self, view: str, query: dict | None = None, **kwargs) -> str:
-        """reverse `view` with `**kwargs` into full URL using live_server_url"""
-        url = self.live_server_url + reverse(view, kwargs=kwargs)
-        if query:
-            return url + "?" + urlencode(query)
-        return url
 
     def if_user_url(self, path: str | None = None) -> str:
         """same as self.url() but show URL in shell"""

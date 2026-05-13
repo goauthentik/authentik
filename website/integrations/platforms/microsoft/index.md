@@ -5,7 +5,7 @@ support_level: community
 toc_max_heading_level: 5
 ---
 
-## What is Microsoft365
+## What is Microsoft365?
 
 > Microsoft 365 is the cloud productivity platform that delivers Office applications, Teams collaboration, and identity services from Microsoft's global infrastructure.
 >
@@ -113,8 +113,6 @@ If MFA is configured in Microsoft365, then you also need to create a property ma
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://login.microsoftonline.com/login.srf`.
-        - Set the **Issuer** to `https://authentik.company/application/saml/<application_slug>/metadata/`.
-        - Set the **Service Provider Binding** to `Post`.
         - Set the **Audience** to `urn:federation:MicrosoftOnline`.
         - Under **Advanced protocol settings**:
             - Set **Signing Certificate** to use any available certificate.
@@ -195,11 +193,11 @@ Connect-MgGraph -Scopes "Domain.ReadWrite.All", "Directory.AccessAsUser.All", "U
 
 # 2. Define all variables
 $domain = "domain.company"
-$PassiveLogOnUri = "https://authentik.company/application/saml/<application_slug>/sso/binding/post/"
-$LogOffUri = "https://authentik.company/application/saml/<application_slug>/slo/binding/post/"
+$PassiveLogOnUri = "https://authentik.company/application/saml/<application_slug>/"
+$LogOffUri = "https://authentik.company/application/saml/<application_slug>/"
 $IssuerUri = "https://authentik.company/application/saml/<application_slug>/metadata/"
 $MetadataExchangeUri = $IssuerUri
-$ActiveSignInUri = "https://authentik.company/application/saml/<application_slug>/sso/binding/post"
+$ActiveSignInUri = "https://authentik.company/application/saml/<application_slug>/"
 $SigningCert = Get-Content "C:\path\to\authentik_certificate.cer" -Raw
 $DisplayName = $domain
 $FederatedIdpMfaBehavior = "acceptIfMfaDoneByFederatedIdp"

@@ -4,7 +4,7 @@ sidebar_label: Wiki.js
 support_level: community
 ---
 
-## What is Wiki.js
+## What is Wiki.js?
 
 > Wiki.js is a wiki engine running on Node.js and written in JavaScript. It is free software released under the Affero GNU General Public License. It is available as a self-hosted solution or using "single-click" install on the DigitalOcean and AWS marketplace.
 >

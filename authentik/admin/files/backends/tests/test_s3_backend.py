@@ -1,4 +1,5 @@
 from unittest import skipUnless
+from urllib.parse import parse_qs, urlsplit
 
 from botocore.exceptions import UnsupportedSignatureVersionError
 from django.test import TestCase
@@ -166,6 +167,44 @@ class TestS3Backend(FileTestS3BackendMixin, TestCase):
             1,
             f"Bucket name '{bucket_name}' appears {bucket_occurrences} times in URL, expected 1. "
             f"URL: {url}",
+        )
+
+    @CONFIG.patch("storage.s3.secure_urls", False)
+    @CONFIG.patch("storage.s3.addressing_style", "path")
+    def test_file_url_custom_domain_resigns_for_custom_host(self):
+        """Test presigned URLs are signed for the custom domain host.
+
+        Host-changing custom domains must produce a signature query string for
+        the public host, not reuse the internal endpoint signature.
+        """
+        bucket_name = self.media_s3_bucket_name
+        key_name = "application-icons/test.svg"
+        custom_domain = f"files.example.test:8020/{bucket_name}"
+
+        endpoint_signed_url = self.media_s3_backend.client.generate_presigned_url(
+            "get_object",
+            Params={
+                "Bucket": bucket_name,
+                "Key": f"{self.media_s3_backend.base_path}/{key_name}",
+            },
+            ExpiresIn=900,
+            HttpMethod="GET",
+        )
+
+        with CONFIG.patch("storage.media.s3.custom_domain", custom_domain):
+            custom_url = self.media_s3_backend.file_url(key_name, use_cache=False)
+
+        endpoint_parts = urlsplit(endpoint_signed_url)
+        custom_parts = urlsplit(custom_url)
+
+        self.assertEqual(custom_parts.scheme, "http")
+        self.assertEqual(custom_parts.netloc, "files.example.test:8020")
+        self.assertEqual(parse_qs(custom_parts.query)["X-Amz-SignedHeaders"], ["host"])
+        self.assertNotEqual(
+            custom_parts.query,
+            endpoint_parts.query,
+            "Custom-domain URLs must be signed for the public host, not reuse the endpoint "
+            "signature query string.",
         )
 
     def test_themed_urls_without_theme_variable(self):

@@ -1,7 +1,6 @@
 """authentik URL Configuration"""
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from authentik.core.api.application_entitlements import ApplicationEntitlementViewSet
@@ -20,6 +19,7 @@ from authentik.core.api.sources import (
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
 from authentik.core.api.users import UserViewSet
+from authentik.core.setup.views import SetupView
 from authentik.core.views.apps import RedirectToAppLaunch
 from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.interface import (
@@ -36,7 +36,7 @@ from authentik.tenants.channels import TenantsAwareMiddleware
 urlpatterns = [
     path(
         "",
-        login_required(RootRedirectView.as_view()),
+        RootRedirectView.as_view(),
         name="root-redirect",
     ),
     path(
@@ -62,6 +62,11 @@ urlpatterns = [
         # of the reverse calls to be adjusted
         FlowInterfaceView.as_view(),
         name="if-flow",
+    ),
+    path(
+        "setup",
+        SetupView.as_view(),
+        name="setup",
     ),
     # Fallback for WS
     path("ws/outpost/<uuid:pk>/", InterfaceView.as_view(template_name="if/admin.html")),

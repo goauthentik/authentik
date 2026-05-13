@@ -85,7 +85,7 @@ export class MFADevicesPage extends Table<Device> {
                                 role="menuitem"
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
                                     `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
-                                        page: "page-mfa",
+                                        page: "page-credentials",
                                     })}`,
                                 )}"
                                 class="pf-c-dropdown__menu-item"

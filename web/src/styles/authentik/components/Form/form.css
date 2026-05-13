@@ -20,6 +20,11 @@
     );
 }
 
+.pf-c-form__alert {
+    display: grid;
+    gap: var(--pf-global--spacer--form-element);
+}
+
 .pf-c-form.ak-m-content-center {
     --pf-c-form--GridGap: var(--pf-global--spacer--sm);
 
@@ -83,90 +88,12 @@
     text-wrap: pretty;
 }
 
-/* #region Fields */
-
-fieldset {
-    --ak-fieldset--BorderWidth: thin;
-    --ak-fieldset__legend--MarginInlineBase: var(--pf-global--spacer--sm);
-    --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--sm);
-
-    border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BackgroundColor--light-100));
-
-    @media (prefers-contrast: more) {
-        border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--200));
-    }
-
-    @media (prefers-contrast: less) {
-        border-color: var(--ak-fieldset--BorderColor, transparent);
-    }
-
-    border-width: var(--ak-fieldset--BorderWidth);
-
-    padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
-
-    & > legend {
-        line-height: 1;
-        padding: var(--ak-fieldset__legend--PaddingInlineBase) !important;
-        margin-inline-start: var(
-            --ak-fieldset__legend--MarginInlineStart,
-            var(--ak-fieldset__legend--MarginInlineBase)
-        ) !important;
-        margin-inline-end: var(
-            --ak-legend-margin-inline-end,
-            var(--ak-fieldset__legend--MarginInlineBase)
-        ) !important;
-    }
-
-    &:has(legend.sr-only:not(.more-contrast-only)) {
-        border-width: 0;
-
-        &:not(.pf-c-modal-box__footer) {
-            --ak-fieldset__legend--PaddingInlineBase: 0;
-            --ak-fieldset__legend--MarginInlineBase: 0;
-        }
-    }
-
-    &.pf-c-form__group {
-        border-radius: var(--pf-global--BorderRadius--sm);
-    }
-
-    &.pf-c-form__group {
-        display: flex;
-        flex-wrap: wrap;
-
-        &.pf-m-action {
-            gap: var(--pf-global--spacer--md) var(--pf-global--spacer--sm);
-            margin-block-start: 0;
-        }
-    }
-
-    &.pf-c-login__main-footer-band {
-        & > *:last-child {
-            padding-block-end: var(--pf-c-login__main-footer-band-item--PaddingTop);
-        }
-    }
-
-    &.pf-c-modal-box__footer {
-        --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--lg);
-        --pf-c-modal-box__footer--c-button--MarginRight: 0;
-
-        gap: var(--pf-global--spacer--sm);
-        justify-content: end;
-        padding-block: calc(var(--ak-fieldset__legend--PaddingInlineBase) / 2);
-        border-inline: none;
-        border-block-end: none;
-
-        --pf-c-modal-box__footer--c-button--sm--MarginRight: var(
-            --pf-c-modal-box__footer--c-button--MarginRight
-        );
-
-        & > ak-spinner-button:not(:last-child) {
-            margin-right: var(--pf-c-modal-box__footer--c-button--MarginRight);
-        }
+ak-form-element-horizontal:has(.pf-c-form__helper-text + ak-checkbox-group) {
+    .pf-c-form__helper-text {
+        margin-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+        line-height: var(--pf-global--LineHeight--sm);
     }
 }
-
-/* #endregion */
 
 /* #region Radio */
 
@@ -178,22 +105,24 @@ label.pf-c-radio {
     --pf-c-radio--checkmark--BorderColor: var(--pf-global--BorderColor--300);
     --pf-c-radio--checkmark--Color: transparent;
     --pf-c-radio--BorderColor: transparent;
-    --pf-c-radio--BoxShadowColor: transparent;
 
     --pf-c-radio--checked--BackgroundColor: transparent;
     --pf-c-radio--checked--BorderColor: var(--pf-global--active-color--300);
+    --pf-c-radio--checked--Hover--BorderColor: var(--pf-global--active-color--400);
     --pf-c-radio--hover--BorderColor: var(--pf-global--active-color--200);
-
     --pf-c-radio--disabled--BackgroundColor: var(--pf-global--BackgroundColor--150);
+    --pf-c-radio__description--Color: var(--pf-global--Color--300);
+
     transition:
+        background-color 0.2s,
         border-color 0.2s,
         color 0.2s;
 
+    margin-block: 0;
     padding-inline: var(--pf-global--spacer--md);
     padding-block: var(--pf-global--spacer--sm);
     cursor: pointer;
     background-color: var(--pf-c-radio--BackgroundColor, transparent);
-    border: 1px solid var(--pf-c-radio--BorderColor);
     border-radius: var(--pf-global--BorderRadius--sm);
     position: relative;
 
@@ -218,45 +147,48 @@ label.pf-c-radio {
         width: 1.5em;
         height: 1.5em;
         padding: 0.25em;
-        border: 1px solid;
+        border: 0.5px solid;
         color: var(--pf-c-radio--checkmark--BorderColor, transparent);
-        border-radius: 3px;
+        border-radius: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 1;
+        background: color-mix(var(--pf-c-radio--checkmark--BorderColor), transparent 84%);
+        box-shadow: inset 0 0 1px
+            color-mix(var(--pf-c-radio--checkmark--BorderColor), var(--pf-global--BorderColor--200));
 
         &::after {
             font-family: "Font Awesome 5 Free";
             font-weight: 900;
 
-            content: "\f00c";
+            content: "";
             display: block;
             line-height: 1;
             color: var(--pf-c-radio--checkmark--Color);
             transition: color 0.2s;
+
+            background: var(--pf-c-radio--checkmark--Color);
+            height: 100%;
+            width: 100%;
+            border-radius: 100%;
+            filter: drop-shadow(0 0 6px color-mix(currentColor, transparent 50%));
         }
     }
 
-    &:not(:last-child) {
-        --pf-c-radio--BoxShadowColor: var(--pf-global--BorderColor--100);
-    }
-
-    &::after {
-        content: "";
-        position: absolute;
-        display: block;
-        background-color: var(--pf-c-radio--BoxShadowColor);
-        height: 0.5px;
-        inset-inline: 0;
-        inset-block-end: 0;
+    &:hover:has(.pf-c-radio__input:not(:disabled)) {
+        --pf-c-radio--BackgroundColor: color-mix(currentColor, transparent 98%);
     }
 
     &:has(.pf-c-radio__input:checked:not(:disabled)) {
-        --pf-c-radio--BackgroundColor: var(--pf-c-radio--checked--BackgroundColor);
         --pf-c-radio--BorderColor: var(--pf-c-radio--checked--BorderColor);
         --pf-c-radio--checkmark--BorderColor: var(--pf-global--active-color--300);
         --pf-c-radio--checkmark--Color: var(--pf-c-radio--checked--BorderColor);
+    }
+
+    &:hover:has(.pf-c-radio__input:checked:not(:disabled)) {
+        --pf-c-radio--checkmark--BorderColor: var(--pf-c-radio--checked--Hover--BorderColor);
+        --pf-c-radio--checkmark--Color: var(--pf-c-radio--checked--Hover--BorderColor);
     }
 
     &:hover:not(:has(.pf-c-radio__input:checked)):not(:has(.pf-c-radio__input:disabled)) {
@@ -276,6 +208,8 @@ label.pf-c-radio {
 
     .pf-c-radio__label {
         align-self: center;
+        font-weight: var(--pf-global--FontWeight--overpass--semi-bold);
+        font-family: var(--pf-global--FontFamily--redhat-updated--heading--sans-serif);
     }
 
     &:has(.pf-c-radio__input:last-child) .pf-c-radio__label {
@@ -297,9 +231,8 @@ label.pf-c-radio {
 /* #endregion */
 
 ak-switch-input {
-    padding-inline: var(--pf-global--spacer--form-element);
     ::part(group-control) {
-        grid-area: control;
+        grid-column: 1 / -1;
     }
 
     .pf-c-switch {
@@ -324,8 +257,10 @@ ak-switch-input {
     }
 
     .pf-c-form__helper-text {
-        padding-inline-end: var(--pf-global--spacer--2xl);
         grid-area: secondary / label / secondary / -1;
+        /* Fallback for browsers that do not support container queries. */
+        max-width: clamp(25cqi, 90%, 90ch);
+        max-width: clamp(25cqi, 90cqi, 90ch);
     }
 }
 
@@ -385,21 +320,6 @@ ak-switch-input {
 
     .pf-c-form__field-group {
         border-bottom: 0;
-    }
-
-    fieldset {
-        border-color: var(
-            --ak-fieldset--BorderColor,
-            var(--pf-global--BackgroundColor--dark-transparent-200)
-        );
-
-        @media (prefers-contrast: more) {
-            border-color: var(--ak-fieldset--BorderColor, var(--pf-global--BorderColor--300));
-        }
-
-        @media (prefers-contrast: less) {
-            border-color: var(--ak-fieldset--BorderColor, transparent);
-        }
     }
 
     /* #endregion */

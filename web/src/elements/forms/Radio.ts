@@ -51,7 +51,7 @@ export class Radio<T extends Jsonifiable = never> extends FormAssociatedElement<
 
     @property()
     public set value(nextValue: T) {
-        if (!nextValue) {
+        if (nextValue === null) {
             return;
         }
 

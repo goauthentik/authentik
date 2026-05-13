@@ -4,7 +4,7 @@ sidebar_label: The Lounge
 support_level: community
 ---
 
-## What is The Lounge
+## What is The Lounge?
 
 > The Lounge is a modern, web-based IRC (Internet Relay Chat) client that allows users to stay connected to IRC servers even when offline.
 >

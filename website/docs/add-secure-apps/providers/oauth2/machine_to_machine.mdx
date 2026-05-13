@@ -26,6 +26,8 @@ All user account types, including internal users, external users, and service ac
 
 authentik treats a grant type of `password` the same as `client_credentials` to support applications that rely on a password grant. Scopes, if required, must be defined in the request and follow the same behavior as other OAuth requests.
 
+To include custom claims from scope mappings in the issued JWT, select the scope mappings on the OAuth2 provider and request their scope names in the token request with the `scope` parameter, for example `scope=profile custom-scope`.
+
 ### Request with username and app password
 
 **Example**:
@@ -109,9 +111,39 @@ Alternatively, you can set the `client_secret` parameter to `<inputJWT>`, for ap
 
 Input JWTs are checked to verify that they are signed by any of the selected **Federated OIDC Sources**, and that their `exp` attribute is not set to the current time or a past time.
 
-To dynamically limit access based on the claims of the tokens, you can use [Expression policies](../../../customize/policies/types/expression/index.mdx).
+#### Kubernetes service account tokens
 
-**Example**:
+[Projected Kubernetes service account tokens](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/) work with this flow. The cluster or an auxiliary service must expose the service account issuer through OpenID Connect discovery or a JWKS endpoint. In practice, this means you can:
+
+1. Create a generic **OAuth Source** in authentik.
+2. Configure the source with either the issuer's `.well-known/openid-configuration` URL or the issuer's JWKS URL.
+3. Add that source to the OAuth2 provider under **Federated OIDC Sources**.
+4. Send the projected service account token as the `client_assertion` in the `client_credentials` request.
+
+When the token validates, authentik creates or updates a generated service account and then issues a new access token from the selected OAuth2 provider. The generated account is derived from the provider name and the incoming JWT subject claim.
+
+To propagate claims from the Kubernetes token into the token issued by authentik, create an **OAuth Source Property Mapping** to transfer the incoming JWT values to the generated service account, then use an **OAuth2 Scope Mapping** to include them as claims for the relying party.
+
+Example OAuth source property mapping:
+
+```python
+return {
+    "attributes": {
+        "kubernetes_subject": info.get("sub"),
+        "kubernetes_namespace": info.get("kubernetes.io", {}).get("namespace"),
+    },
+}
+```
+
+Example OAuth2 scope mapping:
+
+```python
+return {
+    "kubernetes_namespace": request.user.attributes.get("kubernetes_namespace"),
+}
+```
+
+To dynamically limit access based on the claims of the tokens, you can use [Expression policies](../../../customize/policies/types/expression/index.mdx), for example:
 
 ```python
 return request.context["oauth_jwt"]["iss"] == "https://my.issuer"
@@ -146,7 +178,7 @@ client_id=<client_id>
 
 Alternatively, you can set the `client_secret` parameter to `<inputJWT>`, for applications which can set the password from a file but not other parameters.
 
-Input JWTs must be valid access tokens issued by any of the configured **Federated OIDC Providers**. They must not have been revoked and must not have expired.
+Input JWTs must be valid access tokens issued by any of the configured **Federated OAuth2/OpenID Providers**. They must not have been revoked and must not have expired.
 
 To dynamically limit access based on the claims of the tokens, you can use [Expression policies](../../../customize/policies/types/expression/index.mdx).
 
@@ -172,11 +204,11 @@ If you receive an error response from authentik, it only includes a generic erro
 
 However, you can obtain more detailed error information from the [authentik server container logs](../../../troubleshooting/logs/logs.mdx) by searching for the `request_id` from the response.
 
-### OAuth introspection endpoint
+### OAuth introspection and revocation endpoints
 
-To use the OAuth introspection endpoint to obtain more information on a token, you must first authenticate to it.
+To use the OAuth introspection endpoint to obtain more information on a token, you must first authenticate to it. By default, a provider can introspect or revoke tokens that were issued by that same provider.
 
-You are only able to introspect a token from the same provider that was used to authenticate, or you must exchange the token for a token from the provider as described above.
+To let a confidential provider introspect or revoke tokens from another OAuth2 provider, open the provider that issues the token and add the calling provider under **Federated OAuth2/OpenID Providers**. This applies to both `/application/o/introspect/` and `/application/o/revoke/`.
 
 ### Event logging
 

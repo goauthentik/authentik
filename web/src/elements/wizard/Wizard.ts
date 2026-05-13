@@ -62,23 +62,6 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                 display: block;
                 height: min(var(--ak-c-dialog--AspectRatioHeight), var(--ak-c-dialog--MaxHeight));
             }
-
-            .pf-c-wizard__main {
-                overscroll-behavior: contain;
-                display: flex;
-                flex-flow: column;
-            }
-
-            .pf-c-wizard__main,
-            .pf-c-wizard__main-body {
-                transform: translate3d(0, 0, 0);
-                will-change: transform;
-            }
-
-            .pf-c-wizard__main-body {
-                display: flex;
-                flex: 1 1 auto;
-            }
         `,
     ];
 
@@ -182,8 +165,31 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
     /**
      * Actions to display at the end of the wizard.
      */
+    private _actions: WizardAction[] = [];
+
     @property({ attribute: false })
-    public actions: WizardAction[] = [];
+    public get actions(): WizardAction[] {
+        return this._actions;
+    }
+
+    public set actions(value: WizardAction[]) {
+        const oldValue = this._actions;
+        this._actions = value;
+
+        if (this._actions.length > 0) {
+            if (!this.querySelector(`[slot="ak-wizard-page-action"]`)) {
+                const actionPage = document.createElement("ak-wizard-page-action");
+                actionPage.slot = "ak-wizard-page-action";
+                actionPage.dataset.wizardmanaged = "true";
+                this.appendChild(actionPage);
+            }
+            if (!this.steps.includes("ak-wizard-page-action")) {
+                this.steps = [...this.steps, "ak-wizard-page-action"];
+            }
+        }
+
+        this.requestUpdate("actions", oldValue);
+    }
 
     @property({ attribute: false })
     public finalHandler?: () => Promise<void>;
@@ -498,6 +504,12 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                     return html`<p>Unexpected missing step: ${step}</p>`;
                 }
 
+                // By default, disable steps ahead of the current step
+                let disabled = activeStepIndex < idx;
+                // If this wizard is at the end, disable navigation back
+                if (activeStepIndex === this.steps.length - 1 && idx !== activeStepIndex) {
+                    disabled = true;
+                }
                 return html`<li role="presentation" class="pf-c-wizard__nav-item">
                     <button
                         class=${classMap({
@@ -505,7 +517,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                             "pf-m-current": idx === activeStepIndex,
                         })}
                         type="button"
-                        ?disabled=${activeStepIndex < idx}
+                        ?disabled=${disabled}
                         @click=${() => {
                             this.activeStepElement = stepEl;
                         }}
@@ -530,12 +542,14 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
         return guard(
             [activeStepIndex, lastPage, canBack, cancelable, valid, childElementCount],
             () => {
+                const customLabel = this.activeStepElement?.formatNextLabel();
                 const nextLabel =
-                    lastPage && activeStepIndex > 0
+                    customLabel ??
+                    (lastPage && activeStepIndex > 0
                         ? this.cancelable
                             ? ButtonKindLabelRecord.create()
                             : ButtonKindLabelRecord.finish()
-                        : ButtonKindLabelRecord.next();
+                        : ButtonKindLabelRecord.next());
 
                 return [
                     cancelable

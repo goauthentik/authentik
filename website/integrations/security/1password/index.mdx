@@ -4,7 +4,7 @@ sidebar_label: 1Password
 support_level: community
 ---
 
-## What is 1Password
+## What is 1Password?
 
 > 1Password is a password management tool that simplifies the process of creating, storing, and sharing passwords. It allows you to create strong, unique passwords, securely store them in a vault, and automatically fill them in when needed.
 >
@@ -28,7 +28,7 @@ To support the integration of 1Password with authentik, you need to create an ap
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -74,7 +74,7 @@ You can optionally configure automated user provisioning from authentik to 1Pass
 
 To support automated user provisioning, you need to create a group, and a SCIM provider in authentik. This SCIM provider is then connected to the **1Password SCIM Bridge**, which will need to be deployed. For more information, see the [Automate provisioning in 1Password Business using SCIM Documentation](https://support.1password.com/scim/).
 
-### Setup automated user provisioning in authentik
+### Set up automated user provisioning in authentik
 
 #### Create a user group
 
@@ -97,7 +97,7 @@ To support automated user provisioning, you need to create a group, and a SCIM p
 
 3. Click **Finish** to save the new provider.
 
-### Setup automated user provisioning in 1Password
+### Set up automated user provisioning in 1Password
 
 1. Log in to the [1Password dashboard](https://start.1password.com/) as an administrator.
 2. Click on **Integrations** in the sidebar and **Automated User Provisioning**.

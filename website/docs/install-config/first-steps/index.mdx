@@ -167,24 +167,24 @@ Now that you can access the authentik Admin interface, and you have added an app
 
 ### 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-    **A.** Navigate to **Directory > Users**, and click **New User**.
+    **A.** Navigate to **Directory > Users**, click **New User**, and then select **Internal User**..
 
-    **B.** Fill in the **_required_** fields:
+    **B.** Fill in all **_required_** fields:
 
     - **Username**: This value must be unique across all users.
-    - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the default because most applications
-          (including Grafana) do not support back-channel logout.
-    - **Path**: The path where the user will be created. By default the new user is created in the `users` directory, but you can change that later by editing the user.
-        - <strong className="tip">TIP</strong>: Paths are basically directories that are used to organize your users (for example HR vs Sales, etc.). Paths do not impact access; they are purely organizational. Note that the top-level **users** directory displays all users in that directory and all sub-directories.
+    - **Display Name** (_optional_): The display name of the user.
+    - **Email** (_optional_): The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.md), as an alternative method to log in, by services to request an email address, and if configured, to receive [notifications](../../sys-mgmt/events/notifications.md).
+    - **Active** (_optional_): Define if the newly created user account is active. Selected by default.
+    - **Path**: The path where the user will be created. By default the new user is created in the `users` folder, but you can change that later by editing the user.
+        - <strong className="tip">TIP</strong>: Paths are directories that are used to organize your
+          users (for example HR vs Sales, etc.). Paths do not impact access; they are purely
+          organizational. Note that the top-level **users** folder displays all users in that folder
+          and all sub-folders.
+    - **Attributes** (_optional_): [Custom attributes](../../users-sources/user/user_ref.mdx) for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 
-    For information about the **_optional_** fields below, refer to our [documentation on managing users](../../users-sources/user/user_basic_operations.md#create-a-user).
+C. Click **Create**.
 
-    - **Name**: The display name of the user.
-    - **Email**: The email address of the user. This is required for many integrations.
-    - **Is active**: Define the newly created user account as active.
-    - **Attributes**: You can leave this empty for this tutorial. This field can be used to store custom attributes for the user, in YAML or JSON format. These attributes can then be used within property mappings and policies.
-
-    **C.** Click **Create User**.
+For more information refer to our [documentation on managing users](../../users-sources/user/user_basic_operations.md#create-a-user).
 
 ### 2. Verify that the new user was created
 

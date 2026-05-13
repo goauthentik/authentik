@@ -10,7 +10,7 @@ from uuid import uuid4
 
 import pgtrigger
 from deepmerge import always_merger
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, identify_hasher
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
@@ -562,6 +562,33 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         self.password_change_date = now()
         return super().set_password(raw_password)
 
+    @staticmethod
+    def validate_password_hash(password_hash: str):
+        """Validate that the value is a recognized Django password hash."""
+        identify_hasher(password_hash)  # Raises ValueError if invalid
+
+    def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
+        """Set password directly from a pre-hashed value.
+
+        Unlike set_password(), this does not hash the input again. The provided value
+        must already be a valid Django password hash, and it is stored directly on the
+        user after validation.
+
+        Because no raw password is available, downstream password sync integrations
+        such as LDAP and Kerberos cannot be updated from this code path.
+
+        Raises ValueError if the hash format is not recognized.
+        """
+        self.validate_password_hash(password_hash)
+        if self.pk and signal:
+            from authentik.core.signals import password_hash_changed
+
+            if not sender:
+                sender = self
+            password_hash_changed.send(sender=sender, user=self, request=request)
+        self.password = password_hash
+        self.password_change_date = now()
+
     def check_password(self, raw_password: str) -> bool:
         """
         Return a boolean of whether the raw_password was correct. Handles
@@ -737,6 +764,9 @@ class Application(SerializerModel, PolicyBindingModel):
     meta_icon = FileField(default="", blank=True)
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
+    meta_hide = models.BooleanField(
+        default=False, help_text=_("Hide this application from the user's My applications page.")
+    )
 
     objects = ApplicationQuerySet.as_manager()
 
@@ -792,9 +822,13 @@ class Application(SerializerModel, PolicyBindingModel):
 
     def get_provider(self) -> Provider | None:
         """Get casted provider instance. Needs Application queryset with_provider"""
+        if hasattr(self, "_cached_provider"):
+            return self._cached_provider
         if not self.provider:
+            self._cached_provider = None
             return None
-        return get_deepest_child(self.provider)
+        self._cached_provider = get_deepest_child(self.provider)
+        return self._cached_provider
 
     def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
         """Get Backchannel provider for a specific type"""

@@ -10,7 +10,15 @@ To add an application to authentik and have it display on users' **My applicatio
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard. Alternatively, you can first create a provider separately, then create the application and connect it to the provider.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+
+:::info
+By default, if you click **New Application**, you are prompted to create the new application and a new provider. However, you can use the drop-down menu beside **New Application** to explicitly select either:
+
+    - **with New Provider...** to create the application and configure a new provider at the same time.
+    - **with Existing Provider...** if you have already created a provider separately, and now you want to create the application and connect it to the provider.
+
+:::
 
 3. In the **New application** box, define the application details, the provider type and configuration settings, and bindings for the application.
     - **Application**: provide a name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -60,7 +68,6 @@ To bind a user or group to an existing application, click on an application in t
 <div className="badge-group">
 
 :ak-version[2024.12]
-:ak-preview
 
 </div>
 
@@ -104,9 +111,13 @@ return {
 
 ## Hide applications
 
-To hide an application without modifying its policy settings or removing it, you can simply set the _Launch URL_ to `blank://blank`, which will hide the application from users.
+To hide an application without modifying its policy settings or removing it, you can use the **Hide from My applications** option on the application. The application will no longer appear on the **My applications** page.
 
 Keep in mind that users still have access, so they can still authorize access when the login process is started from the application.
+
+:::info Hiding applications before 2026.5
+Before authentik 2026.5, an application was hidden by setting its **Launch URL** to `blank://blank`. Existing applications using that value are automatically migrated to using the **Hide from My applications** option upon upgrading.
+:::
 
 ## Launch URLs
 
