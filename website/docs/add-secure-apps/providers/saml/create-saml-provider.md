@@ -12,7 +12,7 @@ To create a provider along with the corresponding application that uses it for a
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
 3. On the **New application** page, define the application details, and then click **Next**.
 4. Select **SAML Provider** as the **Provider Type**, and then click **Next**.
-5. On the **Configure SAML Provider** page, provide the configuration settings and then click **Create** to create both the application and the provider.
+5. On the **Configure SAML Provider** page, provide the configuration settings and then click **Create Application** to create both the application and the provider.
 
 ## Create a SAML provider from SP metadata (import SP metadata)
 
