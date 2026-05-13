@@ -77,6 +77,7 @@ Every application that you add to authentik requires a provider, which is used t
 :::
 
 **B.** Provide the details for the application (Grafana) and provider (OAuth2/OIDC).
+
 - **Configure the Application**:
     - **Name**: provide a descriptive name (such as Grafana).
         - **Group**: select an optional group for the application; groups are used to visually separate applications. For example, you can choose to group applications that you use for coding from those you use for internal communication.
@@ -101,18 +102,20 @@ Every application that you add to authentik requires a provider, which is used t
           authorization, etc.
     - **Protocol settings**: provide the following required configurations:
         - Note the **Client ID**, **Client Secret**, and **Slug** values because they will be required later when you configure Grafana to use authentik.
-        - Set the **Redirect UIR as a `Strict` redirect to `https://grafana.company/login/generic_oauth`.
-            - <strong className="tip">TIP</strong>: The Redirect URI is where the application will go as soon as authentik's authorization flow is successfully completed.
-    - ***Grant Types** (required): Select at least one [grant type](../../add-secure-apps/providers/oauth2/#oauth-20-flows-and-grant-types) that the provider can use.
+        - Set the **Redirect URI**as a `Strict` redirect to `https://grafana.company/login/generic_oauth`.
+            - <strong className="tip">TIP</strong>: The Redirect URI is where where a user is directed to, as soon as authentik's authorization flow is successfully completed.
+    - **\*Grant Types** (required): Select at least one [grant type](../../add-secure-apps/providers/oauth2/#oauth-20-flows-and-grant-types) that the provider can use.
     - **Logout URI**: set to `https://grafana.company/logout`.
     - **Logout Method**: set to `Front-channel`.
-        - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the
-          default because most applications (including Grafana) do not support back-channel logout.
+        - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the default because most applications (including Grafana) do not support back-channel logout.
     - **Signing key**: select any available signing key.
         - <strong className="tip">TIP</strong>: authentik generates a key that you can use, called the `authentik Self-signed Certificate`, if you do not have a specific signing key for an application.
 - **Configure Bindings** _(optional)_: for this tutorial, skip this step because you do not yet have a user. Later, after you create your first user, you can [create a binding](../../add-secure-apps/bindings-overview/work-with-bindings.md) to manage the display and access to applications on a user's **My applications** page.
-    - <strong className="tip">TIP</strong>: By creating a binding between an application and a specific user, you are ensuring that the application is accessible only to that user and any other users or groups for whom you created a binding. Learn more about how bindings are used in authentik in our [Bindings overview](../../add-secure-apps/bindings-overview/index.md).
-    For any fields not mentioned above, you can leave the default value.
+    - <strong className="tip">TIP</strong>: By creating a binding between an application and a
+      specific user, you are ensuring that the application is accessible only to that user and any
+      other users or groups for whom you created a binding. Learn more about how bindings are used
+      in authentik in our [Bindings overview](../../add-secure-apps/bindings-overview/index.md). For
+      any fields not mentioned above, you can leave the default value.
 
 **C.** Click **Create Application** to save the new application and provider.
 
