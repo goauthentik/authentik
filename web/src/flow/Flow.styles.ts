@@ -33,7 +33,9 @@ export const styles = css`
     [part="branding"] {
         display: flex;
         justify-content: center;
-        padding-block-end: 1rem;
+        padding-block-start: var(--ak-v2-c-flow__header--PaddingBlockStart);
+        padding-inline: var(--ak-v2-c-flow__header--PaddingInline);
+        padding-block-end: var(--ak-v2-c-flow__header--PaddingBlockEnd);
     }
 
     [part="footer"] {
@@ -73,7 +75,7 @@ export const styles = css`
         grid-template-rows: 1fr auto;
     }
 
-    :where(:host([data-layout="stacked"]), :host(:not([data-layout]))) .ak-flow-panel {
+    :where(:host([data-layout="stacked"]), :host(:not([data-layout]))) [part="panel"] {
         grid-row: 1 / -1;
         grid-template-rows: var(--ak-flow-vertical-offset) auto 1fr auto;
         grid-template-columns: 1fr;

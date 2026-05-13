@@ -2,6 +2,7 @@
     --ak-v2-c-flow--Color: var(--ak-v2-global--PrimaryText, #151515);
     --ak-v2-c-flow--Gutter: var(--ak-v2-global--spacer--xl);
     --ak-v2-c-flow--VerticalOffest: 18vh;
+    --ak-v2-c-flow--PaddingMax: 8dvw;
 
     --ak-v2-c-flow__card--BackgroundColor: var(--ak-v2-global--ContentSurface, #fff);
     --ak-v2-c-flow__card--BorderRadius: var(--ak-v2-global--BorderRadius--sm);
@@ -10,12 +11,23 @@
     --ak-v2-c-flow__card--InlineSize: min(35rem, 100%);
     --ak-v2-c-flow__card--MinBlockSize: 32rem;
     --ak-v2-c-flow__card--Padding: var(--ak-v2-global--spacer-xl);
+    --ak-v2-c-flow--padding-max: 8dvw;
 
+    --ak-v2-c-flow-sidebar-inline-size: clamp(20rem, 32vw, 32rem);
     --ak-v2-c-flow__footer--Gap: var(--ak-v2-global--spacer-sm);
-
-    --ak-flow-sidebar-inline-size: clamp(20rem, 32vw, 32rem);
-
+    
     /* Translucent band that reads against a photographic background. */
     --ak-v2-c-flow__footer--Background: var(--ak-v2-global--BackgroundColor--over-photo-filter);
     --ak-v2-c-flow__footer--Color: var(--ak-v2-global--SecondaryReverseColor);
+
+    --ak-v2-c-flow__branding--PaddingBlockStart: clamp(2rem, 4rem, 4rem);
+    
+    --ak-v2-c-flow__header-PaddingMin: var(--ak-v2-global--spacer-xs);
+    --ak-v2-c-flow__header-PaddingIdeal: 5rem;
+    --ak-v2-c-flow__header-PaddingMax: 15dvh;
+
+    --ak-v2-c-flow--spacer: clamp(1rem, (-0.75rem + 0.003125vw), 3rem);
+    --ak-v2-c-flow__header--PaddingBlockStart: clamp(0.25rem, 5rem, 15dvh);
+    --ak-v2-c-flow__header--PaddingInline: calc(var(--ak-v2-c-flow--spacer) / 4);
+    --ak-v2-c-flow__header--PaddingBlockEnd: calc(var(--ak-v2-c-flow--spacer) / 2);
 }
