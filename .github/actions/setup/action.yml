@@ -25,7 +25,7 @@ runs:
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       uses: gerlero/apt-install@f4fa5265092af9e750549565d28c99aec7189639
       with:
-        packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext krb5-multidev libkrb5-dev heimdal-multidev libclang-dev krb5-kdc krb5-user krb5-admin-server
+        packages: libpq-dev openssl libxmlsec1-dev pkg-config gettext libclang-dev libkadm5clnt-mit12 libkadm5clnt7t64-heimdal libkrb5-dev krb5-kdc krb5-user krb5-admin-server
         update: true
         upgrade: false
         install-recommends: false
@@ -52,19 +52,19 @@ runs:
       run: uv sync --all-extras --dev --locked
     - name: Setup rust (stable)
       if: ${{ contains(inputs.dependencies, 'rust') && !contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6 # v1
       with:
         rustflags: ""
     - name: Setup rust (nightly)
       if: ${{ contains(inputs.dependencies, 'rust-nightly') }}
-      uses: actions-rust-lang/setup-rust-toolchain@2b1f5e9b395427c92ee4e3331786ca3c37afe2d7 # v1
+      uses: actions-rust-lang/setup-rust-toolchain@46268bd060767258de96ed93c1251119784f2ab6 # v1
       with:
         toolchain: nightly
         components: rustfmt
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@711e1c3275189d76dcc4d34ddea63bf96ac49090 # v2
+      uses: taiki-e/install-action@e3134ec54b36203e18f2d1e80652058bd078dd91 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup node (web)

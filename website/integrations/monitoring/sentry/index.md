@@ -25,8 +25,6 @@ This documentation lists only the settings that you need to change from their de
 Create an application in authentik. Create a SAML Provider with the following values
 
 - ACS URL: `https://sentry.company/saml/acs/<sentry organisation name>/`
-- Issuer: `authentik`
-- Service Provider Binding: `Post`
 - Audience: `https://sentry.company/saml/metadata/<sentry organisation name>/`
 
 Under _Advanced protocol settings_, set the following:
@@ -38,7 +36,7 @@ Under _Advanced protocol settings_, set the following:
 
 **This guide assumes you've installed Sentry using [getsentry/self-hosted](https://github.com/getsentry/self-hosted)**
 
-Navigate to **Settings > Auth**, and click on Configure next to SAML2
+Navigate to **Settings** > **Auth**, and click **Configure** next to **SAML2**.
 
 ![](./auth.png)
 

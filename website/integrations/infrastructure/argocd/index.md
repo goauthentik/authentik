@@ -45,7 +45,7 @@ Using the authentik Admin interface, navigate to **Directory** > **Groups** and 
 
 After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed.
 
-## ArgoCD Configuration
+## ArgoCD configuration
 
 :::info
 We're not going to use the oidc config, but instead the "dex", oidc doesn't allow ArgoCD CLI usage while DEX does.
@@ -68,9 +68,9 @@ configs:
             dex.authentik.clientSecret: "${argocd_authentik_client_secret}"
 ```
 
-### Step 2 - Configure ArgoCD to use authentik as OIDC backend
+### Step 2 - configure ArgoCD to use authentik as OIDC backend
 
-In the `argocd-cm` ConfigMap, add the following to the data field :
+In the `argocd-cm` ConfigMap, add the following to the data field:
 
 ```yaml
 url: https://argocd.company

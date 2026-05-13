@@ -38,8 +38,6 @@ To support the integration of SeaTable with authentik, you need to create an app
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://seatable.company/saml/acs/`.
-        - Set the **Issuer** to `https://seatable.company`.
-        - Set the **Service Provider Binding** to `Post`.
         - Set the **Audience** to `https://seatable.company/saml/metadata/`.
         - Under **Advanced protocol settings**, set an available **Signing certificate**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -55,13 +53,13 @@ To support the integration of SeaTable with authentik, you need to create an app
 
 ## SeaTable configuration
 
-To support the integration of authentik with SeaTable you need to configure certificates and then enable SAML authentication.
+To support the integration of authentik with SeaTable, you need to configure certificates and then enable SAML authentication.
 
-### Setup required certificates
+### Set up required certificates
 
 SeaTable requires the signing certificate from authentik and its own signing certificate. Follow these steps to configure the required certificates on your SeaTable deployment:
 
-1. Connect to your SeaTable server or exec in to the shell of your SeaTable container.
+1. Connect to your SeaTable server or exec into the shell of your SeaTable container.
 2. Create a `/opt/seatable-server/certs` directory and navigate to it.
 3. Copy the signing certificate that you downloaded from authentik to this directory and name it `idp.crt`.
 4. Generate a certificate and key with the following command:
@@ -88,7 +86,7 @@ Add the following block to your SeaTable configuration file:
 
 ```python title="/opt/seatable-server/seatable/conf/dtable_web_settings.py"
 ENABLE_SAML = True
-SAML_PROVIDER_IDENTIFIER = 'authentik'
+SAML_PROVIDER_IDENTIFIER = 'https://authentik.company/application/saml/<application_slug>/metadata/'
 SAML_REMOTE_METADATA_URL = '<metadata_effective_url>'
 SAML_ATTRIBUTE_MAP = {
     'http://schemas.goauthentik.io/2021/02/saml/uid': 'uid',
@@ -102,7 +100,7 @@ Restart the SeaTable service or Docker container to apply the changes.
 
 ## Configuration verification
 
-To confirm that authentik is integrated correctly with SeaTable, log out, then navigate to the SeaTable login page, then click **Single Sign-On**. You should be redirected to authentik to log in, and if successful, redirected to SeaTable.
+To confirm that authentik is integrated correctly with SeaTable, log out, navigate to the SeaTable login page, and then click **Single Sign-On**. You should be redirected to authentik to log in, and if successful, redirected to SeaTable.
 
 :::info Troubleshooting
 Check `opt/seatable-server/seatable/logs/dtable_web.log` for troubleshooting info if authentication fails.

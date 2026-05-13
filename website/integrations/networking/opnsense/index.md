@@ -98,7 +98,7 @@ In OPNsense, go to _System/Settings/Administration_ and under _Authentication_ a
 
 ### Step 7
 
-You can now either import users, or synchronize from Authentik LDAP. See https://docs.opnsense.org/manual/how-tos/user-ldap.html for more.
+You can now either import users, or synchronize from authentik LDAP. See https://docs.opnsense.org/manual/how-tos/user-ldap.html for more.
 
 ## Notes
 

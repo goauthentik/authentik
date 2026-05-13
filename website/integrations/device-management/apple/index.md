@@ -33,7 +33,7 @@ While this integration guide focuses on Business Manager, the instructions are a
 
 :::
 
-## Authentication Flow
+## Authentication flow
 
 This sequence diagram shows a high-level flow between Apple device, authentik, and Apple Business Manager.
 
