@@ -26,7 +26,9 @@ export class PointerFixture extends PageFixture {
         context: LocatorContext = this.page,
     ): Promise<void> => {
         if (typeof optionsOrRole === "string") {
-            return context.getByRole(optionsOrRole, { name }).first().click();
+            const target = context.getByRole(optionsOrRole, { name }).first();
+
+            return target.click();
         }
 
         const options = {

@@ -4,7 +4,7 @@ sidebar_label: Wiki.js
 support_level: community
 ---
 
-## What is Wiki.js
+## What is Wiki.js?
 
 > Wiki.js is a wiki engine running on Node.js and written in JavaScript. It is free software released under the Affero GNU General Public License. It is available as a self-hosted solution or using "single-click" install on the DigitalOcean and AWS marketplace.
 >
@@ -18,8 +18,8 @@ This is based on authentik 2022.11 and Wiki.js 2.5. Instructions may differ betw
 
 The following placeholders are used in this guide:
 
-- `wiki.company` is the FQDN of Wiki.js installation.
-- `authentik.company` is the FQDN of authentik installation.
+- `wiki.company` is the FQDN of the Wiki.js installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -38,7 +38,7 @@ To support the integration of Wiki.js with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -59,17 +59,17 @@ In Wiki.js, configure the authentication strategy with these settings:
 - Authorization Endpoint URL: https://authentik.company/application/o/authorize/
 - Token Endpoint URL: https://authentik.company/application/o/token/
 - User Info Endpoint URL: https://authentik.company/application/o/userinfo/
-- Issuer: https://authentik.company/application/o/wikijs/
-- Logout URL: https://authentik.company/application/o/wikijs/end-session/
+- Issuer: `https://authentik.company/application/o/<application_slug>/`
+- Logout URL: `https://authentik.company/application/o/<application_slug>/end-session/`
 - Allow self-registration: Enabled
 - Assign to group: The group to which new users logging in from authentik should be assigned.
 
 ![](./wiki-js_strategy.png)
 
 :::info
-You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't you will have to manually provision users in Wiki.js and ensure that their emails match the email they have in authentik.
+You do not have to enable "Allow self-registration" and select a group to which new users should be assigned, but if you don't, you will have to manually provision users in Wiki.js and ensure that their email addresses match the ones they have in authentik.
 :::
 
 :::info
-If you're using self-signed certificates for authentik, you need to set the root certificate of your CA as trusted in WikiJS by setting the NODE_EXTRA_CA_CERTS variable as explained here: https://github.com/Requarks/wiki/discussions/3387.
+If you're using self-signed certificates for authentik, you need to set the root certificate of your CA as trusted in Wiki.js by setting the NODE_EXTRA_CA_CERTS variable as explained here: https://github.com/Requarks/wiki/discussions/3387.
 :::

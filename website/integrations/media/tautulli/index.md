@@ -4,7 +4,7 @@ sidebar_label: Tautulli
 support_level: community
 ---
 
-## What is Tautulli
+## What is Tautulli?
 
 > Tautulli is an application that you can run alongside your Plex Media Server to monitor activity and track various statistics. These statistics include what has been watched, who watched it, when and where they watched it, and how it was watched.
 >
@@ -47,7 +47,7 @@ Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP 
 ### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: Select **Proxy Provider** as the provider type.

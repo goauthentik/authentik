@@ -4,7 +4,7 @@ sidebar_label: pgAdmin
 support_level: community
 ---
 
-## What is pgAdmin
+## What is pgAdmin?
 
 > pgAdmin is a management tool for PostgreSQL and derivative relational databases such as EnterpriseDB's EDB Advanced Server. It may be run either as a web or desktop application.
 >
@@ -32,7 +32,7 @@ To support the integration of pgAdmin with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -43,7 +43,7 @@ To support the integration of pgAdmin with authentik, you need to create an appl
 
 3. Click **Submit** to save the new application and provider.
 
-## pgAdmin OAuth Configuration
+## pgAdmin OAuth configuration
 
 To configure OAuth in pgAdmin, you can either use the `config_local.py` file or set environment variables if you are deploying pgAdmin in a containerized setup.
 
@@ -79,7 +79,7 @@ To configure OAuth in pgAdmin, you can either use the `config_local.py` file or 
     You must restart pgAdmin every time you make changes to `config_local.py`.
     :::
 
-### Using Environment Variables for Containerized Deployments
+### Use environment variables for containerized deployments
 
 For deployments using Docker or Kubernetes, you can configure OAuth using the following environment variables:
 
@@ -91,7 +91,7 @@ PGADMIN_CONFIG_OAUTH2_AUTO_CREATE_USER=True
 PGADMIN_CONFIG_OAUTH2_CONFIG="[{'OAUTH2_NAME':'authentik','OAUTH2_DISPLAY_NAME':'Login with authentik','OAUTH2_CLIENT_ID':'<Client ID from authentik>','OAUTH2_CLIENT_SECRET':'<Client secret from authentik>','OAUTH2_TOKEN_URL':'https://authentik.company/application/o/token/','OAUTH2_AUTHORIZATION_URL':'https://authentik.company/application/o/authorize/','OAUTH2_API_BASE_URL':'https://authentik.company/','OAUTH2_USERINFO_ENDPOINT':'https://authentik.company/application/o/userinfo/','OAUTH2_SERVER_METADATA_URL':'https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration','OAUTH2_SCOPE':'openid email profile','OAUTH2_ICON':'<Fontawesome icon key (e.g., fa-key)>','OAUTH2_BUTTON_COLOR':'<Hexadecimal color code for the login button>'}]"
 ```
 
-### General Notes
+### General notes
 
 - To **only allow OAuth2 login**, set:
 

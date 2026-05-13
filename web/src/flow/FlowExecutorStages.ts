@@ -20,14 +20,14 @@ import type {
 } from "#flow/FlowExecutorStageFactory";
 
 /**
- * A tuple representing the metadata for a stage entry in the stage mapping registry.
+ * An interface representing the metadata for a stage entry in the stage mapping registry.
  */
-// prettier-ignore
-export type StageEntry =
-    | [token: FlowChallengeComponentName, tag: string, variant: PropVariant, import?: StageModuleCallback]
-    | [token: FlowChallengeComponentName, variant: PropVariant, import?: StageModuleCallback]
-    | [token: FlowChallengeComponentName, tag: string, import?: StageModuleCallback]
-    | [token: FlowChallengeComponentName, import?: StageModuleCallback];
+export interface StageEntry {
+    stage: FlowChallengeComponentName;
+    fetch?: StageModuleCallback;
+    variant?: PropVariant;
+    tag?: string;
+}
 
 /**
  * A mapping of server-side stage tokens to client-side custom element tags, along with the variant
@@ -46,7 +46,7 @@ export type StageEntry =
  *   function, following the examples already provided.
  *
  * Variants and Tags have a single strong differentiator: Tags refer to web components and so must
- * always have a dash, whereas wariants are from a limited supply of names and do not have a dash.
+ * always have a dash, whereas variants are from a limited supply of names and do not have a dash.
  * The StageFactory will not get confused. If you get confused, the type-checker will explain it.
  *
  * The resolution of the web component tag name is: tag supplied, tag received with import, tag
@@ -59,40 +59,125 @@ export type StageEntry =
 // |   ||   ||   |    | \ ||---'| | |        ||    ,---||   ||---'`---.    |   ||---'|    |---'
 // `   '`---'`---'    `  `'`---'`-'-'    `---'`---'`---^`---|`---'`---'    `   '`---'`    `---'
 //                                                      `---'
+
 // prettier-ignore
 export const StageEntries: readonly StageEntry[] = [
-    ["ak-provider-iframe-logout", () => import("#flow/providers/IFrameLogoutStage")],
-    ["ak-provider-oauth2-device-code", () => import("#flow/providers/oauth2/DeviceCode")],
-    ["ak-provider-oauth2-device-code-finish", () => import("#flow/providers/oauth2/DeviceCodeFinish")],
-    ["ak-provider-saml-native-logout", () => import("#flow/providers/saml/NativeLogoutStage")],
-
-    ["ak-source-oauth-apple", "ak-flow-source-oauth-apple"],
-    ["ak-source-plex", "ak-flow-source-plex"],
-    ["ak-source-telegram", "ak-flow-source-telegram"],
-
-    ["ak-stage-access-denied", () => import("#flow/stages/access_denied/AccessDeniedStage")],
-    ["ak-stage-authenticator-duo", () => import("#flow/stages/authenticator_duo/AuthenticatorDuoStage")],
-    ["ak-stage-authenticator-email", () => import("#flow/stages/authenticator_email/AuthenticatorEmailStage")],
-    ["ak-stage-authenticator-sms", () => import("#flow/stages/authenticator_sms/AuthenticatorSMSStage")],
-    ["ak-stage-authenticator-static", () => import("#flow/stages/authenticator_static/AuthenticatorStaticStage")],
-    ["ak-stage-authenticator-totp", () => import("#flow/stages/authenticator_totp/AuthenticatorTOTPStage")],
-    ["ak-stage-authenticator-validate", () => import("#flow/stages/authenticator_validate/AuthenticatorValidateStage")],
-    ["ak-stage-authenticator-webauthn"],
-    ["ak-stage-autosubmit", () => import("#flow/stages/autosubmit/AutosubmitStage")],
-    ["ak-stage-captcha", () => import("#flow/stages/captcha/CaptchaStage")],
-    ["ak-stage-consent", () => import("#flow/stages/consent/ConsentStage")],
-    ["ak-stage-dummy", () => import("#flow/stages/dummy/DummyStage")],
-    ["ak-stage-email", () => import("#flow/stages/email/EmailStage")],
-    ["ak-stage-endpoint-agent", "challenge", () => import("#flow/stages/endpoint/agent/EndpointAgentStage")],
-    ["ak-stage-flow-error"],
-    ["ak-stage-identification", () => import("#flow/stages/identification/IdentificationStage")],
-    ["ak-stage-password", () => import("#flow/stages/password/PasswordStage")],
-    ["ak-stage-prompt", () => import("#flow/stages/prompt/PromptStage")],
-    ["ak-stage-session-end", () => import("#flow/providers/SessionEnd")],
-    ["ak-stage-user-login", "challenge", () => import("#flow/stages/user_login/UserLoginStage")],
-
-    ["xak-flow-frame", "challenge"],
-    ["xak-flow-redirect", "ak-stage-redirect"],
-]
+    {
+        stage: "ak-provider-iframe-logout",
+        fetch: () => import("#flow/providers/IFrameLogoutStage"),
+    },
+    {
+        stage: "ak-provider-oauth2-device-code",
+        fetch: () => import("#flow/providers/oauth2/DeviceCode"),
+    },
+    {
+        stage: "ak-provider-oauth2-device-code-finish",
+        fetch: () => import("#flow/providers/oauth2/DeviceCodeFinish"),
+    },
+    {
+        stage: "ak-provider-saml-native-logout",
+        fetch: () => import("#flow/providers/saml/NativeLogoutStage"),
+    },
+    {
+        stage: "ak-source-oauth-apple",
+        tag: "ak-flow-source-oauth-apple",
+    },
+    {
+        stage: "ak-source-plex",
+        tag: "ak-flow-source-plex",
+    },
+    {
+        stage: "ak-source-telegram",
+        tag: "ak-flow-source-telegram",
+    },
+    {
+        stage: "ak-stage-access-denied",
+        fetch: () => import("#flow/stages/access_denied/AccessDeniedStage"),
+    },
+    {
+        stage: "ak-stage-authenticator-duo",
+        fetch: () => import("#flow/stages/authenticator_duo/AuthenticatorDuoStage"),
+    },
+    {
+        stage: "ak-stage-authenticator-email",
+        fetch: () => import("#flow/stages/authenticator_email/AuthenticatorEmailStage"),
+    },
+    {
+        stage: "ak-stage-authenticator-sms",
+        fetch: () => import("#flow/stages/authenticator_sms/AuthenticatorSMSStage"),
+    },
+    {
+        stage: "ak-stage-authenticator-static",
+        fetch: () => import("#flow/stages/authenticator_static/AuthenticatorStaticStage"),
+    },
+    {
+        stage: "ak-stage-authenticator-totp",
+        fetch: () => import("#flow/stages/authenticator_totp/AuthenticatorTOTPStage"),
+    },
+    {
+        stage: "ak-stage-authenticator-validate",
+        fetch: () => import("#flow/stages/authenticator_validate/AuthenticatorValidateStage"),
+    },
+    {
+        stage: "ak-stage-authenticator-webauthn"
+    },
+    {
+        stage: "ak-stage-autosubmit",
+        fetch: () => import("#flow/stages/autosubmit/AutosubmitStage"),
+    },
+    {
+        stage: "ak-stage-captcha",
+        fetch: () => import("#flow/stages/captcha/CaptchaStage"),
+    },
+    {
+        stage: "ak-stage-consent",
+        fetch: () => import("#flow/stages/consent/ConsentStage"),
+    },
+    {
+        stage: "ak-stage-dummy",
+        fetch: () => import("#flow/stages/dummy/DummyStage"),
+    },
+    {
+        stage: "ak-stage-email",
+        fetch: () => import("#flow/stages/email/EmailStage"),
+    },
+    {
+        stage: "ak-stage-endpoint-agent",
+        fetch: () => import("#flow/stages/endpoint/agent/EndpointAgentStage"),
+        variant: "challenge",
+    },
+    {
+        stage: "ak-stage-flow-error"
+    },
+    {
+        stage: "ak-stage-identification",
+        fetch: () => import("#flow/stages/identification/IdentificationStage"),
+    },
+    {
+        stage: "ak-stage-password",
+        fetch: () => import("#flow/stages/password/PasswordStage"),
+    },
+    {
+        stage: "ak-stage-prompt",
+        fetch: () => import("#flow/stages/prompt/PromptStage"),
+    },
+    {
+        stage: "ak-stage-session-end",
+        fetch: () => import("#flow/providers/SessionEnd"),
+    },
+    {
+        stage: "ak-stage-user-login",
+        fetch: () => import("#flow/stages/user_login/UserLoginStage"),
+        variant: "challenge",
+    },
+    {
+        stage: "xak-flow-frame",
+        variant: "challenge"
+    },
+    {
+        stage: "xak-flow-redirect",
+        tag: "ak-stage-redirect",
+    },
+];
 
 export default StageEntries;

@@ -4,23 +4,19 @@ import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 import "#flow/stages/captcha/CaptchaStage";
 
-import {
-    isConditionalMediationAvailable,
-    transformAssertionForServer,
-    transformCredentialRequestOptions,
-} from "#common/helpers/webauthn";
+import { renderSourceIcon } from "#elements/sources/utils";
 
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
-import { renderSourceIcon } from "#admin/sources/utils";
-
 import { BaseStage } from "#flow/stages/base";
-import { AkRememberMeController } from "#flow/stages/identification/RememberMeController";
+import AutoRedirect from "#flow/stages/identification/controllers/AutoRedirectController";
+import CaptchaDisplayController from "#flow/stages/identification/controllers/CaptchaDisplayController";
+import RememberMeController from "#flow/stages/identification/controllers/RememberMeController";
+import WebauthnController from "#flow/stages/identification/controllers/WebauthnController";
 import Styles from "#flow/stages/identification/styles.css";
 
 import {
-    CaptchaChallenge,
     FlowDesignationEnum,
     IdentificationChallenge,
     IdentificationChallengeResponseRequest,
@@ -33,9 +29,9 @@ import { kebabCase } from "change-case";
 import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
+import { html, nothing, PropertyValues, ReactiveControllerHost } from "lit";
+import { createRef, ref } from "lit-html/directives/ref.js";
+import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -46,13 +42,9 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
-    passkeyChallenge?: PublicKeyCredentialRequestOptions;
-};
-
 type IdentificationFooter = Partial<Pick<IdentificationChallenge, "enrollUrl" | "recoveryUrl">>;
 
-type EmptyString = string | null | undefined;
+export type IdentificationHost = IdentificationStage & ReactiveControllerHost;
 
 export const PasswordManagerPrefill: {
     password?: string;
@@ -81,7 +73,7 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallenge,
     IdentificationChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
+    static styles = [
         PFAlert,
         PFInputGroup,
         PFLogin,
@@ -89,153 +81,105 @@ export class IdentificationStage extends BaseStage<
         PFFormControl,
         PFTitle,
         PFButton,
-        ...AkRememberMeController.styles,
+        ...RememberMeController.styles,
         Styles,
     ];
 
     /**
-     * The ID of the input field.
+     * The ID of the identifier input field, used for accessibility and focus management.
      *
      * @attr
      */
     @property({ type: String, attribute: "input-id" })
     public inputID = "ak-identifier-input";
 
+    protected passwordFieldRef = createRef<HTMLInputElement>();
+
     #form?: HTMLFormElement;
 
-    private rememberMe = new AkRememberMeController(this);
+    public defaultUserIdentification: string | null = null;
 
-    //#region State
+    protected rememberMeController: RememberMeController | null = null;
 
-    @state()
-    protected captchaToken = "";
-
-    @state()
-    protected captchaRefreshedAt = new Date();
-
-    @state()
-    protected captchaLoaded = false;
-
-    #captchaInputRef = createRef<HTMLInputElement>();
-
-    #tokenChangeListener = (token: string) => {
-        const input = this.#captchaInputRef.value;
-
-        if (!input) return;
-
-        input.value = token;
-    };
-
-    #captchaLoadListener = () => {
-        this.captchaLoaded = true;
-    };
-
-    // AbortController for conditional WebAuthn request
-    #passkeyAbortController: AbortController | null = null;
+    #autoRedirect = new AutoRedirect(this);
+    #captcha = new CaptchaDisplayController(this);
+    #webauthn = new WebauthnController(this);
 
     //#endregion
 
     //#region Lifecycle
 
+    constructor() {
+        super();
+        // We _define and instantiate_ these fields above, then _read_ them here, and that satisfies
+        // the lint pass that there are no unused private fields.
+        this.addController(this.#autoRedirect);
+        this.addController(this.#captcha);
+        this.addController(this.#webauthn);
+    }
+
+    #prepareRememberMeFrame = -1;
+
     public override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
         if (changedProperties.has("challenge") && this.challenge) {
-            this.#autoRedirect();
+            cancelAnimationFrame(this.#prepareRememberMeFrame);
+
+            this.#prepareRememberMeFrame = requestAnimationFrame(() => {
+                this.prepareRememberMeController();
+            });
+
             this.#createHelperForm();
-            this.#startConditionalWebAuthn();
         }
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.addEventListener("focus", this.autofocusTarget.toEventListener());
     }
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
-        // Abort any pending conditional WebAuthn request when component is removed
-        this.#passkeyAbortController?.abort();
-        this.#passkeyAbortController = null;
+
+        cancelAnimationFrame(this.#prepareRememberMeFrame);
+    }
+
+    public override firstUpdated(): void {
+        this.focus();
+    }
+
+    protected prepareRememberMeController(): void {
+        if (!this.challenge) return;
+
+        const { enableRememberMe, pendingUserIdentifier = null } = this.challenge;
+
+        if (!enableRememberMe) {
+            this.defaultUserIdentification = pendingUserIdentifier;
+
+            if (this.rememberMeController) {
+                this.removeController(this.rememberMeController);
+                this.rememberMeController = null;
+            }
+
+            return;
+        }
+
+        if (!this.rememberMeController) {
+            this.rememberMeController = new RememberMeController(this, {
+                identificationFieldID: this.inputID,
+                identificationFieldRef: this.autofocusTarget.reference,
+                passwordFieldRef: this.passwordFieldRef,
+                pendingUserIdentifier,
+            });
+
+            this.addController(this.rememberMeController);
+        }
+
+        this.defaultUserIdentification = this.rememberMeController.defaultUserIdentification;
     }
 
     //#endregion
-
-    #autoRedirect(): void {
-        if (!this.challenge) return;
-        // We only want to auto-redirect to a source if there's only one source.
-        if (this.challenge.sources?.length !== 1) return;
-
-        // And we also only do an auto-redirect if no user fields are select
-        // meaning that without the auto-redirect the user would only have the option
-        // to manually click on the source button
-        if ((this.challenge.userFields || []).length !== 0) return;
-
-        // We also don't want to auto-redirect if there's a passwordless URL configured
-        if (this.challenge.passwordlessUrl) return;
-
-        const source = this.challenge.sources[0];
-        this.host.challenge = source.challenge;
-    }
-
-    /**
-     * Start a conditional WebAuthn request for passkey autofill.
-     * This allows users to select a passkey from the browser's autofill dropdown.
-     */
-    async #startConditionalWebAuthn(): Promise<void> {
-        // Check if passkey challenge is provided
-        // Note: passkeyChallenge is added dynamically and may not be in the generated types yet
-        const passkeyChallenge = (
-            this.challenge as IdentificationChallenge & {
-                passkeyChallenge?: PublicKeyCredentialRequestOptions;
-            }
-        )?.passkeyChallenge;
-
-        if (!passkeyChallenge) {
-            return;
-        }
-
-        // Check if browser supports conditional mediation
-        const isAvailable = await isConditionalMediationAvailable();
-        if (!isAvailable) {
-            console.debug("authentik/identification: Conditional mediation not available");
-            return;
-        }
-
-        // Abort any existing request
-        this.#passkeyAbortController?.abort();
-        this.#passkeyAbortController = new AbortController();
-
-        try {
-            const publicKeyOptions = transformCredentialRequestOptions(passkeyChallenge);
-
-            // Start the conditional WebAuthn request
-            const credential = (await navigator.credentials.get({
-                publicKey: publicKeyOptions,
-                mediation: "conditional",
-                signal: this.#passkeyAbortController.signal,
-            })) as PublicKeyCredential | null;
-
-            if (!credential) {
-                console.debug("authentik/identification: No credential returned");
-                return;
-            }
-
-            // Transform and submit the passkey response
-            const transformedCredential = transformAssertionForServer(credential);
-
-            await this.host?.submit(
-                {
-                    passkey: transformedCredential,
-                },
-                {
-                    invisible: true,
-                },
-            );
-        } catch (error) {
-            if (error instanceof Error && error.name === "AbortError") {
-                // Request was aborted, this is expected when navigating away
-                console.debug("authentik/identification: Conditional WebAuthn aborted");
-                return;
-            }
-            console.warn("authentik/identification: Conditional WebAuthn failed", error);
-        }
-    }
 
     //#region Helper Form
 
@@ -333,13 +277,7 @@ export class IdentificationStage extends BaseStage<
     }
 
     protected override onSubmitFailure(): void {
-        const captchaInput = this.#captchaInputRef.value;
-
-        if (captchaInput) {
-            captchaInput.value = "";
-        }
-
-        this.captchaRefreshedAt = new Date();
+        this.#captcha.onFailure();
     }
 
     #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
@@ -357,10 +295,18 @@ export class IdentificationStage extends BaseStage<
         id: string,
         type: string,
         label: string,
-        username: EmptyString,
-        autocomplete: string,
+        initialUserIdentification: string | null,
+        passwordFields?: boolean,
     ) {
+        // When webauthn is enabled, add "webauthn" to autocomplete to enable passkey autofill
+        let autocomplete: AutoFill = type === "email" ? "email" : "username";
+
+        if (this.#webauthn.live) {
+            autocomplete = `${autocomplete} webauthn`;
+        }
+
         return html`<input
+            ${ref(this.autofocusTarget.reference)}
             id=${id}
             type=${type}
             name="uidField"
@@ -368,92 +314,61 @@ export class IdentificationStage extends BaseStage<
             autofocus
             autocomplete=${autocomplete}
             spellcheck="false"
+            inputmode=${type === "email" ? "email" : "text"}
+            autocapitalize="none"
+            enterkeyhint=${passwordFields ? "next" : "go"}
             class="pf-c-form-control"
-            value=${username ?? ""}
+            value=${initialUserIdentification ?? ""}
             required
         />`;
     }
 
     protected renderPasswordFields(challenge: IdentificationChallenge) {
         const { allowShowPassword } = challenge;
-        return html`
-            <ak-flow-input-password
-                label=${msg("Password")}
-                input-id="ak-stage-identification-password"
-                class="pf-c-form__group"
-                .errors=${challenge.responseErrors?.password}
-                ?allow-show-password=${allowShowPassword}
-                prefill=${PasswordManagerPrefill.password ?? ""}
-            ></ak-flow-input-password>
-        `;
-    }
-
-    protected renderCaptcha(captchaChallenge: CaptchaChallenge) {
-        return html`
-            <div class="captcha-container">
-                <ak-stage-captcha
-                    .challenge=${captchaChallenge}
-                    .onTokenChange=${this.#tokenChangeListener}
-                    .onLoad=${this.#captchaLoadListener}
-                    .refreshedAt=${this.captchaRefreshedAt}
-                    embedded
-                >
-                </ak-stage-captcha>
-                <input
-                    aria-hidden="true"
-                    class="faux-input"
-                    ${ref(this.#captchaInputRef)}
-                    name="captchaToken"
-                    type="text"
-                    required
-                    value=""
-                />
-            </div>
-        `;
+        return html`<ak-flow-input-password
+            .inputRef=${this.passwordFieldRef}
+            label=${msg("Password")}
+            input-id="ak-stage-identification-password"
+            class="pf-c-form__group"
+            .errors=${challenge.responseErrors?.password}
+            ?allow-show-password=${allowShowPassword}
+            prefill=${PasswordManagerPrefill.password ?? ""}
+        ></ak-flow-input-password> `;
     }
 
     protected renderInput(challenge: IdentificationChallenge) {
-        const {
-            captchaStage,
-            flowDesignation,
-            passkeyChallenge,
-            passwordFields,
-            passwordlessUrl,
-            pendingUserIdentifier,
-            primaryAction,
-            userFields,
-        } = challenge as PasskeyChallenge;
+        const { flowDesignation, passwordFields, passwordlessUrl, primaryAction, userFields } =
+            challenge;
 
         const fields = (userFields || []).sort();
         if (fields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
 
-        const { inputID, rememberMe, captchaLoaded } = this;
+        const {
+            inputID,
+            defaultUserIdentification: initialUserIdentification,
+            rememberMeController,
+        } = this;
 
         const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
-        const username = rememberMe.username ?? pendingUserIdentifier;
-        const captchaPending = captchaStage && captchaStage.interactive && !captchaLoaded;
 
-        // When passkey is enabled, add "webauthn" to autocomplete to enable passkey autofill
-        const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
-
+        // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
             <div class="pf-c-form__group">
                 ${AKLabel({ required: true, htmlFor: inputID }, label)}
-                ${this.renderUidField(inputID, type, label, username, autocomplete)}
-                ${rememberMe.render()}
+                ${this.renderUidField(inputID, type, label, initialUserIdentification, passwordFields)}
+                ${rememberMeController?.renderToggleInput() ?? null}
                 ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
             </div>
             ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
             ${this.renderNonFieldErrors()}
-            ${captchaStage ? this.renderCaptcha(captchaStage) : nothing}
-
-            <div class="pf-c-form__group ${captchaStage ? "" : "pf-m-action"}">
+            ${this.#captcha.render()}
+            <div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
                 <button
-                    ?disabled=${captchaPending}
+                    ?disabled=${this.#captcha.pending}
                     type="submit"
                     class="pf-c-button pf-m-primary pf-m-block"
                 >
@@ -471,7 +386,7 @@ export class IdentificationStage extends BaseStage<
         return html`<a
             href=${url}
             class="pf-c-button pf-m-secondary pf-m-block"
-            ouiaId="passwordless"
+            data-ouia-component-id="passwordless"
         >
             ${msg("Use a security key")}
         </a> `;
@@ -520,9 +435,8 @@ export class IdentificationStage extends BaseStage<
         return html`<fieldset
             slot="footer"
             part="source-list"
-            role="group"
             name="login-sources"
-            class="pf-c-form__group"
+            class="ak-c-fieldset pf-c-form__group"
         >
             <legend class="sr-only">${msg("Login sources")}</legend>
             ${repeat(
@@ -554,18 +468,19 @@ export class IdentificationStage extends BaseStage<
         return html`<fieldset
             slot="footer-band"
             part="additional-actions"
-            class="pf-c-login__main-footer-band"
+            name="additional-actions"
+            class="ak-c-fieldset pf-c-login__main-footer-band"
         >
             <legend class="sr-only">${msg("Additional actions")}</legend>
             ${enrollUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
                       ${msg("Need an account?")}
-                      <a href="${enrollUrl}" ouiaId="enroll">${msg("Sign up.")}</a>
+                      <a href="${enrollUrl}" data-ouia-component-id="enroll">${msg("Sign up.")}</a>
                   </div>`
                 : nothing}
             ${recoveryUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
-                      <a href="${recoveryUrl}" ouiaId="recovery"
+                      <a href="${recoveryUrl}" data-ouia-component-id="recovery"
                           >${msg("Forgot username or password?")}</a
                       >
                   </div>`

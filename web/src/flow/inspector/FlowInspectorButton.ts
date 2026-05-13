@@ -25,7 +25,7 @@ export class FlowInspectorButton extends WithCapabilitiesConfig(AKElement) {
     @state()
     private loaded = false;
 
-    @listen(AKFlowInspectorChangeEvent)
+    @listen(AKFlowInspectorChangeEvent, { target: window })
     protected _onInspectorToggle = (ev: AKFlowInspectorChangeEvent) => {
         this.open = ev.open;
     };
@@ -33,7 +33,7 @@ export class FlowInspectorButton extends WithCapabilitiesConfig(AKElement) {
     public override connectedCallback() {
         super.connectedCallback();
         const inspector = new URLSearchParams(window.location.search).get("inspector");
-        this.available = this.can(CapabilitiesEnum.CanDebug) || inspector !== undefined;
+        this.available = this.can(CapabilitiesEnum.CanDebug) || typeof inspector === "string";
         this.open = inspector === "" || inspector === "open";
     }
 
@@ -72,8 +72,11 @@ export class FlowInspectorButton extends WithCapabilitiesConfig(AKElement) {
         }
         const drawer = document.getElementById("flow-drawer");
         if (changed.has("open") && drawer) {
-            drawer.classList.toggle("pf-m-expanded", this.open);
-            drawer.classList.toggle("pf-m-collapsed", !this.open);
+            if (this.open) {
+                drawer.setAttribute("open", "");
+            } else {
+                drawer.removeAttribute("open");
+            }
         }
     }
 }

@@ -168,7 +168,7 @@ class KerberosSource(IncomingSyncSource):
                 }
             ),
             name=self.name,
-            icon_url=self.icon_url,
+            icon_url=self.get_icon_url(request, use_cache=False) or self.icon_url,
             promoted=self.promoted,
         )
 

@@ -4,7 +4,7 @@ sidebar_label: Budibase
 support_level: community
 ---
 
-## What is Budibase
+## What is Budibase?
 
 > Budibase is an open source low-code platform, and the easiest way to build internal tools that improve productivity.
 >
@@ -28,7 +28,7 @@ To support the integration of Budibase with authentik, you need to create an app
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.

@@ -4,7 +4,7 @@ sidebar_label: GlobalProtect
 support_level: community
 ---
 
-## What is GlobalProtect
+## What is GlobalProtect?
 
 > GlobalProtect enables you to use Palo Alto Networks next-gen firewalls or Prisma Access to secure your mobile workforce.
 >
@@ -27,20 +27,18 @@ This documentation lists only the settings that you need to change from their de
 A trusted web certificate is required to be bound to the GlobalProtect Portal. This can be signed by a trusted internal Root Certificate Authority (CA); however, a self-signed certificate, a certificate outside of its validity, or a non-standard confirming certificate (such as a lifespan not trusted by modern browsers) will error out on SAML authentication.
 :::
 
-## authentik Configuration
+## authentik configuration
 
 To support the integration of GlobalProtect with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an Application and Provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: Provide a descriptive name, an optional group, and UI settings. Take note of the **slug** as it will be required later.
     - **Choose a Provider type**: Select **SAML Provider**.
     - **Configure the Provider**:
         - Set the **ACS URL** to `https://gp.company:443/SAML20/SP/ACS`. (Note the absence of the trailing slash and the inclusion of the web interface port)
-        - Set the **Issuer** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, select an available **Signing certificate**.
 3. Click **Submit** to save the new application and provider.
 

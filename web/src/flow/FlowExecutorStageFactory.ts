@@ -21,19 +21,7 @@ export type { FlowChallengeComponentName, StageModuleCallback };
 export const propVariants = ["standard", "challenge"] as const;
 export type PropVariant = (typeof propVariants)[number];
 
-// The first type supports "import only."
-type StageEntryMetadata =
-    | []
-    | [tag: string]
-    | [variant: PropVariant]
-    | [tag: string, variant: PropVariant];
-
 const STANDARD = propVariants[0];
-const isImport = (x: unknown): x is StageModuleCallback => typeof x === "function";
-const PVariant = P.when(
-    (x): x is PropVariant => typeof x === "string" && propVariants.includes(x as PropVariant),
-);
-const PTag = P.when((x): x is string => typeof x === "string" && x.includes("-"));
 
 export class StageMappingError extends TypeError {
     constructor(message: string, options?: ErrorOptions) {
@@ -60,11 +48,21 @@ function resolveStageTag(module: ResolvedDefaultESModule<BaseStageConstructor>):
     return tag;
 }
 
+// The first type supports "import only."
+type StageEntryMetadata = {
+    tag: string | undefined;
+    variant: PropVariant | undefined;
+};
+
 interface StageMappingInit {
-    token: FlowChallengeComponentName;
+    stage: FlowChallengeComponentName;
     variant: PropVariant;
     tag?: string;
 }
+
+const PVariant = P.when((x): x is PropVariant => propVariants.includes(x as PropVariant));
+
+const PTag = P.when((x): x is string => typeof x === "string");
 
 /**
  * The metadata needed to load and invoke a stage.
@@ -76,15 +74,15 @@ export class StageMapping {
      * This can be used to determine if a given stage component has a corresponding client-side stage.
      */
     public static readonly registry: ReadonlyMap<FlowChallengeComponentName, StageEntry> = new Map(
-        StageEntries.map((entry) => [entry[0], entry]),
+        StageEntries.map((entry) => [entry.stage, entry]),
     );
 
-    public readonly token: FlowChallengeComponentName;
+    public readonly stage: FlowChallengeComponentName;
     public readonly variant: PropVariant;
     public readonly tag: string;
 
-    protected constructor({ token, variant, tag }: DeepRequired<StageMappingInit>) {
-        this.token = token;
+    protected constructor({ stage, variant, tag }: DeepRequired<StageMappingInit>) {
+        this.stage = stage;
         this.tag = tag;
         this.variant = variant;
     }
@@ -92,19 +90,26 @@ export class StageMapping {
     /**
      * Create a `StageMapping` from a `StageEntry`.
      */
-    public static async from([token, ...rest]: StageEntry): Promise<StageMapping> {
-        const last = rest.at(-1);
-        const callback = isImport(last) ? last : null;
-        const meta = (callback ? rest.slice(0, -1) : rest) as StageEntryMetadata;
+    public static async from(entry: StageEntry): Promise<StageMapping> {
+        const { stage, fetch, variant, tag } = entry;
+        const meta: StageEntryMetadata = { variant, tag };
 
+        // prettier-ignore
         const init = match<StageEntryMetadata, StageMappingInit>(meta)
-            .with([], () => ({ token, variant: STANDARD }))
-            .with([PTag, PVariant], ([tag, variant]) => ({ token, variant, tag }))
-            .with([PVariant], ([variant]) => ({ token, variant }))
-            .with([PTag], ([tag]) => ({ token, variant: STANDARD, tag }))
+            .with({ tag: undefined, variant: undefined },
+                () => ({ stage, variant: STANDARD }))
+            .with({ variant: PVariant, tag: PTag },
+                ({ tag, variant }) => ({ stage, variant, tag, }))
+            .with({ variant: PVariant, tag: undefined },
+                ({ variant }) => ({ stage, variant }))
+            .with({ variant: undefined, tag: PTag },
+                ({ tag }) => ({ stage, variant: STANDARD, tag }))
             .exhaustive();
 
-        const tag = init.tag || (await callback?.().then(resolveStageTag)) || token;
-        return new StageMapping({ ...init, tag });
+        // A StageEntry supplies a tag only when the stage has been imported by default and so the
+        // import event won't happen. Without it, the class constructor won't be available for tag
+        // resolution anyway.
+        const newtag = init.tag || (await fetch?.().then(resolveStageTag)) || stage;
+        return new StageMapping({ ...init, tag: newtag });
     }
 }

@@ -1,9 +1,10 @@
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
+import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
@@ -17,12 +18,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    GoogleWorkspaceProvider,
-    ModelEnum,
-    ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { GoogleWorkspaceProvider, ModelEnum, ProvidersApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -104,13 +100,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </section>
                 <section
@@ -142,13 +136,12 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     </div>
                 </section>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
+                    model=${ModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -205,7 +198,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update Google Workspace Provider")}</span>
                             <ak-provider-google-workspace-form
                                 slot="form"
@@ -236,13 +229,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__title">${msg("Schedules")}</div>
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.provider.pk}"
-                            ></ak-schedule-list>
-                        </div>
+                        <ak-schedule-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-schedule-list>
                     </div>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
@@ -250,13 +241,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                         <div class="pf-c-card__header">
                             <div class="pf-c-card__title">${msg("Tasks")}</div>
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-task-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.provider.pk}"
-                            ></ak-task-list>
-                        </div>
+                        <ak-task-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-task-list>
                     </div>
                 </div>
             </div>`;

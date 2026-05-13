@@ -24,7 +24,7 @@ Do not use an API key from a normal user because these keys expire.
 Follow these instructions to configure the Fleet connector in authentik:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
+2. Navigate to **Endpoint Devices** > **Connectors** and click **New Endpoint Connector**.
 3. Select **Fleet Connector** as the connector type, click **Next**, and configure the following settings:
     - **Connector name**: provide a descriptive name for the connector.
     - **Fleet Server URL**: enter your **Fleet web address** URL.
@@ -36,3 +36,5 @@ Follow these instructions to configure the Fleet connector in authentik:
 :::note
 The **Map teams to device access group** setting will not detect changes to a device's groups membership in Fleet. If the device's groups change, you will need to manually configure a [device access group](../../authentik-agent/device-authentication/device-access-groups.mdx).
 :::
+
+After creating the connector, it can be used in the [Endpoint Stage](../../../add-secure-apps/flows-stages/stages/endpoint/index.md). Refer to [Fleet conditional access](../fleet-conditional-access.md) and [Device compliance policy](../device-compliance-policy.md) for more information on using device facts from the connector in a flow.

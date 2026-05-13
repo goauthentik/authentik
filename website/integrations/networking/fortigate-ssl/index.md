@@ -4,7 +4,7 @@ sidebar_label: FortiGate SSLVPN
 support_level: community
 ---
 
-## What is FortiGate SSLVPN
+## What is FortiGate SSLVPN?
 
 > FortiGate is a firewall from Fortinet. It is an NGFW with layer 7 inspection and can become part of a Fortinet security fabric.
 >
@@ -43,7 +43,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an admin and navigate to the Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
 
 - **Application**: provide a descriptive name (e.g. "FortiGate SSLVPN"), an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **SAML Provider from metadata** as the provider type.
@@ -51,6 +51,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
     - Upload the metadata file from FortiGate (you will get this in the FortiGate configuration steps).
     - Set the **ACS URL** to `https://fortigate.company/remote/saml/login`.
     - Set the **Audience** to `http://fortigate.company/remote/saml/metadata/`.
+    - Set the **SLS URL** to `http://fortigate.company/remote/saml/logout/`.
     - Under **Advanced protocol settings**:
         - Set **Signing certificate** to use any available certificate.
             - Enable both **Sign assertions** and **Sign responses**.
@@ -64,7 +65,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ## FortiGate configuration
 
-### Setup SAML SP
+### Set up SAML SP
 
 1. SSH into the FortiGate (if you are using vdom, change to the correct vdom).
 2. The configuration will be written to `/data/config/config.conf`. Copy and paste the following configuration, replacing the placeholders with your values:
@@ -76,9 +77,9 @@ config user saml
         set entity-id "http://fortigate.company/remote/saml/metadata/"
         set single-sign-on-url "https://fortigate.company/remote/saml/login"
         set single-logout-url "https://fortigate.company/remote/saml/logout"
-        set idp-entity-id "https://authentik.company"
-        set idp-single-sign-on-url "https://authentik.company/application/saml/fortigate-sslvpn/sso/binding/redirect/"
-        set idp-single-logout-url "https://authentik.company/application/saml/fortigate-sslvpn/slo/binding/redirect/"
+        set idp-entity-id "https://authentik.company/application/saml/fortigate-sslvpn/metadata/"
+        set idp-single-sign-on-url "https://authentik.company/application/saml/fortigate-sslvpn/"
+        set idp-single-logout-url "https://authentik.company/application/saml/fortigate-sslvpn/"
         set idp-cert "your-authentik-cert"
         set user-name "http://schemas.goauthentik.io/2021/02/saml/username"
         set group-name "http://schemas.xmlsoap.org/claims/Group"

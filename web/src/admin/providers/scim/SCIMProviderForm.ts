@@ -28,7 +28,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
         });
     }
 
-    get defaultInstance() {
+    public override createDefaultInstance(): SCIMProvider {
         return {
             authMode: SCIMAuthenticationModeEnum.Token,
         } as SCIMProvider;

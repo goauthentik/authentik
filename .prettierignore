@@ -1,6 +1,7 @@
 # Prettier Ignorefile
 
 ## Static Files
+CODEOWNERS
 **/LICENSE
 
 authentik/stages/**/*

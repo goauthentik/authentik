@@ -3,8 +3,7 @@
 from django.urls import path
 
 from authentik.enterprise.providers.ws_federation.api.providers import WSFederationProviderViewSet
-from authentik.enterprise.providers.ws_federation.views import WSFedEntryView
-from authentik.providers.saml.views.metadata import MetadataDownload
+from authentik.enterprise.providers.ws_federation.views import MetadataDownload, WSFedEntryView
 
 urlpatterns = [
     path(

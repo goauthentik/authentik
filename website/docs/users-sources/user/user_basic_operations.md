@@ -4,15 +4,15 @@ title: Manage users
 
 The following topics are for the basic management of users: how to create, modify, delete or deactivate users, and using a recovery email.
 
-[Policies](../../customize/policies/index.md) can be used to further manage how users are authenticated. For example, by default authentik does not require email addresses be unique, but you can use a policy to [enforce unique email addresses](../../customize/policies/expression/unique_email.md).
+[Policies](../../customize/policies/index.md) can be used to further manage how users are authenticated. For example, by default authentik does not require email addresses be unique, but you can use a policy to [enforce unique email addresses](../../customize/policies/types/expression/unique_email.md).
 
 ## Create a user
 
-> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/api/reference/core-users-create).
+> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write/index.md), or [using the API](/api/reference/core-users-create).
 
 1. In the Admin interface of your authentik instance, select **Directory** > **Users** in the left side menu.
 2. In the **User folders** area, select the folder where you want to create a user.
-3. Click **Create** (for a default user).
+3. Click **New User** (for a default user).
 4. Fill in the required fields:
 
 - **Username**: This value must be unique across your user folders.
@@ -21,11 +21,11 @@ The following topics are for the basic management of users: how to create, modif
 5. Fill the **_optional_** fields if needed:
 
 - **Name**: The display name of the user.
-- **Email**: The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) and to receive [notifications](../../sys-mgmt/events/notifications.md), if configured.
+- **Email**: The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.md) and, if configured, to receive [notifications](../../sys-mgmt/events/notifications.md).
 - **Is active**: Define if the newly created user account is active. Selected by default.
 - **Attributes**: Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 
-6. Click **Create**
+6. Click **Create User**
 
 You should see a confirmation pop-up on the top-right of the screen that the user has been created, and see the new user in the user list. You can directly click the username if you want to [modify your user](./user_basic_operations.md#modify-a-user).
 
@@ -33,7 +33,7 @@ You should see a confirmation pop-up on the top-right of the screen that the use
 To create a super-user, you need to add the user to a group that has super-user permissions. For more information, refer to [Create a Group](../groups/manage_groups.mdx#create-a-group).
 :::
 
-## Advanced queries for users:ak-enterprise {#advanced-queries}
+## Advanced queries for users {#advanced-queries}
 
 You can create advanced queries to locate specific users within the list shown under **Directory** > **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
@@ -116,9 +116,11 @@ If a user has lost their credentials and needs to recover their account, there a
 
 Both options require you to configure a recovery flow and set it as the **Default recovery flow** for the active brand.
 
+If the user only needs their password reset, see these [instructions](#reset-a-password).
+
 ### Configure a recovery flow
 
-To get started, you can [import](../../add-secure-apps/flows-stages/flow/index.md#import-or-export-a-flow) this example flow: [Recovery with email verification flow](../../add-secure-apps/flows-stages/flow/examples/flows.md#recovery-with-email-verification)
+To get started, you can [import](../../add-secure-apps/flows-stages/flow/index.md#import-or-export-a-flow) this example flow: [Recovery with email verification flow](../../add-secure-apps/flows-stages/flow/examples/flows.md#recovery-with-email-and-mfa-verification)
 
 Then, set this as the default recovery flow for the active brand:
 
@@ -143,7 +145,7 @@ A pop-up will appear on your browser with the link for you to copy and to send t
 ### 2. Email a recovery link
 
 :::info Email stage required
-This option is only available if the default recovery flow has an [Email Stage](../../add-secure-apps/flows-stages/stages/email/index.mdx) bound to it. The example recovery flow includes an email stage.
+This option is only available if the recovery flow has an [Email Stage](../../add-secure-apps/flows-stages/stages/email/index.md) bound to it. The example recovery flow includes an email stage.
 :::
 
 You can send a link with the URL for the user to reset their password via Email. This option will only work if you have [configured email](../../install-config/email.mdx) and set an email address for the user.
@@ -154,13 +156,19 @@ You can send a link with the URL for the user to reset their password via Email.
 
 If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails.md).
 
-## Reset the password for the user
+## Reset a password
+
+### Admin resets a user's password
 
 As an Admin, you can simply reset the password for the user.
 
 1. In the Admin interface, navigate to **Directory** > **Users** to display all users.
 2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the options.
 3. To reset the user's password, click **Reset password**, and then define the new value.
+
+### User resets their password
+
+If a [Recovery flow](#configure-a-recovery-flow) has been applied to the brand, users can reset their own passwords in the [User interface](../user/user-interface.mdx).
 
 ## Deactivate or Delete user
 

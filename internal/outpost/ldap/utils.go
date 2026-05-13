@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"goauthentik.io/api/v3"
+	api "goauthentik.io/packages/client-go"
 )
 
 func (pi *ProviderInstance) GroupsForUser(user api.User) []string {

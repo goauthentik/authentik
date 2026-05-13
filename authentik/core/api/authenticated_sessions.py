@@ -32,19 +32,19 @@ from authentik.rbac.decorators import permission_required
 class UserAgentDeviceDict(TypedDict):
     """User agent device"""
 
-    brand: str
+    brand: str | None = None
     family: str
-    model: str
+    model: str | None = None
 
 
 class UserAgentOSDict(TypedDict):
     """User agent os"""
 
     family: str
-    major: str
-    minor: str
-    patch: str
-    patch_minor: str
+    major: str | None = None
+    minor: str | None = None
+    patch: str | None = None
+    patch_minor: str | None = None
 
 
 class UserAgentBrowserDict(TypedDict):

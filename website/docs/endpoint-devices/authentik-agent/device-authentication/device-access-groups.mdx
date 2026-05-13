@@ -7,6 +7,10 @@ authentik_version: "2025.12.0"
 
 Device access groups control access to endpoint devices. You can organize devices into groups and bind users, user groups, and policies to determine which users can access the device.
 
+:::warning
+Device access groups are **required** for [local device login](./local-device-login/index.mdx) to work. If a device is not assigned to an access group with the appropriate bindings, all login attempts to that device will be denied.
+:::
+
 ## Creating a device access group
 
 To create a device access group, follow these steps:
@@ -17,3 +21,10 @@ To create a device access group, follow these steps:
 4. Expand the newly created device access group.
 5. Click either **Create and bind Policy** or **Bind existing Policy / Group / User**.
 6. Once you've configured the desired access for the device access group, click **Finish**.
+
+## Assigning devices to an access group
+
+After creating a device access group, you need to assign devices to it. There are two ways to do this:
+
+- **During enrollment**: When creating an enrollment token, select the device access group in the **Device group** field. Any device that enrolls with this token is automatically added to the group.
+- **After enrollment**: Navigate to **Endpoint Devices** > **Devices**, edit the device, and set the **Access group** field to the desired device access group.

@@ -4,7 +4,7 @@ sidebar_label: Rancher
 support_level: authentik
 ---
 
-## What is Rancher
+## What is Rancher?
 
 > An enterprise platform for managing Kubernetes Everywhere
 > Rancher is a platform built to address the needs of the DevOps teams deploying applications with Kubernetes, and the IT staff responsible for delivering an enterprise-critical service.
@@ -34,8 +34,6 @@ Create a SAML provider with the following parameters:
 
 - ACS URL: `https://rancher.company/v1-saml/adfs/saml/acs`
 - Audience: `https://rancher.company/v1-saml/adfs/saml/metadata`
-- Issuer: `authentik`
-- Service Provider Binding: `Post`
 - Property mappings: Select all default mappings and the mapping you've created above.
 - Signing Certificate: Select the authentik self-signed certificate.
 

@@ -10,8 +10,8 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/flow"
+	api "goauthentik.io/packages/client-go"
 )
 
 func testSecret() string {
