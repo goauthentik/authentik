@@ -4,7 +4,7 @@ sidebar_label: Uptime Kuma
 support_level: community
 ---
 
-## What is Uptime Kuma
+## What is Uptime Kuma?
 
 > Uptime Kuma is an easy-to-use self-hosted monitoring tool.
 >

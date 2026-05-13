@@ -4,7 +4,7 @@ sidebar_label: Observium
 support_level: community
 ---
 
-## What is Observium
+## What is Observium?
 
 > Observium is a network monitoring and management platform that provides real-time insight into network health and performance.
 >

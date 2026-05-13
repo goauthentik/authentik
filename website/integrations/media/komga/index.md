@@ -4,7 +4,7 @@ sidebar_label: Komga
 support_level: community
 ---
 
-## What is Komga
+## What is Komga?
 
 > Komga is an open-source comic and manga server that lets users organize, read, and stream their digital comic collections with ease.
 >

@@ -158,3 +158,58 @@ class TestGroupsAPI(APITestCase):
             data={"name": generate_id(), "is_superuser": True},
         )
         self.assertEqual(res.status_code, 201)
+
+    def test_patch_users_no_perm(self):
+        """PATCH group with new users without add_user_to_group must be rejected."""
+        group = Group.objects.create(name=generate_id())
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
+        self.client.force_login(self.login_user)
+        res = self.client.patch(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            data={"users": [self.user.pk]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_patch_users_with_global_perm(self):
+        """PATCH group with new users with global add_user_to_group must succeed."""
+        group = Group.objects.create(name=generate_id())
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.add_user_to_group")
+        self.client.force_login(self.login_user)
+        res = self.client.patch(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            data={"users": [self.user.pk]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_patch_users_with_obj_perm(self):
+        """PATCH group with new users with object-level add_user_to_group must succeed."""
+        group = Group.objects.create(name=generate_id())
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.add_user_to_group", group)
+        self.client.force_login(self.login_user)
+        res = self.client.patch(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            data={"users": [self.user.pk]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_patch_existing_users_no_perm(self):
+        """PATCH group keeping existing membership without add_user_to_group must succeed."""
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+        self.login_user.assign_perms_to_managed_role("authentik_core.view_group", group)
+        self.login_user.assign_perms_to_managed_role("authentik_core.change_group", group)
+        self.client.force_login(self.login_user)
+        res = self.client.patch(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            data={"users": [self.user.pk]},
+            content_type="application/json",
+        )
+        self.assertEqual(res.status_code, 200)

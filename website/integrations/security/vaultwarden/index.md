@@ -4,7 +4,7 @@ sidebar_label: Vaultwarden
 support_level: community
 ---
 
-## What is Vaultwarden
+## What is Vaultwarden?
 
 > Vaultwarden is an alternative server implementation of the Bitwarden Client API, written in Rust and compatible with official Bitwarden clients, perfect for self-hosted deployment where running the official resource-heavy service might not be ideal.
 >

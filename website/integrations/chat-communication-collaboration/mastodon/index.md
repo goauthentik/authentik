@@ -4,7 +4,7 @@ sidebar_label: Mastodon
 support_level: community
 ---
 
-## What is Mastodon
+## What is Mastodon?
 
 > Mastodon is free and open-source software for running self-hosted social networking services. It has microblogging features similar to Twitter
 >

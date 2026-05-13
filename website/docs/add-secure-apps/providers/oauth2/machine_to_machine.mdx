@@ -178,7 +178,7 @@ client_id=<client_id>
 
 Alternatively, you can set the `client_secret` parameter to `<inputJWT>`, for applications which can set the password from a file but not other parameters.
 
-Input JWTs must be valid access tokens issued by any of the configured **Federated OIDC Providers**. They must not have been revoked and must not have expired.
+Input JWTs must be valid access tokens issued by any of the configured **Federated OAuth2/OpenID Providers**. They must not have been revoked and must not have expired.
 
 To dynamically limit access based on the claims of the tokens, you can use [Expression policies](../../../customize/policies/types/expression/index.mdx).
 
@@ -204,11 +204,11 @@ If you receive an error response from authentik, it only includes a generic erro
 
 However, you can obtain more detailed error information from the [authentik server container logs](../../../troubleshooting/logs/logs.mdx) by searching for the `request_id` from the response.
 
-### OAuth introspection endpoint
+### OAuth introspection and revocation endpoints
 
-To use the OAuth introspection endpoint to obtain more information on a token, you must first authenticate to it.
+To use the OAuth introspection endpoint to obtain more information on a token, you must first authenticate to it. By default, a provider can introspect or revoke tokens that were issued by that same provider.
 
-You are only able to introspect a token from the same provider that was used to authenticate, or you must exchange the token for a token from the provider as described above.
+To let a confidential provider introspect or revoke tokens from another OAuth2 provider, open the provider that issues the token and add the calling provider under **Federated OAuth2/OpenID Providers**. This applies to both `/application/o/introspect/` and `/application/o/revoke/`.
 
 ### Event logging
 

@@ -125,7 +125,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
+install: node-install web-install core-install  ## Install all requires dependencies for `node`, `web` and `core`
 
 dev-drop-db:
 	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
@@ -160,7 +160,7 @@ endif
 	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION))
 	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml
 	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
-	$(SED_INPLACE) "s/version = \"${current_version}\"/version = \"$(version)\"" ${PWD}/Cargo.toml ${PWD}/Cargo.lock
+	$(SED_INPLACE) "s/version = \"${current_version}\"/version = \"$(version)\"/" ${PWD}/Cargo.toml ${PWD}/Cargo.lock
 	$(MAKE) gen-build gen-compose aws-cfn
 	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION
@@ -228,13 +228,25 @@ gen-dev-config:  ## Generate a local development config file
 ## Node.js
 #########################
 
+# Packages whose install/postinstall scripts are required for correct
+# operation (binary downloads, native bindings). The root .npmrc sets
+# `ignore-scripts=true` to block dependency lifecycle scripts by default;
+# this list is rebuilt explicitly with scripts re-enabled. Audit any
+# additions: each entry runs arbitrary code at install time.
+TRUSTED_INSTALL_SCRIPTS := esbuild chromedriver tree-sitter tree-sitter-json
+
 node-install:  ## Install the necessary libraries to build Node.js packages
 	npm ci
-	npm ci --prefix web
 
 #########################
 ## Web
 #########################
+
+web-install: ## Install the necessary libraries to build the Authentik UI
+	npm ci --prefix web
+
+web-postinstall:  ## Trigger postinstall scripts for packages with native bindings or binary downloads, which are blocked by default for security reasons.
+	npm rebuild --prefix web --ignore-scripts=false --foreground-scripts $(TRUSTED_INSTALL_SCRIPTS)
 
 web-build: node-install  ## Build the Authentik UI
 	npm run --prefix web build
@@ -268,7 +280,7 @@ web-i18n-extract:
 
 docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Authentik docs source code, lint the code, and compile it
 
-docs-install:
+docs-install: node-install
 	npm ci --prefix website
 
 docs-lint-fix: lint-spellcheck
