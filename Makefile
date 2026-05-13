@@ -21,10 +21,16 @@ BREW_PKG_CONFIG_PATH :=
 
 CARGO := cargo
 UV := uv
-NPM_PREFIX := $(shell npm config get prefix 2>/dev/null || true)
 
-ifneq ($(NPM_PREFIX),)
-	export PATH := $(NPM_PREFIX)/bin:$(PATH)
+# Global npm installs can land in a user-scoped prefix whose bin/ is not on PATH
+# (common with nix, asdf, volta, or `npm config set prefix ~/.npm-global`). Pull
+# that bin onto PATH so `corepack` etc. resolve in every make recipe.
+NPM_EXISTS := $(shell command -v npm 2> /dev/null)
+ifdef NPM_EXISTS
+	NPM_PREFIX := $(shell npm config get prefix 2> /dev/null)
+	ifneq ($(NPM_PREFIX),)
+		export PATH := $(NPM_PREFIX)/bin:$(PATH)
+	endif
 endif
 
 # For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
