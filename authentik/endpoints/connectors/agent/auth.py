@@ -31,7 +31,6 @@ class DeviceUser(VirtualUser):
     username = "authentik:endpoints:device"
 
     def has_perm(self, perm: str, obj: Model | None = None) -> bool:
-        print(perm)
         if perm in [
             "authentik_core.view_user",
             "authentik_core.view_group",
