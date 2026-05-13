@@ -121,7 +121,7 @@ export const Default: Story = {
     render: () => html` <ak-drawer> ${contentBlock} ${panelBlock} </ak-drawer> `,
 };
 
-export const story = (args: DrawerProps = {}, name?: string): Story => ({
+const story = (args: DrawerProps = {}, name?: string): Story => ({
     ...Template,
     ...(name ? { name } : {}),
     args: {

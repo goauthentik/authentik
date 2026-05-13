@@ -90,6 +90,7 @@ export class SyncStatusCard extends AKElement {
                         </div>
                     </dd>
                 </div>
+                <slot></slot>
             </dl>
         `;
     }
