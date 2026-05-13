@@ -56,6 +56,8 @@ jobs:
         run: npm ci
       - name: build
         working-directory: web/
+        env:
+          NODE_ENV: "production"
         run: npm run build
   ci-web-mark:
     if: always()

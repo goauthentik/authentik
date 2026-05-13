@@ -261,6 +261,8 @@ jobs:
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
         working-directory: web
+        env:
+          NODE_ENV: "production"
         run: |
           npm ci
           npm run build
@@ -314,6 +316,8 @@ jobs:
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
         working-directory: web
+        env:
+          NODE_ENV: "production"
         run: |
           npm ci
           npm run build
