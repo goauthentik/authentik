@@ -21,6 +21,11 @@ BREW_PKG_CONFIG_PATH :=
 
 CARGO := cargo
 UV := uv
+NPM_PREFIX := $(shell npm config get prefix 2>/dev/null || true)
+
+ifneq ($(NPM_PREFIX),)
+	export PATH := $(NPM_PREFIX)/bin:$(PATH)
+endif
 
 # For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
 # to prevent SAML-related tests from failing and ensure correct pip dependency compilation

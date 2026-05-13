@@ -5,6 +5,7 @@
  */
 
 import * as fs from "node:fs/promises";
+import { delimiter, join } from "node:path";
 import { parseArgs } from "node:util";
 
 import { ConsoleLogger } from "../../packages/logger-js/lib/node.js";
@@ -19,6 +20,24 @@ import { findNPMPackage, loadJSON, npm } from "./utils/node.mjs";
 const FALLBACK_PACKAGE_MANAGER =
     "npm@11.14.1+sha512.6a8a4d67478497a2dbc6815cad72e64c43f33413717e242756047d466241ab39bee61e691683a64658e94496ec5f1a1c05e4a5ec62dcc773280dfd949443a367";
 const logger = ConsoleLogger.prefix("setup-corepack");
+
+/**
+ * Global npm installs can land outside PATH, especially when npm's prefix is
+ * user-scoped. Add that bin directory before checking for or invoking Corepack.
+ *
+ * @param {string} cwd
+ */
+async function addNPMGlobalBinToPath(cwd) {
+    const npmPrefix = await npm`config get prefix`({ cwd });
+    const npmGlobalBin = join(npmPrefix, "bin");
+    const path = process.env.PATH || "";
+
+    if (path.split(delimiter).includes(npmGlobalBin)) {
+        return;
+    }
+
+    process.env.PATH = [npmGlobalBin, path].filter(Boolean).join(delimiter);
+}
 
 async function main() {
     const parsedArgs = parseArgs({
@@ -40,6 +59,8 @@ async function main() {
     const npmVersion = await npm`--version`({ cwd });
 
     logger.info(`npm ${npmVersion}`);
+
+    await addNPMGlobalBinToPath(cwd);
 
     const corepackVersion = await corepack`--version`({ cwd }).catch(() => null);
 
