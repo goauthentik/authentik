@@ -7,7 +7,7 @@
     --ak-v2-c-flow__card--BorderRadius: var(--ak-v2-global--BorderRadius--sm);
     --ak-v2-c-flow__card--BoxShadow: var(--ak-v2-global--BoxShadow--md);
     --ak-v2-c-flow__card--Gap: var(--ak-v2-global--spacer-lg);
-    --ak-v2-c-flow__card--InlineSize: min(28rem, 100%);
+    --ak-v2-c-flow__card--InlineSize: min(35rem, 100%);
     --ak-v2-c-flow__card--MinBlockSize: 32rem;
     --ak-v2-c-flow__card--Padding: var(--ak-v2-global--spacer-xl);
 

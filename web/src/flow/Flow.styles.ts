@@ -62,7 +62,7 @@ export const styles = css`
     }
 
     [part="content-iframe"] {
-        ainline-size: 100%;
+        inline-size: 100%;
         block-size: 100%;
         border: 0;
     }
