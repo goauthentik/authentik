@@ -34,6 +34,7 @@ packages/django-channels-postgres       @goauthentik/backend
 packages/django-postgres-cache          @goauthentik/backend
 packages/django-dramatiq-postgres       @goauthentik/backend
 # Web packages
+.npmrc                                  @goauthentik/frontend
 tsconfig.json                           @goauthentik/frontend
 package.json                            @goauthentik/frontend
 package-lock.json                       @goauthentik/frontend
