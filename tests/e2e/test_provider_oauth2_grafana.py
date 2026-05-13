@@ -20,13 +20,15 @@ from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
-    ClientTypes,
+    ClientType,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
     ScopeMapping,
 )
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderOAuth2OAuth(SeleniumTestCase):
@@ -84,12 +86,13 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/")],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -133,7 +136,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -143,6 +146,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 )
             ],
             authorization_flow=authorization_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -206,7 +210,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         invalidation_flow = Flow.objects.get(slug="default-provider-invalidation-flow")
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -217,6 +221,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             ],
             authorization_flow=authorization_flow,
             invalidation_flow=invalidation_flow,
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -286,7 +291,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=authorization_flow,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -295,6 +300,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                     RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
                 )
             ],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -370,7 +376,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=authorization_flow,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -379,6 +385,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                     RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
                 )
             ],
+            grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(

@@ -9,12 +9,11 @@
         "build:integrations": "npm run build -w integrations",
         "check-types": "tsc -b",
         "docusaurus": "docusaurus",
-        "preinstall": "npm ci --prefix ..",
         "lint": "eslint --fix .",
-        "lint:lockfile": "echo 'Skipping lockfile linting'",
         "lint-check": "eslint --max-warnings 0 .",
         "prettier": "prettier --write .",
-        "prettier-check": "prettier --check .",
+        "prettier-check": "npm run prettier-prepare && prettier --check .",
+        "prettier-prepare": "npm ci --prefix ../packages/prettier-config",
         "start": "npm start -w docs",
         "test": "node --test"
     },
@@ -23,29 +22,29 @@
         "@goauthentik/eslint-config": "../packages/eslint-config",
         "@goauthentik/prettier-config": "../packages/prettier-config",
         "@goauthentik/tsconfig": "../packages/tsconfig",
-        "@types/node": "^25.3.0",
-        "@typescript-eslint/eslint-plugin": "^8.56.1",
-        "@typescript-eslint/parser": "^8.56.1",
+        "@types/node": "^25.7.0",
+        "deepmerge-ts": "^7.1.5",
         "escape-string-regexp": "^5.0.0",
         "eslint": "^9.39.3",
         "netlify-plugin-cache": "^1.0.3",
         "netlify-redirect-parser": "^14.4.0",
         "npm-run-all": "^4.1.5",
-        "postman-code-generators": "2.1.0",
-        "prettier": "^3.8.1",
-        "prettier-plugin-packagejson": "^3.0.0",
-        "typescript-eslint": "^8.56.1"
+        "postman-code-generators": "2.1.1",
+        "prettier": "^3.8.3",
+        "prettier-plugin-packagejson": "^3.0.2",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.59.3"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "1.7.9",
-        "@rspack/binding-linux-arm64-gnu": "1.7.9",
-        "@rspack/binding-linux-x64-gnu": "1.7.9",
-        "@swc/core-darwin-arm64": "1.15.18",
-        "@swc/core-linux-arm64-gnu": "1.15.18",
-        "@swc/core-linux-x64-gnu": "1.15.18",
-        "@swc/html-darwin-arm64": "1.15.18",
-        "@swc/html-linux-arm64-gnu": "1.15.18",
-        "@swc/html-linux-x64-gnu": "1.15.18",
+        "@rspack/binding-darwin-arm64": "2.0.3",
+        "@rspack/binding-linux-arm64-gnu": "2.0.3",
+        "@rspack/binding-linux-x64-gnu": "2.0.3",
+        "@swc/core-darwin-arm64": "1.15.33",
+        "@swc/core-linux-arm64-gnu": "1.15.33",
+        "@swc/core-linux-x64-gnu": "1.15.33",
+        "@swc/html-darwin-arm64": "1.15.33",
+        "@swc/html-linux-arm64-gnu": "1.15.33",
+        "@swc/html-linux-x64-gnu": "1.15.33",
         "lightningcss-darwin-arm64": "1.32.0",
         "lightningcss-linux-arm64-gnu": "1.32.0",
         "lightningcss-linux-x64-gnu": "1.32.0"
@@ -59,7 +58,7 @@
     ],
     "engines": {
         "node": ">=24",
-        "npm": ">=11.10.1"
+        "npm": ">=11.14.1"
     },
     "devEngines": {
         "runtime": {
@@ -73,30 +72,30 @@
             "onFail": "warn"
         }
     },
-    "packageManager": "npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973",
+    "packageManager": "npm@11.14.1+sha512.6a8a4d67478497a2dbc6815cad72e64c43f33413717e242756047d466241ab39bee61e691683a64658e94496ec5f1a1c05e4a5ec62dcc773280dfd949443a367",
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
-        "@goauthentik/api-docs": {
-            "openapi-to-postmanv2": "^5.0.0",
-            "postman-collection": "^5.0.2",
-            "postman-code-generators": {
-                "detect-package-manager": "file:./vendored/detect-package-manager",
-                "shelljs": "0.10.0"
-            },
-            "docusaurus-theme-openapi-docs": {
-                "postman-code-generators": {
-                    ".": "^2.1.0",
-                    "detect-package-manager": "file:./vendored/detect-package-manager"
-                }
-            }
+        "@goauthentik/docusaurus-config": {
+            "react": "$react",
+            "react-dom": "$react-dom",
+            "@docusaurus/theme-common": "$@docusaurus/theme-common"
+        },
+        "@goauthentik/eslint-config": {
+            "typescript": "$typescript"
         },
         "@goauthentik/prettier-config": {
             "prettier": "$prettier",
             "prettier-plugin-packagejson": "$prettier-plugin-packagejson"
         },
+        "@typescript-eslint/parser": {
+            "typescript": "$typescript"
+        },
+        "@typescript-eslint/utils": {
+            "typescript": "$typescript"
+        },
         "docusaurus-theme-openapi-docs": {
             "postman-code-generators": {
-                ".": "^1.10.1",
+                ".": "^2.1.1",
                 "detect-package-manager": "file:./vendored/detect-package-manager",
                 "shelljs": "0.10.0"
             }
@@ -104,9 +103,15 @@
         "format-imports": {
             "eslint": "$eslint"
         },
+        "lodash": "^4.18.1",
         "postman-code-generators": {
             "detect-package-manager": "file:./vendored/detect-package-manager",
             "shelljs": "0.10.0"
-        }
+        },
+        "postman-collection": "^5.3.0",
+        "typescript-eslint": {
+            "typescript": "$typescript"
+        },
+        "uuid": "^14.0.0"
     }
 }

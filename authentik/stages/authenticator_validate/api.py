@@ -39,6 +39,10 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
             "webauthn_hints",
             "webauthn_allowed_device_types",
             "webauthn_allowed_device_types_obj",
+            "email_otp_throttling_factor",
+            "sms_otp_throttling_factor",
+            "totp_otp_throttling_factor",
+            "static_otp_throttling_factor",
         ]
 
 

@@ -371,21 +371,4 @@ export function applyBackgroundImageProperty(
     target.style.setProperty(AKBackgroundImageProperty, `url("${nextURL.href}")`);
 }
 
-/**
- * Returns the root interface element of the page.
- *
- * @deprecated Use context controllers to access the interface root instead.
- */
-export function rootInterface<T extends HTMLElement = HTMLElement>(): T {
-    const element = document.body.querySelector<T>("[data-test-id=interface-root]");
-
-    if (!element) {
-        throw new Error(
-            `Could not find root interface element. Was this element added before the parent interface element?`,
-        );
-    }
-
-    return element;
-}
-
 //#endregion

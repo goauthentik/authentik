@@ -33,6 +33,7 @@ from authentik.common.oauth.constants import (
     SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
 )
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
@@ -57,7 +58,7 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    ClientTypes,
+    ClientType,
     DeviceToken,
     OAuth2Provider,
     RedirectURIMatchingMode,
@@ -147,6 +148,7 @@ class TokenParams:
         ):
             user = self.user if self.user else get_anonymous_user()
             engine = PolicyEngine(app, user, request)
+            engine.empty_result = AppAccessWithoutBindings.get()
             # Don't cache as for client_credentials flows the user will not be set
             # so we'll get generic cache results
             engine.use_cache = False
@@ -163,8 +165,20 @@ class TokenParams:
                 raise TokenError("invalid_grant")
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
-        if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
-            if self.provider.client_type == ClientTypes.CONFIDENTIAL and not compare_digest(
+        if self.grant_type not in self.provider.grant_types:
+            LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
+            raise TokenError("invalid_grant").with_cause("grant_type_not_configured")
+
+        # Confidential clients MUST authenticate to the token endpoint per
+        # RFC 6749 §2.3.1. The device code grant (RFC 8628 §3.4) inherits
+        # that requirement - the device_code alone is not a substitute for
+        # client credentials.
+        if self.grant_type in [
+            GRANT_TYPE_AUTHORIZATION_CODE,
+            GRANT_TYPE_REFRESH_TOKEN,
+            GRANT_TYPE_DEVICE_CODE,
+        ]:
+            if self.provider.client_type == ClientType.CONFIDENTIAL and not compare_digest(
                 self.provider.client_secret, self.client_secret
             ):
                 LOGGER.warning(
@@ -239,7 +253,7 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
     def __check_redirect_uri(self, request: HttpRequest):
-        allowed_redirect_urls = self.provider.redirect_uris
+        allowed_redirect_urls = self.provider.authorization_redirect_uris
         # At this point, no provider should have a blank redirect_uri, in case they do
         # this will check an empty array and raise an error
 
@@ -341,7 +355,7 @@ class TokenParams:
         user = User.objects.filter(username=username, is_active=True).first()
         if not user:
             raise TokenError("invalid_grant")
-        token: Token = Token.filter_not_expired(
+        token: Token = Token.objects.filter(
             key=password, intent=TokenIntents.INTENT_APP_PASSWORD, user=user
         ).first()
         if not token or token.user.uid != user.uid:
@@ -596,10 +610,10 @@ class TokenView(View):
                 if not self.provider:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
-                CTX_AUTH_VIA.set("oauth_client_secret")
                 self.params = self.params_class.parse(
                     request, self.provider, client_id, client_secret
                 )
+                CTX_AUTH_VIA.set("oauth_client_secret")
 
             with start_span(
                 op="authentik.providers.oauth2.post.response",
@@ -717,7 +731,7 @@ class TokenView(View):
         refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
         if (
             refresh_token_threshold.total_seconds() == 0
-            or (now - self.params.refresh_token.expires) > refresh_token_threshold
+            or (self.params.refresh_token.expires - now) < refresh_token_threshold
         ):
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(

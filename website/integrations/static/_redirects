@@ -10,4 +10,18 @@
 /integrations/*                                                     /:splat 301!
 #endregion
 
+#region GitHub integration renames
+/development/github-enterprise-cloud                              /development/ghec 301!
+/development/github-enterprise-cloud/                             /development/ghec/ 301!
+
+/development/github-organization                                  /development/ghec 301!
+/development/github-organization/                                 /development/ghec/ 301!
+
+/development/github-enterprise-emu                                /development/ghec-emu 301!
+/development/github-enterprise-emu/                               /development/ghec-emu/ 301!
+
+/development/github-enterprise-server                             /development/ghes 301!
+/development/github-enterprise-server/                            /development/ghes/ 301!
+#endregion
+
 /networking/cloudflare-access                                       /security/cloudflare-access 301!

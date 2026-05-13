@@ -3,7 +3,7 @@ import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 
 import {
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     type ProvidersSamlImportMetadataCreateRequest,
 } from "@goauthentik/api";
 
@@ -14,18 +14,20 @@ export function renderForm(provider: Partial<ProvidersSamlImportMetadataCreateRe
     return html`
         <ak-text-input
             name="name"
-            label=${msg("Name")}
-            .value=${provider.name ?? ""}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
+            value=${provider.name ?? ""}
             required
         ></ak-text-input>
 
         <ak-form-element-horizontal
-            label=${msg("Authorization flow")}
+            label=${msg("Authorization Flow")}
             required
             name="authorizationFlow"
         >
             <ak-flow-search-no-default
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 required
             ></ak-flow-search-no-default>
             <p class="pf-c-form__helper-text">
@@ -34,12 +36,12 @@ export function renderForm(provider: Partial<ProvidersSamlImportMetadataCreateRe
         </ak-form-element-horizontal>
 
         <ak-form-element-horizontal
-            label=${msg("Invalidation flow")}
+            label=${msg("Invalidation Flow")}
             required
             name="invalidationFlow"
         >
             <ak-flow-search-no-default
-                flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                flowType=${FlowDesignationEnum.Invalidation}
                 required
             ></ak-flow-search-no-default>
             <p class="pf-c-form__helper-text">

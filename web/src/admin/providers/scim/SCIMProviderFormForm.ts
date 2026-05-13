@@ -7,7 +7,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/CodeMirror";
-import "#admin/common/ak-license-notice";
+import "#elements/LicenseNotice";
 import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
@@ -93,17 +93,21 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
         case SCIMAuthenticationModeEnum.Token:
             return renderAuthToken(provider, errors);
         case SCIMAuthenticationModeEnum.Oauth:
+        case SCIMAuthenticationModeEnum.OauthInteractive:
             return renderAuthOAuth(provider, errors);
     }
 }
 
 export interface SCIMProviderFormProps {
     update: () => void;
-    provider?: Partial<SCIMProvider>;
-    errors?: ValidationError;
+    provider?: Partial<SCIMProvider> | null;
+    errors?: ValidationError | null;
 }
 
-export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderFormProps) {
+export function renderForm({ provider, errors, update }: SCIMProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
     return html`
         <ak-text-input
             name="name"
@@ -157,11 +161,17 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                                 )}`,
                             },
                             {
-                                label: msg("OAuth"),
+                                label: msg("OAuth (Silent)"),
                                 value: SCIMAuthenticationModeEnum.Oauth,
-                                default: true,
                                 description: html`${msg("Authenticate SCIM requests using OAuth.")}
                                     <ak-license-notice></ak-license-notice>`,
+                            },
+                            {
+                                label: msg("OAuth (Interactive)"),
+                                value: SCIMAuthenticationModeEnum.OauthInteractive,
+                                description: html`${msg(
+                                        "Authenticate SCIM requests using OAuth, interactively authorized.",
+                                    )} <ak-license-notice></ak-license-notice>`,
                             },
                         ]}
                     ></ak-radio>
@@ -197,6 +207,18 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                             label: msg("Salesforce"),
                             value: CompatibilityModeEnum.Sfdc,
                             description: html`${msg("Altered behavior for usage with Salesforce.")}`,
+                        },
+                        {
+                            label: msg("Webex"),
+                            value: CompatibilityModeEnum.Webex,
+                            description: html`${msg("Altered behavior for usage with Cisco Webex.")}`,
+                        },
+                        {
+                            label: msg("vCenter"),
+                            value: CompatibilityModeEnum.Vcenter,
+                            description: html`${msg(
+                                "Altered behavior for usage with VMware vCenter.",
+                            )}`,
                         },
                     ]}
                     help=${msg(

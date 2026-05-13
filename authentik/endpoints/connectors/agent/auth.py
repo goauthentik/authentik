@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.db.models import Model
 from django.http import HttpRequest
 from django.utils.timezone import now
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
@@ -9,7 +10,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
-from authentik.api.authentication import IPCUser, validate_auth
+from authentik.api.authentication import VirtualUser, validate_auth
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import User
 from authentik.crypto.apps import MANAGED_KEY
@@ -25,8 +26,17 @@ LOGGER = get_logger()
 PLATFORM_ISSUER = "goauthentik.io/platform"
 
 
-class DeviceUser(IPCUser):
+class DeviceUser(VirtualUser):
+
     username = "authentik:endpoints:device"
+
+    def has_perm(self, perm: str, obj: Model | None = None) -> bool:
+        if perm in [
+            "authentik_core.view_user",
+            "authentik_core.view_group",
+        ]:
+            return True
+        return False
 
 
 class AgentEnrollmentAuth(BaseAuthentication):
@@ -34,8 +44,10 @@ class AgentEnrollmentAuth(BaseAuthentication):
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
         auth = get_authorization_header(request)
         key = validate_auth(auth)
-        token = EnrollmentToken.filter_not_expired(key=key).first()
+        token = EnrollmentToken.objects.filter(key=key).first()
         if not token:
+            raise PermissionDenied()
+        if not token.connector.enabled:
             raise PermissionDenied()
         CTX_AUTH_VIA.set("endpoint_token_enrollment")
         return (DeviceUser(), token)
@@ -48,8 +60,10 @@ class AgentAuth(BaseAuthentication):
         key = validate_auth(auth, format="bearer+agent")
         if not key:
             return None
-        device_token = DeviceToken.filter_not_expired(key=key).first()
+        device_token = DeviceToken.objects.filter(key=key).first()
         if not device_token:
+            raise PermissionDenied()
+        if not device_token.device.connector.enabled:
             raise PermissionDenied()
         if device_token.device.device.is_expired:
             raise PermissionDenied()
@@ -87,7 +101,7 @@ class DeviceAuthFedAuthentication(BaseAuthentication):
         if not raw_token:
             LOGGER.warning("Missing token")
             return None
-        device = Device.filter_not_expired(name=request.query_params.get("device")).first()
+        device = Device.objects.filter(name=request.query_params.get("device")).first()
         if not device:
             LOGGER.warning("Couldn't find device")
             return None

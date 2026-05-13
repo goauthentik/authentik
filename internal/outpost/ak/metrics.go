@@ -52,6 +52,7 @@ func RunMetricsServer(listen string, router *mux.Router) {
 func RunMetricsUnix(router *mux.Router) {
 	socketPath := path.Join(os.TempDir(), MetricsSocketName)
 	l := log.WithField("logger", "authentik.outpost.metrics").WithField("listen", socketPath)
+	_ = os.Remove(socketPath)
 	ln, err := unix.Listen(socketPath)
 	if err != nil {
 		l.WithError(err).Warning("failed to listen")
@@ -59,6 +60,7 @@ func RunMetricsUnix(router *mux.Router) {
 	}
 	defer func() {
 		err := ln.Close()
+		_ = os.Remove(socketPath)
 		if err != nil {
 			l.WithError(err).Warning("failed to close listener")
 		}

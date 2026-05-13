@@ -3,7 +3,6 @@
 import uuid
 
 import django.db.models.deletion
-import django_tenants.postgresql_backend.base
 from django.db import migrations, models
 from django_tenants.utils import get_tenant_base_schema
 
@@ -16,8 +15,8 @@ def create_default_tenant(apps, schema_editor):
     db_alias = schema_editor.connection.alias
 
     Tenant = apps.get_model("authentik_tenants", "Tenant")
-    tenant = Tenant.objects.using(db_alias).create(
-        schema_name="public",
+    Tenant.objects.using(db_alias).create(
+        schema_name=CONFIG.get("postgresql.default_schema", "public"),
         name="Default",
         ready=True,
         avatars=CONFIG.get("avatars", "gravatar,initials"),

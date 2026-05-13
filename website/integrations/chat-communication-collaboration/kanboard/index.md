@@ -4,7 +4,7 @@ sidebar_label: Kanboard
 support_level: community
 ---
 
-## What is Kanboard
+## What is Kanboard?
 
 > Kanboard is a free and open source Kanban project management software.
 >
@@ -28,7 +28,7 @@ To support the integration of Kanboard with authentik, you need to create an app
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -45,9 +45,9 @@ Integrating Kanboard with authentik requires enabling the plugin system and inst
 
 ### Enable plugin management
 
-To enable plugin management through the web interface, add the following line to your Kanboard configuration file, typically located at `/var/www/app/config.php`:
+To enable plugin management through the web interface, add the following line to your Kanboard `config.php` file. Kanboard reads this file from the project root or the `data` folder. For Docker installations, the data folder is typically `/var/www/app/data/`.
 
-```yaml
+```php
 define('PLUGIN_INSTALLER', true);
 ```
 
@@ -65,9 +65,9 @@ Then, restart your server to apply the updated configuration.
 | **Callback URL**           | `https://kanboard.company/oauth/callback` (prefilled) |
 | **Client ID**              | Client ID from authentik                              |
 | **Client Secret**          | Client secret from authentik                          |
-| **Authorize URL**          | `https://authentik.company/application/o/authorize`   |
-| **Token URL**              | `https://authentik.company/application/o/token`       |
-| **User API URL**           | `https://authentik.company/application/o/userinfo`    |
+| **Authorize URL**          | `https://authentik.company/application/o/authorize/`  |
+| **Token URL**              | `https://authentik.company/application/o/token/`      |
+| **User API URL**           | `https://authentik.company/application/o/userinfo/`   |
 | **Scopes**                 | `openid profile email`                                |
 | **Username Key**           | `preferred_username`                                  |
 | **Name Key**               | `name`                                                |
@@ -79,7 +79,7 @@ Then, restart your server to apply the updated configuration.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Kanboard, log out and attempt to log back in by clicking **OAuth2 login**.
+To confirm that authentik is properly configured with Kanboard, log out of Kanboard and log back in using the **OAuth2 login** option. You should be redirected to authentik for authentication and then redirected back to Kanboard.
 
 ## Resources
 

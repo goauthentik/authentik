@@ -10,7 +10,7 @@ It's important to understand how authentik works with and supports the OAuth 2.0
 
 authentik can act either as the OP, (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth 2.0 to authenticate). If you want to configure authentik as an OP, then you create a provider, then use the OAuth 2.0 provider. If you want authentik to serve as the RP, then configure a [source](../../../users-sources/sources/index.md). Of course, authentik can serve as both the RP and OP, if you want to use the authentik OAuth provider and also use sources.
 
-All standard OAuth 2.0 flows (authorization code, client_credentials, implicit, hybrid, device code) and grant types are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth 2.0 in authentik supports OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP receives data from our scope mapping system.
+All standard OAuth 2.0 flows (authorization code, client_credentials, implicit, hybrid, device code) and grant types are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth 2.0 in authentik supports OAuth, PKCE, [GitHub compatibility](./github-compatibility.md), and the RP receives data from our scope mapping system.
 
 The authentik OAuth 2.0 provider comes with all the standard functionality and features of OAuth 2.0, including the OAuth 2.0 security principles such as no cleartext storage of credentials, configurable encryption, configurable short expiration times, and the configuration of automatic rotation of refresh tokens. In short, our OAuth 2.0 protocol support provides full coverage.
 
@@ -66,6 +66,12 @@ sequenceDiagram
 Due to how the OAuth2 provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke` as these would conflict with the global OAuth2 endpoints.
 :::
 
+### Cross-provider token introspection and revocation
+
+The token introspection and revocation endpoints are global OAuth2 endpoints, but access to tokens is still scoped by provider. A client can introspect or revoke tokens issued by the same OAuth2 provider that authenticated the request.
+
+For cross-provider introspection or revocation, authenticate the request with a confidential provider. Then, on the provider that issues the token, select the authenticating provider under **Federated OAuth2/OpenID Providers**. This allows the authenticating provider to introspect and revoke tokens issued by the federated provider.
+
 ### Additional configuration options with Redirect URIs
 
 When using an OAuth 2.0 provider in authentik, the OP must validate the provided redirect URI by the RP. An authentik admin can configure a list in the **Redirect URI** field on the Provider.
@@ -89,6 +95,8 @@ There are three general flows of OAuth 2.0:
 3. Device code
 
 Additionally, the [Refresh token](#refresh-token-grant) (grant type) is optionally used with any of the above flows, as well as the client credentials and device code flows.
+
+You can define which grant types are available for your OAuth2 provider when you [create and configure the provider](./create-oauth2-provider.md). By default, all types are selected.
 
 ### 1: Web-based application authorization
 
@@ -205,14 +213,14 @@ return {
 }
 ```
 
-## Signing & Encryption
+## Signing and encryption
 
-[JWTs](https://jwt.io/introduction) created by authentik will always be signed.
+Selecting **Signing Key** is optional. [JWTs](https://jwt.io/introduction) created by authentik will always be signed.
 
-When a _Signing Key_ is selected in the provider, the JWT will be signed asymmetrically with the private key of the selected certificate, and can be verified using the public key of the certificate. The public key data of the signing key can be retrieved via the JWKS endpoint listed on the provider page.
+When **Signing Key** is selected in the provider, authentik signs JWTs asymmetrically with the private key of the selected certificate. Clients can verify those JWTs with the certificate's public key, which is available from the JWKS endpoint listed on the provider page.
 
-When no _Signing Key_ is selected, the JWT will be signed symmetrically with the _Client secret_ of the provider, which can be seen in the provider settings.
+When **Signing Key** is not selected, authentik signs JWTs symmetrically with the provider **Client secret**, which is shown in the provider settings.
 
-### Encryption:ak-version
+### Encryption
 
-authentik can also encrypt JWTs (turning them into JWEs) it issues by selecting an _Encryption Key_ in the provider. When selected, all JWTs will be encrypted symmetrically using the selected certificate. authentik uses the `RSA-OAEP-256` algorithm with the `A256CBC-HS512` encryption method.
+authentik can also encrypt JWTs (turning them into JWEs) it issues by selecting an **Encryption Key** in the provider. When selected, all JWTs will be encrypted symmetrically using the selected certificate. authentik uses the `RSA-OAEP-256` algorithm with the `A256CBC-HS512` encryption method.

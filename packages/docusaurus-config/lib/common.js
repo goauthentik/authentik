@@ -56,7 +56,7 @@ export function createDefaultDocusaurusConfig() {
                 removeLegacyPostBuildHeadAttribute: true,
                 useCssCascadeLayers: false,
             },
-            experimental_faster: {
+            faster: {
                 swcJsLoader: true,
                 rspackBundler: true,
                 lightningCssMinimizer: production,

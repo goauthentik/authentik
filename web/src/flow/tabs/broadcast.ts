@@ -17,16 +17,16 @@ export interface BroadcastMessage {
     [key: string]: unknown;
 }
 
-export class Broadcast extends BroadcastChannel {
+export class Broadcast extends BroadcastChannel implements Disposable {
     static shared = new Broadcast();
 
-    private discoveredTabIds = new Set<string>();
-    exitedTabIds: string[] = [];
+    protected discoveredTabIDs = new Set<string>();
+    public exitedTabIDs: string[] = [];
 
-    #logger: Logger;
+    protected logger: Logger;
 
-    #onMessage = (ev: MessageEvent<BroadcastMessage>) => {
-        this.#logger.debug("broadcast event", ev.data);
+    protected messageListener = (ev: MessageEvent<BroadcastMessage>) => {
+        this.logger.debug("broadcast event", ev.data);
         switch (ev.data.type) {
             case BroadcastMessageType.discover:
                 if (ev.data.sender === TabID.shared.current) {
@@ -38,40 +38,50 @@ export class Broadcast extends BroadcastChannel {
                 });
                 return;
             case BroadcastMessageType.discoverReply:
-                this.discoveredTabIds.add(ev.data.sender as string);
+                this.discoveredTabIDs.add(ev.data.sender as string);
                 return;
             case BroadcastMessageType.exit:
-                this.exitedTabIds.push(ev.data.sender);
+                this.exitedTabIDs.push(ev.data.sender);
                 return;
             case BroadcastMessageType.continue:
                 if (ev.data.target === TabID.shared.current) {
-                    this.#logger.debug("Continuing upon event");
+                    this.logger.debug("Continuing upon event");
                     window.dispatchEvent(new CustomEvent("ak-multitab-continue"));
                 }
                 return;
         }
     };
 
+    protected pageHideListener = () => {
+        this.akExitTab();
+    };
+
     constructor() {
         super(BROADCAST_CHANNEL_NAME);
-        this.addEventListener("message", this.#onMessage);
-        this.#logger = ConsoleLogger.prefix("mtab/broadcast");
+
+        this.addEventListener("message", this.messageListener);
+        window.addEventListener("pagehide", this.pageHideListener);
+
+        this.logger = ConsoleLogger.prefix("mtab/broadcast");
     }
 
     [Symbol.dispose]() {
-        this.removeEventListener("message", this.#onMessage);
+        this.removeEventListener("message", this.messageListener);
     }
 
     async akTabDiscover(): Promise<Set<string>> {
-        this.discoveredTabIds.clear();
+        this.discoveredTabIDs.clear();
+
         this.postMessage({
             type: BroadcastMessageType.discover,
             sender: TabID.shared.current,
         });
+
         await new Promise<void>((r) => {
             setTimeout(r, 20);
         });
-        return this.discoveredTabIds;
+
+        return this.discoveredTabIDs;
     }
 
     akResumeTab(tabId: string) {

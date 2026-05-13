@@ -1,0 +1,8 @@
+---
+services:
+  gen:
+    image: docker.io/openapitools/openapi-generator-cli:v7.20.0
+    restart: never
+    network_mode: none
+    volumes:
+      - ./:/local

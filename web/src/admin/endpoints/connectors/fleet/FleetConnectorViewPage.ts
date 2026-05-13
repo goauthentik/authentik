@@ -1,6 +1,7 @@
 import "#elements/Tabs";
-import "#components/events/ObjectChangelog";
-import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/events/ObjectChangelog";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/rbac/ObjectPermissionModal";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
 
@@ -11,12 +12,7 @@ import { AKElement } from "#elements/Base";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import {
-    EndpointsApi,
-    FleetConnector,
-    ModelEnum,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { EndpointsApi, FleetConnector, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -79,13 +75,11 @@ export class FleetConnectorViewPage extends AKElement {
                     <div class="pf-c-card__header">
                         <div class="pf-c-card__title">${msg("Schedules")}</div>
                     </div>
-                    <div class="pf-c-card__body">
-                        <ak-schedule-list
-                            .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
-                            .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
-                            .relObjId="${this.connector?.connectorUuid}"
-                        ></ak-schedule-list>
-                    </div>
+                    <ak-schedule-list
+                        .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
+                        .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
+                        .relObjId="${this.connector?.connectorUuid}"
+                    ></ak-schedule-list>
                 </div>
             </div>
             <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
@@ -93,13 +87,11 @@ export class FleetConnectorViewPage extends AKElement {
                     <div class="pf-c-card__header">
                         <div class="pf-c-card__title">${msg("Tasks")}</div>
                     </div>
-                    <div class="pf-c-card__body">
-                        <ak-task-list
-                            .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
-                            .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
-                            .relObjId="${this.connector?.connectorUuid}"
-                        ></ak-task-list>
-                    </div>
+                    <ak-task-list
+                        .relObjAppLabel=${FLEET_CONNECTOR_APP_LABEL}
+                        .relObjModel=${FLEET_CONNECTOR_MODEL_NAME}
+                        .relObjId="${this.connector?.connectorUuid}"
+                    ></ak-task-list>
                 </div>
             </div>
         </div> `;
@@ -128,13 +120,11 @@ export class FleetConnectorViewPage extends AKElement {
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.connector?.connectorUuid || ""}
-                            targetModelName=${this.connector?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
-                    </div>
+                    <ak-object-changelog
+                        targetModelPk=${this.connector?.connectorUuid || ""}
+                        targetModelName=${this.connector?.metaModelName || ""}
+                    >
+                    </ak-object-changelog>
                 </div>
             </div>
             <ak-rbac-object-permission-page
@@ -143,7 +133,7 @@ export class FleetConnectorViewPage extends AKElement {
                 slot="page-permissions"
                 id="page-permissions"
                 aria-label=${msg("Permissions")}
-                model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector}
+                model=${ModelEnum.AuthentikEndpointsConnectorsFleetFleetconnector}
                 objectPk=${this.connector.connectorUuid!}
             ></ak-rbac-object-permission-page>
         </ak-tabs> `;

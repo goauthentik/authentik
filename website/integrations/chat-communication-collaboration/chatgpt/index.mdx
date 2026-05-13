@@ -7,7 +7,7 @@ support_level: community
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-## What is ChatGPT
+## What is ChatGPT?
 
 > ChatGPT is OpenAI's conversational AI platform that provides chat-based assistance across the web and desktop applications.
 >
@@ -42,7 +42,7 @@ To support the integration of ChatGPT with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -56,7 +56,7 @@ To support the integration of ChatGPT with authentik, you need to create an appl
 ## ChatGPT configuration
 
 :::info Domain verification required
-ChatGPT only enables the **Manage SSO** wizard after you verify ownership of your domain in the ChatGPT admin console. Refer to the [OpenAI Domain Verification documentation](https://help.openai.com/en/articles/8871611-domain-verification) for more details .
+ChatGPT only enables the **Manage SSO** wizard after you verify ownership of your domain in the ChatGPT admin console. Refer to the [OpenAI Domain Verification documentation](https://help.openai.com/en/articles/8871611-domain-verification) for more details.
 :::
 
 1. Log in to ChatGPT as an administrator and navigate to the [Identity & Access page](https://chatgpt.com/admin/identity).
@@ -90,7 +90,7 @@ To support the integration of ChatGPT with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -109,7 +109,7 @@ To support the integration of ChatGPT with authentik, you need to create an appl
 ## ChatGPT configuration
 
 :::info Domain verification required
-ChatGPT only enables the **Manage SSO** wizard after you verify ownership of your domain in the ChatGPT admin console. Refer to the [OpenAI Domain Verification documentation](https://help.openai.com/en/articles/8871611-domain-verification) for more details .
+ChatGPT only enables the **Manage SSO** wizard after you verify ownership of your domain in the ChatGPT admin console. Refer to the [OpenAI Domain Verification documentation](https://help.openai.com/en/articles/8871611-domain-verification) for more details.
 :::
 
 1. Log in to ChatGPT as an administrator and navigate to the [Identity & Access page](https://chatgpt.com/admin/identity).
@@ -117,9 +117,9 @@ ChatGPT only enables the **Manage SSO** wizard after you verify ownership of you
 3. Complete the Custom SAML wizard:
     - **Provide an Identity Provider Name**: enter a descriptive name (e.g. `authentik`).
     - **Provide your SAML Configuration**:
-        - **Entity ID**: `authentik`
-        - **Sign-in URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-        - **Sign-out URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+        - **Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+        - **Sign-in URL**: `https://authentik.company/application/saml/<application_slug>/`
+        - **Sign-out URL**: `https://authentik.company/application/saml/<application_slug>/`
         - **X.509 Certificate**: paste the contents of your certificate file.
     - **Create an Application**: copy the **ACS URL** and **Audience** values that ChatGPT displays.
     - **Configure Application Link**: review the direct sign-in link that ChatGPT generates; share it with users if needed.

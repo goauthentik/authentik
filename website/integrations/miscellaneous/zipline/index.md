@@ -4,7 +4,7 @@ sidebar_label: Zipline
 support_level: community
 ---
 
-## What is Zipline
+## What is Zipline?
 
 > Zipline is a self-hostable file upload server designed for easy file sharing, supporting tools like ShareX and Flameshot, with features such as simplified setup and extensive customization options.
 >
@@ -32,7 +32,7 @@ To support the integration of Zipline with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: Select **OAuth2/OpenID Connect** as the provider type.
@@ -61,4 +61,4 @@ To support the integration of Zipline with authentik, you need to create an appl
 
 ## Configuration verification
 
-To verify integration with authentik, log out of Zipline by clicking your user icon in the top right and selecting **Logout**. A new button should now appear on the login page, allowing you to sign in with authentik.
+To verify integration with authentik, log out of Zipline by clicking your user icon in the top-right corner and selecting **Logout**. A new button should now appear on the login page, allowing you to sign in with authentik.

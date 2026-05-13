@@ -83,7 +83,10 @@ function formatContentTypePlaceholder(contentType: ContentTypeEnum): string {
 }
 
 @customElement("ak-lifecycle-rule-form")
-export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
+export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, LifecycleRule | null> {
+    public static override verboseName = msg("Lifecycle Rule");
+    public static override verboseNamePlural = msg("Lifecycle Rules");
+
     #targetSelectRef = createRef<SearchSelect<TargetObject>>();
     #reviewerGroupsSelectRef = createRef<SearchSelect<Group>>();
     #reviewerUsersSelectRef = createRef<SearchSelect<Group>>();
@@ -146,8 +149,8 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
         });
     }
 
-    protected override serialize(): LifecycleRule | null {
-        const result = super.serialize();
+    public override toJSON(): LifecycleRule | null {
+        const result = super.toJSON();
 
         if (!result) {
             return null;
@@ -231,7 +234,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                 ${this.renderReviewerGroupsSelection()}
             </ak-form-element-horizontal>
             <ak-number-input
-                label=${msg("Min reviewers")}
+                label=${msg("Minimum reviewers")}
                 min=${1}
                 name="minReviewers"
                 value="${this.instance?.minReviewers ?? 1}"
@@ -242,7 +245,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
             <ak-switch-input
                 name="minReviewersIsPerGroup"
                 ?checked=${this.instance?.minReviewersIsPerGroup ?? false}
-                label=${msg("Min reviewers is per-group")}
+                label=${msg("Minimum reviewers is per-group")}
                 .help=${msg(
                     html`If checked, approving a review will require at least that many users from
                         <em>each</em> of the selected groups. When disabled, the value is a total
