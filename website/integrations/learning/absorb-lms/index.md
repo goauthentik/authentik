@@ -74,7 +74,7 @@ To integrate authentik with Absorb LMS via OIDC, you will need to create an appl
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Absorb LMS, log out and then log back in via the myabsorb portal. You will be redirected to authentik, and once authenticated you will be logged in to the portal.
+To confirm that authentik is properly configured with Absorb LMS, log out and then log back in via the Absorb LMS user portal. You will be redirected to authentik, and once authenticated you will be logged in to the portal.
 
   </TabItem>
   <TabItem value="saml">
@@ -101,7 +101,7 @@ To integrate authentik with Absorb LMS via SAML, you will need to create an appl
 
 ## Absorb LMS configuration
 
-1. Log in to the Absorb LMS Admin Dashboard (company.myabsorb.com/admin/dashboard) as an administrator.
+1. Log in to the Absorb LMS Admin Dashboard (`company.myabsorb.com/admin/dashboard`) as an administrator.
 2. Click the account icon in the top right, and then click **Portal Settings**.
 3. In the right-hand sidebar, click **Manage SSO Settings**.
 4. Under **SSO Configurations**, click **Manage**, click **Add SSO Configuration**, and set the following values:
@@ -121,7 +121,7 @@ To integrate authentik with Absorb LMS via SAML, you will need to create an appl
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Absorb LMS, log out and then log back in via the myabsorb portal. You will be redirected to authentik, and once authenticated you will be logged in to the portal.
+To confirm that authentik is properly configured with Absorb LMS, log out and then log back in via the Absorb LMS user portal. You will be redirected to authentik, and once authenticated you will be logged in to the portal.
 
   </TabItem>
   <TabItem value="scim">
