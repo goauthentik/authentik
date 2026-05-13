@@ -117,6 +117,21 @@ export function reportAndExit(error, logger = ConsoleLogger) {
 
     if (cause) {
         logger.error(`Caused by: ${cause.message}`);
+
+        // `child_process.exec` attaches stdout/stderr to its rejection as
+        // sibling properties, but the default `message` is just
+        // `Command failed: <cmd>` and drops them. Surface them so the actual
+        // failure (e.g. EACCES on a read-only prefix) is visible.
+        const stdout = /** @type {{ stdout?: unknown }} */ (cause).stdout;
+        const stderr = /** @type {{ stderr?: unknown }} */ (cause).stderr;
+
+        if (typeof stdout === "string" && stdout.trim()) {
+            logger.error(`stdout:\n${stdout.trimEnd()}`);
+        }
+
+        if (typeof stderr === "string" && stderr.trim()) {
+            logger.error(`stderr:\n${stderr.trimEnd()}`);
+        }
     }
 
     process.exit(1);
