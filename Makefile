@@ -125,7 +125,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
+install: node-install web-install core-install  ## Install all requires dependencies for `node`, `web` and `core`
 
 dev-drop-db:
 	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
@@ -235,16 +235,18 @@ gen-dev-config:  ## Generate a local development config file
 # additions: each entry runs arbitrary code at install time.
 TRUSTED_INSTALL_SCRIPTS := esbuild chromedriver tree-sitter tree-sitter-json
 
-root-node-install:
+node-install:  ## Install the necessary libraries to build Node.js packages
 	npm ci
-
-node-install: root-node-install  ## Install the necessary libraries to build Node.js packages
-	npm ci --prefix web
-	npm rebuild --prefix web --ignore-scripts=false --foreground-scripts $(TRUSTED_INSTALL_SCRIPTS)
 
 #########################
 ## Web
 #########################
+
+web-install: ## Install the necessary libraries to build the Authentik UI
+	npm ci --prefix web
+
+web-postinstall:  ## Trigger postinstall scripts for packages with native bindings or binary downloads, which are blocked by default for security reasons.
+	npm rebuild --prefix web --ignore-scripts=false --foreground-scripts $(TRUSTED_INSTALL_SCRIPTS)
 
 web-build: node-install  ## Build the Authentik UI
 	npm run --prefix web build
