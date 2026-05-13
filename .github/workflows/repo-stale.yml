@@ -27,8 +27,6 @@ jobs:
           exempt-issue-labels: pinned,security,pr_wanted,enhancement,bug/confirmed,enhancement/confirmed,question,status/reviewing
           stale-issue-label: status/stale
           stale-issue-message: >
-            This issue has been automatically marked as stale because it has not had
-            recent activity. It will be closed if no further activity occurs. Thank you
-            for your contributions.
+            This issue has been automatically marked as stale because it has not had recent activity. It will be closed if no further activity occurs. Thank you for your contributions.
           # Don't stale PRs, so only apply to PRs with a non-existent label
           only-pr-labels: foo
