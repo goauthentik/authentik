@@ -20,6 +20,9 @@
     },
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
+    "yaml.format.printWidth": 200,
+    "yaml.format.singleQuote": true,
+    "yaml.format.bracketSpacing": false,
     "yaml.customTags": [
         "!Condition sequence",
         "!Context scalar",
