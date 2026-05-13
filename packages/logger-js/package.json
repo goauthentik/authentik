@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/logger-js",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Pino-based logger for authentik",
     "license": "MIT",
     "repository": {

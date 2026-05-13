@@ -70,7 +70,7 @@ For more configuration options and full details about integrating with Grafana, 
 
 ### 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-    **A.** In the Admin interface, navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
+**A.** In the Admin interface, navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
 
 :::tip About application and provider pairs
 Every application that you add to authentik requires a provider, which is used to configure the specific protocol between the application and authentik, for example OAuth2/OIDC, SAML, LDAP, or others.
@@ -91,9 +91,7 @@ Every application that you add to authentik requires a provider, which is used t
           policies bound to the application must pass in order for a user to have access to the
           application.
     - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the **My Applications** page: an optional icon, the publisher of the application, and a brief description.
-
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-
 - **Configure the Provider**:
     - **Name**: Provide a name (or accept the auto-provided name).
     - **Authorization flow**: Select the default `implicit` authorization flow to use for this provider.
@@ -102,11 +100,12 @@ Every application that you add to authentik requires a provider, which is used t
           [_stages_](../../add-secure-apps/flows-stages/stages/index.md) of authorization are
           defined and executed. The defined set of stages construct the workflows of authentication,
           authorization, etc.
-    - **Protocol settings** provide the following required configurations:
+    - **Protocol settings**: provide the following required configurations:
         - Note the **Client ID**, **Client Secret**, and **Slug** values because they will be required later when you configure Grafana to use authentik.
-        - Set a `Strict` redirect URI to `https://grafana.company/login/generic_oauth`.
-            - <strong className="tip">TIP</strong>: The Redirect URI is where the application will
-              go as soon as authentik's authorization flow is successfully completed.
+        - Set the **Redirect URI** as a `Strict` redirect to `https://grafana.company/login/generic_oauth`.
+            - <strong className="tip">TIP</strong>: The Redirect URI is where where a user is
+              directed to, as soon as authentik's authorization flow is successfully completed.
+    - **Grant Types** (required): Select at least one [grant type](../../add-secure-apps/providers/oauth2/#oauth-20-flows-and-grant-types) that the provider can use.
     - **Logout URI**: set to `https://grafana.company/logout`.
     - **Logout Method**: set to `Front-channel`.
         - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the
@@ -115,16 +114,14 @@ Every application that you add to authentik requires a provider, which is used t
         - <strong className="tip">TIP</strong>: authentik generates a key that you can use, called
           the `authentik Self-signed Certificate`, if you do not have a specific signing key for an
           application.
-
 - **Configure Bindings** _(optional)_: for this tutorial, skip this step because you do not yet have a user. Later, after you create your first user, you can [create a binding](../../add-secure-apps/bindings-overview/work-with-bindings.md) to manage the display and access to applications on a user's **My applications** page.
     - <strong className="tip">TIP</strong>: By creating a binding between an application and a
       specific user, you are ensuring that the application is accessible only to that user and any
       other users or groups for whom you created a binding. Learn more about how bindings are used
-      in authentik in our [Bindings overview](../../add-secure-apps/bindings-overview/index.md).
+      in authentik in our [Bindings overview](../../add-secure-apps/bindings-overview/index.md). For
+      any fields not mentioned above, you can leave the default value.
 
-    For any fields not mentioned above, you can leave the default value.
-
-**C.** Click **Submit** to save the new application and provider.
+**C.** Click **Create Application** to save the new application and provider.
 
 ### 2. Configure Grafana to use authentik as its IdP
 
@@ -167,24 +164,24 @@ Now that you can access the authentik Admin interface, and you have added an app
 
 ### 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-    **A.** Navigate to **Directory > Users**, and click **New User**.
+    **A.** Navigate to **Directory > Users**, click **New User**, and then select **Internal User**..
 
-    **B.** Fill in the **_required_** fields:
+    **B.** Fill in all **_required_** fields:
 
     - **Username**: This value must be unique across all users.
-    - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the default because most applications
-          (including Grafana) do not support back-channel logout.
-    - **Path**: The path where the user will be created. By default the new user is created in the `users` directory, but you can change that later by editing the user.
-        - <strong className="tip">TIP</strong>: Paths are basically directories that are used to organize your users (for example HR vs Sales, etc.). Paths do not impact access; they are purely organizational. Note that the top-level **users** directory displays all users in that directory and all sub-directories.
+    - **Display Name** (_optional_): The display name of the user.
+    - **Email** (_optional_): The email address of the user. Email addresses are used in [email stages](../../add-secure-apps/flows-stages/stages/email/index.md), as an alternative method to log in, by services to request an email address, and if configured, to receive [notifications](../../sys-mgmt/events/notifications.md).
+    - **Active** (_optional_): Define if the newly created user account is active. Selected by default.
+    - **Path**: The path where the user will be created. By default the new user is created in the `users` folder, but you can change that later by editing the user.
+        - <strong className="tip">TIP</strong>: Paths are directories that are used to organize your
+          users (for example HR vs Sales, etc.). Paths do not impact access; they are purely
+          organizational. Note that the top-level **users** folder displays all users in that folder
+          and all sub-folders.
+    - **Attributes** (_optional_): [Custom attributes](../../users-sources/user/user_ref.mdx) for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 
-    For information about the **_optional_** fields below, refer to our [documentation on managing users](../../users-sources/user/user_basic_operations.md#create-a-user).
+C. Click **Create**.
 
-    - **Name**: The display name of the user.
-    - **Email**: The email address of the user. This is required for many integrations.
-    - **Is active**: Define the newly created user account as active.
-    - **Attributes**: You can leave this empty for this tutorial. This field can be used to store custom attributes for the user, in YAML or JSON format. These attributes can then be used within property mappings and policies.
-
-    **C.** Click **Create User**.
+For more information refer to our [documentation on managing users](../../users-sources/user/user_basic_operations.md#create-a-user).
 
 ### 2. Verify that the new user was created
 

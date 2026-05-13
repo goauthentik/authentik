@@ -10,7 +10,15 @@ To add an application to authentik and have it display on users' **My applicatio
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard. Alternatively, you can first create a provider separately, then create the application and connect it to the provider.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+
+:::info
+By default, if you click **New Application**, you are prompted to create the new application and a new provider. However, you can use the drop-down menu beside **New Application** to explicitly select either:
+
+    - **with New Provider...** to create the application and configure a new provider at the same time.
+    - **with Existing Provider...** if you have already created a provider separately, and now you want to create the application and connect it to the provider.
+
+:::
 
 3. In the **New application** box, define the application details, the provider type and configuration settings, and bindings for the application.
     - **Application**: provide a name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -21,7 +29,7 @@ To add an application to authentik and have it display on users' **My applicatio
 
     - **Configure Bindings**: to manage which applications a user can view and access via their **My applications** page, you can optionally create a [binding](../bindings-overview/index.md) between the application and a specific policy, group, or user. Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [policy-driven authorization](#policy-driven-authorization), [using application entitlements](../applications/manage_apps.mdx#create-an-application-entitlement) and [hiding an application](#hide-applications).
 
-4. On the **Review and Submit Application** panel, review the configuration for the new application and its provider, and then click **Submit**.
+4. On the **Review and Submit Application** panel, review the configuration for the new application and its provider, and then click **Create Application**.
 
 ## Use bindings to control access
 
