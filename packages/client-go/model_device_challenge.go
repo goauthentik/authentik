@@ -23,7 +23,7 @@ var _ MappedNullable = &DeviceChallenge{}
 // DeviceChallenge Single device challenge
 type DeviceChallenge struct {
 	DeviceClass          DeviceClassesEnum      `json:"device_class"`
-	DeviceUid            string                 `json:"device_uid"`
+	DeviceUid            NullableString         `json:"device_uid"`
 	Challenge            map[string]interface{} `json:"challenge"`
 	LastUsed             NullableTime           `json:"last_used"`
 	Uid                  string                 `json:"uid"`
@@ -36,7 +36,7 @@ type _DeviceChallenge DeviceChallenge
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDeviceChallenge(deviceClass DeviceClassesEnum, deviceUid string, challenge map[string]interface{}, lastUsed NullableTime, uid string) *DeviceChallenge {
+func NewDeviceChallenge(deviceClass DeviceClassesEnum, deviceUid NullableString, challenge map[string]interface{}, lastUsed NullableTime, uid string) *DeviceChallenge {
 	this := DeviceChallenge{}
 	this.DeviceClass = deviceClass
 	this.DeviceUid = deviceUid
@@ -79,27 +79,29 @@ func (o *DeviceChallenge) SetDeviceClass(v DeviceClassesEnum) {
 }
 
 // GetDeviceUid returns the DeviceUid field value
+// If the value is explicit nil, the zero value for string will be returned
 func (o *DeviceChallenge) GetDeviceUid() string {
-	if o == nil {
+	if o == nil || o.DeviceUid.Get() == nil {
 		var ret string
 		return ret
 	}
 
-	return o.DeviceUid
+	return *o.DeviceUid.Get()
 }
 
 // GetDeviceUidOk returns a tuple with the DeviceUid field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DeviceChallenge) GetDeviceUidOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.DeviceUid, true
+	return o.DeviceUid.Get(), o.DeviceUid.IsSet()
 }
 
 // SetDeviceUid sets field value
 func (o *DeviceChallenge) SetDeviceUid(v string) {
-	o.DeviceUid = v
+	o.DeviceUid.Set(&v)
 }
 
 // GetChallenge returns the Challenge field value
@@ -187,7 +189,7 @@ func (o DeviceChallenge) MarshalJSON() ([]byte, error) {
 func (o DeviceChallenge) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["device_class"] = o.DeviceClass
-	toSerialize["device_uid"] = o.DeviceUid
+	toSerialize["device_uid"] = o.DeviceUid.Get()
 	toSerialize["challenge"] = o.Challenge
 	toSerialize["last_used"] = o.LastUsed.Get()
 	toSerialize["uid"] = o.Uid

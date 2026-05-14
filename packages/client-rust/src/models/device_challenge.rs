@@ -15,8 +15,8 @@ use crate::models;
 pub struct DeviceChallenge {
     #[serde(rename = "device_class")]
     pub device_class: models::DeviceClassesEnum,
-    #[serde(rename = "device_uid")]
-    pub device_uid: String,
+    #[serde(rename = "device_uid", deserialize_with = "Option::deserialize")]
+    pub device_uid: Option<String>,
     #[serde(rename = "challenge")]
     pub challenge: std::collections::HashMap<String, serde_json::Value>,
     #[serde(rename = "last_used", deserialize_with = "Option::deserialize")]
@@ -29,7 +29,7 @@ impl DeviceChallenge {
     /// Single device challenge
     pub fn new(
         device_class: models::DeviceClassesEnum,
-        device_uid: String,
+        device_uid: Option<String>,
         challenge: std::collections::HashMap<String, serde_json::Value>,
         last_used: Option<String>,
         uid: String,

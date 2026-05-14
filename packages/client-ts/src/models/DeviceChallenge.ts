@@ -32,7 +32,7 @@ export interface DeviceChallenge {
      * @type {string}
      * @memberof DeviceChallenge
      */
-    deviceUid: string;
+    deviceUid: string | null;
     /**
      *
      * @type {{ [key: string]: any; }}
