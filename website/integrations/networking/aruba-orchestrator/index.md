@@ -57,7 +57,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
 
 4. Navigate to **Applications** > **Providers** > **Provider for _Application Name_**, and download the signing certificate.
 
-## Aruba Orchestrator Configuration
+## Aruba Orchestrator configuration
 
 1. Log in to the Aruba Orchestrator.
 2. Create a new Remote Authentication Server under **Orchestrator** > **Authentication** > **Add New Server**.

@@ -54,18 +54,18 @@ You may have different settings for some of the group and role mapping for advan
 
 In Rocket.chat, follow the procedure below:
 
-1. Log in as a System Administrator, click on your avatar, and choose _Administration_
+1. Log in as a System Administrator, click your avatar, and choose **Administration**
 
-2. Scroll down and click on _OAuth_
+2. Scroll down and click **OAuth**
 
-3. In the top right corner, click _Add custom oauth_
+3. In the top-right corner, click **Add custom OAuth**
 
-4. Give your new oauth the name of _Authentik_, then click _Send_
+4. Give your new oauth the name of _Authentik_, then click **Send**
 
 ![](./rocketchat6.png)
 
 5. Scroll down to the new OAuth application, expand the dropdown, and enter the following settings:
-    - Enable: Turn the radio button to the _on_ position
+    - Enable: Turn the radio button to the **on** position
     - URL: https://authentik.company/application/o
     - Token Path: /token/
     - Token Sent Via: Payload
@@ -87,8 +87,8 @@ In Rocket.chat, follow the procedure below:
     - Roles/Groups field name: groups
     - Roles/Groups field for channel mapping: groups
     - User Data Group Map: rocket.cat
-    - Merge users: Turn the radio button to the _on_ position
-    - Show Button on Login Page: Turn the radio button to the _on_ position
+    - Merge users: Turn the radio button to the **on** position
+    - Show Button on Login Page: Turn the radio button to the **on** position
 
     ![](./rocketchat7.png)
 
@@ -98,9 +98,9 @@ In Rocket.chat, follow the procedure below:
 
     ![](./rocketchat10.png)
 
-6. Click _Save changes_ in the top right corner of the screen
+6. Click _Save changes_ in the top-right corner of the screen
 
-### Step 4 (Optional)
+### Step 4 (optional)
 
 :::info
 By default, Rocket.chat will attempt to use two-factor authentication with any new user coming in to the system and allows users to change their information

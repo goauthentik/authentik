@@ -95,7 +95,7 @@ Variables to set
 
 The `SAML_IDP_X509CERT` is the certificate in the SAML Metadata `X509Certificate` key.
 
-Should you wish to only allow registration and login through Authentik, you should set the following variables as well.
+Should you wish to only allow registration and login through authentik, you should set the following variables as well.
 
 - REGISTRATION_OPEN: `0`
 - REGISTRATION_ALLOW_BACKENDS: `saml`

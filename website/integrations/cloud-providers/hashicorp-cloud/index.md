@@ -22,15 +22,15 @@ This documentation lists only the settings that you need to change from their de
 
 ## HashiCorp Cloud preparation
 
-Login in under https://portal.cloud.hashicorp.com. Navigate to the _Settings_ entry in the sidebar, then _SSO_. Enable SSO and configure domain verification for the domain your users email have.
+Log in at https://portal.cloud.hashicorp.com. Navigate to the _Settings_ entry in the sidebar, then _SSO_. Enable SSO and configure domain verification for the domain that your users' email addresses use.
 
 Under _Initiate SAML integration_, copy _SSO Sign-On URL_ and _Entity ID_.
 
-## authentik Configuration
+## authentik configuration
 
 To support the integration of HashiCorp Cloud with authentik, you need to create an application/provider pair in authentik.
 
-### Create an Application and Provider in authentik
+### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application**.

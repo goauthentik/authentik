@@ -110,14 +110,14 @@ To support the integration of authentik with Elastic Cloud, you need to claim yo
 
 ### Claim your email domain
 
-1. Log in to Elastic Cloud as an administrator. Click your organization menu in the top right, select **Organization**, and click **Security** in the bottom left.
+1. Log in to Elastic Cloud as an administrator. Click your organization menu in the top-right corner, select **Organization**, and click **Security** in the bottom-left corner.
 2. Under **Domains**, click **Add domain** and enter `example.com`.
 3. Add the DNS TXT record provided by Elastic, `_elastic_domain_challenge.example.com`, to your DNS provider's configuration.
 4. Return to Elastic Cloud and click **Verify and add domain**.
 
 ### Configure SSO
 
-1. Log in to Elastic Cloud as an administrator. Click your organization menu in the top right, select **Organization**, and click **Security** in the bottom left. From there, click **Configure SSO**.
+1. Log in to Elastic Cloud as an administrator. Click your organization menu in the top-right corner, select **Organization**, and click **Security** in the bottom-left corner. From there, click **Configure SSO**.
 2. Configure the following settings:
     - **Identity Provider Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **Identity Provider SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
@@ -143,9 +143,9 @@ To support the integration of authentik with Elastic Cloud, you need to claim yo
 
 ### Enforce SAML SSO _(optional)_
 
-1. Log out of Elastic Cloud (click your icon in the top right, then click **Log out**).
+1. Log out of Elastic Cloud (click your icon in the top-right corner, then click **Log out**).
 2. On the login page, choose **SSO**, enter an email address that matches your claimed domain, and click **Log in**.
-3. After you sign in, click your organization menu in the top right, select **Organization**, and click **Security** in the bottom left.
+3. After you sign in, click your organization menu in the top-right corner, select **Organization**, and click **Security** in the bottom-left corner.
 4. Click **Configure SSO** and toggle **Enforce SAML SSO**.
 
 ### Configure role mappings
@@ -165,8 +165,8 @@ Elastic Cloud requires the first role mapping in a SAML SSO configuration to inc
 
 Elastic Cloud requires the **Organization owner** role to be mapped to a value present in the SAML `groups` attribute before the role mapping can be saved.
 
-:::caution IdP initiated sign in not supported
-Elastic Cloud does not support IdP-initiated SSO. Use the Elastic **SSO Login URL** to start sign-in.
+:::caution IdP-initiated sign-in is not supported
+Elastic Cloud does not support IdP-initiated SSO. Use the Elastic **SSO login URL** to start sign-in.
 :::
 
 ## Configuration verification

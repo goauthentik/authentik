@@ -77,8 +77,8 @@ Bitwarden requires a first and last name for every user. However, authentik, by 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to:
-            - `https://sso.bitwarden.com/oidc-signin` for Non-EU based SaaS Bitwarden.
-            - `https://sso.bitwarden.eu/oidc-signin` for EU based SaaS Bitwarden.
+            - `https://sso.bitwarden.com/oidc-signin` for non-EU-based SaaS Bitwarden.
+            - `https://sso.bitwarden.eu/oidc-signin` for EU-based SaaS Bitwarden.
             - `https://bitwarden.company/oidc-signin` for self-hosted Bitwarden.
         - Select any available signing key.
         - Under **Advanced protocol settings**, **Selected Scopes**:
@@ -133,7 +133,7 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 
 ## Bitwarden configuration
 
-1. Log in to the [Bitwarden dashboard](https://vault.bitwarden.com/#/login) as an administrator (select `Accessing: bitwarden.eu` for EU based Bitwarden accounts). For self-hosted Bitwarden use `https://bitwarden.company/#/login`.
+1. Log in to the [Bitwarden dashboard](https://vault.bitwarden.com/#/login) as an administrator (select `Accessing: bitwarden.eu` for EU-based Bitwarden accounts). For self-hosted Bitwarden use `https://bitwarden.company/#/login`.
 2. In the sidebar, navigate to **Admin Console** > **Settings** > **Single sign-on**, and enter the following settings:
     - **Allow SSO authentication**: Select this option.
     - **SSO Identifier**: enter a globally unique SSO identifier (this is not required if using self-hosted Bitwarden, or if you have claimed a domain, see the [Bitwarden Claimed Domains documentation](https://bitwarden.com/help/claimed-domains/)).
@@ -162,9 +162,9 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Bitwarden, log out and go to the [Bitwarden login page](https://vault.bitwarden.com/#/login) (select `Accessing: bitwarden.eu` for EU based Bitwarden accounts or use `https://bitwarden.company/#/login` for self-hosted Bitwarden).
+To confirm that authentik is properly configured with Bitwarden, log out and go to the [Bitwarden login page](https://vault.bitwarden.com/#/login) (select `Accessing: bitwarden.eu` for EU-based Bitwarden accounts or use `https://bitwarden.company/#/login` for self-hosted Bitwarden).
 
-Enter the email address of a Bitwarden account and click **Use single sign-on**. If you haven't claimed the email domain in Bitwarden, enter the unique SSO identifier that you selected, and click **Continue**. You should be redirected to authentik to login, once successful you should be redirected to the Bitwarden dashboard.
+Enter the email address of a Bitwarden account and click **Use single sign-on**. If you haven't claimed the email domain in Bitwarden, enter the unique SSO identifier that you selected, and click **Continue**. You should be redirected to authentik to log in. After successfully logging in, you should be redirected to the Bitwarden dashboard.
 
 :::info
 Depending on your `Member decryption options` setting, which is set in Bitwarden via **Admin Console** > **Settings** > **Single sign-on**, you may still be required to enter your master password after signing in via SSO.

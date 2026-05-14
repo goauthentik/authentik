@@ -54,13 +54,13 @@ To support the integration of SeaTable with authentik, you need to create an app
 
 ## SeaTable configuration
 
-To support the integration of authentik with SeaTable you need to configure certificates and then enable SAML authentication.
+To support the integration of authentik with SeaTable, you need to configure certificates and then enable SAML authentication.
 
-### Setup required certificates
+### Set up required certificates
 
 SeaTable requires the signing certificate from authentik and its own signing certificate. Follow these steps to configure the required certificates on your SeaTable deployment:
 
-1. Connect to your SeaTable server or exec in to the shell of your SeaTable container.
+1. Connect to your SeaTable server or exec into the shell of your SeaTable container.
 2. Create a `/opt/seatable-server/certs` directory and navigate to it.
 3. Copy the signing certificate that you downloaded from authentik to this directory and name it `idp.crt`.
 4. Generate a certificate and key with the following command:
@@ -101,7 +101,7 @@ Restart the SeaTable service or Docker container to apply the changes.
 
 ## Configuration verification
 
-To confirm that authentik is integrated correctly with SeaTable, log out, then navigate to the SeaTable login page, then click **Single Sign-On**. You should be redirected to authentik to log in, and if successful, redirected to SeaTable.
+To confirm that authentik is integrated correctly with SeaTable, log out, navigate to the SeaTable login page, and then click **Single Sign-On**. You should be redirected to authentik to log in, and if successful, redirected to SeaTable.
 
 :::info Troubleshooting
 Check `opt/seatable-server/seatable/logs/dtable_web.log` for troubleshooting info if authentication fails.

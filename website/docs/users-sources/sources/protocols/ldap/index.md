@@ -45,7 +45,7 @@ If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enab
     When the **Sync users** and/or the **Sync groups** options are enabled, their respective property mapping options must have at least one mapping selected, otherwise the sync will not start.
     :::
 
-#### Additional Settings
+#### Additional settings
 
 - **Parent Group**: Parent group for all the groups imported from LDAP. An example use case would be to import Active Directory groups under a root `imported-from-ad` group.
 - **User path**: Path template for all new users created.

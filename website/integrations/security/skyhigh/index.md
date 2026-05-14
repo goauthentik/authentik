@@ -10,11 +10,11 @@ support_level: community
 >
 > -- https://www.skyhighsecurity.com/en-us/about.html
 
-## Multiple Integration Points
+## Multiple integration points
 
 Skyhigh has multiple points for SAML integration:
 
-- Dashboard Administrator login - Allows you to manage the Skyhigh Security dashboard
+- Dashboard administrator login - allows you to manage the Skyhigh Security dashboard
 - Web Gateway and Private Access - Authenticates for Internet access and ZTNA/Private Access
 
 The following placeholder will be used throughout this document.
@@ -25,11 +25,11 @@ The following placeholder will be used throughout this document.
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## Integration for Dashboard Administrator login
+## Integration for dashboard administrator login
 
 ### Configure Skyhigh Security
 
-While logged in to your Skyhigh Security Dashboard, click the configuration gear and navigate to **User Management > SAML Configuration > Skyhigh Cloud Users** tab
+While logged in to your Skyhigh Security Dashboard, click the configuration gear and navigate to the **User Management > SAML Configuration > Skyhigh Cloud Users** tab.
 
 Under the `Identity Provider` section enter the following values:
 
@@ -52,7 +52,7 @@ In the authentik admin interface, navigate to **Applications > Providers**. Crea
 - Audience: Enter the Audience URL provided by the Skyhigh Dashboard above
 - Signing certificate: Select the certificate you uploaded to Skyhigh above
 - Property mappings: Select all default mappings.
-- NameID Property Mapping: `Authentik default SAML Mapping: Email`
+- NameID Property Mapping: `authentik default SAML Mapping: Email`
 
 Create an application linked to this new provider and use the slug name you used in the Skyhigh section above.
 
@@ -74,7 +74,7 @@ Create an application linked to this new provider and note the name of its slug.
 
 While logged in to your Skyhigh Security Dashboard, click the configuration gear and navigate to **Infrastructure > Web Gateway Setup**.
 
-Under the `Setup SAML` section click the `New SAML` button.
+Under the **Setup SAML** section, click the **New SAML** button.
 
 Configure your SAML provider as follows:
 

@@ -21,7 +21,7 @@ This documentation lists only the settings that you need to change from their de
 
 For additional information about integrating with Slack, refer to their [documentation](https://slack.com/help/docs/205168057-Custom-SAML-single-sign-on).
 
-## SAML Login Integration
+## SAML login integration
 
 ### authentik configuration
 
@@ -70,7 +70,7 @@ To support the integration of Slack with authentik, you need to create an applic
 4. Optionally, configure the other settings and customize the Sign in button label.
 5. Click **Save**.
 
-## SCIM Integration _(optional)_
+## SCIM integration _(optional)_
 
 You can configure SCIM with Slack to automatically provision new Slack accounts whenever a new user is added to authentik.
 

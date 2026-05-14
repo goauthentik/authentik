@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik Configuration
+## authentik configuration
 
 Create an application in authentik and note the slug, as this will be used later. Set the _Launch URL_ to `https://mail.google.com/a/example.com`.
 
@@ -37,7 +37,7 @@ Copy the values of _SSO URL (Redirect)_ and _SLO URL (Redirect)_ fields from the
 
 Click the _Download_ button next to the _Download signing certificate_ label.
 
-## Google Workspace Configuration
+## Google Workspace configuration
 
 Log in to the Google Workspace Admin portal by navigating to https://admin.google.com/, and authenticating with a super-admin account.
 

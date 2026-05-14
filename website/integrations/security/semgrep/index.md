@@ -48,7 +48,7 @@ This documentation lists only the settings that you need to change from their de
 ## Semgrep configuration
 
 1. Log in to Semgrep Cloud platform as an administrator.
-2. Click **Settings** on bottom left corner.
+2. Click **Settings** in the bottom-left corner.
 3. Navigate to **Access** > **Login methods**.
 4. Locate the Single sign-on entry, click **Add SSO configuration**, and select **SAML2 SSO** from the drop-down.
 5. Fill in the following:

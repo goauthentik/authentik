@@ -65,7 +65,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ## FortiGate configuration
 
-### Setup SAML SP
+### Set up SAML SP
 
 1. SSH into the FortiGate (if you are using vdom, change to the correct vdom).
 2. The configuration will be written to `/data/config/config.conf`. Copy and paste the following configuration, replacing the placeholders with your values:

@@ -20,7 +20,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## SAML Configuration
+## SAML configuration
 
 ### Prerequisites
 
@@ -30,7 +30,7 @@ This documentation lists only the settings that you need to change from their de
 IAM Identity Center needs a user pre-provisioned manually or via SCIM. Accounts are not created upon login.
 :::
 
-### Download AWS service Provider metadata file
+### Download AWS service provider metadata file
 
 1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
 2. Navigate to **IAM Identity Center** > **Settings** > **Identity Source**.
@@ -67,7 +67,7 @@ The NameID field of type email is matched in AWS against the AWS username attrib
 
 #### Download metadata file
 
-1. Log into authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created AWS provider.
 3. Under **Related objects** > **Metadata**, click **Download**. This metadata file will be required in the next section.
 
@@ -78,14 +78,14 @@ The NameID field of type email is matched in AWS against the AWS username attrib
 3. Click **Next**.
 4. Type `ACCEPT` in the **Confirm that you want to change your identity source by entering ACCEPT in the field below.** field and click **Add/Change Identity Provider**.
 
-## SCIM Configuration (optional)
+## SCIM configuration (optional)
 
 ### Prerequisites
 
 - Completed IAM Identity Center (SAML) setup.
 
-:::info SCIM Provisioning Limitation
-SCIM Provisioning is only supported in conjunction with IAM Identity Center, not [Classic IAM](../aws-classic/index.mdx).
+:::info SCIM provisioning limitation
+SCIM provisioning is only supported in conjunction with IAM Identity Center, not [Classic IAM](../aws-classic/index.mdx).
 :::
 
 ### Enable automatic provisioning in AWS
@@ -145,7 +145,7 @@ To support the integration of AWS with authentik using SCIM, you need to create 
 7. Set **Backchannel providers** to the AWS SCIM provider that you just created.
 8. Click **Update**.
 
-The SCIM provider will automatically sync when users, groups, or memberships change. You can manually sync from SCIM provider page.
+The SCIM provider will automatically sync when users, groups, or memberships change. You can manually sync from the SCIM provider page.
 
 ## Resources
 

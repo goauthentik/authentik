@@ -45,7 +45,7 @@ To support the integration of AWX Tower with authentik, you need to create an ap
 
 3. Click **Submit** to save the new application and provider.
 
-## AWX Configuration
+## AWX configuration
 
 Navigate to `https://awx.company/#/settings/auth` to configure SAML. Set the Field `SAML SERVICE PROVIDER ENTITY ID` to `awx`.
 

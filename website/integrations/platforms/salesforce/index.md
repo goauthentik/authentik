@@ -130,13 +130,13 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 3. Select **Standard** for the provisioning type.
 4. Click **Save**.
 
-## Salesforce as an OAuth Source
+## Salesforce as an OAuth source
 
 You can configure Salesforce as an OAuth source to allow users to log in to authentik using their Salesforce credentials. Optionally, this can be used alongside [SCIM provisioning](#scim-provisioning-optional) to keep your Salesforce users in sync with your authentik users.
 
 ### Salesforce configuration
 
-#### Create a Connected App
+#### Create a connected app
 
 1. Log in to your Salesforce organization as an administrator.
 2. Navigate to **Setup** and search for **App Manager**.
@@ -155,7 +155,7 @@ You can configure Salesforce as an OAuth source to allow users to log in to auth
     - Check **Require Proof Key for Code Exchange (PKCE) Extension for Supported Authorization Flows**.
 6. Click **Save**.
 
-#### Configure Client Credentials Flow _(required for SCIM with OAuth)_
+#### Configure client credentials flow _(required for SCIM with OAuth)_
 
 If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth authentication:
 
@@ -166,7 +166,7 @@ If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth a
     - Set **Run As** to an admin user that has permissions to manage users.
 5. Click **Save**.
 
-#### Get the Consumer Key and Secret
+#### Get the consumer key and secret
 
 1. Navigate to **Setup** > **External Client App Manager**.
 2. Find your Connected App and open it.
@@ -175,7 +175,7 @@ If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth a
 
 ### authentik configuration
 
-#### Create an OAuth Source
+#### Create an OAuth source
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login** and click **Create**.

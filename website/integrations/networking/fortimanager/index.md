@@ -39,7 +39,7 @@ To support the integration of FortiManager with authentik, you need to create an
 
 3. Click **Submit** to save the new application and provider.
 
-## FortiManager Configuration
+## FortiManager configuration
 
 1. Navigate to `https://fortimanager.company/p/app/#!/sys/sso_settings` and select **SAML SSO Settings** to configure SAML.
 2. Under **Single Sign-On Mode**, choose **Service Provider (SP)** to enable SAML authentication.

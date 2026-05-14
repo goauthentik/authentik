@@ -48,7 +48,7 @@ To support the integration of Terraform with authentik, you need to create an ap
 ## Terraform Cloud configuration
 
 1. Log in to [Terraform Cloud](https://app.terraform.io) as an administrator.
-2. Select your organization from the dropdown menu in the top left, then click **Settings** > **SSO**.
+2. Select your organization from the drop-down menu in the top-left corner, then click **Settings** > **SSO**.
 3. Click **Setup SSO**, click **SAML**, then **Next**, and set the **Metadata URL** to the URL copied in the previous step.
 4. Click **Save Settings**.
 5. Under **HCP Terraform**, take note of the **Entity ID (Audience)** and **Assertion Consumer URL** values. Do not close this window.
@@ -61,7 +61,7 @@ To support the integration of Terraform with authentik, you need to create an ap
 4. Under **Protocol settings**, set the value of the **ACS URL** to the **Assertion Consumer URL** value from the previous step. Then, set the value of the **Audience** to the **Entity ID (Audience)** value from the previous step.
 5. Click **Update**.
 
-## Enabling Terraform Cloud SSO
+## Enable Terraform Cloud SSO
 
 1. In Terraform Cloud, under **Settings** > **SSO**, click **Test**. Successfully authenticating will result in a green checkmark and **Successful** appearing. Then, to enable SSO, click **Enable**.
 2. Read the warning message that appears and click **Enable SAML**.

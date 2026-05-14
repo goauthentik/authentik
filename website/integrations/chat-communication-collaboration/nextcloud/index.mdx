@@ -296,9 +296,9 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
 
 ## Nextcloud configuration
 
-1. Log in to Nextcloud as an administrator and navigate to **Apps** by clicking your profile picture in the top right corner.
+1. Log in to Nextcloud as an administrator and navigate to **Apps** by clicking your profile picture in the top-right corner.
 2. Under **App bundles**, install the **SSO & SAML authentication** bundle.
-3. Click your profile picture in the top right corner and select **Administrative settings**. Under **SSO & SAML authentication**, click **Use built-in SAML authentication**.
+3. Click your profile picture in the top-right corner and select **Administrative settings**. Under **SSO & SAML authentication**, click **Use built-in SAML authentication**.
 4. In the **General** section, set:
     - **Attribute to map the UID to**: `http://schemas.goauthentik.io/2021/02/saml/uid`
     - **Optional display name**: `authentik`
@@ -381,11 +381,11 @@ This documentation lists only the settings that you need to change from their de
     - On the **LDAP/AD integration** tab:
         - Uncheck **LDAP/AD Username**.
         - Set **Other Attributes** to `cn`.
-        - Click **Expert** in the top right corner and enter these settings:
+        - Click **Expert** in the top-right corner and enter these settings:
             - **Internal Username Attribute**: `uid`
             - **UUID Attribute for Users**: `uid`
             - **UUID Attribute for Groups**: `gidNumber`
-        - Click **Advanced** in the top right corner and enter these settings:
+        - Click **Advanced** in the top-right corner and enter these settings:
             - Under **Connection Settings**:
                 - **Configuration Active**: checked
             - Under **Directory Settings**:

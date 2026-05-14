@@ -51,7 +51,7 @@ To support the integration of FortiGate with authentik, you need to create an ap
 
 3. Click **Submit** to save the new application and provider.
 
-## FortiGate Configuration
+## FortiGate configuration
 
 To integrate FortiGate with authentik, navigate to `https://fortigate.company/ng/system/certificate` and import the certificate you configured in the previous section.
 

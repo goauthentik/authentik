@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Knocknoc?
 
-> Knocknoc links your single-sign on experience to existing network access controls. It can dynamically orchestrate network access controls (e.g., managing firewall rules in real-time without exposing target machines) or function as an identity-aware gateway.
+> Knocknoc links your single sign-on experience to existing network access controls. It can dynamically orchestrate network access controls (e.g., managing firewall rules in real-time without exposing target machines) or function as an identity-aware gateway.
 >
 > -- https://knocknoc.io/
 
@@ -79,7 +79,7 @@ This example sets the session duration to 540 minutes. Change the value to match
     - **ACS URL**: `https://knocknoc.company/api/saml/acs`
     - **Service Provider Binding**: `Post`
     - **Audience**: `https://knocknoc.company/api/saml/metadata`
-    - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `Authentik default SAML Mapping: Username`.
+    - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

@@ -32,9 +32,9 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik Configuration
+## authentik configuration
 
-### Step 1 - Service account
+### Step 1: Service account
 
 In authentik, create a service account (under _Directory/Users_) for Snipe-IT to use as the LDAP Binder and take note of the password generated.
 
@@ -44,42 +44,42 @@ In this example, we'll use `snipeit-user` as the Service account's username
 If you didn't keep the password, you can copy it from _Directory/Tokens & App password_.
 :::
 
-### Step 2 - LDAP Provider
+### Step 2: LDAP provider
 
-In authentik, create a LDAP Provider (under _Applications/Providers_) with these settings :
+In authentik, create an LDAP provider (under _Applications/Providers_) with these settings:
 
-- Name : Snipe IT-LDAP
-- Bind DN : `DC=ldap,DC=goauthentik,DC=io`
-- Certificate : `authentik Self-signed Certificate`
+- Name: Snipe IT-LDAP
+- Bind DN: `DC=ldap,DC=goauthentik,DC=io`
+- Certificate: `authentik Self-signed Certificate`
 
-### Step 3 - Application
+### Step 3: Application
 
-In authentik, create an application (under _Resources/Applications_) with these settings :
+In authentik, create an application (under _Resources/Applications_) with these settings:
 
 - Name: Snipe IT-LDAP
 - Slug: snipe-it-ldap
 - Provider: Snipe IT-LDAP
 
-### Step 4 - Outpost
+### Step 4: Outpost
 
 In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` that uses the LDAP Application you created in _Step 3_.
 
 - Name: LDAP
 - Type: LDAP
 
-## Snipe-IT LDAP Setup
+## Snipe-IT LDAP setup
 
-Configure Snipe-IT LDAP settings by going to settings (the gear icon), and selecting `LDAP`
+Configure Snipe-IT LDAP settings by going to settings (the gear icon), and selecting `LDAP`.
 
-Change the following fields
+Change the following fields:
 
 - LDAP Integration: **Checked**
 - LDAP Password Sync: **Checked**
-- Active Directory : **Unchecked**
+- Active Directory: **Unchecked**
 - LDAP Client-Side TLS Key: (taken from authentik)
 - LDAP Server: `ldap://authentik.company`
-- Use TLS : **Unchecked**
-- LDAP SSL certificate validation : **Checked**
+- Use TLS: **Unchecked**
+- LDAP SSL certificate validation: **Checked**
 - Bind credentials:
     - LDAP Bind Username: `cn=snipeit-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
     - LDAP Bind Password: `<snipeit-user password from step 2>`
@@ -99,58 +99,58 @@ Change the following fields
 - LDAP Email: mail
 
 :::info
-authentik does not support other LDAP attributes like Employee Number, Department, etc out of the box. If you need these fields, you will need to setup custom attributes.
+authentik does not support other LDAP attributes such as Employee Number and Department out of the box. If you need these fields, you will need to set up custom attributes.
 :::
 
-Save your config, then click on Test LDAP Synchronization. This does not import any users, just verifies everything is working and the account can search the directory.
+Save your configuration, then click **Test LDAP Synchronization**. This does not import any users; it only verifies that everything is working and the account can search the directory.
 
-To test your settings, enter a username and password and click Test LDAP.
+To test your settings, enter a username and password and click **Test LDAP**.
 
-## Snipe-IT LDAP Sync
+## Snipe-IT LDAP sync
 
 You must sync your LDAP database with Snipe-IT. Go to People on the sidebar menu.
 
 - Click `LDAP Sync`
-- Select your Location
-- Click Synchronize
+- Select your location.
+- Click **Synchronize**.
   :::info
   Snipe-IT will only import users with both a first and last name set. You need to create user attributes with first and last names.
   :::
 
-## authentik SAML Config
+## authentik SAML configuration
 
 ### Step 1
 
-Create another application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to Applications ->Providers. Create a SAML provider with the following parameters:
+Create another application in authentik and note the slug you choose, as this will be used later. In the Admin interface, go to **Applications > Providers**. Create a SAML provider with the following parameters:
 
 - ACS URL: `https://inventory.company/saml/acs`
 - Service Provider Binding: `Post`
 - Audience: `https://inventory.company`
 - Signing certificate: Select any certificate you have.
 - Property mappings: Select all Managed mappings.
-- NamedID Property Mapping: authentik default SAML Mapping: Email
+- NameID Property Mapping: authentik default SAML Mapping: Email
   :::info
   This is to match setting the username as **mail**. If you are using another field as the username, set it here.
   :::
 
 ### Step 2
 
-After saving your new Application and Provider, go to _Applications/Providers_ and select your newly created Provider.
+After saving your new application and provider, go to _Applications/Providers_ and select your newly created provider.
 
-Either copy the information under SAML Metadata, or click the Download button under SAML Metadata
+Either copy the information under SAML Metadata, or click the Download button under SAML Metadata.
 
-## Snipe-IT SAML Config
+## Snipe-IT SAML configuration
 
-Configure Snipe-IT SAML settings by going to settings (the gear icon), and selecting `SAML`
+Configure Snipe-IT SAML settings by going to settings (the gear icon), and selecting `SAML`.
 
 - SAML enabled: **Checked**
-- SAML IdP Metadata: (paste information copied in Step 2 above -or-
-- Click `Select File` and select the file you downloaded in Step 2
+- SAML IdP Metadata: paste the information copied in Step 2 above, or
+- Click **Select File** and select the file you downloaded in Step 2.
 - Attribute Mapping - Username: mail
 - SAML Force Login: **Checked**
 - SAML Single Log Out: **Checked**
 
-All other field can be left blank.
+All other fields can be left blank.
 
 ## Resources
 
