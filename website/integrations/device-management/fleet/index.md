@@ -55,7 +55,6 @@ The workflow to configure authentik as a single sign-on provider for Fleet invol
             You will also need to configure Fleet with additional settings to enable the EULA. For more information, refer to Fleet's [end user authentication guide](https://fleetdm.com/docs/using-fleet/mdm-macos-setup-experience#end-user-authentication-and-eula).
             :::
 
-        - **Service Provider Binding**: `Post`
         - **Audience**: `https://fleet.company`
         - **Advanced protocol settings**:
           (Any fields that can be left as their default values are omitted from the list below).

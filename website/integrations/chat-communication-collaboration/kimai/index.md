@@ -34,7 +34,6 @@ To support the integration of Kimai with authentik, you need to create an applic
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://kimai.company/auth/saml/acs`.
-        - Set the **Service Provider Binding** to `Post`.
         - Set the **Audience** to `https://kimai.company/auth/saml`.
         - Under **Advanced protocol settings**:
             - Select an available **Signing certificate**.
@@ -89,11 +88,11 @@ kimai:
             idp:
                 entityId: "https://authentik.company/application/saml/<application_slug>/metadata/"
                 singleSignOnService:
-                    url: "https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/"
+                    url: "https://authentik.company/application/saml/<application_slug>/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # the "single logout" feature was not yet tested, if you want to help, please let me know!
                 singleLogoutService:
-                    url: "https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/"
+                    url: "https://authentik.company/application/saml/<application_slug>/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # Signing certificate from *Advanced protocol settings*
                 x509cert: "|

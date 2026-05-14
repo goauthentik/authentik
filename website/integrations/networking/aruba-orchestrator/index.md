@@ -48,7 +48,6 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`.
-    - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**.
     - Under **Advanced protocol settings**, add the newly created property mapping under **Property Mappings**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
@@ -65,7 +64,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
     - **Name**: `authentik`
     - **Username Attribute**: `http://schemas.goauthentik.io/2021/02/saml/username`
     - **Issuer URL**: `https://authentik.company/application/saml/<application_slug>/metadata/`
-    - **SSO Endpoint**: `https://authentik.company/application/saml/<application_slug>/sso/binding/init/`
+    - **SSO Endpoint**: `https://authentik.company/application/saml/<application_slug>/init/`
     - **IdP X509 Cert**: (paste in the downloaded signing certificate)
     - **ACS URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
     - **EdgeConnect SLO Endpoint**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/logout`

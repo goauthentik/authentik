@@ -35,7 +35,7 @@ Under the `Identity Provider` section enter the following values:
 
 - Issuer: `https://authentik.company/application/saml/<application_slug>/metadata/`
 - Certificate: Upload the signing certificate you will use for the authentik provider
-- Login URL: `https://authentik.company/application/saml/<application_slug>/sso/binding/init/`
+- Login URL: `https://authentik.company/application/saml/<application_slug>/init/`
 - SP-Initiated Request Binding: HTTP-POST
 - User exclusions: Select at least one administrator account to log in directly (in case something goes wrong with SAML)
 
@@ -48,7 +48,6 @@ Note the Audience and ACS URLs that appear. You will use these to configure auth
 In the authentik admin interface, navigate to **Applications > Providers**. Create a SAML provider with the following parameters:
 
 - ACS URL: Enter the ACS URL provided by the Skyhigh Dashboard above
-- Service Provider Binding: `Post`
 - Audience: Enter the Audience URL provided by the Skyhigh Dashboard above
 - Signing certificate: Select the certificate you uploaded to Skyhigh above
 - Property mappings: Select all default mappings.
@@ -63,7 +62,6 @@ Create an application linked to this new provider and use the slug name you used
 In the authentik admin interface, navigate to **Applications > Providers**. Create a SAML provider with the following parameters:
 
 - ACS URL: `https://login.auth.ui.trellix.com/sso/saml2`
-- Service Provider Binding: `Post`
 - Audience: `https://login.auth.ui.trellix.com/sso/saml2`
 - Signing certificate: Select any certificate
 - Property mappings: Select all default mappings.
@@ -80,7 +78,7 @@ Configure your SAML provider as follows:
 
 - SAML Configuration Name: Enter a descriptive name here
 - Service Provider Entity ID: `https://login.auth.ui.trellix.com/sso/saml2`
-- SAML Identity Provider URL: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
+- SAML Identity Provider URL: `https://authentik.company/application/saml/<application_slug>/`
 - Identity Provider Entity ID: `https://authentik.company/application/saml/<application_slug>/metadata/`
 - User ID Attribute in SAML Response: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 - Group ID Attribute in SAML Response: `http://schemas.xmlsoap.org/claims/Group`

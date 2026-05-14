@@ -124,7 +124,6 @@ You must sync your LDAP database with Snipe-IT. Go to People on the sidebar menu
 Create another application in authentik and note the slug you choose, as this will be used later. In the Admin interface, go to **Applications > Providers**. Create a SAML provider with the following parameters:
 
 - ACS URL: `https://inventory.company/saml/acs`
-- Service Provider Binding: `Post`
 - Audience: `https://inventory.company`
 - Signing certificate: Select any certificate you have.
 - Property mappings: Select all Managed mappings.
