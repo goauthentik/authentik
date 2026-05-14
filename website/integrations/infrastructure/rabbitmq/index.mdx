@@ -6,17 +6,9 @@ support_level: community
 
 ## What is RabbitMQ?
 
-> RabbitMQ is an open-source message broker that supports AMQP 0-9-1,
-> MQTT, STOMP and several other protocols. It ships with a built-in
-> HTTP Management UI and HTTP API for administering virtual hosts,
-> queues, exchanges, users and permissions.
+> RabbitMQ is an open-source message broker that lets applications send, receive, and route messages between each other reliably and asynchronously.
 >
 > -- https://www.rabbitmq.com/
-
-This guide covers RabbitMQ 4.x with the `rabbitmq_auth_backend_oauth2`
-plugin. The same configuration supports both Management UI login via
-OpenID Connect and AMQP / HTTP API authentication with a JWT used as
-the password.
 
 ## Preparation
 
@@ -25,96 +17,69 @@ The following placeholders are used in this guide:
 - `rabbitmq.company` is the FQDN of the RabbitMQ installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
+This guide covers RabbitMQ 4.x with the `rabbitmq_auth_backend_oauth2` plugin. The same configuration supports both Management UI login via OpenID Connect and AMQP / HTTP API authentication with a JWT used as the password.
+
 :::info
-This documentation lists only the settings that you need to change from
-their default values. Be aware that any changes other than those
-explicitly mentioned in this guide could cause issues accessing your
-application.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik configuration
 
-To support the integration of RabbitMQ with authentik, you need to
-create one property mapping, two groups, and an application/provider
-pair with three policy bindings.
+To support the integration of RabbitMQ with authentik, you need to create a property mapping, two user groups, and an application/provider pair.
 
 ### Create a property mapping
 
-The mapping injects the `aud` claim that RabbitMQ requires
-(`auth_oauth2.verify_aud = true` by default) and provides admin
-membership for the `client_credentials` grant's synthetic service
-account.
+The following mapping adds the `aud` claim required by RabbitMQ and grants admin membership to the internal service account used by the client_credentials grant.
 
-1. Navigate to **Customization** > **Property mappings** and click
-   **Create** > **Scope Mapping**.
-2. Configure the mapping:
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property mappings** and click **New Property Mapping**.
+3. Select **Scope Mapping** as the property mapping type.
+4. Set the following values:
     - **Name**: `RabbitMQ claims`
     - **Scope name**: `rabbitmq`
     - **Expression**:
 
-      ```python
-      out = {"aud": ["rabbitmq"]}
-      # `internal_service_account` is the user type authentik assigns to
-      # the synthetic service account it creates behind every
-      # `client_credentials` grant. Manually-created service accounts use
-      # the plain `service_account` type, so this check matches only the
-      # auto-generated one.
-      if request.user.type == "internal_service_account":
-          out["groups"] = ["rabbitmq-administrator"]
-      return out
-      ```
+        ```python
+        out = {"aud": ["rabbitmq"]}
+        if request.user.type == "internal_service_account":
+            out["groups"] = ["rabbitmq-administrator"]
+        return out
+        ```
 
-### Create groups
+5. Click **Create**.
 
-Navigate to **Directory** > **Groups** and create:
+### Create user groups
 
-- `rabbitmq-administrator` — full admin access in RabbitMQ.
-- `rabbitmq-monitoring` — read-only / monitoring tag in RabbitMQ.
-
-Add the test users to one of these groups.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **New Group**.
+3. Create two groups with the following names: `rabbitmq-administrator` and `rabbitmq-monitoring`
+4. After creating the groups, add the appropriate members to each group:
+    - `rabbitmq-administrator` — full admin access in RabbitMQ.
+    - `rabbitmq-monitoring` — read-only / monitoring tag in RabbitMQ.
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik
-   Admin interface.
-2. Navigate to **Applications** > **Applications** and click
-   **Create with Provider** to open the application wizard.
-    - **New application**: provide a descriptive name and a slug. The
-      slug becomes part of the issuer URL — set it to `rabbitmq`. Note
-      the slug because it is required later.
-    - **Choose a Provider type**: select **OAuth2/OpenID Provider**.
-    - **Configure Provider**:
-        - **Provider name**: any descriptive value (or accept the
-          auto-suggested one).
-        - **Authorization flow**: `default-provider-authorization-explicit-consent`
-          (or the implicit-consent flow if you don't want a consent
-          screen).
-        - Under **Protocol settings**:
-            - **Client ID** and **Client Secret** are generated
-              automatically. Note them — they are required later.
-            - **Redirect URIs/Origins (RegEx)**: add an entry with
-              **Strict** matching mode and URL
-              `https://rabbitmq.company:15672/js/oidc-oauth/login-callback.html`.
-            - **Signing Key**: any available RSA key.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://rabbitmq.company:15672/js/oidc-oauth/login-callback.html`.
+        - Select any available signing key.
         - Under **Advanced protocol settings**:
-            - **Scopes**: bind four mappings:
-                - `authentik default OAuth Mapping: OpenID 'openid'`
-                - `authentik default OAuth Mapping: OpenID 'profile'`
-                - `authentik default OAuth Mapping: OpenID 'email'`
-                - `RabbitMQ claims` (the one created above)
-    - **Configure Bindings**: create three bindings on the application
-      (engine mode `any`):
-        - Order `10` — group `rabbitmq-administrator`.
-        - Order `20` — group `rabbitmq-monitoring`.
-        - Order `30` — expression policy with body
-          `return request.user.type == "internal_service_account"`.
-          This lets the synthetic service account that authentik
-          generates for the `client_credentials` grant through the
-          application policy; group membership is not the right gate
-          for that grant because identity is established by the OAuth2
-          client secret at the token endpoint.
+            - Add the `RabbitMQ claims` scope that you created in the previous section to **Selected Scopes**.
+    - **Configure Bindings**: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+        - It's recommended to create the three following bindings:
+            - Order `10` — group `rabbitmq-administrator`.
+            - Order `20` — group `rabbitmq-monitoring`.
+            - Order `30` — expression policy set to: `return request.user.type == "internal_service_account"`
 
-3. Click **Submit** to save the new application and provider.
+:::note Application binding for internal service account
+This last application binding is required to allow the synthetic service account that authentik generates for the `client_credentials` grant through the application policy; group membership is not the right gate for that grant because identity is established by the OAuth2 client secret at the token endpoint.
+:::
+
+3. Click **Create Application** to save the new application and provider.
 
 ## RabbitMQ configuration
 
@@ -124,16 +89,14 @@ Enable the OAuth 2 backend plugin:
 rabbitmq-plugins enable rabbitmq_auth_backend_oauth2
 ```
 
-Add the following to `/etc/rabbitmq/rabbitmq.conf`, replacing
-`<client_id>` and `<client_secret>` with values from the provider you
-just created:
+Add the following to `/etc/rabbitmq/rabbitmq.conf`, replacing `<client_id>` and `<client_secret>` with values from the provider you just created:
 
 ```ini
 auth_backends.1 = rabbit_auth_backend_oauth2
 auth_backends.2 = rabbit_auth_backend_internal
 
 auth_oauth2.resource_server_id          = rabbitmq
-auth_oauth2.issuer                      = https://authentik.company/application/o/rabbitmq/
+auth_oauth2.issuer                      = https://authentik.company/application/o/<application_slug>/
 auth_oauth2.preferred_username_claims.1 = preferred_username
 auth_oauth2.preferred_username_claims.2 = email
 
@@ -147,7 +110,7 @@ management.oauth_enabled            = true
 management.oauth_disable_basic_auth = false
 management.oauth_client_id          = <client_id>
 management.oauth_client_secret      = <client_secret>
-management.oauth_provider_url       = https://authentik.company/application/o/rabbitmq/
+management.oauth_provider_url       = https://authentik.company/application/o/<application_slug>/
 management.oauth_scopes             = openid profile email rabbitmq
 ```
 
@@ -155,11 +118,7 @@ Restart RabbitMQ for the changes to take effect.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with RabbitMQ, log out
-of the RabbitMQ Management UI at `https://rabbitmq.company:15672/`, click
-**Click here to log in**, and authenticate through authentik. Members
-of `rabbitmq-administrator` see the `administrator` tag; members of
-`rabbitmq-monitoring` see the `monitoring` tag.
+To confirm that authentik is properly configured with RabbitMQ, log out of the RabbitMQ Management UI at `https://rabbitmq.company:15672/`, click **Click here to log in**, and authenticate through authentik. Members of `rabbitmq-administrator` see the `administrator` tag; members of `rabbitmq-monitoring` see the `monitoring` tag.
 
 ## Resources
 
