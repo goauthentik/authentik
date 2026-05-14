@@ -1,15 +1,11 @@
-import socket
-from http.server import BaseHTTPRequestHandler
-from time import sleep
+from collections.abc import Callable
 from typing import Any, cast
 
-import pglock
-from django.db import OperationalError, connections
-from django.utils.timezone import now
+from django.conf import settings
+from django.db import OperationalError
 from django_dramatiq_postgres.middleware import (
     CurrentTask as BaseCurrentTask,
 )
-from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
@@ -19,12 +15,11 @@ from dramatiq.middleware import Middleware
 from psycopg.errors import Error
 from structlog.stdlib import get_logger
 
-from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
 from authentik.root.signals import post_startup, pre_startup, startup
-from authentik.tasks.models import Task, TaskLog, TaskStatus, WorkerStatus
+from authentik.tasks.models import Task, TaskLog, TaskStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
@@ -181,88 +176,26 @@ class DescriptionMiddleware(Middleware):
         return {"description"}
 
 
-class _healthcheck_handler(BaseHTTPRequestHandler):
-    def log_request(self, code="-", size="-"):
-        HEALTHCHECK_LOGGER.info(
-            self.path,
-            method=self.command,
-            status=code,
-        )
-
-    def log_error(self, format, *args):
-        HEALTHCHECK_LOGGER.warning(format, *args)
-
-    def do_HEAD(self):
-        try:
-            for db_conn in connections.all():
-                # Force connection reload
-                db_conn.connect()
-                _ = db_conn.cursor()
-            self.send_response(200)
-        except DB_ERRORS:  # pragma: no cover
-            self.send_response(503)
-        self.send_header("Content-Type", "text/plain; charset=utf-8")
-        self.send_header("Content-Length", "0")
-        self.end_headers()
-
-    do_GET = do_HEAD
-
-
-class WorkerHealthcheckMiddleware(Middleware):
-    @property
-    def forks(self):
-        from authentik.tasks.forks import worker_healthcheck
-
-        return [worker_healthcheck]
-
-    @staticmethod
-    def run(addr: str, port: int):
-        try:
-            httpd = HTTPServer((addr, port), _healthcheck_handler)
-            httpd.serve_forever()
-        except OSError as exc:
-            get_logger(__name__, type(WorkerHealthcheckMiddleware)).warning(
-                "Port is already in use, not starting healthcheck server",
-                exc=exc,
-            )
-
-
-class WorkerStatusMiddleware(Middleware):
-    @property
-    def forks(self):
-        from authentik.tasks.forks import worker_status
-
-        return [worker_status]
-
-    @staticmethod
-    def run():
-        status = WorkerStatus.objects.create(
-            hostname=socket.gethostname(),
-            version=authentik_full_version(),
-        )
-        while True:
-            try:
-                WorkerStatusMiddleware.keep(status)
-            except DB_ERRORS:  # pragma: no cover
-                sleep(10)
-                try:
-                    connections.close_all()
-                except DB_ERRORS:
-                    pass
-
-    @staticmethod
-    def keep(status: WorkerStatus):
-        lock_id = f"goauthentik.io/worker/status/{status.pk}"
-        with pglock.advisory(lock_id, side_effect=pglock.Raise):
-            while True:
-                status.last_seen = now()
-                status.save(update_fields=("last_seen",))
-                sleep(30)
-
-
 class MetricsMiddleware(BaseMetricsMiddleware):
     @property
-    def forks(self):
-        from authentik.tasks.forks import worker_metrics
+    def forks(self) -> list[Callable[[], None]]:
+        return []
 
-        return [worker_metrics]
+    def before_worker_boot(self, broker: Broker, worker: Any) -> None:
+        if settings.TEST:
+            return super().before_worker_boot(broker, worker)
+
+        from prometheus_client import values
+        from prometheus_client.values import MultiProcessValue
+
+        values.ValueClass = MultiProcessValue(lambda: worker.worker_id)
+
+        return super().before_worker_boot(broker, worker)
+
+    def after_worker_shutdown(self, broker: Broker, worker: Any) -> None:
+        if settings.TEST:
+            return
+
+        from prometheus_client import multiprocess
+
+        multiprocess.mark_process_dead(worker.worker_id)

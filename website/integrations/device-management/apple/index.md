@@ -33,7 +33,7 @@ While this integration guide focuses on Business Manager, the instructions are a
 
 :::
 
-## Authentication Flow
+## Authentication flow
 
 This sequence diagram shows a high-level flow between the user's apple device, authentik, and Apple Business Manager.
 
@@ -60,7 +60,7 @@ as a federated identity provider controlled by authentik. When a user signs in w
 
 By the end of this integration, your users will be able to enroll their Apple devices using their authentik credentials.
 
-You'll need to have authentik instance running and accessible on an HTTPS domain, and an Apple Business Manager user with the role of Administrator or People Manager.
+You'll need to have an authentik instance running and accessible on an HTTPS domain, and an Apple Business Manager user with the role of Administrator or People Manager.
 
 :::warning Caveats
 
@@ -80,7 +80,7 @@ The following placeholders are used in this guide:
 
 ## authentik configuration
 
-The workflow to configure authentik as an identity provider for Apple Business Manager involves creating scope mappings, signing keys, a Shared Signals Framework provider, and a OIDC provider/application pair.
+The workflow to configure authentik as an identity provider for Apple Business Manager involves creating scope mappings, signing keys, a Shared Signals Framework provider, and an OIDC provider/application pair.
 
 Together, these components will handle the authentication flow and backchannel communication between authentik and Apple Business Manager.
 
@@ -163,7 +163,7 @@ Alternatively, you can use an existing key if you have one available.
 2. Click **Create** and use the following values:
     - **Name**: `apple-business-manager`
     - **Certificate**: Paste in your certificate
-    - **Private Key**: _[optional]_ Pastein your private key
+    - **Private Key**: _[optional]_ Paste in your private key
 
 3. Click **Create** and confirm that the new key is listed in the **Certificates** overview.
 
@@ -214,7 +214,7 @@ While the OIDC provider handles the authentication flow, you'll need to create a
 
 3. Click **Finish** and confirm that the new SSF provider is listed in the overview.
 
-    :::tip A Blank SSF Config URL is expected
+    :::tip A blank SSF Config URL is expected
 
     Keep in mind the **SSF Config URL** will be blank until the SSF provider is assigned to an application as a backchannel provider. We'll return to collect this URL after creating the application.
 
@@ -375,7 +375,7 @@ When creating test users, ensure that their role is set to Standard (or Student)
 
 1. Confirmed the test user in synchronized in authentik.
 2. Open a private browsing window and navigate to the [Apple Business Manager](https://business.apple.com/).
-3. In the the email field, provide the email address assigned to test user.
+3. In the email field, provide the email address assigned to test user.
 
 4. Submit the form to trigger the authentication flow.
 

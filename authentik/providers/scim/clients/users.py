@@ -3,6 +3,7 @@
 from typing import Any
 
 from django.db import transaction
+from django.db.models import Q
 from django.utils.http import urlencode
 from orjson import dumps
 from pydantic import ValidationError
@@ -49,15 +50,10 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
             scim_user.externalId = str(obj.uid)
         return scim_user
 
-    def delete(self, obj: User):
+    def delete(self, identifier: str):
         """Delete user"""
-        scim_user = SCIMProviderUser.objects.filter(provider=self.provider, user=obj).first()
-        if not scim_user:
-            self.logger.debug("User does not exist in SCIM, skipping")
-            return None
-        response = self._request("DELETE", f"/Users/{scim_user.scim_id}")
-        scim_user.delete()
-        return response
+        SCIMProviderUser.objects.filter(provider=self.provider, scim_id=identifier).delete()
+        return self._request("DELETE", f"/Users/{identifier}")
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
@@ -77,7 +73,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                     raise exc
                 users = self._request(
                     "GET",
-                    f"/Users?{urlencode({'filter': f'userName eq \"{scim_user.userName}\"'})}",
+                    f"/Users?{urlencode({'filter': f'userName eq "{scim_user.userName}"'})}",
                 )
                 users_res = users.get("Resources", [])
                 if len(users_res) < 1:
@@ -123,3 +119,32 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         )
         connection.attributes = response
         connection.save()
+
+    def discover(self):
+        res = self._request("GET", "/Users")
+        seen_items = 0
+        expected_items = int(res["totalResults"])
+        while True:
+            for user in res["Resources"]:
+                self._discover_user_single(user)
+                seen_items += 1
+            if seen_items >= expected_items:
+                break
+            res = self._request("GET", f"/Users?startIndex={seen_items+1}")
+
+    def _discover_user_single(self, user: dict):
+        scim_user = SCIMUserSchema.model_validate(user)
+        if SCIMProviderUser.objects.filter(scim_id=scim_user.id, provider=self.provider).exists():
+            return
+        user_query = Q(username=scim_user.userName)
+        for email in scim_user.emails:
+            user_query |= Q(username=email.value) | Q(email=email.value)
+        ak_user = User.objects.filter(user_query).first()
+        if not ak_user:
+            return
+        SCIMProviderUser.objects.create(
+            provider=self.provider,
+            user=ak_user,
+            scim_id=scim_user.id,
+            attributes=user,
+        )

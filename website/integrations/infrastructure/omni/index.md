@@ -4,7 +4,7 @@ sidebar_label: Omni
 support_level: community
 ---
 
-## What is Omni
+## What is Omni?
 
 > Omni manages Kubernetes on bare metal, virtual machines, or in a cloud.
 >
@@ -37,7 +37,7 @@ To support the integration of Omni with authentik, you need to create a property
     - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
     - **Expression**: `return request.user.email`
 
-3. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+3. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, application slug, an optional group for the type of application, the policy engine mode, and optional UI settings.
 
@@ -45,7 +45,6 @@ To support the integration of Omni with authentik, you need to create a property
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **ACS URL**: `https://omni.company/saml/acs`
-    - **Service Provider Binding**: `Post`
     - **Audience**: `https://omni.company/saml/metadata`
     - **Signing Certificate**: select a signing certificate, either the `authentik Self-signed Certificate` or generate a certificate via **System** > **Certificate**
     - **Sign assertions**: `true`
@@ -53,13 +52,13 @@ To support the integration of Omni with authentik, you need to create a property
     - **Property mappings**: `*property_mapping_name*` (e.g. `Omni Mapping`)
     - **NameID Property Mapping**: `*property_mapping_name*` (e.g. `Omni Mapping`)
 
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 4. Click **Submit** to save the new application and provider.
 
 ## Omni configuration
 
-Add the following environment variables to your Omni configuration. Make sure to fill in the authentik FQDN from your authentik instance and the application slug generated in the last section.
+Add the following environment variables to your Omni configuration, replacing the placeholders with your authentik FQDN and the application slug from the previous section.
 
 ```shell
 auth-saml-enabled=true

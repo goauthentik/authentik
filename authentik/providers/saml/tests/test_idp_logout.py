@@ -5,6 +5,14 @@ from unittest.mock import Mock
 
 from django.test import RequestFactory, TestCase
 
+from authentik.common.oauth.constants import (
+    OAUTH2_BINDING,
+    PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
+)
+from authentik.common.saml.constants import (
+    RSA_SHA256,
+    SAML_NAME_ID_FORMAT_EMAIL,
+)
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
@@ -13,6 +21,7 @@ from authentik.providers.iframe_logout import (
     IframeLogoutChallenge,
     IframeLogoutStageView,
 )
+from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.native_logout import (
     NativeLogoutChallenge,
@@ -21,10 +30,6 @@ from authentik.providers.saml.native_logout import (
 from authentik.providers.saml.views.flows import (
     PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS,
     PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS,
-)
-from authentik.sources.saml.processors.constants import (
-    RSA_SHA256,
-    SAML_NAME_ID_FORMAT_EMAIL,
 )
 
 
@@ -42,7 +47,7 @@ class TestNativeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp1.example.com/acs",
             sls_url="https://sp1.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
@@ -53,7 +58,7 @@ class TestNativeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp2.example.com/acs",
             sls_url="https://sp2.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="post",
             sls_binding="post",
             logout_method=SAMLLogoutMethods.FRONTCHANNEL_NATIVE,
@@ -69,7 +74,7 @@ class TestNativeLogoutStageView(TestCase):
             {
                 "redirect_url": "https://sp1.example.com/sls?SAMLRequest=encoded",
                 "provider_name": "test-provider-1",
-                "binding": "redirect",
+                "saml_binding": "redirect",
             }
         ]
         stage_view = NativeLogoutStageView(
@@ -85,7 +90,7 @@ class TestNativeLogoutStageView(TestCase):
 
         # Should return a NativeLogoutChallenge
         self.assertIsInstance(challenge, NativeLogoutChallenge)
-        self.assertEqual(challenge.initial_data["binding"], "redirect")
+        self.assertEqual(challenge.initial_data["saml_binding"], "redirect")
         self.assertEqual(challenge.initial_data["provider_name"], "test-provider-1")
         self.assertIn("redirect_url", challenge.initial_data)
 
@@ -102,9 +107,9 @@ class TestNativeLogoutStageView(TestCase):
             {
                 "post_url": "https://sp2.example.com/sls",
                 "saml_request": "encoded_saml_request",
-                "relay_state": "https://idp.example.com/flow/test-flow",
+                "saml_relay_state": "https://idp.example.com/flow/test-flow",
                 "provider_name": "test-provider-2",
-                "binding": "post",
+                "saml_binding": "post",
             }
         ]
         stage_view = NativeLogoutStageView(
@@ -120,11 +125,11 @@ class TestNativeLogoutStageView(TestCase):
 
         # Should return a NativeLogoutChallenge
         self.assertIsInstance(challenge, NativeLogoutChallenge)
-        self.assertEqual(challenge.initial_data["binding"], "post")
+        self.assertEqual(challenge.initial_data["saml_binding"], "post")
         self.assertEqual(challenge.initial_data["provider_name"], "test-provider-2")
         self.assertEqual(challenge.initial_data["post_url"], "https://sp2.example.com/sls")
         self.assertIn("saml_request", challenge.initial_data)
-        self.assertIn("relay_state", challenge.initial_data)
+        self.assertIn("saml_relay_state", challenge.initial_data)
 
     def test_get_challenge_all_complete(self):
         """Test get_challenge when all providers are done"""
@@ -213,7 +218,7 @@ class TestIframeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp1.example.com/acs",
             sls_url="https://sp1.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             logout_method="frontchannel_iframe",
@@ -224,7 +229,7 @@ class TestIframeLogoutStageView(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp2.example.com/acs",
             sls_url="https://sp2.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="post",
             sls_binding="post",
             logout_method="frontchannel_iframe",
@@ -295,14 +300,14 @@ class TestIframeLogoutStageView(TestCase):
             },
         ]
         # OIDC sessions (pre-processed)
-        from authentik.providers.oauth2.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
-
         plan.context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = [
             {
                 "url": "https://oidc.example.com/logout?iss=authentik&sid=abc123",
                 "provider_name": "oidc-provider",
-                "binding": "redirect",
-                "provider_type": "oidc",
+                "binding": OAUTH2_BINDING,
+                "provider_type": (
+                    f"{OAuth2Provider._meta.app_label}" f".{OAuth2Provider._meta.model_name}"
+                ),
             },
         ]
         stage_view = IframeLogoutStageView(
@@ -367,7 +372,7 @@ class TestIdPLogoutIntegration(FlowTestCase):
             authorization_flow=self.flow,
             acs_url="https://sp.example.com/acs",
             sls_url="https://sp.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             signing_kp=self.keypair,

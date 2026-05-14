@@ -121,7 +121,7 @@ class OAuth2Client(BaseOAuthClient):
             LOGGER.warning(
                 "Unable to fetch access token",
                 exc=exc,
-                response=exc.response.text if exc.response else str(exc),
+                response=exc.response.text if exc.response is not None else str(exc),
             )
             return None
         return response.json()
@@ -189,6 +189,8 @@ class UserprofileHeaderAuthClient(OAuth2Client):
         profile_url = self.source.source_type.profile_url or ""
         if self.source.source_type.urls_customizable and self.source.profile_url:
             profile_url = self.source.profile_url
+        if profile_url == "":
+            return None
         response = self.session.request(
             "get",
             profile_url,
@@ -198,9 +200,9 @@ class UserprofileHeaderAuthClient(OAuth2Client):
             response.raise_for_status()
         except RequestException as exc:
             LOGGER.warning(
-                "Unable to fetch user profile",
+                "Unable to fetch user profile from profile_url",
                 exc=exc,
-                response=exc.response.text if exc.response else str(exc),
+                response=exc.response.text if exc.response is not None else str(exc),
             )
             return None
         return response.json()

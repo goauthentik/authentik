@@ -13,11 +13,10 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-email")
 export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponseRequest> {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
@@ -26,20 +25,22 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
                     <p>${msg("Check your Inbox for a verification email.")}</p>
                 </div>
 
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"
                         type="submit"
                         class="pf-c-button pf-m-primary pf-m-block"
                     >
-                        ${msg("Send Email again.")}
+                        ${msg("Resend Email")}
                     </button>
                 </fieldset>
             </form>
         </ak-flow-card>`;
     }
 }
+
+export default EmailStage;
 
 declare global {
     interface HTMLElementTagNameMap {

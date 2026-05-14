@@ -30,10 +30,17 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     }
 
     @state()
-    showHttpBasic = true;
+    protected showHttpBasic = true;
 
     @state()
-    mode: ProxyMode = ProxyMode.Proxy;
+    protected mode: ProxyMode = ProxyMode.Proxy;
+
+    public override reset(): void {
+        super.reset();
+
+        this.showHttpBasic = true;
+        this.mode = ProxyMode.Proxy;
+    }
 
     async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;

@@ -1,3 +1,4 @@
+import "#elements/forms/Radio";
 import "#components/ak-switch-input";
 import "#elements/Alert";
 import "#elements/forms/FormGroup";
@@ -34,7 +35,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>${msg("Log the currently pending user in.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

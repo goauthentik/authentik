@@ -5,17 +5,37 @@ title: Email
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-This page covers both configuring authentik to send emails and testing that email delivery is working.
+This page covers both configuring authentik to send email and testing that email delivery is working.
 
-authentik can be configured with global email settings used to notify administrators about alerts, configuration issues, and new releases. They can also be used alongside [notification rules](../sys-mgmt/events/notifications.md) to send emails based on any event that occurs within authentik.
+Global email settings are used for administrator notifications, release and configuration alerts, [notification rules](../sys-mgmt/events/notifications.md), and any [Email stage](../../add-secure-apps/flows-stages/stages/email/) configured to use global settings.
 
-authentik also provides [Email stages](../../add-secure-apps/flows-stages/stages/email/), which are used to send emails to users for actions such as account recovery and verification. Email stages can be configured to use the global email settings or their own specific email settings.
+Email stages can be configured to use their own stage-specific SMTP settings if you need them to send mail through a different server than the one used by the rest of authentik.
 
 :::warning
 Some hosting providers block outgoing SMTP ports, in which case you will need to host an SMTP relay on a different port with a different provider.
 :::
 
-## Global email settings
+## Before you begin
+
+Have the following values ready:
+
+- SMTP server hostname or IP address
+- SMTP port
+- SMTP server username and password, if authentication is required
+- The sender address for `AUTHENTIK_EMAIL__FROM`
+- The TLS mode required by your provider
+
+## Configure global email settings
+
+Set the global SMTP configuration in your deployment, then redeploy authentik.
+
+Follow your mail provider's documentation and configure TLS mode as follows:
+
+- STARTTLS, also called explicit TLS, often uses port `587`. Set `AUTHENTIK_EMAIL__USE_TLS=true` and leave `AUTHENTIK_EMAIL__USE_SSL=false`.
+- SSL or implicit TLS often uses port `465`. Set `AUTHENTIK_EMAIL__USE_SSL=true` and leave `AUTHENTIK_EMAIL__USE_TLS=false`.
+- Plain SMTP without TLS should leave both settings disabled.
+
+Never enable `USE_TLS` and `USE_SSL` at the same time. In the Helm chart, apply the same rules to `email.use_tls` and `email.use_ssl`.
 
 <Tabs
   groupId="deployment"
@@ -30,19 +50,19 @@ Some hosting providers block outgoing SMTP ports, in which case you will need to
 To configure global email settings, append the following block to your `.env` file:
 
 ```sh
-# SMTP Host Emails are sent to
+# SMTP server
 AUTHENTIK_EMAIL__HOST=localhost
 AUTHENTIK_EMAIL__PORT=25
 # Optionally authenticate (don't add quotation marks to your password)
 AUTHENTIK_EMAIL__USERNAME=
 AUTHENTIK_EMAIL__PASSWORD=
-# Use StartTLS
+# STARTTLS / explicit TLS, usually on port 587
 AUTHENTIK_EMAIL__USE_TLS=false
-# Use SSL
+# Implicit TLS/SSL on the SMTP connection (`USE_SSL` is the variable name), usually on port 465
 AUTHENTIK_EMAIL__USE_SSL=false
 AUTHENTIK_EMAIL__TIMEOUT=10
-# Email address authentik will send from, should have a correct @domain
-AUTHENTIK_EMAIL__FROM=authentik@localhost
+# Sender email address; verify that the domain is valid.
+AUTHENTIK_EMAIL__FROM=authentik@example.com
 ```
 
   </TabItem>
@@ -54,35 +74,42 @@ To configure global email settings, append the following block to your `values.y
 # add this block under the `authentik:` block in your values.yaml file
 # authentik:
 email:
-    # -- SMTP Server emails are sent from, fully optional
+    # -- SMTP server from which emails are sent by authentik
     host: ""
-    port: 587
-    # -- SMTP credentials. When left empty, no authentication will be done.
+    port: 25
+    # -- Optional SMTP authentication credentials. Leave empty to disable authentication.
     username: ""
-    # -- SMTP credentials. When left empty, no authentication will be done.
+    # -- Optional SMTP authentication credentials. Leave empty to disable authentication.
     password: ""
-    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
+    # -- STARTTLS / explicit TLS, usually on port 587.
     use_tls: false
-    # -- Enable either use_tls or use_ssl. They can't be enabled at the same time.
+    # -- Implicit TLS/SSL, usually on port 465 (`use_ssl` is the setting name).
     use_ssl: false
     # -- Connection timeout in seconds
-    timeout: 30
+    timeout: 10
     # -- Email 'from' address can either be in the format "foo@bar.baz" or "authentik <foo@bar.baz>"
-    from: ""
+    from: "authentik@example.com"
 ```
 
   </TabItem>
 </Tabs>
 
-## Testing email configuration
+### When to use stage-specific settings
 
-To test whether the global email settings are configured correctly, you can use the following command on your authentik server:
+[Email stages](../../add-secure-apps/flows-stages/stages/email/) can either:
+
+- use the global SMTP settings described above, or
+- use their own stage-specific SMTP host, port, credentials, and TLS settings
+
+## Test email delivery
+
+After configuring SMTP, send a test message from the authentik server:
 
 ```shell
 ak test_email <to_address>
 ```
 
-To test the email settings of a specific email stage, you can optionally provide the `-S` parameter:
+To test a specific Email stage instead of the global settings, include `-S`:
 
 ```shell
 ak test_email <to_address> [-S <stage_name>]
@@ -107,7 +134,7 @@ docker compose exec worker ak test_email [...]
   </TabItem>
   <TabItem value="kubernetes">
 
-To run this command with Kubernetes:
+To run the command in the Kubernetes worker pod:
 
 ```shell
 kubectl exec -it deployment/authentik-worker -c worker -- ak test_email [...]
@@ -118,14 +145,14 @@ kubectl exec -it deployment/authentik-worker -c worker -- ak test_email [...]
 
 ## Google Workspace SMTP relay configuration
 
-To send email through Google SMTP servers, the easiest and most reliable method is often to use [Google's SMTP relay service](https://support.google.com/a/answer/2956491). Google provides detailed guidance in their documentation: [Send email from a printer, scanner, or app](https://support.google.com/a/answer/176600?hl=en).
+One reliable way to send email through Google is [Google's SMTP relay service](https://support.google.com/a/answer/2956491). Google also documents the broader setup flow in [Send email from a printer, scanner, or app](https://support.google.com/a/answer/176600?hl=en).
 
-First, confirm the outbound IP address that authentik uses to send emails. [Follow Google's documentation](https://support.google.com/a/answer/2956491) to add the IP address or addresses to the **SMTP relay service** options in your workspace's Gmail settings.
+First, determine the outbound IP address used by authentik to send emails and add it to the Google Workspace **SMTP relay service** settings. Then configure the relay with these options:
 
-    - Set **Allowed Senders** to `Only addresses in my domains`.
-    - Set **Authentication** to `Only accept mail from the specified IP addresses`.
-    - Do not set **Require SMTP Authentication**.
-    - Select **Require TLS encryption**.
+- Set **Allowed Senders** to `Only addresses in my domains`.
+- Set **Authentication** to `Only accept mail from the specified IP addresses`.
+- Do not set **Require SMTP Authentication**.
+- Select **Require TLS encryption**.
 
 <Tabs
   groupId="deployment"
@@ -138,7 +165,7 @@ First, confirm the outbound IP address that authentik uses to send emails. [Foll
   <TabItem value="docker">
 If you are using Docker Compose, set the following environment variables for authentik:
 
-```yaml
+```sh
 AUTHENTIK_EMAIL__HOST=smtp-relay.gmail.com
 AUTHENTIK_EMAIL__PORT=587
 AUTHENTIK_EMAIL__USE_TLS=true
@@ -151,7 +178,7 @@ Redeploy the authentik containers, then use the `ak test_email` command to confi
   </TabItem>
   <TabItem value="kubernetes">
 
-If you are using the Kubernetes Helm chart, set the following variables in the `email` section:
+If you are using the Kubernetes Helm chart, set the following variables in the `email` section of your authentik configuration file:
 
 ```yaml
 email:
@@ -169,7 +196,7 @@ Redeploy the authentik containers, then use the `ak test_email` command to confi
 
 ## SMTP server with TLS verification
 
-If you're configuring authentik to send email via an SMTP server with TLS enabled, you must mount the certificate used for authentication in your authentik worker and server containers:
+If you are configuring authentik to send email via an SMTP server with TLS enabled, mount the certificate used for authentication in your authentik server and worker containers (for example a private CA bundle) and point `SSL_CERT_FILE` at it.
 
 <Tabs
   groupId="deployment"
@@ -181,7 +208,7 @@ If you're configuring authentik to send email via an SMTP server with TLS enable
 >
   <TabItem value="docker">
 
-1. Add the following configuration to the server and worker containers in your Docker Compose file:
+1. Add the following configuration to the server and worker services in your Docker Compose file:
 
 ```yaml
 volumes:

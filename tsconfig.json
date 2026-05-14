@@ -2,7 +2,7 @@
 {
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
-        "baseUrl": "."
+        "ignoreDeprecations": "6.0"
     },
     "watchOptions": {
         "excludeDirectories": [

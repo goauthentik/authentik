@@ -4,7 +4,7 @@ sidebar_label: ownCloud
 support_level: community
 ---
 
-## What is ownCloud
+## What is ownCloud?
 
 > ownCloud is a free and open-source software project for content collaboration and sharing and syncing of files.
 >
@@ -30,7 +30,7 @@ The configuration for each application is nearly identical, except for the **Cli
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.) You will need to repeat the process four times: once each for the Desktop application, Web UI, Android application, and iOS application.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard. You will need to repeat the process four times: once each for the Desktop application, Web UI, Android application, and iOS application.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -70,7 +70,7 @@ The configuration for each application is nearly identical, except for the **Cli
     - **Advanced protocol settings:**
         - **Scopes**: Select the following scopes for each of the four application/provider pairs: `email`, `offline_access`, `openid`, `profile`.
 
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -82,7 +82,7 @@ Refer to the [ownCloud Admin Manual](https://doc.owncloud.com/server/latest/admi
 
 For other reverse proxies, consult the provider-specific documentation for guidance on implementing this rewrite rule.
 
-## ownCloud Configuration
+## ownCloud configuration
 
 To enable OIDC functionality in ownCloud, follow these steps:
 
@@ -92,7 +92,7 @@ To enable OIDC functionality in ownCloud, follow these steps:
       or by clicking the **Hamburger Menu** in the top-left corner of any page in your ownCloud deployment and selecting **Market**.
     - Search for and enable the **OIDC plugin**.
 
-2.  **OIDC Plugin Configuration**:
+2.  **OIDC plugin configuration**:
     The OIDC plugin cannot be configured via the ownCloud UI. Configuration must be performed either:
 
         - by editing the `config.php` file
@@ -106,13 +106,13 @@ To enable OIDC functionality in ownCloud, follow these steps:
     Instructions for configuring the OIDC plugin using the ownCloud database can be found in the OIDC plugin's [README.md file](https://github.com/owncloud/openidconnect?tab=readme-ov-file#settings-in-database). Both methods produce identical configurations, differing only in whether the settings are stored in a `php` file or in the database (via an `occ` command).
     :::
 
-3.  **Create the `oidc.config.php` File**:
+3.  **Create the `oidc.config.php` file**:
     - Place a file named `oidc.config.php` in the same directory as the existing `config.php` file in your ownCloud installation.
     - Files named with this pattern are treated as "override" files, allowing ownCloud to override matching configuration keys in the `config.php` file.
 
     The location of this file depends on your Docker configuration. By default, the file resides in `/mnt/data/config` within the container. This location is exposed via the `files` volume in the [official setup guide](https://doc.owncloud.com/server/next/admin_manual/installation/docker/#docker-compose).
 
-4.  **Minimal Contents of `oidc.config.php`**:
+4.  **Minimal contents of `oidc.config.php`**:
     Add the necessary configuration settings to this file. Ensure it includes at least the minimal requirements for your setup:
 
     :::warning
@@ -126,11 +126,10 @@ $CONFIG = [
   'openid-connect' => [
     'provider-url' => 'https://authentik.company/application/o/owncloud/',
     'client-id' => '<Client ID from authentik>',
-    'client-secret' => '<Client secret from authentik',
+    'client-secret' => '<Client secret from authentik>',
     'loginButtonName' => 'Log in with authentik',
     'mode' => 'userid',
     'search-attribute' => 'preferred_username',
-    ],
   ],
 ];
 ```
@@ -190,12 +189,12 @@ For more information on other available configuration options, refer to the OIDC
 
 You have successfully configured OIDC authentication through authentik. Here's what you can expect next:
 
-- **Login Behavior:**
-    - If the `autoRedirectOnLoginPage` option is **set to false**, navigating to `https://owncloud.company` will present the standard login page, which now includes an "Log in with authentik" button (or any custom text defined in the `loginButtonName` field).
+- **Login behavior:**
+    - If the `autoRedirectOnLoginPage` option is **set to false**, navigating to `https://owncloud.company` will present the standard login page, which now includes a "Log in with authentik" button (or any custom text defined in the `loginButtonName` field).
     - If the `autoRedirectOnLoginPage` option is **set to true**, users will be automatically redirected to the authentik login page when attempting to access `https://owncloud.company`.
 
-- **ownCloud Applications:**
+- **ownCloud applications:**
   Any new connections through the ownCloud desktop, Android, or iOS applications will automatically use OIDC for authentication.
 
-- **Force Re-authentication:**
+- **Force re-authentication:**
   To enforce re-authentication using OIDC for existing sessions, set the `token_auth_enforced` option to **true** in the `oidc.config.php` file (as detailed in the above section). This will prompt users to re-authenticate on their ownCloud clients.

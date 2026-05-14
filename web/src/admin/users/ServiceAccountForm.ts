@@ -9,6 +9,9 @@ import { dateTimeLocal } from "#common/temporal";
 
 import { Form } from "#elements/forms/Form";
 import { ModalForm } from "#elements/forms/ModalForm";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { AKLabel } from "#components/ak-label";
 
 import {
     CoreApi,
@@ -21,20 +24,19 @@ import {
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { createRef, ref } from "lit/directives/ref.js";
+
+const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360; // 360 days
 
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
-    #initialExpirationValue = dateTimeLocal(new Date(Date.now() + 1000 * 60 ** 2 * 24 * 360));
+    public static override verboseName = msg("Service Account");
+    public static override verboseNamePlural = msg("Service Accounts");
+    public override cancelButtonLabel = msg("Close");
 
-    //#region Refs
-
-    #expiringInputRef = createRef<HTMLInputElement>();
-    #expirationDateInputRef = createRef<HTMLInputElement>();
-
-    //#endregion
+    @state()
+    protected expiresAt: Date | null = new Date(Date.now() + EXPIRATION_DURATION);
 
     //#region Properties
 
@@ -61,7 +63,9 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             userServiceAccountRequest: data,
         });
         this.result = result;
-        (this.parentElement as ModalForm).showSubmitButton = false;
+        if (this.parentElement instanceof ModalForm) {
+            this.parentElement.showSubmitButton = false;
+        }
         if (this.targetGroup) {
             await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
                 groupUuid: this.targetGroup.pk,
@@ -81,22 +85,40 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         return result;
     }
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
         this.result = null;
-        (this.parentElement as ModalForm).showSubmitButton = true;
+
+        this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
+        if (this.parentElement instanceof ModalForm) {
+            this.parentElement.showSubmitButton = true;
+        }
     }
 
-    renderForm(): TemplateResult {
+    //#region Event Listeners
+
+    #expiringChangeListener = (event: Event) => {
+        const expiringElement = event.target as HTMLInputElement;
+
+        this.expiresAt = expiringElement.checked
+            ? new Date(Date.now() + EXPIRATION_DURATION)
+            : null;
+    };
+
+    //#endregion
+
+    //#region Rendering
+
+    protected override renderForm(): TemplateResult {
         return html`<ak-text-input
                 name="name"
                 label=${msg("Username")}
-                placeholder=${msg("Type a username for the user...")}
-                autocomplete="off"
+                placeholder=${msg("Type a username for the service account...")}
                 value=""
                 input-hint="code"
                 required
                 maxlength=${150}
+                autofocus
                 help=${msg(
                     "The user's primary identifier used for authentication. 150 characters or fewer.",
                 )}
@@ -109,41 +131,38 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             >
             </ak-switch-input>
 
-            <ak-form-element-horizontal name="expiring">
-                <label class="pf-c-switch">
-                    <input
-                        ${ref(this.#expiringInputRef)}
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        checked
-                        @change=${this.expiringChangeListener}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Expiring")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Whether the token will expire. Upon expiration, the token will be rotated.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="expiring"
+                label=${msg("Expiring")}
+                help=${msg(
+                    "Whether the token will expire. Upon expiration, the token will be rotated.",
+                )}
+                @change=${this.#expiringChangeListener}
+                ?checked=${this.expiresAt}
+            ></ak-switch-input>
 
-            <ak-form-element-horizontal label=${msg("Expires on")} name="expires">
+            <ak-form-element-horizontal name="expires">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "expiration-date-input",
+                    },
+                    msg("Expires on"),
+                )}
+
                 <input
-                    ${ref(this.#expirationDateInputRef)}
+                    id="expiration-date-input"
                     type="datetime-local"
                     data-type="datetime-local"
-                    value="${this.#initialExpirationValue}"
+                    value=${this.expiresAt ? dateTimeLocal(this.expiresAt) : ""}
+                    ?disabled=${!this.expiresAt}
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>`;
     }
 
-    renderResponseForm(): TemplateResult {
+    protected renderResponseForm(): SlottedTemplateResult {
         return html`<p>
                 ${msg(
                     "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.",
@@ -172,21 +191,14 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </form>`;
     }
 
-    expiringChangeListener = () => {
-        const expiringElement = this.#expiringInputRef.value;
-        const expirationDateElement = this.#expirationDateInputRef.value;
-
-        if (!expiringElement || !expirationDateElement) return;
-
-        expirationDateElement.disabled = !expiringElement.checked;
-    };
-
-    renderFormWrapper(): TemplateResult {
+    protected override renderFormWrapper(): SlottedTemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }
         return super.renderFormWrapper();
     }
+
+    //#endregion
 }
 
 declare global {

@@ -1,0 +1,13 @@
+debugpy
+dramatiq
+kwargs
+pgtrigger
+psycopg
+pyrad
+uvicorn
+pglock
+dicted
+mypy
+klass
+pgactivity
+kinit

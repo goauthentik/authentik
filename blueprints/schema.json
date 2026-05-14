@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2026.2.0-rc1 Blueprint schema",
+    "title": "authentik 2026.8.0-rc1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -664,6 +664,206 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_endpoints_connectors_fleet.fleetconnector"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_fleet.fleetconnector_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_fleet.fleetconnector"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_fleet.fleetconnector"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_endpoints_connectors_google_chrome.googlechromeconnector"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_lifecycle.lifecycleiteration"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.lifecycleiteration_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.lifecycleiteration"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.lifecycleiteration"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_lifecycle.lifecyclerule"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.lifecyclerule_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.lifecyclerule"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.lifecyclerule"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_lifecycle.review"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.review_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.review"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.review"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_enterprise.license"
                         },
                         "id": {
@@ -944,6 +1144,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_providers_ws_federation.wsfederationprovider"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_providers_ws_federation.wsfederationprovider_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_providers_ws_federation.wsfederationprovider"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_providers_ws_federation.wsfederationprovider"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_reports.dataexport"
                         },
                         "id": {
@@ -973,6 +1213,46 @@
                         },
                         "identifiers": {
                             "$ref": "#/$defs/model_authentik_reports.dataexport"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_stages_account_lockdown.accountlockdownstage"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage"
                         }
                     }
                 },
@@ -4860,6 +5140,11 @@
                     "format": "uuid",
                     "title": "Flow device code"
                 },
+                "flow_lockdown": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Flow lockdown"
+                },
                 "default_application": {
                     "type": "string",
                     "format": "uuid",
@@ -4974,6 +5259,11 @@
                 "group": {
                     "type": "string",
                     "title": "Group"
+                },
+                "meta_hide": {
+                    "type": "boolean",
+                    "title": "Meta hide",
+                    "description": "Hide this application from the user's My applications page."
                 },
                 "icon": {
                     "type": "string",
@@ -5292,6 +5582,14 @@
                     "minLength": 1,
                     "title": "Password"
                 },
+                "password_hash": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Password hash"
+                },
                 "permissions": {
                     "type": "array",
                     "items": {
@@ -5319,7 +5617,6 @@
                             "authentik_core.add_user",
                             "authentik_core.add_user_to_group",
                             "authentik_core.add_usersourceconnection",
-                            "authentik_core.assign_user_permissions",
                             "authentik_core.change_application",
                             "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
@@ -5353,7 +5650,6 @@
                             "authentik_core.remove_user_from_group",
                             "authentik_core.reset_user_password",
                             "authentik_core.set_token_key",
-                            "authentik_core.unassign_user_permissions",
                             "authentik_core.view_application",
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
@@ -5406,6 +5702,7 @@
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
@@ -5413,6 +5710,7 @@
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
@@ -5420,6 +5718,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
@@ -5427,11 +5726,20 @@
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
                             "authentik_endpoints_connectors_agent.view_enrollmenttoken",
+                            "authentik_endpoints_connectors_fleet.add_fleetconnector",
+                            "authentik_endpoints_connectors_fleet.change_fleetconnector",
+                            "authentik_endpoints_connectors_fleet.delete_fleetconnector",
+                            "authentik_endpoints_connectors_fleet.view_fleetconnector",
+                            "authentik_endpoints_connectors_google_chrome.add_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.change_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.delete_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.view_googlechromeconnector",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
@@ -5480,6 +5788,18 @@
                             "authentik_flows.view_flowstagebinding",
                             "authentik_flows.view_flowtoken",
                             "authentik_flows.view_stage",
+                            "authentik_lifecycle.add_lifecycleiteration",
+                            "authentik_lifecycle.add_lifecyclerule",
+                            "authentik_lifecycle.add_review",
+                            "authentik_lifecycle.change_lifecycleiteration",
+                            "authentik_lifecycle.change_lifecyclerule",
+                            "authentik_lifecycle.change_review",
+                            "authentik_lifecycle.delete_lifecycleiteration",
+                            "authentik_lifecycle.delete_lifecyclerule",
+                            "authentik_lifecycle.delete_review",
+                            "authentik_lifecycle.view_lifecycleiteration",
+                            "authentik_lifecycle.view_lifecyclerule",
+                            "authentik_lifecycle.view_review",
                             "authentik_outposts.add_dockerserviceconnection",
                             "authentik_outposts.add_kubernetesserviceconnection",
                             "authentik_outposts.add_outpost",
@@ -5683,6 +6003,10 @@
                             "authentik_providers_ssf.view_ssfprovider",
                             "authentik_providers_ssf.view_stream",
                             "authentik_providers_ssf.view_streamevent",
+                            "authentik_providers_ws_federation.add_wsfederationprovider",
+                            "authentik_providers_ws_federation.change_wsfederationprovider",
+                            "authentik_providers_ws_federation.delete_wsfederationprovider",
+                            "authentik_providers_ws_federation.view_wsfederationprovider",
                             "authentik_rbac.access_admin_interface",
                             "authentik_rbac.add_initialpermissions",
                             "authentik_rbac.add_role",
@@ -5815,6 +6139,10 @@
                             "authentik_sources_telegram.view_telegramsource",
                             "authentik_sources_telegram.view_telegramsourcepropertymapping",
                             "authentik_sources_telegram.view_usertelegramsourceconnection",
+                            "authentik_stages_account_lockdown.add_accountlockdownstage",
+                            "authentik_stages_account_lockdown.change_accountlockdownstage",
+                            "authentik_stages_account_lockdown.delete_accountlockdownstage",
+                            "authentik_stages_account_lockdown.view_accountlockdownstage",
                             "authentik_stages_authenticator_duo.add_authenticatorduostage",
                             "authentik_stages_authenticator_duo.add_duodevice",
                             "authentik_stages_authenticator_duo.change_authenticatorduostage",
@@ -5996,13 +6324,11 @@
                         "type": "string",
                         "enum": [
                             "add_user",
-                            "assign_user_permissions",
                             "change_user",
                             "delete_user",
                             "impersonate",
                             "preview_user",
                             "reset_user_password",
-                            "unassign_user_permissions",
                             "view_user",
                             "view_user_applications"
                         ]
@@ -6276,6 +6602,11 @@
                     ],
                     "format": "date-time",
                     "title": "Expires"
+                },
+                "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Key"
                 }
             },
             "required": []
@@ -6314,6 +6645,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
+                },
+                "attributes": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Attributes"
                 }
             },
             "required": []
@@ -6461,6 +6797,315 @@
                             "change_endpointstage",
                             "delete_endpointstage",
                             "view_endpointstage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_connectors_fleet.fleetconnector": {
+            "type": "object",
+            "properties": {
+                "connector_uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Connector uuid"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
+                    "minLength": 1,
+                    "title": "Url"
+                },
+                "token": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Token"
+                },
+                "headers_mapping": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Headers mapping",
+                    "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
+                },
+                "map_users": {
+                    "type": "boolean",
+                    "title": "Map users"
+                },
+                "map_teams_access_group": {
+                    "type": "boolean",
+                    "title": "Map teams access group"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_fleet.fleetconnector_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_fleetconnector",
+                            "change_fleetconnector",
+                            "delete_fleetconnector",
+                            "view_fleetconnector"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_connectors_google_chrome.googlechromeconnector": {
+            "type": "object",
+            "properties": {
+                "connector_uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Connector uuid"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "credentials": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Credentials"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_connectors_google_chrome.googlechromeconnector_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_googlechromeconnector",
+                            "change_googlechromeconnector",
+                            "delete_googlechromeconnector",
+                            "view_googlechromeconnector"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_lifecycle.lifecycleiteration": {
+            "type": "object",
+            "properties": {
+                "content_type": {
+                    "type": "string",
+                    "enum": [
+                        "authentik_core.application",
+                        "authentik_core.group",
+                        "authentik_rbac.role"
+                    ],
+                    "title": "Content type"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_lifecycle.lifecycleiteration_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_lifecycleiteration",
+                            "change_lifecycleiteration",
+                            "delete_lifecycleiteration",
+                            "view_lifecycleiteration"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_lifecycle.lifecyclerule": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "content_type": {
+                    "type": "string",
+                    "enum": [
+                        "authentik_core.application",
+                        "authentik_core.group",
+                        "authentik_rbac.role"
+                    ],
+                    "title": "Content type"
+                },
+                "object_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Object id"
+                },
+                "interval": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Interval"
+                },
+                "grace_period": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Grace period"
+                },
+                "reviewer_groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Reviewer groups"
+                },
+                "min_reviewers": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 32767,
+                    "title": "Min reviewers"
+                },
+                "min_reviewers_is_per_group": {
+                    "type": "boolean",
+                    "title": "Min reviewers is per group"
+                },
+                "reviewers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[-a-zA-Z0-9_]+$"
+                    },
+                    "title": "Reviewers"
+                },
+                "notification_transports": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI."
+                    },
+                    "title": "Notification transports",
+                    "description": "Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_lifecycle.lifecyclerule_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_lifecyclerule",
+                            "change_lifecyclerule",
+                            "delete_lifecyclerule",
+                            "view_lifecyclerule"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_lifecycle.review": {
+            "type": "object",
+            "properties": {
+                "iteration": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Iteration"
+                },
+                "note": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Note"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_lifecycle.review_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_review",
+                            "change_review",
+                            "delete_review",
+                            "view_review"
                         ]
                     },
                     "user": {
@@ -6928,6 +7573,10 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Event retention"
+                },
+                "push_verify_certificates": {
+                    "type": "boolean",
+                    "title": "Push verify certificates"
                 }
             },
             "required": []
@@ -6948,6 +7597,167 @@
                             "change_ssfprovider",
                             "delete_ssfprovider",
                             "view_ssfprovider"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_providers_ws_federation.wsfederationprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authentication flow",
+                    "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
+                },
+                "authorization_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authorization flow",
+                    "description": "Flow used when authorizing this provider."
+                },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Property mappings"
+                },
+                "reply_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "minLength": 1,
+                    "title": "Reply url"
+                },
+                "wtrealm": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Wtrealm"
+                },
+                "assertion_valid_not_before": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Assertion valid not before",
+                    "description": "Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3)."
+                },
+                "assertion_valid_not_on_or_after": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Assertion valid not on or after",
+                    "description": "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "session_valid_not_on_or_after": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Session valid not on or after",
+                    "description": "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "name_id_mapping": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "NameID Property Mapping",
+                    "description": "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered"
+                },
+                "authn_context_class_ref_mapping": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "AuthnContextClassRef Property Mapping",
+                    "description": "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate."
+                },
+                "digest_algorithm": {
+                    "type": "string",
+                    "enum": [
+                        "http://www.w3.org/2000/09/xmldsig#sha1",
+                        "http://www.w3.org/2001/04/xmlenc#sha256",
+                        "http://www.w3.org/2001/04/xmldsig-more#sha384",
+                        "http://www.w3.org/2001/04/xmlenc#sha512"
+                    ],
+                    "title": "Digest algorithm"
+                },
+                "signature_algorithm": {
+                    "type": "string",
+                    "enum": [
+                        "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+                        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
+                        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384",
+                        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
+                        "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
+                    ],
+                    "title": "Signature algorithm"
+                },
+                "signing_kp": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Signing Keypair",
+                    "description": "Keypair used to sign outgoing Responses going to the Service Provider."
+                },
+                "encryption_kp": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption Keypair",
+                    "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
+                },
+                "sign_assertion": {
+                    "type": "boolean",
+                    "title": "Sign assertion"
+                },
+                "sign_logout_request": {
+                    "type": "boolean",
+                    "title": "Sign logout request"
+                },
+                "default_name_id_policy": {
+                    "type": "string",
+                    "enum": [
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+                    ],
+                    "title": "Default name id policy"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_ws_federation.wsfederationprovider_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_wsfederationprovider",
+                            "change_wsfederationprovider",
+                            "delete_wsfederationprovider",
+                            "view_wsfederationprovider"
                         ]
                     },
                     "user": {
@@ -6985,6 +7795,69 @@
                             "change_dataexport",
                             "delete_dataexport",
                             "view_dataexport"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_stages_account_lockdown.accountlockdownstage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "deactivate_user": {
+                    "type": "boolean",
+                    "title": "Deactivate user",
+                    "description": "Deactivate the user account (set is_active to False)"
+                },
+                "set_unusable_password": {
+                    "type": "boolean",
+                    "title": "Set unusable password",
+                    "description": "Set an unusable password for the user"
+                },
+                "delete_sessions": {
+                    "type": "boolean",
+                    "title": "Delete sessions",
+                    "description": "Delete all active sessions for the user"
+                },
+                "revoke_tokens": {
+                    "type": "boolean",
+                    "title": "Revoke tokens",
+                    "description": "Revoke all tokens for the user (API, app password, recovery, verification, OAuth)"
+                },
+                "self_service_completion_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Self service completion flow",
+                    "description": "Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_account_lockdown.accountlockdownstage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_accountlockdownstage",
+                            "change_accountlockdownstage",
+                            "delete_accountlockdownstage",
+                            "view_accountlockdownstage"
                         ]
                     },
                     "user": {
@@ -7201,12 +8074,17 @@
                         "system_task_exception",
                         "system_exception",
                         "configuration_error",
+                        "configuration_warning",
                         "model_created",
                         "model_updated",
                         "model_deleted",
                         "email_sent",
                         "update_available",
                         "export_ready",
+                        "review_initiated",
+                        "review_overdue",
+                        "review_attested",
+                        "review_completed",
                         "custom_"
                     ],
                     "title": "Action"
@@ -7318,12 +8196,17 @@
                                 "system_task_exception",
                                 "system_exception",
                                 "configuration_error",
+                                "configuration_warning",
                                 "model_created",
                                 "model_updated",
                                 "model_deleted",
                                 "email_sent",
                                 "update_available",
                                 "export_ready",
+                                "review_initiated",
+                                "review_overdue",
+                                "review_attested",
+                                "review_completed",
                                 "custom_"
                             ],
                             "title": "Action"
@@ -7486,6 +8369,12 @@
                     "type": "string",
                     "title": "Webhook url"
                 },
+                "webhook_ca": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Webhook ca",
+                    "description": "When set, the selected ceritifcate is used to validate the certificate of the webhook server."
+                },
                 "webhook_mapping_body": {
                     "type": "string",
                     "format": "uuid",
@@ -7642,7 +8531,9 @@
                         "content_left",
                         "content_right",
                         "sidebar_left",
-                        "sidebar_right"
+                        "sidebar_right",
+                        "sidebar_left_frame_background",
+                        "sidebar_right_frame_background"
                     ],
                     "title": "Layout"
                 },
@@ -7664,7 +8555,8 @@
                         "require_unauthenticated",
                         "require_superuser",
                         "require_redirect",
-                        "require_outpost"
+                        "require_outpost",
+                        "require_token"
                     ],
                     "title": "Authentication",
                     "description": "Required level of authentication and authorization to access a flow."
@@ -8064,12 +8956,17 @@
                         "system_task_exception",
                         "system_exception",
                         "configuration_error",
+                        "configuration_warning",
                         "model_created",
                         "model_updated",
                         "model_deleted",
                         "email_sent",
                         "update_available",
                         "export_ready",
+                        "review_initiated",
+                        "review_overdue",
+                        "review_attested",
+                        "review_completed",
                         "custom_"
                     ],
                     "title": "Action",
@@ -8156,14 +9053,18 @@
                         "authentik.blueprints",
                         "authentik.enterprise.audit",
                         "authentik.enterprise.endpoints.connectors.agent",
+                        "authentik.enterprise.endpoints.connectors.fleet",
+                        "authentik.enterprise.endpoints.connectors.google_chrome",
+                        "authentik.enterprise.lifecycle",
                         "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.radius",
                         "authentik.enterprise.providers.scim",
                         "authentik.enterprise.providers.ssf",
+                        "authentik.enterprise.providers.ws_federation",
                         "authentik.enterprise.reports",
-                        "authentik.enterprise.search",
+                        "authentik.enterprise.stages.account_lockdown",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
                         "authentik.enterprise.stages.source"
@@ -8283,19 +9184,34 @@
                         "authentik_tasks_schedules.schedule",
                         "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
+                        "authentik_endpoints_connectors_fleet.fleetconnector",
+                        "authentik_endpoints_connectors_google_chrome.googlechromeconnector",
+                        "authentik_lifecycle.lifecyclerule",
+                        "authentik_lifecycle.lifecycleiteration",
+                        "authentik_lifecycle.review",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
                         "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
                         "authentik_providers_ssf.ssfprovider",
+                        "authentik_providers_ws_federation.wsfederationprovider",
                         "authentik_reports.dataexport",
+                        "authentik_stages_account_lockdown.accountlockdownstage",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
+                },
+                "query": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Query"
                 }
             },
             "required": []
@@ -8505,7 +9421,6 @@
                             "CO",
                             "KM",
                             "CG",
-                            "CD",
                             "CK",
                             "CR",
                             "CI",
@@ -8514,6 +9429,7 @@
                             "CW",
                             "CY",
                             "CZ",
+                            "CD",
                             "DK",
                             "DJ",
                             "DM",
@@ -8552,7 +9468,6 @@
                             "GY",
                             "HT",
                             "HM",
-                            "VA",
                             "HN",
                             "HK",
                             "HU",
@@ -8694,6 +9609,7 @@
                             "UY",
                             "UZ",
                             "VU",
+                            "VA",
                             "VE",
                             "VN",
                             "VG",
@@ -9173,6 +10089,23 @@
                     "title": "Client Type",
                     "description": "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable"
                 },
+                "grant_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "authorization_code",
+                            "implicit",
+                            "hybrid",
+                            "refresh_token",
+                            "client_credentials",
+                            "password",
+                            "urn:ietf:params:oauth:grant-type:device_code"
+                        ],
+                        "title": "Grant types"
+                    },
+                    "title": "Grant types"
+                },
                 "client_id": {
                     "type": "string",
                     "maxLength": 255,
@@ -9242,6 +10175,14 @@
                                 "type": "string",
                                 "minLength": 1,
                                 "title": "Url"
+                            },
+                            "redirect_uri_type": {
+                                "type": "string",
+                                "enum": [
+                                    "authorization",
+                                    "logout"
+                                ],
+                                "title": "Redirect uri type"
                             }
                         },
                         "required": [
@@ -9998,11 +10939,10 @@
                     "title": "Audience",
                     "description": "Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added."
                 },
-                "issuer": {
+                "issuer_override": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Issuer",
-                    "description": "Also known as EntityID"
+                    "title": "Issuer override",
+                    "description": "Also known as EntityID. Providing a value overrides the default issuer generated by authentik."
                 },
                 "assertion_valid_not_before": {
                     "type": "string",
@@ -10088,6 +11028,10 @@
                 "sign_logout_request": {
                     "type": "boolean",
                     "title": "Sign logout request"
+                },
+                "sign_logout_response": {
+                    "type": "boolean",
+                    "title": "Sign logout response"
                 },
                 "sp_binding": {
                     "type": "string",
@@ -10259,7 +11203,8 @@
                     "type": "string",
                     "enum": [
                         "token",
-                        "oauth"
+                        "oauth",
+                        "oauth_interactive"
                     ],
                     "title": "Auth mode"
                 },
@@ -10280,7 +11225,9 @@
                         "default",
                         "aws",
                         "slack",
-                        "sfdc"
+                        "sfdc",
+                        "webex",
+                        "vcenter"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."
@@ -10295,11 +11242,6 @@
                     "type": "boolean",
                     "title": "Exclude users service account"
                 },
-                "filter_group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Filter group"
-                },
                 "sync_page_size": {
                     "type": "integer",
                     "minimum": 1,
@@ -10312,6 +11254,16 @@
                     "minLength": 1,
                     "title": "Sync page timeout",
                     "description": "Timeout for synchronization of a single page"
+                },
+                "group_filters": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Group filters used to define sync-scope for groups."
+                    },
+                    "title": "Group filters",
+                    "description": "Group filters used to define sync-scope for groups."
                 },
                 "dry_run": {
                     "type": "boolean",
@@ -10402,7 +11354,6 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "maxLength": 150,
                     "minLength": 1,
                     "title": "Name"
                 },
@@ -10433,7 +11384,6 @@
                             "authentik_core.add_user",
                             "authentik_core.add_user_to_group",
                             "authentik_core.add_usersourceconnection",
-                            "authentik_core.assign_user_permissions",
                             "authentik_core.change_application",
                             "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
@@ -10467,7 +11417,6 @@
                             "authentik_core.remove_user_from_group",
                             "authentik_core.reset_user_password",
                             "authentik_core.set_token_key",
-                            "authentik_core.unassign_user_permissions",
                             "authentik_core.view_application",
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
@@ -10520,6 +11469,7 @@
                             "authentik_endpoints_connectors_agent.add_agentconnector",
                             "authentik_endpoints_connectors_agent.add_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
@@ -10527,6 +11477,7 @@
                             "authentik_endpoints_connectors_agent.change_agentconnector",
                             "authentik_endpoints_connectors_agent.change_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
@@ -10534,6 +11485,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentconnector",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
@@ -10541,11 +11493,20 @@
                             "authentik_endpoints_connectors_agent.view_agentconnector",
                             "authentik_endpoints_connectors_agent.view_agentdeviceconnection",
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
+                            "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
                             "authentik_endpoints_connectors_agent.view_enrollmenttoken",
+                            "authentik_endpoints_connectors_fleet.add_fleetconnector",
+                            "authentik_endpoints_connectors_fleet.change_fleetconnector",
+                            "authentik_endpoints_connectors_fleet.delete_fleetconnector",
+                            "authentik_endpoints_connectors_fleet.view_fleetconnector",
+                            "authentik_endpoints_connectors_google_chrome.add_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.change_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.delete_googlechromeconnector",
+                            "authentik_endpoints_connectors_google_chrome.view_googlechromeconnector",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
@@ -10594,6 +11555,18 @@
                             "authentik_flows.view_flowstagebinding",
                             "authentik_flows.view_flowtoken",
                             "authentik_flows.view_stage",
+                            "authentik_lifecycle.add_lifecycleiteration",
+                            "authentik_lifecycle.add_lifecyclerule",
+                            "authentik_lifecycle.add_review",
+                            "authentik_lifecycle.change_lifecycleiteration",
+                            "authentik_lifecycle.change_lifecyclerule",
+                            "authentik_lifecycle.change_review",
+                            "authentik_lifecycle.delete_lifecycleiteration",
+                            "authentik_lifecycle.delete_lifecyclerule",
+                            "authentik_lifecycle.delete_review",
+                            "authentik_lifecycle.view_lifecycleiteration",
+                            "authentik_lifecycle.view_lifecyclerule",
+                            "authentik_lifecycle.view_review",
                             "authentik_outposts.add_dockerserviceconnection",
                             "authentik_outposts.add_kubernetesserviceconnection",
                             "authentik_outposts.add_outpost",
@@ -10797,6 +11770,10 @@
                             "authentik_providers_ssf.view_ssfprovider",
                             "authentik_providers_ssf.view_stream",
                             "authentik_providers_ssf.view_streamevent",
+                            "authentik_providers_ws_federation.add_wsfederationprovider",
+                            "authentik_providers_ws_federation.change_wsfederationprovider",
+                            "authentik_providers_ws_federation.delete_wsfederationprovider",
+                            "authentik_providers_ws_federation.view_wsfederationprovider",
                             "authentik_rbac.access_admin_interface",
                             "authentik_rbac.add_initialpermissions",
                             "authentik_rbac.add_role",
@@ -10929,6 +11906,10 @@
                             "authentik_sources_telegram.view_telegramsource",
                             "authentik_sources_telegram.view_telegramsourcepropertymapping",
                             "authentik_sources_telegram.view_usertelegramsourceconnection",
+                            "authentik_stages_account_lockdown.add_accountlockdownstage",
+                            "authentik_stages_account_lockdown.change_accountlockdownstage",
+                            "authentik_stages_account_lockdown.delete_accountlockdownstage",
+                            "authentik_stages_account_lockdown.view_accountlockdownstage",
                             "authentik_stages_authenticator_duo.add_authenticatorduostage",
                             "authentik_stages_authenticator_duo.add_duodevice",
                             "authentik_stages_authenticator_duo.change_authenticatorduostage",
@@ -11279,8 +12260,7 @@
                     "type": "string",
                     "enum": [
                         "MIT",
-                        "Heimdal",
-                        "other"
+                        "Heimdal"
                     ],
                     "title": "Kadmin type",
                     "description": "KAdmin server type"
@@ -12690,6 +13670,11 @@
                     "title": "Allow idp initiated",
                     "description": "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."
                 },
+                "force_authn": {
+                    "type": "boolean",
+                    "title": "Force authn",
+                    "description": "When enabled, the IdP will re-authenticate the user even if a session exists."
+                },
                 "name_id_policy": {
                     "type": "string",
                     "enum": [
@@ -13707,7 +14692,7 @@
                 "token_length": {
                     "type": "integer",
                     "minimum": 0,
-                    "maximum": 2147483647,
+                    "maximum": 100,
                     "title": "Token length"
                 }
             },
@@ -13932,6 +14917,19 @@
                     "title": "Webauthn user verification",
                     "description": "Enforce user verification for WebAuthn devices."
                 },
+                "webauthn_hints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "security-key",
+                            "client-device",
+                            "hybrid"
+                        ],
+                        "title": "Webauthn hints"
+                    },
+                    "title": "Webauthn hints"
+                },
                 "webauthn_allowed_device_types": {
                     "type": "array",
                     "items": {
@@ -13939,6 +14937,22 @@
                         "format": "uuid"
                     },
                     "title": "Webauthn allowed device types"
+                },
+                "email_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Email otp throttling factor"
+                },
+                "sms_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Sms otp throttling factor"
+                },
+                "totp_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Totp otp throttling factor"
+                },
+                "static_otp_throttling_factor": {
+                    "type": "number",
+                    "title": "Static otp throttling factor"
                 }
             },
             "required": []
@@ -14017,6 +15031,19 @@
                     ],
                     "title": "Resident key requirement"
                 },
+                "hints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "security-key",
+                            "client-device",
+                            "hybrid"
+                        ],
+                        "title": "Hints"
+                    },
+                    "title": "Hints"
+                },
                 "device_type_restrictions": {
                     "type": "array",
                     "items": {
@@ -14024,6 +15051,11 @@
                         "format": "uuid"
                     },
                     "title": "Device type restrictions"
+                },
+                "prevent_duplicate_devices": {
+                    "type": "boolean",
+                    "title": "Prevent duplicate devices",
+                    "description": "When enabled, a given device can only be registered once."
                 },
                 "max_attempts": {
                     "type": "integer",
@@ -14760,6 +15792,9 @@
                         "separator",
                         "hidden",
                         "static",
+                        "alert_info",
+                        "alert_warning",
+                        "alert_danger",
                         "ak-locale"
                     ],
                     "title": "Type"

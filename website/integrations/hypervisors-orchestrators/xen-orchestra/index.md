@@ -4,7 +4,7 @@ sidebar_label: Xen Orchestra
 support_level: community
 ---
 
-## What is Xen Orchestra
+## What is Xen Orchestra?
 
 > Xen Orchestra provides a user friendly web interface for every Xen based hypervisor (XenServer, xcp-ng, etc.).
 >
@@ -33,7 +33,7 @@ To support the integration of Xen Orchestra with authentik, you need to create a
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -41,7 +41,7 @@ To support the integration of Xen Orchestra with authentik, you need to create a
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://xenorchestra.company/signin/oidc/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -51,19 +51,19 @@ Xen Orchestra allows the configuration of the OpenID Connect authentication in t
 All of the URLs mentioned below can be copied & pasted from authentik (**Applications > Providers** > _the provider created earlier_).
 
 1. Navigate to Settings > Plugins
-2. Scroll to **auth-oidc** and click on the **+** icon on the right hand side.
+2. Scroll to **auth-oidc** and click on the **+** icon on the right side.
 3. Configure the auth-oidc plugin with the following configuration values:
 
 - Set the `Auto-discovery URL` to `https://authentik.company/application/o/xenorchestra/.well-known/openid-configuration`.
 - Set the `Client identifier (key)` to the Client ID from your notes.
 - Set the `Client secret` to the Client Secret from your notes.
-- Check the `Fill information (optional)`-Checkbox to open the advanced menu.
+- Check the `Fill information (optional)` checkbox to open the advanced menu.
 - Set the `Username field` to `username`
 - Set the `Scopes` to `openid profile email`
 
 4. Enable the `auth-oidc`-Plugin by toggling the switch above the configuration.
-5. You should be able to login with OIDC.
+5. You should be able to log in with OIDC.
 
 :::info
-The first time a user signs in, Xen Orchesta will create a new user with the same username used in authentik. If you want to map the users by their e-mail-address instead of their username, you have to set the `Username field` to `email` in the Xen Orchestra plugin configuration.
+The first time a user signs in, Xen Orchestra will create a new user with the same username used in authentik. If you want to map the users by their e-mail-address instead of their username, you have to set the `Username field` to `email` in the Xen Orchestra plugin configuration.
 :::

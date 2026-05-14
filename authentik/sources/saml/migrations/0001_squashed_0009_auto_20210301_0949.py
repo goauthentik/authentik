@@ -6,7 +6,7 @@ from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 import authentik.lib.utils.time
-from authentik.sources.saml.processors import constants
+from authentik.common.saml import constants
 
 
 def update_algorithms(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):

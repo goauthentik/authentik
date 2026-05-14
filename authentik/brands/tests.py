@@ -6,7 +6,6 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.brands.api import Themes
 from authentik.brands.models import Brand
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand
@@ -21,12 +20,15 @@ class TestBrands(APITestCase):
 
     def setUp(self):
         super().setUp()
-        self.default_flags = {}
-        for flag in Flag.available():
-            _flag = flag()
-            if _flag.visibility == "public":
-                self.default_flags[_flag.key] = _flag.get()
         Brand.objects.all().delete()
+
+    @property
+    def default_flags(self) -> dict[str, object]:
+        """Get current public flags.
+
+        Some tests define temporary Flag subclasses, so this can't be cached in setUp.
+        """
+        return {flag().key: flag.get() for flag in Flag.available(visibility="public")}
 
     def test_current_brand(self):
         """Test Current brand API"""
@@ -35,12 +37,14 @@ class TestBrands(APITestCase):
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_logo_themed_urls": None,
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_favicon_themed_urls": None,
                 "branding_title": "authentik",
                 "branding_custom_css": "",
                 "matched_domain": brand.domain,
                 "ui_footer_links": [],
-                "ui_theme": Themes.AUTOMATIC,
+                "ui_theme": "automatic",
                 "default_locale": "",
                 "flags": self.default_flags,
             },
@@ -55,12 +59,14 @@ class TestBrands(APITestCase):
             ).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_logo_themed_urls": None,
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_favicon_themed_urls": None,
                 "branding_title": "custom",
                 "branding_custom_css": "",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": [],
-                "ui_theme": Themes.AUTOMATIC,
+                "ui_theme": "automatic",
                 "default_locale": "",
                 "flags": self.default_flags,
             },
@@ -72,12 +78,14 @@ class TestBrands(APITestCase):
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_logo_themed_urls": None,
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_favicon_themed_urls": None,
                 "branding_title": "authentik",
                 "branding_custom_css": "",
                 "matched_domain": "fallback",
                 "ui_footer_links": [],
-                "ui_theme": Themes.AUTOMATIC,
+                "ui_theme": "automatic",
                 "default_locale": "",
                 "flags": self.default_flags,
             },
@@ -94,12 +102,14 @@ class TestBrands(APITestCase):
             response,
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_logo_themed_urls": None,
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_favicon_themed_urls": None,
                 "branding_title": "authentik",
                 "branding_custom_css": "",
                 "matched_domain": "authentik-default",
                 "ui_footer_links": [],
-                "ui_theme": Themes.AUTOMATIC,
+                "ui_theme": "automatic",
                 "default_locale": "",
                 "flags": self.default_flags,
             },
@@ -117,12 +127,14 @@ class TestBrands(APITestCase):
             response,
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_logo_themed_urls": None,
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_favicon_themed_urls": None,
                 "branding_title": "authentik",
                 "branding_custom_css": "",
                 "matched_domain": "authentik-default",
                 "ui_footer_links": [],
-                "ui_theme": Themes.AUTOMATIC,
+                "ui_theme": "automatic",
                 "default_locale": "",
                 "flags": self.default_flags,
             },
@@ -133,12 +145,14 @@ class TestBrands(APITestCase):
             ).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_logo_themed_urls": None,
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_favicon_themed_urls": None,
                 "branding_title": "custom",
                 "branding_custom_css": "",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": [],
-                "ui_theme": Themes.AUTOMATIC,
+                "ui_theme": "automatic",
                 "default_locale": "",
                 "flags": self.default_flags,
             },
@@ -154,12 +168,14 @@ class TestBrands(APITestCase):
             ).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_logo_themed_urls": None,
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_favicon_themed_urls": None,
                 "branding_title": "custom-strong",
                 "branding_custom_css": "",
                 "matched_domain": "foo.bar.baz",
                 "ui_footer_links": [],
-                "ui_theme": Themes.AUTOMATIC,
+                "ui_theme": "automatic",
                 "default_locale": "",
                 "flags": self.default_flags,
             },
@@ -175,12 +191,14 @@ class TestBrands(APITestCase):
             ).content.decode(),
             {
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_logo_themed_urls": None,
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_favicon_themed_urls": None,
                 "branding_title": "custom-weak",
                 "branding_custom_css": "",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": [],
-                "ui_theme": Themes.AUTOMATIC,
+                "ui_theme": "automatic",
                 "default_locale": "",
                 "flags": self.default_flags,
             },
@@ -256,12 +274,14 @@ class TestBrands(APITestCase):
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
                 "branding_logo": "https://goauthentik.io/img/icon.png",
+                "branding_logo_themed_urls": None,
                 "branding_favicon": "https://goauthentik.io/img/icon.png",
+                "branding_favicon_themed_urls": None,
                 "branding_title": "authentik",
                 "branding_custom_css": "",
                 "matched_domain": brand.domain,
                 "ui_footer_links": [],
-                "ui_theme": Themes.AUTOMATIC,
+                "ui_theme": "automatic",
                 "default_locale": "",
                 "flags": self.default_flags,
             },

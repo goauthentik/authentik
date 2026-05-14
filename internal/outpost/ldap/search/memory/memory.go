@@ -10,7 +10,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
@@ -20,6 +20,7 @@ import (
 	"goauthentik.io/internal/outpost/ldap/search/direct"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
+	api "goauthentik.io/packages/client-go"
 )
 
 type MemorySearcher struct {
@@ -52,13 +53,13 @@ func NewMemorySearcher(si server.LDAPServerInstance, existing search.Searcher) *
 
 func (ms *MemorySearcher) fetch() {
 	// Error is not handled here, we get an empty/truncated list and the error is logged
-	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
-		PageSize: 100,
+	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
+		PageSize: config.Get().LDAP.PageSize,
 		Logger:   ms.log,
 	})
 	ms.users = users
-	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true).IncludeParents(true), ak.PaginatorOptions{
-		PageSize: 100,
+	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true).IncludeParents(true), ak.PaginatorOptions{
+		PageSize: config.Get().LDAP.PageSize,
 		Logger:   ms.log,
 	})
 	ms.groups = groups
@@ -165,7 +166,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				for _, u := range g.UsersObj {
 					if flag.UserPk == u.Pk {
 						// TODO: Is there a better way to clone this object?
-						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, []api.RelatedGroup{}, []api.PartialUser{u}, []api.Role{}, []string{}, []api.RelatedGroup{})
+						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, []api.RelatedGroup{}, []api.PartialUser{u}, []api.Role{}, nil, []string{}, []api.RelatedGroup{})
 						fg.SetUsers([]int32{flag.UserPk})
 						fg.SetAttributes(g.Attributes)
 						fg.SetIsSuperuser(*g.IsSuperuser)

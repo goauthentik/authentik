@@ -4,7 +4,7 @@ sidebar_label: Hoop.dev
 support_level: community
 ---
 
-## What is Hoop.dev
+## What is Hoop.dev?
 
 > Hoop.dev is an access gateway for databases and servers with AI-powered automations that eliminate cumbersome access policies and break-glass workflows without compromising security.
 >
@@ -28,22 +28,22 @@ To support the integration of Hoop.dev with authentik, you need to create an app
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://hoop.company/api/callback`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Hoop.dev configuration
 
-To support the integration of Hoop.dev with authentik, you must configure it to use authentik as it's identity provider.
+To support the integration of Hoop.dev with authentik, you must configure it to use authentik as its identity provider.
 
-1. Create the Kubernetes ConfigMap for `hoopgateway` deploment or set corresponding environment variables with the **Client ID**, **Client Secret** and **slug** values from the authentik provider created earlier:
+1. Create the Kubernetes ConfigMap for `hoopgateway` deployment or set corresponding environment variables with the **Client ID**, **Client Secret**, and **slug** values from the authentik provider created earlier:
 
 ```yaml
 config:
@@ -58,7 +58,7 @@ config:
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Hoop.dev, log in using the command below. Once authenticated, you should be signed into Hoop.dev network.
+To confirm that authentik is properly configured with Hoop.dev, log in using the command below. Once authenticated, you should be signed into the Hoop.dev network.
 
 ```bash
 hoop config create --api-url https://hoop.company
@@ -67,4 +67,4 @@ hoop login
 
 ## Resources
 
-- [Hoop.dev Documentation - Oauth2/OIDC Authentication](https://hoop.dev/docs/setup/configuration/env-vars#oauth2%2Foidc-authentication)
+- [Hoop.dev Documentation - OAuth2/OIDC Authentication](https://hoop.dev/docs/setup/configuration/env-vars#oauth2%2Foidc-authentication)

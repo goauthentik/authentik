@@ -12,6 +12,7 @@ class DeviceAccessGroupSerializer(ModelSerializer):
         fields = [
             "pbm_uuid",
             "name",
+            "attributes",
         ]
 
 

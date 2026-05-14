@@ -5,8 +5,9 @@ import uuid
 from base64 import b64decode, urlsafe_b64encode
 from binascii import Error
 from hashlib import sha256
+from hmac import compare_digest
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, unquote, urlencode, urlparse, urlunparse
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.http.response import HttpResponseRedirect
@@ -121,7 +122,11 @@ def extract_client_auth(request: HttpRequest) -> tuple[str, str]:
         try:
             user_pass = b64decode(b64_user_pass).decode("utf-8").partition(":")
             client_id, _, client_secret = user_pass
-        except (ValueError, Error):
+            # RFC 6749 requires client credentials in Basic auth to be form-encoded first.
+            # We only percent-decode here so raw `+` characters keep their previous meaning.
+            client_id = unquote(client_id)
+            client_secret = unquote(client_secret)
+        except ValueError, Error:
             client_id = client_secret = ""  # nosec
     else:
         client_id = request.POST.get("client_id", "")
@@ -206,7 +211,9 @@ def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
     provider, client_id, client_secret = provider_from_request(request)
     if not provider:
         return None
-    if client_id != provider.client_id or client_secret != provider.client_secret:
+    if not compare_digest(client_id, provider.client_id) or not compare_digest(
+        client_secret, provider.client_secret
+    ):
         LOGGER.debug("(basic) Provider for basic auth does not exist")
         return None
     CTX_AUTH_VIA.set("oauth_client_secret")
@@ -259,4 +266,33 @@ def create_logout_token(
     if session_key:
         payload["sid"] = hash_session_key(session_key)
     # Encode the token
-    return provider.encode(payload)
+    return provider.encode(payload, jwt_type="logout+jwt")
+
+
+def build_frontchannel_logout_url(
+    provider: OAuth2Provider,
+    request: HttpRequest,
+    session_key: str | None = None,
+) -> str | None:
+    """Build frontchannel logout URL with iss and sid parameters.
+
+    Returns None if provider doesn't have a logout_uri configured.
+    """
+    if not provider.logout_uri:
+        return None
+
+    parsed_url = urlparse(provider.logout_uri)
+
+    query_params = {"iss": provider.get_issuer(request)}
+    if session_key:
+        query_params["sid"] = hash_session_key(session_key)
+
+    # Preserve existing query params
+    if parsed_url.query:
+        existing_params = parse_qs(parsed_url.query, keep_blank_values=True)
+        for key, value in existing_params.items():
+            if key not in query_params:
+                query_params[key] = value[0] if len(value) == 1 else value
+
+    parsed_url = parsed_url._replace(query=urlencode(query_params))
+    return urlunparse(parsed_url)

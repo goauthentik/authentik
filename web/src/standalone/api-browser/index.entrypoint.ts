@@ -1,5 +1,5 @@
-// sort-imports-ignore
 import "rapidoc";
+import "#types/rapi-doc";
 
 import styles from "./index.entrypoint.css";
 
@@ -9,12 +9,20 @@ import { getCookie } from "#common/utils";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { renderImage } from "#elements/utils/images";
+import { ThemedImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+export const BEFORE_TRY_EVENT = "before-try";
+
+export interface BeforeTryEventDetail {
+    request: {
+        headers: Headers;
+    };
+}
 
 function rgba2hex(cssValue: string) {
     const matches = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/.exec(cssValue);
@@ -43,6 +51,15 @@ export class APIBrowser extends WithBrandConfig(Interface) {
 
     @state()
     textColor = "#000000";
+
+    #appendCSRFHeader = (event: CustomEvent<BeforeTryEventDetail>) => {
+        event.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
+    };
+
+    constructor() {
+        super();
+        this.addEventListener(BEFORE_TRY_EVENT, this.#appendCSRFHeader);
+    }
 
     #synchronizeTheme = () => {
         const style = getComputedStyle(document.body);
@@ -82,18 +99,15 @@ export class APIBrowser extends WithBrandConfig(Interface) {
                 allow-spec-url-load="false"
                 allow-spec-file-load="false"
                 show-method-in-nav-bar="as-colored-text"
-                @before-try=${(
-                    e: CustomEvent<{
-                        request: {
-                            headers: Headers;
-                        };
-                    }>,
-                ) => {
-                    e.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
-                }}
             >
                 <div slot="nav-logo">
-                    ${renderImage(this.brandingLogo, msg("authentik Logo"), "logo")}
+                    ${ThemedImage({
+                        src: this.brandingLogo,
+                        alt: msg("authentik Logo"),
+                        className: "logo",
+                        theme: this.activeTheme,
+                        themedUrls: this.brandingLogoThemedUrls,
+                    })}
                 </div>
             </rapi-doc>
         `;
@@ -103,5 +117,11 @@ export class APIBrowser extends WithBrandConfig(Interface) {
 declare global {
     interface HTMLElementTagNameMap {
         "ak-api-browser": APIBrowser;
+    }
+}
+
+declare global {
+    interface HTMLElementEventMap {
+        [BEFORE_TRY_EVENT]: CustomEvent<BeforeTryEventDetail>;
     }
 }

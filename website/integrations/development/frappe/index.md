@@ -8,7 +8,7 @@ support_level: community
 These instructions apply to all projects in the Frappe Family, including ERPNext.
 :::
 
-## What is Frappe
+## What is Frappe?
 
 > Frappe is a full stack, batteries-included, web framework written in Python and JavaScript.
 >
@@ -33,7 +33,7 @@ To support the integration of Frappe with authentik, you need to create an appli
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -42,7 +42,7 @@ To support the integration of Frappe with authentik, you need to create an appli
     - Set a `Strict` redirect URI to `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/<provider-name>`. Replace `<provider-name>` with the name of the provider in Frappe.
     - Select any available signing key.
     - Under **Advanced protocol settings**, set **Subject mode** to be `Based on the Users's username`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

@@ -2,9 +2,8 @@
 
 from django.apps import apps
 from django.db.models import Model
-from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema, extend_schema_field
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -13,6 +12,7 @@ from rest_framework.views import APIView
 from yaml import ScalarNode
 
 from authentik.api.validation import validate
+from authentik.blueprints.api import check_blueprint_perms
 from authentik.blueprints.v1.common import (
     Blueprint,
     BlueprintEntry,
@@ -165,21 +165,7 @@ class TransactionalApplicationView(APIView):
     def put(self, request: Request, body: TransactionApplicationSerializer) -> Response:
         """Convert data into a blueprint, validate it and apply it"""
         blueprint: Blueprint = body.validated_data
-        for entry in blueprint.entries:
-            full_model = entry.get_model(blueprint)
-            app, __, model = full_model.partition(".")
-            if not request.user.has_perm(f"{app}.add_{model}"):
-                raise PermissionDenied(
-                    {
-                        entry.id: _(
-                            "User lacks permission to create {model}".format_map(
-                                {
-                                    "model": full_model,
-                                }
-                            )
-                        )
-                    }
-                )
+        check_blueprint_perms(blueprint, request.user, explicit_action="add")
         importer = Importer(blueprint, {})
         applied = importer.apply()
         response = {"applied": False, "logs": []}

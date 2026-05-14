@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       next_version:
-        description: Next major version (for example, if releasing 2042.2, this is 2042.4)
+        description: Next version (for example, if you're currently releasing 2026.5, then enter 2026.8)
         required: true
         type: string
 
@@ -29,12 +29,12 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
       - name: Checkout main
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           ref: main
           token: "${{ steps.app-token.outputs.token }}"
@@ -57,23 +57,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
       - name: Checkout main
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           ref: main
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          dependencies: "system,python,go,node,runtime,rust-nightly"
       - name: Run migrations
         run: make migrate
       - name: Bump version
         run: "make bump version=${{ inputs.next_version }}.0-rc1"
+      - name: Re-generate API Clients
+        run: make gen
       - name: Create pull request
-        uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v7
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v7
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch: release-bump-${{ inputs.next_version }}

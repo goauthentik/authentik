@@ -16,6 +16,6 @@ Provide a few use cases, with examples/scenarios when possible.
 
 Provide more conceptual details.
 
-##Important considerations
+## Important considerations
 
 List anything users should know before implementing the feature/technology.

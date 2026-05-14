@@ -32,7 +32,7 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Dummy stage used for testing. Shows a simple continue button and always passes.",

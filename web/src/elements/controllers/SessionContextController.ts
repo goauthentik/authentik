@@ -1,79 +1,202 @@
-import type { APIResult } from "#common/api/responses";
-import { isCausedByAbortError, parseAPIResponseError } from "#common/errors/network";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { type APIResult, isAPIResultReady } from "#common/api/responses";
+import { globalAK } from "#common/global";
+import { applyThemeChoice, formatColorScheme } from "#common/theme";
+import { createUIConfig, DefaultUIConfig } from "#common/ui/config";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
+import { me } from "#common/users";
 
-import { AKConfigMixin } from "#elements/mixins/config";
-import { type LocaleMixin } from "#elements/mixins/locale";
-import { SessionContext, SessionMixin } from "#elements/mixins/session";
+import {
+    CommandPaletteState,
+    PaletteCommandDefinitionInit,
+    PaletteCommandNamespace,
+} from "#elements/commands/shared";
+import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
+import { AKConfigMixin, kAKConfig } from "#elements/mixins/config";
+import { kAKLocale, type LocaleMixin } from "#elements/mixins/locale";
+import {
+    canAccessAdmin,
+    SessionContext,
+    SessionMixin,
+    UIConfigContext,
+} from "#elements/mixins/session";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import type { ReactiveElementHost } from "#elements/types";
 
-import { SessionUser } from "@goauthentik/api";
+import { CoreApi, SessionUser } from "@goauthentik/api";
+
+import { setUser } from "@sentry/browser";
 
 import { ContextProvider } from "@lit/context";
-import type { ReactiveController } from "lit";
+import { msg } from "@lit/localize";
 
 /**
  * A controller that provides the session information to the element.
  *
  * @see {@linkcode SessionMixin}
  */
-export class SessionContextController implements ReactiveController {
-    #log = console.debug.bind(console, `authentik/controller/session`);
-    #abortController: null | AbortController = null;
+export class SessionContextController extends ReactiveContextController<APIResult<SessionUser>> {
+    protected static override logPrefix = "session";
 
-    #host: ReactiveElementHost<LocaleMixin & SessionMixin & AKConfigMixin>;
-    #context: ContextProvider<SessionContext>;
+    public host: ReactiveElementHost<LocaleMixin & SessionMixin & AKConfigMixin>;
+    public context: ContextProvider<SessionContext>;
+
+    protected uiConfigContext: ContextProvider<UIConfigContext>;
 
     constructor(
         host: ReactiveElementHost<SessionMixin & AKConfigMixin>,
         initialValue?: APIResult<SessionUser>,
     ) {
-        this.#host = host;
+        super();
 
-        this.#context = new ContextProvider(this.#host, {
+        this.host = host;
+
+        this.context = new ContextProvider(this.host, {
             context: SessionContext,
             initialValue: initialValue ?? { loading: true, error: null },
         });
+
+        this.uiConfigContext = new ContextProvider(this.host, {
+            context: UIConfigContext,
+            initialValue: DefaultUIConfig,
+        });
     }
 
-    #fetch = () => {
-        if (!this.#host.refreshSession) {
-            this.#log("No refreshSession method available, skipping session fetch");
-            return Promise.resolve();
+    protected apiEndpoint(requestInit?: RequestInit) {
+        return me(requestInit);
+    }
+
+    #refreshCommandsFrameID = -1;
+
+    #commands = new CommandPaletteState({
+        target: this.host,
+    });
+
+    protected doRefresh(session: APIResult<SessionUser>): void {
+        this.context.setValue(session);
+        this.host.session = session;
+
+        if (!isAPIResultReady(session)) return;
+
+        const localeHint: string | undefined = session.user.settings.locale;
+
+        if (localeHint) {
+            const locale = autoDetectLanguage(localeHint);
+            this.logger.info(`Activating user's configured locale '${locale}'`);
+            this.host[kAKLocale]?.setLocale(locale);
         }
 
-        this.#abortController?.abort();
+        const { settings = {} } = session.user || {};
 
-        this.#abortController = new AbortController();
+        const nextUIConfig = createUIConfig(settings);
+        this.uiConfigContext.setValue(nextUIConfig);
+        this.host.uiConfig = nextUIConfig;
+        const colorScheme = formatColorScheme(nextUIConfig.theme.base);
 
-        return this.#host
-            .refreshSession({
-                signal: this.#abortController.signal,
-            })
-            .then((session) => {
-                this.#context.setValue(session);
-                this.#host.requestUpdate?.();
-            })
-            .catch(async (error: unknown) => {
-                if (isCausedByAbortError(error)) {
-                    this.#log("Aborted fetching session");
-                }
+        applyThemeChoice(colorScheme, this.host.ownerDocument);
 
-                const parsedError = parseAPIResponseError(error);
-                console.error("authentik/controller/session: Failed to fetch session", parsedError);
+        const config = this.host[kAKConfig];
 
-                throw error;
-            })
-            .finally(() => {
-                this.#abortController = null;
-            });
-    };
+        if (config?.errorReporting.sendPii) {
+            this.logger.info("Sentry with PII enabled.");
 
-    public hostConnected() {
-        this.#fetch();
+            setUser({ email: session.user.email });
+        }
+
+        this.#refreshCommandsFrameID = requestAnimationFrame(this.#refreshCommands);
     }
 
-    public hostDisconnected() {
-        this.#context.clearCallbacks();
-        this.#abortController?.abort();
+    #refreshCommands = (): void => {
+        const session = this.context.value;
+
+        if (!isAPIResultReady(session)) {
+            this.#commands.clear();
+            return;
+        }
+
+        const base = globalAK().api.base;
+        const group = msg("Session");
+        const weight = 0.5;
+
+        const commands: PaletteCommandDefinitionInit[] = [
+            {
+                namespace: PaletteCommandNamespace.Navigation,
+
+                label: msg("User settings"),
+                prefix: msg("Navigate to", { id: "command-palette.prefix.navigate" }),
+                group,
+                weight,
+                action: () => {
+                    window.location.assign(`${base}if/user/#/settings`);
+                },
+            },
+        ];
+
+        const { notificationDrawer, apiDrawer } = this.host.uiConfig?.enabledFeatures ?? {};
+        const drawerGroup = msg("Interface");
+
+        if (apiDrawer) {
+            commands.push({
+                label: msg("API requests drawer", {
+                    id: "command-palette.label.api-requests-drawer",
+                }),
+                prefix: msg("Toggle", { id: "command-palette.prefix.toggle" }),
+                group: drawerGroup,
+                weight,
+                action: AKDrawerChangeEvent.dispatchAPIToggle,
+            });
+        }
+
+        if (notificationDrawer) {
+            commands.push({
+                label: msg("Notifications drawer", {
+                    id: "command-palette.label.notifications-drawer",
+                }),
+                prefix: msg("Toggle", { id: "command-palette.prefix.toggle" }),
+                group: drawerGroup,
+                weight,
+
+                action: AKDrawerChangeEvent.dispatchNotificationsToggle,
+            });
+        }
+
+        if (canAccessAdmin(session.user)) {
+            commands.push({
+                label: msg("Admin interface"),
+                prefix: msg("Navigate to", { id: "command-palette.prefix.navigate" }),
+                group,
+                weight,
+                action: () => {
+                    window.location.assign(`${base}if/admin/`);
+                },
+            });
+        }
+
+        if (session.original) {
+            commands.push({
+                label: msg("Stop impersonation"),
+                suffix: msg("Reloads page", { id: "command-palette.prefix.reloads-page" }),
+                group,
+                weight,
+                action: async () => {
+                    await new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve();
+                    window.location.reload();
+                },
+            });
+        }
+
+        this.#commands.set(commands);
+    };
+
+    public override hostConnected() {
+        this.logger.debug("Host connected, refreshing session");
+        this.refresh();
+    }
+
+    public override hostDisconnected() {
+        this.context.clearCallbacks();
+        cancelAnimationFrame(this.#refreshCommandsFrameID);
+
+        super.hostDisconnected();
     }
 }

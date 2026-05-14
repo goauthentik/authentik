@@ -6,6 +6,7 @@ from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import AnonymousUser, Permission
+from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
@@ -13,6 +14,7 @@ from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,
@@ -22,6 +24,7 @@ from django_filters.filters import (
     UUIDFilter,
 )
 from django_filters.filterset import FilterSet
+from djangoql.schema import BoolField, StrField
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     OpenApiParameter,
@@ -30,7 +33,6 @@ from drf_spectacular.utils import (
     extend_schema_field,
     inline_serializer,
 )
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -42,6 +44,7 @@ from rest_framework.fields import (
     IntegerField,
     ListField,
     SerializerMethodField,
+    UUIDField,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -55,6 +58,10 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.authentication import TokenAuthentication
+from authentik.api.search.fields import (
+    ChoiceSearchField,
+    JSONSearchField,
+)
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
@@ -72,12 +79,14 @@ from authentik.core.middleware import (
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_PATH_SERVICE_ACCOUNT,
+    USERNAME_MAX_LENGTH,
     Group,
     Session,
     Token,
     TokenIntents,
     User,
     UserTypes,
+    default_token_duration,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -87,6 +96,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -96,6 +106,10 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
+
+INVALID_PASSWORD_HASH_MESSAGE = gettext_lazy(
+    "Invalid password hash format. Must be a valid Django password hash."
+)
 
 
 class ParamUserSerializer(PassiveSerializer):
@@ -123,13 +137,12 @@ class PartialGroupSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     """User Serializer"""
 
-    is_superuser = BooleanField(read_only=True)
+    is_superuser = SerializerMethodField()
     avatar = SerializerMethodField()
     attributes = JSONDictField(required=False)
     groups = PrimaryKeyRelatedField(
         allow_empty=True,
         many=True,
-        source="ak_groups",
         queryset=Group.objects.all().order_by("name"),
         default=list,
     )
@@ -143,7 +156,7 @@ class UserSerializer(ModelSerializer):
     roles_obj = SerializerMethodField(allow_null=True)
     uid = CharField(read_only=True)
     username = CharField(
-        max_length=150,
+        max_length=USERNAME_MAX_LENGTH,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
 
@@ -161,11 +174,19 @@ class UserSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_roles", "true")).lower() == "true"
 
+    @extend_schema_field(BooleanField)
+    def get_is_superuser(self, instance: User) -> bool:
+        """Use annotation if available to avoid N+1 query"""
+        ann = getattr(instance, "_annotated_is_superuser", None)
+        if ann is not None:
+            return ann
+        return instance.is_superuser
+
     @extend_schema_field(PartialGroupSerializer(many=True))
     def get_groups_obj(self, instance: User) -> list[PartialGroupSerializer] | None:
         if not self._should_include_groups:
             return None
-        return PartialGroupSerializer(instance.ak_groups, many=True).data
+        return PartialGroupSerializer(instance.groups, many=True).data
 
     @extend_schema_field(RoleSerializer(many=True))
     def get_roles_obj(self, instance: User) -> list[RoleSerializer] | None:
@@ -174,47 +195,79 @@ class UserSerializer(ModelSerializer):
         return RoleSerializer(instance.roles, many=True).data
 
     def __init__(self, *args, **kwargs):
+        """Setting password and permissions directly is allowed only in blueprints."""
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
+            self.fields["password_hash"] = CharField(required=False, allow_null=True)
             self.fields["permissions"] = ListField(
                 required=False,
                 child=ChoiceField(choices=get_permission_choices()),
             )
 
     def create(self, validated_data: dict) -> User:
-        """If this serializer is used in the blueprint context, we allow for
-        directly setting a password. However should be done via the `set_password`
-        method instead of directly setting it like rest_framework."""
-        password = validated_data.pop("password", None)
-        perms_qs = Permission.objects.filter(
-            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        ).values_list("content_type__app_label", "codename")
-        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
+        """Create a user, with blueprint-only password and permission writes."""
+        is_blueprint = SERIALIZER_CONTEXT_BLUEPRINT in self.context
+        if is_blueprint:
+            password = validated_data.pop("password", None)
+            password_hash = validated_data.pop("password_hash", None)
+            permissions = validated_data.pop("permissions", [])
+            self._validate_password_inputs(password, password_hash)
+
         instance: User = super().create(validated_data)
-        self._set_password(instance, password)
-        instance.assign_perms_to_managed_role(perms_list)
+        if is_blueprint:
+            self._set_password(instance, password, password_hash)
+            perms_qs = Permission.objects.filter(
+                codename__in=[permission.split(".")[1] for permission in permissions]
+            ).values_list("content_type__app_label", "codename")
+            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
+            instance.assign_perms_to_managed_role(perms_list)
+        self._ensure_password_not_empty(instance)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
-        """Same as `create` above, set the password directly if we're in a blueprint
-        context"""
-        password = validated_data.pop("password", None)
-        perms_qs = Permission.objects.filter(
-            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
-        ).values_list("content_type__app_label", "codename")
-        perms_list = [f"{ct}.{name}" for ct, name in list(perms_qs)]
+        """Update a user, with blueprint-only password and permission writes."""
+        is_blueprint = SERIALIZER_CONTEXT_BLUEPRINT in self.context
+        if is_blueprint:
+            password = validated_data.pop("password", None)
+            password_hash = validated_data.pop("password_hash", None)
+            permissions = validated_data.pop("permissions", [])
+            self._validate_password_inputs(password, password_hash)
+
         instance = super().update(instance, validated_data)
-        self._set_password(instance, password)
-        instance.assign_perms_to_managed_role(perms_list)
+        if is_blueprint:
+            self._set_password(instance, password, password_hash)
+            perms_qs = Permission.objects.filter(
+                codename__in=[permission.split(".")[1] for permission in permissions]
+            ).values_list("content_type__app_label", "codename")
+            perms_list = [f"{ct}.{name}" for ct, name in perms_qs]
+            instance.assign_perms_to_managed_role(perms_list)
+        self._ensure_password_not_empty(instance)
         return instance
 
-    def _set_password(self, instance: User, password: str | None):
-        """Set password of user if we're in a blueprint context, and if it's an empty
-        string then use an unusable password"""
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and password:
+    def _validate_password_inputs(self, password: str | None, password_hash: str | None):
+        """Validate mutually-exclusive password inputs before any model mutation."""
+        if password is not None and password_hash is not None:
+            raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
+        if password_hash is None:
+            return
+        try:
+            User.validate_password_hash(password_hash)
+        except ValueError as exc:
+            LOGGER.warning("Failed to identify password hash format", exc_info=exc)
+            raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
+
+    def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
+        """Set password from plain text or hash."""
+        if password_hash is not None:
+            instance.set_password_from_hash(password_hash)
+            instance.save()
+        elif password:
             instance.set_password(password)
             instance.save()
+
+    def _ensure_password_not_empty(self, instance: User):
+        """Store an explicit unusable password instead of an empty password field."""
         if len(instance.password) == 0:
             instance.set_unusable_password()
             instance.save()
@@ -239,14 +292,44 @@ class UserSerializer(ModelSerializer):
             and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT
             and user_type != UserTypes.INTERNAL_SERVICE_ACCOUNT.value
         ):
-            raise ValidationError("Can't change internal service account to other user type.")
+            raise ValidationError(_("Can't change internal service account to other user type."))
         if not self.instance and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT.value:
-            raise ValidationError("Setting a user to internal service account is not allowed.")
+            raise ValidationError(_("Setting a user to internal service account is not allowed."))
         return user_type
+
+    def validate_groups(self, groups: list) -> list:
+        """Require enable_group_superuser permission when adding a user to a superuser group."""
+        request: Request = self.context.get("request", None)
+        if not request:
+            return groups
+        current_groups = set(self.instance.groups.all()) if self.instance else set()
+        for group in groups:
+            if not group.is_superuser:
+                continue
+            if group in current_groups:
+                continue
+            if not request.user.has_perm("authentik_core.enable_group_superuser"):
+                raise ValidationError(
+                    _("User does not have permission to add members to a superuser group.")
+                )
+        return groups
+
+    def validate_roles(self, roles: list) -> list:
+        """Require change_role permission when assigning new roles to a user."""
+        request: Request = self.context.get("request", None)
+        if not request:
+            return roles
+        current_roles = set(self.instance.roles.all()) if self.instance else set()
+        new_roles = [r for r in roles if r not in current_roles]
+        if not new_roles:
+            return roles
+        if not request.user.has_perm("authentik_rbac.change_role"):
+            raise ValidationError(_("User does not have permission to assign roles."))
+        return roles
 
     def validate(self, attrs: dict) -> dict:
         if self.instance and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            raise ValidationError("Can't modify internal service account users")
+            raise ValidationError(_("Can't modify internal service account users"))
         return super().validate(attrs)
 
     class Meta:
@@ -383,6 +466,12 @@ class UserPasswordSetSerializer(PassiveSerializer):
     password = CharField(required=True)
 
 
+class UserPasswordHashSetSerializer(PassiveSerializer):
+    """Payload to set a users' password hash directly"""
+
+    password = CharField(required=True)
+
+
 class UserServiceAccountSerializer(PassiveSerializer):
     """Payload to create a service account"""
 
@@ -396,6 +485,18 @@ class UserServiceAccountSerializer(PassiveSerializer):
         required=False,
         help_text="If not provided, valid for 360 days",
     )
+
+
+class UserRecoveryLinkSerializer(PassiveSerializer):
+    """Payload to create a recovery link"""
+
+    token_duration = CharField(required=False)
+
+
+class UserRecoveryEmailSerializer(UserRecoveryLinkSerializer):
+    """Payload to create and email a recovery link"""
+
+    email_stage = UUIDField()
 
 
 class UsersFilter(FilterSet):
@@ -416,7 +517,12 @@ class UsersFilter(FilterSet):
     last_updated = IsoDateTimeFilter(field_name="last_updated")
     last_updated__gt = IsoDateTimeFilter(field_name="last_updated", lookup_expr="gt")
 
-    is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
+    last_login__lt = IsoDateTimeFilter(field_name="last_login", lookup_expr="lt")
+    last_login = IsoDateTimeFilter(field_name="last_login")
+    last_login__gt = IsoDateTimeFilter(field_name="last_login", lookup_expr="gt")
+    last_login__isnull = BooleanFilter(field_name="last_login", lookup_expr="isnull")
+
+    is_superuser = BooleanFilter(field_name="groups", method="filter_is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
@@ -425,12 +531,12 @@ class UsersFilter(FilterSet):
     type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
 
     groups_by_name = ModelMultipleChoiceFilter(
-        field_name="ak_groups__name",
+        field_name="groups__name",
         to_field_name="name",
         queryset=Group.objects.all().order_by("name"),
     )
     groups_by_pk = ModelMultipleChoiceFilter(
-        field_name="ak_groups",
+        field_name="groups",
         queryset=Group.objects.all().order_by("name"),
     )
 
@@ -446,22 +552,22 @@ class UsersFilter(FilterSet):
 
     def filter_is_superuser(self, queryset, name, value):
         if value:
-            return queryset.filter(ak_groups__is_superuser=True).distinct()
-        return queryset.exclude(ak_groups__is_superuser=True).distinct()
+            return queryset.filter(groups__is_superuser=True).distinct()
+        return queryset.exclude(groups__is_superuser=True).distinct()
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
         try:
             value = loads(value)
         except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON") from None
+            raise ValidationError(_("filter: failed to parse JSON")) from None
         if not isinstance(value, dict):
-            raise ValidationError(detail="filter: value must be key:value mapping")
+            raise ValidationError(_("filter: value must be key:value mapping"))
         qs = {}
         for key, _value in value.items():
             qs[f"attributes__{key}"] = _value
         try:
-            _ = len(queryset.filter(**qs))
+            __ = len(queryset.filter(**qs))
             return queryset.filter(**qs)
         except ValueError:
             return queryset
@@ -473,6 +579,7 @@ class UsersFilter(FilterSet):
             "email",
             "date_joined",
             "last_updated",
+            "last_login",
             "name",
             "is_active",
             "is_superuser",
@@ -486,6 +593,9 @@ class UsersFilter(FilterSet):
 
 
 class UserViewSet(
+    ConditionalInheritance(
+        "authentik.enterprise.stages.account_lockdown.api.UserAccountLockdownMixin"
+    ),
     ConditionalInheritance("authentik.enterprise.reports.api.reports.ExportMixin"),
     UsedByMixin,
     ModelViewSet,
@@ -493,7 +603,7 @@ class UserViewSet(
     """User Viewset"""
 
     queryset = User.objects.none()
-    ordering = ["username", "date_joined", "last_updated"]
+    ordering = ["username", "date_joined", "last_updated", "last_login"]
     serializer_class = UserSerializer
     filterset_class = UsersFilter
     search_fields = ["email", "name", "uuid", "username"]
@@ -504,13 +614,6 @@ class UserViewSet(
     ]
 
     def get_ql_fields(self):
-        from djangoql.schema import BoolField, StrField
-
-        from authentik.enterprise.search.fields import (
-            ChoiceSearchField,
-            JSONSearchField,
-        )
-
         return [
             StrField(User, "username"),
             StrField(User, "name"),
@@ -518,15 +621,35 @@ class UserViewSet(
             StrField(User, "path"),
             BoolField(User, "is_active", nullable=True),
             ChoiceSearchField(User, "type"),
-            JSONSearchField(User, "attributes", suggest_nested=False),
+            JSONSearchField(User, "attributes"),
         ]
 
     def get_queryset(self):
         base_qs = User.objects.all().exclude_anonymous()
+        # Always prefetch groups since group PKs are always serialized.
+        # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:
-            base_qs = base_qs.prefetch_related("ak_groups")
+            base_qs = base_qs.prefetch_related("groups")
+        else:
+            base_qs = base_qs.prefetch_related(
+                Prefetch("groups", queryset=Group.objects.all().only("group_uuid"))
+            )
         if self.serializer_class(context={"request": self.request})._should_include_roles:
             base_qs = base_qs.prefetch_related("roles")
+        else:
+            base_qs = base_qs.prefetch_related(
+                Prefetch("roles", queryset=Role.objects.all().only("uuid"))
+            )
+        # Annotate is_superuser to avoid N+1 query per user
+        base_qs = base_qs.annotate(
+            _annotated_is_superuser=Exists(
+                Group.objects.filter(
+                    is_superuser=True,
+                ).filter(
+                    Q(users=OuterRef("pk")) | Q(descendant_nodes__descendant__users=OuterRef("pk"))
+                )
+            )
+        )
         return base_qs
 
     @extend_schema(
@@ -538,14 +661,16 @@ class UserViewSet(
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    def _create_recovery_link(self, for_email=False) -> tuple[str, Token]:
+    def _create_recovery_link(
+        self, token_duration: str | None, for_email=False
+    ) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
-        brand: Brand = self.request._request.brand
+        brand: Brand = self.request.brand
         # Check that there is a recovery flow, if not return an error
         flow = brand.flow_recovery
         if not flow:
-            raise ValidationError({"non_field_errors": "No recovery flow set."})
+            raise ValidationError({"non_field_errors": _("No recovery flow set.")})
         user: User = self.get_object()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
@@ -559,11 +684,15 @@ class UserViewSet(
             )
         except FlowNonApplicableException:
             raise ValidationError(
-                {"non_field_errors": "Recovery flow not applicable to user"}
+                {"non_field_errors": _("Recovery flow not applicable to user")}
             ) from None
         _plan = FlowToken.pickle(plan)
         if for_email:
             _plan = pickle_flow_token_for_email(plan)
+        expires = default_token_duration()
+        if token_duration:
+            timedelta_string_validator(token_duration)
+            expires = now() + timedelta_from_string(token_duration)
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={
@@ -571,6 +700,7 @@ class UserViewSet(
                 "flow": flow,
                 "_plan": _plan,
                 "revoke_on_execution": not for_email,
+                "expires": expires,
             },
         )
         querystring = urlencode({QS_KEY_TOKEN: token.key})
@@ -688,6 +818,11 @@ class UserViewSet(
         self.request.session.modified = True
         return Response(serializer.initial_data)
 
+    def _update_session_hash_after_password_change(self, request: Request, user: User):
+        if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
+            LOGGER.debug("Updating session hash after password change")
+            update_session_auth_hash(self.request, user)
+
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
         request=UserPasswordSetSerializer,
@@ -711,67 +846,103 @@ class UserViewSet(
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
             return Response(status=400)
-        if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
-            LOGGER.debug("Updating session hash after password change")
-            update_session_auth_hash(self.request, user)
+        self._update_session_hash_after_password_change(request, user)
         return Response(status=204)
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
+        request=UserPasswordHashSetSerializer,
+        responses={
+            204: OpenApiResponse(description="Successfully changed password"),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(
+        detail=True,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+    )
+    @validate(UserPasswordHashSetSerializer)
+    def set_password_hash(
+        self, request: Request, pk: int, body: UserPasswordHashSetSerializer
+    ) -> Response:
+        """Set a user's password from a pre-hashed Django password value.
+
+        Submit the Django password hash in the shared ``password`` request field.
+
+        This updates authentik's local password verifier only. It does not attempt
+        to propagate the password change to LDAP or Kerberos because no raw password
+        is available from the request payload.
+        """
+        user: User = self.get_object()
+        try:
+            user.set_password_from_hash(body.validated_data["password"], request=request)
+            user.save()
+        except ValueError as exc:
+            LOGGER.debug("Failed to set password hash", exc=exc)
+            return Response(data={"password": [INVALID_PASSWORD_HASH_MESSAGE]}, status=400)
+        except (ValidationError, IntegrityError) as exc:
+            LOGGER.debug("Failed to set password hash", exc=exc)
+            return Response(status=400)
+        self._update_session_hash_after_password_change(request, user)
+        return Response(status=204)
+
+    @permission_required("authentik_core.reset_user_password")
+    @extend_schema(
+        request=UserRecoveryLinkSerializer,
         responses={
             "200": LinkSerializer(many=False),
         },
-        request=None,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def recovery(self, request: Request, pk: int) -> Response:
+    @validate(UserRecoveryLinkSerializer)
+    def recovery(self, request: Request, pk: int, body: UserRecoveryLinkSerializer) -> Response:
         """Create a temporary link that a user can use to recover their account"""
-        link, _ = self._create_recovery_link()
+        link, _ = self._create_recovery_link(
+            token_duration=body.validated_data.get("token_duration")
+        )
         return Response({"link": link})
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="email_stage",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.STR,
-                required=True,
-            )
-        ],
+        request=UserRecoveryEmailSerializer,
         responses={
             "204": OpenApiResponse(description="Successfully sent recover email"),
         },
-        request=None,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def recovery_email(self, request: Request, pk: int) -> Response:
+    @validate(UserRecoveryEmailSerializer)
+    def recovery_email(
+        self, request: Request, pk: int, body: UserRecoveryEmailSerializer
+    ) -> Response:
         """Send an email with a temporary link that a user can use to recover their account"""
-        for_user: User = self.get_object()
-        if for_user.email == "":
+        email_error_message = _("User does not have an email address set.")
+        stage_error_message = _("Email stage not found.")
+        user: User = self.get_object()
+        if not user.email:
             LOGGER.debug("User doesn't have an email address")
-            raise ValidationError({"non_field_errors": "User does not have an email address set."})
-        link, token = self._create_recovery_link(for_email=True)
-        # Lookup the email stage to assure the current user can access it
-        stages = get_objects_for_user(
-            request.user, "authentik_stages_email.view_emailstage"
-        ).filter(pk=request.query_params.get("email_stage"))
-        if not stages.exists():
-            LOGGER.debug("Email stage does not exist/user has no permissions")
-            raise ValidationError({"non_field_errors": "Email stage does not exist."})
-        email_stage: EmailStage = stages.first()
+            raise ValidationError({"non_field_errors": email_error_message})
+        if not (stage := EmailStage.objects.filter(pk=body.validated_data["email_stage"]).first()):
+            LOGGER.debug("Email stage does not exist")
+            raise ValidationError({"non_field_errors": stage_error_message})
+        if not request.user.has_perm("authentik_stages_email.view_emailstage", stage):
+            LOGGER.debug("User has no view access to email stage")
+            raise ValidationError({"non_field_errors": stage_error_message})
+        link, token = self._create_recovery_link(
+            token_duration=body.validated_data.get("token_duration"), for_email=True
+        )
         message = TemplateEmailMessage(
-            subject=_(email_stage.subject),
-            to=[(for_user.name, for_user.email)],
-            template_name=email_stage.template,
-            language=for_user.locale(request),
+            subject=_(stage.subject),
+            to=[(user.name, user.email)],
+            template_name=stage.template,
+            language=user.locale(request),
             template_context={
                 "url": link,
-                "user": for_user,
+                "user": user,
                 "expires": token.expires,
             },
         )
-        send_mails(email_stage, message)
+        send_mails(stage, message)
         return Response(status=204)
 
     @permission_required("authentik_core.impersonate")

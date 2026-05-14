@@ -5,14 +5,10 @@ from urllib.parse import quote, urlencode
 
 import xmlsec
 from lxml import etree  # nosec
-from lxml.etree import Element
+from lxml.etree import Element, _Element
 
-from authentik.core.models import User
-from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.utils import get_random_id
-from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
-from authentik.providers.saml.utils.time import get_time_string
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
+    DEFAULT_ISSUER,
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
@@ -20,6 +16,12 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.core.models import User
+from authentik.lib.xml import remove_xml_newlines
+from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.utils import get_random_id
+from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
+from authentik.providers.saml.utils.time import get_time_string
 
 
 class LogoutRequestProcessor:
@@ -32,11 +34,12 @@ class LogoutRequestProcessor:
     name_id_format: str
     session_index: str | None
     relay_state: str | None
+    issuer: str | None
 
     _issue_instant: str
     _request_id: str
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         provider: SAMLProvider,
         user: User | None,
@@ -45,6 +48,7 @@ class LogoutRequestProcessor:
         name_id_format: str = SAML_NAME_ID_FORMAT_EMAIL,
         session_index: str | None = None,
         relay_state: str | None = None,
+        issuer: str | None = None,
     ):
         self.provider = provider
         self.user = user
@@ -53,14 +57,23 @@ class LogoutRequestProcessor:
         self.name_id_format = name_id_format
         self.session_index = session_index
         self.relay_state = relay_state
+        self.issuer = issuer
 
         self._issue_instant = get_time_string()
         self._request_id = get_random_id()
 
+    def _get_issuer_value(self) -> str:
+        """Get issuer value from session, with fallback to provider"""
+        if self.issuer:
+            return self.issuer
+        if self.provider.issuer_override:
+            return self.provider.issuer_override
+        return DEFAULT_ISSUER
+
     def get_issuer(self) -> Element:
         """Get Issuer element"""
         issuer = Element(f"{{{NS_SAML_ASSERTION}}}Issuer")
-        issuer.text = self.provider.issuer
+        issuer.text = self._get_issuer_value()
         return issuer
 
     def get_name_id(self) -> Element:
@@ -134,7 +147,7 @@ class LogoutRequestProcessor:
             "RelayState": self.relay_state or "",
         }
 
-    def _sign_logout_request(self, logout_request: Element):
+    def _sign_logout_request(self, logout_request: _Element):
         """Sign the LogoutRequest element"""
         signature_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
             self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
@@ -154,7 +167,7 @@ class LogoutRequestProcessor:
 
         self._sign(logout_request)
 
-    def _sign(self, element: Element):
+    def _sign(self, element: _Element):
         """Sign an XML element based on the providers' configured signing settings"""
         digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
             self.provider.digest_algorithm, xmlsec.constants.TransformSha1
@@ -183,7 +196,7 @@ class LogoutRequestProcessor:
             xmlsec.constants.KeyDataFormatCertPem,
         )
         ctx.key = key
-        ctx.sign(signature_node)
+        ctx.sign(remove_xml_newlines(element, signature_node))
 
     def _build_signable_query_string(self, params: dict) -> str:
         """Build query string for signing (order matters per SAML spec)"""

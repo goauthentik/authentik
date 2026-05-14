@@ -31,6 +31,7 @@ class Capabilities(models.TextChoices):
     """Define capabilities which influence which APIs can/should be used"""
 
     CAN_SAVE_MEDIA = "can_save_media"
+    CAN_SAVE_REPORTS = "can_save_reports"
     CAN_GEO_IP = "can_geo_ip"
     CAN_ASN = "can_asn"
     CAN_IMPERSONATE = "can_impersonate"
@@ -70,6 +71,8 @@ class ConfigView(APIView):
         caps = []
         if get_file_manager(FileUsage.MEDIA).manageable:
             caps.append(Capabilities.CAN_SAVE_MEDIA)
+        if get_file_manager(FileUsage.REPORTS).manageable:
+            caps.append(Capabilities.CAN_SAVE_REPORTS)
         for processor in get_context_processors():
             if cap := processor.capability():
                 caps.append(cap)

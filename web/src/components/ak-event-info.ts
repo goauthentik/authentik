@@ -23,7 +23,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 // TODO: Settle these types. It's too hard to make sense of what we're expecting here.
 type EventSlotValueType =
@@ -85,7 +84,6 @@ export class EventInfo extends AKElement {
     event!: EventWithContext;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFFlex,
         PFCard,
@@ -232,8 +230,9 @@ export class EventInfo extends AKElement {
             case EventActions.PolicyExecution:
                 return this.renderPolicyExecution();
 
+            case EventActions.ConfigurationWarning:
             case EventActions.ConfigurationError:
-                return this.renderConfigurationError();
+                return this.renderConfigurationEvent();
 
             case EventActions.UpdateAvailable:
                 return this.renderUpdateAvailable();
@@ -519,7 +518,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }
 
-    renderConfigurationError() {
+    renderConfigurationEvent() {
         return html`<div class="pf-c-card__title">${this.event.context.message}</div>
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }

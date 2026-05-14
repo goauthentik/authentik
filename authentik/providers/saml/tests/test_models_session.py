@@ -6,14 +6,14 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
+from authentik.common.saml.constants import (
+    SAML_NAME_ID_FORMAT_EMAIL,
+)
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.tests.utils import create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.saml.api.sessions import SAMLSessionSerializer
 from authentik.providers.saml.models import SAMLProvider, SAMLSession
-from authentik.sources.saml.processors.constants import (
-    SAML_NAME_ID_FORMAT_EMAIL,
-)
 
 
 class TestSAMLSessionModel(TestCase):
@@ -32,7 +32,7 @@ class TestSAMLSessionModel(TestCase):
             name="test-provider",
             authorization_flow=self.flow,
             acs_url="https://sp.example.com/acs",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
         )
 
         # Create another provider for testing
@@ -40,7 +40,7 @@ class TestSAMLSessionModel(TestCase):
             name="test-provider-2",
             authorization_flow=self.flow,
             acs_url="https://sp2.example.com/acs",
-            issuer="https://idp2.example.com",
+            issuer_override="https://idp2.example.com",
         )
 
         # Create a session first (using authentik's custom Session model)
@@ -72,6 +72,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         # Verify the session was created
@@ -100,6 +101,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         # Try to create another session with same session_index and provider
@@ -113,6 +115,7 @@ class TestSAMLSessionModel(TestCase):
                 name_id_format=self.name_id_format,
                 expires=self.expires,
                 expiring=True,
+                issuer="authentik",
             )
 
     def test_cascade_deletion_user(self):
@@ -127,6 +130,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         # Verify session exists
@@ -150,6 +154,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         # Verify session exists
@@ -173,6 +178,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         # Verify session exists
@@ -196,6 +202,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         # Create second session with different provider
@@ -208,6 +215,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         # Verify both sessions exist
@@ -229,6 +237,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=future_time,
             expiring=True,
+            issuer="authentik",
         )
 
         # Verify expiry time
@@ -248,6 +257,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=past_time,
             expiring=True,
+            issuer="authentik",
         )
 
         # Check if marked as expired
@@ -265,6 +275,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format="",  # Blank format
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         # Verify it was created successfully
@@ -283,6 +294,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         session2 = SAMLSession.objects.create(
@@ -294,6 +306,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         # Query by provider
@@ -316,6 +329,7 @@ class TestSAMLSessionModel(TestCase):
             name_id_format=self.name_id_format,
             expires=self.expires,
             expiring=True,
+            issuer="authentik",
         )
 
         # Check serializer property
@@ -334,6 +348,7 @@ class TestSAMLSessionModel(TestCase):
                 name_id_format=self.name_id_format,
                 expires=self.expires,
                 expiring=True,
+                issuer="authentik",
             )
 
         # Verify sessions exist

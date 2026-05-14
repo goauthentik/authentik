@@ -13,10 +13,10 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import SCOPE_AUTHENTIK_API
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.outposts.models import Outpost
-from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
 
 LOGGER = get_logger()
 _tmp = Path(gettempdir())
@@ -42,11 +42,29 @@ def validate_auth(header: bytes, format="bearer") -> str | None:
     return auth_credentials
 
 
-class IPCUser(AnonymousUser):
+class VirtualUser(AnonymousUser):
+    is_active = True
+
+    @property
+    def type(self):
+        return UserTypes.INTERNAL_SERVICE_ACCOUNT
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    def all_roles(self):
+        return []
+
+
+class IPCUser(VirtualUser):
     """'Virtual' user for IPC communication between authentik core and the authentik router"""
 
     username = "authentik:system"
-    is_active = True
     is_superuser = True
 
     @property
@@ -61,17 +79,6 @@ class IPCUser(AnonymousUser):
 
     def has_module_perms(self, module):
         return True
-
-    @property
-    def is_anonymous(self):
-        return False
-
-    @property
-    def is_authenticated(self):
-        return True
-
-    def all_roles(self):
-        return []
 
 
 class TokenAuthentication(BaseAuthentication):
@@ -106,14 +113,14 @@ class TokenAuthentication(BaseAuthentication):
         if not auth_credentials:
             return None
         # first, check traditional tokens
-        key_token = Token.filter_not_expired(
+        key_token = Token.objects.filter(
             key=auth_credentials, intent=TokenIntents.INTENT_API
         ).first()
         if key_token:
             CTX_AUTH_VIA.set("api_token")
             return key_token.user, key_token
         # then try to auth via JWT
-        jwt_token = AccessToken.filter_not_expired(
+        jwt_token = AccessToken.objects.filter(
             token=auth_credentials, _scope__icontains=SCOPE_AUTHENTIK_API
         ).first()
         if jwt_token:

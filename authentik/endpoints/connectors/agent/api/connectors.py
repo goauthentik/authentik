@@ -1,11 +1,13 @@
 from typing import cast
 
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import ChoiceField
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -22,6 +24,9 @@ from authentik.endpoints.connectors.agent.api.agent import (
 from authentik.endpoints.connectors.agent.auth import (
     AgentAuth,
     AgentEnrollmentAuth,
+    DeviceAuthFedAuthentication,
+    agent_auth_issue_token,
+    check_device_policies,
 )
 from authentik.endpoints.connectors.agent.controller import MDMConfigResponseSerializer
 from authentik.endpoints.connectors.agent.models import (
@@ -32,11 +37,13 @@ from authentik.endpoints.connectors.agent.models import (
 )
 from authentik.endpoints.facts import DeviceFacts, OSFamily
 from authentik.endpoints.models import Device
+from authentik.events.models import Event, EventAction
+from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
 class AgentConnectorSerializer(ConnectorSerializer):
-
     class Meta(ConnectorSerializer.Meta):
         model = AgentConnector
         fields = ConnectorSerializer.Meta.fields + [
@@ -55,9 +62,10 @@ class AgentConnectorSerializer(ConnectorSerializer):
 
 
 class MDMConfigSerializer(PassiveSerializer):
-
     platform = ChoiceField(choices=OSFamily.choices)
-    enrollment_token = PrimaryKeyRelatedField(queryset=EnrollmentToken.objects.all())
+    enrollment_token = PrimaryKeyRelatedField(
+        queryset=EnrollmentToken.objects.including_expired().all()
+    )
 
     def validate_platform(self, platform: OSFamily) -> OSFamily:
         if platform not in [OSFamily.iOS, OSFamily.macOS, OSFamily.windows]:
@@ -79,7 +87,6 @@ class AgentConnectorViewSet(
     UsedByMixin,
     ModelViewSet,
 ):
-
     queryset = AgentConnector.objects.all()
     serializer_class = AgentConnectorSerializer
     search_fields = ["name"]
@@ -111,6 +118,8 @@ class AgentConnectorViewSet(
         methods=["POST"],
         detail=False,
         authentication_classes=[AgentEnrollmentAuth],
+        # Permissions are handled via AgentEnrollmentAuth
+        permission_classes=[AllowAny],
     )
     def enroll(self, request: Request):
         token: EnrollmentToken = request.auth
@@ -128,7 +137,7 @@ class AgentConnectorViewSet(
             device=device,
             connector=token.connector,
         )
-        DeviceToken.objects.filter(device=connection).delete()
+        DeviceToken.objects.including_expired().filter(device=connection).delete()
         token = DeviceToken.objects.create(device=connection, expiring=False)
         return Response(
             {
@@ -141,7 +150,13 @@ class AgentConnectorViewSet(
         request=OpenApiTypes.NONE,
         responses=AgentConfigSerializer(),
     )
-    @action(methods=["GET"], detail=False, authentication_classes=[AgentAuth])
+    @action(
+        methods=["GET"],
+        detail=False,
+        authentication_classes=[AgentAuth],
+        # Permissions are handled via AgentAuth
+        permission_classes=[AllowAny],
+    )
     def agent_config(self, request: Request):
         token: DeviceToken = request.auth
         connector: AgentConnector = token.device.connector.agentconnector
@@ -155,7 +170,13 @@ class AgentConnectorViewSet(
         request=DeviceFacts(),
         responses={204: OpenApiResponse(description="Successfully checked in")},
     )
-    @action(methods=["POST"], detail=False, authentication_classes=[AgentAuth])
+    @action(
+        methods=["POST"],
+        detail=False,
+        authentication_classes=[AgentAuth],
+        # Permissions are handled via AgentAuth
+        permission_classes=[AllowAny],
+    )
     def check_in(self, request: Request):
         token: DeviceToken = request.auth
         data = DeviceFacts(data=request.data)
@@ -163,3 +184,43 @@ class AgentConnectorViewSet(
         connection: AgentDeviceConnection = token.device
         connection.create_snapshot(data.validated_data)
         return Response(status=204)
+
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        parameters=[OpenApiParameter("device", OpenApiTypes.STR, location="query", required=True)],
+        responses={
+            200: AgentTokenResponseSerializer(),
+            404: OpenApiResponse(description="Device not found"),
+        },
+    )
+    @action(
+        methods=["POST"],
+        detail=False,
+        pagination_class=None,
+        filter_backends=[],
+        permission_classes=[IsAuthenticated],
+        authentication_classes=[DeviceAuthFedAuthentication],
+    )
+    def auth_fed(self, request: Request) -> Response:
+        federated_token, device, connector = request.auth
+
+        policy_result = check_device_policies(device, federated_token.user, request._request)
+        if not policy_result.passing:
+            raise ValidationError(
+                {"policy_result": "Policy denied access", "policy_messages": policy_result.messages}
+            )
+
+        token, exp = agent_auth_issue_token(device, connector, federated_token.user)
+        rel_exp = int((exp - now()).total_seconds())
+        Event.new(
+            EventAction.LOGIN,
+            **{
+                PLAN_CONTEXT_METHOD: "jwt",
+                PLAN_CONTEXT_METHOD_ARGS: {
+                    "jwt": federated_token,
+                    "provider": federated_token.provider,
+                },
+                PLAN_CONTEXT_DEVICE: device,
+            },
+        ).from_http(request, user=federated_token.user)
+        return Response({"token": token, "expires_in": rel_exp})

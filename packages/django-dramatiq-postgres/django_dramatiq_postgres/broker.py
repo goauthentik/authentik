@@ -23,11 +23,9 @@ from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 from dramatiq.broker import Broker, Consumer, MessageProxy
 from dramatiq.common import compute_backoff, current_millis, dq_name, q_name, xq_name
-from dramatiq.errors import ConnectionError, QueueJoinTimeout
+from dramatiq.errors import BrokerConnectionError, DecodeError, QueueJoinTimeout
 from dramatiq.message import Message
-from dramatiq.middleware import (
-    Middleware,
-)
+from dramatiq.middleware import Middleware
 from pglock.core import _cast_lock_id
 from psycopg import sql
 from psycopg.errors import AdminShutdown
@@ -46,7 +44,6 @@ DATABASE_ERRORS = (
     AdminShutdown,
     InterfaceError,
     DatabaseError,
-    ConnectionError,
     OperationalError,
 )
 
@@ -55,20 +52,24 @@ def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
     return f"{CHANNEL_PREFIX}.{queue_name}.{identifier.value}"
 
 
-def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:
+def raise_broker_connection_error(func: Callable[P, R]) -> Callable[P, R]:  # noqa: UP047
     @functools.wraps(func)
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
         try:
             return func(*args, **kwargs)
         except DATABASE_ERRORS as exc:
             logger.warning("Database error encountered", exc=exc)
-            raise ConnectionError(str(exc)) from exc  # type: ignore[no-untyped-call]
+            try:
+                connections.close_all()
+            except DATABASE_ERRORS:
+                pass
+            raise BrokerConnectionError(str(exc)) from exc  # type: ignore[no-untyped-call]
 
     return wrapper
 
 
 class PostgresBroker(Broker):
-    queues: set[str]  # type: ignore[assignment]
+    queues: set[str]
 
     def __init__(
         self,
@@ -77,7 +78,7 @@ class PostgresBroker(Broker):
         db_alias: str = DEFAULT_DB_ALIAS,
         **kwargs: Any,
     ) -> None:
-        super().__init__(*args, middleware=[], **kwargs)  # type: ignore[no-untyped-call,misc]
+        super().__init__(*args, middleware=[], **kwargs)  # type: ignore[misc]
         self.logger = get_logger(__name__, type(self))
 
         self.queues = set()
@@ -94,7 +95,7 @@ class PostgresBroker(Broker):
         return cast(DatabaseWrapper, connections[self.db_alias])
 
     @property
-    def consumer_class(self) -> "type[_PostgresConsumer]":
+    def consumer_class(self) -> type[_PostgresConsumer]:
         return _PostgresConsumer
 
     @cached_property
@@ -118,10 +119,10 @@ class PostgresBroker(Broker):
 
     def declare_queue(self, queue_name: str) -> None:
         if queue_name not in self.queues:
-            self.emit_before("declare_queue", queue_name)  # type: ignore[no-untyped-call]
+            self.emit_before("declare_queue", queue_name)
             self.queues.add(queue_name)
             # Nothing more to do, all queues are in the same table
-            self.emit_after("declare_queue", queue_name)  # type: ignore[no-untyped-call]
+            self.emit_after("declare_queue", queue_name)
 
     def model_defaults(self, message: Message[Any]) -> dict[str, Any]:
         eta = None
@@ -137,7 +138,7 @@ class PostgresBroker(Broker):
         }
 
     @tenacity.retry(
-        retry=tenacity.retry_if_exception_type(ConnectionError),
+        retry=tenacity.retry_if_exception_type(BrokerConnectionError),
         reraise=True,
         wait=tenacity.wait_random_exponential(multiplier=1, max=5),
         stop=tenacity.stop_after_attempt(3),
@@ -145,11 +146,11 @@ class PostgresBroker(Broker):
             cast(logging.Logger, logger), logging.INFO, exc_info=True
         ),
     )
-    @raise_connection_error
+    @raise_broker_connection_error
     def enqueue(self, message: Message[Any], *, delay: int | None = None) -> Message[Any]:
-        queue_name = q_name(message.queue_name)  # type: ignore[no-untyped-call]
+        queue_name = q_name(message.queue_name)
         if delay:
-            message_eta = current_millis() + delay  # type: ignore[no-untyped-call]
+            message_eta = current_millis() + delay
             message.options["eta"] = message_eta
 
         self.declare_queue(queue_name)
@@ -159,7 +160,7 @@ class PostgresBroker(Broker):
 
         message.options["model_defaults"] = self.model_defaults(message)
         message.options["model_create_defaults"] = {}
-        self.emit_before("enqueue", message, delay)  # type: ignore[no-untyped-call]
+        self.emit_before("enqueue", message, delay)
 
         with transaction.atomic(using=self.db_alias):
             query = {
@@ -181,7 +182,7 @@ class PostgresBroker(Broker):
             message.options["task"] = task
             message.options["task_created"] = created
 
-            self.emit_after("enqueue", message, delay)  # type: ignore[no-untyped-call]
+            self.emit_after("enqueue", message, delay)
         return message
 
     def get_declared_queues(self) -> set[str]:
@@ -189,7 +190,7 @@ class PostgresBroker(Broker):
 
     def flush(self, queue_name: str) -> None:
         self.query_set.filter(
-            queue_name__in=(queue_name, dq_name(queue_name), xq_name(queue_name))  # type: ignore[no-untyped-call]
+            queue_name__in=(queue_name, dq_name(queue_name), xq_name(queue_name))
         ).delete()
 
     def flush_all(self) -> None:
@@ -259,6 +260,7 @@ class _PostgresConsumer(Consumer):
         if Conf().schedule_model:
             self.scheduler = import_string(Conf().scheduler_class)()
             self.scheduler.broker = self.broker
+            self.scheduler.db_alias = self.db_alias
             self.scheduler_interval = timedelta(seconds=Conf().scheduler_interval)
             self.scheduler_last_run = timezone.now() - self.scheduler_interval
 
@@ -329,8 +331,7 @@ class _PostgresConsumer(Consumer):
 
         with self.locks_connection.cursor() as cursor:
             cursor.execute(
-                sql.SQL(
-                    """
+                sql.SQL("""
                     UPDATE {table}
                     SET {state} = %(state)s, {mtime} = %(mtime)s
                     WHERE
@@ -341,8 +342,7 @@ class _PostgresConsumer(Consumer):
                         ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
                         AND
                         pg_try_advisory_lock(%(lock_id)s)
-                    """
-                ).format(
+                    """).format(
                     table=sql.Identifier(self.query_set.model._meta.db_table),
                     state=sql.Identifier("state"),
                     mtime=sql.Identifier("mtime"),
@@ -367,12 +367,23 @@ class _PostgresConsumer(Consumer):
         )
         if task is None:
             return None
-        message = Message.decode(cast(bytes, task.message))
+        try:
+            message = Message.decode(cast(bytes, task.message))
+        except DecodeError:
+            self.logger.error(
+                "Failed to decode task, rejecting", queue=self.queue_name, message_id=message_id
+            )
+            self.query_set.filter(message_id=message_id, queue_name=self.queue_name).update(
+                state=TaskState.REJECTED,
+                mtime=timezone.now(),
+                eta=None,
+            )
+            return None
         message.options["task"] = task
         self.in_processing.add(str(message_id))
         return message
 
-    @raise_connection_error
+    @raise_broker_connection_error
     def __next__(self) -> MessageProxy | None:
         # This method is called every second
 
@@ -392,7 +403,7 @@ class _PostgresConsumer(Consumer):
         if processing >= self.prefetch:
             # If we have too many messages already processing, wait and don't consume a message
             # straight away, other workers will be faster.
-            self.misses, backoff_ms = compute_backoff(self.misses, max_backoff=1000)  # type: ignore[no-untyped-call]
+            self.misses, backoff_ms = compute_backoff(self.misses, max_backoff=1000)
             self.logger.debug(
                 "Too many messages in processing, Sleeping",
                 processing=processing,
@@ -417,7 +428,7 @@ class _PostgresConsumer(Consumer):
                 break
             message = self._consume_one(str(message_id))
             if message is not None:
-                return MessageProxy(message)  # type: ignore[no-untyped-call]
+                return MessageProxy(message)
             else:
                 self.logger.debug("Message already consumed. Skipping.", message_id=message_id)
                 continue
@@ -441,7 +452,7 @@ class _PostgresConsumer(Consumer):
             self.to_unlock.add(str(message_id))
             return False
 
-    def _post_process_message(self, message: Message[Any], state: TaskState) -> None:
+    def _post_process_message(self, message: MessageProxy, state: TaskState) -> None:
         self.logger.debug("Post-processing message", message=message.message_id, state=state)
         try:
             self.in_processing.remove(str(message.message_id))
@@ -449,6 +460,7 @@ class _PostgresConsumer(Consumer):
             pass
         self.to_unlock.add(str(message.message_id))
         task = message.options.pop("task", None)
+        m = b"" if state == TaskState.DONE else message.encode()
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -456,22 +468,22 @@ class _PostgresConsumer(Consumer):
             state=TaskState.QUEUED,
         ).update(
             state=state,
-            message=message.encode(),
+            message=m,
             mtime=timezone.now(),
             eta=None,
         )
         message.options["task"] = task
 
-    @raise_connection_error
-    def ack(self, message: Message[Any]) -> None:
+    @raise_broker_connection_error
+    def ack(self, message: MessageProxy) -> None:
         self._post_process_message(message, TaskState.DONE)
 
-    @raise_connection_error
-    def nack(self, message: Message[Any]) -> None:
+    @raise_broker_connection_error
+    def nack(self, message: MessageProxy) -> None:
         self._post_process_message(message, TaskState.REJECTED)
 
-    @raise_connection_error
-    def requeue(self, messages: Iterable[Message[Any]]) -> None:
+    @raise_broker_connection_error
+    def requeue(self, messages: Iterable[MessageProxy]) -> None:
         self.query_set.filter(
             message_id__in=[message.message_id for message in messages],
         ).update(
@@ -510,7 +522,7 @@ class _PostgresConsumer(Consumer):
         self.logger.info("Purged messages in all queues", count=count)
         self.task_purge_last_run = timezone.now()
 
-    @raise_connection_error
+    @raise_broker_connection_error
     def close(self) -> None:
         try:
             self._purge_locks()

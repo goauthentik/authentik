@@ -12,8 +12,10 @@ from authentik.core.expression.exceptions import (
 )
 from authentik.core.models import Group
 from authentik.core.sources.mapper import SourceMapper
+from authentik.core.sources.matcher import Action
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.sources.ldap.models import (
     LDAP_UNIQUENESS,
     GroupLDAPSourceConnection,
@@ -59,10 +61,10 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             self._task.info("Group syncing is disabled for this Source")
             return -1
         group_count = 0
-        for group in page_data:
-            if (attributes := self.get_attributes(group)) is None:
+        for group_data in page_data:
+            if (attributes := self.get_attributes(group_data)) is None:
                 continue
-            group_dn = flatten(flatten(group.get("entryDN", group.get("dn"))))
+            group_dn = flatten(flatten(group_data.get("entryDN", group_data.get("dn"))))
             if not (uniq := self.get_identifier(attributes)):
                 self._task.info(
                     f"Uniqueness field not found/not set in attributes: '{group_dn}'",
@@ -88,37 +90,59 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 if "users" in defaults:
                     del defaults["users"]
                 parent = defaults.pop("parent", None)
-                ak_group, created = Group.update_or_create_attributes(
-                    {
-                        f"attributes__{LDAP_UNIQUENESS}": uniq,
-                    },
-                    defaults,
-                )
+                action, connection = self.matcher.get_group_action(uniq, defaults)
+
+                created = False
+                if action == Action.ENROLL:
+                    # Legacy fallback, in case the group only has an `ldap_uniq` attribute set, but
+                    # no source connection exists yet
+                    legacy_group = Group.objects.filter(
+                        **{
+                            f"attributes__{LDAP_UNIQUENESS}": uniq,
+                        }
+                    ).first()
+                    if legacy_group and LDAP_UNIQUENESS in legacy_group.attributes:
+                        connection = GroupLDAPSourceConnection(
+                            source=self._source,
+                            group=legacy_group,
+                            identifier=legacy_group.attributes.get(LDAP_UNIQUENESS),
+                        )
+                        group = legacy_group
+                        # Switch the action to update the attributes
+                        action = Action.AUTH
+                    else:
+                        group = Group.objects.create(**defaults)
+                        created = True
+                        connection.group = group
+                    connection.save()
+
+                if action in (Action.AUTH, Action.LINK):
+                    group = connection.group
+                    group.update_attributes(defaults)
+                elif action == Action.DENY:
+                    continue
+
                 if parent:
-                    ak_group.parents.add(parent)
+                    group.parents.add(parent)
                 self._logger.debug("Created group with attributes", **defaults)
-                if not GroupLDAPSourceConnection.objects.filter(
-                    source=self._source, identifier=uniq
-                ):
-                    GroupLDAPSourceConnection.objects.create(
-                        source=self._source, group=ak_group, identifier=uniq
-                    )
             except SkipObjectException:
                 continue
             except PropertyMappingExpressionException as exc:
                 raise StopSync(exc, None, exc.mapping) from exc
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
+                self._logger.debug("failed to create group", exc=exc)
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=(
-                        f"Failed to create group: {str(exc)} "
-                        "To merge new group with existing group, set the groups's "
-                        f"Attribute '{LDAP_UNIQUENESS}' to '{uniq}'"
+                        "Failed to create group; "
+                        "To merge new group with existing group, connect it via the LDAP Source's "
+                        "'Synced Groups' tab."
                     ),
+                    exception=exception_to_dict(exc),
                     source=self._source,
                     dn=group_dn,
                 ).save()
             else:
-                self._logger.debug("Synced group", group=ak_group.name, created=created)
+                self._logger.debug("Synced group", group=group.name, created=created)
                 group_count += 1
         return group_count

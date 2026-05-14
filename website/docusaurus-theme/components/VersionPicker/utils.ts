@@ -1,4 +1,4 @@
-import type { AKReleasesPluginData } from "@goauthentik/docusaurus-theme/releases/plugin";
+import type { AKReleasesPluginData } from "@goauthentik/docusaurus-theme/releases/common";
 
 import { usePluginData } from "@docusaurus/useGlobalData";
 import useIsBrowser from "@docusaurus/useIsBrowser";
@@ -7,10 +7,15 @@ import { coerce } from "semver";
 
 export const LocalhostAliases: ReadonlySet<string> = new Set(["localhost", "127.0.0.1"]);
 
+export function normalizeReleaseName(name: string): string {
+    return name.split(" ")[0] || name;
+}
+
 /**
  * Given a semver, create the URL for the version.
  */
-export function createVersionURL(semver: string): string {
+export function createVersionURL(releaseName: string): string {
+    const semver = normalizeReleaseName(releaseName);
     const subdomain = `version-${semver.replace(".", "-")}`;
 
     return `https://${subdomain}.goauthentik.io`;

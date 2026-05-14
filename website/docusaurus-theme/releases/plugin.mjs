@@ -32,7 +32,9 @@ async function akReleasesPlugin(loadContext, options) {
             };
 
             const releases = collectReleaseFiles(options.docsDirectory);
-            const releaseNames = releases.map((release) => release.name);
+            const releaseNames = releases
+                .filter((release) => !release.frontMatter?.draft)
+                .map((release) => release.name);
 
             const outputPath = path.join(loadContext.siteDir, "static", RELEASES_FILENAME);
 

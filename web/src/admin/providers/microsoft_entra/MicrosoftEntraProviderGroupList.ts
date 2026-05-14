@@ -28,7 +28,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     protected override searchEnabled = true;
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
@@ -50,7 +50,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Microsoft Entra Group(s)")}
+            object-label=${msg("Microsoft Entra Group(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: MicrosoftEntraProviderGroup) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsDestroy({

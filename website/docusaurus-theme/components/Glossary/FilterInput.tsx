@@ -20,11 +20,11 @@ export const FilterInput: React.FC<FilterInputProps> = ({ value, onChange, onCle
                 onChange={(e) => onChange(e.target.value)}
                 aria-label="Filter glossary terms"
             />
-            {value && (
+            {value ? (
                 <button className={styles.clearButton} onClick={onClear} aria-label="Clear filter">
                     Clear
                 </button>
-            )}
+            ) : null}
         </div>
     );
 };

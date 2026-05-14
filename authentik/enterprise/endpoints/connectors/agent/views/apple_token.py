@@ -10,6 +10,7 @@ from jwt import PyJWTError, decode, encode, get_unverified_header
 from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import TOKEN_TYPE
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.crypto.apps import MANAGED_KEY
@@ -18,6 +19,7 @@ from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
     AgentDeviceUserBinding,
+    AppleIndependentSecureEnclave,
     AppleNonce,
     DeviceAuthenticationToken,
 )
@@ -26,7 +28,6 @@ from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.providers.oauth2.constants import TOKEN_TYPE
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import JWTAlgorithms
 from authentik.root.middleware import SessionMiddleware
@@ -96,14 +97,16 @@ class TokenView(View):
         self.remote_nonce = decoded.get("nonce")
 
         # Check that the nonce hasn't been used before
-        nonce = AppleNonce.filter_not_expired(nonce=decoded["request_nonce"]).first()
+        nonce = AppleNonce.objects.filter(nonce=decoded["request_nonce"]).first()
         if not nonce:
             raise ValidationError("Invalid nonce")
         self.nonce = nonce
         nonce.delete()
         return decoded
 
-    def validate_embedded_assertion(self, assertion: str) -> tuple[AgentDeviceUserBinding, dict]:
+    def validate_embedded_assertion(
+        self, assertion: str
+    ) -> tuple[AgentDeviceUserBinding | AppleIndependentSecureEnclave, dict]:
         """Decode an embedded assertion and validate it by looking up the matching device user"""
         decode_unvalidated = get_unverified_header(assertion)
         expected_kid = decode_unvalidated["kid"]
@@ -112,8 +115,13 @@ class TokenView(View):
             target=self.device_connection.device, apple_enclave_key_id=expected_kid
         ).first()
         if not device_user:
-            LOGGER.warning("Could not find device user binding for user")
-            raise ValidationError("Invalid request")
+            independent_user = AppleIndependentSecureEnclave.objects.filter(
+                apple_enclave_key_id=expected_kid
+            ).first()
+            if not independent_user:
+                LOGGER.warning("Could not find device user binding or independent enclave for user")
+                raise ValidationError("Invalid request")
+            device_user = independent_user
         decoded: dict[str, Any] = decode(
             assertion,
             device_user.apple_secure_enclave_key,

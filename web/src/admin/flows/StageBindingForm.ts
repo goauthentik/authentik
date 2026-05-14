@@ -1,3 +1,4 @@
+import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -7,13 +8,14 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowStageBinding,
     InvalidResponseActionEnum,
     Stage,
@@ -22,24 +24,59 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+
+function createInvalidResponseOptions(): RadioOption<InvalidResponseActionEnum>[] {
+    return [
+        {
+            label: "RETRY",
+            value: InvalidResponseActionEnum.Retry,
+            default: true,
+            description: msg("Returns the error message and a similar challenge to the executor"),
+        },
+        {
+            label: "RESTART",
+            value: InvalidResponseActionEnum.Restart,
+            description: msg("Restarts the flow from the beginning"),
+        },
+        {
+            label: "RESTART_WITH_CONTEXT",
+            value: InvalidResponseActionEnum.RestartWithContext,
+            description: msg(
+                "Restarts the flow from the beginning, while keeping the flow context",
+            ),
+        },
+    ];
+}
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
+    public static override verboseName = msg("Stage Binding");
+    public static override verboseNamePlural = msg("Stage Bindings");
+
+    async load() {
+        this.defaultOrder = await this.getOrder();
+    }
+
     async loadInstance(pk: string): Promise<FlowStageBinding> {
         const binding = await new FlowsApi(DEFAULT_CONFIG).flowsBindingsRetrieve({
             fsbUuid: pk,
         });
-        this.defaultOrder = await this.getOrder();
         return binding;
     }
 
     @property()
-    targetPk?: string;
+    public targetPk?: string;
 
     @state()
-    defaultOrder = 0;
+    protected defaultOrder = 0;
+
+    public override reset(): void {
+        super.reset();
+
+        this.defaultOrder = 0;
+    }
 
     getSuccessMessage(): string {
         if (this.instance?.pk) {
@@ -83,17 +120,18 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         }
         return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${this.instance?.target}
                 required
             ></ak-flow-search>
         </ak-form-element-horizontal>`;
     }
 
-    renderForm(): TemplateResult {
-        return html` ${this.renderTarget()}
+    protected override renderForm(): SlottedTemplateResult {
+        return html`${this.renderTarget()}
             <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
                 <ak-search-select
+                    placeholder=${msg("Select a stage...")}
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {
                             ordering: "name",
@@ -110,9 +148,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     .renderElement=${(stage: Stage): string => {
                         return stage.name;
                     }}
-                    .value=${(stage: Stage | undefined): string | undefined => {
-                        return stage?.pk;
-                    }}
+                    .value=${(stage: Stage | null) => stage?.pk}
                     .selected=${(stage: Stage): boolean => {
                         return stage.pk === this.instance?.stage;
                     }}
@@ -147,28 +183,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 name="invalidResponseAction"
             >
                 <ak-radio
-                    .options=${[
-                        {
-                            label: "RETRY",
-                            value: InvalidResponseActionEnum.Retry,
-                            default: true,
-                            description: html`${msg(
-                                "Returns the error message and a similar challenge to the executor",
-                            )}`,
-                        },
-                        {
-                            label: "RESTART",
-                            value: InvalidResponseActionEnum.Restart,
-                            description: html`${msg("Restarts the flow from the beginning")}`,
-                        },
-                        {
-                            label: "RESTART_WITH_CONTEXT",
-                            value: InvalidResponseActionEnum.RestartWithContext,
-                            description: html`${msg(
-                                "Restarts the flow from the beginning, while keeping the flow context",
-                            )}`,
-                        },
-                    ]}
+                    .options=${createInvalidResponseOptions()}
                     .value=${this.instance?.invalidResponseAction}
                 >
                 </ak-radio>

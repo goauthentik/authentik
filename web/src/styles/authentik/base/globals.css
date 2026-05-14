@@ -31,6 +31,11 @@ body {
     }
 }
 
+[data-dialog-count] {
+    overscroll-behavior: none;
+    overflow: hidden;
+}
+
 /* #endregion */
 
 html > form > input {

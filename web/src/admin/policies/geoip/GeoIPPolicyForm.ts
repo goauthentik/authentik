@@ -12,13 +12,13 @@ import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
-import { DetailedCountry, GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
+import { GeoIPPolicy, GeoIPPolicyCountriesObjInner, PoliciesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
-function countryToPair(country: DetailedCountry): DualSelectPair {
+function countryToPair(country: GeoIPPolicyCountriesObjInner): DualSelectPair {
     return [country.code, country.name, country.name];
 }
 
@@ -48,7 +48,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<span>
                 ${msg(
                     "Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.",
@@ -193,5 +193,11 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-geoip-form": GeoIPPolicyForm;
     }
 }

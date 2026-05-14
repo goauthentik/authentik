@@ -79,7 +79,7 @@ class LDAPPasswordChanger:
                 attributes=["pwdProperties"],
             )
             root_attrs = list(root_attrs)[0]
-        except (LDAPAttributeError, LDAPUnwillingToPerformResult, KeyError, IndexError):
+        except LDAPAttributeError, LDAPUnwillingToPerformResult, KeyError, IndexError:
             return False
         raw_pwd_properties = root_attrs.get("attributes", {}).get("pwdProperties", None)
         if not raw_pwd_properties:
@@ -102,7 +102,7 @@ class LDAPPasswordChanger:
             return
         try:
             self._connection.extend.microsoft.modify_password(user_dn, password)
-        except (LDAPAttributeError, LDAPUnwillingToPerformResult, LDAPNoSuchAttributeResult):
+        except LDAPAttributeError, LDAPUnwillingToPerformResult, LDAPNoSuchAttributeResult:
             self._connection.extend.standard.modify_password(user_dn, new_password=password)
 
     def _ad_check_password_existing(self, password: str, user_dn: str) -> bool:

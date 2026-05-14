@@ -130,6 +130,12 @@ export const mainStyles = css`
         color: var(--pf-c-dual-list-selector__status-text--Color);
     }
 
+    .ak-dual-list-selector__status--selected {
+        font-size: var(--pf-c-dual-list-selector__status-text--FontSize);
+        line-height: 1.25;
+        min-height: calc(1.25em + 1.25em); /* reserve space for 2 lines */
+    }
+
     .ak-dual-list-selector {
         display: grid;
         grid-template-columns: minmax(0, 1fr) min-content minmax(0, 1fr);

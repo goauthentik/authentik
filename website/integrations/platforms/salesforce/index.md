@@ -4,7 +4,7 @@ sidebar_label: Salesforce
 support_level: community
 ---
 
-## What is Salesforce
+## What is Salesforce?
 
 > Salesforce is a cloud-based CRM platform that provides sales, service, marketing, and analytics applications.
 >
@@ -79,18 +79,16 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** as it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://company.my.salesforce.com?so=XXXXXXXXX`, replacing `XXXXXXXXX` with your Salesforce Organization ID.
-        - Set the **Issuer** to a unique identifier (e.g., `https://authentik.company`).
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
             - Add all five **Property Mappings** you created in the previous section.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -114,14 +112,14 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 1. On the **Single Sign-On Settings** page, under **SAML Single Sign-On Settings**, click **New**.
 2. Enter the following values:
     - **Name**: `authentik`
-    - **Issuer**: Enter the same issuer value you configured in authentik (e.g., `https://authentik.company`).
+    - **Issuer**: `https://authentik.company/application/saml/<application_slug>/metadata/`.
     - **Identity Provider Certificate**: Upload the signing certificate that you downloaded from authentik.
     - **Request Signing Certificate**: Select the default certificate or leave as-is.
     - **Request Signature Method**: `RSA-SHA256`
     - **SAML Identity Type**: Select **Assertion contains the Federation ID from the User object**.
     - **SAML Identity Location**: Select **Identity is in the NameIdentifier element of the Subject statement**.
     - **Service Provider Initiated Request Binding**: `HTTP POST`
-    - **Identity Provider Login URL**: Enter the **SSO URL (Post)** from your authentik provider.`https://authentik.company/application/saml/<slug>/sso/binding/post/`
+    - **Identity Provider Login URL**: Enter the **SAML Endpoint** from your authentik provider: `https://authentik.company/application/saml/<slug>/`
 3. Click **Save**.
 
 ### Enable Just-in-Time provisioning
@@ -131,13 +129,13 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
 3. Select **Standard** for the provisioning type.
 4. Click **Save**.
 
-## Salesforce as an OAuth Source
+## Salesforce as an OAuth source
 
 You can configure Salesforce as an OAuth source to allow users to log in to authentik using their Salesforce credentials. Optionally, this can be used alongside [SCIM provisioning](#scim-provisioning-optional) to keep your Salesforce users in sync with your authentik users.
 
 ### Salesforce configuration
 
-#### Create a Connected App
+#### Create a connected app
 
 1. Log in to your Salesforce organization as an administrator.
 2. Navigate to **Setup** and search for **App Manager**.
@@ -156,27 +154,27 @@ You can configure Salesforce as an OAuth source to allow users to log in to auth
     - Check **Require Proof Key for Code Exchange (PKCE) Extension for Supported Authorization Flows**.
 6. Click **Save**.
 
-#### Configure Client Credentials Flow _(required for SCIM with OAuth)_
+#### Configure client credentials flow _(required for SCIM with OAuth)_
 
 If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth authentication:
 
 1. Navigate to **Setup** > **External Client App Manager**.
-2. Find your Connected App and click on it.
+2. Find your Connected App and open it.
 3. Click **Edit Policies**.
 4. Under **Client Credentials Flow**:
     - Set **Run As** to an admin user that has permissions to manage users.
 5. Click **Save**.
 
-#### Get the Consumer Key and Secret
+#### Get the consumer key and secret
 
 1. Navigate to **Setup** > **External Client App Manager**.
-2. Find your Connected App and click on it.
-3. Under **Settings** > **Oauth Settings**, click **Consumer Key and Secret**.
+2. Find your Connected App and open it.
+3. Under **Settings** > **OAuth Settings**, click **Consumer Key and Secret**.
 4. Copy the **Consumer Key** and **Consumer Secret**.
 
 ### authentik configuration
 
-#### Create an OAuth Source
+#### Create an OAuth source
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login** and click **Create**.
@@ -195,7 +193,7 @@ If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth a
 
 ## SCIM Provisioning _(optional)_
 
-You can configure SCIM provisioning to automatically sync users from authentik to Salesforce. This guide only covers the Oauth2 SCIM integration, which requires an enterprise authentik account.
+You can configure SCIM provisioning to automatically sync users from authentik to Salesforce. This guide only covers OAuth2 SCIM integration, which requires an enterprise authentik account.
 
 ### Create SCIM property mappings
 
@@ -252,7 +250,7 @@ Salesforce requires specific SCIM attributes that are not included in the defaul
 4. In the **Backchannel Providers** field, select the SCIM provider you created.
 5. Click **Update** to save the application.
 
-## References
+## Resources
 
 - [Salesforce Help - Configure SSO with Salesforce as a SAML Service Provider](https://help.salesforce.com/s/articleView?id=sf.sso_saml.htm&type=5)
 - [Salesforce Help - Just-in-Time SAML Assertion Fields for Salesforce](https://help.salesforce.com/s/articleView?id=sf.sso_jit_requirements.htm&type=5)

@@ -3,6 +3,7 @@ import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -16,6 +17,7 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourc
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPreviousValue } from "#elements/utils/properties";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -23,9 +25,8 @@ import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
-    AdminFileListUsageEnum,
     AuthorizationCodeAuthMethodEnum,
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     GroupMatchingModeEnum,
     OAuthSource,
     OAuthSourceRequest,
@@ -33,11 +34,12 @@ import {
     ProviderTypeEnum,
     SourcesApi,
     SourceType,
+    UsageEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, PropertyValues, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -71,7 +73,15 @@ const pkceMethodOptions = [
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
-    async loadInstance(pk: string): Promise<OAuthSource> {
+    @property({ attribute: false, useDefault: true, hasChanged: ifPreviousValue })
+    public providerType: SourceType | null = null;
+
+    @property({ attribute: "model-name", useDefault: true, hasChanged: ifPreviousValue })
+    public modelName: string | null = null;
+
+    //#region Lifecycle
+
+    protected async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
         });
@@ -79,16 +89,15 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         return source;
     }
 
-    _modelName?: string;
+    protected load(): Promise<void> {
+        if (!this.modelName) return Promise.resolve();
 
-    @property()
-    modelName?: string;
+        return this.fetchProviderType(this.modelName);
+    }
 
-    @property({ attribute: false })
-    providerType: SourceType | null = null;
-
-    async send(data: OAuthSource): Promise<OAuthSource> {
+    protected async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
+
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
@@ -101,27 +110,26 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         });
     }
 
-    fetchProviderType(v: string | undefined) {
-        new SourcesApi(DEFAULT_CONFIG)
+    protected fetchProviderType(modelName: string): Promise<void> {
+        return new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthSourceTypesList({
-                name: v?.replace("oauthsource", ""),
+                name: modelName?.replace("oauthsource", ""),
             })
             .then((type) => {
                 this.providerType = type[0];
             });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("modelName")) {
-            this.fetchProviderType(this.modelName);
-        }
-    }
+    //#endregion
 
-    renderUrlOptions(): SlottedTemplateResult {
+    //#region Render
+
+    protected renderUrlOptions(): SlottedTemplateResult {
         if (!this.providerType?.urlsCustomizable) {
             return nothing;
         }
-        return html` <ak-form-group open label="${msg("URL settings")}">
+
+        return html`<ak-form-group open label="${msg("URL settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authorization URL")}
@@ -262,17 +270,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-oauth-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
@@ -377,7 +385,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 name="icon"
                 label=${msg("Icon")}
                 .value=${this.instance?.icon}
-                .usage=${AdminFileListUsageEnum.Media}
+                .usage=${UsageEnum.Media}
                 blankable
                 help=${iconHelperText}
             ></ak-file-search-input>
@@ -463,11 +471,11 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
+                        label=${msg("Authentication Flow")}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-authentication"
@@ -481,7 +489,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
                             fallback="default-source-enrollment"
@@ -508,6 +516,8 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                 </div>
             </ak-form-group>`;
     }
+
+    //#endregion
 }
 
 declare global {

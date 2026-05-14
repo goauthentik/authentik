@@ -1,7 +1,26 @@
 """authentik core app config"""
 
+from django.utils.translation import gettext_lazy as _
+
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tenants.flags import Flag
+
+
+class Setup(Flag[bool], key="setup"):
+
+    default = False
+    visibility = "system"
+
+
+class AppAccessWithoutBindings(Flag[bool], key="core_default_app_access"):
+
+    default = True
+    visibility = "none"
+    description = _(
+        "Configure if applications without any policy/group/user bindings "
+        "should be accessible to any user."
+    )
 
 
 class AuthentikCoreConfig(ManagedAppConfig):
@@ -12,6 +31,10 @@ class AuthentikCoreConfig(ManagedAppConfig):
     verbose_name = "authentik Core"
     mountpoint = ""
     default = True
+
+    def import_related(self):
+        super().import_related()
+        self.import_module("authentik.core.setup.signals")
 
     @ManagedAppConfig.reconcile_tenant
     def source_inbuilt(self):

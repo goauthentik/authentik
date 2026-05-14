@@ -1,7 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/saml/SAMLProviderForm";
-import "#admin/rbac/ObjectPermissionsPage";
-import "#components/events/ObjectChangelog";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
@@ -24,8 +24,8 @@ import {
     CoreApi,
     CoreUsersListRequest,
     CryptoApi,
+    ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
     SAMLMetadata,
     SAMLProvider,
     User,
@@ -46,9 +46,8 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-interface SAMLPreviewAttribute {
+export interface SAMLPreviewAttribute {
     attributes: {
         Name: string;
         Value: string[];
@@ -80,7 +79,6 @@ export class SAMLProviderViewPage extends AKElement {
     previewUser?: User;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,
@@ -261,13 +259,11 @@ export class SAMLProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
@@ -276,7 +272,7 @@ export class SAMLProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersSamlSamlprovider}
+                    model=${ModelEnum.AuthentikProvidersSamlSamlprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -354,7 +350,7 @@ export class SAMLProviderViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.issuer}
+                                        ${this.provider.issuerOverride}
                                     </div>
                                 </dd>
                             </div>
@@ -362,7 +358,7 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update SAML Provider")}</span>
                             <ak-provider-saml-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-saml-form>
@@ -389,34 +385,26 @@ export class SAMLProviderViewPage extends AKElement {
                                               class="pf-c-form-control"
                                               readonly
                                               type="text"
-                                              value="${ifDefined(this.provider?.issuer)}"
+                                              value="${ifDefined(this.provider?.urlIssuer)}"
                                           />
                                       </div>
                                       <div class="pf-c-form__group">
                                           <label class="pf-c-form__label">
                                               <span class="pf-c-form__label-text"
-                                                  >${msg("SSO URL (Post)")}</span
+                                                  >${msg("SAML Endpoint")}</span
                                               >
                                           </label>
                                           <input
                                               class="pf-c-form-control"
                                               readonly
                                               type="text"
-                                              value="${ifDefined(this.provider.urlSsoPost)}"
+                                              value="${ifDefined(this.provider.urlUnified)}"
                                           />
-                                      </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
-                                                  >${msg("SSO URL (Redirect)")}</span
-                                              >
-                                          </label>
-                                          <input
-                                              class="pf-c-form-control"
-                                              readonly
-                                              type="text"
-                                              value="${ifDefined(this.provider.urlSsoRedirect)}"
-                                          />
+                                          <p class="pf-c-form__helper-text">
+                                              ${msg(
+                                                  "SAML provider endpoint. Use this URL for SP configuration.",
+                                              )}
+                                          </p>
                                       </div>
                                       <div class="pf-c-form__group">
                                           <label class="pf-c-form__label">
@@ -428,33 +416,7 @@ export class SAMLProviderViewPage extends AKElement {
                                               class="pf-c-form-control"
                                               readonly
                                               type="text"
-                                              value="${ifDefined(this.provider.urlSsoInit)}"
-                                          />
-                                      </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
-                                                  >${msg("SLO URL (Post)")}</span
-                                              >
-                                          </label>
-                                          <input
-                                              class="pf-c-form-control"
-                                              readonly
-                                              type="text"
-                                              value="${ifDefined(this.provider.urlSloPost)}"
-                                          />
-                                      </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
-                                                  >${msg("SLO URL (Redirect)")}</span
-                                              >
-                                          </label>
-                                          <input
-                                              class="pf-c-form-control"
-                                              readonly
-                                              type="text"
-                                              value="${ifDefined(this.provider.urlSloRedirect)}"
+                                              value="${ifDefined(this.provider.urlUnifiedInit)}"
                                           />
                                       </div>
                                   </form>

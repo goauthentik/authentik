@@ -11,10 +11,12 @@ import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpe
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
-    FlowsInstancesListDesignationEnum,
+    FlowDesignationEnum,
     IdentificationStage,
     Stage,
     StagesApi,
@@ -67,7 +69,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const userSelectFields = [
             { name: UserFieldsEnum.Username, label: msg("Username") },
             { name: UserFieldsEnum.Email, label: msg("Email") },
@@ -87,7 +89,22 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("User fields")} name="userFields">
+                    <ak-form-element-horizontal name="userFields">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userFields",
+                            },
+                            msg("User Fields"),
+                        )}
+
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.",
+                            )}
+                        </p>
+
                         <ak-checkbox-group
                             class="user-field-select"
                             .options=${userSelectFields}
@@ -95,11 +112,6 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 .map(({ name }) => name)
                                 .filter((name) => this.isUserFieldSelected(name))}
                         ></ak-checkbox-group>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Fields a user can identify themselves with. If no fields are selected, the user will only be able to use sources.",
-                            )}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Password stage")} name="passwordStage">
                         <ak-search-select
@@ -261,7 +273,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         name="passwordlessFlow"
                     >
                         <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.passwordlessFlow}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
@@ -275,7 +287,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         name="enrollmentFlow"
                     >
                         <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                         ></ak-flow-search>
 
@@ -287,7 +299,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="recoveryFlow">
                         <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Recovery}
+                            flowType=${FlowDesignationEnum.Recovery}
                             .currentFlow=${this.instance?.recoveryFlow}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">

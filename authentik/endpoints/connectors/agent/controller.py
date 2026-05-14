@@ -8,7 +8,7 @@ from rest_framework.fields import CharField
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
-from authentik.endpoints.controller import BaseController
+from authentik.endpoints.controller import BaseController, Capabilities
 from authentik.endpoints.facts import OSFamily
 
 
@@ -44,8 +44,12 @@ class MDMConfigResponseSerializer(PassiveSerializer):
 
 class AgentConnectorController(BaseController[AgentConnector]):
 
-    def supported_enrollment_methods(self):
-        return []
+    @staticmethod
+    def vendor_identifier() -> str:
+        return "goauthentik.io/platform"
+
+    def capabilities(self) -> list[Capabilities]:
+        return [Capabilities.STAGE_ENDPOINTS]
 
     def generate_mdm_config(
         self, target_platform: OSFamily, request: HttpRequest, token: EnrollmentToken
@@ -134,13 +138,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                             "AllowDeviceIdentifiersInAttestation": True,
                             "AuthenticationMethod": "UserSecureEnclaveKey",
                             "EnableAuthorization": True,
-                            "EnableCreateUserAtLogin": True,
-                            "FileVaultPolicy": ["RequireAuthentication"],
-                            "LoginPolicy": ["RequireAuthentication"],
-                            "NewUserAuthorizationMode": "Standard",
-                            "UnlockPolicy": ["RequireAuthentication"],
                             "UseSharedDeviceKeys": True,
-                            "UserAuthorizationMode": "Standard",
                         },
                     },
                 ],

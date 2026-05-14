@@ -81,6 +81,7 @@ class OutpostConfig:
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
     kubernetes_json_patches: dict[str, list[dict[str, Any]]] | None = field(default=None)
+    kubernetes_disable_x509_strict: bool = field(default=False)
 
 
 class OutpostModel(Model):
@@ -304,7 +305,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         return f"goauthentik.io/outposts/state/{self.uuid.hex}"
 
     @property
-    def state(self) -> list["OutpostState"]:
+    def state(self) -> list[OutpostState]:
         """Get outpost's health status"""
         return OutpostState.for_outpost(self)
 
@@ -403,7 +404,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     def token(self) -> Token:
         """Get/create token for auto-generated user"""
         managed = f"goauthentik.io/outpost/{self.token_identifier}"
-        tokens = Token.filter_not_expired(
+        tokens = Token.objects.filter(
             identifier=self.token_identifier,
             intent=TokenIntents.INTENT_API,
             managed=managed,
@@ -439,9 +440,13 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         if self.managed:
             for brand in Brand.objects.filter(web_certificate__isnull=False):
                 objects.append(brand)
-                objects.append(("view_certificatekeypair", brand.web_certificate))
-                objects.append(("view_certificatekeypair_certificate", brand.web_certificate))
-                objects.append(("view_certificatekeypair_key", brand.web_certificate))
+                objects.append(("authentik_crypto.view_certificatekeypair", brand.web_certificate))
+                objects.append(
+                    ("authentik_crypto.view_certificatekeypair_certificate", brand.web_certificate)
+                )
+                objects.append(
+                    ("authentik_crypto.view_certificatekeypair_key", brand.web_certificate)
+                )
         return objects
 
     def __str__(self) -> str:
@@ -480,7 +485,7 @@ class OutpostState:
         return parse(self.version) != OUR_VERSION
 
     @staticmethod
-    def for_outpost(outpost: Outpost) -> list["OutpostState"]:
+    def for_outpost(outpost: Outpost) -> list[OutpostState]:
         """Get all states for an outpost"""
         keys = cache.keys(f"{outpost.state_cache_prefix}/*")
         if not keys:
@@ -492,7 +497,7 @@ class OutpostState:
         return states
 
     @staticmethod
-    def for_instance_uid(outpost: Outpost, uid: str) -> "OutpostState":
+    def for_instance_uid(outpost: Outpost, uid: str) -> OutpostState:
         """Get state for a single instance"""
         key = f"{outpost.state_cache_prefix}/{uid}"
         default_data = {"uid": uid}

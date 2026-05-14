@@ -3,6 +3,7 @@ package application
 import (
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
 )
 
@@ -29,7 +30,7 @@ func (a *Application) redirect(rw http.ResponseWriter, r *http.Request) {
 }
 
 // toString Generic to string function, currently supports actual strings and integers
-func toString(in interface{}) string {
+func toString(in any) string {
 	switch v := in.(type) {
 	case string:
 		return v
@@ -42,12 +43,7 @@ func toString(in interface{}) string {
 }
 
 func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(s, e)
 }
 
 func cleanseHeaders(headers http.Header) map[string]string {

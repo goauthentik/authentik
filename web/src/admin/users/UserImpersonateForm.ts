@@ -1,10 +1,10 @@
 import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 
+import { asInstanceInvoker } from "#elements/dialogs";
 import { Form } from "#elements/forms/Form";
-import { APIMessage } from "#elements/messages/Message";
 
 import { AdminApi, CoreApi, ImpersonationRequest } from "@goauthentik/api";
 
@@ -14,13 +14,17 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-user-impersonate-form")
 export class UserImpersonateForm extends Form<ImpersonationRequest> {
+    public static asInstanceInvoker = asInstanceInvoker;
+    public override submitLabel = msg("Impersonate");
+    public override headline = msg("Impersonate User");
+
     @property({ type: Number })
     public instancePk?: number;
 
     @state()
-    private requireReason = false;
+    protected requireReason = false;
 
-    async firstUpdated(): Promise<void> {
+    protected refreshReasonRequirement = async () => {
         try {
             const settings = await new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve();
             this.requireReason = settings.impersonationRequireReason ?? false;
@@ -29,6 +33,11 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
             // fallback to reason not required as the backend will still validate it
             this.requireReason = false;
         }
+    };
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.refreshReasonRequirement();
     }
 
     protected override formatAPISuccessMessage(): APIMessage | null {
@@ -50,7 +59,7 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
             });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-text-input
             name="reason"
             label=${msg("Reason")}

@@ -4,9 +4,9 @@ sidebar_label: Knocknoc
 support_level: community
 ---
 
-## What is Knocknoc
+## What is Knocknoc?
 
-> Knocknoc links your single-sign on experience to existing network access controls. It can dynamically orchestrate network access controls (e.g., managing firewall rules in real-time without exposing target machines) or function as an identity-aware gateway.
+> Knocknoc links your single sign-on experience to existing network access controls. It can dynamically orchestrate network access controls (e.g., managing firewall rules in real-time without exposing target machines) or function as an identity-aware gateway.
 >
 > -- https://knocknoc.io/
 
@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Knocknoc with authentik, you need to create an application/provider pair and 3 property mappings in authentik.
+To support the integration of Knocknoc with authentik, you need to create an application/provider pair and three property mappings in authentik.
 
 ### Create property mappings in authentik
 
@@ -50,7 +50,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
     - **Expression**:
 
     ```python
-    for group in user.ak_groups.all(): yield group.name
+    for group in user.groups.all(): yield group.name
     ```
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
@@ -64,24 +64,22 @@ To support the integration of Knocknoc with authentik, you need to create an app
     ```
 
 :::info
-This example will set session duration at 540 minutes. Change the value to match your desired session duration length in minutes.
+This example sets the session duration to 540 minutes. Change the value to match your desired session duration in minutes.
 :::
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
   **Protocol Settings**:
     - **ACS URL**: `https://knocknoc.company/api/saml/acs`
-    - **Issuer**: `https://authentik.company`
-    - **Service Provider Binding**: `Post`
-    - **Audience**: `https://kocknoc.company/api/saml/metadata`
-    - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `Authentik default SAML Mapping: Username`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Audience**: `https://knocknoc.company/api/saml/metadata`
+    - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

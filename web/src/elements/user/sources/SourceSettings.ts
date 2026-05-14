@@ -8,10 +8,9 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { renderSourceIcon } from "#elements/sources/utils";
 import Styles from "#elements/user/sources/SourceSettings.css";
 import { ifPresent } from "#elements/utils/attributes";
-
-import { renderSourceIcon } from "#admin/sources/utils";
 
 import { SourcesApi, UserSetting, UserSourceConnection } from "@goauthentik/api";
 
@@ -25,7 +24,7 @@ import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css
 export class UserSourceSettingsPage extends AKElement {
     static styles: CSSResult[] = [PFDataList, Styles];
 
-    @property({ type: Number })
+    @property({ type: Number, attribute: "user-id" })
     public userId?: number;
 
     @property({ type: Boolean, attribute: "allow-configuration" })

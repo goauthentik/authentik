@@ -3,6 +3,7 @@ import warnings
 
 from cryptography.hazmat.backends.openssl.backend import backend
 from defusedxml import defuse_stdlib
+from xmlsec import base64_default_line_size
 
 from authentik.lib.config import CONFIG
 
@@ -19,6 +20,7 @@ def setup():
     )
 
     defuse_stdlib()
+    base64_default_line_size(size=8192)
 
     if CONFIG.get_bool("compliance.fips.enabled", False):
         backend._enable_fips()

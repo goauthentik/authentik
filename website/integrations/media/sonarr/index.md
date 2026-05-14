@@ -8,7 +8,7 @@ support_level: community
 These instructions apply to all projects in the \*arr Family. If you use multiple of these projects, you can assign them to the same Outpost.
 :::
 
-## What is Sonarr
+## What is Sonarr?
 
 > Sonarr is a PVR for Usenet and BitTorrent users. It can monitor multiple RSS feeds for new episodes of your favorite shows and will grab, sort and rename them. It can also be configured to automatically upgrade the quality of files already downloaded when a better quality format becomes available.
 >
@@ -45,7 +45,7 @@ Create an outpost deployment for the provider you've created above, as described
 
 The outpost will connect to authentik and configure itself.
 
-## Authentication Setup
+## Authentication setup
 
 Because Sonarr can use HTTP Basic credentials, you can save your HTTP Basic Credentials in authentik. The recommended way to do this is to create a Group. Name the group "Sonarr Users", for example. For this group, add the following attributes:
 
@@ -58,9 +58,9 @@ Additional note: Make sure the type of authentication is set to "Basic (Browser 
 
 Add all Sonarr users to the Group. You should also create a Group Membership Policy to limit access to the application.
 
-Enable the `Use Basic Authentication` option. Set and `HTTP-Basic Username` and `HTTP-Basic Password` to `sonarr_user` and `sonarr_password` respectively. These values can be chosen freely, `sonarr_` is just used as a prefix for clarity.
+Enable the `Use Basic Authentication` option. Set `HTTP-Basic Username` and `HTTP-Basic Password` to `sonarr_user` and `sonarr_password` respectively. These values can be chosen freely, `sonarr_` is just used as a prefix for clarity.
 
-## Reverse Proxy Setup
+## Reverse proxy setup
 
 Finally, in your reverse proxy setup for Sonarr, replace the current value for the proxied server (e.g. proxy_pass in nginx) with your authentik outpost proxy provider address.
 

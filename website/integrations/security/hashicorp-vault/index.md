@@ -1,17 +1,17 @@
 ---
-title: Integrate with Hashicorp Vault
-sidebar_label: Hashicorp Vault
+title: Integrate with HashiCorp Vault
+sidebar_label: HashiCorp Vault
 support_level: authentik
 ---
 
-## What is Vault
+## What is Vault?
 
 > Secure, store and tightly control access to tokens, passwords, certificates, encryption keys for protecting secrets and other sensitive data using a UI, CLI, or HTTP API.
 >
 > -- https://vaultproject.io
 
 :::info
-This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ between versions. This guide does not cover vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in depth vault guide
+This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ between versions. This guide does not cover Vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in-depth Vault guide
 :::
 
 ## Preparation
@@ -27,12 +27,12 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Hashicorp Vault with authentik, you need to create an application/provider pair in authentik.
+To support the integration of HashiCorp Vault with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -40,16 +40,16 @@ To support the integration of Hashicorp Vault with authentik, you need to create
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Add three `Strict` redirect URIs and set them to `https://vault.company/ui/vault/auth/oidc/oidc/callback`, `https://vault.company/oidc/callback`, and `http://localhost:8250/oidc/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-## Hashicorp Vault configuration
+## HashiCorp Vault configuration
 
-Enable the oidc auth method
+Enable the OIDC auth method.
 `vault auth enable oidc`
 
-Configure the oidc auth method, oidc discovery url is the OpenID Configuration Issuer in your provider
+Configure the OIDC auth method. The OIDC discovery URL is the OpenID Configuration Issuer in your provider.
 
 ```
 vault write auth/oidc/config \
@@ -59,7 +59,7 @@ vault write auth/oidc/config \
          default_role="reader"
 ```
 
-Create the reader role
+Create the reader role.
 
 ```
 vault write auth/oidc/role/reader \
@@ -71,9 +71,9 @@ vault write auth/oidc/role/reader \
       policies="reader"
 ```
 
-## External Groups
+## External groups
 
-If you wish to manage group membership in Hashicorp Vault via Authentik you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
+If you wish to manage group membership in HashiCorp Vault via authentik, you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
 
 :::info
 This assumes that the steps above have already been completed and tested.
