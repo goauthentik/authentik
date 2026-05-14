@@ -183,7 +183,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             ?checked=${app.openInNewTab ?? false}
                             label=${msg("Open in new tab")}
                             help=${msg(
-                                "If checked, the launch URL will open in a new browser tab or window from the user's application dashboard.",
+                                "If checked, the launch URL will open in a new browser tab or window from the user's Application Dashboard.",
                             )}
                         >
                         </ak-switch-input>
