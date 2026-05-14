@@ -82,7 +82,11 @@ jobs:
         run: | # shell
           go build -o ./bin/authentik-server ./cmd/server
           sudo install -m 0755 ./bin/authentik-server /usr/local/bin/authentik-server
-      - name: Build authentik worker (Rust)
+      # The Rust binary is named `authentik` (not `authentik-worker`) to match
+      # `lifecycle/ak`, which probes `command -v authentik` and falls back to
+      # `cargo run --` if the prebuilt binary isn't on PATH. It serves both
+      # `ak worker` and `ak allinone`.
+      - name: Build authentik Rust binary (worker / allinone)
         run: | # shell
           cargo build --release --bin authentik
           sudo install -m 0755 ./target/release/authentik /usr/local/bin/authentik
