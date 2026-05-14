@@ -34,7 +34,6 @@ To support the integration of macmon NAC with authentik, you need to create an a
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://macmon.company/login/?acs`.
         - Set the **Audience** to `https://macmon.company/login/?acs`.
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Set an available signing certificate.
             - Enable both **Sign Assertions** and **Sign Responses**.

@@ -48,7 +48,6 @@ Note the Audience and ACS URLs that appear. You will use these to configure auth
 In the authentik admin interface, navigate to **Applications > Providers**. Create a SAML provider with the following parameters:
 
 - ACS URL: Enter the ACS URL provided by the Skyhigh Dashboard above
-- Service Provider Binding: `Post`
 - Audience: Enter the Audience URL provided by the Skyhigh Dashboard above
 - Signing certificate: Select the certificate you uploaded to Skyhigh above
 - Property mappings: Select all default mappings.
@@ -63,7 +62,6 @@ Create an application linked to this new provider and use the slug name you used
 In the authentik admin interface, navigate to **Applications > Providers**. Create a SAML provider with the following parameters:
 
 - ACS URL: `https://login.auth.ui.trellix.com/sso/saml2`
-- Service Provider Binding: `Post`
 - Audience: `https://login.auth.ui.trellix.com/sso/saml2`
 - Signing certificate: Select any certificate
 - Property mappings: Select all default mappings.

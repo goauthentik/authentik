@@ -40,7 +40,6 @@ This documentation lists only the settings that you need to change from their de
 9. Create a new SAML provider under **Applications** > **Providers** using the following settings:
     - **ACS URL**: `https://semgrep.dev/api/auth/saml/devcompany/`
     - **Audience**: `semgrep-dev`
-    - **Service Provider Binding**: `Post`
     - **Signing Keypair**: Choose the RSA certificate you generated earlier.
     - **Property mappings**: `semgrep-name` and `semgrep-email`
 10. Create a new application under **Applications** > **Applications**, pick a name and a slug, and assign the provider that you just created.

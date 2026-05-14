@@ -32,7 +32,6 @@ To support the integration of KnowBe4 with authentik, you need to create an appl
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Temporarily set the **ACS URL** to `https://temp.temp`
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, select any available signing certificate.
     - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to control which users see the KnowBe4 application on the **My Applications** page.
 
