@@ -39,7 +39,6 @@ This documentation lists only the settings that you need to change from their de
 8. Download the generated certificate, as you will need it later.
 9. Create a new SAML provider under **Applications** > **Providers** using the following settings:
     - **ACS URL**: `https://semgrep.dev/api/auth/saml/devcompany/`
-    - **Issuer**: `https://authentik.company`
     - **Audience**: `semgrep-dev`
     - **Service Provider Binding**: `Post`
     - **Signing Keypair**: Choose the RSA certificate you generated earlier.
@@ -56,7 +55,7 @@ This documentation lists only the settings that you need to change from their de
     - **Display name**: Anything you like.
     - **Email domain**: `company`
     - **IdP SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
-    - **IdP Issuer ID**: `https://authentik.company`
+    - **IdP Issuer ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **Upload/paste certificate**: Downloaded from the previous step.
 
 ## Verification

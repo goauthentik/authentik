@@ -25,7 +25,6 @@ This documentation lists only the settings that you need to change from their de
 Create an application in authentik. Create a SAML Provider with the following values
 
 - ACS URL: `https://sentry.company/saml/acs/<sentry organisation name>/`
-- Issuer: `authentik`
 - Service Provider Binding: `Post`
 - Audience: `https://sentry.company/saml/metadata/<sentry organisation name>/`
 

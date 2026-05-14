@@ -28,7 +28,6 @@ Create an application in authentik and note the slug, as this will be used later
 Create a SAML provider with the following parameters:
 
 - ACS URL: `https://www.google.com/a/example.com/acs`
-- Issuer: `google.com/a/example.com`
 - Binding: `Post`
 - Audience: `google.com/a/example.com`
 
