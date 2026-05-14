@@ -45,7 +45,7 @@ Create an outpost deployment for the provider you've created above, as described
 
 The outpost will connect to authentik and configure itself.
 
-## Authentication Setup
+## Authentication setup
 
 Because Sonarr can use HTTP Basic credentials, you can save your HTTP Basic Credentials in authentik. The recommended way to do this is to create a Group. Name the group "Sonarr Users", for example. For this group, add the following attributes:
 
@@ -60,7 +60,7 @@ Add all Sonarr users to the Group. You should also create a Group Membership Pol
 
 Enable the `Use Basic Authentication` option. Set `HTTP-Basic Username` and `HTTP-Basic Password` to `sonarr_user` and `sonarr_password` respectively. These values can be chosen freely, `sonarr_` is just used as a prefix for clarity.
 
-## Reverse Proxy Setup
+## Reverse proxy setup
 
 Finally, in your reverse proxy setup for Sonarr, replace the current value for the proxied server (e.g. proxy_pass in nginx) with your authentik outpost proxy provider address.
 

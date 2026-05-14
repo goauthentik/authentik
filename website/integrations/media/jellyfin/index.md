@@ -32,9 +32,9 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## LDAP Configuration
+## LDAP configuration
 
-### authentik Configuration
+### authentik configuration
 
 Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create the LDAP application, provider, service account, and outpost. Complete the [service account creation](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#create-a-service-account) and [LDAP search permission](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#assign-the-ldap-search-permission-to-the-service-account) steps for the account Jellyfin uses to connect to LDAP.
 
@@ -47,7 +47,7 @@ If access to the authentik LDAP application is restricted, allow the LDAP servic
 3. Open the **Administrator dashboard** and go to the **Plugins** section.
 4. Click **Catalog** at the top of the page, and locate the "LDAP Authentication Plugin".
 5. Install the plugin. You may need to restart Jellyfin to finish installation.
-6. Once finished, navigate back to the plugins section of the admin dashboard, click the 3 dots on the "LDAP-Auth Plugin" card, and click settings.
+6. Once finished, navigate back to the plugins section of the admin dashboard, click the three dots on the "LDAP-Auth Plugin" card, and click **Settings**.
 7. Configure the LDAP Settings as follows:
     - `LDAP Server`: `ldap.company`
     - `LDAP Port`: 636
@@ -93,9 +93,9 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 1. Click "Save".
 2. Log out, and log in with an LDAP user. Username **must** be used; logging in with email will not work.
 
-## OIDC Configuration
+## OIDC configuration
 
-### authentik Configuration
+### authentik configuration
 
 **Provider Settings**
 
@@ -116,11 +116,11 @@ Create an application that uses `jellyfin` provider. Optionally apply access res
 
 Set the launch URL to `https://jellyfin.company/sso/OID/start/authentik`
 
-### Jellyfin Configuration
+### Jellyfin configuration
 
-1. Log in to Jellyfin with an administrator account and navigate to the **Admin Dashboard** by selecting your profile icon in the top right, then clicking **Dashboard**.
+1. Log in to Jellyfin with an administrator account and navigate to the **Admin Dashboard** by selecting your profile icon in the top-right corner, then clicking **Dashboard**.
 2. Go to **Dashboard > Plugins > Repositories**.
-3. Click the **+** in the top left to add a new repository. Use the following URL and name it "SSO-Auth":
+3. Click the **+** in the top-left corner to add a new repository. Use the following URL and name it "SSO-Auth":
 
 ```
 https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manifest.json
