@@ -1,0 +1,158 @@
+---
+title: Integrate with RabbitMQ
+sidebar_label: RabbitMQ
+support_level: community
+---
+
+## What is RabbitMQ?
+
+> RabbitMQ is an open-source message broker that supports AMQP 0-9-1,
+> MQTT, STOMP and several other protocols. It ships with a built-in
+> HTTP Management UI and HTTP API for administering virtual hosts,
+> queues, exchanges, users and permissions.
+>
+> -- https://www.rabbitmq.com/
+
+This guide covers RabbitMQ 4.x with the `rabbitmq_auth_backend_oauth2`
+plugin. The same configuration supports both Management UI login via
+OpenID Connect and AMQP / HTTP API authentication with a JWT used as
+the password.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `rabbitmq.company` is the FQDN of the RabbitMQ installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from
+their default values. Be aware that any changes other than those
+explicitly mentioned in this guide could cause issues accessing your
+application.
+:::
+
+## authentik configuration
+
+To support the integration of RabbitMQ with authentik, you need to
+create one property mapping, two groups, and an application/provider
+pair with three policy bindings.
+
+### Create a property mapping
+
+The mapping injects the `aud` claim that RabbitMQ requires
+(`auth_oauth2.verify_aud = true` by default) and provides admin
+membership for the `client_credentials` grant's synthetic service
+account.
+
+1. Navigate to **Customization** > **Property mappings** and click
+   **Create** > **Scope Mapping**.
+2. Configure the mapping:
+    - **Name**: `RabbitMQ claims`
+    - **Scope name**: `rabbitmq`
+    - **Expression**:
+
+      ```python
+      out = {"aud": ["rabbitmq"]}
+      if (request.user.type == "service_account"
+              and request.user.username.endswith("-client_credentials")):
+          out["groups"] = ["rabbitmq-administrator"]
+      return out
+      ```
+
+### Create groups
+
+Navigate to **Directory** > **Groups** and create:
+
+- `rabbitmq-administrator` — full admin access in RabbitMQ.
+- `rabbitmq-monitoring` — read-only / monitoring tag in RabbitMQ.
+
+Add the test users to one of these groups.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik
+   Admin interface.
+2. Navigate to **Applications** > **Applications** and click
+   **Create with Provider** to open the application wizard.
+    - **New application**: provide a descriptive name and a slug. The
+      slug becomes part of the issuer URL — set it to `rabbitmq`. Note
+      the slug because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Provider**.
+    - **Configure Provider**:
+        - **Provider name**: any descriptive value (or accept the
+          auto-suggested one).
+        - **Authorization flow**: `default-provider-authorization-explicit-consent`
+          (or the implicit-consent flow if you don't want a consent
+          screen).
+        - Under **Protocol settings**:
+            - **Client ID** and **Client Secret** are generated
+              automatically. Note them — they are required later.
+            - **Redirect URIs/Origins (RegEx)**: add an entry with
+              **Strict** matching mode and URL
+              `https://rabbitmq.company:15672/js/oidc-oauth/login-callback.html`.
+            - **Signing Key**: any available RSA key.
+        - Under **Advanced protocol settings**:
+            - **Scopes**: bind four mappings:
+                - `authentik default OAuth Mapping: OpenID 'openid'`
+                - `authentik default OAuth Mapping: OpenID 'profile'`
+                - `authentik default OAuth Mapping: OpenID 'email'`
+                - `RabbitMQ claims` (the one created above)
+    - **Configure Bindings**: create three bindings on the application
+      (engine mode `any`):
+        - Order `10` — group `rabbitmq-administrator`.
+        - Order `20` — group `rabbitmq-monitoring`.
+        - Order `30` — expression policy with body
+          `return request.user.type == "service_account" and request.user.username.endswith("-client_credentials")`.
+
+3. Click **Submit** to save the new application and provider.
+
+## RabbitMQ configuration
+
+Enable the OAuth 2 backend plugin:
+
+```shell
+rabbitmq-plugins enable rabbitmq_auth_backend_oauth2
+```
+
+Add the following to `/etc/rabbitmq/rabbitmq.conf`, replacing
+`<client_id>` and `<client_secret>` with values from the provider you
+just created:
+
+```ini
+auth_backends.1 = rabbit_auth_backend_oauth2
+auth_backends.2 = rabbit_auth_backend_internal
+
+auth_oauth2.resource_server_id          = rabbitmq
+auth_oauth2.issuer                      = https://authentik.company/application/o/rabbitmq/
+auth_oauth2.preferred_username_claims.1 = preferred_username
+auth_oauth2.preferred_username_claims.2 = email
+
+auth_oauth2.additional_scopes_key = groups
+auth_oauth2.scope_aliases.1.alias = rabbitmq-administrator
+auth_oauth2.scope_aliases.1.scope = rabbitmq.tag:administrator rabbitmq.read:*/* rabbitmq.write:*/* rabbitmq.configure:*/*
+auth_oauth2.scope_aliases.2.alias = rabbitmq-monitoring
+auth_oauth2.scope_aliases.2.scope = rabbitmq.tag:monitoring rabbitmq.read:*/*
+
+management.oauth_enabled            = true
+management.oauth_disable_basic_auth = false
+management.oauth_client_id          = <client_id>
+management.oauth_client_secret      = <client_secret>
+management.oauth_provider_url       = https://authentik.company/application/o/rabbitmq/
+management.oauth_scopes             = openid profile email rabbitmq
+```
+
+Restart RabbitMQ for the changes to take effect.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with RabbitMQ, log out
+of the RabbitMQ Management UI at `https://rabbitmq.company:15672/`, click
+**Click here to log in**, and authenticate through authentik. Members
+of `rabbitmq-administrator` see the `administrator` tag; members of
+`rabbitmq-monitoring` see the `monitoring` tag.
+
+## Resources
+
+- [RabbitMQ docs — OAuth 2.0 authentication](https://www.rabbitmq.com/docs/oauth2)
+- [RabbitMQ docs — Management plugin](https://www.rabbitmq.com/docs/management)
