@@ -28,13 +28,11 @@ class ChallengeValidationError(Exception):
         self,
         detail: str,
         code: str | None = None,
-        device: Device | None = None,
         failure_context: dict = None,
     ):
         if failure_context is None:
             failure_context = {}
         self.detail = detail
-        self.device = device
         self.code = code
         self.failure_context = failure_context
 
@@ -170,7 +168,7 @@ class DeviceDependentValidationMixin:
         if success:
             return device
         else:
-            raise ChallengeValidationError(_("Invalid Token."), device=device)
+            raise ChallengeValidationError(_("Invalid Token."), failure_context={"device": device})
 
 
 class DeviceIndependentValidationMixin:

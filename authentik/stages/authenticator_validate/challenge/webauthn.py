@@ -138,7 +138,7 @@ class WebAuthnChallenger(DeviceChallenger):
         except InvalidAuthenticationResponse as exc:
             LOGGER.warning("Assertion failed", exc=exc)
             raise ChallengeValidationError(
-                "Assertion failed", device=device, failure_context=self._get_failure_context(device)
+                "Assertion failed", failure_context=self._get_failure_context(device)
             ) from exc
 
         with audit_ignore():
@@ -146,6 +146,4 @@ class WebAuthnChallenger(DeviceChallenger):
         return device
 
     def _get_failure_context(self, device: WebAuthnDevice) -> dict:
-        return {
-            "device_type": device.device_type,
-        }
+        return {"device_type": device.device_type, "device": device}

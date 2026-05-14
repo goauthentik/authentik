@@ -23,7 +23,6 @@ from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.policies.reputation.signals import update_score
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_validate.challenge import (
     ChallengeValidationError,
@@ -69,6 +68,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
 
     device: Device | None
     challenge: dict | None
+    failure_context: dict
 
     selected_stage = CharField(required=False)
 
@@ -78,6 +78,10 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     duo = IntegerField(required=False)
     challenge_uid = CharField(required=False)
     component = CharField(default="ak-stage-authenticator-validate")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.failure_context = {}
 
     def validate_challenge_uid(self, challenge_uid: str):
         device_challenges: list[dict] = self.stage.executor.plan.context.get(
@@ -112,6 +116,8 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
             challenger.initiate(self.challenge)
             raise ValidationError("Empty response")
 
+        self.failure_context = {"device_class": device_class.value}
+
         if device_class in [
             DeviceClasses.TOTP,
             DeviceClasses.STATIC,
@@ -132,28 +138,19 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
                 {response_field: _("This field is required")}, code="required"
             ) from None
 
+        pending_user = self.stage.get_pending_user()
+
         if self.challenge["device_uid"] is not None:
             devices = device_class.as_type().objects.filter(pk=self.challenge["device_uid"])
+        elif pending_user.is_anonymous:
+            devices = device_class.as_type().objects.all()
         else:
-            user = self.stage.get_pending_user()
-            if user.is_anonymous:
-                devices = device_class.as_type().objects.all()
-            else:
-                devices = device_class.as_type().objects.filter(user=self.stage.get_pending_user())
+            devices = device_class.as_type().objects.filter(user=self.stage.get_pending_user())
 
         try:
             self.device = challenger.validate(devices, self.challenge["challenge"], response)
         except ChallengeValidationError as exc:
-            if exc.device is not None:
-                context = {"device_class": device_class.value, "device": exc.device}
-                context.update(exc.failure_context)
-                login_failed.send(
-                    sender=__name__,
-                    credentials={"username": exc.device.user.username},
-                    request=self.stage.request,
-                    stage=self.stage.executor.current_stage,
-                    context={PLAN_CONTEXT_METHOD_ARGS: context},
-                )
+            self.failure_context.update(exc.failure_context)
             raise ValidationError({response_field: exc.detail}, code=exc.code) from exc
 
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "auth_mfa")
@@ -386,7 +383,18 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         return response
 
     def challenge_invalid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
-        update_score(self.request, self.get_pending_user().username, -1)
+        if response.data.get("action") != ChallengeAction.INITIATE:
+            failed_user = self.get_pending_user()
+            if failed_user.is_anonymous and "device" in response.failure_context:
+                failed_user = response.failure_context["device"].user
+            if not failed_user.is_anonymous:
+                login_failed.send(
+                    sender=__name__,
+                    credentials={"username": failed_user.username},
+                    request=self.request,
+                    stage=self.executor.current_stage,
+                    context={PLAN_CONTEXT_METHOD_ARGS: response.failure_context},
+                )
         return super().challenge_invalid(response)
 
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:

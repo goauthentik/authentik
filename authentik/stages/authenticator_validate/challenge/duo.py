@@ -70,8 +70,7 @@ class DuoChallenger(DeviceChallenger):
                 raise ChallengeValidationError(
                     "Duo denied access",
                     code="denied",
-                    device=device,
-                    failure_context={"duo_response": response},
+                    failure_context={"duo_response": response, "device": device},
                 )
             return device
         except RuntimeError as exc:
@@ -81,5 +80,5 @@ class DuoChallenger(DeviceChallenger):
                 user=device.user,
             ).from_http(self.request, device.user)
             raise ChallengeValidationError(
-                "Duo denied access", code="denied", device=device
+                "Duo denied access", code="denied", failure_context={"device": device}
             ) from exc
