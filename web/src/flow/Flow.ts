@@ -5,6 +5,7 @@ import "#flow/FlowExecutor";
 import "#flow/tabs/broadcast";
 
 import { FlowWebsocketClientController } from "./controllers/FlowWebsocketClientController";
+import render from "./Flow.render";
 import Styles from "./Flow.styles";
 
 import { globalAK } from "#common/global";
@@ -12,7 +13,6 @@ import { applyBackgroundImageProperty } from "#common/theme";
 import { AKSessionAuthenticatedEvent } from "#common/ws/events";
 
 import { listen } from "#elements/decorators/listen";
-import { light } from "#elements/directives/light";
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { SlottedTemplateResult } from "#elements/types";
@@ -202,8 +202,8 @@ export class Flow extends WithBrandConfig(Interface) {
         });
     }
 
-    // Only used by the `sidebar_*_frame_backgrounds` to give customers a place to put their
-    // branding visuals, if they like.
+    // Only used by the `sidebar_*_frame_backgrounds` to give admins a place to put their branding
+    // visuals, if they like.
     //
     protected renderFrameBackground() {
         return guard([this.layout, this.background], () => {
@@ -225,41 +225,10 @@ export class Flow extends WithBrandConfig(Interface) {
         });
     }
 
-    protected renderFooter() {
-        return guard([this.layout], () => {
-            return html``;
-        });
-    }
-
     protected override render(): SlottedTemplateResult {
-        const { loading } = this;
-
-        return html` ${this.renderFrameBackground()}
-            <div class="ak-c-v2-flow__panel" part="panel">
-                <div class="ak-c-v2-flow__spacer" part="head-spacer"></div>
-                <main
-                    data-layout=${this.layout}
-                    class="ak-c-v2-flow__card"
-                    aria-label=${msg("Authentication form")}
-                    part="main"
-                >
-                    <div class="ak-c-v2-flow__header" part="branding">${this.renderHeader()}</div>
-                    ${loading
-                        ? html`<ak-loading-overlay part="loading-overlay"></ak-loading-overlay>`
-                        : nothing}
-                    <div class="ak-c-v2-flow__executor" part="flow-executor">
-                        ${light(html`<ak-flow-executor slug=${this.slug}></ak-flow-executor>`)}
-                    </div>
-                </main>
-                <footer
-                    aria-label=${msg("Site footer")}
-                    name="site-footer"
-                    part="footer"
-                    class="ak-v2-c-flow__footer"
-                >
-                    <slot name="footer"></slot>
-                </footer>
-            </div>`;
+        const { loading, layout, slug } = this;
+        const header = this.renderHeader();
+        return html` ${this.renderFrameBackground()} ${render({ loading, layout, header, slug })}`;
     }
 
     //#endregion
