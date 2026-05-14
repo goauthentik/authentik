@@ -99,7 +99,11 @@ class TestEmailStage(FlowTestCase):
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={"non_field_errors": [{"string": "email-sent", "code": "email-sent"}]},
+        )
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "authentik")
         self.assertEqual(mail.outbox[0].to, [f"{self.user.name} <{self.user.email}>"])
@@ -119,7 +123,12 @@ class TestEmailStage(FlowTestCase):
 
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-email",
+            response_errors={"non_field_errors": [{"string": "email-sent", "code": "email-sent"}]},
+        )
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "authentik")
         self.assertEqual(mail.outbox[0].to, [f"{self.user.name} <foo@bar.baz>"])
@@ -430,7 +439,7 @@ class TestEmailStage(FlowTestCase):
         with patch.object(stage_view, "send_email") as mock_send_email:
             result = stage_view.challenge_invalid(challenge_response)
 
-            self.assertEqual(result.status_code, 200)
+            self.assertEqual(result.status_code, 400)
 
             mock_send_email.assert_called_once()
 
@@ -453,7 +462,7 @@ class TestEmailStage(FlowTestCase):
             # This next request should be rate limited
             result = stage_view.challenge_invalid(challenge_response)
 
-            self.assertEqual(result.status_code, 200)
+            self.assertEqual(result.status_code, 400)
 
             mock_send_email.assert_not_called()
 
