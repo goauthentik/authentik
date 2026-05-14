@@ -38,6 +38,12 @@ export const styles = css`
         padding-block-end: var(--ak-v2-c-flow__branding--PaddingBlockEnd);
     }
 
+    [part="branding"] > img,
+    [part="branding"] > svg {
+        display: block;
+        max-width: var(--ak-v2-c-flow__branding__content--MaxWidth);
+    }
+
     [part="footer"] {
         display: flex;
         flex-direction: column;
