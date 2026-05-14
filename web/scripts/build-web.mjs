@@ -5,6 +5,7 @@
 import "@goauthentik/core/environment/load/node";
 
 import * as fs from "node:fs/promises";
+import { createRequire } from "node:module";
 import * as path from "node:path";
 
 /**
@@ -25,6 +26,8 @@ import { BuildIdentifier } from "@goauthentik/core/version/node";
 import esbuild from "esbuild";
 
 /// <reference types="../types/esbuild.js" />
+
+const require = createRequire(import.meta.url);
 
 const logger = ConsoleLogger.child({ name: "Build" });
 
@@ -48,7 +51,34 @@ const assets = [
         path.dirname(EntryPoint.StandaloneLoading.out),
     ],
     [path.resolve(PackageRoot, "src", "assets", "images"), "./assets/images"],
-    [path.resolve(PackageRoot, "icons"), "./assets/icons"],
+    [require.resolve("@goauthentik/brand-assets/brand.png"), "./assets/icons/brand.png"],
+    [require.resolve("@goauthentik/brand-assets/brand.svg"), "./assets/icons/brand.svg"],
+    [require.resolve("@goauthentik/brand-assets/icon.png"), "./assets/icons/icon.png"],
+    [require.resolve("@goauthentik/brand-assets/icon.svg"), "./assets/icons/icon.svg"],
+    [
+        require.resolve("@goauthentik/brand-assets/icon_left_brand.png"),
+        "./assets/icons/icon_left_brand.png",
+    ],
+    [
+        require.resolve("@goauthentik/brand-assets/icon_left_brand.svg"),
+        "./assets/icons/icon_left_brand.svg",
+    ],
+    [
+        require.resolve("@goauthentik/brand-assets/icon_pride_lgbt.png"),
+        "./assets/icons/icon_pride_lgbt.png",
+    ],
+    [
+        require.resolve("@goauthentik/brand-assets/icon_pride_trans.png"),
+        "./assets/icons/icon_pride_trans.png",
+    ],
+    [
+        require.resolve("@goauthentik/brand-assets/icon_top_brand.png"),
+        "./assets/icons/icon_top_brand.png",
+    ],
+    [
+        require.resolve("@goauthentik/brand-assets/icon_top_brand.svg"),
+        "./assets/icons/icon_top_brand.svg",
+    ],
 ];
 
 const entryPointNames = Object.keys(EntryPoint);
