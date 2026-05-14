@@ -54,8 +54,12 @@ account.
 
       ```python
       out = {"aud": ["rabbitmq"]}
-      if (request.user.type == "service_account"
-              and request.user.username.endswith("-client_credentials")):
+      # `internal_service_account` is the user type authentik assigns to
+      # the synthetic service account it creates behind every
+      # `client_credentials` grant. Manually-created service accounts use
+      # the plain `service_account` type, so this check matches only the
+      # auto-generated one.
+      if request.user.type == "internal_service_account":
           out["groups"] = ["rabbitmq-administrator"]
       return out
       ```
@@ -103,7 +107,12 @@ Add the test users to one of these groups.
         - Order `10` — group `rabbitmq-administrator`.
         - Order `20` — group `rabbitmq-monitoring`.
         - Order `30` — expression policy with body
-          `return request.user.type == "service_account" and request.user.username.endswith("-client_credentials")`.
+          `return request.user.type == "internal_service_account"`.
+          This lets the synthetic service account that authentik
+          generates for the `client_credentials` grant through the
+          application policy; group membership is not the right gate
+          for that grant because identity is established by the OAuth2
+          client secret at the token endpoint.
 
 3. Click **Submit** to save the new application and provider.
 
