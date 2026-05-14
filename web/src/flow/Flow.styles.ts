@@ -33,9 +33,9 @@ export const styles = css`
     [part="branding"] {
         display: flex;
         justify-content: center;
-        padding-block-start: var(--ak-v2-c-flow__header--PaddingBlockStart);
-        padding-inline: var(--ak-v2-c-flow__header--PaddingInline);
-        padding-block-end: var(--ak-v2-c-flow__header--PaddingBlockEnd);
+        padding-block-start: var(--ak-v2-c-flow__branding--PaddingBlockStart);
+        padding-inline: var(--ak-v2-c-flow__branding--PaddingInline);
+        padding-block-end: var(--ak-v2-c-flow__branding--PaddingBlockEnd);
     }
 
     [part="footer"] {

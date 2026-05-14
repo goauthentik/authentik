@@ -20,14 +20,7 @@
     --ak-v2-c-flow__footer--Background: var(--ak-v2-global--BackgroundColor--over-photo-filter);
     --ak-v2-c-flow__footer--Color: var(--ak-v2-global--SecondaryReverseColor);
 
-    --ak-v2-c-flow__branding--PaddingBlockStart: clamp(2rem, 4rem, 4rem);
-    
-    --ak-v2-c-flow__header-PaddingMin: var(--ak-v2-global--spacer-xs);
-    --ak-v2-c-flow__header-PaddingIdeal: 5rem;
-    --ak-v2-c-flow__header-PaddingMax: 15dvh;
-
-    --ak-v2-c-flow--spacer: clamp(1rem, (-0.75rem + 0.003125vw), 3rem);
-    --ak-v2-c-flow__header--PaddingBlockStart: clamp(0.25rem, 5rem, 15dvh);
-    --ak-v2-c-flow__header--PaddingInline: calc(var(--ak-v2-c-flow--spacer) / 4);
-    --ak-v2-c-flow__header--PaddingBlockEnd: calc(var(--ak-v2-c-flow--spacer) / 2);
+    --ak-v2-c-flow__branding--PaddingInline: clamp(0.25rem, 3.333vw, 0.75rem);
+    --ak-v2-c-flow__branding--PaddingBlockEnd: clamp(0.5rem, 2.4528vw, 1.5rem);
+    --ak-v2-c-flow__branding--PaddingBlockStart: calc(4rem - var(--ak-v2-c-flow__branding--PaddingBlockEnd));
 }
