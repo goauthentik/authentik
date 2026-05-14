@@ -67,6 +67,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: ./.github/actions/setup-node
+        with:
+          working-directory: web
+          dependencies: "monorepo"
+      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6
+        with:
+          go-version-file: "go.mod"
+      - name: Generate API Clients
+        run: |
+          make gen-client-ts
       - name: Build Docker Image
         uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         id: push
