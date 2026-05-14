@@ -18,7 +18,7 @@ This guide requires grommunio-web 2023.10 or later. The integration uses grommun
 
 The following placeholders are used in this guide:
 
-- `mail.company` is the FQDN of the grommunio installation.
+- `grommunio.company` is the FQDN of the grommunio installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -27,45 +27,38 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
+To integrate authentik with grommunio, you will need to create an application and provider pair in authentik.
+
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name (e.g., `grommunio`), an optional group, and the policy engine mode.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name, the authorization flow to use, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://grommunio.company/web`.
+        - Set **Signing Key** to an available RS256 or ES256 key.
+        - Under **Advanced Protocol Settings**:
+            - Set **Subject mode** to `Based on the User's Email`.
+            - Add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope to **Selected Scopes**.
+    - **Configure Bindings** _(optional)_: create a binding to manage access.
 
-- **Application**: provide a descriptive name (e.g., `grommunio`), an optional group, and the policy engine mode.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name, the authorization flow to use, and the following required configurations.
-    - Note the **Client ID** and **Client Secret** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://mail.company/web`.
-    - Set **Signing Key** to an available RS256 or ES256 key.
-    - Under **Advanced Protocol Settings**, set **Subject mode** to `Based on the User's Email`.
-- **Configure Bindings** _(optional)_: create a binding to manage access.
+3. Click **Create Application** to save the new application and provider.
 
-3. Click **Submit** to save the new application and provider.
+### Download certificate file
 
-### Add the offline_access scope mapping
-
-grommunio-web requires a `refresh_token` in the token response. By default, authentik only issues a `refresh_token` when the `offline_access` scope is requested.
-
-1. In the authentik Admin interface, navigate to **Applications** > **Providers** and open the grommunio provider you just created.
-2. Under **Advanced Protocol Settings** > **Scopes**, add the **offline_access** scope mapping to the selected scopes.
-3. Save the provider.
-
-### Export the authentik signing key
-
-grommunio's backend (gromox) verifies access tokens using the provider's public key directly, without making a live introspect call.
-
-1. Navigate to **System** > **Certificates** and open the signing key you selected for the grommunio provider.
-2. Download or copy the **Certificate** (PEM format, the public key portion).
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
+3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
 
 ## grommunio configuration
 
 ### Configure gromox JWT verification
 
-On the grommunio server, set the authentik public key so gromox can verify JWT tokens:
+On the grommunio server, edit your `/etc/gromox/http.cfg` file to include the contents of your authentik signging certificate:
 
-```bash
-# /etc/gromox/http.cfg
+```bash title="/etc/gromox/http.cfg"
 # Add the PEM-encoded public key (replace newlines with \n):
 bearer_pubkey = -----BEGIN CERTIFICATE-----\nMIID...
 ```
@@ -83,7 +76,7 @@ grommunio-web uses a Keycloak-compatible OIDC configuration file at `/etc/grommu
 ```json
 {
     "realm": "grommunio",
-    "auth-server-url": "https://mail.company/sso/",
+    "auth-server-url": "https://grommunio.company/sso/",
     "ssl-required": "external",
     "resource": "<Client ID from authentik>",
     "credentials": {
@@ -151,6 +144,6 @@ systemctl reload php-fpm
 
 ## Configuration verification
 
-Log out of grommunio-web completely, then navigate to `https://mail.company/web`. You should be redirected to the authentik login page. After authenticating, you will be returned to grommunio-web and logged in automatically.
+Log out of grommunio-web completely, then navigate to `https://grommunio.company/web`. You should be redirected to the authentik login page. After authenticating, you will be returned to grommunio-web and logged in automatically.
 
 To verify single logout, click the logout button in grommunio-web — you should be redirected to the authentik session invalidation flow on `authentik.company`.
