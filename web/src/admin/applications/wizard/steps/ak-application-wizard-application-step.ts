@@ -131,7 +131,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     spellcheck="false"
                     required
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
-                    help=${msg("The name displayed in the application dashboard.")}
+                    help=${msg("The name displayed in the Application Dashboard.")}
                 ></ak-text-input>
                 <ak-slug-input
                     name="slug"
