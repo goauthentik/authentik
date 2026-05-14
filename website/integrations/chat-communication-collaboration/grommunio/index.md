@@ -32,14 +32,14 @@ This documentation lists only the settings that you need to change from their de
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
--   **Application**: provide a descriptive name (e.g., `grommunio`), an optional group, and the policy engine mode.
--   **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
--   **Configure the Provider**: provide a name, the authorization flow to use, and the following required configurations.
-    -   Note the **Client ID** and **Client Secret** values because they will be required later.
-    -   Set a `Strict` redirect URI to `https://mail.company/web`.
-    -   Set **Signing Key** to an available RS256 or ES256 key.
-    -   Under **Advanced Protocol Settings**, set **Subject mode** to `Based on the User's Email`.
--   **Configure Bindings** _(optional)_: create a binding to manage access.
+- **Application**: provide a descriptive name (e.g., `grommunio`), an optional group, and the policy engine mode.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name, the authorization flow to use, and the following required configurations.
+    - Note the **Client ID** and **Client Secret** values because they will be required later.
+    - Set a `Strict` redirect URI to `https://mail.company/web`.
+    - Set **Signing Key** to an available RS256 or ES256 key.
+    - Under **Advanced Protocol Settings**, set **Subject mode** to `Based on the User's Email`.
+- **Configure Bindings** _(optional)_: create a binding to manage access.
 
 3. Click **Submit** to save the new application and provider.
 
