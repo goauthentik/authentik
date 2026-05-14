@@ -56,8 +56,23 @@
     padding-inline-end: 0;
 }
 
+
 .ak-v2-c-brand-links .ak-v2-c-salesmark {
     text-align: center;
     padding-block-end: var(--ak-v2-c-brand-links--Gap);
+}
+
+.ak-v2-c-brand-links .ak-v2-c-salesmark {
+    display: flex;
+    white-space: nowrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    padding-block-end: var(--ak-v2-c-brand-links--Gap);
+}
+
+.ak-v2-c-brand-links .ak-v2-c-salesmark svg {
+    height: 2rex;
 }
 

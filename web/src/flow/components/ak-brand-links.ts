@@ -4,11 +4,13 @@ import { BrandedHTMLPolicy, sanitizeHTML } from "#common/purify";
 import { AKElement } from "#elements/Base";
 
 import { FooterLink } from "@goauthentik/api";
+import authentikIcon from "@goauthentik/brand-assets/icon_left_brand.svg" with { type: "text" };
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 /**
  * @part list - The list element containing the links
@@ -34,6 +36,7 @@ export class BrandLinks extends AKElement {
 
     render() {
         const { links } = this;
+        const salesmark = html`${<span>msg("Powered by ")}</span>${unsafeHTML(authentikIcon)}`;
 
         return html` <div class="ak-v2-c-brand-links">
             <ul aria-label=${msg("Site links")} data-count=${links.length}>
@@ -55,7 +58,7 @@ export class BrandLinks extends AKElement {
                     </li>`;
                 })}
             </ul>
-            <h4 class="ak-v2-c-salesmark">${msg("Powered by authentik")}</h4>
+            <h4 class="ak-v2-c-salesmark">${salesmark}</h4>
         </div>`;
     }
 }
