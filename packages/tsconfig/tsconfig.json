@@ -1,7 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
-        "ignoreDeprecations": "6.0",
         "alwaysStrict": true,
         "composite": true,
         "declaration": true,

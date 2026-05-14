@@ -13,7 +13,6 @@
         "format": "wireit",
         "lint": "eslint --fix .",
         "lint:imports": "knip --config scripts/knip.config.ts",
-        "lint:lockfile": "wireit",
         "lint:types": "wireit",
         "lint-check": "eslint --max-warnings 0 .",
         "lit-analyse": "wireit",
@@ -127,13 +126,13 @@
         "@types/codemirror": "^5.60.17",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.5",
-        "@types/node": "^25.6.2",
+        "@types/node": "^25.7.0",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "@typescript-eslint/eslint-plugin": "^8.57.2",
         "@typescript-eslint/parser": "^8.57.2",
         "@typescript-eslint/utils": "^8.57.2",
-        "@typescript/native-preview": "^7.0.0-dev.20260421.2",
+        "@typescript/native-preview": "^7.0.0-dev.20260506.1",
         "@vitest/browser": "^4.1.6",
         "@vitest/browser-playwright": "^4.1.6",
         "@webcomponents/webcomponentsjs": "^2.8.0",
@@ -149,13 +148,13 @@
         "dompurify": "^3.4.2",
         "esbuild": "^0.28.0",
         "eslint": "^9.39.3",
-        "eslint-plugin-lit": "^2.2.1",
+        "eslint-plugin-lit": "^2.3.1",
         "eslint-plugin-wc": "^3.1.0",
         "fuse.js": "^7.3.0",
         "globals": "^17.6.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
-        "knip": "^6.11.0",
+        "knip": "^6.12.0",
         "lex": "^2025.11.0",
         "lit": "^3.3.2",
         "lit-analyzer": "^2.0.3",
@@ -190,7 +189,7 @@
         "turnstile-types": "^1.2.3",
         "type-fest": "^5.6.0",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.57.2",
+        "typescript-eslint": "^8.59.3",
         "unist-util-visit": "^5.1.0",
         "vite": "^8.0.12",
         "vitest": "^4.1.6",
@@ -202,6 +201,7 @@
         "@esbuild/darwin-arm64": "^0.28.0",
         "@esbuild/linux-arm64": "^0.28.0",
         "@esbuild/linux-x64": "^0.28.0",
+        "@goauthentik/prettier-config-dev": "../packages/prettier-config",
         "@rollup/rollup-darwin-arm64": "^4.57.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.57.1",
         "@rollup/rollup-linux-x64-gnu": "^4.57.1"
@@ -266,11 +266,6 @@
                 "build-locales"
             ]
         },
-        "lint:lockfile": {
-            "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
-            "shell": true,
-            "command": "sh ./scripts/lint-lockfile.sh package-lock.json"
-        },
         "lit-analyse": {
             "command": "lit-analyzer src"
         },
@@ -279,8 +274,7 @@
             "dependencies": [
                 "lint",
                 "lint:types",
-                "lint:components",
-                "lint:lockfile"
+                "lint:components"
             ]
         },
         "storybook:build": {
@@ -298,7 +292,7 @@
     },
     "engines": {
         "node": ">=24",
-        "npm": ">=11.6.2"
+        "npm": ">=11.14.1"
     },
     "devEngines": {
         "runtime": {
@@ -308,11 +302,12 @@
         },
         "packageManager": {
             "name": "npm",
-            "version": "11.10.1",
+            "version": ">=11.14.1",
             "onFail": "warn"
         }
     },
-    "prettier": "@goauthentik/prettier-config",
+    "packageManager": "npm@11.14.1+sha512.6a8a4d67478497a2dbc6815cad72e64c43f33413717e242756047d466241ab39bee61e691683a64658e94496ec5f1a1c05e4a5ec62dcc773280dfd949443a367",
+    "prettier": "./prettier.config.mjs",
     "overrides": {
         "@goauthentik/esbuild-plugin-live-reload": {
             "esbuild": "$esbuild",
@@ -351,6 +346,7 @@
         "rapidoc": {
             "@apitools/openapi-parser": "0.0.37"
         },
+        "tree-sitter": false,
         "typescript-eslint": {
             "typescript": "$typescript"
         },
