@@ -12,16 +12,17 @@ Bindings define how SAML messages are exchanged between an Identity Provider (Id
 
 A binding defines how SAML messages are transported over network protocols. In authentik, you can select one of two SAML bindings: `HTTP Redirect` or `HTTP POST`.
 
-Endpoint URLs specify where and how the messages are sent according to that binding. The table below shows the supported endpoints for each binding:
+Endpoint URLs specify where and how the messages are sent according to that binding. authentik exposes a unified SAML endpoint that handles both SSO and SLO for both `HTTP Redirect` and `HTTP POST` bindings — the operation type is detected from the incoming SAML message:
 
-| Endpoint                  | URL                                                          |
-| ------------------------- | ------------------------------------------------------------ |
-| SSO (Redirect binding)    | `/application/saml/<application_slug>/sso/binding/redirect/` |
-| SSO (POST binding)        | `/application/saml/<application_slug>/sso/binding/post/`     |
-| SSO (IdP-initiated login) | `/application/saml/<application_slug>/sso/binding/init/`     |
-| SLO (Redirect binding)    | `/application/saml/<application_slug>/slo/binding/redirect/` |
-| SLO (POST binding)        | `/application/saml/<application_slug>/slo/binding/post/`     |
-| Metadata Download         | `/application/saml/<application_slug>/metadata/`             |
+| Endpoint                  | URL                                              |
+| ------------------------- | ------------------------------------------------ |
+| SAML endpoint (SSO + SLO) | `/application/saml/<application_slug>/`          |
+| SSO (IdP-initiated login) | `/application/saml/<application_slug>/init/`     |
+| Metadata Download         | `/application/saml/<application_slug>/metadata/` |
+
+:::info Legacy endpoints
+The previous binding-specific endpoints (`/sso/binding/redirect/`, `/sso/binding/post/`, `/sso/binding/init/`, `/slo/binding/redirect/`, `/slo/binding/post/`) remain available for backward compatibility.
+:::
 
 ## SAML metadata
 
