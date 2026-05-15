@@ -22,8 +22,14 @@ export class FormFixture extends PageFixture {
         fieldName: string | RegExp,
         context: LocatorContext = this.page,
     ) => {
+        // The `ak-text-input` / `ak-number-input` wrappers set role="presentation"
+        // *and* aria-labelledby on themselves, so getByLabel matches the wrapper
+        // in addition to the inner <input>.
+        // .filter({ hasNot: ... }) only checks descendants, not self.
+        // So we exclude self-presentation explicitly.
         const control = context
             .getByLabel(fieldName, { exact: true })
+            .and(context.locator(':not([role="presentation"])'))
             .filter({
                 hasNot: context.getByRole("presentation"),
             })
