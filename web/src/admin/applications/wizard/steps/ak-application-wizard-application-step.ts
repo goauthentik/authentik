@@ -211,7 +211,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             name="metaPublisher"
                             value="${ifDefined(app.metaPublisher)}"
                             .errorMessages=${errors.metaPublisher}
-                            help=${msg("The publisher is shown in the application dashboard.")}
+                            help=${msg("The publisher is shown in the Application Dashboard.")}
                         ></ak-text-input>
                         <ak-textarea-input
                             label=${msg("Description")}
