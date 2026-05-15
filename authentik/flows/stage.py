@@ -16,7 +16,7 @@ from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.common.oauth.constants import PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI
-from authentik.core.models import Application, User
+from authentik.core.models import Application, User, UserTypes
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
@@ -331,6 +331,10 @@ class SessionEndStage(ChallengeStageView):
             "component": "ak-stage-session-end",
             "brand_name": self.request.brand.branding_title,
         }
+        if self.get_pending_user().type == UserTypes.INTERNAL:
+            data["overview_url"] = self.request.build_absolute_uri(
+                reverse("authentik_core:root-redirect")
+            )
         if application:
             data["application_name"] = application.name
             data["application_launch_url"] = application.get_launch_url(self.get_pending_user())
