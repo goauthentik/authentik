@@ -129,7 +129,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 label=${msg("Application Name")}
                 spellcheck="false"
                 required
-                help=${msg("The name displayed in the application dashboard.")}
+                help=${msg("The name displayed in the Application Dashboard.")}
             ></ak-text-input>
             <ak-slug-input
                 name="slug"
