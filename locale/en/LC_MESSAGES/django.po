@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-13 05:39+0000\n"
+"POT-Creation-Date: 2026-05-14 00:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2801,7 +2801,11 @@ msgid "SAML Sessions"
 msgstr ""
 
 #: authentik/providers/scim/models.py
-msgid "OAuth"
+msgid "OAuth (Silent)"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "OAuth (interactive)"
 msgstr ""
 
 #: authentik/providers/scim/models.py

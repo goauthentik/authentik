@@ -55963,6 +55963,8 @@ components:
           type: string
         invalidation_flow_url:
           type: string
+        overview_url:
+          type: string
         brand_name:
           type: string
       required:

@@ -2234,9 +2234,6 @@
 <trans-unit id="s24d7ac2fc280ca5e">
   <source>Authenticate SCIM requests using a static token.</source>
 </trans-unit>
-<trans-unit id="s0e1641692e0dac94">
-  <source>OAuth</source>
-</trans-unit>
 <trans-unit id="s1c34cb0a4cccc041">
   <source>Authenticate SCIM requests using OAuth.</source>
 </trans-unit>
@@ -10784,6 +10781,36 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s3162a5abea92514e">
   <source>View Credentials</source>
+</trans-unit>
+<trans-unit id="s7cbd6ddbb3cdbda4">
+  <source>OAuth (Silent)</source>
+</trans-unit>
+<trans-unit id="sf74719393c9d600b">
+  <source>OAuth (Interactive)</source>
+</trans-unit>
+<trans-unit id="s364366c872ccd349">
+  <source>Authenticate SCIM requests using OAuth, interactively authorized.</source>
+</trans-unit>
+<trans-unit id="s67dbb822a17bf6fc">
+  <source>OAuth Token last updated</source>
+</trans-unit>
+<trans-unit id="sb586db2f11959745">
+  <source>OAuth Token expires</source>
+</trans-unit>
+<trans-unit id="s4011de0d7365d106">
+  <source>OAuth Status</source>
+</trans-unit>
+<trans-unit id="s169a1a1dce3987b8">
+  <source>Authenticated</source>
+</trans-unit>
+<trans-unit id="s02e7dfce69646f50">
+  <source>No token saved</source>
+</trans-unit>
+<trans-unit id="sde2c41117de5db9d">
+  <source>(Re-)authenticate</source>
+</trans-unit>
+<trans-unit id="s13c4adf0d185f12e">
+  <source>OAuth Callback URL</source>
 </trans-unit>
 </body>
 </file>
