@@ -53,7 +53,7 @@ To support adding authentik as an external identity provider in NetBird, you nee
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Leave **Redirect URIs/Origins** empty. NetBird generates the redirect URI in a later step.
         - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -115,7 +115,7 @@ To support replacing NetBird's embedded IdP with authentik, you need to create a
         - Under **Advanced protocol settings**, set **Access Code Validity** to `minutes=10`.
         - Under **Advanced protocol settings**, set **Subject Mode** to `Based on the User's ID`.
         - Under **Advanced protocol settings**, add the `authentik default OAuth Mapping: OpenID 'offline_access'`, `authentik default OAuth Mapping: OpenID 'entitlements'`, and `authentik default OAuth Mapping: authentik API access` scopes to **Selected Scopes**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
