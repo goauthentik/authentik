@@ -178,8 +178,17 @@ export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
     }
 
     protected override renderForm(): SlottedTemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("User")} name="user">
+        return html`<ak-form-element-horizontal name="user">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "user",
+                    },
+                    msg("User"),
+                )}
                 <ak-search-select
+                    id="user"
                     placeholder=${msg("Select a user...")}
                     blankable
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
@@ -207,8 +216,17 @@ export class PropertyMappingTestForm extends Form<PropertyMappingTestRequest> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Group")} name="group">
+            <ak-form-element-horizontal name="group">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "group",
+                    },
+                    msg("Group"),
+                )}
                 <ak-search-select
+                    id="group"
                     placeholder=${msg("Select a group...")}
                     blankable
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {

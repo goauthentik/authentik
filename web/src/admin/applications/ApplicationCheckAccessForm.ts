@@ -11,6 +11,8 @@ import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     Application,
     CoreApi,
@@ -76,8 +78,16 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     protected renderResult(): SlottedTemplateResult {
         const { passing, messages = [], logMessages = [] } = this.result || {};
 
-        return html`<ak-form-element-horizontal label=${msg("Passing")}>
-                <div class="pf-c-form__group-label">
+        return html`<ak-form-element-horizontal>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "check-access-passing",
+                    },
+                    msg("Passing"),
+                )}
+                <div id="check-access-passing" class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
                             <ak-status-label ?good=${ifPresent(passing)}></ak-status-label>
@@ -85,8 +95,16 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                     </div>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Messages")}>
-                <div class="pf-c-form__group-label">
+            <ak-form-element-horizontal>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "check-access-messages",
+                    },
+                    msg("Messages"),
+                )}
+                <div id="check-access-messages" class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <ul>
                             ${messages.map((m) => {
@@ -98,14 +116,32 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                     </div>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Log messages")}>
-                <ak-log-viewer .items=${logMessages}></ak-log-viewer>
+            <ak-form-element-horizontal>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "check-access-log-messages",
+                    },
+                    msg("Log messages"),
+                )}
+                <ak-log-viewer id="check-access-log-messages" .items=${logMessages}></ak-log-viewer>
             </ak-form-element-horizontal>`;
     }
 
     protected override renderForm(): SlottedTemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("User")} required name="forUser">
+        return html`<ak-form-element-horizontal required name="forUser">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "forUser",
+                        required: true,
+                    },
+                    msg("User"),
+                )}
                 <ak-search-select
+                    id="forUser"
                     placeholder=${msg("Select a user...")}
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {

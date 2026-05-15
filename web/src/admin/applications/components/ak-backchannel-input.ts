@@ -9,6 +9,8 @@ import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { Provider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -88,8 +90,16 @@ export class AkBackchannelProvidersInput extends AKElement {
             >`;
 
         return html`
-            <ak-form-element-horizontal label=${this.label} name=${this.name}>
-                <div class="pf-c-input-group">
+            <ak-form-element-horizontal name=${this.name}>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: this.name,
+                    },
+                    this.label,
+                )}
+                <div id=${this.name} class="pf-c-input-group">
                     <button
                         class="pf-c-button pf-m-control"
                         type="button"

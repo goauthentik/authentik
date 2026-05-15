@@ -6,6 +6,8 @@ import { docLink } from "#common/global";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -45,8 +47,21 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
             >
             </ak-text-input>
             ${this.renderExtraFields()}
-            <ak-form-element-horizontal label=${msg("Expression")} required name="expression">
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
+            <ak-form-element-horizontal required name="expression">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "expression",
+                        required: true,
+                    },
+                    msg("Expression"),
+                )}
+                <ak-codemirror
+                    id="expression"
+                    mode="python"
+                    value="${ifDefined(this.instance?.expression)}"
+                >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Expression using Python.")}
