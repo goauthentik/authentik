@@ -225,7 +225,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         name="metaPublisher"
                         value="${ifDefined(this.instance?.metaPublisher)}"
                         placeholder=${msg("Type an optional publisher name...")}
-                        help=${msg("The publisher is shown in the application dashboard.")}
+                        help=${msg("The publisher is shown in the Application Dashboard.")}
                     ></ak-text-input>
                     <ak-textarea-input
                         label=${msg("Description")}
