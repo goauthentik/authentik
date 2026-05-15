@@ -192,7 +192,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             ?checked=${app.metaHide ?? false}
                             label=${msg("Hide from Application Dashboard")}
                             help=${msg(
-                                "If checked, this application will not be shown on the user's application dashboard.",
+                                "If checked, this application will not be shown on the user's Application Dashboard.",
                             )}
                         >
                         </ak-switch-input>
