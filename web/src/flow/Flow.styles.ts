@@ -66,6 +66,11 @@ export const styles = css`
         display: contents;
     }
 
+    /*
+     * The salesmark does not get a '[part]' reference; it should be *hard*
+     * for someone to modify or delete it.
+     */
+
     .ak-v2-c-salesmark {
         align-items: center;
         display: flex;
@@ -107,6 +112,12 @@ export const styles = css`
     [part="flow"] {
         grid-template-columns: 1fr;
         grid-template-rows: var(--ak-v2-c-flow--VerticalOffset) auto 1fr;
+    }
+
+    [part="header"] {
+        position: relative;
+        grid-row: 1 / 2;
+        grid-column: 1 / -1;
     }
 
     [part="main"] {
@@ -156,14 +167,13 @@ export const styles = css`
             grid-template-rows: var(--ak-v2-c-flow--VerticalOffset) auto 1fr;
         }
 
-        :host([data-layout^="sidebar_left"]) [part="main"] {
-            grid-row: 2 / 3;
+        :host([data-layout^="sidebar_left"]) [part="header"] {
             grid-column: 1 / 2;
         }
 
-        :host([data-layout^="sidebar_left"]) [part="iframe"] {
-            grid-row: 1 / 4;
-            grid-column: 2 / 3;
+        :host([data-layout^="sidebar_left"]) [part="main"] {
+            grid-row: 2 / 3;
+            grid-column: 1 / 2;
         }
 
         :host([data-layout^="sidebar_left"]) [part="flow"]::before {
@@ -193,6 +203,10 @@ export const styles = css`
             grid-template-rows: var(--ak-v2-c-flow--VerticalOffset) auto 1fr;
         }
 
+        :host([data-layout^="sidebar_right"]) [part="header"] {
+            grid-column: 2 / 3;
+        }
+
         :host([data-layout^="sidebar_right"]) [part="main"] {
             grid-row: 2 / 3;
             grid-column: 2 / 3;
@@ -218,12 +232,12 @@ export const styles = css`
 
     /* -------- Styles when the browser width is greater than 992px -------------------- */
 
-    /* -------- Content left -------------------- */
+    /* -------- Content left, AKA Patternfly Classic -------------------- */
 
     @media (width > 992px) {
         :host([data-layout="content_left"]) [part="flow"] {
             --card: var(--ak-v2-c-flow__card--InlineSize);
-            --meta: calc(var(--ak-v2-c-flow__card--InlineSize) * 0.66666);
+            --meta: var(--ak-v2-c-flow__meta--InlineSize);
 
             grid-template-columns: 1fr var(--card) var(--meta) 1fr;
             grid-template-rows: var(--ak-v2-c-flow--VerticalOffset) auto 1fr;
@@ -232,12 +246,18 @@ export const styles = css`
         :host([data-layout="content_left"]) [part="main"] {
             grid-row: 2 / 3;
             grid-column: 2 / 3;
+            border-radius: unset;
+            border-top-left-radius: var(--ak-v2-c-flow__card--BorderRadius);
+            border-bottom-left-radius: var(--ak-v2-c-flow__card--BorderRadius);
         }
 
         :host([data-layout="content_left"]) [part="footer"] {
-            align-self: stretch;
             grid-row: 2 / 3;
             grid-column: 3 / 4;
+            border-radius: unset;
+            border-top-right-radius: var(--ak-v2-c-flow__card--BorderRadius);
+            border-bottom-right-radius: var(--ak-v2-c-flow__card--BorderRadius);
+            align-self: stretch;
         }
     }
 
@@ -246,22 +266,95 @@ export const styles = css`
     @media (width > 992px) {
         :host([data-layout="content_right"]) [part="flow"] {
             --card: var(--ak-v2-c-flow__card--InlineSize);
-            --meta: calc(var(--ak-v2-c-flow__card--InlineSize) * 0.66666);
-            grid-template-columns: 1fr var(--meta) var(--card) 1fr;
+            --meta: var(--ak-v2-c-flow__meta--InlineSize);
 
+            grid-template-columns: 1fr var(--meta) var(--card) 1fr;
             grid-template-rows: var(--ak-v2-c-flow--VerticalOffset) auto 1fr;
         }
 
         :host([data-layout="content_right"]) [part="main"] {
             grid-row: 2 / 3;
             grid-column: 3 / 4;
+            border-radius: unset;
+            border-top-right-radius: var(--ak-v2-c-flow__card--BorderRadius);
+            border-bottom-right-radius: var(--ak-v2-c-flow__card--BorderRadius);
         }
 
         :host([data-layout="content_right"]) [part="footer"] {
             align-self: stretch;
             grid-row: 2 / 3;
             grid-column: 2 / 3;
+            border-radius: unset;
+            border-top-left-radius: var(--ak-v2-c-flow__card--BorderRadius);
+            border-bottom-left-radius: var(--ak-v2-c-flow__card--BorderRadius);
         }
+    }
+
+    /* -------- Accessory: Locale Selection ---------------------------------- */
+
+    [part="locale-select"],
+    [part="locale-select"].style-scope {
+        /* Compatibility mode */
+        color: var(--ak-v2-c-flow__locale--Color);
+        position: absolute;
+        inset-block-start: var(--ak-v2-c-flow__locale--Padding);
+        inset-inline-start: var(--ak-v2-c-flow__locale--Padding);
+        font-weight: 500;
+        z-index: 100;
+
+        /* Slight differences in browser hover states. */
+        &:has(select:hover),
+        &:hover {
+            --ak-c-locale-select--label--Color: var(
+                --ak-v2-c-flow__locale--Color--hover,
+                var(--ak-v2-c-flow__locale--Color)
+            );
+            --ak-c-locale-select--BackgroundColor: var(
+                --ak-v2-c-flow__locale--BackgroundColor--hover
+            );
+            --ak-c-locale-select--TextDecorationColor: var(--ak-c-locale-select--label--Color);
+            --ak-c-locale-select__after--Opacity: 1;
+
+            --ak-c-locale-select--Color: var(--ak-v2-c-flow__locale--Color--hover);
+
+            @media (prefers-contrast: more) {
+                --ak-c-locale--select--OutlineColor: var(--pf-global--primary-color--dark-100);
+            }
+        }
+
+        filter: var(--ak-global--BackgroundContrastFilter);
+
+        /* At least a third of the card cut-off is available. */
+        @media (width <= 61.25rem) and (height <= 61.25rem) {
+            --ak-global--BackgroundContrastFilter: none;
+            --ak-v2-c-flow__locale--Color: var(--ak-c-login__main--Color);
+
+            grid-area: main;
+        }
+
+        @media (width <= 61.25rem) and (height <= 61.25rem) and (not (prefers-contrast: more)) {
+            --ak-c-locale-select--Opacity: 0;
+
+            &:hover {
+                --ak-c-locale-select--Opacity: 1;
+                --ak-c-locale-select__after--Opacity: 1;
+            }
+        }
+
+        /* Card is fully masked to mobile background. */
+        @media (width <= 35rem) {
+            grid-row: header;
+        }
+    }
+
+    /* -------- Accessory: Flow Inspector Button ---------------------------------- */
+
+    ak-flow-inspector-button {
+        position: absolute;
+        inset-block-start: var(--ak-v2-c-flow__locale--Padding);
+        inset-inline-end: var(--ak-v2-c-flow__locale--Padding);
+
+        z-index: 100;
     }
 `;
 

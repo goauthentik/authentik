@@ -19,6 +19,14 @@ interface FlowRenderProps {
 export function render({ header, layout, loading, salesmark, slug, iframe }: FlowRenderProps) {
     return html` <div part="flow">
         ${iframe}
+        <header part="header">
+            <ak-locale-select
+                part="locale-select"
+                exportparts="label:locale-select-label,select:locale-select-select"
+                class="pf-m-dark"
+            ></ak-locale-select>
+            <ak-flow-inspector-button></ak-flow-inspector-button>
+        </header>
         <main
             data-layout=${layout}
             class="ak-c-v2-flow__card"

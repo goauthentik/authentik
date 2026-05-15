@@ -102,6 +102,7 @@
     /* ---- Customization Bridge - */
     --ak-v2-global--dark-background: var(--ak-dark-background);
     --ak-v2-global--SecondaryReverseColor: var(--pf-global--Color--200);
+    --ak-v2-global--Color--light-100: var(--pf-global--Color--light-100);
 }
 
 /* -------- Dark Theme ------------------------------- */

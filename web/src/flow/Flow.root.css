@@ -9,7 +9,7 @@
 
     --ak-v2-c-flow-sidebar-inline-size: clamp(20rem, 32vw, 32rem);
     --ak-v2-c-flow__footer--Gap: var(--ak-v2-global--spacer-sm);
-    
+
     /* Translucent band that reads against a photographic background. */
     --ak-v2-c-flow__footer--Background: var(--ak-v2-global--BackgroundColor--over-photo-filter);
     --ak-v2-c-flow__footer--Color: var(--ak-v2-global--SecondaryReverseColor);
@@ -23,6 +23,8 @@
     --ak-v2-c-flow__card--MinBlockSize: 16rex;
     --ak-v2-c-flow__card--Padding: var(--ak-v2-global--spacer--xl);
 
+    --ak-v2-c-flow__meta--InlineSize: calc(var(--ak-v2-c-flow__card--InlineSize) * 0.6666);
+
     /* Assuming a 16px rem (although it scales fine anywhere from 8 to 32px to-the-rem), these only
        change the size of the header to better fit mobile devices; anything above 560px will just be
        the clamp() maximums. Despite some of these being block sizes, we always use the viewport
@@ -31,10 +33,20 @@
     --ak-v2-c-flow__branding--PaddingInline: clamp(0.25rem, 3.333vw - 0.664rem, 0.75rem);
     --ak-v2-c-flow__branding--PaddingBlockEnd: clamp(0.5rem, 6.666vw - 1.3218rem, 1.5rem);
     --ak-v2-c-flow__branding--PaddingBlockStart: clamp(2rem, 13.333vw - 2.6466rem, 4rem);
-    --ak-v2-c-flow__branding__content--MaxWidth: clamp(75%, calc(var(--ak-v2-c-flow__card--InlineSize) / 2), 90%);
+    --ak-v2-c-flow__branding__content--MaxWidth: clamp(
+        75%,
+        calc(var(--ak-v2-c-flow__card--InlineSize) / 2),
+        90%
+    );
+
+    --ak-v2-c-flow__locale--Color: var(--ak-v2-global--Color--light-100);
+    --ak-v2-c-flow__locale--BackgroundColor: transparent;
+    --ak-v2-c-flow__locale--BackgroundColor--hover: transparent;
+    --ak-v2-c-flow__locale--Padding: var(--ak-v2-global--spacer--md);
+    --ak-v2-c-flow__locale__label--Color: var(--ak-v2-c-flow--Color);
+    --ak-v2-c-flow__locale__label--Color--hover: var(--ak-v2-c-flow--Color);
 
     --ak-v2-c-brand-links--Gap: var(--ak-v2-global--spacer--md);
-
 }
 
 .ak-v2-c-brand-links {
@@ -55,5 +67,3 @@
 .ak-v2-c-brand-links ul li:last-child {
     padding-inline-end: 0;
 }
-
-
