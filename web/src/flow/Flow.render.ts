@@ -12,12 +12,13 @@ interface FlowRenderProps {
     loading: boolean;
     layout: string;
     header: TemplateResult;
+    salesmark: TemplateResult;
     slug: string;
 }
 
-export function render({ loading, layout, header, slug }: FlowRenderProps) {
-    return html`<div class="ak-c-v2-flow" part="panel">
-        <div class="ak-c-v2-flow__headroom" part="headroom"></div>
+export function render({ header, layout, loading, salesmark, slug, iframe }: FlowRenderProps) {
+    return html` <div part="flow">
+        ${iframe}
         <main
             data-layout=${layout}
             class="ak-c-v2-flow__card"
@@ -39,6 +40,7 @@ export function render({ loading, layout, header, slug }: FlowRenderProps) {
             class="ak-v2-c-flow__footer"
         >
             <slot name="footer"></slot>
+            <h4 class="ak-v2-c-salesmark">${salesmark}</h4>
         </footer>
     </div>`;
 }

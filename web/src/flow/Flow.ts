@@ -23,11 +23,13 @@ import { AKFlowInfoUpdateEvent, AKFlowLoadingEvent } from "#flow/events";
 import { ConsoleLogger } from "#logger/browser";
 
 import { ContextualFlowInfo, FlowLayoutEnum } from "@goauthentik/api";
+import authentikIcon from "@goauthentik/brand-assets/icon_left_brand.svg" with { type: "text" };
 
 import { msg } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 /// <reference types="../../types/lit.d.ts" />
 
@@ -145,7 +147,6 @@ export class Flow extends WithBrandConfig(Interface) {
 
     public override connectedCallback(): void {
         super.connectedCallback();
-
         if (this.#abortController) {
             this.#abortController.abort();
         }
@@ -213,7 +214,7 @@ export class Flow extends WithBrandConfig(Interface) {
             if (!background) return nothing;
 
             return html`
-                <div class="ak-c-login__content" part="content">
+                <div class="ak-c-login__content" part="iframe">
                     <iframe
                         class="ak-c-login__content-iframe"
                         part="content-iframe"
@@ -228,7 +229,15 @@ export class Flow extends WithBrandConfig(Interface) {
     protected override render(): SlottedTemplateResult {
         const { loading, layout, slug } = this;
         const header = this.renderHeader();
-        return html` ${this.renderFrameBackground()} ${render({ loading, layout, header, slug })}`;
+        const salesmark = html`${<span>msg("Powered by ")}</span>${unsafeHTML(authentikIcon)}`;
+        return render({
+            header,
+            layout,
+            loading,
+            salesmark,
+            slug,
+            iframe: this.renderFrameBackground(),
+        });
     }
 
     //#endregion
