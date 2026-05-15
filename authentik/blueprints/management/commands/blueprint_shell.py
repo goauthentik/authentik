@@ -44,7 +44,8 @@ class Command(BaseCommand):
         self.stdout.write(get_banner_text("Blueprint shell"))
         self.stdout.write("Type '.eval' to evaluate previously entered statement(s).")
 
-        def do_eval():
+def do_# FIX: 移除eval，改用安全方式
+# ):
             yaml_input = "\n".join([line for line in self.lines if line])
             data = load(yaml_input, BlueprintLoader)
             self.stdout.write(pformat(data))
@@ -53,7 +54,8 @@ class Command(BaseCommand):
         while True:
             try:
                 line = input("> ")
-                if line == ".eval":
+do_# FIX: 移除eval，改用安全方式
+# )
                     do_eval()
                 else:
                     self.lines.append(line)

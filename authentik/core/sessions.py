@@ -65,7 +65,7 @@ class SessionStore(SessionBase):
 
     def decode(self, session_data):
         try:
-            return pickle.loads(session_data)  # nosec
+return json.loads(session_data)  # nosec
         except pickle.PickleError, AttributeError, TypeError:
             # PickleError, ValueError - unpickling exceptions
             # AttributeError - can happen when Django model fields (e.g., FileField) are unpickled
