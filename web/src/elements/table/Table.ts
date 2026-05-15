@@ -405,7 +405,12 @@ export abstract class Table<T extends object, D = T>
 
     protected override firstUpdated(changedProperties: PropertyValues<this>): void {
         super.firstUpdated(changedProperties);
-        this.#synchronizeRefreshSchedule();
+
+        // Use `fetch()` rather than `#synchronizeRefreshSchedule()` here: the
+        // latter only flushes a *previously deferred* refresh and would no-op
+        // when a parent (e.g. `AKModal`) has already forced `visible = true`
+        // before the first update cycle, leaving the table empty on open.
+        this.fetch();
     }
 
     //#endregion
