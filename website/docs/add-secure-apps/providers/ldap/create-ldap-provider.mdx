@@ -65,9 +65,10 @@ Now you'll need to create the LDAP authentication flow and bind the previously c
     - Provide a **Name**, **Title** and **Slug** for the flow (e.g. `ldap-authentication-flow`).
     - Set **Designation** to `Authentication`.
 3. Click **Create**.
-4. Click the name of the newly created flow, open the **Stage Bindings** tab, and click **Bind existing stage**.
+4. Click the name of the newly created flow, open the **Stage Bindings** tab, and click **Create or bind...**
+5. Select **Existing stage**.
 5. Select the previously created LDAP Identification Stage (e.g.`ldap-identification-stage`), set the order to `10`, and click **Create**.
-6. Click **Bind existing stage**.
+6. Repeat above steps: click **Create or bind...** and then select **Existing stage**.
 7. Select the previously created LDAP User Login Stage (e.g.`ldap-authentication-login-stage`), set the order to `30`, and click **Create**.
 
 ## Create an LDAP application and provider
