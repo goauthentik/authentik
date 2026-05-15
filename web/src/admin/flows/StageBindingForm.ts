@@ -11,6 +11,8 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
@@ -118,8 +120,18 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.target || this.targetPk) {
             return nothing;
         }
-        return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
+        return html`<ak-form-element-horizontal required name="target">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "target",
+                    required: true,
+                },
+                msg("Target"),
+            )}
             <ak-flow-search
+                id="target"
                 flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${this.instance?.target}
                 required
@@ -129,8 +141,18 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
 
     protected override renderForm(): SlottedTemplateResult {
         return html`${this.renderTarget()}
-            <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
+            <ak-form-element-horizontal required name="stage">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "stage",
+                        required: true,
+                    },
+                    msg("Stage"),
+                )}
                 <ak-search-select
+                    id="stage"
                     placeholder=${msg("Select a stage...")}
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {
@@ -155,8 +177,18 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} required name="order">
+            <ak-form-element-horizontal required name="order">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "order",
+                        required: true,
+                    },
+                    msg("Order"),
+                )}
                 <input
+                    id="order"
                     type="number"
                     value="${this.instance?.order ?? this.defaultOrder}"
                     class="pf-c-form-control"
@@ -177,12 +209,18 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 help=${msg("Evaluate policies before the Stage is presented to the user.")}
             >
             </ak-switch-input>
-            <ak-form-element-horizontal
-                label=${msg("Invalid response behavior")}
-                required
-                name="invalidResponseAction"
-            >
+            <ak-form-element-horizontal required name="invalidResponseAction">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "invalidResponseAction",
+                        required: true,
+                    },
+                    msg("Invalid response behavior"),
+                )}
                 <ak-radio
+                    id="invalidResponseAction"
                     .options=${createInvalidResponseOptions()}
                     .value=${this.instance?.invalidResponseAction}
                 >
@@ -193,12 +231,21 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Policy engine mode")}
-                required
-                name="policyEngineMode"
-            >
-                <ak-radio .options=${policyEngineModes} .value=${this.instance?.policyEngineMode}>
+            <ak-form-element-horizontal required name="policyEngineMode">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "policyEngineMode",
+                        required: true,
+                    },
+                    msg("Policy engine mode"),
+                )}
+                <ak-radio
+                    id="policyEngineMode"
+                    .options=${policyEngineModes}
+                    .value=${this.instance?.policyEngineMode}
+                >
                 </ak-radio>
             </ak-form-element-horizontal>`;
     }

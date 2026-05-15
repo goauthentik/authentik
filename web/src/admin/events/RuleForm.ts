@@ -13,6 +13,8 @@ import { severityToLabel } from "#common/labels";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     CoreApi,
     CoreGroupsListRequest,
@@ -74,8 +76,17 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 placeholder=${msg("Type a name for this rule...")}
                 value="${ifDefined(this.instance?.name)}"
             ></ak-text-input>
-            <ak-form-element-horizontal label=${msg("Group")} name="destinationGroup">
+            <ak-form-element-horizontal name="destinationGroup">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "destinationGroup",
+                    },
+                    msg("Group"),
+                )}
                 <ak-search-select
+                    id="destinationGroup"
                     placeholder=${msg("Select a group...")}
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
@@ -117,8 +128,18 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 )}
             >
             </ak-switch-input>
-            <ak-form-element-horizontal label=${msg("Transports")} required name="transports">
+            <ak-form-element-horizontal required name="transports">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "transports",
+                        required: true,
+                    },
+                    msg("Transports"),
+                )}
                 <ak-dual-select-dynamic-selected
+                    id="transports"
                     .provider=${eventTransportsProvider}
                     .selector=${eventTransportsSelector(this.instance?.transports)}
                     available-label="${msg("Available Transports")}"
@@ -130,8 +151,18 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Severity")} required name="severity">
+            <ak-form-element-horizontal required name="severity">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "severity",
+                        required: true,
+                    },
+                    msg("Severity"),
+                )}
                 <ak-radio
+                    id="severity"
                     .options=${[
                         {
                             label: severityToLabel(SeverityEnum.Alert),

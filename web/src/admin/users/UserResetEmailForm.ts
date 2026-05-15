@@ -7,6 +7,8 @@ import { groupBy } from "#common/utils";
 
 import { Form } from "#elements/forms/Form";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     CoreApi,
     Stage,
@@ -40,12 +42,18 @@ export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("Email stage")}
-                required
-                name="emailStage"
-            >
+        return html`<ak-form-element-horizontal required name="emailStage">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "emailStage",
+                        required: true,
+                    },
+                    msg("Email stage"),
+                )}
                 <ak-search-select
+                    id="emailStage"
                     placeholder=${msg("Select email stage...")}
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {

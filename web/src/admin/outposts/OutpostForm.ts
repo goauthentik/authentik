@@ -168,8 +168,18 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 required
             ></ak-text-input>
 
-            <ak-form-element-horizontal label=${msg("Type")} required name="type">
+            <ak-form-element-horizontal required name="type">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "type",
+                        required: true,
+                    },
+                    msg("Type"),
+                )}
                 <select
+                    id="type"
                     class="pf-c-form-control"
                     @change=${(ev: Event) => {
                         const target = ev.target as HTMLSelectElement;
@@ -249,12 +259,18 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     </p>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Applications")}
-                ?required=${!this.embedded}
-                name="providers"
-            >
+            <ak-form-element-horizontal ?required=${!this.embedded} name="providers">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "providers",
+                        required: !this.embedded,
+                    },
+                    msg("Applications"),
+                )}
                 <ak-dual-select-provider
+                    id="providers"
                     .provider=${this.providers}
                     .selected=${(this.instance?.providersObj ?? []).map(dualSelectPairMaker)}
                     available-label="${msg("Available Applications")}"

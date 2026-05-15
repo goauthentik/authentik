@@ -8,6 +8,8 @@ import { Form } from "#elements/forms/Form";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { showMessage } from "#elements/messages/MessageContainer";
 
+import { AKLabel } from "#components/ak-label";
+
 import { AdminApi, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -108,7 +110,16 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
     renderForm() {
         return html`
             <form ${ref(this.#formRef)} class="pf-c-form pf-m-horizontal">
-                <ak-form-element-horizontal label=${msg("File")} required>
+                <ak-form-element-horizontal required>
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "file-input",
+                            required: true,
+                        },
+                        msg("File"),
+                    )}
                     <input
                         type="file"
                         class="pf-c-form-control"
@@ -117,8 +128,17 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                         @change=${this.#fileChangeListener}
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("File Name")} name="name">
+                <ak-form-element-horizontal name="name">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "name",
+                        },
+                        msg("File Name"),
+                    )}
                     <input
+                        id="name"
                         type="text"
                         class="pf-c-form-control"
                         pattern=${VALID_FILE_NAME_PATTERN_STRING}

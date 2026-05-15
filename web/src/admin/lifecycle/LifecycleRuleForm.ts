@@ -17,6 +17,8 @@ import { RadioChangeEventDetail, RadioOption } from "#elements/forms/Radio";
 import type SearchSelect from "#elements/forms/SearchSelect/SearchSelect";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
 
 import {
@@ -230,7 +232,15 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
                 .bighelp=${html`<ak-utils-time-delta-help></ak-utils-time-delta-help>`}
             ></ak-text-input>
 
-            <ak-form-element-horizontal label=${msg("Reviewer groups")} name="reviewerGroups">
+            <ak-form-element-horizontal name="reviewerGroups">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "reviewerGroups",
+                    },
+                    msg("Reviewer groups"),
+                )}
                 ${this.renderReviewerGroupsSelection()}
             </ak-form-element-horizontal>
             <ak-number-input
@@ -254,7 +264,15 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
             >
             </ak-switch-input>
 
-            <ak-form-element-horizontal label=${msg("Reviewers")} name="reviewers">
+            <ak-form-element-horizontal name="reviewers">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "reviewers",
+                    },
+                    msg("Reviewers"),
+                )}
                 ${this.renderReviewerUserSelection()}
             </ak-form-element-horizontal>
             ${this.renderTransportsSelection()} `;
@@ -274,8 +292,17 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
     protected renderTargetSelection() {
         return keyed(
             this.selectedContentType,
-            html`<ak-form-element-horizontal label=${msg("Object")} name="objectId">
+            html`<ak-form-element-horizontal name="objectId">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "objectId",
+                    },
+                    msg("Object"),
+                )}
                 <ak-search-select
+                    id="objectId"
                     ${ref(this.#targetSelectRef)}
                     placeholder=${formatContentTypePlaceholder(this.selectedContentType)}
                     .fetchObjects=${this.#loadObjects}
@@ -297,6 +324,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
 
     protected renderReviewerGroupsSelection(): SlottedTemplateResult {
         return html`<ak-dual-select-provider
+            id="reviewerGroups"
             ${ref(this.#reviewerGroupsSelectRef)}
             .provider=${this.#fetchGroups}
             .selected=${(this.instance?.reviewerGroupsObj ?? []).map(groupToPair)}
@@ -307,6 +335,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
 
     protected renderReviewerUserSelection(): SlottedTemplateResult {
         return html`<ak-dual-select-provider
+                id="reviewers"
                 ${ref(this.#reviewerUsersSelectRef)}
                 .provider=${this.#fetchUsers}
                 .selected=${(this.instance?.reviewersObj ?? []).map(userToPair)}
@@ -322,12 +351,18 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string, Lifecycl
 
     protected renderTransportsSelection(): SlottedTemplateResult {
         return html`
-            <ak-form-element-horizontal
-                label=${msg("Notification transports")}
-                required
-                name="notificationTransports"
-            >
+            <ak-form-element-horizontal required name="notificationTransports">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "notificationTransports",
+                        required: true,
+                    },
+                    msg("Notification transports"),
+                )}
                 <ak-dual-select-dynamic-selected
+                    id="notificationTransports"
                     .provider=${eventTransportsProvider}
                     .selector=${eventTransportsSelector(this.instance?.notificationTransports)}
                     available-label="${msg("Available Transports")}"

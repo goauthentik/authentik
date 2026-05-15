@@ -15,6 +15,8 @@ import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKLabel } from "#components/ak-label";
+
 import { RoleForm } from "#admin/roles/ak-role-form";
 
 import { Group, RbacApi, Role, User } from "@goauthentik/api";
@@ -71,8 +73,16 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
     };
 
     protected override renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Roles to add")} name="roles">
-            <div class="pf-c-input-group">
+        return html`<ak-form-element-horizontal name="roles">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "roles",
+                },
+                msg("Roles to add"),
+            )}
+            <div id="roles" class="pf-c-input-group">
                 <button
                     class="pf-c-button pf-m-control"
                     type="button"

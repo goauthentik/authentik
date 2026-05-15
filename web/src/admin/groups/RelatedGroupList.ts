@@ -12,6 +12,8 @@ import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { GroupForm } from "#admin/groups/ak-group-form";
 
 import { CoreApi, Group, User } from "@goauthentik/api";
@@ -66,8 +68,16 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     };
 
     protected override renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Groups to add")} name="groups">
-            <div class="pf-c-input-group">
+        return html`<ak-form-element-horizontal name="groups">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "groups",
+                },
+                msg("Groups to add"),
+            )}
+            <div id="groups" class="pf-c-input-group">
                 <button
                     class="pf-c-button pf-m-control"
                     type="button"

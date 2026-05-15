@@ -7,6 +7,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { Form } from "#elements/forms/Form";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     AlgEnum,
     CertificateGenerationRequest,
@@ -61,8 +63,18 @@ export class CryptoCertificateGenerateForm extends Form<CertificateGenerationReq
                 value="365"
             ></ak-number-input>
 
-            <ak-form-element-horizontal label=${msg("Private key Algorithm")} required name="alg">
+            <ak-form-element-horizontal required name="alg">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "alg",
+                        required: true,
+                    },
+                    msg("Private key Algorithm"),
+                )}
                 <ak-radio
+                    id="alg"
                     .options=${[
                         {
                             label: msg("RSA"),

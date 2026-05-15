@@ -8,6 +8,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import { EndpointsApi, GoogleChromeConnector } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -56,12 +58,18 @@ export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, 
             ></ak-switch-input>
             <ak-form-group label=${msg("Google settings")} open>
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Credentials")}
-                        required
-                        name="credentials"
-                    >
+                    <ak-form-element-horizontal required name="credentials">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "credentials",
+                                required: true,
+                            },
+                            msg("Credentials"),
+                        )}
                         <ak-codemirror
+                            id="credentials"
                             mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
                         ></ak-codemirror>

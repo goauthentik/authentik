@@ -202,11 +202,17 @@ export class BrandForm extends ModelForm<Brand, string> {
 
             <ak-form-group label="${msg("External user settings")} ">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Default application")}
-                        name="defaultApplication"
-                    >
+                    <ak-form-element-horizontal name="defaultApplication">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "defaultApplication",
+                            },
+                            msg("Default application"),
+                        )}
                         <ak-search-select
+                            id="defaultApplication"
                             placeholder=${msg("Select an application...")}
                             blankable
                             .fetchObjects=${async (query?: string): Promise<Application[]> => {
@@ -242,11 +248,17 @@ export class BrandForm extends ModelForm<Brand, string> {
 
             <ak-form-group label="${msg("Default flows")} ">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication Flow")}
-                        name="flowAuthentication"
-                    >
+                    <ak-form-element-horizontal name="flowAuthentication">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "flowAuthentication",
+                            },
+                            msg("Authentication Flow"),
+                        )}
                         <ak-flow-search
+                            id="flowAuthentication"
                             placeholder=${msg("Select an authentication flow...")}
                             flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.flowAuthentication}
@@ -257,11 +269,17 @@ export class BrandForm extends ModelForm<Brand, string> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Invalidation Flow")}
-                        name="flowInvalidation"
-                    >
+                    <ak-form-element-horizontal name="flowInvalidation">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "flowInvalidation",
+                            },
+                            msg("Invalidation Flow"),
+                        )}
                         <ak-flow-search
+                            id="flowInvalidation"
                             placeholder=${msg("Select an invalidation flow...")}
                             flowType=${FlowDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.flowInvalidation}
@@ -273,18 +291,33 @@ export class BrandForm extends ModelForm<Brand, string> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Recovery flow")} name="flowRecovery">
+                    <ak-form-element-horizontal name="flowRecovery">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "flowRecovery",
+                            },
+                            msg("Recovery flow"),
+                        )}
                         <ak-flow-search
+                            id="flowRecovery"
                             placeholder=${msg("Select a recovery flow...")}
                             flowType=${FlowDesignationEnum.Recovery}
                             .currentFlow=${this.instance?.flowRecovery}
                         ></ak-flow-search>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Unenrollment flow")}
-                        name="flowUnenrollment"
-                    >
+                    <ak-form-element-horizontal name="flowUnenrollment">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "flowUnenrollment",
+                            },
+                            msg("Unenrollment flow"),
+                        )}
                         <ak-flow-search
+                            id="flowUnenrollment"
                             placeholder=${msg("Select an unenrollment flow...")}
                             flowType=${FlowDesignationEnum.Unenrollment}
                             .currentFlow=${this.instance?.flowUnenrollment}
@@ -295,11 +328,17 @@ export class BrandForm extends ModelForm<Brand, string> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("User settings flow")}
-                        name="flowUserSettings"
-                    >
+                    <ak-form-element-horizontal name="flowUserSettings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "flowUserSettings",
+                            },
+                            msg("User settings flow"),
+                        )}
                         <ak-flow-search
+                            id="flowUserSettings"
                             placeholder=${msg("Select a user settings flow...")}
                             flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowUserSettings}
@@ -308,11 +347,17 @@ export class BrandForm extends ModelForm<Brand, string> {
                             ${msg("If set, users are able to configure details of their profile.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Device code flow")}
-                        name="flowDeviceCode"
-                    >
+                    <ak-form-element-horizontal name="flowDeviceCode">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "flowDeviceCode",
+                            },
+                            msg("Device code flow"),
+                        )}
                         <ak-flow-search
+                            id="flowDeviceCode"
                             placeholder=${msg("Select a device code flow...")}
                             flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowDeviceCode}
@@ -323,11 +368,17 @@ export class BrandForm extends ModelForm<Brand, string> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Account lockdown flow")}
-                        name="flowLockdown"
-                    >
+                    <ak-form-element-horizontal name="flowLockdown">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "flowLockdown",
+                            },
+                            msg("Account lockdown flow"),
+                        )}
                         <ak-flow-search
+                            id="flowLockdown"
                             placeholder=${msg("Select an account lockdown flow...")}
                             flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowLockdown}
@@ -350,19 +401,31 @@ export class BrandForm extends ModelForm<Brand, string> {
             </ak-form-group>
             <ak-form-group label="${msg("Other global settings")} ">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Web Certificate")}
-                        name="webCertificate"
-                    >
+                    <ak-form-element-horizontal name="webCertificate">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "webCertificate",
+                            },
+                            msg("Web Certificate"),
+                        )}
                         <ak-crypto-certificate-search
+                            id="webCertificate"
                             .certificate=${this.instance?.webCertificate}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Client Certificates")}
-                        name="clientCertificates"
-                    >
+                    <ak-form-element-horizontal name="clientCertificates">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "clientCertificates",
+                            },
+                            msg("Client Certificates"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="clientCertificates"
                             .provider=${certificateProvider}
                             .selector=${certificateSelector(this.instance?.clientCertificates)}
                             available-label=${msg("Available Certificates")}

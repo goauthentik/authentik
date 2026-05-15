@@ -12,6 +12,8 @@ import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent } from "#elements/forms/Form";
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import { Permission, RbacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -72,8 +74,16 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
 
     protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Permissions to add")} name="permissions">
-                <div class="pf-c-input-group">
+            <ak-form-element-horizontal name="permissions">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "permissions",
+                    },
+                    msg("Permissions to add"),
+                )}
+                <div id="permissions" class="pf-c-input-group">
                     <button
                         class="pf-c-button pf-m-control"
                         type="button"

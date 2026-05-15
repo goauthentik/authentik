@@ -1,6 +1,8 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/forms/HorizontalFormElement";
 
+import { AKLabel } from "#components/ak-label";
+
 import { AkFlowSearch } from "#admin/common/ak-flow-search/ak-flow-search";
 
 import { Flow, FlowDesignationEnum } from "@goauthentik/api";
@@ -110,12 +112,18 @@ const displayChange = (ev: any) => {
 
 export const Default = () =>
     container(
-        html` <ak-form-element-horizontal
-            label=${msg("Authorization flow")}
-            required
-            name="authorizationFlow"
-        >
+        html` <ak-form-element-horizontal required name="authorizationFlow">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "authorizationFlow",
+                    required: true,
+                },
+                msg("Authorization flow"),
+            )}
             <ak-flow-search
+                id="authorizationFlow"
                 flowType=${FlowDesignationEnum.Authorization}
                 @input=${displayChange}
             ></ak-flow-search
@@ -124,12 +132,18 @@ export const Default = () =>
 
 export const WithInitialValue = () =>
     container(
-        html` <ak-form-element-horizontal
-            label=${msg("Authorization flow")}
-            required
-            name="authorizationFlow"
-        >
+        html` <ak-form-element-horizontal required name="authorizationFlow">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "authorizationFlow",
+                    required: true,
+                },
+                msg("Authorization flow"),
+            )}
             <ak-flow-search
+                id="authorizationFlow"
                 flowType=${FlowDesignationEnum.Authorization}
                 currentFlow="89f57fd8-fd1e-42be-a5fd-abc13b19529b"
                 @input=${displayChange}

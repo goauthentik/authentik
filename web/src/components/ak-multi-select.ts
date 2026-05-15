@@ -2,6 +2,8 @@ import "#elements/forms/HorizontalFormElement";
 
 import { AKControlElement } from "#elements/ControlElement";
 
+import { AKLabel } from "#components/ak-label";
+
 import { css, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -118,12 +120,18 @@ export class AkMultiSelect extends AKControlElement {
 
     render() {
         return html` <div class="pf-c-form">
-            <ak-form-element-horizontal
-                label=${this.label}
-                ?required=${this.required}
-                name=${this.name}
-            >
+            <ak-form-element-horizontal ?required=${this.required} name=${this.name}>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: this.name,
+                        required: this.required,
+                    },
+                    this.label,
+                )}
                 <select
+                    id=${ifDefined(this.name)}
                     part="select"
                     class="pf-c-form-control"
                     name=${ifDefined(this.name)}

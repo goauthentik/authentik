@@ -13,6 +13,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import { CoreApi, Group, RbacApi, RelatedGroup, Role } from "@goauthentik/api";
 
 import YAML from "yaml";
@@ -120,8 +122,17 @@ export class GroupForm extends ModelForm<Group, string> {
             >
             </ak-switch-input>
 
-            <ak-form-element-horizontal label=${msg("Parents")} name="parents">
+            <ak-form-element-horizontal name="parents">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "parents",
+                    },
+                    msg("Parents"),
+                )}
                 <ak-dual-select-provider
+                    id="parents"
                     .provider=${this.#fetchGroups}
                     .selected=${(this.instance?.parentsObj ?? []).map(coreGroupPair)}
                     available-label=${msg("Available Groups")}
@@ -131,8 +142,17 @@ export class GroupForm extends ModelForm<Group, string> {
                     ${msg("A group recursively inherits every role from its ancestors.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Roles")} name="roles">
+            <ak-form-element-horizontal name="roles">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "roles",
+                    },
+                    msg("Roles"),
+                )}
                 <ak-dual-select-provider
+                    id="roles"
                     .provider=${this.#fetchRoles}
                     .selected=${(this.instance?.rolesObj ?? []).map(rbacRolePair)}
                     available-label=${msg("Available Roles")}
@@ -144,8 +164,17 @@ export class GroupForm extends ModelForm<Group, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
+            <ak-form-element-horizontal name="attributes">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "attributes",
+                    },
+                    msg("Attributes"),
+                )}
                 <ak-codemirror
+                    id="attributes"
                     mode="yaml"
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"
                 >
