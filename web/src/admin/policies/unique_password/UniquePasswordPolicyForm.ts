@@ -4,6 +4,8 @@ import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { PoliciesApi, UniquePasswordPolicy } from "@goauthentik/api";
@@ -39,8 +41,18 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
                     "Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
                     class="pf-c-form-control"
@@ -56,12 +68,18 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
                 )}
             >
             </ak-switch-input>
-            <ak-form-element-horizontal
-                label=${msg("Password field")}
-                required
-                name="passwordField"
-            >
+            <ak-form-element-horizontal required name="passwordField">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "passwordField",
+                        required: true,
+                    },
+                    msg("Password field"),
+                )}
                 <input
+                    id="passwordField"
                     type="text"
                     value="${ifDefined(this.instance?.passwordField || "password")}"
                     class="pf-c-form-control"
@@ -71,12 +89,18 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
                     ${msg("Field key to check, field keys defined in Prompt stages are available.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Number of previous passwords to check")}
-                required
-                name="numHistoricalPasswords"
-            >
+            <ak-form-element-horizontal required name="numHistoricalPasswords">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "numHistoricalPasswords",
+                        required: true,
+                    },
+                    msg("Number of previous passwords to check"),
+                )}
                 <input
+                    id="numHistoricalPasswords"
                     type="number"
                     value="${this.instance?.numHistoricalPasswords ?? 1}"
                     class="pf-c-form-control"

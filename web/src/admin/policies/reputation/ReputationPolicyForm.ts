@@ -4,6 +4,8 @@ import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { PoliciesApi, ReputationPolicy } from "@goauthentik/api";
@@ -49,8 +51,18 @@ username they are attempting to login as, by one.`,
 doesn't pass when either or both of the selected options are equal or above the threshold.`,
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
                     class="pf-c-form-control"
@@ -80,8 +92,18 @@ doesn't pass when either or both of the selected options are equal or above the 
                         ?checked=${this.instance?.checkUsername ?? false}
                     >
                     </ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("Threshold")} required name="threshold">
+                    <ak-form-element-horizontal required name="threshold">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "threshold",
+                                required: true,
+                            },
+                            msg("Threshold"),
+                        )}
                         <input
+                            id="threshold"
                             type="number"
                             value="${ifDefined(this.instance?.threshold || -5)}"
                             class="pf-c-form-control"

@@ -6,6 +6,8 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { docLink } from "#common/global";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import {
@@ -53,8 +55,18 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
                     class="pf-c-form-control"
@@ -72,8 +84,17 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
             </ak-switch-input>
             <ak-form-group open label="${msg("Policy-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Query")} name="query">
+                    <ak-form-element-horizontal name="query">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "query",
+                            },
+                            msg("Query"),
+                        )}
                         <input
+                            id="query"
                             type="text"
                             value="${ifDefined(this.instance?.query || "")}"
                             class="pf-c-form-control pf-m-monospace"
@@ -91,8 +112,17 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             </a>
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Action")} name="action">
+                    <ak-form-element-horizontal name="action">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "action",
+                            },
+                            msg("Action"),
+                        )}
                         <ak-search-select
+                            id="action"
                             .fetchObjects=${async (query?: string): Promise<TypeCreate[]> => {
                                 const items = await new EventsApi(
                                     DEFAULT_CONFIG,
@@ -121,8 +151,17 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Client IP")} name="clientIp">
+                    <ak-form-element-horizontal name="clientIp">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "clientIp",
+                            },
+                            msg("Client IP"),
+                        )}
                         <input
+                            id="clientIp"
                             type="text"
                             value="${ifDefined(this.instance?.clientIp || "")}"
                             class="pf-c-form-control pf-m-monospace"
@@ -135,8 +174,17 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("App")} name="app">
+                    <ak-form-element-horizontal name="app">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "app",
+                            },
+                            msg("App"),
+                        )}
                         <ak-search-select
+                            id="app"
                             .fetchObjects=${async (query?: string): Promise<App[]> => {
                                 const items = await new AdminApi(DEFAULT_CONFIG).adminAppsList();
                                 return items.filter((item) =>
@@ -161,8 +209,17 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Model")} name="model">
+                    <ak-form-element-horizontal name="model">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "model",
+                            },
+                            msg("Model"),
+                        )}
                         <ak-search-select
+                            id="model"
                             .fetchObjects=${async (query?: string): Promise<App[]> => {
                                 const items = await new AdminApi(DEFAULT_CONFIG).adminModelsList();
                                 return items
