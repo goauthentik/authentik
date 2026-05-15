@@ -3,9 +3,6 @@
     --ak-v2-c-flow--InvertedColor: var(--ak-v2-global--Color-900, #f0f0f0);
     --ak-v2-c-flow--Gutter: var(--ak-v2-global--spacer--xl);
     --ak-v2-c-flow--VerticalOffset: 18vh;
-    --ak-v2-c-flow--PaddingMax: 8dvw;
-
-    --ak-v2-c-flow--padding-max: 8dvw;
 
     --ak-v2-c-flow-sidebar-inline-size: clamp(20rem, 32vw, 32rem);
     --ak-v2-c-flow__footer--Gap: var(--ak-v2-global--spacer-sm);
@@ -25,11 +22,10 @@
 
     --ak-v2-c-flow__meta--InlineSize: calc(var(--ak-v2-c-flow__card--InlineSize) * 0.6666);
 
-    /* Assuming a 16px rem (although it scales fine anywhere from 8 to 32px to-the-rem), these only
-       change the size of the header to better fit mobile devices; anything above 560px will just be
-       the clamp() maximums. Despite some of these being block sizes, we always use the viewport
-       *width* as our input variable to ensure consistent ratios at all screen widths.
-    */
+    /* Using the first line as an example, the scary math in the middle pencils
+     * out to 0.25rem at 320px, and 0.75rem at 560px.  The other two are
+     * proportional.  You can find the math at utopia.fyi
+     */
     --ak-v2-c-flow__branding--PaddingInline: clamp(0.25rem, 3.333vw - 0.664rem, 0.75rem);
     --ak-v2-c-flow__branding--PaddingBlockEnd: clamp(0.5rem, 6.666vw - 1.3218rem, 1.5rem);
     --ak-v2-c-flow__branding--PaddingBlockStart: clamp(2rem, 13.333vw - 2.6466rem, 4rem);

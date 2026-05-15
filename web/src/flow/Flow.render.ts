@@ -10,11 +10,6 @@ import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { guard } from "lit/directives/guard.js";
 
-/*
- * The render function for Flow.
-
- */
-
 type IframeType = ReturnType<typeof guard>;
 type HeaderType = ReturnType<typeof ThemedImage>;
 
@@ -27,7 +22,10 @@ interface FlowRenderProps {
     slug: string;
 }
 
-export function render({ header, layout, loading, salesmark, slug, iframe }: FlowRenderProps) {
+/*
+ * The render function for Flow.
+ */
+function render({ header, layout, loading, salesmark, slug, iframe }: FlowRenderProps) {
     return html` <div part="flow">
         ${iframe}
         <header part="header">
@@ -40,7 +38,7 @@ export function render({ header, layout, loading, salesmark, slug, iframe }: Flo
         </header>
         <main
             data-layout=${layout}
-            class="ak-c-v2-flow__card"
+            class="ak-v2-c-flow__card"
             aria-label=${msg("Authentication form")}
             part="main"
         >

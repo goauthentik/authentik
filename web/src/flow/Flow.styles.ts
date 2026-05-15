@@ -70,7 +70,6 @@ export const styles = css`
      * The salesmark does not get a '[part]' reference; it should be *hard*
      * for someone to modify or delete it.
      */
-
     .ak-v2-c-salesmark {
         align-items: center;
         display: flex;
@@ -83,6 +82,9 @@ export const styles = css`
     }
 
     .ak-v2-c-salesmark svg {
+        /* Yes, "rex"; we're controlling the height of the Authentik logo, and 
+         * it has to fit in a text stream. 
+         */
         height: 2rex;
     }
 
@@ -126,7 +128,7 @@ export const styles = css`
     }
 
     [part="footer"] {
-        grid-row: 3/4;
+        grid-row: 3 / 4;
         grid-column: 1 / 2;
     }
 
@@ -167,6 +169,11 @@ export const styles = css`
             grid-template-rows: var(--ak-v2-c-flow--VerticalOffset) auto 1fr;
         }
 
+        /* Memory-preserving notice: in sidebar mode, we restrict the header to
+         * the same width as the sidebar;the locale and inspect buttons are now
+         * constrained to fit in the sidebar, which is the correct design. This
+         * applies to sidebar_right as well. 
+         */
         :host([data-layout^="sidebar_left"]) [part="header"] {
             grid-column: 1 / 2;
         }
@@ -176,6 +183,9 @@ export const styles = css`
             grid-column: 1 / 2;
         }
 
+        /* Ensures the entire sidebar has the solid background, not just the 
+         * components 
+         */
         :host([data-layout^="sidebar_left"]) [part="flow"]::before {
             content: "";
             background: var(--ak-v2-c-flow__card--BackgroundColor);
@@ -189,7 +199,7 @@ export const styles = css`
         }
 
         :host([data-layout^="sidebar_left"]) [part="footer"] {
-            grid-row: 3/4;
+            grid-row: 3 / 4;
             grid-column: 1 / 2;
         }
     }
@@ -225,7 +235,7 @@ export const styles = css`
         }
 
         :host([data-layout^="sidebar_right"]) [part="footer"] {
-            grid-row: 3/4;
+            grid-row: 3 / 4;
             grid-column: 2 / 3;
         }
     }
@@ -243,6 +253,9 @@ export const styles = css`
             grid-template-rows: var(--ak-v2-c-flow--VerticalOffset) auto 1fr;
         }
 
+        /* With 'main' and 'footer' placed immediately adjacent, tune the 
+         * borders to create a seamless impression.
+         */
         :host([data-layout="content_left"]) [part="main"] {
             grid-row: 2 / 3;
             grid-column: 2 / 3;
