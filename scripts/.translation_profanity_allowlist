@@ -1,0 +1,9 @@
+# Translation profanity gate — false-positive allowlist.
+#
+# One msgid-hash (first 16 hex chars of SHA-256 over the English source msgid)
+# per line. '#' begins a comment.
+#
+# When the gate flags a legitimate translation (e.g. a medical/anatomical
+# term that overlaps with the LDNOOBW dictionary), copy the printed
+# `msgid_hash=` value here. We deliberately key on the *source* msgid hash so
+# this repo never stores the translated profane text itself.

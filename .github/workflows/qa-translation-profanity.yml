@@ -1,0 +1,48 @@
+---
+name: QA - Translation profanity
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - "locale/**"
+      - "web/xliff/**"
+      - "scripts/translation_profanity_check.py"
+      - "scripts/.translation_profanity_allowlist"
+      - ".github/workflows/qa-translation-profanity.yml"
+  push:
+    branches:
+      - main
+      - version-*
+    paths:
+      - "locale/**"
+      - "web/xliff/**"
+      - "scripts/translation_profanity_check.py"
+      - "scripts/.translation_profanity_allowlist"
+      - ".github/workflows/qa-translation-profanity.yml"
+  schedule:
+    # Daily safety net for translations that land via the automated Transifex
+    # PR (created by ci-translation-extract-compile.yml). Random HH:MM to
+    # avoid the 00:00 load spike.
+    - cron: "37 4 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  profanity-scan:
+    name: scan translations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
+        with:
+          python-version: "3.14"
+      - name: Self-test the scanner
+        run: python scripts/translation_profanity_check.py --self-test
+      - name: Scan translations
+        env:
+          # Operator-swappable: defaults to the public LDNOOBW raw URL; swap
+          # to an S3 mirror by setting this secret/variable in the repo.
+          PROFANITY_DICT_BASE_URL: ${{ vars.PROFANITY_DICT_BASE_URL }}
+        run: python scripts/translation_profanity_check.py --root .
