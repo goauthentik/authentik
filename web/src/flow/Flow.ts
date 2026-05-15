@@ -23,6 +23,7 @@ import { AKFlowInfoUpdateEvent, AKFlowLoadingEvent } from "#flow/events";
 import { ConsoleLogger } from "#logger/browser";
 
 import { ContextualFlowInfo, FlowLayoutEnum } from "@goauthentik/api";
+// @ts-expect-error TS2307: Typescript does not parse this as a valid import yet
 import authentikIcon from "@goauthentik/brand-assets/icon_left_brand.svg" with { type: "text" };
 
 import { msg } from "@lit/localize";
@@ -229,7 +230,7 @@ export class Flow extends WithBrandConfig(Interface) {
     protected override render(): SlottedTemplateResult {
         const { loading, layout, slug } = this;
         const header = this.renderHeader();
-        const salesmark = html`${<span>msg("Powered by ")}</span>${unsafeHTML(authentikIcon)}`;
+        const salesmark = html`<span>${msg("Powered by ")}</span>${unsafeHTML(authentikIcon)}`;
         return render({
             header,
             layout,

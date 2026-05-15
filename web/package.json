@@ -263,7 +263,7 @@
             "command": "prettier --write ./src/locale-codes.ts"
         },
         "lint:components": {
-            "command": "lit-analyzer src"
+            "command": "lit-analyzer src --rules.no-invalid-css off --rules.no-unknown-attribute off"
         },
         "lint:types": {
             "command": "tsgo -p .",

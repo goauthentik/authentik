@@ -1,18 +1,29 @@
+import "#elements/locale/ak-locale-select";
+import "#flow/inspector/FlowInspectorButton";
+import "#elements/LoadingOverlay";
+import "#flow/FlowExecutor";
+
 import { light } from "#elements/directives/light";
+import { ThemedImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
+import { guard } from "lit/directives/guard.js";
 
 /*
  * The render function for Flow.
 
  */
 
+type IframeType = ReturnType<typeof guard>;
+type HeaderType = ReturnType<typeof ThemedImage>;
+
 interface FlowRenderProps {
     loading: boolean;
     layout: string;
-    header: TemplateResult;
+    header: HeaderType;
     salesmark: TemplateResult;
+    iframe: IframeType;
     slug: string;
 }
 
