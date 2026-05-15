@@ -223,3 +223,17 @@ class TestAgentAPI(APITestCase):
             data={"platform": OSFamily.macOS, "enrollment_token": self.token.pk},
         )
         self.assertEqual(res.status_code, 200)
+
+    def test_users_list(self):
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_other_api_forbidden(self):
+        response = self.client.get(
+            reverse("authentik_api:application-list"),
+            HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
+        )
+        self.assertEqual(response.status_code, 403)

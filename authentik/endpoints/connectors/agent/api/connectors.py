@@ -7,7 +7,7 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_sche
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import ChoiceField
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -44,7 +44,6 @@ from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_ME
 
 
 class AgentConnectorSerializer(ConnectorSerializer):
-
     class Meta(ConnectorSerializer.Meta):
         model = AgentConnector
         fields = ConnectorSerializer.Meta.fields + [
@@ -63,7 +62,6 @@ class AgentConnectorSerializer(ConnectorSerializer):
 
 
 class MDMConfigSerializer(PassiveSerializer):
-
     platform = ChoiceField(choices=OSFamily.choices)
     enrollment_token = PrimaryKeyRelatedField(
         queryset=EnrollmentToken.objects.including_expired().all()
@@ -89,7 +87,6 @@ class AgentConnectorViewSet(
     UsedByMixin,
     ModelViewSet,
 ):
-
     queryset = AgentConnector.objects.all()
     serializer_class = AgentConnectorSerializer
     search_fields = ["name"]
@@ -121,6 +118,8 @@ class AgentConnectorViewSet(
         methods=["POST"],
         detail=False,
         authentication_classes=[AgentEnrollmentAuth],
+        # Permissions are handled via AgentEnrollmentAuth
+        permission_classes=[AllowAny],
     )
     def enroll(self, request: Request):
         token: EnrollmentToken = request.auth
@@ -151,7 +150,13 @@ class AgentConnectorViewSet(
         request=OpenApiTypes.NONE,
         responses=AgentConfigSerializer(),
     )
-    @action(methods=["GET"], detail=False, authentication_classes=[AgentAuth])
+    @action(
+        methods=["GET"],
+        detail=False,
+        authentication_classes=[AgentAuth],
+        # Permissions are handled via AgentAuth
+        permission_classes=[AllowAny],
+    )
     def agent_config(self, request: Request):
         token: DeviceToken = request.auth
         connector: AgentConnector = token.device.connector.agentconnector
@@ -165,7 +170,13 @@ class AgentConnectorViewSet(
         request=DeviceFacts(),
         responses={204: OpenApiResponse(description="Successfully checked in")},
     )
-    @action(methods=["POST"], detail=False, authentication_classes=[AgentAuth])
+    @action(
+        methods=["POST"],
+        detail=False,
+        authentication_classes=[AgentAuth],
+        # Permissions are handled via AgentAuth
+        permission_classes=[AllowAny],
+    )
     def check_in(self, request: Request):
         token: DeviceToken = request.auth
         data = DeviceFacts(data=request.data)
