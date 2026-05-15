@@ -10,6 +10,8 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSo
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { AKLabel } from "#components/ak-label";
+
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
@@ -80,12 +82,17 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                     "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
                 )}
             ></ak-switch-input>
-            <ak-form-element-horizontal
-                label=${msg("User matching mode")}
-                required
-                name="userMatchingMode"
-            >
-                <select class="pf-c-form-control">
+            <ak-form-element-horizontal required name="userMatchingMode">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "userMatchingMode",
+                        required: true,
+                    },
+                    msg("User matching mode"),
+                )}
+                <select id="userMatchingMode" class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
                         ?selected=${this.instance?.userMatchingMode ===
@@ -123,8 +130,18 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Bot username")} required name="botUsername">
+            <ak-form-element-horizontal required name="botUsername">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "botUsername",
+                        required: true,
+                    },
+                    msg("Bot username"),
+                )}
                 <input
+                    id="botUsername"
                     type="text"
                     value="${ifDefined(this.instance?.botUsername)}"
                     class="pf-c-form-control"
@@ -145,12 +162,18 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             ></ak-switch-input>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Pre-authentication flow")}
-                        required
-                        name="preAuthenticationFlow"
-                    >
+                    <ak-form-element-horizontal required name="preAuthenticationFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "preAuthenticationFlow",
+                                required: true,
+                            },
+                            msg("Pre-authentication flow"),
+                        )}
                         <ak-source-flow-search
+                            id="preAuthenticationFlow"
                             flowType=${FlowDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.preAuthenticationFlow}
                             .instanceId=${this.instance?.pk}
@@ -160,11 +183,17 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                             ${msg("Flow used before authentication.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication Flow")}
-                        name="authenticationFlow"
-                    >
+                    <ak-form-element-horizontal name="authenticationFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "authenticationFlow",
+                            },
+                            msg("Authentication Flow"),
+                        )}
                         <ak-source-flow-search
+                            id="authenticationFlow"
                             flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
@@ -174,11 +203,17 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                             ${msg("Flow to use when authenticating existing users.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
+                    <ak-form-element-horizontal name="enrollmentFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "enrollmentFlow",
+                            },
+                            msg("Enrollment flow"),
+                        )}
                         <ak-source-flow-search
+                            id="enrollmentFlow"
                             flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
@@ -192,11 +227,17 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             </ak-form-group>
             <ak-form-group open label="${msg("Telegram Attribute mapping")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("User Property Mappings")}
-                        name="userPropertyMappings"
-                    >
+                    <ak-form-element-horizontal name="userPropertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userPropertyMappings",
+                            },
+                            msg("User Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="userPropertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.userPropertyMappings,
@@ -208,11 +249,17 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                             ${msg("Property mappings for user creation.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Group Property Mappings")}
-                        name="groupPropertyMappings"
-                    >
+                    <ak-form-element-horizontal name="groupPropertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "groupPropertyMappings",
+                            },
+                            msg("Group Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="groupPropertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.groupPropertyMappings,
@@ -228,12 +275,18 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Advanced settings")} ">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Policy engine mode")}
-                        required
-                        name="policyEngineMode"
-                    >
+                    <ak-form-element-horizontal required name="policyEngineMode">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "policyEngineMode",
+                                required: true,
+                            },
+                            msg("Policy engine mode"),
+                        )}
                         <ak-radio
+                            id="policyEngineMode"
                             .options=${policyEngineModes}
                             .value=${this.instance?.policyEngineMode}
                         >

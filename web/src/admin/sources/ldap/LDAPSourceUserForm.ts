@@ -6,6 +6,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     CoreApi,
     CoreUsersListRequest,
@@ -43,8 +45,17 @@ export class LDAPSourceUserForm extends ModelForm<UserLDAPSourceConnection, numb
     }
 
     renderForm() {
-        return html`<ak-form-element-horizontal label=${msg("User")} name="user">
+        return html`<ak-form-element-horizontal name="user">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "user",
+                    },
+                    msg("User"),
+                )}
                 <ak-search-select
+                    id="user"
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",

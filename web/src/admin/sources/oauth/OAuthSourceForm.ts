@@ -19,6 +19,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPreviousValue } from "#elements/utils/properties";
 
+import { AKLabel } from "#components/ak-label";
+
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -131,11 +133,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
 
         return html`<ak-form-group open label="${msg("URL settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Authorization URL")}
-                    name="authorizationUrl"
-                >
+                <ak-form-element-horizontal name="authorizationUrl">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "authorizationUrl",
+                        },
+                        msg("Authorization URL"),
+                    )}
                     <input
+                        id="authorizationUrl"
                         type="text"
                         value="${this.instance?.authorizationUrl ??
                         this.providerType.authorizationUrl ??
@@ -148,8 +156,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         ${msg("URL the user is redirect to to consent the authorization.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("Access token URL")} name="accessTokenUrl">
+                <ak-form-element-horizontal name="accessTokenUrl">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "accessTokenUrl",
+                        },
+                        msg("Access token URL"),
+                    )}
                     <input
+                        id="accessTokenUrl"
                         type="url"
                         value="${this.instance?.accessTokenUrl ??
                         this.providerType.accessTokenUrl ??
@@ -162,8 +179,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         ${msg("URL used by authentik to retrieve tokens.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("Profile URL")} name="profileUrl">
+                <ak-form-element-horizontal name="profileUrl">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "profileUrl",
+                        },
+                        msg("Profile URL"),
+                    )}
                     <input
+                        id="profileUrl"
                         type="url"
                         value="${this.instance?.profileUrl ?? this.providerType.profileUrl ?? ""}"
                         class="pf-c-form-control pf-m-monospace"
@@ -175,11 +201,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                     </p>
                 </ak-form-element-horizontal>
                 ${this.providerType.requestTokenUrl
-                    ? html`<ak-form-element-horizontal
-                          label=${msg("Request token URL")}
-                          name="requestTokenUrl"
-                      >
+                    ? html`<ak-form-element-horizontal name="requestTokenUrl">
+                          ${AKLabel(
+                              {
+                                  slot: "label",
+                                  className: "pf-c-form__group-label",
+                                  htmlFor: "requestTokenUrl",
+                              },
+                              msg("Request token URL"),
+                          )}
                           <input
+                              id="requestTokenUrl"
                               type="url"
                               value="${this.instance?.requestTokenUrl ?? ""}"
                               class="pf-c-form-control pf-m-monospace"
@@ -194,11 +226,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                     : nothing}
                 ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcWellKnownUrl !== ""
-                    ? html`<ak-form-element-horizontal
-                          label=${msg("OIDC Well-known URL")}
-                          name="oidcWellKnownUrl"
-                      >
+                    ? html`<ak-form-element-horizontal name="oidcWellKnownUrl">
+                          ${AKLabel(
+                              {
+                                  slot: "label",
+                                  className: "pf-c-form__group-label",
+                                  htmlFor: "oidcWellKnownUrl",
+                              },
+                              msg("OIDC Well-known URL"),
+                          )}
                           <input
+                              id="oidcWellKnownUrl"
                               type="url"
                               value="${this.instance?.oidcWellKnownUrl ??
                               this.providerType.oidcWellKnownUrl ??
@@ -216,11 +254,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                     : nothing}
                 ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
                 this.providerType.oidcJwksUrl !== ""
-                    ? html`<ak-form-element-horizontal
-                              label=${msg("OIDC JWKS URL")}
-                              name="oidcJwksUrl"
-                          >
+                    ? html`<ak-form-element-horizontal name="oidcJwksUrl">
+                              ${AKLabel(
+                                  {
+                                      slot: "label",
+                                      className: "pf-c-form__group-label",
+                                      htmlFor: "oidcJwksUrl",
+                                  },
+                                  msg("OIDC JWKS URL"),
+                              )}
                               <input
+                                  id="oidcJwksUrl"
                                   type="url"
                                   value="${this.instance?.oidcJwksUrl ??
                                   this.providerType.oidcJwksUrl ??
@@ -235,8 +279,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                                   )}
                               </p>
                           </ak-form-element-horizontal>
-                          <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
+                          <ak-form-element-horizontal name="oidcJwks">
+                              ${AKLabel(
+                                  {
+                                      slot: "label",
+                                      className: "pf-c-form__group-label",
+                                      htmlFor: "oidcJwks",
+                                  },
+                                  msg("OIDC JWKS"),
+                              )}
                               <ak-codemirror
+                                  id="oidcJwks"
                                   mode="javascript"
                                   value="${JSON.stringify(this.instance?.oidcJwks ?? {})}"
                               >
@@ -299,12 +352,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                     "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
                 )}
             ></ak-switch-input>
-            <ak-form-element-horizontal
-                label=${msg("User matching mode")}
-                required
-                name="userMatchingMode"
-            >
-                <select class="pf-c-form-control">
+            <ak-form-element-horizontal required name="userMatchingMode">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "userMatchingMode",
+                        required: true,
+                    },
+                    msg("User matching mode"),
+                )}
+                <select id="userMatchingMode" class="pf-c-form-control">
                     <option
                         value=${UserMatchingModeEnum.Identifier}
                         ?selected=${this.instance?.userMatchingMode ===
@@ -342,12 +400,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Group matching mode")}
-                required
-                name="groupMatchingMode"
-            >
-                <select class="pf-c-form-control">
+            <ak-form-element-horizontal required name="groupMatchingMode">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "groupMatchingMode",
+                        required: true,
+                    },
+                    msg("Group matching mode"),
+                )}
+                <select id="groupMatchingMode" class="pf-c-form-control">
                     <option
                         value=${GroupMatchingModeEnum.Identifier}
                         ?selected=${this.instance?.groupMatchingMode ===
@@ -371,8 +434,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
+            <ak-form-element-horizontal name="userPathTemplate">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "userPathTemplate",
+                    },
+                    msg("User path"),
+                )}
                 <input
+                    id="userPathTemplate"
                     type="text"
                     value="${this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"}"
                     class="pf-c-form-control pf-m-monospace"
@@ -392,12 +464,18 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Consumer key")}
-                        required
-                        name="consumerKey"
-                    >
+                    <ak-form-element-horizontal required name="consumerKey">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "consumerKey",
+                                required: true,
+                            },
+                            msg("Consumer key"),
+                        )}
                         <input
+                            id="consumerKey"
                             type="text"
                             value="${ifDefined(this.instance?.consumerKey)}"
                             class="pf-c-form-control pf-m-monospace"
@@ -415,8 +493,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         ?required=${!this.instance}
                         ?revealed=${!this.instance}
                     ></ak-secret-textarea-input>
-                    <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
+                    <ak-form-element-horizontal name="additionalScopes">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "additionalScopes",
+                            },
+                            msg("Scopes"),
+                        )}
                         <input
+                            id="additionalScopes"
                             type="text"
                             value="${this.instance?.additionalScopes ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
@@ -434,11 +521,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
             ${this.renderUrlOptions()}
             <ak-form-group open label="${msg("OAuth Attribute mapping")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("User Property Mappings")}
-                        name="userPropertyMappings"
-                    >
+                    <ak-form-element-horizontal name="userPropertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userPropertyMappings",
+                            },
+                            msg("User Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="userPropertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.userPropertyMappings,
@@ -450,11 +543,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                             ${msg("Property mappings for user creation.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Group Property Mappings")}
-                        name="groupPropertyMappings"
-                    >
+                    <ak-form-element-horizontal name="groupPropertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "groupPropertyMappings",
+                            },
+                            msg("Group Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="groupPropertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.groupPropertyMappings,
@@ -470,11 +569,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication Flow")}
-                        name="authenticationFlow"
-                    >
+                    <ak-form-element-horizontal name="authenticationFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "authenticationFlow",
+                            },
+                            msg("Authentication Flow"),
+                        )}
                         <ak-source-flow-search
+                            id="authenticationFlow"
                             flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
@@ -484,11 +589,17 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                             ${msg("Flow to use when authenticating existing users.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
+                    <ak-form-element-horizontal name="enrollmentFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "enrollmentFlow",
+                            },
+                            msg("Enrollment flow"),
+                        )}
                         <ak-source-flow-search
+                            id="enrollmentFlow"
                             flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
@@ -502,12 +613,18 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
             </ak-form-group>
             <ak-form-group label=${msg("Advanced settings")}>
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Policy engine mode")}
-                        required
-                        name="policyEngineMode"
-                    >
+                    <ak-form-element-horizontal required name="policyEngineMode">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "policyEngineMode",
+                                required: true,
+                            },
+                            msg("Policy engine mode"),
+                        )}
                         <ak-radio
+                            id="policyEngineMode"
                             .options=${policyEngineModes}
                             .value=${this.instance?.policyEngineMode}
                         >

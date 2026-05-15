@@ -6,6 +6,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     CoreApi,
     CoreGroupsListRequest,
@@ -43,8 +45,17 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
     }
 
     renderForm() {
-        return html`<ak-form-element-horizontal label=${msg("Group")} name="group">
+        return html`<ak-form-element-horizontal name="group">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "group",
+                    },
+                    msg("Group"),
+                )}
                 <ak-search-select
+                    id="group"
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
                             ordering: "name",

@@ -9,6 +9,8 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMSource
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { AKLabel } from "#components/ak-label";
+
 import { placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 
@@ -67,11 +69,17 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
 
             <ak-form-group open label="${msg("SCIM Attribute mapping")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("User Property Mappings")}
-                        name="userPropertyMappings"
-                    >
+                    <ak-form-element-horizontal name="userPropertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userPropertyMappings",
+                            },
+                            msg("User Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="userPropertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.userPropertyMappings,
@@ -83,11 +91,17 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                             ${msg("Property mappings for user creation.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Group Property Mappings")}
-                        name="groupPropertyMappings"
-                    >
+                    <ak-form-element-horizontal name="groupPropertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "groupPropertyMappings",
+                            },
+                            msg("Group Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="groupPropertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.groupPropertyMappings,
@@ -103,8 +117,17 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Advanced protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
+                    <ak-form-element-horizontal name="userPathTemplate">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userPathTemplate",
+                            },
+                            msg("User path"),
+                        )}
                         <input
+                            id="userPathTemplate"
                             type="text"
                             value="${this.instance?.userPathTemplate ??
                             "goauthentik.io/sources/%(slug)s"}"

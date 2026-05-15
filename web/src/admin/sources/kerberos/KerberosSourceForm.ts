@@ -18,6 +18,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { RadioOption } from "#elements/forms/Radio";
 
+import { AKLabel } from "#components/ak-label";
+
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
@@ -152,12 +154,17 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                             "Kerberos 5 configuration. See man krb5.conf(5) for configuration format. If left empty, a default krb5.conf will be used.",
                         )}
                     ></ak-textarea-input>
-                    <ak-form-element-horizontal
-                        label=${msg("User matching mode")}
-                        required
-                        name="userMatchingMode"
-                    >
-                        <select class="pf-c-form-control">
+                    <ak-form-element-horizontal required name="userMatchingMode">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userMatchingMode",
+                                required: true,
+                            },
+                            msg("User matching mode"),
+                        )}
+                        <select id="userMatchingMode" class="pf-c-form-control">
                             <option
                                 value=${UserMatchingModeEnum.Identifier}
                                 ?selected=${this.instance?.userMatchingMode ===
@@ -195,12 +202,17 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Group matching mode")}
-                        required
-                        name="groupMatchingMode"
-                    >
-                        <select class="pf-c-form-control">
+                    <ak-form-element-horizontal required name="groupMatchingMode">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "groupMatchingMode",
+                                required: true,
+                            },
+                            msg("Group matching mode"),
+                        )}
+                        <select id="groupMatchingMode" class="pf-c-form-control">
                             <option
                                 value=${GroupMatchingModeEnum.Identifier}
                                 ?selected=${this.instance?.groupMatchingMode ===
@@ -228,12 +240,18 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Sync connection settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("KAdmin type")}
-                        required
-                        name="kadminType"
-                    >
+                    <ak-form-element-horizontal required name="kadminType">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "kadminType",
+                                required: true,
+                            },
+                            msg("KAdmin type"),
+                        )}
                         <ak-radio
+                            id="kadminType"
                             .options=${[
                                 {
                                     label: "MIT",
@@ -313,11 +331,17 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Kerberos Attribute mapping")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("User Property Mappings")}
-                        name="userPropertyMappings"
-                    >
+                    <ak-form-element-horizontal name="userPropertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userPropertyMappings",
+                            },
+                            msg("User Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="userPropertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 "user",
@@ -330,11 +354,17 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                             ${msg("Property mappings for user creation.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Group Property Mappings")}
-                        name="groupPropertyMappings"
-                    >
+                    <ak-form-element-horizontal name="groupPropertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "groupPropertyMappings",
+                            },
+                            msg("Group Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="groupPropertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 "group",
@@ -351,11 +381,17 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication Flow")}
-                        name="authenticationFlow"
-                    >
+                    <ak-form-element-horizontal name="authenticationFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "authenticationFlow",
+                            },
+                            msg("Authentication Flow"),
+                        )}
                         <ak-source-flow-search
+                            id="authenticationFlow"
                             flowType=${FlowDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
                             .instanceId=${this.instance?.pk}
@@ -365,11 +401,17 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                             ${msg("Flow to use when authenticating existing users.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Enrollment flow")}
-                        name="enrollmentFlow"
-                    >
+                    <ak-form-element-horizontal name="enrollmentFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "enrollmentFlow",
+                            },
+                            msg("Enrollment flow"),
+                        )}
                         <ak-source-flow-search
+                            id="enrollmentFlow"
                             flowType=${FlowDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
                             .instanceId=${this.instance?.pk}
