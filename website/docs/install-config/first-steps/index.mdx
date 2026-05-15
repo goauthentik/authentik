@@ -90,12 +90,8 @@ Every application that you add to authentik requires a provider, which is used t
           then access to the application is granted. The mode **ALL** means that every one of any
           policies bound to the application must pass in order for a user to have access to the
           application.
-<<<<<<< HEAD
-    - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the **My Applications** page: an optional icon, the publisher of the application, and a brief description.
-
-=======
     - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the **Application Dashboard** page: an optional icon, the publisher of the application, and a brief description.
->>>>>>> 37a59e6ad1 (web, website: Update name to application dashboard (#22190))
+
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 
 - **Configure the Provider**:
@@ -119,12 +115,8 @@ Every application that you add to authentik requires a provider, which is used t
         - <strong className="tip">TIP</strong>: authentik generates a key that you can use, called
           the `authentik Self-signed Certificate`, if you do not have a specific signing key for an
           application.
-<<<<<<< HEAD
 
-- **Configure Bindings** _(optional)_: for this tutorial, skip this step because you do not yet have a user. Later, after you create your first user, you can [create a binding](../../add-secure-apps/bindings-overview/work-with-bindings.md) to manage the display and access to applications on a user's **My applications** page.
-=======
 - **Configure Bindings** _(optional)_: for this tutorial, skip this step because you do not yet have a user. Later, after you create your first user, you can [create a binding](../../add-secure-apps/bindings-overview/work-with-bindings.md) to manage the display and access to applications on a user's **Application Dashboard** page.
->>>>>>> 37a59e6ad1 (web, website: Update name to application dashboard (#22190))
     - <strong className="tip">TIP</strong>: By creating a binding between an application and a
       specific user, you are ensuring that the application is accessible only to that user and any
       other users or groups for whom you created a binding. Learn more about how bindings are used
