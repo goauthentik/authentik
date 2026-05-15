@@ -2,7 +2,7 @@
 title: Captcha stage
 ---
 
-The Captcha stage adds CAPTCHA verification to a flow by using Google reCAPTCHA or compatible alternatives like hCaptcha and Cloudflare Turnstile.
+The Captcha stage adds CAPTCHA verification to a flow by using Google reCAPTCHA or compatible alternatives like hCaptcha, Cloudflare Turnstile, and Cap.
 
 ## Overview
 
@@ -20,6 +20,7 @@ It can either be bound to a flow or embedded inside the [Identification stage](.
 - **Error on invalid score**: show an error immediately when the score is outside the configured threshold. If disabled, the flow continues and policies can inspect the result from context.
 - **JS URL**: JavaScript loader URL for the provider.
 - **API URL**: verification endpoint URL for the provider.
+- **Request content type**: content type used when authentik verifies the CAPTCHA token with the provider.
 
 ## Flow integration
 

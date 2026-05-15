@@ -2,12 +2,35 @@ import { CaptchaStage, CaptchaStageRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 
+export type CaptchaRequestContentType = "application/x-www-form-urlencoded" | "application/json";
+
+export const CAPTCHA_REQUEST_CONTENT_TYPES = [
+    {
+        value: "application/x-www-form-urlencoded",
+        formatDisplayName: () =>
+            msg("Form encoded", {
+                id: "captcha.request-content-type.form",
+            }),
+    },
+    {
+        value: "application/json",
+        formatDisplayName: () =>
+            msg("JSON", {
+                id: "captcha.request-content-type.json",
+            }),
+    },
+] as const satisfies {
+    value: CaptchaRequestContentType;
+    formatDisplayName: () => string;
+}[];
+
 export const CaptchaProviderKeys = [
     "recaptcha_v2",
     "recaptcha_v3",
     "recaptcha_enterprise",
     "hcaptcha",
     "turnstile",
+    "cap",
     "custom",
 ] as const satisfies string[];
 
@@ -17,6 +40,7 @@ export interface CaptchaProviderPreset {
     formatDisplayName: () => string;
     jsUrl: string;
     apiUrl: string;
+    requestContentType: CaptchaRequestContentType;
     interactive: boolean;
     supportsScore: boolean;
     score?: { min: number; max: number };
@@ -37,6 +61,7 @@ export const CAPTCHA_PROVIDERS = {
             }),
         jsUrl: "https://www.recaptcha.net/recaptcha/api.js",
         apiUrl: "https://www.recaptcha.net/recaptcha/api/siteverify",
+        requestContentType: "application/x-www-form-urlencoded",
         interactive: true,
         supportsScore: false,
         formatAPISource: () =>
@@ -52,6 +77,7 @@ export const CAPTCHA_PROVIDERS = {
             }),
         jsUrl: "https://www.recaptcha.net/recaptcha/api.js",
         apiUrl: "https://www.recaptcha.net/recaptcha/api/siteverify",
+        requestContentType: "application/x-www-form-urlencoded",
         interactive: false,
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
@@ -68,6 +94,7 @@ export const CAPTCHA_PROVIDERS = {
             }),
         jsUrl: "https://www.recaptcha.net/recaptcha/enterprise.js",
         apiUrl: "https://www.recaptcha.net/recaptcha/api/siteverify",
+        requestContentType: "application/x-www-form-urlencoded",
         interactive: false,
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
@@ -84,6 +111,7 @@ export const CAPTCHA_PROVIDERS = {
             }),
         jsUrl: "https://js.hcaptcha.com/1/api.js",
         apiUrl: "https://api.hcaptcha.com/siteverify",
+        requestContentType: "application/x-www-form-urlencoded",
         interactive: true,
         supportsScore: true,
         score: { min: 0.0, max: 0.5 },
@@ -100,6 +128,7 @@ export const CAPTCHA_PROVIDERS = {
             }),
         jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
         apiUrl: "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+        requestContentType: "application/x-www-form-urlencoded",
         interactive: true,
         supportsScore: false,
         formatAPISource: () =>
@@ -108,6 +137,22 @@ export const CAPTCHA_PROVIDERS = {
             }),
         keyURL: "https://dash.cloudflare.com",
     },
+    cap: {
+        formatDisplayName: () =>
+            msg("Cap", {
+                id: "captcha.providers.cap",
+            }),
+        jsUrl: "https://cdn.jsdelivr.net/npm/cap-widget",
+        apiUrl: "https://cap.example.com/site-key/siteverify",
+        requestContentType: "application/json",
+        interactive: true,
+        supportsScore: false,
+        formatAPISource: () =>
+            msg("Cap setup guide", {
+                id: "captcha.providers.cap.setup-guide",
+            }),
+        keyURL: "https://capjs.js.org/guide/",
+    },
     custom: {
         formatDisplayName: () =>
             msg("Custom", {
@@ -115,11 +160,18 @@ export const CAPTCHA_PROVIDERS = {
             }),
         jsUrl: "https://www.recaptcha.net/recaptcha/api.js",
         apiUrl: "https://www.recaptcha.net/recaptcha/api/siteverify",
+        requestContentType: "application/x-www-form-urlencoded",
         interactive: false,
         supportsScore: true,
         score: { min: 0.5, max: 1.0 },
     },
 } as const satisfies Record<CaptchaProviderKey, CaptchaProviderPreset>;
+
+export function deriveCapSiteVerifyURL(endpoint: string): string {
+    const normalizedEndpoint = endpoint.endsWith("/") ? endpoint : `${endpoint}/`;
+
+    return new URL("siteverify", normalizedEndpoint).toString();
+}
 
 /**
  * Detect which provider preset matches the given {@linkcode CaptchaStage} instance.
@@ -131,6 +183,14 @@ export function detectProviderFromInstance(stage?: CaptchaStage | null): Captcha
 
     for (const key of CaptchaProviderKeys) {
         const preset = CAPTCHA_PROVIDERS[key];
+
+        if (
+            key === "cap" &&
+            stage.jsUrl === preset.jsUrl &&
+            stage.requestContentType === preset.requestContentType
+        ) {
+            return key;
+        }
 
         if (stage.jsUrl === preset.jsUrl && stage.apiUrl === preset.apiUrl) {
             return key;
@@ -153,6 +213,7 @@ export function pluckFormValues(
         return {
             jsUrl: instance.jsUrl,
             apiUrl: instance.apiUrl,
+            requestContentType: instance.requestContentType,
             interactive: instance.interactive,
             scoreMinThreshold: instance.scoreMinThreshold,
             scoreMaxThreshold: instance.scoreMaxThreshold,
@@ -163,6 +224,7 @@ export function pluckFormValues(
     return {
         jsUrl: preset.jsUrl,
         apiUrl: preset.apiUrl,
+        requestContentType: preset.requestContentType,
         interactive: preset.interactive,
         scoreMinThreshold: preset.score?.min ?? 0.5,
         scoreMaxThreshold: preset.score?.max ?? 1.0,

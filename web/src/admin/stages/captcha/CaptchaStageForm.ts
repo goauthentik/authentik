@@ -14,9 +14,11 @@ import { SlottedTemplateResult } from "#elements/types";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     CAPTCHA_PROVIDERS,
+    CAPTCHA_REQUEST_CONTENT_TYPES,
     CaptchaProviderKey,
     CaptchaProviderKeys,
     CaptchaProviderPreset,
+    deriveCapSiteVerifyURL,
     detectProviderFromInstance,
     pluckFormValues,
 } from "#admin/stages/captcha/shared";
@@ -83,6 +85,15 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     public async send(
         data: CaptchaStageRequest | PatchedCaptchaStageRequest,
     ): Promise<CaptchaStage> {
+        if (this.selectedProvider === "cap" && data.publicKey) {
+            const presetURL = CAPTCHA_PROVIDERS.cap.apiUrl;
+            // The Cap verification URL includes the site key, so derive it from the
+            // widget endpoint unless the advanced field was explicitly customized.
+            if (!data.apiUrl || data.apiUrl === presetURL) {
+                data.apiUrl = deriveCapSiteVerifyURL(data.publicKey);
+            }
+        }
+
         if (this.instance) {
             return this.#api.stagesCaptchaPartialUpdate({
                 stageUuid: this.instance.pk || "",
@@ -140,20 +151,34 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     }
 
     protected renderKeyFields(): SlottedTemplateResult {
+        const publicKeyLabel =
+            this.selectedProvider === "cap" ? msg("API Endpoint") : msg("Public Key");
+        const publicKeyPlaceholder =
+            this.selectedProvider === "cap"
+                ? msg("https://cap.example.com/site-key/")
+                : msg("Paste your CAPTCHA public key...");
+        const publicKeyHelp =
+            this.selectedProvider === "cap"
+                ? msg("The public Cap endpoint used by the widget, including the site key path.", {
+                      id: "captcha.cap-endpoint.description",
+                      desc: "Description for Cap endpoint field.",
+                  })
+                : msg("The public key is used by authentik to render the CAPTCHA widget.", {
+                      id: "captcha.public-key.description",
+                      desc: "Description for CAPTCHA public key field.",
+                  });
+
         return html`
             <ak-text-input
-                label=${msg("Public Key")}
+                label=${publicKeyLabel}
                 required
                 name="publicKey"
                 type="text"
                 value="${ifDefined(this.instance?.publicKey || "")}"
                 autocomplete="off"
                 input-hint="code"
-                placeholder=${msg("Paste your CAPTCHA public key...")}
-                help=${msg("The public key is used by authentik to render the CAPTCHA widget.", {
-                    id: "captcha.public-key.description",
-                    desc: "Description for CAPTCHA public key field.",
-                })}
+                placeholder=${publicKeyPlaceholder}
+                help=${publicKeyHelp}
             >
             </ak-text-input>
 
@@ -246,10 +271,35 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     type="url"
                     value="${ifDefined(formValues.apiUrl)}"
                     required
-                    help=${msg(
-                        "URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.",
-                    )}
+                    help=${this.selectedProvider === "cap"
+                        ? msg(
+                              "Cap's server-side verification endpoint, for example https://cap.example.com/site-key/siteverify.",
+                          )
+                        : msg(
+                              "URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.",
+                          )}
                 ></ak-text-input>
+                <ak-form-element-horizontal
+                    label=${msg("Request Content Type")}
+                    name="requestContentType"
+                >
+                    <select class="pf-c-form-control" name="requestContentType">
+                        ${CAPTCHA_REQUEST_CONTENT_TYPES.map(
+                            (type) =>
+                                html`<option
+                                    value=${type.value}
+                                    ?selected=${type.value === formValues.requestContentType}
+                                >
+                                    ${type.formatDisplayName()}
+                                </option>`,
+                        )}
+                    </select>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Content-Type used for server-side verification. Cap requires JSON; most other providers use form-encoded requests.",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
             </div>
         </ak-form-group>`;
     }
