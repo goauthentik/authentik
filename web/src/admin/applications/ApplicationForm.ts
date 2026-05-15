@@ -233,7 +233,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         placeholder=${msg("Type an optional description...")}
                         value=${ifDefined(this.instance?.metaDescription)}
                         help=${msg(
-                            "The description is shown in the application dashboard and may provide additional information about the application to end users.",
+                            "The description is shown in the Application Dashboard and may provide additional information about the application to end users.",
                         )}
                     ></ak-textarea-input>
                 </div>
