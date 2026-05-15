@@ -13,7 +13,7 @@ import { expect, test } from "#e2e";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-const ADMIN_TOKEN = process.env.AK_TEST_BOOTSTRAP_TOKEN ?? "playpen-dev-bootstrap-token-changeme";
+const ADMIN_TOKEN = process.env.AK_TEST_BOOTSTRAP_TOKEN ?? "bootstrap-token";
 const AUTHORIZATION_FLOW_SLUG = "default-provider-authorization-explicit-consent";
 
 interface APIClient {
