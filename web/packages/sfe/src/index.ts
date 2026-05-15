@@ -469,6 +469,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="" />
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3 has-validation">
+                    <input type="hidden" name="challenge_uid" value="${this.deviceChallenge?.uid}"/>
                     <input
                         type="text"
                         autofocus
@@ -516,6 +517,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
 
                     // post the assertion to the server for verification.
                     this.executor.submit({
+                        challenge_uid: this.deviceChallenge?.uid,
                         webauthn: transformedAssertionForServer,
                     });
                 } catch (err) {
