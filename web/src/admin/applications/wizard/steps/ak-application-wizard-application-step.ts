@@ -219,7 +219,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             value=${ifDefined(app.metaDescription)}
                             .errorMessages=${errors.metaDescription}
                             help=${msg(
-                                "The description is shown in the application dashboard and may provide additional information about the application to end users.",
+                                "The description is shown in the Application Dashboard and may provide additional information about the application to end users.",
                             )}
                         ></ak-textarea-input>
                     </div>
