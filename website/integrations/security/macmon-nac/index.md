@@ -40,7 +40,7 @@ To support the integration of macmon NAC with authentik, you need to create an a
             - Set **NameID Property Mapping** to the email mapping you selected (for example, `authentik default SAML Mapping: Email`).
               macmon NAC expects the NameID format `E-mail address`, so ensure that the chosen mapping provides the user’s email address.
               You can optionally add mappings for additional claims such as `firstName`, `surName`, `memberOf`, or `description` if macmon NAC will use them.
-    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to control which users see the macmon NAC application on the **My Applications** page.
+    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to control which users see the macmon NAC application on the **Application Dashboard** page.
 
 3. Click **Submit**.
 

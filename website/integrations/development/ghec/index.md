@@ -41,7 +41,7 @@ To support the integration of GitHub Enterprise Cloud with authentik, you need t
         - Set **ACS URL** to `https://github.com/orgs/foo/saml/consume`.
         - Set **Audience** to `https://github.com/orgs/foo`.
         - Under **Advanced protocol settings**, select an available **Signing certificate**. Download this certificate because it is required later.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
