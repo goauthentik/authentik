@@ -15,7 +15,7 @@ class TestLDAPProviderAPI(APITestCase):
     """LDAP Provider API tests"""
 
     def test_outpost_application(self):
-        """Test outpost-like provider retrieval (direct connection)"""
+"""Test outpost-like provider retrieval (direct connection)"""
         provider = LDAPProvider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
@@ -34,7 +34,7 @@ class TestLDAPProviderAPI(APITestCase):
         self.assertEqual(len(data["results"]), 1)
 
     def test_outpost_application_backchannel(self):
-        """Test outpost-like provider retrieval (backchannel connection)"""
+"""Test outpost-like provider retrieval (backchannel connection)"""
         provider = LDAPProvider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),

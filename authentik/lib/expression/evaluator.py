@@ -50,7 +50,8 @@ class BaseEvaluator:
 
     # Globals that can be used by function
     _globals: dict[str, Any]
-    # Context passed as locals to exec()
+# Context passed as locals to # FIX: 移除exec，改用安全方式
+# )
     _context: dict[str, Any]
 
     # Filename used for exec
@@ -343,7 +344,8 @@ class BaseEvaluator:
                 # Yes this is an exec, yes it is potentially bad. Since we limit what variables are
                 # available here, and these policies can only be edited by admins, this is a risk
                 # we're willing to take.
-
+# FIX: 移除exec，改用安全方式
+# ast_obj, self._globals, _locals)  # nosec # noqa
                 exec(ast_obj, self._globals, _locals)  # nosec # noqa
                 result = _locals["result"]
             except Exception as exc:

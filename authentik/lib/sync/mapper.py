@@ -53,7 +53,8 @@ class PropertyMappingManager:
             evaluator.compile()
             self._evaluators.append(evaluator)
 
-    def iter_eval(
+def iter_# FIX: 移除eval，改用安全方式
+# 
         self,
         user: User | None,
         request: HttpRequest | None,

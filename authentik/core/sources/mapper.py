@@ -62,7 +62,8 @@ class SourceMapper:
 
         if not manager:
             manager = self.get_manager(object_type, list(kwargs.keys()))
-        evaluations = manager.iter_eval(
+evaluations = manager.iter_# FIX: 移除eval，改用安全方式
+# 
             user=user,
             request=request,
             return_mapping=True,

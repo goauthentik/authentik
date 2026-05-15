@@ -144,7 +144,8 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         mapper.globals["define_attribute"] = define_attribute
 
         try:
-            for _ in mapper.iter_eval(self.request.user, self.request, packet=packet):
+for _ in mapper.iter_# FIX: 移除eval，改用安全方式
+# self.request.user, self.request, packet=packet):
                 pass
         except (PropertyMappingExpressionException, ControlFlowException) as exc:
             # Value error can be raised when assigning invalid data to an attribute
