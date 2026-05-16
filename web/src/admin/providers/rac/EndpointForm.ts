@@ -113,8 +113,17 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                 )}
             >
             </ak-number-input>
-            <ak-form-element-horizontal label=${msg("Property mappings")} name="propertyMappings">
+            <ak-form-element-horizontal name="propertyMappings">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "propertyMappings",
+                    },
+                    msg("Property mappings"),
+                )}
                 <ak-dual-select-dynamic-selected
+                    id="propertyMappings"
                     .provider=${propertyMappingsProvider}
                     .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
                     available-label="${msg("Available User Property Mappings")}"
@@ -123,8 +132,17 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
             </ak-form-element-horizontal>
             <ak-form-group label="${msg("Advanced settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Settings")} name="settings">
+                    <ak-form-element-horizontal name="settings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "settings",
+                            },
+                            msg("Settings"),
+                        )}
                         <ak-codemirror
+                            id="settings"
                             mode="yaml"
                             value="${YAML.stringify(this.instance?.settings ?? {})}"
                         >

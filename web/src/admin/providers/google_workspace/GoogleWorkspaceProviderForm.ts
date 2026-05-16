@@ -13,6 +13,8 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     propertyMappingsProvider,
@@ -54,8 +56,18 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
+        return html` <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Provider Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
@@ -66,12 +78,18 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Credentials")}
-                        required
-                        name="credentials"
-                    >
+                    <ak-form-element-horizontal required name="credentials">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "credentials",
+                                required: true,
+                            },
+                            msg("Credentials"),
+                        )}
                         <ak-codemirror
+                            id="credentials"
                             mode="javascript"
                             .value="${this.instance?.credentials ?? {}}"
                         ></ak-codemirror>
@@ -79,12 +97,18 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             ${msg("Google Cloud credentials file.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Delegated Subject")}
-                        required
-                        name="delegatedSubject"
-                    >
+                    <ak-form-element-horizontal required name="delegatedSubject">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "delegatedSubject",
+                                required: true,
+                            },
+                            msg("Delegated Subject"),
+                        )}
                         <input
+                            id="delegatedSubject"
                             type="email"
                             value="${this.instance?.delegatedSubject ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
@@ -96,12 +120,18 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Default group email domain")}
-                        required
-                        name="defaultGroupEmailDomain"
-                    >
+                    <ak-form-element-horizontal required name="defaultGroupEmailDomain">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "defaultGroupEmailDomain",
+                                required: true,
+                            },
+                            msg("Default group email domain"),
+                        )}
                         <input
+                            id="defaultGroupEmailDomain"
                             type="text"
                             value="${this.instance?.defaultGroupEmailDomain ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
@@ -183,8 +213,17 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         label=${msg("Exclude service accounts")}
                         ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("Group")} name="filterGroup">
+                    <ak-form-element-horizontal name="filterGroup">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "filterGroup",
+                            },
+                            msg("Group"),
+                        )}
                         <ak-search-select
+                            id="filterGroup"
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
@@ -218,11 +257,17 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
             </ak-form-group>
             <ak-form-group open label="${msg("Attribute mapping")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("User Property Mappings")}
-                        name="propertyMappings"
-                    >
+                    <ak-form-element-horizontal name="propertyMappings">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "propertyMappings",
+                            },
+                            msg("User Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="propertyMappings"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappings,
@@ -235,11 +280,17 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             ${msg("Property mappings used to user mapping.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Group Property Mappings")}
-                        name="propertyMappingsGroup"
-                    >
+                    <ak-form-element-horizontal name="propertyMappingsGroup">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "propertyMappingsGroup",
+                            },
+                            msg("Group Property Mappings"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="propertyMappingsGroup"
                             .provider=${propertyMappingsProvider}
                             .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappingsGroup,

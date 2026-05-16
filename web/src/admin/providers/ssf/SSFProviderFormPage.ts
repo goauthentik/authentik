@@ -12,6 +12,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     oauth2ProvidersProvider,
@@ -66,12 +68,18 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
             ></ak-text-input>
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Signing Key")}
-                        name="signingKey"
-                        required
-                    >
+                    <ak-form-element-horizontal name="signingKey" required>
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "signingKey",
+                                required: true,
+                            },
+                            msg("Signing Key"),
+                        )}
                         <ak-crypto-certificate-search
+                            id="signingKey"
                             certificate=${ifPresent(provider?.signingKey)}
                             singleton
                         ></ak-crypto-certificate-search>
@@ -83,12 +91,18 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                         ?checked=${this.instance?.pushVerifyCertificates ?? true}
                     >
                     </ak-switch-input>
-                    <ak-form-element-horizontal
-                        label=${msg("Event Retention")}
-                        required
-                        name="eventRetention"
-                    >
+                    <ak-form-element-horizontal required name="eventRetention">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "eventRetention",
+                                required: true,
+                            },
+                            msg("Event Retention"),
+                        )}
                         <input
+                            id="eventRetention"
                             type="text"
                             value="${provider?.eventRetention ?? "days=30"}"
                             class="pf-c-form-control"
@@ -106,11 +120,17 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
 
             <ak-form-group label="${msg("Authentication settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Federated OAuth2/OpenID Providers")}
-                        name="oidcAuthProviders"
-                    >
+                    <ak-form-element-horizontal name="oidcAuthProviders">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "oidcAuthProviders",
+                            },
+                            msg("Federated OAuth2/OpenID Providers"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="oidcAuthProviders"
                             .provider=${oauth2ProvidersProvider}
                             .selector=${oauth2ProvidersSelector(provider?.oidcAuthProviders)}
                             available-label=${msg("Available Providers")}
