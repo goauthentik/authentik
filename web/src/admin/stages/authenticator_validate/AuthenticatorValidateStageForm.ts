@@ -141,12 +141,18 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                 )}
                         ></ak-checkbox-group>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Last validation threshold")}
-                        required
-                        name="lastAuthThreshold"
-                    >
+                    <ak-form-element-horizontal required name="lastAuthThreshold">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "lastAuthThreshold",
+                                required: true,
+                            },
+                            msg("Last validation threshold"),
+                        )}
                         <input
+                            id="lastAuthThreshold"
                             type="text"
                             value="${this.instance?.lastAuthThreshold || "seconds=0"}"
                             class="pf-c-form-control pf-m-monospace"
@@ -161,12 +167,18 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Not configured action")}
-                        required
-                        name="notConfiguredAction"
-                    >
+                    <ak-form-element-horizontal required name="notConfiguredAction">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "notConfiguredAction",
+                                required: true,
+                            },
+                            msg("Not configured action"),
+                        )}
                         <select
+                            id="notConfiguredAction"
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
                                 const target = ev.target as HTMLSelectElement;
@@ -205,11 +217,17 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     </ak-form-element-horizontal>
                     ${this.showConfigurationStages
                         ? html`
-                              <ak-form-element-horizontal
-                                  label=${msg("Configuration stages")}
-                                  name="configurationStages"
-                              >
+                              <ak-form-element-horizontal name="configurationStages">
+                                  ${AKLabel(
+                                      {
+                                          slot: "label",
+                                          className: "pf-c-form__group-label",
+                                          htmlFor: "configurationStages",
+                                      },
+                                      msg("Configuration stages"),
+                                  )}
                                   <ak-dual-select-dynamic-selected
+                                      id="configurationStages"
                                       .provider=${stagesProvider}
                                       .selector=${stagesSelector(
                                           this.instance?.configurationStages,
@@ -233,12 +251,18 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Throttling settings")}">
-                <ak-form-element-horizontal
-                    label=${msg("Email OTP throttling factor")}
-                    required
-                    name="emailOtpThrottlingFactor"
-                >
+                <ak-form-element-horizontal required name="emailOtpThrottlingFactor">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "emailOtpThrottlingFactor",
+                            required: true,
+                        },
+                        msg("Email OTP throttling factor"),
+                    )}
                     <input
+                        id="emailOtpThrottlingFactor"
                         type="number"
                         step="0.1"
                         value=${this.instance?.emailOtpThrottlingFactor || 1}
@@ -249,12 +273,18 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     />
                 </ak-form-element-horizontal>
 
-                <ak-form-element-horizontal
-                    label=${msg("SMS OTP throttling factor")}
-                    required
-                    name="smsOtpThrottlingFactor"
-                >
+                <ak-form-element-horizontal required name="smsOtpThrottlingFactor">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "smsOtpThrottlingFactor",
+                            required: true,
+                        },
+                        msg("SMS OTP throttling factor"),
+                    )}
                     <input
+                        id="smsOtpThrottlingFactor"
                         type="number"
                         step="0.1"
                         value=${this.instance?.smsOtpThrottlingFactor || 1}
@@ -264,12 +294,18 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("TOTP throttling factor")}
-                    required
-                    name="totpOtpThrottlingFactor"
-                >
+                <ak-form-element-horizontal required name="totpOtpThrottlingFactor">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "totpOtpThrottlingFactor",
+                            required: true,
+                        },
+                        msg("TOTP throttling factor"),
+                    )}
                     <input
+                        id="totpOtpThrottlingFactor"
                         type="number"
                         step="0.1"
                         value=${this.instance?.totpOtpThrottlingFactor || 1}
@@ -280,12 +316,18 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     />
                 </ak-form-element-horizontal>
 
-                <ak-form-element-horizontal
-                    label=${msg("Static OTP throttling factor")}
-                    required
-                    name="staticOtpThrottlingFactor"
-                >
+                <ak-form-element-horizontal required name="staticOtpThrottlingFactor">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "staticOtpThrottlingFactor",
+                            required: true,
+                        },
+                        msg("Static OTP throttling factor"),
+                    )}
                     <input
+                        id="staticOtpThrottlingFactor"
                         type="number"
                         step="0.1"
                         value=${this.instance?.staticOtpThrottlingFactor || 1}
@@ -298,12 +340,18 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
             </ak-form-group>
             <ak-form-group open label="${msg("WebAuthn-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("WebAuthn User verification")}
-                        required
-                        name="webauthnUserVerification"
-                    >
+                    <ak-form-element-horizontal required name="webauthnUserVerification">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "webauthnUserVerification",
+                                required: true,
+                            },
+                            msg("WebAuthn User verification"),
+                        )}
                         <ak-radio
+                            id="webauthnUserVerification"
                             .options=${[
                                 {
                                     label: msg("User verification must occur."),
@@ -325,8 +373,17 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("WebAuthn Hints")} name="webauthnHints">
+                    <ak-form-element-horizontal name="webauthnHints">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "webauthnHints",
+                            },
+                            msg("WebAuthn Hints"),
+                        )}
                         <ak-dual-select-provider
+                            id="webauthnHints"
                             .provider=${(): Promise<DataProvision> => {
                                 return Promise.resolve({
                                     options: allHints,
@@ -345,11 +402,17 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("WebAuthn Device type restrictions")}
-                        name="webauthnAllowedDeviceTypes"
-                    >
+                    <ak-form-element-horizontal name="webauthnAllowedDeviceTypes">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "webauthnAllowedDeviceTypes",
+                            },
+                            msg("WebAuthn Device type restrictions"),
+                        )}
                         <ak-dual-select-provider
+                            id="webauthnAllowedDeviceTypes"
                             .provider=${authenticatorWebauthnDeviceTypesListProvider}
                             .selected=${(this.instance?.webauthnAllowedDeviceTypesObj ?? []).map(
                                 deviceTypeRestrictionPair,

@@ -6,6 +6,8 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { AKLabel } from "#components/ak-label";
+
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -60,12 +62,18 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
     }
 
     renderProviderTwillio(): TemplateResult {
-        return html` <ak-form-element-horizontal
-                label=${msg("Twilio Account SID")}
-                required
-                name="accountSid"
-            >
+        return html` <ak-form-element-horizontal required name="accountSid">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "accountSid",
+                        required: true,
+                    },
+                    msg("Twilio Account SID"),
+                )}
                 <input
+                    id="accountSid"
                     type="text"
                     value="${this.instance?.accountSid ?? ""}"
                     class="pf-c-form-control pf-m-monospace"
@@ -77,8 +85,18 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("Get this value from https://console.twilio.com")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Twilio Auth Token")} required name="auth">
+            <ak-form-element-horizontal required name="auth">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "auth",
+                        required: true,
+                    },
+                    msg("Twilio Auth Token"),
+                )}
                 <input
+                    id="auth"
                     type="text"
                     value="${this.instance?.auth ?? ""}"
                     class="pf-c-form-control pf-m-monospace"
@@ -95,7 +113,6 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
     renderProviderGeneric(): TemplateResult {
         return html`
             <ak-form-element-horizontal
-                label=${msg("Authentication Type")}
                 @change=${(ev: Event) => {
                     const current = (ev.target as HTMLInputElement).value;
                     this.authType = current as AuthTypeEnum;
@@ -103,7 +120,17 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 required
                 name="authType"
             >
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "authType",
+                        required: true,
+                    },
+                    msg("Authentication Type"),
+                )}
                 <ak-radio
+                    id="authType"
                     .options=${[
                         {
                             label: msg("Basic Auth"),
@@ -119,8 +146,18 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("External API URL")} required name="accountSid">
+            <ak-form-element-horizontal required name="accountSid">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "accountSid",
+                        required: true,
+                    },
+                    msg("External API URL"),
+                )}
                 <input
+                    id="accountSid"
                     type="text"
                     value="${this.instance?.accountSid ?? ""}"
                     class="pf-c-form-control pf-m-monospace"
@@ -132,8 +169,18 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("This is the full endpoint to send POST requests to.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("API Auth Username")} required name="auth">
+            <ak-form-element-horizontal required name="auth">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "auth",
+                        required: true,
+                    },
+                    msg("API Auth Username"),
+                )}
                 <input
+                    id="auth"
                     type="text"
                     value="${this.instance?.auth ?? ""}"
                     class="pf-c-form-control pf-m-monospace"
@@ -146,12 +193,17 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("API Auth password")}
-                ?required=${false}
-                name="authPassword"
-            >
+            <ak-form-element-horizontal ?required=${false} name="authPassword">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "authPassword",
+                    },
+                    msg("API Auth password"),
+                )}
                 <input
+                    id="authPassword"
                     type="text"
                     value="${this.instance?.authPassword ?? ""}"
                     class="pf-c-form-control pf-m-monospace"
@@ -169,20 +221,35 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
         return html` <span>
                 ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Authenticator type name")}
-                ?required=${false}
-                name="friendlyName"
-            >
+            <ak-form-element-horizontal ?required=${false} name="friendlyName">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "friendlyName",
+                    },
+                    msg("Authenticator type name"),
+                )}
                 <input
+                    id="friendlyName"
                     type="text"
                     value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
@@ -195,8 +262,18 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Provider")} required name="provider">
+                    <ak-form-element-horizontal required name="provider">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "provider",
+                                required: true,
+                            },
+                            msg("Provider"),
+                        )}
                         <select
+                            id="provider"
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
                                 const current = (ev.target as HTMLInputElement).value;
@@ -217,12 +294,18 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("From number")}
-                        required
-                        name="fromNumber"
-                    >
+                    <ak-form-element-horizontal required name="fromNumber">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "fromNumber",
+                                required: true,
+                            },
+                            msg("From number"),
+                        )}
                         <input
+                            id="fromNumber"
                             type="text"
                             value="${this.instance?.fromNumber ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
@@ -237,8 +320,17 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${this.provider === ProviderEnum.Generic
                         ? this.renderProviderGeneric()
                         : this.renderProviderTwillio()}
-                    <ak-form-element-horizontal label=${msg("Mapping")} name="mapping">
+                    <ak-form-element-horizontal name="mapping">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "mapping",
+                            },
+                            msg("Mapping"),
+                        )}
                         <ak-search-select
+                            id="mapping"
                             .fetchObjects=${async (
                                 query?: string,
                             ): Promise<NotificationWebhookMapping[]> => {
@@ -277,11 +369,17 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons. Devices created from a stage with this enabled cannot be used with the authenticator validation stage.",
                         )}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal
-                        label=${msg("Configuration flow")}
-                        name="configureFlow"
-                    >
+                    <ak-form-element-horizontal name="configureFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "configureFlow",
+                            },
+                            msg("Configuration flow"),
+                        )}
                         <ak-search-select
+                            id="configureFlow"
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",

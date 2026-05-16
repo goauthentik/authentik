@@ -9,6 +9,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { RenderFlowOption } from "#admin/flows/utils";
 import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -66,20 +68,35 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Authenticator type name")}
-                ?required=${false}
-                name="friendlyName"
-            >
+            <ak-form-element-horizontal ?required=${false} name="friendlyName">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "friendlyName",
+                    },
+                    msg("Authenticator type name"),
+                )}
                 <input
+                    id="friendlyName"
                     type="text"
                     value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
@@ -92,12 +109,18 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("User verification")}
-                        required
-                        name="userVerification"
-                    >
+                    <ak-form-element-horizontal required name="userVerification">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "userVerification",
+                                required: true,
+                            },
+                            msg("User verification"),
+                        )}
                         <ak-radio
+                            id="userVerification"
                             .options=${[
                                 {
                                     label: msg("Required: User verification must occur."),
@@ -119,12 +142,18 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Resident key requirement")}
-                        required
-                        name="residentKeyRequirement"
-                    >
+                    <ak-form-element-horizontal required name="residentKeyRequirement">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "residentKeyRequirement",
+                                required: true,
+                            },
+                            msg("Resident key requirement"),
+                        )}
                         <ak-radio
+                            id="residentKeyRequirement"
                             .options=${[
                                 {
                                     label: msg(
@@ -150,12 +179,18 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Authenticator Attachment")}
-                        required
-                        name="authenticatorAttachment"
-                    >
+                    <ak-form-element-horizontal required name="authenticatorAttachment">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "authenticatorAttachment",
+                                required: true,
+                            },
+                            msg("Authenticator Attachment"),
+                        )}
                         <ak-radio
+                            id="authenticatorAttachment"
                             .options=${[
                                 {
                                     label: msg(
@@ -186,8 +221,17 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Hints")} name="hints">
+                    <ak-form-element-horizontal name="hints">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "hints",
+                            },
+                            msg("Hints"),
+                        )}
                         <ak-dual-select-provider
+                            id="hints"
                             .provider=${(): Promise<DataProvision> => {
                                 return Promise.resolve({
                                     options: allHints,
@@ -223,11 +267,17 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             "When enabled, any unique authenticator can only be registered once.",
                         )}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal
-                        label=${msg("Device type restrictions")}
-                        name="deviceTypeRestrictions"
-                    >
+                    <ak-form-element-horizontal name="deviceTypeRestrictions">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "deviceTypeRestrictions",
+                            },
+                            msg("Device type restrictions"),
+                        )}
                         <ak-dual-select-provider
+                            id="deviceTypeRestrictions"
                             .provider=${(page: number, search?: string): Promise<DataProvision> => {
                                 return new StagesApi(DEFAULT_CONFIG)
                                     .stagesAuthenticatorWebauthnDeviceTypesList({
@@ -253,11 +303,17 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Configuration flow")}
-                        name="configureFlow"
-                    >
+                    <ak-form-element-horizontal name="configureFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "configureFlow",
+                            },
+                            msg("Configuration flow"),
+                        )}
                         <ak-search-select
+                            id="configureFlow"
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",

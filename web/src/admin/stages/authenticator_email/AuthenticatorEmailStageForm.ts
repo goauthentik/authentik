@@ -9,6 +9,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -64,24 +66,53 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         }
         return html`<ak-form-group open label="${msg("Connection settings")}">
             <div class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
+                <ak-form-element-horizontal required name="host">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "host",
+                            required: true,
+                        },
+                        msg("SMTP Host"),
+                    )}
                     <input
+                        id="host"
                         type="text"
                         value="${ifDefined(this.instance?.host || "")}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("SMTP Port")} required name="port">
+                <ak-form-element-horizontal required name="port">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "port",
+                            required: true,
+                        },
+                        msg("SMTP Port"),
+                    )}
                     <input
+                        id="port"
                         type="number"
                         value="${this.instance?.port ?? 25}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("SMTP Username")} name="username">
+                <ak-form-element-horizontal name="username">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "username",
+                        },
+                        msg("SMTP Username"),
+                    )}
                     <input
+                        id="username"
                         type="text"
                         value="${ifDefined(this.instance?.username || "")}"
                         class="pf-c-form-control"
@@ -106,20 +137,36 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                     ?checked=${this.instance?.useSsl ?? false}
                 >
                 </ak-switch-input>
-                <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
+                <ak-form-element-horizontal required name="timeout">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "timeout",
+                            required: true,
+                        },
+                        msg("Timeout"),
+                    )}
                     <input
+                        id="timeout"
                         type="number"
                         value="${this.instance?.timeout ?? 30}"
                         class="pf-c-form-control"
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("From address")}
-                    required
-                    name="fromAddress"
-                >
+                <ak-form-element-horizontal required name="fromAddress">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "fromAddress",
+                            required: true,
+                        },
+                        msg("From address"),
+                    )}
                     <input
+                        id="fromAddress"
                         type="text"
                         value="${ifDefined(this.instance?.fromAddress || "system@authentik.local")}"
                         class="pf-c-form-control"
@@ -135,20 +182,35 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
 
     protected override renderForm(): TemplateResult {
         return html` <span> ${msg("Stage used to configure an email-based authenticator.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Authenticator type name")}
-                ?required=${false}
-                name="friendlyName"
-            >
+            <ak-form-element-horizontal ?required=${false} name="friendlyName">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "friendlyName",
+                    },
+                    msg("Authenticator type name"),
+                )}
                 <input
+                    id="friendlyName"
                     type="text"
                     value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
@@ -174,8 +236,18 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
             ${this.renderConnectionSettings()}
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Subject")} required name="subject">
+                    <ak-form-element-horizontal required name="subject">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "subject",
+                                required: true,
+                            },
+                            msg("Subject"),
+                        )}
                         <input
+                            id="subject"
                             type="text"
                             value="${this.instance?.subject ?? "authentik Sign-in code"}"
                             class="pf-c-form-control"
@@ -185,12 +257,18 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             ${msg("Subject of the verification email.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Token expiration")}
-                        required
-                        name="tokenExpiry"
-                    >
+                    <ak-form-element-horizontal required name="tokenExpiry">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "tokenExpiry",
+                                required: true,
+                            },
+                            msg("Token expiration"),
+                        )}
                         <input
+                            id="tokenExpiry"
                             type="text"
                             value="${this.instance?.tokenExpiry ?? "minutes=15"}"
                             class="pf-c-form-control"
@@ -202,11 +280,17 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Configuration flow")}
-                        name="configureFlow"
-                    >
+                    <ak-form-element-horizontal name="configureFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "configureFlow",
+                            },
+                            msg("Configuration flow"),
+                        )}
                         <ak-search-select
+                            id="configureFlow"
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
@@ -241,8 +325,17 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Template")} name="template">
+                    <ak-form-element-horizontal name="template">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "template",
+                            },
+                            msg("Template"),
+                        )}
                         <select
+                            id="template"
                             class="pf-c-form-control"
                             ?disabled=${!this.templates || this.templates.length === 0}
                         >
