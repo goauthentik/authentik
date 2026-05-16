@@ -4,15 +4,13 @@ sidebar_label: grommunio
 support_level: community
 ---
 
+<!-- spellchecker:ignore gromox -->
+
 ## What is grommunio?
 
 > grommunio is an open-source groupware server and collaboration platform offering email, calendar, contacts, tasks, video conferencing, and file sync. It is fully compatible with Microsoft Outlook via MAPI/RPC, EWS, and ActiveSync.
 >
 > -- https://grommunio.com/
-
-:::info
-This guide requires grommunio-web 2023.10 or later. The integration uses grommunio-web's built-in Keycloak/OIDC compatibility layer, so no additional plugins are needed.
-:::
 
 ## Preparation
 
@@ -29,6 +27,10 @@ This documentation lists only the settings that you need to change from their de
 
 To integrate authentik with grommunio, you will need to create an application and provider pair in authentik.
 
+:::info Keycloak-compatible endpoints
+grommunio-web expects Keycloak-compatible OIDC endpoints. Because authentik does not use Keycloak's `/realms/` endpoint structure, this guide configures an nginx bridge on the grommunio server.
+:::
+
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
@@ -38,13 +40,12 @@ To integrate authentik with grommunio, you will need to create an application an
     - **Configure the Provider**: provide a name, the authorization flow to use, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Set a `Strict` redirect URI to `https://grommunio.company/web`.
-        - Set **Signing Key** to an available RS256 or ES256 key.
-        - Under **Advanced Protocol Settings**:
-            - Set **Subject mode** to `Based on the User's Email`.
+        - Set **Signing Key** to an available RSA key.
+        - Under **Advanced protocol settings**:
             - Add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope to **Selected Scopes**.
     - **Configure Bindings** _(optional)_: create a binding to manage access.
 
-3. Click **Create Application** to save the new application and provider.
+3. Click **Submit** to save the new application and provider.
 
 ### Download certificate file
 
@@ -56,14 +57,13 @@ To integrate authentik with grommunio, you will need to create an application an
 
 ### Configure gromox JWT verification
 
-On the grommunio server, edit your `/etc/gromox/http.cfg` file to include the contents of your authentik signging certificate:
+On the grommunio server, extract the public key from the certificate that you downloaded from authentik:
 
-```bash title="/etc/gromox/http.cfg"
-# Add the PEM-encoded public key (replace newlines with \n):
-bearer_pubkey = -----BEGIN CERTIFICATE-----\nMIID...
+```bash
+openssl x509 -pubkey -noout -in /path/to/authentik-signing-certificate.pem > /etc/gromox/bearer_pubkey
 ```
 
-After editing, restart gromox:
+After creating the public key file, restart gromox:
 
 ```bash
 systemctl restart gromox-http
@@ -71,9 +71,9 @@ systemctl restart gromox-http
 
 ### Create keycloak.json
 
-grommunio-web uses a Keycloak-compatible OIDC configuration file at `/etc/grommunio-common/nginx/keycloak.json`:
+grommunio-web uses a Keycloak-compatible OIDC configuration file at `/etc/gromox/keycloak.json`:
 
-```json
+```json title="/etc/gromox/keycloak.json"
 {
     "realm": "grommunio",
     "auth-server-url": "https://grommunio.company/sso/",
@@ -92,13 +92,23 @@ grommunio-web expects Keycloak-style OIDC endpoint paths under `/sso/realms/`. A
 Create `/etc/grommunio-common/nginx/locations.d/sso-authentik.conf`:
 
 ```nginx
-location ~* ^/sso/realms/grommunio/protocol/openid-connect/auth {
+location = /sso/realms/grommunio/protocol/openid-connect/auth {
     return 302 https://authentik.company/application/o/authorize/$is_args$args;
 }
 
 location = /sso/realms/grommunio/protocol/openid-connect/token {
     proxy_pass https://authentik.company/application/o/token/;
-    proxy_set_header Host $host;
+    proxy_ssl_server_name on;
+    proxy_set_header Host authentik.company;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+location = /sso/realms/grommunio/protocol/openid-connect/token/introspect {
+    proxy_pass https://authentik.company/application/o/introspect/;
+    proxy_ssl_server_name on;
+    proxy_set_header Host authentik.company;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
@@ -106,14 +116,15 @@ location = /sso/realms/grommunio/protocol/openid-connect/token {
 
 location = /sso/realms/grommunio/protocol/openid-connect/userinfo {
     proxy_pass https://authentik.company/application/o/userinfo/;
-    proxy_set_header Host $host;
+    proxy_ssl_server_name on;
+    proxy_set_header Host authentik.company;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
 }
 
 location = /sso/realms/grommunio/protocol/openid-connect/logout {
-    return 302 https://authentik.company/application/o/grommunio/end-session/$is_args$args;
+    return 302 https://authentik.company/application/o/<application_slug>/end-session/$is_args$args;
 }
 ```
 
@@ -125,15 +136,18 @@ nginx -t && nginx -s reload
 
 ### Patch class.keycloak.php
 
-grommunio-web's OIDC client does not request the `offline_access` scope by default, which means authentik will not return a `refresh_token`, causing a redirect loop after login. Apply the following fix:
+grommunio-web's OIDC client does not request the `email` or `offline_access` scopes by default. Without these scopes, grommunio cannot map the authentik user from the access token or refresh the session after login.
 
-Open `/usr/share/grommunio-web/lib/class.keycloak.php` and find the two occurrences of `openid email` in the scope strings, then change them to `openid email offline_access`.
+Open `/usr/share/php-mapi/class.keycloak.php` and update the two scope strings from `openid` to `openid email offline_access`.
 
 There should be one occurrence in the authorization URL builder and one in the token request. Example diff:
 
 ```diff
-- $scope = 'openid email';
-+ $scope = 'openid email offline_access';
+- $params['scope'] = 'openid';
++ $params['scope'] = 'openid email offline_access';
+
+- return $this->realm_url . '/protocol/openid-connect/auth?scope=openid&client_id=' . urlencode((string) $this->client_id) . '&state=' . urlencode($uuid) . '&redirect_uri=' . urlencode($redirect_url) . '&response_type=code';
++ return $this->realm_url . '/protocol/openid-connect/auth?scope=openid%20email%20offline_access&client_id=' . urlencode((string) $this->client_id) . '&state=' . urlencode($uuid) . '&redirect_uri=' . urlencode($redirect_url) . '&response_type=code';
 ```
 
 After saving, reload PHP-FPM:
@@ -144,6 +158,13 @@ systemctl reload php-fpm
 
 ## Configuration verification
 
-Log out of grommunio-web completely, then navigate to `https://grommunio.company/web`. You should be redirected to the authentik login page. After authenticating, you will be returned to grommunio-web and logged in automatically.
+Log out of grommunio-web completely, then open grommunio-web. You should be redirected to the authentik login page. After authenticating, you will be returned to grommunio-web and logged in automatically.
 
-To verify single logout, click the logout button in grommunio-web — you should be redirected to the authentik session invalidation flow on `authentik.company`.
+To verify single logout, click the logout button in grommunio-web. You should be redirected to the authentik session invalidation flow.
+
+## Resources
+
+- [grommunio Web Documentation](https://docs.grommunio.com/web/intro.html)
+- [grommunio-web GitHub repository](https://github.com/grommunio/grommunio-web)
+- [grommunio mapi-header-php KeyCloak client](https://github.com/grommunio/mapi-header-php/blob/master/class.keycloak.php)
+- [Gromox authmgr bearer token verification](https://github.com/grommunio/gromox/blob/master/exch/authmgr.cpp)
