@@ -9,10 +9,10 @@ from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
-from authentik.providers.oauth2.api.providers import OAuth2ProviderSerializer
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 
 
@@ -20,7 +20,7 @@ class ExpiringBaseGrantModelSerializer(ModelSerializer, MetaNameSerializer):
     """Serializer for BaseGrantModel and ExpiringBaseGrant"""
 
     user = UserSerializer()
-    provider = OAuth2ProviderSerializer()
+    provider = ProviderSerializer()
     scope = ListField(child=CharField())
 
     class Meta:

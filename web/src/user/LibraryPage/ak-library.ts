@@ -93,7 +93,7 @@ export class LibraryPage extends AKElement {
         );
     }
 
-    public pageTitle = msg("My Applications");
+    public pageTitle = msg("Application Dashboard");
 
     render() {
         if (this.apps.loading) {

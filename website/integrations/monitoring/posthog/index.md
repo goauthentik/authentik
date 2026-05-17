@@ -66,7 +66,7 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because you will use it when configuring PostHog.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -76,7 +76,7 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
             - Set the **Signing Certificate** to any available certificate.
             - Set **NameID Property Mapping** to `PostHog name_id`.
             - Add `authentik default SAML Mapping: Email`, `PostHog name_id`, `PostHog first_name`, and `PostHog last_name` to **Selected User Property Mappings**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 ## PostHog configuration
