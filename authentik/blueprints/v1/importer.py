@@ -367,7 +367,7 @@ class Importer:
                 if entry.get_state(self._import) == BlueprintEntryDesiredState.ABSENT:
                     serializer = exc.serializer
                 else:
-                    self.logger.warning(f"Entry invalid: {exc}", entry=entry, error=exc)
+                    self.logger.warning("Entry invalid", entry=entry, error=exc)
                     if raise_errors:
                         raise exc
                     return False
