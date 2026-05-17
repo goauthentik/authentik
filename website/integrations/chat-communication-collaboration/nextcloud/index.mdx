@@ -98,7 +98,7 @@ If you want to control user storage and designate Nextcloud administrators, you 
                 # Set a quota by using the "nextcloud_quota" property in the user's attributes
                 "quota": user.group_attributes().get("nextcloud_quota", None),
                 # To connect an existing Nextcloud user, set "nextcloud_user_id" to the Nextcloud username.
-                "user_id": user.attributes.get("nextcloud_user_id", str(user.uuid)),
+                "user_id": user.attributes.get("nextcloud_user_id", str(user.username.lower())),
             }
             ```
 
@@ -109,7 +109,7 @@ To set a quota, define the `nextcloud_quota` attribute for individual users or g
 :::
 
 :::info
-To connect to an existing Nextcloud user, set the `nextcloud_user_id` attribute to match the Nextcloud username (found under the user's `Display name` in Nextcloud).
+To connect to an existing Nextcloud user, set the `nextcloud_user_id` attribute to match the Nextcloud username (found under the user's `Display name` in Nextcloud).  If the Authentik username matches the Nextcloud username, you can use `user.username.lower()`.
 :::
 
 ## Create an application and provider in authentik
