@@ -80,7 +80,7 @@ sentry = { version = "= 0.48.2", default-features = false, features = [
 serde = { version = "= 1.0.228", features = ["derive"] }
 serde_json = "= 1.0.149"
 serde_repr = "= 0.1.20"
-serde_with = { version = "= 3.19.0", default-features = false, features = [
+serde_with = { version = "= 3.20.0", default-features = false, features = [
   "base64",
 ] }
 sqlx = { version = "= 0.8.6", default-features = false, features = [
