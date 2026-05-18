@@ -1,0 +1,5500 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Marc Schmitt, 2025
+# Gyula Kiss <kiss@indi.hu>, 2026
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-14 00:33+0000\n"
+"PO-Revision-Date: 2025-12-01 19:09+0000\n"
+"Last-Translator: Gyula Kiss <kiss@indi.hu>, 2026\n"
+"Language-Team: Hungarian (Hungary) (https://app.transifex.com/authentik/teams/119923/hu_HU/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu_HU\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: authentik/admin/files/api.py
+#, python-brace-format
+msgid "File size ({file.size}B) exceeds maximum allowed "
+msgstr "Fájlméret ({file.size}B) túlmutat a maximális engedélyezett értéken"
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot be empty"
+msgstr "A fájlnevet nem lehet üresként hagyni"
+
+#: authentik/admin/files/validation.py
+#, python-format
+msgid ""
+"File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
+"hyphens (-), underscores (_), forward slashes (/), and the placeholder "
+"%(theme)s for theme-specific files"
+msgstr ""
+"A fájlnevben csak betűket (a-z, A-Z), számokat (0-9), pontok (. ), "
+"kötőjeleket (-), aláhúzás jeleket (_), felhasználójelöletek (/) és a téma-"
+"specifikus fájlokhoz használt %(theme)s helyettesítő karaktereket "
+"tartalmazhat"
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot contain duplicate /"
+msgstr "A fájlnevben nem lehet duplikált / karakter"
+
+#: authentik/admin/files/validation.py
+msgid "Absolute paths are not allowed"
+msgstr "Abszolút elérési utak nem engedélyezettek"
+
+#: authentik/admin/files/validation.py
+msgid "Parent directory references ('..') are not allowed"
+msgstr "A szülőmappák hivatkozásai ('..') nem engedélyezettek"
+
+#: authentik/admin/files/validation.py
+msgid "Paths cannot start with '.'"
+msgstr "Az elérési útok nem kezdhető '.' karakterrel"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+msgstr "A fájlnev túl hosszú (maximum {MAX_FILE_NAME_LENGTH} karakter)"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
+msgstr ""
+"Az elérési utat alkotó komponens túl hosszú (maximum "
+"{MAX_PATH_COMPONENT_LENGTH} karakter)"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr "Verzióelőzmények"
+
+#: authentik/admin/tasks.py
+msgid "Update latest version info."
+msgstr "Frissítse a legfrissebb verzióinformációkat."
+
+#: authentik/admin/tasks.py
+#, python-brace-format
+msgid "New version {version} available!"
+msgstr "Új verzió {version} elérhető!"
+
+#: authentik/api/v3/schema/query.py
+msgid "Which field to use when ordering the results."
+msgstr "A sorrendben lévő eredményekhez használandó mező."
+
+#: authentik/api/v3/schema/query.py
+msgid "A page number within the paginated result set."
+msgstr "Az oldalak közötti lapozásban a jelenlegi oldal száma."
+
+#: authentik/api/v3/schema/query.py
+msgid "Number of results to return per page."
+msgstr "Az egyes oldalakon visszaadott eredmények maximális száma."
+
+#: authentik/api/v3/schema/query.py
+msgid "A search term."
+msgstr "A kereséshez használt kifejezés."
+
+#: authentik/api/v3/schema/response.py
+msgid "Generic API Error"
+msgstr "Általános API hiba"
+
+#: authentik/api/v3/schema/response.py
+msgid "Validation Error"
+msgstr "Érvényesítési hiba"
+
+#: authentik/blueprints/api.py
+msgid "Blueprint file does not exist"
+msgstr "Blueprint fájl nem létezik"
+
+#: authentik/blueprints/api.py
+msgid "Context must be valid JSON"
+msgstr "Az adatok JSON formátumban kell lenniük."
+
+#: authentik/blueprints/api.py
+msgid "Context must be a JSON object"
+msgstr "Az adatok JSON objektumként kell megadásuk."
+
+#: authentik/blueprints/api.py
+msgid "Failed to validate blueprint"
+msgstr "Nem sikerült érvényesíteni a blueprint-et"
+
+#: authentik/blueprints/api.py
+msgid "Either path or content must be set."
+msgstr "Vagy az elérési utat, vagy a tartalmat be kell állítani."
+
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr "A felhasználónak nincs jogosultsága hogy elkészítse a {model}-t."
+
+#: authentik/blueprints/models.py
+msgid "Managed by authentik"
+msgstr "Authentik által kezelve"
+
+#: authentik/blueprints/models.py
+msgid ""
+"Objects that are managed by authentik. These objects are created and updated"
+" automatically. This flag only indicates that an object can be overwritten "
+"by migrations. You can still modify the objects via the API, but expect "
+"changes to be overwritten in a later update."
+msgstr ""
+"Authentik által kezelt objektumok. Ezek az objektumok automatikusan jönnek "
+"létre és frissülnek. Ez azt jelenti, hogy egy objektumot a migrációk "
+"felülírhatják, módosíthatják. Az objektumokat továbbra is módosíthatja az "
+"API-n keresztül, de figyelemmel kell lenni arra, hogy a módosítások egy "
+"későbbi frissítés során felülíródhatnak."
+
+#: authentik/blueprints/models.py
+msgid "Blueprint Instance"
+msgstr "Blueprint példány"
+
+#: authentik/blueprints/models.py
+msgid "Blueprint Instances"
+msgstr "Blueprint példány"
+
+#: authentik/blueprints/v1/exporter.py
+#, python-brace-format
+msgid "authentik Export - {date}"
+msgstr "authentik Exportálás - {date}"
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Find blueprints as `blueprints_find` does, but return a safe dict."
+msgstr ""
+"`blueprints_find` minta alapján a blueprint-eket találja, de biztonságos "
+"szótárban adja vissza."
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Find blueprints and check if they need to be created in the database."
+msgstr ""
+"A blueprint-eket találja és ellenőrzi, hogy azoknak létre kell hozniuk-e a "
+"adatbázisban."
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Apply single blueprint."
+msgstr "Egy blueprint alkalmazása."
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Remove blueprints which couldn't be fetched."
+msgstr "Azok eltávolítására, amik nem tölthetők be."
+
+#: authentik/brands/models.py
+msgid ""
+"Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
+"and `ba.b`"
+msgstr ""
+"Az a domain, amely aktiválja ezt a brand-et. Ez lehet egy superset, például "
+"a.b az aa.b és ba.b esetében."
+
+#: authentik/brands/models.py
+msgid ""
+"When set, external users will be redirected to this application after "
+"authenticating."
+msgstr ""
+"Ha be van állítva, a külső felhasználók erre az alkalmazásra lesznek "
+"továbbítva bejelentkezés után."
+
+#: authentik/brands/models.py
+msgid "Web Certificate used by the authentik Core webserver."
+msgstr "Az authentik Core webszervere által használt webes tanúsítvány."
+
+#: authentik/brands/models.py
+msgid "Certificates used for client authentication."
+msgstr "A kliens-hitelesítéshez használt tanúsítványok."
+
+#: authentik/brands/models.py
+msgid "Brand"
+msgstr "Brand"
+
+#: authentik/brands/models.py
+msgid "Brands"
+msgstr "Brand-ek"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the Hashed User ID"
+msgstr "A felhasználó hash-elt ID-ja alapján"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user ID"
+msgstr "A felhasználó ID-ja alapján"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user UUID"
+msgstr "A felhasználó UUID-ja alapján"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the username"
+msgstr "A felhasználónév alapján"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the User's Email. This is recommended over the UPN method."
+msgstr "A felhasználó email címe alapján. Ezt ajánljuk UPN módszer helyett."
+
+#: authentik/common/oauth/constants.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+"A felhasználó UPN-je alapján, csak akkor működik, ha a 'upn' attribútum be "
+"van állítva. Csak akkor használja, ha van különböző UPN és levelező domain-"
+"je."
+
+#: authentik/core/api/application_entitlements.py
+msgid "User does not have access to application."
+msgstr ""
+"Az felhasználó nincs engedélyezve a felhasználói alkalmazásnak való "
+"hozzáféréssel."
+
+#: authentik/core/api/applications.py
+#, python-brace-format
+msgid "The slug '{slug}' is reserved and cannot be used for applications."
+msgstr "A '{slug}' slug elavult, és nem használható alkalmazásokhoz."
+
+#: authentik/core/api/groups.py
+msgid "User does not have permission to add members to this group."
+msgstr ""
+"Az felhasználónak nincs jogosultsága a csoport tagjainak hozzáadására."
+
+#: authentik/core/api/providers.py
+msgid ""
+"When not set all providers are returned. When set to true, only backchannel "
+"providers are returned. When set to false, backchannel providers are "
+"excluded"
+msgstr ""
+"Ha nincs beállítva, minden szolgáltatót visszadob. Ha true-ra van állítva, "
+"csak a háttérszolgáltatókat dobja vissza. Ha false-ra van állítva, a "
+"háttérszolgáltatókat kivéve dobja vissza."
+
+#: authentik/core/api/users.py
+msgid "Invalid password hash format. Must be a valid Django password hash."
+msgstr ""
+"Érvénytelen jelszó hash formátum. A Django jelszó hashnak kell lennie."
+
+#: authentik/core/api/users.py
+msgid "Cannot set both password and password_hash. Use only one."
+msgstr ""
+"Nem lehet mindkét jelszót és jelszó hash-ot egyidejűleg beállítani. "
+"Használjon csak egyet."
+
+#: authentik/core/api/users.py
+msgid "No leading or trailing slashes allowed."
+msgstr "Kezdeti és záró perjelek használata nem engedélyezett."
+
+#: authentik/core/api/users.py
+msgid "No empty segments in user path allowed."
+msgstr "Szóközök használata nem engedélyezett a felhasználói útvonalban."
+
+#: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr ""
+"A belső szolgáltatás fióktól eltérő felhasználói típust nem lehet "
+"beállítani."
+
+#: authentik/core/api/users.py
+msgid "Setting a user to internal service account is not allowed."
+msgstr "Belül szolgáltatói fiókra való konvertálás nem engedélyezett."
+
+#: authentik/core/api/users.py
+msgid "User does not have permission to add members to a superuser group."
+msgstr ""
+"Az felhasználónak nincs jogosultsága a superuser csoport tagjainak "
+"hozzáadására."
+
+#: authentik/core/api/users.py
+msgid "User does not have permission to assign roles."
+msgstr "Az felhasználónak nincs jogosultsága szerepkörök kiosztására."
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr "Nem módosítható a belső szolgáltatásfiók felhasználói"
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr "szűrő: nem sikerült megjeleníteni a JSON-t"
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr "szűrő: az értéknek kulcs:érték formátumúnak kell lennie"
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr "Nincs visszaállítási folyamat beállítva."
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr "A visszaállítási folyamat nem alkalmazható a felhasználónak"
+
+#: authentik/core/api/users.py
+msgid "A user/group with these details already exists"
+msgstr "Egy felhasználó/csoport már létezik ezzel az információval"
+
+#: authentik/core/api/users.py
+msgid "Unable to create user"
+msgstr "Nem sikerült létrehozni a felhasználót"
+
+#: authentik/core/api/users.py
+msgid "Unknown error occurred"
+msgstr "Ismeretlen hiba történt"
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr "A felhasználónak nincs email-címe beállítva."
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
+msgstr "Az email folyamat nem található."
+
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr "Ez a mező szükséges."
+
+#: authentik/core/apps.py
+msgid ""
+"Configure if applications without any policy/group/user bindings should be "
+"accessible to any user."
+msgstr ""
+"Konfigurálja, hogy azoknak az alkalmazásoknak, amelyeknek nincs megfelelő "
+"jogkör/együttható/felhasználói kötése, bármilyen felhasználó számára "
+"elérhetőek legyenek."
+
+#: authentik/core/models.py
+msgid "name"
+msgstr "név"
+
+#: authentik/core/models.py
+msgid "Users added to this group will be superusers."
+msgstr ""
+"Ebbe a csoportba felvett felhasználók superuser szerepkörrel fognak "
+"rendelkezni."
+
+#: authentik/core/models.py
+msgid "Group"
+msgstr "Csoport"
+
+#: authentik/core/models.py
+msgid "Groups"
+msgstr "Csoportok"
+
+#: authentik/core/models.py
+msgid "Add user to group"
+msgstr "Felhasználó csoporthoz adása."
+
+#: authentik/core/models.py
+msgid "Remove user from group"
+msgstr "Felhasználó csoportból eltávolítása"
+
+#: authentik/core/models.py
+msgid "Enable superuser status"
+msgstr "A superuser státusz engedélyezése"
+
+#: authentik/core/models.py
+msgid "Disable superuser status"
+msgstr "A superuser státusz letiltása"
+
+#: authentik/core/models.py
+msgid "Group Parentage Node"
+msgstr "Csoport Szülői Csomópont"
+
+#: authentik/core/models.py
+msgid "Group Parentage Nodes"
+msgstr "Csoport Szülői Csomópontok"
+
+#: authentik/core/models.py
+msgid "User's display name."
+msgstr "A felhasználó megjelenített neve."
+
+#: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/providers/saml/models.py
+msgid "User"
+msgstr "Felhasználó"
+
+#: authentik/core/models.py
+msgid "Users"
+msgstr "Felhasználók"
+
+#: authentik/core/models.py
+#: authentik/stages/email/templates/email/password_reset.html
+msgid "Reset Password"
+msgstr "Jelszó helyreállítása"
+
+#: authentik/core/models.py
+msgid "Can impersonate other users"
+msgstr "Megszemélyesíthet más felhasználókat"
+
+#: authentik/core/models.py
+msgid "Can preview user data sent to providers"
+msgstr "Megtekintheti az szolgáltatóknak küldött felhasználói adatokat."
+
+#: authentik/core/models.py
+msgid "View applications the user has access to"
+msgstr ""
+"Megtekintheti az alkalmazásokat, amelyekhez a felhasználóknak hozzáférésel "
+"rendelkezik"
+
+#: authentik/core/models.py
+msgid ""
+"Flow used for authentication when the associated application is accessed by "
+"an un-authenticated user."
+msgstr ""
+"Az a folyamat, amelyet hitelesítésre használnak, amikor egy nem hitelesített"
+" felhasználó kíván hozzáférni a hozzárendelt alkalmazáshoz."
+
+#: authentik/core/models.py
+msgid "Flow used when authorizing this provider."
+msgstr "Szolgáltató hitelesítéskor használt folyamat."
+
+#: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr "Szolgáltató munkamenetének lezárására használt folyamat."
+
+#: authentik/core/models.py
+msgid ""
+"Accessed from applications; optional backchannel providers for protocols "
+"like LDAP and SCIM."
+msgstr ""
+"Alkalmazásokból férnek hozzá; választható háttérszolgáltatók olyan "
+"protokollokhoz, mint például az LDAP és SCIM."
+
+#: authentik/core/models.py
+msgid "Application's display Name."
+msgstr "Az alkalmazás megjelenített neve."
+
+#: authentik/core/models.py
+msgid "Internal application name, used in URLs."
+msgstr "URL-ekben használt belső alkalmazás név."
+
+#: authentik/core/models.py
+msgid "Open launch URL in a new browser tab or window."
+msgstr "Indítási URL új böngészőfülön vagy -ablakban történő megnyitása."
+
+#: authentik/core/models.py
+msgid "Hide this application from the user's My applications page."
+msgstr ""
+"Ez az alkalmazás elrejtése a felhasználó \"Saját alkalmazásaim\" oldaláról."
+
+#: authentik/core/models.py
+msgid "Application"
+msgstr "Alkalmazás"
+
+#: authentik/core/models.py
+msgid "Applications"
+msgstr "Alkalmazások"
+
+#: authentik/core/models.py
+msgid "Application Entitlement"
+msgstr "Alkalmazás Jogosultság"
+
+#: authentik/core/models.py
+msgid "Application Entitlements"
+msgstr "Alkalmazás Jogosultságok"
+
+#: authentik/core/models.py
+msgid "Use the source-specific identifier"
+msgstr "Használja a forrásspecifikus azonosítót."
+
+#: authentik/core/models.py
+msgid ""
+"Link to a user with identical email address. Can have security implications "
+"when a source doesn't validate email addresses."
+msgstr ""
+"Link egy azonos e-mail címmel rendelkező felhasználóhoz. Biztonsági "
+"következményekkel járhat, ha egy forrás nem ellenőrzi az e-mail címeket."
+
+#: authentik/core/models.py
+msgid ""
+"Use the user's email address, but deny enrollment when the email address "
+"already exists."
+msgstr ""
+"Használja a felhasználó e-mail címét, de tagadja meg a feliratkozást, ha az "
+"e-mail cím már létezik."
+
+#: authentik/core/models.py
+msgid ""
+"Link to a user with identical username. Can have security implications when "
+"a username is used with another source."
+msgstr ""
+"Link egy azonos felhasználónévvel rendelkező felhasználóhoz. Biztonsági "
+"következményekkel járhat, ha egy forrás nem ellenőrzi az e-mail címeket."
+
+#: authentik/core/models.py
+msgid ""
+"Use the user's username, but deny enrollment when the username already "
+"exists."
+msgstr ""
+"Használja a felhasználó felhasználónevét, de tagadja meg a beliratkozást, ha"
+" az e-mail cím már létezik."
+
+#: authentik/core/models.py
+msgid ""
+"Link to a group with identical name. Can have security implications when a "
+"group name is used with another source."
+msgstr ""
+"Link egy azonos névvel rendelkező csoporthoz. Biztonsági következményekkel "
+"járhat, ha a csoport neve már van egy másik forrásban."
+
+#: authentik/core/models.py
+msgid "Use the group name, but deny enrollment when the name already exists."
+msgstr ""
+"Használja a csoportnevet, de tagadma meg a beiratkozást, ha a név már "
+"létezik."
+
+#: authentik/core/models.py
+msgid "Source's display Name."
+msgstr "A forrás megjelenített neve."
+
+#: authentik/core/models.py
+msgid "Internal source name, used in URLs."
+msgstr "URL-ekben használt belső forrás név."
+
+#: authentik/core/models.py
+msgid ""
+"When enabled, this source will be displayed as a prominent button on the "
+"login page, instead of a small icon."
+msgstr ""
+"Ha engedélyezve van, ez a forrás jelenik meg a bejelentkezési oldalon egy "
+"jellemző gombként, helyette kis ikonként."
+
+#: authentik/core/models.py
+msgid "Flow to use when authenticating existing users."
+msgstr ""
+"Az a folyamat, amit létező felhasználó bejelentkeztetésénél használunk."
+
+#: authentik/core/models.py
+msgid "Flow to use when enrolling new users."
+msgstr "Az a folyamat, amit felhasználó beiratkozásánál használunk."
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing user should be authenticated or a "
+"new user enrolled."
+msgstr ""
+"Ahogy a forrás eldönti, hogy egy létező felhasználót kell bejelentkeztetni, "
+"vagy egy újat beiratkoztatni."
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing group should be used or a new group"
+" created."
+msgstr ""
+"Ahogy a forrás eldönti, hogy egy létező csoportot kell használni, vagy egy "
+"újat készíteni."
+
+#: authentik/core/models.py authentik/providers/scim/models.py
+msgid "Token"
+msgstr "Token"
+
+#: authentik/core/models.py
+msgid "Tokens"
+msgstr "Tokenek"
+
+#: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
+msgid "View token's key"
+msgstr "Token kulcs megtekintése"
+
+#: authentik/core/models.py
+msgid "Set a token's key"
+msgstr "Token kulcs beállítása"
+
+#: authentik/core/models.py
+msgid "Property Mapping"
+msgstr "Tulajdonság összerendelés"
+
+#: authentik/core/models.py
+msgid "Property Mappings"
+msgstr "Tulajdonság összerendelések"
+
+#: authentik/core/models.py
+msgid "session data"
+msgstr "munkamenedens adatok"
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr "Munkamenendező"
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr "Munkamenendezők"
+
+#: authentik/core/models.py
+msgid "Authenticated Session"
+msgstr "Hitelesített Munkamenet"
+
+#: authentik/core/models.py
+msgid "Authenticated Sessions"
+msgstr "Hitelesített Munkamenetek"
+
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid ""
+"Request to authenticate with {source} has been denied. Please authenticate "
+"with the source you've previously signed up with."
+msgstr ""
+"A kérés a {source} forrással való hitelesítésre elutasításra került. Kérjük,"
+" hitelesítsen azon a forráson, amellyel korábban regisztrált."
+
+#: authentik/core/sources/flow_manager.py
+msgid "Configured flow does not exist."
+msgstr "A beállított folyamat nem létezik."
+
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid "Successfully authenticated with {source}!"
+msgstr "Sikeres hitelesítés a {source} forrással!"
+
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid "Successfully linked {source}!"
+msgstr "Sikeres összekapcsolás a {source} forrással."
+
+#: authentik/core/sources/flow_manager.py
+msgid "Source is not configured for enrollment."
+msgstr "A forrás nincs konfigurálva a feliratkozáshoz."
+
+#: authentik/core/tasks.py
+msgid "Remove expired objects."
+msgstr "Elavult objektumok eltávolítása."
+
+#: authentik/core/tasks.py
+msgid "Remove temporary users created by SAML Sources."
+msgstr ""
+"A SAML források által létrehozott ideiglenes felhasználók eltávolítása."
+
+#: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
+msgid "Go home"
+msgstr "Vissza a kezdőlapra"
+
+#: authentik/core/templates/login/base_full.html
+msgid "Site footer"
+msgstr "Weboldalszületől"
+
+#: authentik/core/templates/login/base_full.html
+msgid "Flow links"
+msgstr "Folyamat-hivatkozások"
+
+#: authentik/core/templates/login/base_full.html
+#: authentik/flows/templates/if/flow-sfe.html
+msgid "Powered by authentik"
+msgstr "Powered by authentik"
+
+#: authentik/core/views/apps.py
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/oauth2/views/device_init.py
+#: authentik/providers/saml/views/sso.py
+#, python-format
+msgid "You're about to sign into %(application)s."
+msgstr "Mindjárt bejelentkezik a %(application)s alkalmazásba."
+
+#: authentik/core/views/interface.py
+msgid "Interface can only be accessed by internal users."
+msgstr "A felület kizárólag belső felhasználók számára érhető el."
+
+#: authentik/crypto/api.py
+msgid "Subject-alt name"
+msgstr "Tárgy-alternatív név"
+
+#: authentik/crypto/builder.py
+msgid "rsa"
+msgstr "rsa"
+
+#: authentik/crypto/builder.py
+msgid "ecdsa"
+msgstr "ecdsa"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed25519"
+msgstr "Ed25519"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed448"
+msgstr "Ed448"
+
+#: authentik/crypto/models.py
+msgid "RSA"
+msgstr "RSA"
+
+#: authentik/crypto/models.py
+msgid "Elliptic Curve"
+msgstr "Elliptikus görbe"
+
+#: authentik/crypto/models.py
+msgid "DSA"
+msgstr "DSA"
+
+#: authentik/crypto/models.py
+msgid "PEM-encoded Certificate data"
+msgstr "PEM-kódolt Tanusítvány adat"
+
+#: authentik/crypto/models.py
+msgid ""
+"Optional Private Key. If this is set, you can use this keypair for "
+"encryption."
+msgstr ""
+"Választható Magán Kulcs. Ha ez be van állítva, a kulcspárat használhatja "
+"titkosításra."
+
+#: authentik/crypto/models.py
+msgid "Key algorithm type detected from the certificate's public key"
+msgstr ""
+"A tanúsítvánnyal kapcsolatos nyilvános kulcsból észlelt kulcstipszis típusa"
+
+#: authentik/crypto/models.py
+msgid "Certificate expiry date"
+msgstr "Tanúsítvány lejárati dátuma"
+
+#: authentik/crypto/models.py
+msgid "Certificate subject as RFC4514 string"
+msgstr "A tanúsítvány tárgya RFC4514 karakterláncként"
+
+#: authentik/crypto/models.py
+msgid "SHA256 fingerprint of the certificate"
+msgstr "A tanúsítvány SHA256 fingerprintje"
+
+#: authentik/crypto/models.py
+msgid "SHA1 fingerprint of the certificate"
+msgstr "A tanúsítvány SHA1 fingerprintje"
+
+#: authentik/crypto/models.py
+msgid "Key ID generated from private key"
+msgstr "Privát kulcsból generált kulcis"
+
+#: authentik/crypto/models.py
+msgid "Certificate-Key Pair"
+msgstr "Tanúsítvány kulcspár"
+
+#: authentik/crypto/models.py
+msgid "Certificate-Key Pairs"
+msgstr "Tanúsítvány kulcspárok"
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's certificate"
+msgstr "Tanúsítvány-kulcs párok megtekintése"
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's private key"
+msgstr "Létrehozott tanúsítván-kulcs-párok magánhivendélyek megtekintése"
+
+#: authentik/crypto/tasks.py
+msgid "Discover, import and update certificates from the filesystem."
+msgstr ""
+"Fájlrendszerből való tanúsítványok felfedezése, importálása és frissítése."
+
+#: authentik/endpoints/api/stages.py
+msgid "Selected connector is not compatible with this stage."
+msgstr "A kijelölt csatoló nem kompatibilis ezzel a szakaszban."
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Selected platform not supported"
+msgstr "Az adott platform nem támogatott"
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Token is expired"
+msgstr "A token lejárt"
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Invalid token for connector"
+msgstr "Érvénytelen token a csatolónál"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector"
+msgstr "Agent Csatló"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connectors"
+msgstr "Agent Csatlók"
+
+#: authentik/endpoints/connectors/agent/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Device Token"
+msgstr "Eszköz Token"
+
+#: authentik/endpoints/connectors/agent/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Device Tokens"
+msgstr "Eszköz Token-ek."
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Token"
+msgstr "Regisztrációs Token"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Tokens"
+msgstr "Regisztrációs Tokens"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Device authentication token"
+msgstr "Eszköz hitelesítési token"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Device authentication tokens"
+msgstr "Eszköz hitelesítési tokensek"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Nonce"
+msgstr "Apple Nonce"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Nonces"
+msgstr "Apple Nonces"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclave"
+msgstr "Apple független biztonsági tár"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclaves"
+msgstr "Apple független biztonsági tárok"
+
+#: authentik/endpoints/facts.py
+msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
+msgstr "Operációs rendszer név, például 'Server 2022' vagy 'Ubuntu'"
+
+#: authentik/endpoints/facts.py
+msgid ""
+"Operating System version, must always be the version number but may contain "
+"build name"
+msgstr ""
+"Operációs rendszerversionumerek, mindig csak a verziószámot kell megadni, de"
+" lehetnek build nevek is"
+
+#: authentik/endpoints/models.py
+msgid "Device"
+msgstr "Eszköz"
+
+#: authentik/endpoints/models.py
+msgid "Devices"
+msgstr "Eszközek"
+
+#: authentik/endpoints/models.py
+msgid "Device User binding"
+msgstr "Eszköz felhasználói kötődés"
+
+#: authentik/endpoints/models.py
+msgid "Device User bindings"
+msgstr "Eszköz felhasználói kötődések"
+
+#: authentik/endpoints/models.py
+msgid "Device connection"
+msgstr "Eszköz csatlakozás"
+
+#: authentik/endpoints/models.py
+msgid "Device connections"
+msgstr "Eszköz csatlakozások"
+
+#: authentik/endpoints/models.py
+msgid "Device fact snapshot"
+msgstr "Eszköz tényező snapshot"
+
+#: authentik/endpoints/models.py
+msgid "Device fact snapshots"
+msgstr "Eszköz tényező snapshottak"
+
+#: authentik/endpoints/models.py
+msgid "Device access group"
+msgstr "Eszköz hozzáférési csoport"
+
+#: authentik/endpoints/models.py
+msgid "Device access groups"
+msgstr "Eszköz hozzáférési csoportok"
+
+#: authentik/endpoints/models.py
+msgid "Endpoint Stage"
+msgstr "Végpont Stág"
+
+#: authentik/endpoints/models.py
+msgid "Endpoint Stages"
+msgstr "Végpont Stágok"
+
+#: authentik/endpoints/tasks.py
+msgid "Sync endpoints."
+msgstr "Szinkronizálási végpontok."
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to create/update this object."
+msgstr ""
+"Az objektum készítéséhez/frissítéséhez Enterprise előfizetés szükséges."
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to use this endpoint."
+msgstr "Az Enterprise szükséges ehhez a végponthoz való használatra."
+
+#: authentik/enterprise/audit/apps.py
+msgid ""
+"Include additional information in audit logs, may incur a performance "
+"penalty."
+msgstr ""
+"További információkat adj hivatkozási naplókhoz, ez lehet hatással a "
+"teljesítményre."
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+"Konfigurálj további fejlécek küldését. A lekérdezés visszaadnia kell egy "
+"kulcs-érték párok listáját"
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connector"
+msgstr "Fleet Connector"
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connectors"
+msgstr "Fleet Connectors"
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/models.py
+msgid "Google Device Trust Connector"
+msgstr "Google Device Trust Connector"
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/models.py
+msgid "Google Device Trust Connectors"
+msgstr "Google Device Trust Connectors"
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/stage.py
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr "Validálja a böngészőjét..."
+
+#: authentik/enterprise/lifecycle/api/reviews.py
+msgid "You are not allowed to submit a review for this object."
+msgstr "Nem engedélyezett hozzászólást küldeni erre az objektumra."
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Object does not exist"
+msgstr "Az objektum nem létezik"
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Either a reviewer group or a reviewer must be set."
+msgstr "Egy ellenőrző csoport vagy egy ellenőrnek meg kell határozni."
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Grace period must be shorter than the interval."
+msgstr "A szabadságidő hosszabb nem lehet a periódusszámnál."
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Select which transports should be used to notify the reviewers. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+"Válassza ki, hogy mely továbbításokat használják az ellenőrzések "
+"értesítésére. Ha nincs semmi kiválasztva, az értesítés csak a authentik "
+"felhasználói felületén jelenik meg."
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Reviewed"
+msgstr "Ellenőrizve"
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Pending"
+msgstr "Füssben"
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Overdue"
+msgstr "Késleltetett"
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Canceled"
+msgstr "Mégsemzott"
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Go to {self._get_model_name()}"
+msgstr "{self._get_model_name()}-ra ugrás"
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review is due for {self.content_type.name.lower()} {object_label}"
+msgstr ""
+"{self.content_type.name.lower()} {object_label} hozzáférési ellenőrzése "
+"érvénybe lép."
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review is overdue for {self.content_type.name} {str(self.object)}"
+msgstr ""
+"{self.content_type.name} {str(self.object)} hozzáférési ellenőrzése "
+"késleltetett."
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review completed for {self.content_type.name} {str(self.object)}"
+msgstr ""
+"{self.content_type.name} hozzáférési ellenőrzése befejeződött "
+"{str(self.object)}"
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Dispatch tasks to apply lifecycle rules."
+msgstr "Elszállítás feladatok a lifecycle szabályok alkalmazásához."
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Apply lifecycle rule."
+msgstr "A lifecycle szabály alkalmazása."
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Send lifecycle rule notification."
+msgstr "A lifecycle szabály értesítésének küldése."
+
+#: authentik/enterprise/models.py
+msgid "License"
+msgstr "Licensz"
+
+#: authentik/enterprise/models.py
+msgid "Licenses"
+msgstr "Licenszek"
+
+#: authentik/enterprise/models.py
+msgid "License Usage"
+msgstr "Licenchasználat"
+
+#: authentik/enterprise/models.py
+msgid "License Usage Records"
+msgstr "Licenchasználati rekordok"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr ""
+"Az ellenőrizni kívánt mezőkulcsok, a Prompt szakaszban meghatározott "
+"mezőkulcsok elérhetőek."
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr "__T0__ ellenőrzendő jelszavak száma"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr "A jelszó a kontextusban nincs beállítva"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr "Ez a jelszó korábban használt volt. Kérjük, válasszon másikat."
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr "A Jelszó Egyediség Szabály"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr "Jelszó Egyediség Szabályok"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
+msgstr "Felhasználói Jelszavak Története"
+
+#: authentik/enterprise/policies/unique_password/tasks.py
+msgid ""
+"Check if any UniquePasswordPolicy exists, and if not, purge the password "
+"history table."
+msgstr ""
+"Ellenőrizze, hogy létezik-e egyediek UniquePasswordPolicy, és ha nincs, "
+"törölje a jelszó-történet táblázatot."
+
+#: authentik/enterprise/policies/unique_password/tasks.py
+msgid "Remove user password history that are too old."
+msgstr ""
+"Eldobja a felhasználó jelszava előzményeit, amelyek túl régen történtek."
+
+#: authentik/enterprise/policy.py
+msgid "Enterprise required to access this feature."
+msgstr "A funkció eléréséhez Enterprise előfizetés szükséges."
+
+#: authentik/enterprise/policy.py
+msgid "Feature only accessible for internal users."
+msgstr "A funkció kizárólag belső felhasználók számára érhető el."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr "Google Workspace szolgáltató felhasználó"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr "Google Workspace szolgáltató felhasználók"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr "Google Workspace szolgáltató csoport"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr "Google Workspace szolgáltató csoportok"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py
+msgid "Property mappings used for group creation/updating."
+msgstr ""
+"Csoport létrehozásánál/módosításánál használt tulajdonság összerendelések."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider"
+msgstr "Google Workspace szolgáltató"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Providers"
+msgstr "Google Workspace szolgáltatók"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mapping"
+msgstr "Google Workspace szolgáltató összerendelés"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mappings"
+msgstr "Google Workspace szolgáltató összerendelések"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync Google Workspace provider objects."
+msgstr "Szerkesztés Google Workspace szolgáltató objektumaihoz."
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Full sync for Google Workspace provider."
+msgstr "Teljes szinkronizáció a Google Workspace szolgáltatóhoz."
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync a direct object (user, group) for Google Workspace provider."
+msgstr ""
+"Szerkesztés közvetlen objektum (felhasználó, csoport) a Google Workspace "
+"szolgáltatóhoz."
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+"Elindítja a törléseket egy objektum esetében (felhasználó, csoport) a Google"
+" Workspace szolgáltatókhoz."
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr ""
+"Eltávolítás egy objektum esetében (felhasználó, csoport) a Google Workspace "
+"szolgáltatótól."
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch syncs for a direct object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+"Elindítja a szinkronizálásokat közvetlen objektum esetében (felhasználó, "
+"csoport) a Google Workspace szolgáltatókhoz."
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync a related object (memberships) for Google Workspace provider."
+msgstr ""
+"Szerkesztés kapcsolódó objektum (tagok) a Google Workspace szolgáltatóhoz."
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch syncs for a related object (memberships) for Google Workspace "
+"providers."
+msgstr ""
+"Elindítja a szinkronizálásokat kapcsolódó objektum esetében (tagok) a Google"
+" Workspace szolgáltatókhoz."
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr "Microsoft Entra szolgáltató felhasználó"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr "Microsoft Entra szolgáltató csoport"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr "Microsoft Entra szolgáltató csoportok"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider"
+msgstr "Microsoft Entra szolgáltató"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Providers"
+msgstr "Microsoft Entra szolgáltatók"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mapping"
+msgstr "Microsoft Entra szolgáltató összerendelés"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mappings"
+msgstr "Microsoft Entra szolgáltató összerendelések"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync Microsoft Entra provider objects."
+msgstr "Szerkesztés Microsoft Entra szolgáltató objektumaihoz."
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Full sync for Microsoft Entra provider."
+msgstr "Teljes szinkronizálás a Microsoft Entra szolgáltatáshoz."
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync a direct object (user, group) for Microsoft Entra provider."
+msgstr ""
+"Egy közvetlen objektum (felhasználó, csoport) szinkronizálása a Microsoft "
+"Entra szolgáltatáshoz."
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch syncs for a direct object (user, group) for Microsoft Entra "
+"providers."
+msgstr ""
+"Egy közvetlen objektum (felhasználó, csoport) szinkronizálásának elindítása "
+"a Microsoft Entra szolgáltatásokhoz."
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr ""
+"Objektum (felhasználó, csoport) törlése a Microsoft Entra szolgáltatáshoz."
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra "
+"providers."
+msgstr ""
+"Egy objektum (felhasználó, csoport) törlésének elindítása a Microsoft Entra "
+"szolgáltatásokhoz."
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync a related object (memberships) for Microsoft Entra provider."
+msgstr ""
+"Kapcsolódó objektum (tagságok) szinkronizálása a Microsoft Entra "
+"szolgáltatáshoz."
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch syncs for a related object (memberships) for Microsoft Entra "
+"providers."
+msgstr ""
+"Egy kapcsolódó objektum (tagságok) szinkronizálásának elindítása a Microsoft"
+" Entra szolgáltatásokhoz."
+
+#: authentik/enterprise/providers/radius/api.py
+msgid "Enterprise is required to use EAP-TLS."
+msgstr "A vállalatnak EAP-TLS használatára van köteles."
+
+#: authentik/enterprise/providers/scim/api.py
+msgid "Enterprise is required to use the OAuth mode."
+msgstr "A vállalatnak az OAuth mód használatára van köteles."
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Push"
+msgstr "SSF RFC Push"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Pull"
+msgstr "SSF RFC-pull"
+
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "Aláíró kulcs"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr "__T0__-t használt jelzések aláírására a SSF eseményeknél."
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr "Megosztott Jelzéses Rendszer Provider"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr "Megosztott Jelzéses Rendszer Providers"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr "Hozzáadás stream-je a SSF provider-hez"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr "SSF Stream"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr "SSF Streams"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr "SSF Stream Esemény"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr "SSF Stream Események"
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Dispatch SSF events."
+msgstr "SSF események elhelyezése."
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Send an SSF event."
+msgstr "SSF esemény küldése."
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Provider"
+msgstr "WS-Federation Provider"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Providers"
+msgstr "WS-Federation Providers"
+
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "{app}-ra átirányítás..."
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Export"
+msgstr "Adatexportálás"
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Exports"
+msgstr "Adatexportálások"
+
+#: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
+msgstr "{model_verbose_name} export sikeresen generálva"
+
+#: authentik/enterprise/reports/models.py
+msgid "Download"
+msgstr "Letöltés"
+
+#: authentik/enterprise/reports/tasks.py
+msgid "Generate data export."
+msgstr "Adatexportálás generálása."
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "User to lock. If omitted, locks the current user (self-service)."
+msgstr ""
+"Zárolandó felhasználó. Ha nincs megadva, a jelenlegi felhasználót (személyes"
+" szolgáltatás) zárolja."
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured."
+msgstr "Nincs beállított zárolási folyamat."
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Lockdown flow is not applicable."
+msgstr "A lockdownd folyamat nem alkalmazható."
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Choose the target account, then return a flow link."
+msgstr ""
+"Válassza ki a célcsoporti fiókot, majd adja vissza a folyam hivatkozását."
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured or the flow is not applicable"
+msgstr "Nincs beállítva lockdownd folyamat vagy a folyamat nem alkalmazható"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Permission denied (when targeting another user)"
+msgstr "Hozzáférés megtagadva (mikor egy másik felhasználót célozza meg)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Deactivate the user account (set is_active to False)"
+msgstr "Deaktiválja a felhasználói fiókot (beállítás: is_active False-ra)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Set an unusable password for the user"
+msgstr ""
+"Bejelentkezési jelszónak nevezhetetlen értéket adjon meg a felhasználónak"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Delete all active sessions for the user"
+msgstr "Törölje az összes aktív munkamenetet a felhasználótól"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Revoke all tokens for the user (API, app password, recovery, verification, "
+"OAuth)"
+msgstr ""
+"Visszavonja az összes tokenet a felhasználótól (API, alkalmazásjelszó, "
+"helyreállítás, ellenőrzés, OAuth)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Flow to redirect users to after self-service lockdown. This flow should not "
+"require authentication since the user's session is deleted."
+msgstr ""
+"A folyamat, amire átirányítja a felhasználókat a saját-szolgáltatás "
+"lockdownd után. Ez a folyamat nem követelményben kell, hogy igazolványt "
+"kérjen, mivel a felhasználói munkamenet törölve lesz."
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stage"
+msgstr "Felhasználói fiók lockdownd szakasz"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stages"
+msgstr "Fiók zárolásának szakaszai"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "No target user specified for account lockdown"
+msgstr "Nincs megadva cél felhasználó a fiók zárolásához"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "You do not have permission to lock down this account."
+msgstr "Nem rendelkezik jogosultsággal ezt a fiókot zárolni."
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Account lockdown failed for this account."
+msgstr "A fiók zárolása sikertelen volt erre a fióknak."
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Self-service account lockdown requires a completion flow."
+msgstr "Önkiszolgáló fiók zárolás szükséges egy befejezési folyamatra."
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr "Endpoint Authenticator Google Device Trust Connector szakasz"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr "Endpoint Authenticator Google Device Trust Connector szakaszok"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr "Végpont eszköz"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr "Végpont eszközök"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid ""
+"Configure certificate authorities to validate the certificate against. This "
+"option has a higher priority than the `client_certificate` option on "
+"`Brand`."
+msgstr ""
+"Konfigurálja az igazgatott kivonatokat, amelyeket a kivonat ellen "
+"vizsgálnak. Ez a lehetőség magasabb prioritással rendelkezik a `Brand`-en "
+"lévő `client_certificate` beállításnál."
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage"
+msgstr "Egyezményes TLS szakasz"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stages"
+msgstr "Egyezményes TLS szakaszok"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Permissions to pass Certificates for outposts."
+msgstr "Jogosultságok kivonatok átadására az outposts számára."
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "Certificate required but no certificate was given."
+msgstr "Kérelemben nincs megadott kivonat, bár ez szükséges."
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "No user found for certificate."
+msgstr "Nincs felhasználó találat a tanúsítvánnyal."
+
+#: authentik/enterprise/stages/source/models.py
+msgid ""
+"Amount of time a user can take to return from the source to continue the "
+"flow (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"A felhasználónak ennyi ideje van, hogy visszatérjen a forrástól és folytassa"
+" a folyamatot (Formátum: óra=-1;perc=-2;másodperc=-3)"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stage"
+msgstr "Forrás szakasz"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stages"
+msgstr "Forrás szakaszok"
+
+#: authentik/enterprise/tasks.py
+msgid "Update enterprise license status."
+msgstr "Frissítse az üzleti licenc állapotát."
+
+#: authentik/events/models.py
+msgid "Event"
+msgstr "Esemény"
+
+#: authentik/events/models.py
+msgid "Events"
+msgstr "Események"
+
+#: authentik/events/models.py
+msgid "authentik inbuilt notifications"
+msgstr "Beépített authentik értesítések."
+
+#: authentik/events/models.py
+msgid "Generic Webhook"
+msgstr "Általános Webhook"
+
+#: authentik/events/models.py
+msgid "Slack Webhook (Slack/Discord)"
+msgstr "Slack Webhook (Slack/Discord)"
+
+#: authentik/events/models.py
+#: authentik/stages/authenticator_validate/models.py
+msgid "Email"
+msgstr "Email cím"
+
+#: authentik/events/models.py
+msgid ""
+"Only send notification once, for example when sending a webhook into a chat "
+"channel."
+msgstr ""
+"Csak egyszer küldjön értesítéset, például amikor webhook-ot küld csevegő "
+"csatornába."
+
+#: authentik/events/models.py
+msgid ""
+"When set, the selected ceritifcate is used to validate the certificate of "
+"the webhook server."
+msgstr ""
+"Ha be van kapcsolva, a kiválasztott tanúsítvány használatos a webhook-"
+"kiszolgáló tanúsítványának ellenőrzéséhez."
+
+#: authentik/events/models.py
+msgid ""
+"Customize the body of the request. Mapping should return data that is JSON-"
+"serializable."
+msgstr ""
+"Villamosidős kérelem szövegének testreszabása. A lekérdezés ábrázolásai "
+"JSON-serializálható adatokat kell visszaadniuk."
+
+#: authentik/events/models.py
+msgid "Severity"
+msgstr "Súlyosság"
+
+#: authentik/events/models.py
+msgid "Dispatched for user"
+msgstr "Felhasználónak elküldve"
+
+#: authentik/events/models.py
+msgid "Event user"
+msgstr "Esemény felhasználó"
+
+#: authentik/events/models.py
+msgid "Notification Transport"
+msgstr "Értesítés Szállító"
+
+#: authentik/events/models.py
+msgid "Notification Transports"
+msgstr "Értesítés Szállítók"
+
+#: authentik/events/models.py
+msgid "Notice"
+msgstr "Értesítés"
+
+#: authentik/events/models.py
+msgid "Warning"
+msgstr "Figyelmeztetés"
+
+#: authentik/events/models.py
+msgid "Alert"
+msgstr "Riasztás"
+
+#: authentik/events/models.py
+msgid "Notification"
+msgstr "Értesítés"
+
+#: authentik/events/models.py
+msgid "Notifications"
+msgstr "Értesítések"
+
+#: authentik/events/models.py
+msgid ""
+"Select which transports should be used to notify the user. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+"Válassza ki melyik szállító értesítse a felhasználót. Ha egyik sincs "
+"kiválasztva, az értesítés az authentik felhasználói felületen lesz látható."
+
+#: authentik/events/models.py
+msgid "Controls which severity level the created notifications will have."
+msgstr "Beállítja melyik súlyossági szintje legyen az értesítésnek."
+
+#: authentik/events/models.py
+msgid ""
+"Define which group of users this notification should be sent and shown to. "
+"If left empty, Notification won't ben sent."
+msgstr ""
+"Állítsa be melyik felhasználói csoportoknak legyen ez az értesítés küldve és"
+" mutatva. Ha üres, nem lesznek értesítések küldve."
+
+#: authentik/events/models.py
+msgid ""
+"When enabled, notification will be sent to user the user that triggered the "
+"event.When destination_group is configured, notification is sent to both."
+msgstr ""
+"Ha engedélyezett, értesítést küld a felhasználónak, akinek az eseményt "
+"aktívvá tette. Ha a célcsoport be van állítva, az értesítés mindkét "
+"csoportnak lesz elküldve."
+
+#: authentik/events/models.py
+msgid "Notification Rule"
+msgstr "Értesítési szabály"
+
+#: authentik/events/models.py
+msgid "Notification Rules"
+msgstr "Értesítési szabályok"
+
+#: authentik/events/models.py
+msgid "Webhook Mapping"
+msgstr "Webhook összerendelés"
+
+#: authentik/events/models.py
+msgid "Webhook Mappings"
+msgstr "Webhook összerendelések"
+
+#: authentik/events/tasks.py
+msgid "Dispatch new event notifications."
+msgstr "Eseménysorozatok indítása új értesítésekhez."
+
+#: authentik/events/tasks.py
+msgid ""
+"Check if policies attached to NotificationRule match event and dispatch "
+"notification tasks."
+msgstr ""
+"Ellenőrizze, hogy a hozzárendelt szabályok illeszkednek-e az eseményre és "
+"üzenetküldési feladatokat kezdeményeznek-e."
+
+#: authentik/events/tasks.py
+msgid "Send notification."
+msgstr "Értesítés küldése."
+
+#: authentik/events/tasks.py
+msgid "Cleanup events for GDPR compliance."
+msgstr "Események törlése GDPR-megfelelőségi igazoláshoz."
+
+#: authentik/events/tasks.py
+msgid "Cleanup seen notifications and notifications whose event expired."
+msgstr ""
+"Látogázott értesítések és lejárta az esemény időtartama ért értesítések "
+"törlése."
+
+#: authentik/flows/api/flows.py
+#, python-brace-format
+msgid "Flow not applicable to current user/request: {messages}"
+msgstr ""
+"A folyamat nem alkalmazható a jelenlegi felhasználóra/kérésre: {messages}"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Policy ({type})"
+msgstr "Szabályzat ({type})"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Binding {order}"
+msgstr "Hozzárendelés {order}"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Policy passed"
+msgstr "Szabályzat átment"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Stage ({type})"
+msgstr "Szakasz ({type})"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Policy denied"
+msgstr "Szabályzat elutasítva"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "End of the flow"
+msgstr "Folyamat vége"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Requirement not fulfilled"
+msgstr "Követelmény nincs teljesítve"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Flow authentication requirement"
+msgstr "Folyamathitelesítés követelménye"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Requirement fulfilled"
+msgstr "Követelmény teljesítve"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Pre-flow policies"
+msgstr "Elő-folyamat házirendek"
+
+#: authentik/flows/api/flows_diagram.py authentik/flows/models.py
+msgid "Flow"
+msgstr "Folyamat"
+
+#: authentik/flows/apps.py
+msgid "Refresh other tabs after successful authentication."
+msgstr "Frissítse az egyéb lapokat sikeres hitelesítés után."
+
+#: authentik/flows/apps.py
+msgid ""
+"Upon successful authentication, re-start authentication in other open tabs."
+msgstr ""
+"Sikeres hitelesítést követően újraindítsa a hitelesítést az egyéb nyitott "
+"lapokban."
+
+#: authentik/flows/exceptions.py
+msgid "Flow does not apply to current user."
+msgstr "A folyamat nem vonatkozik a jelenlegi felhasználóra."
+
+#: authentik/flows/models.py
+#, python-brace-format
+msgid "Dynamic In-memory stage: {doc}"
+msgstr "Dinamikus memóriabeli szakasz: {doc}"
+
+#: authentik/flows/models.py
+msgid "Visible in the URL."
+msgstr "URL-ben látható."
+
+#: authentik/flows/models.py
+msgid "Shown as the Title in Flow pages."
+msgstr "A folyamatoldalon Címként mutatva."
+
+#: authentik/flows/models.py
+msgid ""
+"Decides what this Flow is used for. For example, the Authentication flow is "
+"redirect to when an un-authenticated user visits authentik."
+msgstr ""
+"Eldönti mire való ez a folyamat. Például, a hitelesítő folyamat átírányít ha"
+" egy nem hitelesített felhasználó meglátogatja az authentik-et."
+
+#: authentik/flows/models.py
+msgid "Background shown during execution"
+msgstr "Futtatás közben mutatott háttér"
+
+#: authentik/flows/models.py
+msgid ""
+"Enable compatibility mode, increases compatibility with password managers on"
+" mobile devices."
+msgstr ""
+"Kompatibilitási mód engedélyezése, növeli a jelszókezelőkkel való "
+"kompatibilitást mobileszközökön."
+
+#: authentik/flows/models.py
+msgid "Configure what should happen when a flow denies access to a user."
+msgstr ""
+"Beállítja mi történik mikor a folyamat megtiltja a felhasználó elérését."
+
+#: authentik/flows/models.py
+msgid "Required level of authentication and authorization to access a flow."
+msgstr "A folyamat eléréséhez kötelező hitelesítési és engedélyezési szint."
+
+#: authentik/flows/models.py
+msgid "Flows"
+msgstr "Folyamatok"
+
+#: authentik/flows/models.py
+msgid "Can export a Flow"
+msgstr "Exportálhat folyamatot."
+
+#: authentik/flows/models.py
+msgid "Can inspect a Flow's execution"
+msgstr "Megszemlélhet folyamatot"
+
+#: authentik/flows/models.py
+msgid "View Flow's cache metrics"
+msgstr "A folyamat gyorsítótáridőmértékeinek megnézése."
+
+#: authentik/flows/models.py
+msgid "Clear Flow's cache metrics"
+msgstr "A folyamat gyorsítótáridőmértékeinek tisztítása."
+
+#: authentik/flows/models.py
+msgid "Evaluate policies during the Flow planning process."
+msgstr "Értékelje ki a házirendeket a folyamattervezési folyamat során."
+
+#: authentik/flows/models.py
+msgid "Evaluate policies when the Stage is presented to the user."
+msgstr "A Stagenél megjelenített időpontban értékelje a szabályokat."
+
+#: authentik/flows/models.py
+msgid ""
+"Configure how the flow executor should handle an invalid response to a "
+"challenge. RETRY returns the error message and a similar challenge to the "
+"executor. RESTART restarts the flow from the beginning, and "
+"RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
+msgstr ""
+"Állítsa be hogyan kezelje a folyamatvégrehajtó a kihívásra adott érvénytelen"
+" válaszolkat. RETRY visszadob egy hibaüzenetet és egy hasonló kihivást a "
+"végrehajtónak. RESTART újraindítja a folyamatot az elejétől és a "
+"RESTART_WITH_CONTEXT újraindítja a folyamatot miközben megtartja a "
+"kontextust."
+
+#: authentik/flows/models.py
+msgid "Flow Stage Binding"
+msgstr "Folyamat Szakasz Hozzárendelés"
+
+#: authentik/flows/models.py
+msgid "Flow Stage Bindings"
+msgstr "Folyamat Szakasz Hozzárendelések"
+
+#: authentik/flows/models.py
+msgid ""
+"Flow used by an authenticated user to configure this Stage. If empty, user "
+"will not be able to configure this stage."
+msgstr ""
+"A hitelesített felhasználó által használt folyamat ezek szakasz "
+"beállítására. Ha üres, a felhasználó nem lesz képes beállítani ezen "
+"szakaszt."
+
+#: authentik/flows/models.py
+msgid "Flow Token"
+msgstr "Folyamat Token"
+
+#: authentik/flows/models.py
+msgid "Flow Tokens"
+msgstr "Folyamat Token-ek"
+
+#: authentik/flows/planner.py
+msgid "This link is invalid or has expired. Please request a new one."
+msgstr "Ez a hivatkozás érvénytelen vagy lejárt. Kérjen egy újat."
+
+#: authentik/flows/views/executor.py
+msgid "Invalid next URL"
+msgstr "Érvénytelen következő URL"
+
+#: authentik/lib/sync/incoming/models.py
+msgid "When to trigger sync for outgoing providers"
+msgstr "Az indulást ideiglenes szolgáltatók számára"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Controls the number of objects synced in a single task"
+msgstr "A feladatban részt vevő objektumok számának beállítása"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Timeout for synchronization of a single page"
+msgstr "Az oldal szinkronizálásának időtúllépése"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, provider will not modify or create objects in the remote "
+"system."
+msgstr ""
+"Ha engedélyezve van, a szolgáltató nem módosítja vagy létrehozhat "
+"objektumokat a távoli rendszerben."
+
+#: authentik/lib/utils/time.py
+#, python-format
+msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
+msgstr "A %(value)s érték nincs a megfelelő formátumban: 'óra=3;perc=1'."
+
+#: authentik/lib/validators.py
+#, python-brace-format
+msgid "The fields {field_names} must be used together."
+msgstr "A {field_names} mezőket együtt kell használni."
+
+#: authentik/outposts/api/service_connections.py
+msgid ""
+"You can only use an empty kubeconfig when connecting to a local cluster."
+msgstr ""
+"Csak egy üres kubeconfig-ot használhatsz amikor csatlakozol egy helyi "
+"klaszterhez."
+
+#: authentik/outposts/api/service_connections.py
+msgid "Invalid kubeconfig"
+msgstr "Érvénytelen kubeconfig"
+
+#: authentik/outposts/models.py
+msgid ""
+"If enabled, use the local connection. Required Docker socket/Kubernetes "
+"Integration"
+msgstr ""
+"Ha engedélyezett, használja a helyi kapcsolatokat. Docker socket/Kubernetes "
+"Integrációhoz kötelező."
+
+#: authentik/outposts/models.py
+msgid "Outpost Service-Connection"
+msgstr "Előörs Szolgáltatás-Kapcsolat"
+
+#: authentik/outposts/models.py
+msgid "Outpost Service-Connections"
+msgstr "Előörs Szolgáltatás-Kapcsolatok"
+
+#: authentik/outposts/models.py
+msgid ""
+"Can be in the format of 'unix://<path>' when connecting to a local docker "
+"daemon, or 'https://<hostname>:2376' when connecting to a remote system."
+msgstr ""
+"A formátum lehet 'unix://<path>' amikor helyi docker démonhoz csatlakozik, "
+"vagy 'https://<hostname>:2376' amikor távoli rendszerhez."
+
+#: authentik/outposts/models.py
+msgid ""
+"CA which the endpoint's Certificate is verified against. Can be left empty "
+"for no validation."
+msgstr ""
+"CA (Tanúsítványhatóság) ami a végpont tanúsítványa ellen érvényesít. Ha "
+"nincs érvényesítés, üresen hagyható."
+
+#: authentik/outposts/models.py
+msgid ""
+"Certificate/Key used for authentication. Can be left empty for no "
+"authentication."
+msgstr ""
+"A hitelestésre használt tanúsítvány/kulcs. Ha nincs hitelesítés, üresen "
+"lehet hagyni."
+
+#: authentik/outposts/models.py
+msgid "Docker Service-Connection"
+msgstr "Docker Szolgáltatás-Kapcsolat"
+
+#: authentik/outposts/models.py
+msgid "Docker Service-Connections"
+msgstr "Docker Szolgáltatás-Kapcsolatok"
+
+#: authentik/outposts/models.py
+msgid ""
+"Paste your kubeconfig here. authentik will automatically use the currently "
+"selected context."
+msgstr ""
+"Illessze be a kubeconfig-ját ide. Az authentik automatikusan a jelenleg "
+"kiválasztott kontextus-t használja."
+
+#: authentik/outposts/models.py
+msgid "Verify SSL Certificates of the Kubernetes API endpoint"
+msgstr "Érvényesítse a Kubernetes API végpont SSL tanusítványait."
+
+#: authentik/outposts/models.py
+msgid "Kubernetes Service-Connection"
+msgstr "Kubernetes Szolgáltatás-Kapcsolat"
+
+#: authentik/outposts/models.py
+msgid "Kubernetes Service-Connections"
+msgstr "Kubernetes Szolgáltatás-Kapcsolatok"
+
+#: authentik/outposts/models.py
+msgid ""
+"Select Service-Connection authentik should use to manage this outpost. Leave"
+" empty if authentik should not handle the deployment."
+msgstr ""
+"Válassza ki a szolgáltatás-kapcsolatot amit az authentik-nek erre az "
+"előőrsre kéne használnia."
+
+#: authentik/outposts/models.py
+msgid "Outpost"
+msgstr "Előörs"
+
+#: authentik/outposts/models.py
+msgid "Outposts"
+msgstr "Előörsök"
+
+#: authentik/outposts/tasks.py
+msgid "Update cached state of service connection."
+msgstr "Frissítse a szolgáltatáskapcsolat gyorsítótárazott állapotát."
+
+#: authentik/outposts/tasks.py
+msgid "Create/update/monitor/delete the deployment of an Outpost."
+msgstr ""
+"Hozzon létre, frissítse, nyomon kövessen vagy törölje az Outpost "
+"üzemeltetését."
+
+#: authentik/outposts/tasks.py
+msgid "Ensure that all Outposts have valid Service Accounts and Tokens."
+msgstr ""
+"Görgezz, hogy minden Outpost érvényes Service Accounts és Tokens maradjon."
+
+#: authentik/outposts/tasks.py
+msgid "Send update to outpost"
+msgstr "Frissítés küldése az outpostnak"
+
+#: authentik/outposts/tasks.py
+msgid "Checks the local environment and create Service connections."
+msgstr ""
+"A helyi környezet ellenőrzése és a szolgáltatáskapcsolatok létrehozása."
+
+#: authentik/outposts/tasks.py
+msgid "Terminate session on all outposts."
+msgstr "Minden outpost-on történő munkamenedemen belül véglegesítés."
+
+#: authentik/policies/denied.py
+msgid "Access denied"
+msgstr "Hozzáférés megtagadva"
+
+#: authentik/policies/dummy/models.py
+msgid "Dummy Policy"
+msgstr "Üres szabályzat"
+
+#: authentik/policies/dummy/models.py
+msgid "Dummy Policies"
+msgstr "Üres házirendek"
+
+#: authentik/policies/event_matcher/api.py
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match events created by selected application. When left empty, all "
+"applications are matched."
+msgstr ""
+"A kiválasztott alkalmazás által létrehozott események egyeztetése. Ha üresen"
+" hagyja, az összes alkalmazás megfelel."
+
+#: authentik/policies/event_matcher/api.py
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match events created by selected model. When left empty, all models are "
+"matched. When an app is selected, all the application's models are matched."
+msgstr ""
+"A kiválasztott modell által létrehozott események egyeztetése. Ha üresen "
+"hagyja, az összes modell megfelel. Amikor egy alkalmazás van kiválasztva, az"
+" alkalmazás minden modellje megfelel."
+
+#: authentik/policies/event_matcher/api.py
+msgid "At least one criteria must be set."
+msgstr "Legalább egy kritériának meg kell felelni."
+
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match created events with this action type. When left empty, all action "
+"types will be matched."
+msgstr ""
+"A kiválasztott akciótípus által létrehozott események egyeztetése. Ha üresen"
+" hagyja, az összes akciótípus megfelel."
+
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Matches Event's Client IP (strict matching, for network matching use an "
+"Expression Policy)"
+msgstr ""
+"A kiválasztott esemény kliens IP-je (szigorú egyeztetés, a hálózati "
+"egyeztetéshez használjon kifejezési szabályzatot)"
+
+#: authentik/policies/event_matcher/models.py
+msgid "Event Matcher Policy"
+msgstr "Esemény kiválasztási szabályzat"
+
+#: authentik/policies/event_matcher/models.py
+msgid "Event Matcher Policies"
+msgstr "Esemény Kiválasztási Házirendek"
+
+#: authentik/policies/expiry/models.py
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
+msgstr "A jelszó {days} napja lejárt. Kérjük, hogy frissítse jelszavát."
+
+#: authentik/policies/expiry/models.py
+msgid "Password has expired."
+msgstr "A jelszava lejárt."
+
+#: authentik/policies/expiry/models.py
+msgid "Password Expiry Policy"
+msgstr "Jelszó lejárati szabályzat."
+
+#: authentik/policies/expiry/models.py
+msgid "Password Expiry Policies"
+msgstr "Jelszó lejárati házirendek."
+
+#: authentik/policies/expression/models.py
+msgid "Expression Policy"
+msgstr "Kifejezési szabályzat"
+
+#: authentik/policies/expression/models.py
+msgid "Expression Policies"
+msgstr "Kifejezési házirendek"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP not found in ASN database."
+msgstr "GeoIP: a kliens IP nem található az ASN adatbázisban."
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not part of an allowed autonomous system."
+msgstr "A kliens IP nem része az engedélyezett autonóm rendszereknek."
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP address not found in City database."
+msgstr "GeoIP: a kliens IP-cím nem található a városi adatbázisban. "
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not in an allowed country."
+msgstr "A kliens IP nem része az engedélyezett országoknak."
+
+#: authentik/policies/geoip/models.py
+msgid "Distance from previous authentication is larger than threshold."
+msgstr "Az előző hitelesítés távolsága a küszöbértéktől nagyobb."
+
+#: authentik/policies/geoip/models.py
+msgid "Distance is further than possible."
+msgstr "A távolság annál messzebb, mint lehetséges."
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policy"
+msgstr "GeoIP szabályzat"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policies"
+msgstr "GeoIP szabályzatok"
+
+#: authentik/policies/models.py
+msgid "all, all policies must pass"
+msgstr "all, minden szabályzat átmegy"
+
+#: authentik/policies/models.py
+msgid "any, any policy must pass"
+msgstr "any, bármely szabályzat átmegy"
+
+#: authentik/policies/models.py
+msgid "Policy Binding Model"
+msgstr "Szabályzat összekötő minta"
+
+#: authentik/policies/models.py
+msgid "Policy Binding Models"
+msgstr "Szabályzat összekötő minták"
+
+#: authentik/policies/models.py
+msgid "Negates the outcome of the policy. Messages are unaffected."
+msgstr "Negálja a szabályzat eredményét. Üzenetekre nincs hatással."
+
+#: authentik/policies/models.py
+msgid "Timeout after which Policy execution is terminated."
+msgstr "Időtúllépés, amely után a szabályzat-végrehajtás leáll."
+
+#: authentik/policies/models.py
+msgid "Result if the Policy execution fails."
+msgstr "Eredmény ha a szabályzat-végrehajtás megbukik."
+
+#: authentik/policies/models.py
+msgid "Policy Binding"
+msgstr "Szabályzat hozzárendelés"
+
+#: authentik/policies/models.py
+msgid "Policy Bindings"
+msgstr "Szabályzat hozzárendelések"
+
+#: authentik/policies/models.py
+msgid ""
+"When this option is enabled, all executions of this policy will be logged. "
+"By default, only execution errors are logged."
+msgstr ""
+"Ha ez az opció engedélyezve van, a szabályzat minden végrehajtása naplózásra"
+" kerül. Alapértelmezés szerint csak a végrehajtási hibák kerülnek "
+"naplózásra."
+
+#: authentik/policies/models.py
+msgid "Policy"
+msgstr "Szabályzat"
+
+#: authentik/policies/models.py
+msgid "Policies"
+msgstr "Szabályzatok"
+
+#: authentik/policies/models.py
+msgid "View Policy's cache metrics"
+msgstr "A szabályzat gyorsítótáridőmértékeinek megnézése."
+
+#: authentik/policies/models.py
+msgid "Clear Policy's cache metrics"
+msgstr "A szabályzat gyorsítótáridőmértékeinek tisztítása."
+
+#: authentik/policies/password/models.py
+msgid "How many times the password hash is allowed to be on haveibeenpwned"
+msgstr "Hányszor engedélyezett a jelszó hash értéke a haveibeenpwned-on."
+
+#: authentik/policies/password/models.py
+msgid ""
+"If the zxcvbn score is equal or less than this value, the policy will fail."
+msgstr ""
+"Ha az zxcvbn pontszám egyenlő vagy kevesebb ennél az értéknél, a szabályzat "
+"megbukik."
+
+#: authentik/policies/password/models.py
+msgid "Invalid password."
+msgstr "Érvénytelen jelszó."
+
+#: authentik/policies/password/models.py
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr "A jelszó {count} online listán létezik."
+
+#: authentik/policies/password/models.py
+msgid "Password is too weak."
+msgstr "A jelszó túl gyenge."
+
+#: authentik/policies/password/models.py
+msgid "Password Policy"
+msgstr "Jelszó szabályzat"
+
+#: authentik/policies/password/models.py
+msgid "Password Policies"
+msgstr "Jelszó házirendek"
+
+#: authentik/policies/reputation/api.py
+msgid "Either IP or Username must be checked"
+msgstr "Vagy az IP-t vagy a felhasználónevet ellenőrizni kell"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Policy"
+msgstr "Hírnév szabályzat"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Policies"
+msgstr "Hírnév szabályzatok"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Score"
+msgstr "Hírnév pontszám"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Scores"
+msgstr "Hírnév pontszámok"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Permission denied"
+msgstr "Engedély megtagadva"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "User's avatar"
+msgstr "A felhasználó avatárja"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Not you?"
+msgstr "Nem maga?"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Error"
+msgstr "Hiba"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Request has been denied."
+msgstr "A kérés elutasítva."
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Messages:"
+msgstr "Üzenetek:"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Explanation:"
+msgstr "Magyarázat:"
+
+#: authentik/policies/templates/policies/denied.html
+#, python-format
+msgid ""
+"\n"
+"                    Policy binding '%(name)s' returned result '%(result)s'\n"
+"                    "
+msgstr ""
+"\n"
+"'%(name)s' szabályzat összekötés '%(result)s' eredményt dobta vissza"
+
+#: authentik/policies/views.py
+msgid "Failed to resolve application"
+msgstr "Alkalmazásfeloldás megbukott"
+
+#: authentik/providers/ldap/models.py
+msgid "DN under which objects are accessible."
+msgstr "Elérhető az ezen objektum alatti DN."
+
+#: authentik/providers/ldap/models.py
+msgid ""
+"The start for uidNumbers, this number is added to the user.pk to make sure "
+"that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
+"that we don't collide with local users uidNumber"
+msgstr ""
+"Az uidNumber-ek kezdete, ez a szám hozzáadódik a user.pk fájlhoz, hogy "
+"megbizonyosodjon arról, hogy a számok nem túl alacsonyak a POSIX "
+"felhasználók számára. Az alapértelmezett 2000 annak biztosítására, hogy ne "
+"ütközzünk a helyi felhasználók uidNumber-eivel"
+
+#: authentik/providers/ldap/models.py
+msgid ""
+"The start for gidNumbers, this number is added to a number generated from "
+"the group.pk to make sure that the numbers aren't too low for POSIX groups. "
+"Default is 4000 to ensure that we don't collide with local groups or users "
+"primary groups gidNumber"
+msgstr ""
+"A gidNumber-ek kezdete, ez a szám hozzáadódik a group.pk fájlból generált "
+"számhoz, hogy megbizonyosodjon arról, hogy a számok nem túl alacsonyak a "
+"POSIX csoportokhoz. Az alapértelmezett 4000 annak biztosítására, hogy ne "
+"ütközzünk helyi csoportokkal vagy felhasználói elsődleges csoportok "
+"gidNumber-eivel"
+
+#: authentik/providers/ldap/models.py authentik/providers/radius/models.py
+msgid ""
+"When enabled, code-based multi-factor authentication can be used by "
+"appending a semicolon and the TOTP code to the password. This should only be"
+" enabled if all users that will bind to this provider have a TOTP device "
+"configured, as otherwise a password may incorrectly be rejected if it "
+"contains a semicolon."
+msgstr ""
+"Amennyiben engedélyezve van, a kódalapú többfaktoros hitelesítés úgy valósul"
+" meg, hogy jelszóhoz egy TOTP-kódot csatolunk. Ezt kizáólag abban az esetben"
+" engedélyezzük, amennyiben az összes felhasználó -  aki ehhez a "
+"szolgáltatóhoz kötődik - rendelkezik beálíltott TOTP-eszközzel, mivel "
+"ellenkező esetben a hitelesítés elutasításra kerülhet."
+
+#: authentik/providers/ldap/models.py
+msgid "LDAP Provider"
+msgstr "LDAP szolgáltató"
+
+#: authentik/providers/ldap/models.py
+msgid "LDAP Providers"
+msgstr "LDAP szolgáltatók"
+
+#: authentik/providers/ldap/models.py
+msgid "Search full LDAP directory"
+msgstr "Keressen az egész LDAP könyvtárban"
+
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr "Érvénytelen Regex minta: {url}"
+
+#: authentik/providers/oauth2/models.py
+msgid "Confidential"
+msgstr "Bizalmas"
+
+#: authentik/providers/oauth2/models.py
+msgid "Public"
+msgstr "Nyílvános"
+
+#: authentik/providers/oauth2/models.py
+msgid "Same identifier is used for all providers"
+msgstr "Minden szolgáltató használja ugyanazt az azonosítót."
+
+#: authentik/providers/oauth2/models.py
+msgid "Each provider has a different issuer, based on the application slug."
+msgstr ""
+"Minden szolgáltatónak más-más kibocsátója van, az alkalmazás \"slug\" "
+"alapján."
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr "Szigorú URL összehasonlítás"
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr "Reguláris Kifejezés URL összeillesztés"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization"
+msgstr "Engedélyezés"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout"
+msgstr "Kijelentkezés"
+
+#: authentik/providers/oauth2/models.py
+msgid "Back-channel"
+msgstr "Háttér-kapcsolat"
+
+#: authentik/providers/oauth2/models.py
+msgid "Front-channel"
+msgstr "Előtéri csatorna"
+
+#: authentik/providers/oauth2/models.py
+msgid "code (Authorization Code Flow)"
+msgstr "code (Engedélyezési kód folyamat)"
+
+#: authentik/providers/oauth2/models.py
+msgid "id_token (Implicit Flow)"
+msgstr "id_token (Hallgatólagos folyamat)"
+
+#: authentik/providers/oauth2/models.py
+msgid "id_token token (Implicit Flow)"
+msgstr "id_token token (Hallgatólagos folymat)"
+
+#: authentik/providers/oauth2/models.py
+msgid "code token (Hybrid Flow)"
+msgstr "code token (Hibrid folyamat)"
+
+#: authentik/providers/oauth2/models.py
+msgid "code id_token (Hybrid Flow)"
+msgstr "code id_token (Hibrid folyamat)"
+
+#: authentik/providers/oauth2/models.py
+msgid "code id_token token (Hybrid Flow)"
+msgstr "code id_token token (Hibrid folyamat)"
+
+#: authentik/providers/oauth2/models.py
+msgid "HS256 (Symmetric Encryption)"
+msgstr "HS256 (Szimmetrikus titkosítás)"
+
+#: authentik/providers/oauth2/models.py
+msgid "RS256 (Asymmetric Encryption)"
+msgstr "RS256 (Asszimetrikus titkosítás)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES256 (Asymmetric Encryption)"
+msgstr "ES256 (Asszimetrikus titkosítás)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES384 (Asymmetric Encryption)"
+msgstr "ES384 (Szimmetrikus titkosítás)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES512 (Asymmetric Encryption)"
+msgstr "ES512 (Szimmetrikus titkosítás)"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope used by the client"
+msgstr "A kliens által használt hatáskör"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Description shown to the user when consenting. If left empty, the user won't"
+" be informed."
+msgstr ""
+"A leírás amit a felhasználó hozzájárulásakor mutatunk meg. Ha üresen van "
+"hagyva, a felhasználó nem lesz tájékoztatva."
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope Mapping"
+msgstr "Hatáskör összerendelés"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope Mappings"
+msgstr "Hatáskör összerendelések"
+
+#: authentik/providers/oauth2/models.py
+msgid "Client Type"
+msgstr "Kliens típus"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Confidential clients are capable of maintaining the confidentiality of their"
+" credentials. Public clients are incapable"
+msgstr ""
+"A bizalmas kliensek képesek a hitelesítő adataik bizalmasságát. Nyílt "
+"kliensek nem képesek rá."
+
+#: authentik/providers/oauth2/models.py
+msgid "Client ID"
+msgstr "Kliens ID"
+
+#: authentik/providers/oauth2/models.py
+msgid "Client Secret"
+msgstr "Kliens titok"
+
+#: authentik/providers/oauth2/models.py
+msgid "Redirect URIs"
+msgstr "Átirányítási URI-k"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout URI"
+msgstr "Kijelentkezési URI"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout Method"
+msgstr "Kijelentkezési mód"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Backchannel logs out with server to server calls. Frontchannel uses iframes "
+"in your browser"
+msgstr ""
+"A háttércsatorna a kiszolgáló között történő kommunikációval jelzi a "
+"kijelentkezést. Az előtéri csatorna iframe-k segítségével kezeli ezt a "
+"folyamatot."
+
+#: authentik/providers/oauth2/models.py
+msgid "Include claims in id_token"
+msgstr "Az id_token-ek tartalmazzák a claim-eket"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Include User claims from scopes in the id_token, for applications that don't"
+" access the userinfo endpoint."
+msgstr ""
+"Az id_token-ek tartalmazzák a felhasználók hatásköri claim-jeiket, olyan "
+"alkalmazásokhoz, amik nem érik el a userinfo endpoint-ot."
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Access codes not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"A hozzáférési kódok nem érvényesek az aktuális időpontban vagy azt követően "
+"+ ez az érték (Formátum: óra=1;perc=2;másodperc=3)."
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Tokens not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"A tokenek nem érvényesek az aktuális időpontban vagy azt követően + ez az "
+"érték (Formátum: óra=1;perc=2;másodperc=3)."
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"When refreshing a token, if the refresh token is valid for less than this "
+"duration, it will be renewed. When set to seconds=0, token will always be "
+"renewed. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Amikor frissít egy jogkivonatot, ha a frissítési jogkivonat érvényes "
+"időtartama rövidebb, mint ez az időtartam, újra frissíti. Ha be van állítva "
+"seconds=0, mindig frissíti a jogkivonatot. (Formátum: "
+"hours=1;minutes=2;seconds=3)."
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Configure what data should be used as unique User Identifier. For most "
+"cases, the default should be fine."
+msgstr ""
+"Állítsa be milyen adatot kéne hsaználni az egyedi felhasználói azonosítónak."
+" A legtöbb esetben az alapértelmezett rendben van."
+
+#: authentik/providers/oauth2/models.py
+msgid "Configure how the issuer field of the ID Token should be filled."
+msgstr "Állítsa be, hogy az ID Token kibocsátó mezője hogyan legyen kitöltve."
+
+#: authentik/providers/oauth2/models.py
+msgid "Key used to sign the tokens."
+msgstr "A kulcs, amit digitális aláírásra lesz használva."
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr "Titkosító kulcs"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
+msgstr ""
+"A kulcs, ami a token-ek titkosítására lesz használva. Mikor be van állítva, "
+"a token-ek titkosítva lesznek és JWE-kként lesznek visszadobva."
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Any JWT signed by the JWK of the selected source can be used to "
+"authenticate."
+msgstr ""
+"Lehessen használni bejelentkeztetésre bármilyen kiválsztott forrás JWK-ja "
+"által aláírt JWT-t."
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2/OpenID Provider"
+msgstr "OAuth2/OpenID szolgáltató"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2/OpenID Providers"
+msgstr "OAuth2/OpenID szolgáltatók"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scopes"
+msgstr "Hatáskörök"
+
+#: authentik/providers/oauth2/models.py
+msgid "Code"
+msgstr "Kód"
+
+#: authentik/providers/oauth2/models.py
+msgid "Nonce"
+msgstr "Semmi"
+
+#: authentik/providers/oauth2/models.py
+msgid "Code Challenge"
+msgstr "Kód kihívás"
+
+#: authentik/providers/oauth2/models.py
+msgid "Code Challenge Method"
+msgstr "Kód kihívási módszer"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization Code"
+msgstr "Engedélyezési kód"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization Codes"
+msgstr "Engedélyezési kódok"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Access Token"
+msgstr "OAuth2 hozzáférés token"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Access Tokens"
+msgstr "OAuth2 hozzáférés tokenek"
+
+#: authentik/providers/oauth2/models.py
+msgid "ID Token"
+msgstr "ID Token"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Refresh Token"
+msgstr "OAuth2 frissítési token"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Refresh Tokens"
+msgstr "OAuth2 frissítési token-ek"
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Send a back-channel logout request to the registered client"
+msgstr ""
+"Háttércsatornai kijelentkezési kérelem küldése a regisztrált ügyfélhez"
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Handle backchannel logout notifications dispatched via signal"
+msgstr ""
+"Kezelje a háttércsatornai kijelentkezési értesítéseket jelző jelek "
+"segítségével"
+
+#: authentik/providers/oauth2/views/device_init.py
+msgid "Invalid code"
+msgstr "Érvénytelen kód"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access your User Information"
+msgstr "GitHub-kompatibilitás: hozzáférés felhasználói adataihoz"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access you Email addresses"
+msgstr "GitHub-kompatibilitás: hozzáférés email címeihez"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access your Groups"
+msgstr "GitHub-kompatibilitás: hozzáférés csoportjaihoz"
+
+#: authentik/providers/proxy/api.py
+msgid "User and password attributes must be set when basic auth is enabled."
+msgstr ""
+"A felhasználói és jelszóattribútumokat be kell állítani, amennyiben a basic "
+"auth hitelesítés engedélyezve van."
+
+#: authentik/providers/proxy/api.py
+msgid "Internal host cannot be empty when forward auth is disabled."
+msgstr ""
+"A belső kiszolgáló nem lehet üres ha a hitelesítés továbbítás ki van "
+"kapcsolva."
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Session"
+msgstr "Proxy-munkamenet"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Sessions"
+msgstr "Proxy-munkamenetek"
+
+#: authentik/providers/proxy/models.py
+msgid "Validate SSL Certificates of upstream servers"
+msgstr "Az upstream kiszolgálók SSL tanúsítványának érvényesítése."
+
+#: authentik/providers/proxy/models.py
+msgid "Internal host SSL Validation"
+msgstr "Belső kiszolgáló SSL érvényesítése"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"Enable support for forwardAuth in traefik and nginx auth_request. Exclusive "
+"with internal_host."
+msgstr ""
+"Hitelesítés továbbítás támogatás engedélyezése Traefik és nginx "
+"auth_request-re. Kizárólag belső_koszolgáló-ra lehet használni."
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"Regular expressions for which authentication is not required. Each new line "
+"is interpreted as a new Regular Expression."
+msgstr ""
+"Reguláris Kifejezések, amikhez nincs szükség hitelesítésre. Minden új sor "
+"egy új Reguláris Kifejezés."
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"When enabled, this provider will intercept the authorization header and "
+"authenticate requests based on its value."
+msgstr ""
+"Ha engedélyezve van, ez a szolgáltató elfogja az engedélyezési fejlécet, és "
+"az értéke alapján hitelesíti a kéréseket."
+
+#: authentik/providers/proxy/models.py
+msgid "Set HTTP-Basic Authentication"
+msgstr "Állítsa be a HTTP-Basic hitelesítést."
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"Set a custom HTTP-Basic Authentication header based on values from "
+"authentik."
+msgstr ""
+"Állítson be egy egyedi HTTP-Basic hitelesítési fejlécet authentik-ből "
+"szerzett érték alapján."
+
+#: authentik/providers/proxy/models.py
+msgid "HTTP-Basic Username Key"
+msgstr "HTTP-Basic felhasználó kulcs"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
+" set, the user's Email address is used."
+msgstr ""
+"A HTTP-Basic fejlécének felhasználó részére használt Felasználó/Csoport "
+"attribútum. Ha nincs beállítva, a felhasználó Email címe lesz használva."
+
+#: authentik/providers/proxy/models.py
+msgid "HTTP-Basic Password Key"
+msgstr "HTTP-Basic jelszó kulcs"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"User/Group Attribute used for the password part of the HTTP-Basic Header."
+msgstr ""
+"A HTTP-Basic fejlécének jelszó részére használt Felasználó/Csoport "
+"attribútum."
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Provider"
+msgstr "Proxy szolgáltató"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Providers"
+msgstr "Proxy szolgáltatók"
+
+#: authentik/providers/rac/models.py authentik/stages/user_login/models.py
+msgid ""
+"Determines how long a session lasts. Default of 0 means that the sessions "
+"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"Meghatározza, hogy a munkamenet mennyi ideig tart. Az alapértelmezett 0 azt "
+"jelenti, hogy a munkamenet a böngésző bezárásáig tart. (Formátum: "
+"óra=-1;perc=-2;másodperc=-3)"
+
+#: authentik/providers/rac/models.py
+msgid "When set to true, connection tokens will be deleted upon disconnect."
+msgstr ""
+"Amikor true-ra van állítva, a kapcsolat token-jei törölve lesznek "
+"szétkapcsoláskor."
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider"
+msgstr "RAC szolgáltató"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Providers"
+msgstr "RAC szolgáltatók"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoint"
+msgstr "RAC végpont"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoints"
+msgstr "RAC végpontok"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mapping"
+msgstr "RAC szolgáltató tulajdonság összerendelés"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mappings"
+msgstr "RAC szolgáltató tulajdonság összerendelések"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection token"
+msgstr "RAC Kapcsolat token"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection tokens"
+msgstr "RAC Kapcsolat token-ek"
+
+#: authentik/providers/rac/views.py
+msgid "Maximum connection limit reached."
+msgstr "Elérte a maximális kapcsolódási limitet."
+
+#: authentik/providers/rac/views.py
+msgid "(You are already connected in another tab/window)"
+msgstr "(Már be van jelentkezve egy másik tab-ban/ablakban)"
+
+#: authentik/providers/radius/models.py
+msgid "Shared secret between clients and server to hash packets."
+msgstr ""
+"Megosztott titok az ügyfelek és a kiszolgáló között a csomagok hash-elése "
+"céljából."
+
+#: authentik/providers/radius/models.py
+msgid ""
+"List of CIDRs (comma-separated) that clients can connect from. A more "
+"specific CIDR will match before a looser one. Clients connecting from a non-"
+"specified CIDR will be dropped."
+msgstr ""
+"Azon CIDR-ek listája (vesszővel elválasztva), amelyekről az ügyfelek "
+"csatlakozhatnak. Egy specifikusabb CIDR fog egyezni a lazább előtt. A nem "
+"meghatározott CIDR-ről csatlakozó ügyfelek el lesznek vetve."
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider"
+msgstr "Radius szolgáltató"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Providers"
+msgstr "Radius szolgáltatók"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mapping"
+msgstr "Radius szolgáltató tulajdonság összerendelés"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mappings"
+msgstr "Radius szolgáltató tulajdonság összerendelések"
+
+#: authentik/providers/saml/api/providers.py
+msgid ""
+"With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
+"Response' must be selected."
+msgstr ""
+"Ha az aláíró kulcspárt kiválasztotta, akkor legalább az egyiket ki kell "
+"jelölni az 'Állítás aláírása' és 'Válasz aláírása' közül."
+
+#: authentik/providers/saml/api/providers.py
+msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
+msgstr "Csak RSA, EC és DSA kulcs típusok támogatottak a SAML aláírásra."
+
+#: authentik/providers/saml/api/providers.py
+msgid "Invalid XML Syntax"
+msgstr "Érvénytelen XML szintaxis."
+
+#: authentik/providers/saml/api/providers.py
+#, python-brace-format
+msgid "Failed to import Metadata: {messages}"
+msgstr "Sikertelen Metadata beolvasás: {messages}"
+
+#: authentik/providers/saml/models.py
+msgid "ACS URL"
+msgstr "ACS URL"
+
+#: authentik/providers/saml/models.py
+msgid "Service Provider Binding"
+msgstr "Szolgáltatás szolgáltató kötés"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"This determines how authentik sends the response back to the Service "
+"Provider."
+msgstr ""
+"Ez határozza meg, hogy az authentik hogyan küldi vissza a választ a "
+"szolgáltatás szolgáltatónak."
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Value of the audience restriction field of the assertion. When left empty, "
+"no audience restriction will be added."
+msgstr ""
+"Az állítás közönség korlátozás mezőjének értéke. Üresen hagyva nem lesz "
+"közönségkorlátozás hozzáadva."
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Also known as EntityID. Providing a value overrides the default issuer "
+"generated by authentik."
+msgstr ""
+"Egyébként az EntitID. Egy érték megadása felülírja az authentik által "
+"generált alapértelmezett kibocsátó értéket."
+
+#: authentik/providers/saml/models.py
+msgid "SLS URL"
+msgstr "SLS URL"
+
+#: authentik/providers/saml/models.py
+msgid "Single Logout Service URL where the logout response should be sent."
+msgstr ""
+"Az egyesített kilépési szolgáltatás URL-je, ahol a kilépési választ "
+"elküldeni kell."
+
+#: authentik/providers/saml/models.py
+msgid "SLS Binding"
+msgstr "SLS Binding"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"This determines how authentik sends the logout response back to the Service "
+"Provider."
+msgstr ""
+"Ez határozza meg, hogyan küldi el az authentik a kilépési választ vissza a "
+"Szolgáltatónak."
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Method to use for logout. Front-channel iframe loads all logout URLs "
+"simultaneously in hidden iframes. Front-channel native uses your active "
+"browser tab to send post requests and redirect to providers. Back-channel "
+"sends logout requests directly from the server without user interaction "
+"(requires POST SLS binding)."
+msgstr ""
+"A kilépéshez használandó módszer. A front-channel iframe minden kilépési "
+"URL-t egyszerre betölti rejtett iframékben. A front-channel native használja"
+" az aktív böngésző lapját a POST kérések küldéséhez és átirányításához a "
+"szolgáltatókhoz. A back-channel közvetlenül a kiszolgálóról küldi el a "
+"kilépési kérelmeket felhasználói interakció nélkül (a POST SLS binding "
+"szükséges)."
+
+#: authentik/providers/saml/models.py
+msgid "NameID Property Mapping"
+msgstr "NameID tulajdonság összerendelés"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the NameID value will be created. When left empty, the "
+"NameIDPolicy of the incoming request will be considered"
+msgstr ""
+"Állítsa be a NameID érték létrehozásának módját. Ha üresen hagyja, a "
+"rendszer figyelembe veszi a bejövő kérés NameID szabályzatát."
+
+#: authentik/providers/saml/models.py
+msgid "AuthnContextClassRef Property Mapping"
+msgstr "AuthnContextClassRef tulajdonság-hozzárendelés"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the AuthnContextClassRef value will be created. When left "
+"empty, the AuthnContextClassRef will be set based on which authentication "
+"methods the user used to authenticate."
+msgstr ""
+"Konfigurálja, hogyan lesz létrehozva az AuthnContextClassRef érték. Ha "
+"üresen hagyják, az authentik alapértelmezett beállítások szerint állítja be "
+"az AuthnContextClassRef-ot a felhasználó által használt hitelesítési "
+"módszerek alapján."
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Assertion valid not before current time + this value (Format: "
+"hours=-1;minutes=-2;seconds=-3)."
+msgstr ""
+"Az állítás érvénytelen a mostani idő + ezen érték előtt. (Formátum: "
+"óra=-1;perc=-2;másodperc=-3)."
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Assertion not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Az állítás érvénytelen a mostani idő + ezen értéken vagy utána. (Formátum: "
+"óra=-1;perc=-2;másodperc=-3)."
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Session not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Az munkamenet érvénytelen a mostani idő + ezen értéken vagy utána. "
+"(Formátum: óra=-1;perc=-2;másodperc=-3)."
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA1"
+msgstr "SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA256"
+msgstr "SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA384"
+msgstr "SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA512"
+msgstr "SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA1"
+msgstr "RSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA256"
+msgstr "RSA-SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA384"
+msgstr "RSA-SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA512"
+msgstr "RSA-SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA1"
+msgstr "ECDSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA256"
+msgstr "ECDSA-SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA384"
+msgstr "ECDSA-SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA512"
+msgstr "ECDSA-SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "DSA-SHA1"
+msgstr "DSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertion's Signatures will be validated against "
+"this certificate. To allow unsigned Requests, leave on default."
+msgstr ""
+"Kiválasztva, bejövő állítások aláírásainak érvényességét ezzel a "
+"tanúsítvánnyal ellenőrizzük. Aláíratlan kérések engedélyezésére hagyja "
+"üresen."
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Verification Certificate"
+msgstr "Hitelesítő Tanusítvány"
+
+#: authentik/providers/saml/models.py
+msgid "Keypair used to sign outgoing Responses going to the Service Provider."
+msgstr ""
+"Kulcspár a szolgáltatás szolgáltatóhoz érkezett kimenő válaszok aláírására "
+"szolgál."
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Signing Keypair"
+msgstr "Aláíró kulcspár"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public"
+" key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr ""
+"Kiválasztva, a bejövő állításokat az IDP ezen kulcspár nyílvános kulcsával "
+"fogja titkosítani. Az állítást az SP a privát kulccsal oldja fel."
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr "Titkosító kulcspár"
+
+#: authentik/providers/saml/models.py
+msgid "Default relay_state value for IDP-initiated logins"
+msgstr ""
+"Alapértelmezett relay_state érték IDP által kedzeményezett bejelentkezésre."
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider"
+msgstr "SAML szolgáltató"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers"
+msgstr "SAML szolgáltatók"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider Property Mapping"
+msgstr "SAML szolgáltató tulajdonság összerendelés"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider Property Mappings"
+msgstr "SAML szolgáltató tulajdonság összerendelések"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr "SAML szolgáltató Metaadatokból"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr "SAML szolgáltatók Metaadatokból"
+
+#: authentik/providers/saml/models.py
+msgid "Link to the user's authenticated session"
+msgstr "A felhasználó hitelesített munkamenetéhez tartozó hivatkozás"
+
+#: authentik/providers/saml/models.py
+msgid "SAML SessionIndex for this session"
+msgstr "Ez a munkamenetre vonatkozó SAML SessionIndex"
+
+#: authentik/providers/saml/models.py
+msgid "SAML NameID value for this session"
+msgstr "Ez a munkamenetre vonatkozó SAML NameID érték"
+
+#: authentik/providers/saml/models.py
+msgid "SAML NameID format"
+msgstr "SAML NameID formátum"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Issuer used for this session"
+msgstr "Ez a SAML szolgáltató, amelyet ezen a munkameneten használnak"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Session"
+msgstr "SAML munkamenet"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Sessions"
+msgstr "SAML munkamenetek"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth (Silent)"
+msgstr "OAuth (titkos)"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth (interactive)"
+msgstr "OAuth (interaktív)"
+
+#: authentik/providers/scim/models.py
+msgid "Default"
+msgstr "Alapértelmezett"
+
+#: authentik/providers/scim/models.py
+msgid "AWS"
+msgstr "AWS"
+
+#: authentik/providers/scim/models.py
+msgid "Slack"
+msgstr "Slack"
+
+#: authentik/providers/scim/models.py
+msgid "Salesforce"
+msgstr "Salesforce"
+
+#: authentik/providers/scim/models.py
+msgid "Webex"
+msgstr "Webex"
+
+#: authentik/providers/scim/models.py
+msgid "vCenter"
+msgstr "vCenter"
+
+#: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr ""
+"Csoport szűrők, amelyeket csoportok szinkronizálási körét definiálnak."
+
+#: authentik/providers/scim/models.py
+msgid "Base URL to SCIM requests, usually ends in /v2"
+msgstr "Alap URL a SCIM-kérelmekhez, általában végződik /v2-re"
+
+#: authentik/providers/scim/models.py
+msgid "Authentication token"
+msgstr "Hitelesítési token"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth Source used for authentication"
+msgstr "OAuth forrás, ami azonosításhoz használt"
+
+#: authentik/providers/scim/models.py
+msgid "Additional OAuth parameters, such as grant_type"
+msgstr "További OAuth paraméterek, például grant_type"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Compatibility Mode"
+msgstr "SCIM kompatibilitási mód"
+
+#: authentik/providers/scim/models.py
+msgid "Alter authentik behavior for vendor-specific SCIM implementations."
+msgstr ""
+"Vendortípusonkénti SCIM implementációkhoz tartozó authentik viselkedés "
+"módosítása."
+
+#: authentik/providers/scim/models.py
+msgid ""
+"Cache duration for ServiceProviderConfig responses. Set minutes=0 to "
+"disable."
+msgstr ""
+"ServiceProviderConfig válaszok gyorsítótár-időtartama. A letiltás érdekében "
+"beállítsa a minutes=0 értéket."
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider"
+msgstr "SCIM szolgáltató"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Providers"
+msgstr "SCIM szolgáltatók"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Mapping"
+msgstr "SCIM szolgáltató összerendelés"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Mappings"
+msgstr "SCIM szolgáltató összerendelések"
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync SCIM provider objects."
+msgstr "SCIM szolgáltató objektumainak szinkronizálása."
+
+#: authentik/providers/scim/tasks.py
+msgid "Full sync for SCIM provider."
+msgstr "Teljes SCIM szolgáltató szinkronizálása."
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync a direct object (user, group) for SCIM provider."
+msgstr ""
+"Egy közvetlen objektum (felhasználó, csoport) szinkronizálása a SCIM "
+"szolgáltatóhoz."
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
+msgstr ""
+"Egy közvetlen objektum (felhasználó, csoport) szinkronizálásának elindítása "
+"a SCIM szolgáltatókhoz."
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr "Az objektum (felhasználó, csoport) törlése a SCIM szolgáltatótól."
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
+msgstr ""
+"Egy objektum (felhasználó, csoport) törlésének elindítása a SCIM "
+"szolgáltatókhoz."
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync a related object (memberships) for SCIM provider."
+msgstr ""
+"A kapcsolódó objektum (tagságok) szinkronizálása a SCIM szolgáltatótól."
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch syncs for a related object (memberships) for SCIM providers."
+msgstr ""
+"Egy kapcsolódó objektum (tagságok) szinkronizálásának elindítása a SCIM "
+"szolgáltatókhoz."
+
+#: authentik/rbac/models.py
+msgid "Role"
+msgstr "Szerepkör"
+
+#: authentik/rbac/models.py
+msgid "Roles"
+msgstr "Szerepkörök"
+
+#: authentik/rbac/models.py
+msgid "Can assign permissions to roles"
+msgstr "Jogosultságokat rendelhet hozzá szerepkörekhöz"
+
+#: authentik/rbac/models.py
+msgid "Can unassign permissions from roles"
+msgstr "Távolíthat el jogosultságokat szerepkörektől"
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr "Kezdeti jogosultságok"
+
+#: authentik/rbac/models.py
+msgid "System permission"
+msgstr "Rendszerjogosultság"
+
+#: authentik/rbac/models.py
+msgid "System permissions"
+msgstr "Rendszerjogosultságok"
+
+#: authentik/rbac/models.py
+msgid "Can view system info"
+msgstr "Létező rendszerek információinak megtekintése"
+
+#: authentik/rbac/models.py
+msgid "Can access admin interface"
+msgstr "Hozzáférhet a rendszergazdai felülethez"
+
+#: authentik/rbac/models.py
+msgid "Can view system settings"
+msgstr "Megnézheti a rendszerszintű beállításokat"
+
+#: authentik/rbac/models.py
+msgid "Can edit system settings"
+msgstr "Rendszerebeállítások szerkesztése lehetséges"
+
+#: authentik/rbac/models.py
+msgid "Can view media files"
+msgstr "Médiafájlok megtekintése lehetséges"
+
+#: authentik/rbac/models.py
+msgid "Can manage media files"
+msgstr "Médiafájlok kezelése lehetséges"
+
+#: authentik/recovery/management/commands/create_admin_group.py
+msgid "Create admin group if the default group gets deleted."
+msgstr ""
+"Az alapértelmezett csoport törlésére kerül, akkor hozzon létre egy admin-"
+"csoportot."
+
+#: authentik/recovery/management/commands/create_recovery_key.py
+msgid "Create a Key which can be used to restore access to authentik."
+msgstr ""
+"Hozzon létre egy kulcsot, amelyet használhat a hozzáférés visszaállításához "
+"authentik-nak."
+
+#: authentik/recovery/views.py
+msgid "Used recovery-link to authenticate."
+msgstr "A recovery-link használatával való hitelesítéshez."
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr "Kerberos világ"
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr ""
+"Egyéni krb5.conf fájl a használathoz. Alapértelmezés szerint a rendszeriatot"
+" használja."
+
+#: authentik/sources/kerberos/models.py
+msgid "KAdmin server type"
+msgstr "KAdmin kiszolgáló típusa"
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr "Synchronizáljon felhasználókat Kerberostól authentik-be"
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr ""
+"Amikor a felhasználó megváltoztatja a jelszavát, szinkronizálja vissza a "
+"Kerberoshez."
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr "A kadmin-szel való hitelesítéshez használandó principal."
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr "A kadmin-szel való hitelesítéshez használandó jelszó."
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr ""
+"A kadmin-szel való hitelesítéshez használandó keytab. Base64-kódolva kell "
+"lennie vagy a TYPE:residual formában kell megadni."
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr ""
+"A kadmin-szel való hitelesítéshez használandó hitelesítői gyűjtemény. A "
+"TYPE:residual formában kell megadni."
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr ""
+"Szükséges, ha egy konkrét szervernevet szeretnénk használni a SPNEGO-hez. "
+"HTTP@hostname formában kell megadni."
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr ""
+"A SPNEGO-hez használandó keytab base64-kódolva vagy FILE:path formájú "
+"elérési út."
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr ""
+"A SPNEGO-hez használandó hitelesítői gyűjtemény type:residual formában kell "
+"megadni."
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr ""
+"Ha engedélyezve van, a bejelentkezéskor frissíti az authentik-beli tárolt "
+"jelszót a Kerberos hitelesítési háttérrel."
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr "Kerberos forrás"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr "Kerberos források"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr "Kerberos forrási tulajdonság-hozzárendelés"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr "Kerberos forráshiányzatok tulajdonság-hozzárendelései"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr "Felhasználói Kerberos forrás-összekötés"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr "Felhasználói Kerberos forrás-összekötések"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr "Csoport Kerberos forrás-összekötés"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr "Csoport Kerberos forrás-összekötések"
+
+#: authentik/sources/kerberos/tasks.py
+msgid "Check connectivity for Kerberos sources."
+msgstr "Kerberos források kapcsolatellenőrzése."
+
+#: authentik/sources/kerberos/tasks.py
+msgid "Sync Kerberos source."
+msgstr "Kerberos forrás szinkronizálása."
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr "SPNEGO hitelesítés szükséges"
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+"\n"
+"                    Győződjön meg róla, hogy érvényes tanúsítványokkal rendelkezik (az kinit segítségével szerezhetőek be)\n"
+"                    és helyesen konfigurálta a böngészőt.\n"
+"                    Kérjük, forduljon az adminisztrátorhoz.\n"
+"                "
+
+#: authentik/sources/ldap/api/sources.py
+msgid "Only a single LDAP Source with password synchronization is allowed"
+msgstr ""
+"Csak egy LDAP forrással lehet rendelkezni jelszó-szinkronizálás esetén."
+
+#: authentik/sources/ldap/models.py
+msgid "Server URI"
+msgstr "Kiszolgálói URI"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Optionally verify the LDAP Server's Certificate against the CA Chain in this"
+" keypair."
+msgstr ""
+"Beállíthatja a tanúsítvány ellenőrzést az LDAP-kiszolgálón lévő "
+"tanúsítványhoz e tanúsítványláncban."
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Client certificate to authenticate against the LDAP Server's Certificate."
+msgstr "A kliens-tanúsítvány az LDAP-kiszolgálóval való hitelesítéshez."
+
+#: authentik/sources/ldap/models.py
+msgid "Bind CN"
+msgstr "Csatlakozási CN"
+
+#: authentik/sources/ldap/models.py
+msgid "Enable Start TLS"
+msgstr "Start TLS engedélyezése"
+
+#: authentik/sources/ldap/models.py
+msgid "Use Server URI for SNI verification"
+msgstr "Az URI használata a SNI ellenőrzéshez"
+
+#: authentik/sources/ldap/models.py
+msgid "Base DN"
+msgstr "Alap DN"
+
+#: authentik/sources/ldap/models.py
+msgid "Prepended to Base DN for User-queries."
+msgstr "A felhasználók lekérdezéséhez hozzáadott előtag az Alap DN-hez."
+
+#: authentik/sources/ldap/models.py
+msgid "Addition User DN"
+msgstr "Bővítményes Felhasználó DN"
+
+#: authentik/sources/ldap/models.py
+msgid "Prepended to Base DN for Group-queries."
+msgstr "A Group-queries alapján hozzáadott Base DN előtag."
+
+#: authentik/sources/ldap/models.py
+msgid "Addition Group DN"
+msgstr "Bővítményes Csoport DN"
+
+#: authentik/sources/ldap/models.py
+msgid "Consider Objects matching this filter to be Users."
+msgstr "Ehhez a szűrőhöz illeszkedő objektumokat felhasználókké tekinteni."
+
+#: authentik/sources/ldap/models.py
+msgid "Attribute which matches the value of `group_membership_field`."
+msgstr "Attribútum, amely az `group_membership_field` értékét illeszt meg."
+
+#: authentik/sources/ldap/models.py
+msgid "Field which contains members of a group."
+msgstr "Az adott csoport tagjait tartalmazó mező."
+
+#: authentik/sources/ldap/models.py
+msgid "Consider Objects matching this filter to be Groups."
+msgstr "Ehhez a szűrőhöz illeszkedő objektumokat csoportoknak tekinteni."
+
+#: authentik/sources/ldap/models.py
+msgid "Field which contains a unique Identifier."
+msgstr "Egyedi azonosítót tartalmazó mező."
+
+#: authentik/sources/ldap/models.py
+msgid "Update internal authentik password when login succeeds with LDAP"
+msgstr ""
+"A bejelentkezés sikeres LDAP-val után frissíti a belső authentik jelszót"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"When a user changes their password, sync it back to LDAP. This can only be "
+"enabled on a single LDAP source."
+msgstr ""
+"Amikor egy felhasználó megváltoztatja a jelszavát, szinkronizálja azt vissza"
+" az LDAP-ba. Ez csak egyetlen LDAP-forráson engedélyezhető."
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
+"Csoporttagságokat felhasználói attribútum alapján keres, nem "
+"csoportattribútummal. Ez lehetővé teszi a FreeIPA és az Active Directory "
+"rendszerekben a beágyazott csoportok megoldását"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Delete authentik users and groups which were previously supplied by this "
+"source, but are now missing from it."
+msgstr ""
+"Törli az authentik felhasználókat és csoportokat, amelyek korábban ezen "
+"forrásból származtak, de most már nincsenek benne."
+
+#: authentik/sources/ldap/models.py
+msgid "N/A"
+msgstr "N/A"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source"
+msgstr "LDAP Forrás"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Sources"
+msgstr "LDAP Források"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source Property Mapping"
+msgstr "LDAP Forrás tulajdonság-hozzárendelés"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source Property Mappings"
+msgstr "LDAP Forrás tulajdonság-hozzárendelések"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Unique ID used while checking if this object still exists in the directory."
+msgstr ""
+"Egyedik azonosító, amelyet a rendszer használ arra, hogy ellenőrizze, "
+"létezik-e még ez az objektum a katalógusban."
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr "Felhasználói LDAP forrás-kapcsolat"
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr "Felhasználói LDAP forrás-kapcsolatok"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr "Csoport LDAP forrás-kapcsolat"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr "Csoport LDAP forrás-kapcsolatok"
+
+#: authentik/sources/ldap/signals.py
+msgid "Password does not match Active Directory Complexity."
+msgstr ""
+"A jelszó nem felel meg az Active Directory bonyolultsági követelményeinek."
+
+#: authentik/sources/ldap/tasks.py
+msgid "Check connectivity for LDAP source."
+msgstr "A LDAP forráshoz kapcsolódási teszt."
+
+#: authentik/sources/ldap/tasks.py
+msgid "Sync LDAP source."
+msgstr "LDAP forrás szinkronizálása."
+
+#: authentik/sources/ldap/tasks.py
+msgid "Sync page for LDAP source."
+msgstr "LDAP forrás szinkronizálási oldal."
+
+#: authentik/sources/oauth/clients/oauth2.py
+msgid "No token received."
+msgstr "Nincs token megkapva."
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr "HTTP Basic hitelesítés"
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr ""
+"Az ügyfélazonosító és titkos kulcs belefoglalása a kérés paramétereiként"
+
+#: authentik/sources/oauth/models.py
+msgid "No PKCE"
+msgstr "Nincs PKCE"
+
+#: authentik/sources/oauth/models.py
+msgid "Plain"
+msgstr "Egyszerű"
+
+#: authentik/sources/oauth/models.py
+msgid "S256"
+msgstr "S256"
+
+#: authentik/sources/oauth/models.py
+msgid "Request Token URL"
+msgstr "Token-kérést küldő URL-cím"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"URL used to request the initial token. This URL is only required for OAuth "
+"1."
+msgstr ""
+"Az inicializáló token kérése érdekében használt URL-cím. Ez az URL csak a "
+"OAuth 1 esetén szükséges."
+
+#: authentik/sources/oauth/models.py
+msgid "Authorization URL"
+msgstr "Engedélyezési URL-cím"
+
+#: authentik/sources/oauth/models.py
+msgid "URL the user is redirect to to conest the flow."
+msgstr ""
+"A felhasználót átirányító URL, amelyre a folyamat engedélyezése érdekében "
+"navigálnia kell."
+
+#: authentik/sources/oauth/models.py
+msgid "Access Token URL"
+msgstr "Hozzáférési token URL-címe"
+
+#: authentik/sources/oauth/models.py
+msgid "URL used by authentik to retrieve tokens."
+msgstr "Az authentik hozzáférési tokent beszerzéséhez használt URL-cím."
+
+#: authentik/sources/oauth/models.py
+msgid "Profile URL"
+msgstr "Profil URL-címe"
+
+#: authentik/sources/oauth/models.py
+msgid "URL used by authentik to get user information."
+msgstr "Az authentik felhasználói információk beszerzéséhez használt URL-cím."
+
+#: authentik/sources/oauth/models.py
+msgid "Additional Scopes"
+msgstr "További környezeti hatókörök"
+
+#: authentik/sources/oauth/models.py
+msgid "PKCE"
+msgstr "PKCE"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr ""
+"Hogyan hajthat végre azonosítást egy authorization_code token kéréssel járó "
+"folyamatra"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source"
+msgstr "OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Sources"
+msgstr "OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "GitHub OAuth Source"
+msgstr "GitHub OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "GitHub OAuth Sources"
+msgstr "GitHub OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Source"
+msgstr "GitLab OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Sources"
+msgstr "GitLab OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitch OAuth Source"
+msgstr "Twitch OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitch OAuth Sources"
+msgstr "Twitch OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Mailcow OAuth Source"
+msgstr "Mailcow OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Mailcow OAuth Sources"
+msgstr "Mailcow OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitter OAuth Source"
+msgstr "Twitter OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitter OAuth Sources"
+msgstr "Twitter OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Facebook OAuth Source"
+msgstr "Facebook OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Facebook OAuth Sources"
+msgstr "Facebook OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Discord OAuth Source"
+msgstr "Discord OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Discord OAuth Sources"
+msgstr "Discord OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Slack OAuth Source"
+msgstr "Slack OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Slack OAuth Sources"
+msgstr "Slack OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Patreon OAuth Source"
+msgstr "Patreon OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Patreon OAuth Sources"
+msgstr "Patreon OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Google OAuth Source"
+msgstr "Google OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Google OAuth Sources"
+msgstr "Google OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Azure AD OAuth Source"
+msgstr "Azure AD OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Azure AD OAuth Sources"
+msgstr "Azure AD OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Source"
+msgstr "Entra ID OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Sources"
+msgstr "Entra ID OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "OpenID OAuth Source"
+msgstr "OpenID OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "OpenID OAuth Sources"
+msgstr "OpenID OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Apple OAuth Source"
+msgstr "Apple OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Apple OAuth Sources"
+msgstr "Apple OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Okta OAuth Source"
+msgstr "Okta OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Okta OAuth Sources"
+msgstr "Okta OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "Reddit OAuth Source"
+msgstr "Reddit OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "Reddit OAuth Sources"
+msgstr "Reddit OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Source"
+msgstr "WeChat OAuth forrás"
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Sources"
+msgstr "WeChat OAuth források"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mapping"
+msgstr "OAuth forrás tulajdonságok ábrázolása"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mappings"
+msgstr "OAuth forrás tulajdonságok ábrázolásai"
+
+#: authentik/sources/oauth/models.py
+msgid "User OAuth Source Connection"
+msgstr "Felhasználói OAuth forráskapcsolat"
+
+#: authentik/sources/oauth/models.py
+msgid "User OAuth Source Connections"
+msgstr "Felhasználói OAuth forrás-kapcsolatok"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connection"
+msgstr "Csoport OAuth forrás-kapcsolat"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connections"
+msgstr "Csoport OAuth forrás-kapcsolatok"
+
+#: authentik/sources/oauth/tasks.py
+msgid ""
+"Update OAuth sources' config from well_known, and JWKS info from the "
+"configured URL."
+msgstr ""
+"Frissítse az OAuth források konfigurációját a well_known-ből, és a "
+"beállított URL-tól származó JWKS információkból."
+
+#: authentik/sources/oauth/views/callback.py
+#, python-brace-format
+msgid "Authentication failed: {reason}"
+msgstr "Hitelesítés sikertelen: {reason}"
+
+#: authentik/sources/plex/models.py
+msgid "Client identifier used to talk to Plex."
+msgstr "A Plex-hez való kommunikációhoz használt ügyfélazonosító."
+
+#: authentik/sources/plex/models.py
+msgid ""
+"Which servers a user has to be a member of to be granted access. Empty list "
+"allows every server."
+msgstr ""
+"Azok a kiszolgálók, melyeknek tagjaként kell lennie a felhasználónak ahhoz, "
+"hogy hozzáférést kapjon. Üres lista minden kiszolgálót engedélyezi."
+
+#: authentik/sources/plex/models.py
+msgid "Allow friends to authenticate, even if you don't share a server."
+msgstr ""
+"Engedélyezze az ismeretségben lévők hitelesítését, még akkor is, ha nem "
+"közös kiszolgálójaik van."
+
+#: authentik/sources/plex/models.py
+msgid "Plex token used to check friends"
+msgstr "A Plex token, amelyet a barátok ellenőrzéséhez használnak"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source"
+msgstr "Plex forrás"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Sources"
+msgstr "Plex források"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mapping"
+msgstr "Plex forrási tulajdonság-hozzárendelés"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mappings"
+msgstr "Plex forráshi tulajdonság-hozzárendelések"
+
+#: authentik/sources/plex/models.py
+msgid "User Plex Source Connection"
+msgstr "Felhasználói Plex forráskapcsolat"
+
+#: authentik/sources/plex/models.py
+msgid "User Plex Source Connections"
+msgstr "Felhasználói Plex forráskapcsolatok"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connection"
+msgstr "CsoportPLEXforráskapcsolat"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connections"
+msgstr "CsoportPLEXforráskapcsolatok"
+
+#: authentik/sources/plex/tasks.py
+msgid "Check the validity of a Plex source."
+msgstr "Ellenőrizze a Plex forrás érvényességét."
+
+#: authentik/sources/saml/api/source.py
+msgid ""
+"With a Verification Certificate selected, at least one of 'Verify Assertion "
+"Signature' or 'Verify Response Signature' must be selected."
+msgstr ""
+"Ha ellenőrzési tanúsítvány van kiválasztva, legalább az 'Assertív állítás "
+"aláírásának' vagy a 'Válasz aláírásának' egyikének is meg kell jelennie."
+
+#: authentik/sources/saml/models.py
+msgid "Redirect Binding"
+msgstr "Átirányítási kötőszöveg"
+
+#: authentik/sources/saml/models.py
+msgid "POST Binding"
+msgstr "POST csatolás"
+
+#: authentik/sources/saml/models.py
+msgid "POST Binding with auto-confirmation"
+msgstr "POST csatolás automatikus megerősítéssel"
+
+#: authentik/sources/saml/models.py authentik/sources/telegram/models.py
+msgid "Flow used before authentication."
+msgstr "A hitelesítés előtt használt folyamat."
+
+#: authentik/sources/saml/models.py
+msgid "Issuer"
+msgstr "Kibocsátó"
+
+#: authentik/sources/saml/models.py
+msgid "Also known as Entity ID. Defaults the Metadata URL."
+msgstr "Egyéni azonosítóként ismert. Alapértelmezett a Metaadat URL-cím."
+
+#: authentik/sources/saml/models.py
+msgid "SSO URL"
+msgstr "SSO URL"
+
+#: authentik/sources/saml/models.py
+msgid "URL that the initial Login request is sent to."
+msgstr "Az első Login kérést elküldő URL-cím."
+
+#: authentik/sources/saml/models.py
+msgid "SLO URL"
+msgstr "SLO URL"
+
+#: authentik/sources/saml/models.py
+msgid "Optional URL if your IDP supports Single-Logout."
+msgstr "Opcionális URL, ha az IDP támogatja a Single-Logout funkciót."
+
+#: authentik/sources/saml/models.py
+msgid ""
+"Allows authentication flows initiated by the IdP. This can be a security "
+"risk, as no validation of the request ID is done."
+msgstr ""
+"Engedélyezi az IdP által kezdeményezett hitelesítési folyamatokat. Ez lehet "
+"biztonsági kockázat, mivel nincs igazolás a kérés azonosítóira."
+
+#: authentik/sources/saml/models.py
+msgid ""
+"When enabled, the IdP will re-authenticate the user even if a session "
+"exists."
+msgstr ""
+"Ha engedélyezve van, az IdP újra hitelesít egy felhasználót, még akkor is, "
+"ha már létezik munkamenet."
+
+#: authentik/sources/saml/models.py
+msgid ""
+"NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
+"sent."
+msgstr ""
+"NameID szabályzat amit az IdP-re lesz küldve. Ha nincs beállítva, nem lesz "
+"küldve."
+
+#: authentik/sources/saml/models.py
+msgid "Delete temporary users after"
+msgstr "Tímid temporáris felhasználók törlése után"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"Time offset when temporary users should be deleted. This only applies if "
+"your IDP uses the NameID Format 'transient', and the user doesn't log out "
+"manually. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"A temporáris felhasználók törlésének időtartama. Ez csak akkor érvényes, ha "
+"az IDP a 'transient' NameID Formátumot használja és a felhasználó nem "
+"jelentkezik ki manuálisan. (Formátum: óra=1;perc=2;másodperc=3)."
+
+#: authentik/sources/saml/models.py
+msgid ""
+"Keypair used to sign outgoing Responses going to the Identity Provider."
+msgstr ""
+"A kulcspár az identitásszolgáltatóhoz intézett kimenő válaszok aláírására "
+"szolgál."
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source"
+msgstr "SAML forrás"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Sources"
+msgstr "SAML források"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mapping"
+msgstr "SAML forrás tulajdonság-hozzárendelés"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mappings"
+msgstr "SAML forrás tulajdonság-hozzárendelések"
+
+#: authentik/sources/saml/models.py
+msgid "User SAML Source Connection"
+msgstr "Felhasználó SAML forrás csatlakozása"
+
+#: authentik/sources/saml/models.py
+msgid "User SAML Source Connections"
+msgstr "Felhasználó SAML forrás csatlakozások"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connection"
+msgstr "Csoport SAML forrás csatlakozása"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connections"
+msgstr "Csoport SAML forrás-kapcsolatok"
+
+#: authentik/sources/saml/views.py
+#, python-brace-format
+msgid "Continue to {source_name}"
+msgstr "Folytatás {source_name}-ra"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source"
+msgstr "SCIM forrás"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Sources"
+msgstr "SCIM források"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mapping"
+msgstr "SCIM forrás-szempontok megfeleltetése"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mappings"
+msgstr "SCIM forrás-szempontok megfeleltetései"
+
+#: authentik/sources/telegram/api/source.py
+msgid "This Telegram account is already connected to another user."
+msgstr "Ez a Telegram-fiók már csatlakoztatva van egy másik felhasználóhoz."
+
+#: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
+msgid "Telegram bot username"
+msgstr "Telegram bot felhasználói név"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram bot token"
+msgstr "Telegram bot token"
+
+#: authentik/sources/telegram/models.py
+msgid "Request access to send messages from your bot."
+msgstr "Kérje meg az üzenetek küldéséhez szükséges engedéllyt a botodtól."
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source"
+msgstr "Telegram forrás"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Sources"
+msgstr "Telegram forráskódok"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source Property Mapping"
+msgstr "Telegram forrás tulajdonságok ábrázolása"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source Property Mappings"
+msgstr "Telegram forrás tulajdonságok ábrázolásai"
+
+#: authentik/sources/telegram/models.py
+msgid "User Telegram Source Connection"
+msgstr "Felhasználó Telegram forrás csatlakoztatva"
+
+#: authentik/sources/telegram/models.py
+msgid "User Telegram Source Connections"
+msgstr "Felhasználó Telegram forrás csatlakoztatások"
+
+#: authentik/sources/telegram/models.py
+msgid "Group Telegram Source Connection"
+msgstr "Csoport Telegram forrás csatlakoztatva"
+
+#: authentik/sources/telegram/models.py
+msgid "Group Telegram Source Connections"
+msgstr "Csoport Telegram forrás csatlakoztatások"
+
+#: authentik/sources/telegram/telegram.py
+msgid "Authentication date is too old"
+msgstr "Az aláírási dátum túlrejtegetett"
+
+#: authentik/sources/telegram/telegram.py
+msgid "Invalid hash"
+msgstr "Érvénytelen szóró"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Authenticator Setup Stage"
+msgstr "Duo hitelesítő alkalmazás beállító szakasz"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Authenticator Setup Stages"
+msgstr "Duo hitelesítő alkalmazás beállító szakaszok"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Device"
+msgstr "Duo eszköz"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Devices"
+msgstr "Duo eszközök"
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid ""
+"When enabled, global Email connection settings will be used and connection "
+"settings below will be ignored."
+msgstr ""
+"Ha engedélyezve van, a globális E-mail kapcsolat beállításai lesznek "
+"használatban és az alábbi beállítások figyelmen kívül lesznek hagyva."
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
+msgstr ""
+"A küldött token érvényességi ideje (Formátum: óra=3, perc=17, "
+"másodperc=300)."
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stage"
+msgstr "E-mail hitelesítő alkalmazás beállító szakasz"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stages"
+msgstr "E-mail hitelesítő alkalmazás beállító szakaszok"
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/email/stage.py
+msgid "Exception occurred while rendering E-mail template"
+msgstr "Hiba történt az E-mail sablon megjelenítése közben"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Device"
+msgstr "E-mail eszköz"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Devices"
+msgstr "E-mail eszközek"
+
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/authenticator_sms/stage.py
+#: authentik/stages/authenticator_totp/stage.py
+msgid "Code does not match"
+msgstr "A kód nem egyezik"
+
+#: authentik/stages/authenticator_email/stage.py
+msgid "Invalid email"
+msgstr "Érvénytelen email cím"
+
+#: authentik/stages/authenticator_email/stage.py
+msgid "The user already has an email address registered for MFA."
+msgstr "A felhasználó már MFA érkezési címmel van regisztrált."
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#: authentik/stages/email/templates/email/password_reset.html
+#, python-format
+msgid ""
+"\n"
+"      Hi %(username)s,\n"
+"      "
+msgstr ""
+"\n"
+"Üdv %(username)s,\\"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+msgid ""
+"\n"
+"          Email MFA code.\n"
+"          "
+msgstr ""
+"\n"
+"          Email MFA kód.\n"
+"          "
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#, python-format
+msgid ""
+"\n"
+"    If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+"    "
+msgstr ""
+"\n"
+"    Ha nem igényelt le ezt a kódot, ne vegye figyelembe ezt az email-t. A fenti kód %(expires)s ideig érvényes.\n"
+"    "
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#: authentik/stages/email/templates/email/password_reset.txt
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Szia %(username)s,"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+msgid ""
+"\n"
+"Email MFA code\n"
+msgstr ""
+"\n"
+"Email MFA kód\n"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#, python-format
+msgid ""
+"\n"
+"If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+msgstr ""
+"\n"
+"Ha nem igényelt le ezt a kódot, ne vegye figyelembe ezt az email-t. A fenti kód %(expires)s ideig érvényes.\n"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid ""
+"When enabled, the Phone number is only used during enrollment to verify the "
+"users authenticity. Only a hash of the phone number is saved to ensure it is"
+" not reused in the future."
+msgstr ""
+"A bekapcsolás esetén a Telefonszám csak az engedélyezés során szolgál a "
+"felhasználó igazságosságának ellenőrzésére. Csak egy hash-je van elmentve, "
+"hogy biztosítsuk, hogy nem lesz további használatra."
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "Optionally modify the payload being sent to custom providers."
+msgstr "Módosíthatja az egyéni szolgáltatóknak küldött csomagot."
+
+#: authentik/stages/authenticator_sms/models.py
+#, python-brace-format
+msgid "Use this code to authenticate in authentik: {token}"
+msgstr "Használja ezt a kódot az authentik bejelentkezéshez: {token}"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Authenticator Setup Stage"
+msgstr "SMS Authenticator Beállítás Stág"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Authenticator Setup Stages"
+msgstr "SMS Hitelesítői Fázisok Beállítása"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Device"
+msgstr "SMS eszköz"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Devices"
+msgstr "SMS eszközök"
+
+#: authentik/stages/authenticator_sms/stage.py
+msgid "Invalid phone number"
+msgstr "Érvénytelen telefonszám"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Authenticator Setup Stage"
+msgstr "Egyszerűsített Hitelesítői Fázis Beállítása"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Authenticator Setup Stages"
+msgstr "Egyszerűsített Hitelesítői Fázisok Beállítása"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Device"
+msgstr "Statikus eszköz"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Devices"
+msgstr "Statikus eszközök"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Token"
+msgstr "Egyszerűsített Token"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Tokens"
+msgstr "Egyszerűsített Tokens"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "6 digits, widely compatible"
+msgstr "6 számjegy, széles körben kompatibilis"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "8 digits, not compatible with apps like Google Authenticator"
+msgstr ""
+"8 számjegy, nem kompatibilis alkalmazásokkal, mint például a Google "
+"Authenticator"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Authenticator Setup Stage"
+msgstr "TOTP Hitelesítői Fázis Beállítása"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Authenticator Setup Stages"
+msgstr "TOTP Hitelesítői Fázisok Beállítása"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Device"
+msgstr "TOTP eszköz"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Devices"
+msgstr "TOTP eszközök"
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid ""
+"Invalid Token. Please ensure the time on your device is accurate and try "
+"again."
+msgstr ""
+"Érvénytelen token. Kérjük, ellenőrizze a(z) eszköz időbeállításait és "
+"próbálja újra."
+
+#: authentik/stages/authenticator_validate/challenge.py
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Invalid device type. Contact your {brand} administrator for help."
+msgstr ""
+"Érvénytelen eszkiszámítógép típusa. Kapcsolatba lépjen az {brand} "
+"adminisztrátorral a segítségért."
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Static"
+msgstr "Félig statikus"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "TOTP"
+msgstr "TOTP"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "WebAuthn"
+msgstr "WebAuthn"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Duo"
+msgstr "Duo"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "SMS"
+msgstr "SMS"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid ""
+"Stages used to configure Authenticator when user doesn't have any compatible"
+" devices. After this configuration Stage passes, the user is not prompted "
+"again."
+msgstr ""
+"Hitelesítő konfigurálására vonatkozó szakaszok, amennyiben a felhasználónak "
+"nincs kompatibilis eszköze. Miután ez a konfigurációs szakasz lezajlik, a "
+"felhasználónak nem kell ismét elvégeznie a folyamatot."
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Device classes which can be used to authenticate"
+msgstr "Azon eszközosztályok, amelyek hitelesítésre használhatóak."
+
+#: authentik/stages/authenticator_validate/models.py
+msgid ""
+"If any of the user's device has been used within this threshold, this stage "
+"will be skipped"
+msgstr ""
+"Amennyiben a felhasználó bármelyik eszközét használták ezen küszöbérték "
+"időtartama alatt, ez a szakasz át lesz ugorva."
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Enforce user verification for WebAuthn devices."
+msgstr "A felhasználói hitelesítés kikényszerítése WebAuthn eszközökön."
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validation Stage"
+msgstr "Hitelesítő alkalmazás ellenőrzési szakasz"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validation Stages"
+msgstr "Hitelesítő alkalmazás ellenőrzési szakaszok"
+
+#: authentik/stages/authenticator_validate/stage.py
+msgid "No (allowed) MFA authenticator configured."
+msgstr "Nincs (engedélyezett) MFA hitelesítő alkalmazás konfigurálva."
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "When enabled, a given device can only be registered once."
+msgstr ""
+"Amikor engedélyezve van, egy megadott eszköz csak egyszer regisztrálható."
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Authenticator Setup Stage"
+msgstr "WebAuthn hitelesítői beállítások"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Authenticator Setup Stages"
+msgstr "WebAuthn hitelesítői beállítások"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device"
+msgstr "WebAuthn eszköz"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Devices"
+msgstr "WebAuthn eszközök"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device type"
+msgstr "WebAuthn eszköz típusa"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device types"
+msgstr "WebAuthn eszköz típusai"
+
+#: authentik/stages/authenticator_webauthn/tasks.py
+msgid ""
+"Background task to import FIDO Alliance MDS blob and AAGUIDs into database."
+msgstr ""
+"Háttérbeli feladat a FIDO Alliance MDS blob és az AAGUID-k importálásához a "
+"adatbázisba."
+
+#: authentik/stages/captcha/models.py
+msgid "Public key, acquired your captcha Provider."
+msgstr "Nyilvános kulcs, megszerezve a captcha-szolgáltató által."
+
+#: authentik/stages/captcha/models.py
+msgid "Private key, acquired your captcha Provider."
+msgstr "Magán kulcs, megszerezve a captcha-szolgáltató által."
+
+#: authentik/stages/captcha/models.py
+msgid ""
+"When enabled and the received captcha score is outside of the given "
+"threshold, the stage will show an error message. When not enabled, the flow "
+"will continue, but the data from the captcha will be available in the "
+"context for policy decisions"
+msgstr ""
+"Ha engedélyezve van, és a kapott captcha pontszám kívül esik a megadott "
+"küszöbértéken, a szakasz hibaüzenetet jelenít meg. Ha nincs engedélyezve, a "
+"folyamat folytatódik, de a captcha-ból származó adatok elérhetőek lesznek az"
+" irányelvekkel kapcsolatos döntésekhez."
+
+#: authentik/stages/captcha/models.py
+msgid "Captcha Stage"
+msgstr "Captcha szakasz"
+
+#: authentik/stages/captcha/models.py
+msgid "Captcha Stages"
+msgstr "Captcha szakaszok"
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr ""
+"Érvénytelen captcha válasz. Újra próbálkozás segíthet e problémák "
+"megoldásában."
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response"
+msgstr "Érvénytelen captcha válasz"
+
+#: authentik/stages/captcha/stage.py
+msgid "Failed to validate token"
+msgstr "Token ellenőrzése sikertelen"
+
+#: authentik/stages/consent/models.py
+msgid ""
+"Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"A jogosítvány lejárati időpontja (Formátum: óra=1;perc=2;másodperc=3)."
+
+#: authentik/stages/consent/models.py
+msgid "Consent Stage"
+msgstr "Hozzájárulás szakasz"
+
+#: authentik/stages/consent/models.py
+msgid "Consent Stages"
+msgstr "Hozzájárulások szakasza"
+
+#: authentik/stages/consent/models.py
+msgid "User Consent"
+msgstr "Felhasználói hozzájárulás"
+
+#: authentik/stages/consent/models.py
+msgid "User Consents"
+msgstr "Felhasználói hozzájárulások"
+
+#: authentik/stages/consent/stage.py
+msgid "Invalid consent token, re-showing prompt"
+msgstr ""
+"Érvénytelen hozzájárulási jogkivonat, újravalasztás a felugró ablakban"
+
+#: authentik/stages/deny/models.py
+msgid "Deny Stage"
+msgstr "Elutasítás szakasz"
+
+#: authentik/stages/deny/models.py
+msgid "Deny Stages"
+msgstr "Elutasítások szakasza"
+
+#: authentik/stages/dummy/models.py
+msgid "Dummy Stage"
+msgstr "Tervezési szakasz"
+
+#: authentik/stages/dummy/models.py
+msgid "Dummy Stages"
+msgstr "Tervezési szakaszok"
+
+#: authentik/stages/email/flow.py
+msgid "Continue to confirm this email address."
+msgstr "Folytatás ezen az email-cím ellenőrzése."
+
+#: authentik/stages/email/flow.py
+msgid "Link was already used, please request a new link."
+msgstr ""
+"A hivatkozás már használatban van, kérem kérje meg egy új hivatkozást."
+
+#: authentik/stages/email/models.py
+msgid "Password Reset"
+msgstr "Jelszó visszaállítása"
+
+#: authentik/stages/email/models.py
+msgid "Account Confirmation"
+msgstr "Fiók megerősítése"
+
+#: authentik/stages/email/models.py
+msgid "Email OTP"
+msgstr "E-mail OTP"
+
+#: authentik/stages/email/models.py
+msgid "Event Notification"
+msgstr "Értesítés eseményről"
+
+#: authentik/stages/email/models.py authentik/stages/invitation/models.py
+msgid "Invitation"
+msgstr "Meghívás"
+
+#: authentik/stages/email/models.py
+msgid ""
+"The time window used to count recent account recovery attempts. If the "
+"number of attempts exceed recovery_max_attempts within this period, further "
+"attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"A körülhatárolt időszak, amelyben a fiók-visszaállítási kísérleteket "
+"számoljuk. Ha a visszaállítási kísérletek száma meghaladja a "
+"recovery_max_attempts értéket ebben az időszakban, további kísérletek "
+"korlátozottan engedélyezettek (Formátum: órák=1;percek=2;mp=3)."
+
+#: authentik/stages/email/models.py
+msgid "Activate users upon completion of stage."
+msgstr "Aktiválja a felhasználókat a szakasz befejezésekor."
+
+#: authentik/stages/email/models.py
+msgid "Email Stage"
+msgstr "E-mail szakasz"
+
+#: authentik/stages/email/models.py
+msgid "Email Stages"
+msgstr "E-mail szakaszok"
+
+#: authentik/stages/email/stage.py
+msgid "Successfully verified Email."
+msgstr "Sikeresen ellenőrzött e-mail."
+
+#: authentik/stages/email/stage.py
+msgid "No pending user."
+msgstr "Nincs függőben lévő felhasználó."
+
+#: authentik/stages/email/stage.py
+msgid "Email sent."
+msgstr "Email elküldve."
+
+#: authentik/stages/email/stage.py
+#, python-brace-format
+msgid ""
+"Too many account verification attempts. Please try again after {minutes} "
+"minutes."
+msgstr ""
+"Túl sok fiók-ellenőrzési kísérlet. Kérem, próbálja újra {minutes} perccel "
+"később."
+
+#: authentik/stages/email/stage.py
+msgid "Email Successfully sent."
+msgstr "Email sikeresen elküldve."
+
+#: authentik/stages/email/tasks.py
+msgid "Send email."
+msgstr "E-mail küldése."
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+#: authentik/stages/email/templates/email/account_confirmation.txt
+msgid "Welcome!"
+msgstr "Üdvözöljük!"
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+msgid ""
+"We're excited to have you get started. First, you need to confirm your "
+"account. Just press the button below."
+msgstr ""
+"Örülünk, hogy kezdeményezést lát a használatunkban. Először is, ellenőrizze "
+"az fiókját. Kattintson a gombra alábbiakban."
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+msgid "Confirm Account"
+msgstr "Fiók megerősítése"
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+#, python-format
+msgid ""
+"\n"
+"    If that doesn't work, copy and paste the following link in your browser: %(url)s\n"
+"    "
+msgstr ""
+"\n"
+"    Ha ez nem működik, másolja és illessze be a következő linket a böngészőbe: %(url)s\n"
+"    "
+
+#: authentik/stages/email/templates/email/account_confirmation.txt
+msgid ""
+"We're excited to have you get started. First, you need to confirm your "
+"account. Just open the link below."
+msgstr ""
+"Örülünk, hogy kezdeményezést lát a használatunkban. Először is, ellenőrizze "
+"az fiókját. Nyissa meg a következő linket alábbiakban."
+
+#: authentik/stages/email/templates/email/event_notification.html
+#, python-format
+msgid ""
+"\n"
+"    This email was sent from the notification transport <code>%(name)s</code>.\n"
+"    "
+msgstr ""
+"\n"
+"Ez az e-mail a(z) <code>%(name)s</code> értesítési szolgáltatásból küldték.\n"
+"    "
+
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "Dear authentik user,"
+msgstr "Kedves authentik felhasználó,"
+
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "The following notification was created:"
+msgstr "A következő értesítés jött létre:"
+
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "Additional attributes:"
+msgstr "További attribútumok:"
+
+#: authentik/stages/email/templates/email/event_notification.txt
+#, python-format
+msgid ""
+"\n"
+"This email was sent from the notification transport %(name)s.\n"
+msgstr ""
+"\n"
+"Ez az e-mail a(z) %(name)s értesítési szolgáltatásból küldték.\n"
+
+#: authentik/stages/email/templates/email/invitation.html
+msgid ""
+"\n"
+"      You're Invited!\n"
+"      "
+msgstr ""
+"\n"
+"      Előírásod van!\n"
+"      "
+
+#: authentik/stages/email/templates/email/invitation.html
+#, python-format
+msgid ""
+"\n"
+"          You have been invited to join %(host)s. Click the button below to get started.\n"
+"          "
+msgstr ""
+"\n"
+"          Előírták, hogy csatlakozzon %(host)s. Kattintson a gombra alább a kezdéshez.\n"
+"          "
+
+#: authentik/stages/email/templates/email/invitation.html
+#, python-format
+msgid ""
+"\n"
+"          This invitation expires %(expires)s.\n"
+"          "
+msgstr ""
+"\n"
+"          Ez az előírás %(expires)s után lejár.\n"
+"          "
+
+#: authentik/stages/email/templates/email/invitation.html
+#: authentik/stages/email/templates/email/invitation.txt
+msgid "Accept Invitation"
+msgstr "Elfogadás"
+
+#: authentik/stages/email/templates/email/invitation.html
+msgid ""
+"\n"
+"    If you cannot click the button above, please copy and paste the following URL into your browser:\n"
+"    "
+msgstr ""
+"\n"
+"    Ha nem kattinthat a felső gombra, kérjük másolja és illessze be a következő URL-t a böngészőbe:\n"
+"    "
+
+#: authentik/stages/email/templates/email/invitation.txt
+msgid "You're Invited!"
+msgstr "Megírva!"
+
+#: authentik/stages/email/templates/email/invitation.txt
+#, python-format
+msgid ""
+"You have been invited to join %(host)s. Use the link below to get started."
+msgstr ""
+"Elküldték az önnhez tartozó csatlakozási meghívást %(host)s-hoz. Használja a"
+" lenti hivatkozást, hogy kezdjen."
+
+#: authentik/stages/email/templates/email/invitation.txt
+#, python-format
+msgid "This invitation expires %(expires)s."
+msgstr "Ez a meghívás lejár ideig: %(expires)s."
+
+#: authentik/stages/email/templates/email/invitation.txt
+msgid ""
+"If you cannot click the link above, please copy and paste the following URL "
+"into your browser:"
+msgstr ""
+"Ha nem kattinthat a felső hivatkozatra, kérjük másolja és illessze be a "
+"következő URL-t a böngészőbe:"
+
+#: authentik/stages/email/templates/email/password_reset.html
+msgid ""
+"\n"
+"          You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
+"          "
+msgstr ""
+"\n"
+"Ön nemrégiben jelszóváltoztatást kezdeményezett az authentik fiókjához. Új jelszó beállításához használja a lentebbi gombot."
+
+#: authentik/stages/email/templates/email/password_reset.html
+#, python-format
+msgid ""
+"\n"
+"    If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
+"    "
+msgstr ""
+"\n"
+"Ha nem kérte a jelszót megváltoztatni, kérem, ne vegye figyelembe ezen az e-mailen. A felső hivatkozás ideiglenes, és %(expires)s után lejár."
+
+#: authentik/stages/email/templates/email/password_reset.txt
+msgid ""
+"\n"
+"You recently requested to change your password for your authentik account. Use the link below to set a new password.\n"
+msgstr ""
+"\n"
+"Néhány idő múlva jelszót megváltoztatni kívánta a saját authentik fiókjában. Használja a lenti hivatkozást, hogy beállíthat új jelszót.\n"
+
+#: authentik/stages/email/templates/email/password_reset.txt
+#, python-format
+msgid ""
+"\n"
+"If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
+msgstr ""
+"\n"
+"Ha nem igyekvett jelszót megváltoztatni, kérem, ne vegye figyelembe ezen az e-mailen. A felső hivatkozás ideiglenes, és %(expires)s után lejár.\n"
+
+#: authentik/stages/email/templates/email/setup.html
+msgid "authentik Test-Email"
+msgstr "authentik teszt-e-mail"
+
+#: authentik/stages/email/templates/email/setup.html
+msgid ""
+"\n"
+"                    This is a test email to inform you, that you've successfully configured authentik emails.\n"
+"                    "
+msgstr ""
+"\n"
+"Ez egy teszt e-mail a hitelesítés beállításainak sikeres konfigurálásáról."
+
+#: authentik/stages/email/templates/email/setup.txt
+msgid ""
+"\n"
+"This is a test email to inform you, that you've successfully configured authentik emails.\n"
+msgstr ""
+"\n"
+"Ez egy teszt e-mail a hitelesítés beállításainak sikeres konfigurálásáról.\n"
+
+#: authentik/stages/identification/api.py
+msgid "When no user fields are selected, at least one source must be selected"
+msgstr ""
+"Ha nincs felhasználói mező kiválasztva, legalább egy forrásnak kell "
+"megjelennie."
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Fields of the user object to match against. (Hold shift to select multiple "
+"options)"
+msgstr ""
+"A felhasználó objektum mezői, amelyekkel az összevetés történik. (Nyomd le a"
+" Shift-gombot több opciót kiválasztáshoz)"
+
+#: authentik/stages/identification/models.py
+msgid "When enabled, user fields are matched regardless of their casing."
+msgstr ""
+"Ha engedélyezve van, a felhasználói mezők összehasonlítása esetleges "
+"betűméretnek is megfelel."
+
+#: authentik/stages/identification/models.py
+msgid ""
+"When a valid username/email has been entered, and this option is enabled, "
+"the user's username and avatar will be shown. Otherwise, the text that the "
+"user entered will be shown"
+msgstr ""
+"Amikor egy érvényes felhasználónév vagy e-mail cím be van írva és ez az "
+"opció engedélyezve van, a felhasználó felhasználónév és profilképe jelenik "
+"meg. Ellenkező esetben a felhasználó által beírt szöveg jelenik meg."
+
+#: authentik/stages/identification/models.py
+msgid ""
+"When enabled, the stage will succeed and continue even when incorrect user "
+"info is entered."
+msgstr ""
+"Ha engedélyezve van, az állapothoz bármilyen hibás felhasználói adatokkal is"
+" sikerül és folytatódik."
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users"
+" to skip straight to entering their password."
+msgstr ""
+"Mutassa a felhasználónak a 'Ezt az eszközt emlékezz meg' kapcsolót, amely "
+"lehetővé teszi a visszatérő felhasználóknak közvetlenül jelszavuk beírására."
+
+#: authentik/stages/identification/models.py
+msgid "Optional enrollment flow, which is linked at the bottom of the page."
+msgstr ""
+"Opcionális regisztrációs folyamat, ami az oldal alján található "
+"hivatkozással érhető el."
+
+#: authentik/stages/identification/models.py
+msgid "Optional recovery flow, which is linked at the bottom of the page."
+msgstr ""
+"Opcionális helyreállítási folyamat, ami az oldal alján található "
+"hivatkozással érhető el."
+
+#: authentik/stages/identification/models.py
+msgid "Optional passwordless flow, which is linked at the bottom of the page."
+msgstr "Nem kötelező jelszómentes folyamat, amely a lapon alul látható."
+
+#: authentik/stages/identification/models.py
+msgid "Specify which sources should be shown."
+msgstr "Határozzza meg, mely forrásokat szeretné mutatni."
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stage"
+msgstr "Azonosítási Stág"
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stages"
+msgstr "Azonosítási Stágok"
+
+#: authentik/stages/identification/stage.py
+msgid "No identification data provided."
+msgstr "Nincs azonosítási adatodottakat nyújtva."
+
+#: authentik/stages/identification/stage.py
+msgid "Failed to authenticate."
+msgstr "A hitelesítés sikertelen."
+
+#: authentik/stages/identification/stage.py
+msgid "Log in"
+msgstr "Bejelentkezés"
+
+#: authentik/stages/identification/stage.py
+msgid "Continue"
+msgstr "Folytatás"
+
+#: authentik/stages/invitation/models.py
+msgid ""
+"If this flag is set, this Stage will jump to the next Stage when no "
+"Invitation is given. By default this Stage will cancel the Flow when no "
+"invitation is given."
+msgstr ""
+"Ha ez a jelző be van állítva, ezen a Stágon keresztül lép tovább az "
+"alábbihoz, ha nincs meghívás. Alapértelmezés szerint ez a Stág a folyamatot "
+"megszakítja, ha nincs meghívás."
+
+#: authentik/stages/invitation/models.py
+msgid "Invitation Stage"
+msgstr "Meghívás Stág"
+
+#: authentik/stages/invitation/models.py
+msgid "Invitation Stages"
+msgstr "Meghívó szakaszok"
+
+#: authentik/stages/invitation/models.py
+msgid "When set, only the configured flow can use this invitation."
+msgstr ""
+"Ha be van kapcsolva, csak a konfigurált folyamat használhatja ezt a "
+"meghívót."
+
+#: authentik/stages/invitation/models.py
+msgid "When enabled, the invitation will be deleted after usage."
+msgstr "Ha engedélyezve van, a meghívó törölkedik az használat után."
+
+#: authentik/stages/invitation/models.py
+msgid "Optional fixed data to enforce on user enrollment."
+msgstr ""
+"Opcionális beállított adatok, amelyeket a felhasználói regisztráció során "
+"követelnek meg."
+
+#: authentik/stages/invitation/models.py
+msgid "Invitations"
+msgstr "Meghívók"
+
+#: authentik/stages/invitation/stage.py
+msgid "Invalid invite/invite not found"
+msgstr "Érvénytelen meghívó/nem található meghívó"
+
+#: authentik/stages/password/models.py
+msgid "User database + standard password"
+msgstr "Felhasználói adatbázis + standard jelszó"
+
+#: authentik/stages/password/models.py
+msgid "User database + app passwords"
+msgstr "Felhasználói adatbázis + alkalmazásjelszavak"
+
+#: authentik/stages/password/models.py
+msgid "User database + LDAP password"
+msgstr "Felhasználói adatbázis + LDAP-jelszó"
+
+#: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr "Felhasználói adatbázis + Kerberos-jelszó"
+
+#: authentik/stages/password/models.py
+msgid "Selection of backends to test the password against."
+msgstr ""
+"Háttérszolgáltatások kiválasztása, amelyekhez tesztelni szeretné a jelszót."
+
+#: authentik/stages/password/models.py
+msgid ""
+"How many attempts a user has before the flow is canceled. To lock the user "
+"out, use a reputation policy and a user_write stage."
+msgstr ""
+"Hányszor próbálkozik a felhasználó a folyamat megszakítása előtt. A "
+"felhasználó kizárásához használjon hírnévszabályzatot és user_write "
+"szakaszt."
+
+#: authentik/stages/password/models.py
+msgid ""
+"When enabled, provides a 'show password' button with the password input "
+"field."
+msgstr ""
+"Ha engedélyezve van, egy 'jelszó megjelenítése' gombot nyújt a jelszónév "
+"mező mellett."
+
+#: authentik/stages/password/models.py
+msgid "Password Stage"
+msgstr "Jelszó szakasz"
+
+#: authentik/stages/password/models.py
+msgid "Password Stages"
+msgstr "Jelszó szakasz"
+
+#: authentik/stages/password/stage.py
+msgid "Invalid password"
+msgstr "Helytelen jelszó"
+
+#: authentik/stages/prompt/models.py
+msgid "Text: Simple Text input"
+msgstr "Szöveg: Egyszerű szövegmegadás"
+
+#: authentik/stages/prompt/models.py
+msgid "Text area: Multiline Text Input."
+msgstr "Szövegszelet: Több soros szövegemadás."
+
+#: authentik/stages/prompt/models.py
+msgid "Text (read-only): Simple Text input, but cannot be edited."
+msgstr ""
+"Szöveg (olvasási módban): Egyszerű szövegmegadás, de nem szerkeszthető."
+
+#: authentik/stages/prompt/models.py
+msgid "Text area (read-only): Multiline Text input, but cannot be edited."
+msgstr ""
+"Szövegszelet (olvasási módban): Több soros szövegemadás, de nem "
+"szerkeszthető."
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Username: Same as Text input, but checks for and prevents duplicate "
+"usernames."
+msgstr ""
+"Felhasználónév: Ugyanaz, mint a Szöveg mező, de duplikált felhasználónevek "
+"elleni ellenőrzést hajt végre."
+
+#: authentik/stages/prompt/models.py
+msgid "Email: Text field with Email type."
+msgstr "E-mail: E-mail típusú szövegmegadás."
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password: Masked input, multiple inputs of this type on the same prompt need"
+" to be identical."
+msgstr ""
+"Jelszó: maszkolt bevitel, az ilyen típusú beviteli mezőkben lévő adatoknak "
+"ugyanazon a prompton meg kell egyeznie."
+
+#: authentik/stages/prompt/models.py
+msgid "Fixed choice field rendered as a group of radio buttons."
+msgstr ""
+"Fix választási lehetőség mező, amely rádiógombok csoportjaként jelenik meg."
+
+#: authentik/stages/prompt/models.py
+msgid "Fixed choice field rendered as a dropdown."
+msgstr "Fix választási lehetőség mező, amely alsóvonali menüként jelenik meg."
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"File: File upload for arbitrary files. File content will be available in "
+"flow context as data-URI"
+msgstr ""
+"Fájl: Bármilyen fájlok feltöltése. A fájl tartalma flow kontextusban "
+"elérhető data-URI formátumban."
+
+#: authentik/stages/prompt/models.py
+msgid "Separator: Static Separator Line"
+msgstr "Elválasztó: Statikus elválasztó vonal"
+
+#: authentik/stages/prompt/models.py
+msgid "Hidden: Hidden field, can be used to insert data into form."
+msgstr ""
+"Rejtett: Rejtett mező, amely adatok beillesztenésére szolgál a form-ba."
+
+#: authentik/stages/prompt/models.py
+msgid "Static: Static value, displayed as-is."
+msgstr "Statikus: Statikus érték, az eredeti formában jelenik meg."
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Info): Static alert box with info styling"
+msgstr ""
+"Figyelmeztetés (Információ): Információs stílusú statikus figyelmeztető "
+"ablak"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Warning): Static alert box with warning styling"
+msgstr ""
+"Figyelmeztetés (Figyelem): Figyelem stílusú statikus figyelmeztető ablak"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Danger): Static alert box with danger styling"
+msgstr ""
+"Figyelmeztetés (Sérülés): Sérülés stílusú statikus figyelmeztető ablak"
+
+#: authentik/stages/prompt/models.py
+msgid "authentik: Selection of locales authentik supports"
+msgstr "authentik: Az authentik támogatott területi beállítások kiválasztása"
+
+#: authentik/stages/prompt/models.py
+msgid "Name of the form field, also used to store the value"
+msgstr "A form mező neve, amely használatos az érték tárolására is"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Optionally provide a short hint that describes the expected input value. "
+"When creating a fixed choice field, enable interpreting as expression and "
+"return a list to return multiple choices."
+msgstr ""
+"Opcionálisan adjon meg egy rövid utasítást a várható bemeneti értékről. A "
+"fiksat választási mező létrehozása során engedélyezze az kifejezésként "
+"történő interpretálást és adjon vissza egy listát több választás esetén."
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Optionally pre-fill the input with an initial value. When creating a fixed "
+"choice field, enable interpreting as expression and return a list to return "
+"multiple default choices."
+msgstr ""
+"Például elektelt értéket adhat hozzá a bemenethez. Amikor egy meghatározott "
+"választási mezőt hoz létre, engedélyezze az kifejezésként történő "
+"interpretálást és adjon vissza egy listát több alapértelmezett "
+"választásokhoz."
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt"
+msgstr "Kérdés"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompts"
+msgstr "Kérdések"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage"
+msgstr "Kérdési szakasz"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stages"
+msgstr "Kérdési szakaszok"
+
+#: authentik/stages/prompt/stage.py
+msgid "Passwords don't match."
+msgstr "A jelszavak nem egyeznek."
+
+#: authentik/stages/redirect/api.py
+msgid "Target URL should be present when mode is Static."
+msgstr "A célmegengedett URL megadása esetén statikus mód."
+
+#: authentik/stages/redirect/api.py
+msgid "Target Flow should be present when mode is Flow."
+msgstr "Cél-folyamathoz hivatkozó mezők megadása esetén folyam mód."
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stage"
+msgstr "Átirányítási szakasz"
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stages"
+msgstr "Átirányítási szakaszok"
+
+#: authentik/stages/user_delete/models.py
+msgid "User Delete Stage"
+msgstr "Felhasználói törlési szakasz"
+
+#: authentik/stages/user_delete/models.py
+msgid "User Delete Stages"
+msgstr "Felhasználó törlési fázisok"
+
+#: authentik/stages/user_delete/stage.py
+msgid "No Pending User."
+msgstr "Nincs várakozó felhasználó."
+
+#: authentik/stages/user_login/models.py
+msgid "Bind sessions created by this stage to the configured network"
+msgstr ""
+"A hozzáadott fázison keresztül létrehozott munkamenetek kötése a beállított "
+"hálózathoz"
+
+#: authentik/stages/user_login/models.py
+msgid "Bind sessions created by this stage to the configured GeoIP location"
+msgstr ""
+"A hozzáadott fázison keresztül létrehozott munkamenetek kötése a konfigurált"
+" GeoIP helyhez"
+
+#: authentik/stages/user_login/models.py
+msgid "Terminate all other sessions of the user logging in."
+msgstr ""
+"Véglegesítsen minden másik munkamenetet a bejelentkező felhasználóval."
+
+#: authentik/stages/user_login/models.py
+msgid ""
+"Offset the session will be extended by when the user picks the remember me "
+"option. Default of 0 means that the remember me option will not be shown. "
+"(Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"A munkamenet hosszabbításának időtartama, amikor a felhasználó a "
+"\"memorbiztos\" opciót választja. Az alapértelmezett 0 érték azt jelenti, "
+"hogy nem jelenik meg a \"memorbiztos\" lehetőség. (Formátum: "
+"óra=-1;perc=-2;mp=-3)"
+
+#: authentik/stages/user_login/models.py
+msgid ""
+"When set to a non-zero value, authentik will save a cookie with a longer "
+"expiry,to remember the device the user is logging in from. (Format: "
+"hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"Ha nem nulla értékre van beállítva, az authentik egy hosszabb élettartamú "
+"sütível menti el a felhasználó által használt eszközt. (Formátum: "
+"óra=-1;perc=-2;mp=-3)"
+
+#: authentik/stages/user_login/models.py
+msgid "User Login Stage"
+msgstr "Felhasználói bejelentkezési fázis"
+
+#: authentik/stages/user_login/models.py
+msgid "User Login Stages"
+msgstr "Felhasználói bejelentkezési fázisok"
+
+#: authentik/stages/user_login/stage.py
+msgid "No Pending user to login."
+msgstr "Nincs várakozó felhasználó a bejelentkezéshez."
+
+#: authentik/stages/user_logout/models.py
+msgid "User Logout Stage"
+msgstr "Felhasználó kijelentkezési szakasz"
+
+#: authentik/stages/user_logout/models.py
+msgid "User Logout Stages"
+msgstr "Felhasználó kijelentkezési szakaszok"
+
+#: authentik/stages/user_write/models.py
+msgid "When set, newly created users are inactive and cannot login."
+msgstr ""
+"Ha be van állítva, az újonnan létrehozott felhasználók inaktívak és nem "
+"jelentkezhetnek be."
+
+#: authentik/stages/user_write/models.py
+msgid "Optionally add newly created users to this group."
+msgstr ""
+"Választottan adja hozzá az újonnan létrehozott felhasználókat ehhez a "
+"csoportokhoz."
+
+#: authentik/stages/user_write/models.py
+msgid "User Write Stage"
+msgstr "Felhasználó írás szakasz"
+
+#: authentik/stages/user_write/models.py
+msgid "User Write Stages"
+msgstr "Felhasználó írás szakaszok"
+
+#: authentik/stages/user_write/stage.py
+msgid "No Pending data."
+msgstr "Nincs várólistán lévő adat."
+
+#: authentik/stages/user_write/stage.py
+msgid "No user found and can't create new user."
+msgstr "Nem található felhasználó és nem hozható létre új felhasználó."
+
+#: authentik/stages/user_write/stage.py
+msgid "Failed to update user. Please try again later."
+msgstr "A felhasználó frissítése sikertelen. Kérjük, próbálja meg később."
+
+#: authentik/tasks/models.py
+msgid "Tenant this task belongs to"
+msgstr "Az ügyfél, amelyhez ez a teendő tartozik"
+
+#: authentik/tasks/models.py
+msgid "Retry failed task"
+msgstr "Újra próbálkozz egy meghiúsult feladattal"
+
+#: authentik/tasks/models.py
+msgid "Task log"
+msgstr "Feladat naplók"
+
+#: authentik/tasks/models.py
+msgid "Task logs"
+msgstr "Feladat naplói"
+
+#: authentik/tasks/models.py
+msgid "Worker status"
+msgstr "Munkahirdető állapota"
+
+#: authentik/tasks/models.py
+msgid "Worker statuses"
+msgstr "Munkahirdető állapotok"
+
+#: authentik/tasks/schedules/models.py
+msgid "Unique schedule identifier"
+msgstr "Egyedi ütemezés azonosítója"
+
+#: authentik/tasks/schedules/models.py
+msgid "User schedule identifier"
+msgstr "Felhasználói ütemezési azonosító"
+
+#: authentik/tasks/schedules/models.py
+msgid "Manually trigger a schedule"
+msgstr "Kezdj manuálisan egy ütemezést"
+
+#: authentik/tasks/tasks.py
+msgid "Remove old worker statuses."
+msgstr "Eldobja a régi munkahirdető állapotokat."
+
+#: authentik/tenants/api/settings.py
+#, python-brace-format
+msgid "Value for flag {flag_key} needs to be of type {type}."
+msgstr ""
+"A {flag_key} jelző értékenek ezzel a típussal kell rendelkeznie: {type}."
+
+#: authentik/tenants/models.py
+msgid ""
+"Schema name must start with t_, only contain lowercase letters and numbers "
+"and be less than 63 characters."
+msgstr ""
+"A schema névjenek t_ karakterekkel kezdődnie kell, csak kisbetűket és "
+"számokat tartalmazhat, és nem lehet hosszabb, mint 63 karakter."
+
+#: authentik/tenants/models.py
+msgid "Configure how authentik should show avatars for users."
+msgstr ""
+"Konfigurálja, hogyan jelenjenek meg az authentik felhasználók profilképeinek"
+" a felhasználók számára."
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their name."
+msgstr "Engedélyezze a felhasználóknak nevük módosítását."
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their email address."
+msgstr "Engedélyezze a felhasználóknak az e-mail címük módosítását."
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their username."
+msgstr "Engedélyezze a felhasználóknak a felhasználónévük módosítását."
+
+#: authentik/tenants/models.py
+msgid ""
+"Events will be deleted after this duration.(Format: "
+"weeks=3;days=2;hours=3,seconds=2)."
+msgstr ""
+"Az események eznyelő idő múltára törölve lesznek.(Formátum: "
+"hét=3;nap=2;óra=3,másodperc=2)."
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr ""
+"A hírnevközlemény nem csökkenthető ezen értéknél alul. Nulla vagy negatív."
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr ""
+"A hírnevközlemény nem növekedhet ezen értéknél felül. Nulla vagy pozitív."
+
+#: authentik/tenants/models.py
+msgid "The option configures the footer links on the flow executor pages."
+msgstr ""
+"Az opció beállítja a folyamat végrehajtásának oldalak alján található "
+"linkeket."
+
+#: authentik/tenants/models.py
+msgid ""
+"When enabled, all the events caused by a user will be deleted upon the "
+"user's deletion."
+msgstr ""
+"Ha engedélyezve van, akkor a felhasználó törlése után törölje az "
+"eseményeket, amelyeket a felhasználó okozott."
+
+#: authentik/tenants/models.py
+msgid "Globally enable/disable impersonation."
+msgstr "Teljes körű engedélyezés/kikapcsolás az átállításhoz."
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
+"Az adminisztrátoroknak szükségük van oka megadni a felhasználó "
+"átállításához."
+
+#: authentik/tenants/models.py
+msgid "Default token duration"
+msgstr "Alapértelmezett jogkivonat időtartama"
+
+#: authentik/tenants/models.py
+msgid "Default token length"
+msgstr "Alapértelmezett jogkivonat hossza"
+
+#: authentik/tenants/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr "Az API-válaszok alapértelmezett oldalhossza, ha nincs kéréssel."
+
+#: authentik/tenants/models.py
+msgid "Maximum page size"
+msgstr "Maximum oldalhossz"
+
+#: authentik/tenants/models.py
+msgid "Tenant"
+msgstr "Tényleg"
+
+#: authentik/tenants/models.py
+msgid "Tenants"
+msgstr "Tényegek"
+
+#: authentik/tenants/models.py
+msgid "Domain"
+msgstr "Domaín"
+
+#: authentik/tenants/models.py
+msgid "Domains"
+msgstr "Domáinek"
+
+#: packages/ak-guardian/guardian/models.py
+msgid "object ID"
+msgstr "objektum azonosító"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Group channel"
+msgstr "Csoport csatorna"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Group channels"
+msgstr "Csoport csatornák"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Message"
+msgstr "Üzenet"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Messages"
+msgstr "Üzeneteink"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Queue name"
+msgstr "Sor név"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Dramatiq actor name"
+msgstr "Dramatiq színész neve"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Message body"
+msgstr "Üzenet tartalma"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task status"
+msgstr "Feladat állapota"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task last modified time"
+msgstr "A feladat utolsó módosítás ideje"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Number of retries"
+msgstr "Próbalkozások száma"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Planned execution time"
+msgstr "Terminált futtatási idő"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task result"
+msgstr "Feladat eredménye"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Result expiry time"
+msgstr "Eredmény lejárati ideje"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task"
+msgstr "Feladat"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Tasks"
+msgstr "Feladatok"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+#, python-format
+msgid "%(value)s is not a valid crontab"
+msgstr "%(value)s nem érvényes crontab formátum"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Dramatiq actor to call"
+msgstr "Dramatiq színész hívása"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Args to send to the actor"
+msgstr "Argumentumok a színésznek"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Kwargs to send to the actor"
+msgstr "Kulcsszavas argumentumok a színésznek"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Options to send to the actor"
+msgstr "Az aktorhoz küldendő beállítások"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "When to schedule tasks"
+msgstr "A feladatok ütemezésének ideje"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Pause this schedule"
+msgstr "Ez az ütemezést szünetelteti"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Schedule"
+msgstr "Ütemezés"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Schedules"
+msgstr "Ütemezések"
