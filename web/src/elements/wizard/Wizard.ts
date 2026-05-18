@@ -519,6 +519,7 @@ export class AKWizard<S = Record<string, unknown>> extends AKElement {
                         type="button"
                         ?disabled=${disabled}
                         @click=${() => {
+                            if (idx === activeStepIndex) return;
                             this.activeStepElement = stepEl;
                         }}
                     >
