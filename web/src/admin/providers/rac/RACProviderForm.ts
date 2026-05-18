@@ -1,6 +1,7 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -15,6 +16,8 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProvide
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+
+import { AKLabel } from "#components/ak-label";
 
 import { FlowDesignationEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
 
@@ -54,23 +57,29 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
     protected override renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                    placeholder=${msg("Type a provider name...")}
-                    spellcheck="false"
-                />
-            </ak-form-element-horizontal>
-
-            <ak-form-element-horizontal
-                name="authorizationFlow"
-                label=${msg("Authorization Flow")}
+            <ak-text-input
+                label=${msg("Provider Name")}
                 required
-            >
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+                placeholder=${msg("Type a provider name...")}
+                spellcheck="false"
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
+
+            <ak-form-element-horizontal name="authorizationFlow" required>
+                ${AKLabel(
+                    {
+                        className: "pf-c-form__group-label",
+                        slot: "label",
+                        htmlFor: "authorizationFlow",
+                        required: true,
+                    },
+                    msg("Authorization Flow"),
+                )}
                 <ak-flow-search
+                    id="authorizationFlow"
+                    label=${msg("Authorization Flow")}
                     flowType=${FlowDesignationEnum.Authorization}
                     .currentFlow=${this.instance?.authorizationFlow}
                     required
