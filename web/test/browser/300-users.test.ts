@@ -85,6 +85,7 @@ test.describe("Users", () => {
         const { click } = pointer;
 
         const dialog = page.getByRole("dialog", { name: "New User Wizard" });
+        const nextButton = dialog.getByTestId("wizard-navigation-next");
 
         await expect(dialog, "Dialog is initially closed").toBeHidden();
 
@@ -101,11 +102,11 @@ test.describe("Users", () => {
             [fill, /^Username/, username, dialog],
         );
 
-        await dialog.getByRole("button", { name: "Next" }).click();
+        await nextButton.click();
 
         await expect(dialog, "Credentials page is visible").toBeVisible();
 
-        await dialog.getByRole("button", { name: "Finish" }).click();
+        await nextButton.click();
 
         await expect(dialog, "Dialog closes after creating service account").toBeHidden();
 

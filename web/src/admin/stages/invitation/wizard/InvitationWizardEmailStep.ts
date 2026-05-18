@@ -45,7 +45,7 @@ export class InvitationWizardEmailStep extends WizardPage {
     @state()
     availableTemplates: TypeCreate[] = [];
 
-    override formatNextLabel(): SlottedTemplateResult {
+    public override formatNextLabel(): SlottedTemplateResult {
         return html`${msg("Send")}
             <span class="pf-c-button__icon pf-m-end">
                 <i class="fas fa-paper-plane" aria-hidden="true"></i>
