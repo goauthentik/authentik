@@ -27,7 +27,6 @@ export const styles = css`
         border-radius: var(--ak-v2-c-flow__card--BorderRadius);
         display: flex;
         flex-direction: column;
-        gap: var(--ak-v2-c-flow__card--Gap);
         inline-size: var(--ak-v2-c-flow__card--InlineSize);
         min-block-size: var(--ak-v2-c-flow__card--MinBlockSize);
     }

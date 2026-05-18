@@ -2,11 +2,11 @@
     --ak-v2-c-flow--Color: var(--ak-v2-global--PrimaryText, #151515);
     --ak-v2-c-flow--InvertedColor: var(--ak-v2-global--Color-900, #f0f0f0);
     --ak-v2-c-flow--Gutter: var(--ak-v2-global--spacer--xl);
-    --ak-v2-c-flow--VerticalOffset: 18vh;
+    --ak-v2-c-flow--VerticalOffset: clamp(1rex, 10dvh, 20rex);
 
     --ak-v2-c-flow-sidebar-inline-size: clamp(20rem, 32vw, 32rem);
     --ak-v2-c-flow__footer--Gap: var(--ak-v2-global--spacer-sm);
-
+    
     /* Translucent band that reads against a photographic background. */
     --ak-v2-c-flow__footer--Background: var(--ak-v2-global--BackgroundColor--over-photo-filter);
     --ak-v2-c-flow__footer--Color: var(--ak-v2-global--SecondaryReverseColor);

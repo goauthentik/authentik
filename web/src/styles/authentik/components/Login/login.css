@@ -52,7 +52,7 @@
   --pf-c-login__header--c-brand--xl--MarginBottom: var(--pf-global--spacer--2xl);
   --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
   --pf-c-login__main--MarginBottom: var(--pf-global--spacer--lg);
-  --pf-c-login__main-header--PaddingTop: var(--pf-global--spacer--2xl);
+  --pf-c-login__main-header--PaddingTop: var(--pf-global--spacer--xl);
   --pf-c-login__main-header--PaddingRight: var(--pf-global--spacer--xl);
   --pf-c-login__main-header--PaddingBottom: var(--pf-global--spacer--md);
   --pf-c-login__main-header--PaddingLeft: var(--pf-global--spacer--xl);
