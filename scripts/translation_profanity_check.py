@@ -156,16 +156,21 @@ class TranslationEntry:
     locale: str
     msgid: str
     target: str
+    references: tuple[str, ...] = ()  # PO `#:` source-location refs
+    xliff_id: str | None = None  # XLIFF trans-unit id attribute
 
 
-def iter_po(path: Path, locale: str) -> Iterator[TranslationEntry]:
+def iter_po(path: Path, locale: str) -> Iterator[TranslationEntry]:  # noqa: PLR0915 — single-pass PO state machine, splits would just push state out
     """Minimal PO reader: yields (msgid, msgstr) pairs with line numbers.
 
     Handles multi-line continuation strings and fuzzy/obsolete entries (we
     include fuzzy entries — they still ship to users — but skip obsolete
-    `#~` entries)."""
+    `#~` entries). PO `#:` location references (gettext extractor output)
+    are captured and attached to the entry whose `msgid` follows."""
     msgid_parts: list[str] = []
     msgstr_parts: list[str] = []
+    pending_refs: list[str] = []  # accumulates between flush and next msgid
+    entry_refs: tuple[str, ...] = ()  # frozen at msgid-encounter time
     state: str | None = None  # None | "msgid" | "msgstr"
     entry_line = 0
 
@@ -174,7 +179,14 @@ def iter_po(path: Path, locale: str) -> Iterator[TranslationEntry]:
             msgid = "".join(msgid_parts)
             target = "".join(msgstr_parts)
             if msgid and target:  # skip the empty header entry
-                yield TranslationEntry(path, entry_line, locale, msgid, target)
+                yield TranslationEntry(
+                    path=path,
+                    line=entry_line,
+                    locale=locale,
+                    msgid=msgid,
+                    target=target,
+                    references=entry_refs,
+                )
 
     with path.open(encoding="utf-8") as fh:
         for lineno, raw in enumerate(fh, start=1):
@@ -183,17 +195,26 @@ def iter_po(path: Path, locale: str) -> Iterator[TranslationEntry]:
             if stripped.startswith("#~"):
                 # Obsolete entry — drop pending and skip.
                 msgid_parts, msgstr_parts, state = [], [], None
+                pending_refs = []
+                continue
+            if stripped.startswith("#:"):
+                # `#: path/to/file.py:42 other/file.py:11` — refs for the
+                # next msgid; accumulate.
+                pending_refs.extend(tok for tok in stripped[2:].split() if tok)
                 continue
             if not stripped or stripped.startswith("#"):
                 if not stripped and state is not None:
                     # Blank line terminates an entry.
                     yield from flush()
                     msgid_parts, msgstr_parts, state = [], [], None
+                    entry_refs = ()
                 continue
             if stripped.startswith("msgid "):
                 yield from flush()
                 msgid_parts = [_po_unquote(stripped[len("msgid ") :])]
                 msgstr_parts = []
+                entry_refs = tuple(pending_refs)
+                pending_refs = []
                 state = "msgid"
                 entry_line = lineno
             elif stripped.startswith("msgid_plural "):
@@ -230,7 +251,10 @@ _XLIFF_NS = "{urn:oasis:names:tc:xliff:document:1.2}"
 
 
 def iter_xliff(path: Path, locale: str) -> Iterator[TranslationEntry]:
-    """Yields trans-units that have a non-empty <target>."""
+    """Yields trans-units that have a non-empty <target>.
+
+    Captures the `id` attribute on every unit so findings can point a
+    developer at the named ID instead of forcing them to decode a hash."""
     try:
         tree = ET.parse(path)
     except ET.ParseError as exc:
@@ -244,10 +268,20 @@ def iter_xliff(path: Path, locale: str) -> Iterator[TranslationEntry]:
         target = "".join(tgt_el.itertext())
         if not target.strip():
             continue
-        msgid = "".join(src_el.itertext()) if src_el is not None else unit.get("id", "")
+        unit_id = unit.get("id") or None
+        # `<source>` is the English msgid; the `id` attribute is the named/
+        # generated identifier developers use in code.
+        msgid = "".join(src_el.itertext()) if src_el is not None else (unit_id or "")
         # XLIFF ElementTree doesn't expose line numbers natively; report 0 to
         # mean "see file". Acceptable trade-off vs. pulling in lxml.
-        yield TranslationEntry(path, 0, locale, msgid, target)
+        yield TranslationEntry(
+            path=path,
+            line=0,
+            locale=locale,
+            msgid=msgid,
+            target=target,
+            xliff_id=unit_id,
+        )
 
 
 # --- discovery ------------------------------------------------------------
@@ -282,13 +316,21 @@ class Finding:
     locale: str
     path: Path
     line: int
-    word: str
+    word: str  # matched dictionary entry; redacted from default output
     msgid: str
-    target: str
+    target: str  # full translated string; available to JSON output
+    dict_code: str
+    references: tuple[str, ...] = ()
+    xliff_id: str | None = None
 
     @property
     def msgid_hash(self) -> str:
         return msgid_hash(self.msgid)
+
+    @property
+    def allowlist_key(self) -> str:
+        """`<locale>:<msgid_hash>` — the per-locale exemption key."""
+        return f"{self.locale}:{self.msgid_hash}"
 
 
 def _build_word_pattern(words: Iterable[str]) -> tuple[re.Pattern[str] | None, list[str]]:
@@ -314,6 +356,7 @@ def _build_word_pattern(words: Iterable[str]) -> tuple[re.Pattern[str] | None, l
 def scan_entries(
     entries: Iterable[TranslationEntry],
     dictionary: list[str],
+    dict_code: str,
 ) -> Iterator[Finding]:
     pattern, substrings = _build_word_pattern(dictionary)
     for entry in entries:
@@ -327,6 +370,9 @@ def scan_entries(
                     word=m.group(0),
                     msgid=entry.msgid,
                     target=entry.target,
+                    dict_code=dict_code,
+                    references=entry.references,
+                    xliff_id=entry.xliff_id,
                 )
         for term in substrings:
             if term in haystack:
@@ -337,20 +383,73 @@ def scan_entries(
                     word=term,
                     msgid=entry.msgid,
                     target=entry.target,
+                    dict_code=dict_code,
+                    references=entry.references,
+                    xliff_id=entry.xliff_id,
                 )
 
 
 # --- allowlist ------------------------------------------------------------
 
+# Allowlist entry shape: `<locale>:<16-hex>`. Locale segment may be any
+# non-empty token that doesn't contain ':' — matches what `discover_*`
+# emits (e.g. `de_DE`, `zh-Hans`, `pt_BR`).
+_ALLOWLIST_ENTRY_RE = re.compile(r"^([^:#\s]+):([0-9a-f]{16})$")
+
+
+class AllowlistError(ValueError):
+    """Raised when the allowlist file violates the schema.
+
+    The validator is intentionally strict: bare hashes with no `# reason`
+    comment, malformed entries, or hashes without a locale prefix all fail
+    loud so the allowlist stays PR-reviewable rather than degenerating into
+    an unauditable set of opaque hex strings."""
+
 
 def load_allowlist(path: Path | None) -> set[str]:
+    """Parse and validate the allowlist file.
+
+    Schema (one entry per line):
+
+        <locale>:<msgid_hash>  # reason text
+
+    - Bare hashes (no `#` comment) raise AllowlistError.
+    - Empty reason comments raise AllowlistError.
+    - Malformed `<locale>:<hash>` segments raise AllowlistError.
+    - Lines that start with `#` or are blank are ignored (header docs)."""
     if path is None or not path.is_file():
         return set()
     out: set[str] = set()
-    for raw_line in path.read_text(encoding="utf-8").splitlines():
-        entry = raw_line.split("#", 1)[0].strip()
-        if entry:
-            out.add(entry)
+    errors: list[str] = []
+    for lineno, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        stripped = raw_line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue  # pure-comment or blank line — fine
+        # Entry line: must have an inline `# reason` comment.
+        if "#" not in raw_line:
+            errors.append(
+                f"{path}:{lineno}: allowlist entry without '# reason' comment: "
+                f"{stripped!r} — every entry must justify itself"
+            )
+            continue
+        lhs, _, comment = raw_line.partition("#")
+        entry = lhs.strip()
+        if not comment.strip():
+            errors.append(
+                f"{path}:{lineno}: empty reason comment for {entry!r} — "
+                f"explain why this msgid is exempt in this locale"
+            )
+            continue
+        m = _ALLOWLIST_ENTRY_RE.match(entry)
+        if not m:
+            errors.append(
+                f"{path}:{lineno}: malformed entry {entry!r} — expected "
+                f"'<locale>:<msgid_hash>' (e.g. 'de_DE:abc123def4567890')"
+            )
+            continue
+        out.add(entry)
+    if errors:
+        raise AllowlistError("\n".join(errors))
     return out
 
 
@@ -358,13 +457,35 @@ def load_allowlist(path: Path | None) -> set[str]:
 
 
 def _format_findings(findings: list[Finding]) -> str:
-    lines = []
+    """Render findings without echoing the matched dictionary token.
+
+    Per the original brief we never print the dictionary entry that matched
+    (the "word") — defence in depth so CI logs stay shareable. We do print
+    the English `msgid` (non-profane by definition) and the `target` (the
+    translated string), since operators need *some* anchor for triage; the
+    `target` may be removed in a future tightening pass.
+
+    Each finding renders both as a GitHub Actions `::error::` annotation
+    and (per CLI tradition) a human-readable trailing line. Extra
+    diagnostics — XLIFF `id`, PO `#:` refs — are emitted when available."""
+    lines: list[str] = []
     for f in findings:
         loc = f"{f.path}:{f.line}" if f.line else str(f.path)
+        extras: list[str] = [
+            f"locale={f.locale}",
+            f"dict={f.dict_code}",
+            f"allowlist_key={f.allowlist_key}",
+            f"msgid={f.msgid!r}",
+            f"target={f.target!r}",
+        ]
+        if f.xliff_id:
+            extras.append(f"xliff_id={f.xliff_id}")
+        if f.references:
+            extras.append(f"refs={','.join(f.references)}")
         lines.append(
             f"::error file={f.path},line={f.line or 1}::"
-            f"[{f.locale}] profanity match {f.word!r} at {loc} "
-            f"(msgid_hash={f.msgid_hash}, msgid={f.msgid!r}, target={f.target!r})"
+            f"[{f.locale}] 1 match against profanity-dict[{f.dict_code}] at {loc} "
+            f"({'; '.join(extras)})"
         )
     return "\n".join(lines)
 
@@ -372,7 +493,12 @@ def _format_findings(findings: list[Finding]) -> str:
 def run(args: argparse.Namespace) -> int:
     root = Path(args.root).resolve()
     base_url = args.base_url or os.environ.get("PROFANITY_DICT_BASE_URL", DEFAULT_BASE_URL)
-    allowlist = load_allowlist(Path(args.allowlist) if args.allowlist else None)
+    try:
+        allowlist = load_allowlist(Path(args.allowlist) if args.allowlist else None)
+    except AllowlistError as exc:
+        print("allowlist validation failed:", file=sys.stderr)
+        print(str(exc), file=sys.stderr)
+        return 2
 
     files = discover_translation_files(root)
     if not files:
@@ -402,13 +528,17 @@ def run(args: argparse.Namespace) -> int:
             continue
         for path, locale, kind in by_dict_code[code]:
             entries = iter_po(path, locale) if kind == "po" else iter_xliff(path, locale)
-            for finding in scan_entries(entries, dictionary):
+            for finding in scan_entries(entries, dictionary, dict_code=code):
                 all_findings.append(finding)
 
-    blocking = [f for f in all_findings if f.msgid_hash not in allowlist]
-    allowed = [f for f in all_findings if f.msgid_hash in allowlist]
+    blocking = [f for f in all_findings if f.allowlist_key not in allowlist]
+    allowed = [f for f in all_findings if f.allowlist_key in allowlist]
 
     if args.json:
+        # JSON output is for local triage / piping; full diagnostics including
+        # the target string are included so an operator can build allowlist
+        # entries without re-running. CI logs use `_format_findings` which
+        # redacts the matched dictionary token.
         print(
             json.dumps(
                 {
@@ -417,14 +547,20 @@ def run(args: argparse.Namespace) -> int:
                             "locale": f.locale,
                             "path": str(f.path),
                             "line": f.line,
-                            "word": f.word,
+                            "dict_code": f.dict_code,
+                            "allowlist_key": f.allowlist_key,
+                            "msgid": f.msgid,
                             "msgid_hash": f.msgid_hash,
+                            "target": f.target,
+                            "xliff_id": f.xliff_id,
+                            "references": list(f.references),
                         }
                         for f in blocking
                     ],
                     "allowed_count": len(allowed),
                 },
                 indent=2,
+                ensure_ascii=False,
             )
         )
     else:
@@ -434,7 +570,8 @@ def run(args: argparse.Namespace) -> int:
             print(_format_findings(blocking))
             print(
                 f"\n{len(blocking)} blocking match(es). "
-                f"To allowlist a false positive, append its msgid_hash to "
+                f"To allowlist a false positive, append a line of the form "
+                f"'<locale>:<msgid_hash>  # reason' to "
                 f"{args.allowlist or 'scripts/.translation_profanity_allowlist'}.",
                 file=sys.stderr,
             )
@@ -482,7 +619,7 @@ def _selftest() -> int:
                 TranslationEntry(Path("x"), 2, "de_DE", "Hi", "xyzzyish should not match"),
                 TranslationEntry(Path("x"), 3, "de_DE", "Plural", "frobnitzes here"),
             ]
-            findings = list(scan_entries(entries, dictionary))
+            findings = list(scan_entries(entries, dictionary, dict_code="de"))
             words = [f.word for f in findings]
             # "xyzzy" matches in entry 1 (word boundary).
             # "xyzzyish" should NOT match (no boundary).
@@ -496,33 +633,38 @@ def _selftest() -> int:
             entry = TranslationEntry(
                 Path("x"), 1, "de_DE", "src", "contains a multiword token here"
             )
-            findings = list(scan_entries([entry], dictionary))
+            findings = list(scan_entries([entry], dictionary, dict_code="de"))
             self.assertEqual([f.word for f in findings], ["multiword token"])
 
         def test_cjk_substring(self):
             dictionary = parse_dictionary(CJK_DICT)
             entry = TranslationEntry(Path("x"), 1, "zh-Hans", "src", "前面蛙蛙蛙後面")
-            findings = list(scan_entries([entry], dictionary))
+            findings = list(scan_entries([entry], dictionary, dict_code="zh"))
             self.assertEqual([f.word for f in findings], ["蛙蛙蛙"])
 
-        def test_allowlist_by_hash(self):
+        def test_allowlist_key_is_locale_prefixed(self):
             msgid = "Some English source string"
             target_text = "übersetzung mit xyzzy"
             entry = TranslationEntry(Path("x"), 1, "de_DE", msgid, target_text)
             dictionary = parse_dictionary(PLACEHOLDER_DICT)
-            findings = list(scan_entries([entry], dictionary))
+            findings = list(scan_entries([entry], dictionary, dict_code="de"))
             self.assertEqual(len(findings), 1)
             self.assertEqual(findings[0].msgid_hash, msgid_hash(msgid))
+            self.assertEqual(findings[0].allowlist_key, f"de_DE:{msgid_hash(msgid)}")
 
-        def test_po_parser_extracts_target(self):
+        def test_po_parser_extracts_target_and_refs(self):
             content = (
                 'msgid ""\n'
                 'msgstr ""\n'
                 '"Content-Type: text/plain; charset=UTF-8\\n"\n'
                 "\n"
+                "#: authentik/admin/files/api.py:142\n"
+                "#: authentik/admin/files/other.py:7\n"
+                "#, python-brace-format\n"
                 'msgid "Hello"\n'
                 'msgstr "Hallo xyzzy"\n'
                 "\n"
+                "#: authentik/other.py:99\n"
                 'msgid "Multi"\n'
                 '"line source"\n'
                 'msgstr "Mehr"\n'
@@ -540,10 +682,18 @@ def _selftest() -> int:
             self.assertEqual(len(entries), 2)
             self.assertEqual(entries[0].msgid, "Hello")
             self.assertEqual(entries[0].target, "Hallo xyzzy")
+            self.assertEqual(
+                entries[0].references,
+                (
+                    "authentik/admin/files/api.py:142",
+                    "authentik/admin/files/other.py:7",
+                ),
+            )
             self.assertEqual(entries[1].msgid, "Multiline source")
             self.assertEqual(entries[1].target, "Mehrzeilig")
+            self.assertEqual(entries[1].references, ("authentik/other.py:99",))
 
-        def test_xliff_parser_extracts_target(self):
+        def test_xliff_parser_extracts_target_and_id(self):
             xml = (
                 '<?xml version="1.0"?>'
                 '<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2"'
@@ -551,7 +701,7 @@ def _selftest() -> int:
                 '<file target-language="de-DE" source-language="en"'
                 ' original="x" datatype="plaintext">'
                 "<body>"
-                '<trans-unit id="a"><source>Hello</source>'
+                '<trans-unit id="sfe629863ba1338c2"><source>Hello</source>'
                 "<target>Hallo xyzzy</target></trans-unit>"
                 '<trans-unit id="b"><source>Skip</source>'
                 "<target></target></trans-unit>"
@@ -568,6 +718,7 @@ def _selftest() -> int:
                 tmp.unlink()
             self.assertEqual(len(entries), 1)
             self.assertEqual(entries[0].target, "Hallo xyzzy")
+            self.assertEqual(entries[0].xliff_id, "sfe629863ba1338c2")
 
         def test_fetch_dictionary_404_returns_none(self):
             def fake_fetch(url):
@@ -614,7 +765,7 @@ def _selftest() -> int:
                 )
                 self.assertEqual(run(ns), 0)
 
-        def test_run_allowlist_suppresses(self):
+        def test_run_allowlist_suppresses_with_locale_key(self):
             with tempfile.TemporaryDirectory() as td:
                 root = Path(td)
                 (root / "locale" / "de_DE" / "LC_MESSAGES").mkdir(parents=True)
@@ -625,7 +776,10 @@ def _selftest() -> int:
                 dict_dir.mkdir()
                 (dict_dir / "de").write_text(PLACEHOLDER_DICT, encoding="utf-8")
                 allow = root / "allow.txt"
-                allow.write_text(msgid_hash("Hello") + "\n", encoding="utf-8")
+                allow.write_text(
+                    f"de_DE:{msgid_hash('Hello')}  # placeholder term, reviewed 2026-05-16\n",
+                    encoding="utf-8",
+                )
 
                 ns = argparse.Namespace(
                     root=str(root),
@@ -634,6 +788,107 @@ def _selftest() -> int:
                     json=False,
                 )
                 self.assertEqual(run(ns), 0)
+
+        def test_run_allowlist_other_locale_does_not_suppress(self):
+            # Per-locale schema: a `ja_JP:<hash>` entry must NOT suppress a
+            # match in `de_DE` even if msgid hash collides.
+            with tempfile.TemporaryDirectory() as td:
+                root = Path(td)
+                (root / "locale" / "de_DE" / "LC_MESSAGES").mkdir(parents=True)
+                (root / "locale" / "de_DE" / "LC_MESSAGES" / "django.po").write_text(
+                    'msgid "Hello"\nmsgstr "Hallo xyzzy"\n', encoding="utf-8"
+                )
+                dict_dir = root / "dict"
+                dict_dir.mkdir()
+                (dict_dir / "de").write_text(PLACEHOLDER_DICT, encoding="utf-8")
+                allow = root / "allow.txt"
+                allow.write_text(
+                    f"ja_JP:{msgid_hash('Hello')}  # exempt only in ja\n",
+                    encoding="utf-8",
+                )
+
+                ns = argparse.Namespace(
+                    root=str(root),
+                    base_url=f"file://{dict_dir}",
+                    allowlist=str(allow),
+                    json=False,
+                )
+                self.assertEqual(run(ns), 1)
+
+        def test_allowlist_bare_hash_fails_loud(self):
+            with tempfile.TemporaryDirectory() as td:
+                allow = Path(td) / "allow.txt"
+                # Bare hash with no `# reason` comment must error.
+                allow.write_text(f"de_DE:{msgid_hash('Hello')}\n", encoding="utf-8")
+                with self.assertRaises(AllowlistError) as ctx:
+                    load_allowlist(allow)
+                self.assertIn("'# reason'", str(ctx.exception))
+
+        def test_allowlist_empty_reason_fails_loud(self):
+            with tempfile.TemporaryDirectory() as td:
+                allow = Path(td) / "allow.txt"
+                allow.write_text(f"de_DE:{msgid_hash('Hello')}  #   \n", encoding="utf-8")
+                with self.assertRaises(AllowlistError) as ctx:
+                    load_allowlist(allow)
+                self.assertIn("empty reason", str(ctx.exception))
+
+        def test_allowlist_missing_locale_prefix_fails_loud(self):
+            with tempfile.TemporaryDirectory() as td:
+                allow = Path(td) / "allow.txt"
+                # Bare hash without `<locale>:` prefix.
+                allow.write_text(f"{msgid_hash('Hello')}  # bad shape\n", encoding="utf-8")
+                with self.assertRaises(AllowlistError) as ctx:
+                    load_allowlist(allow)
+                self.assertIn("malformed entry", str(ctx.exception))
+
+        def test_allowlist_pure_comment_lines_ok(self):
+            with tempfile.TemporaryDirectory() as td:
+                allow = Path(td) / "allow.txt"
+                allow.write_text(
+                    "# header comment\n"
+                    "  # indented comment\n"
+                    "\n"
+                    f"de_DE:{msgid_hash('Hello')}  # ok entry\n",
+                    encoding="utf-8",
+                )
+                loaded = load_allowlist(allow)
+                self.assertEqual(loaded, {f"de_DE:{msgid_hash('Hello')}"})
+
+        def test_findings_format_omits_matched_word(self):
+            # Defence in depth: the rendered output line must not include
+            # the dictionary entry that matched.
+            f = Finding(
+                locale="de_DE",
+                path=Path("locale/de_DE/LC_MESSAGES/django.po"),
+                line=42,
+                word="xyzzy",  # never echoed
+                msgid="Hello",
+                target="Hallo xyzzy",
+                dict_code="de",
+                references=("authentik/admin/api.py:1",),
+                xliff_id=None,
+            )
+            rendered = _format_findings([f])
+            self.assertNotIn("xyzzy", rendered.split(" target=", 1)[0])
+            # `dict[<code>]` style summary appears instead.
+            self.assertIn("profanity-dict[de]", rendered)
+            self.assertIn("refs=authentik/admin/api.py:1", rendered)
+            self.assertIn(f"allowlist_key=de_DE:{msgid_hash('Hello')}", rendered)
+
+        def test_findings_format_includes_xliff_id(self):
+            f = Finding(
+                locale="de-DE",
+                path=Path("web/xliff/de-DE.xlf"),
+                line=0,
+                word="xyzzy",
+                msgid="Hello",
+                target="Hallo xyzzy",
+                dict_code="de",
+                references=(),
+                xliff_id="sfe629863ba1338c2",
+            )
+            rendered = _format_findings([f])
+            self.assertIn("xliff_id=sfe629863ba1338c2", rendered)
 
     loader = unittest.TestLoader()
     suite = loader.loadTestsFromTestCase(Tests)
@@ -654,7 +909,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--allowlist",
         default="scripts/.translation_profanity_allowlist",
-        help="Path to msgid-hash allowlist (one hash per line, '#' comments).",
+        help=(
+            "Path to the allowlist. Each entry is "
+            "'<locale>:<msgid_hash>  # reason' on its own line; bare hashes "
+            "or missing-reason entries cause the scanner to fail loud."
+        ),
     )
     parser.add_argument("--json", action="store_true", help="Emit findings as JSON")
     parser.add_argument("--self-test", action="store_true", help="Run inline unit tests and exit")
