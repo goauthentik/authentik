@@ -9,6 +9,7 @@
 @import "@patternfly/patternfly/components/InputGroup/input-group.css";
 @import "@patternfly/patternfly/components/FormControl/form-control.css";
 @import "@patternfly/patternfly/components/Form/form.css";
+@import "@patternfly/patternfly/components/Switch/switch.css";
 @import "@patternfly/patternfly/components/Button/button.css";
 @import "@patternfly/patternfly/components/Login/login.css";
 
@@ -229,6 +230,13 @@
     &::part(list-item-link) {
         color: unset;
     }
+}
+
+.remember-me-switch {
+    display: flex;
+    align-items: center;
+    padding-top: var(--pf-global--spacer--sm);
+    gap: var(--pf-global--spacer--sm);
 }
 
 /* #endregion */

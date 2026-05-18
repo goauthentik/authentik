@@ -77,7 +77,7 @@ export class RememberMeController implements ReactiveController {
             identificationFieldRef,
             passwordFieldRef,
             identificationFieldID,
-        }: RememberMeControllerInit,
+        }: RememberMeControllerInit
     ) {
         this.identificationFieldRef = identificationFieldRef;
         this.passwordFieldRef = passwordFieldRef || null;
@@ -216,16 +216,17 @@ export class RememberMeController implements ReactiveController {
             class="pf-c-switch remember-me-switch"
             for="authentik-remember-me"
             aria-description=${msg(
-                "When enabled, your username will be remembered on this device for future logins.",
+                "When enabled, your username will be remembered on this device for future logins."
             )}
         >
             <input
                 class="pf-c-switch__input"
                 type="checkbox"
                 id="authentik-remember-me"
-                @change=${this.toggleChangeListener}
+                @click=${this.toggleChangeListener}
                 ?checked=${this.defaultChecked}
             />
+            <span class="pf-c-switch__toggle"></span>
             <span class="pf-c-form__label">${msg("Remember me on this device")}</span>
         </label>`;
     };
