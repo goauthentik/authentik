@@ -11,7 +11,6 @@ import { configureSentry } from "#common/sentry/index";
 import { light } from "#elements/directives/light";
 import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
-import { WithBrandConfig } from "#elements/mixins/branding";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 
@@ -40,7 +39,7 @@ import { observed } from "@patternfly/pfe-core/decorators/observed.js";
 import { match } from "ts-pattern";
 
 import { html, PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -64,24 +63,31 @@ type ChallengeProps = LitPropertyRecord<BaseStage<NonNullable<ChallengeTypes>, o
  * client-side component (also called "stages") best suited to showing the
  * request to the user, send the input to the server and deal with the response.
  *
-  
- *
  * @attr {string} slug - The slug of the flow to execute.
+ *
  * @prop {ChallengeTypes | null} challenge - The current challenge to render.
  *
  * @part main - The main container for the flow content.
+ *
  * @part content - The container for the stage content.
+ *
  * @part content-iframe - The iframe element when using a frame background layout.
+ *
  * @part footer - The footer container.
+ *
  * @part locale-select - The locale select component.
- * @part branding - The branding element, used for the background image in some layouts.
+ *
  * @part challenge-additional-actions - Container in stages which have additional actions.
+ *
  * @part challenge-footer-band - Container for the stage footer, used for additional actions in some stages.
+ *
  * @part locale-select-label - The label of the locale select component.
+ *
  * @part locale-select-select - The select element of the locale select component.
+ *
  */
 @customElement("ak-flow-executor")
-export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
+export class FlowExecutor extends Interface implements StageHost {
     //#region Properties
 
     @property({ type: String, attribute: "slug", useDefault: true })
@@ -94,9 +100,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     @property({ attribute: false })
     public challenge: ChallengeTypes | null = null;
 
-    @state()
-    public loading = false;
-
     //#endregion
 
     //#region Internal State
@@ -105,7 +108,8 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     readonly #api: FlowsApi;
 
-    // Listen for challenge-forwarding events from iframe-based third-party verifiers (Device Compliance)
+    // Listen for challenge-forwarding events from iframe-based third-party
+    // verifiers (Device Compliance)
     readonly #flowIframeMessageController = new FlowIframeMessageController(this);
 
     // Listen for authentik state-change events from other tabs
@@ -143,12 +147,16 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         this.addEventListener(AKFlowSubmitRequest.eventName, this.handleSubordinateSubmit);
     }
 
-    private setFlowErrorChallenge(error: APIError) {
-        this.challenge = {
+    private static buildChallengeError(error: APIError) {
+        return {
             component: "ak-stage-flow-error",
             error: pluckErrorDetail(error),
             requestId: "",
         } satisfies FlowErrorChallenge as ChallengeTypes;
+    }
+
+    private setFlowErrorChallenge(error: APIError) {
+        this.challenge = FlowExecutor.buildChallengeError(error);
     }
 
     protected refresh = async () => {
@@ -194,14 +202,17 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             throw new Error("No flow slug provided");
         }
 
-        // The `as` clauses are necessary because OpenAPI doesn't really do enums, it does records
-        // and unions of records. Alternatives to using `as` would require putting the type being
-        // submitted into the `submit` method's definition, and then modifying every stage to tell
-        // the executor what type is being submitted. That would be lots of code for no win; it's
-        // not coherent to think a stage for a request type will submit a different request type.
-        // (It's possible, but if that doesn't show up in testing we're in a mess anyway.
-
-        // This order is deliberate; the executor always specifies the component token.
+        // The `as` clauses are necessary because OpenAPI doesn't really do
+        // enums, it does records and unions of records. Alternatives to using
+        // `as` would require putting the type being submitted into the `submit`
+        // method's definition, and then modifying every stage to tell the
+        // executor what type is being submitted. That would be lots of code for
+        // no win; it's not coherent to think a stage for a request type will
+        // submit a different request type. (It's possible, but if that doesn't
+        // show up in testing we're in a mess anyway.)
+        //
+        // This order is deliberate; the executor always specifies the component
+        // token.
         const { component } = this.challenge as FlowChallengeResponseRequest;
 
         const flowChallengeResponseRequest = {
@@ -281,12 +292,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         // eslint-disable-next-line no-console
         console.trace(error);
 
-        const errorChallenge: FlowErrorChallenge = {
-            component: "ak-stage-flow-error",
-            error: pluckErrorDetail(error),
-            requestId: "",
-        };
-
+        const errorChallenge = FlowExecutor.buildChallengeError(error as APIError);
         return html`<ak-stage-flow-error .challenge=${errorChallenge}></ak-stage-flow-error>`;
     }
 
