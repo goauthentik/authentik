@@ -102,4 +102,16 @@ class Migration(migrations.Migration):
                 verbose_name="SCIM Compatibility Mode",
             ),
         ),
+        migrations.AlterField(
+            model_name="scimprovider",
+            name="auth_mode",
+            field=models.TextField(
+                choices=[
+                    ("token", "Token"),
+                    ("oauth", "OAuth (Silent)"),
+                    ("oauth_interactive", "OAuth (interactive)"),
+                ],
+                default="token",
+            ),
+        ),
     ]
