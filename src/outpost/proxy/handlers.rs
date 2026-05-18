@@ -9,10 +9,9 @@ use axum::{
 use metrics::histogram;
 use serde_json::json;
 use tokio::time::Instant;
-use tower::util::ServiceExt as _;
 use tracing::{Instrument as _, debug, field, info_span, instrument, trace, warn};
 
-use crate::outpost::proxy::ProxyOutpost;
+use crate::outpost::proxy::{ProxyOutpost, application};
 
 #[instrument(skip_all)]
 pub(super) async fn handle_ping(
@@ -72,7 +71,9 @@ pub(super) async fn default(
     };
 
     trace!("passing to application");
-    let response = app.router.clone().oneshot(request).instrument(span).await?;
+    let response = application::handlers::handle(app, request)
+        .instrument(span)
+        .await?;
 
     histogram!(
         "authentik_outpost_proxy_request_duration_seconds",
