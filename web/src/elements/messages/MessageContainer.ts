@@ -110,7 +110,7 @@ export class MessageContainer extends AKElement {
     public messages: APIMessage[] = [];
 
     @property({ type: String, reflect: true, useDefault: true })
-    public alignment: MessageContainerAlignment = "bottom-right";
+    public alignment: MessageContainerAlignment = "bottom-left";
 
     static styles: CSSResult[] = [PFAlertGroup, Styles];
 
