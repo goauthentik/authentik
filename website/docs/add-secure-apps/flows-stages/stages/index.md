@@ -66,7 +66,7 @@ To bind a stage to a flow (which adds the stage as a "step" in the flow), follow
 3. In the list of flows, click the name of the flow to which you want to bind one or more stages.
 4. On the Flow page, click the **Stage Bindings** tab at the top.
 5. Click **Create or bind...**.
-5. Here, you can choose to either bind an existing stage to the flow with **Existing Stage** or create a new stage and bind it to the flow with **Bind New Stage**.
+6. Here, you can choose to either bind an existing stage to the flow with **Existing Stage** or create a new stage and bind it to the flow with **Bind New Stage**.
 
 ### Control access to a stage
 
