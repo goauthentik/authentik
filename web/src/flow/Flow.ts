@@ -38,18 +38,24 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 /// <reference types="../../types/lit.d.ts" />
 
+// We only need this to re-assure the type checker that we've received an object
+// from the messaging class. ContextualFlowInfo is almost entirely optional
+// fields, and we destructure it while ignoring any unexpected fields.
+
 const isContextualFlowInfo = (v: unknown): v is ContextualFlowInfo =>
     typeof v === "object" && v !== null;
 
 /**
  * The application shell for authentik flows and the Flow Executor.
  *
- * Provides the decorations and features that go around the executor: background, layout, locale
- * selector, flow inspector button, headers, footers, and the iframe if provided.
+ * Provides the decorations and features that go around the executor:
+ * background, layout, locale selector, flow inspector button, headers, footers,
+ * and the iframe if provided.
  *
  * @attr {string} slug - The slug of the flow to execute. Prop-drilled to the executor.
- * @attr {FlowLayoutEnum} data-layout - Page layout variant. Defaults to `globalAK().flow.layout` or
- *     just `stacked`
+ *
+ * @attr {FlowLayoutEnum} data-layout - Page layout variant. Defaults to
+ * `globalAK().flow.layout` or just `stacked`
  *
  * @slot footer - The page-level footer content.  Currently filled by `ak-brand-links`.
  *
@@ -64,10 +70,11 @@ const isContextualFlowInfo = (v: unknown): v is ContextualFlowInfo =>
  * @part locale-select-label - The label of the locale select component.
  * @part locale-select-select - The select element of the locale select component.
  *
- * NOTE: This is the application shell, the top-level component. From here, we invoke the
- * flow-executor in-line in the template rendered, but use the `light()` directive to inject it into
- * the Flow element's lightDOM, and a slot is emplaced where the flow-executor's part of the
- * template would go. This enables password managers to traverse down into the flow and its stages
+ * NOTE: This is the application shell, the top-level component. From here, we
+ * invoke the flow-executor in-line in the template rendered, but use the
+ * `light()` directive to inject it into the Flow element's lightDOM, and a slot
+ * is emplaced where the flow-executor's part of the template would go. This
+ * enables password managers to traverse down into the flow and its stages
  * without having to cross or know about shadowDOM boundaries.
  *
  */
@@ -100,7 +107,7 @@ export class Flow extends WithBrandConfig(Interface) {
     public layout: FlowLayoutEnum = Flow.DefaultLayout;
 
     @state()
-    protected loading = false;
+    protected loading = true;
 
     @state()
     public title: string = "";
@@ -117,6 +124,8 @@ export class Flow extends WithBrandConfig(Interface) {
 
     readonly #logger = ConsoleLogger.prefix("flow");
 
+    //#endregion
+
     //#region Render
 
     constructor() {
@@ -129,6 +138,10 @@ export class Flow extends WithBrandConfig(Interface) {
         if (!isContextualFlowInfo(flowInfo)) {
             return;
         }
+
+        // The `!== undefined` is deliberate; if a flow update has no change to
+        // any of these, they should inherit the previous stage's decorative
+        // state.
 
         if ("title" in flowInfo && flowInfo.title !== undefined) {
             this.title = flowInfo.title;
@@ -149,10 +162,13 @@ export class Flow extends WithBrandConfig(Interface) {
 
     #handleLoading = (event: AKFlowLoadingEvent) => {
         this.loading = true;
-        // The event comes with a payload: a protected boolean promise that reflects the pending
-        // state of whatever triggered the "loading" state deep down. Neat trick here: we simply
-        // await on it and, when it's done, we trigger a state change. No other system needs to
-        // track "loading" states at all.
+
+        // The event comes with a payload: a protected boolean promise that
+        // reflects the pending state of whatever triggered the "loading" state
+        // deep down. Neat trick here: we simply await on it and, when it's
+        // done, we trigger a state change. No other system needs to track
+        // "loading" states at all.
+
         event.awaiter.finally(() => {
             this.loading = false;
         });
@@ -161,6 +177,10 @@ export class Flow extends WithBrandConfig(Interface) {
     public override connectedCallback(): void {
         super.connectedCallback();
 
+        // Do not remove. This can happen if Flow is reparented as the result of
+        // a higher-level component slot change. While there's no current design
+        // that would make that happen, it's not worth removing this code to
+        // take that risk.
         if (this.#abortController) {
             this.#abortController.abort();
         }

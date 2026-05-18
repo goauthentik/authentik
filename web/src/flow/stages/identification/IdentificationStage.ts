@@ -4,6 +4,7 @@ import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 import "#flow/stages/captcha/CaptchaStage";
 
+import { classList } from "#elements/directives/class-list";
 import { light } from "#elements/directives/light";
 import { renderSourceIcon } from "#elements/sources/utils";
 
@@ -257,9 +258,14 @@ export class IdentificationStage extends BaseStage<
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
 
+        const captchaStyles = classList([!this.#captcha.live && "pf-m-action"]);
+
+        // Prettier ignore because it wants to render all this as one big
+        // stream, and that makes it unreadable.
+        //
         // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
-        <div class="pf-c-form__group">
+            <div class="pf-c-form__group">
                 ${AKLabel({ required: true, htmlFor: inputID }, label)}
                 ${this.renderUidField(inputID, type, label, initialUserIdentification, passwordFields)}
                 ${rememberMeController?.renderToggleInput() ?? null}
@@ -268,7 +274,7 @@ export class IdentificationStage extends BaseStage<
             ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
             ${this.renderNonFieldErrors()}
             ${this.#captcha.render()}
-            <div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
+            <div class="pf-c-form__group ${captchaStyles}">
                 <button
                     ?disabled=${this.#captcha.pending}
                     type="submit"
@@ -368,6 +374,9 @@ export class IdentificationStage extends BaseStage<
         if (!(enrollUrl || recoveryUrl)) {
             return nothing;
         }
+
+        // The `light()` calls here facilitate discovery of these features by
+        // automation tools, especially testing.
 
         return html`<fieldset
             slot="footer-band"
