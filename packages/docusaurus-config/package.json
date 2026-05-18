@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "2.7.0",
+    "version": "3.0.0",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "repository": {
@@ -30,33 +30,33 @@
         "prism-react-renderer": "^2.4.1"
     },
     "devDependencies": {
-        "@docusaurus/theme-common": "3.10.0",
+        "@docusaurus/theme-common": "^3.10.0",
         "@docusaurus/theme-search-algolia": "^3.10.0",
         "@docusaurus/types": "^3.10.0",
         "@eslint/js": "^9.39.3",
         "@goauthentik/eslint-config": "../eslint-config",
         "@goauthentik/prettier-config": "../prettier-config",
         "@goauthentik/tsconfig": "../tsconfig",
-        "@types/node": "^25.5.0",
+        "@types/node": "^25.7.0",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "eslint": "^9.39.3",
         "pino": "^10.3.1",
-        "prettier": "^3.8.1",
+        "prettier": "^3.8.3",
         "prettier-plugin-packagejson": "^3.0.2",
-        "typescript": "^6.0.2",
-        "typescript-eslint": "^8.57.2"
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.59.3"
     },
     "peerDependencies": {
-        "@docusaurus/theme-common": "^3.9.2",
-        "@docusaurus/theme-search-algolia": "^3.9.2",
-        "@docusaurus/types": "^3.9.2",
-        "react": ">=18",
-        "react-dom": ">=18"
+        "@docusaurus/theme-common": "^3.10.1",
+        "@docusaurus/theme-search-algolia": "^3.10.1",
+        "@docusaurus/types": "^3.10.1",
+        "react": ">=19",
+        "react-dom": ">=19"
     },
     "optionalDependencies": {
-        "react": ">=18",
-        "react-dom": ">=18"
+        "react": ">=19",
+        "react-dom": ">=19"
     },
     "files": [
         "./index.js",
@@ -66,7 +66,7 @@
     ],
     "engines": {
         "node": ">=24",
-        "npm": ">=11.10.1"
+        "npm": ">=11.14.1"
     },
     "devEngines": {
         "runtime": {
@@ -76,7 +76,7 @@
         },
         "packageManager": {
             "name": "npm",
-            "version": ">=11.10.1",
+            "version": ">=11.14.1",
             "onFail": "warn"
         }
     },
