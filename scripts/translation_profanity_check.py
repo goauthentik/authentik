@@ -459,11 +459,13 @@ def load_allowlist(path: Path | None) -> set[str]:
 def _format_findings(findings: list[Finding]) -> str:
     """Render findings without echoing the matched dictionary token.
 
-    Per the original brief we never print the dictionary entry that matched
-    (the "word") — defence in depth so CI logs stay shareable. We do print
-    the English `msgid` (non-profane by definition) and the `target` (the
-    translated string), since operators need *some* anchor for triage; the
-    `target` may be removed in a future tightening pass.
+    Per the original brief we never print the dictionary entry that
+    matched (the "word") or the full translated `target` — `target` embeds
+    the offending substring in context, so echoing it transitively
+    violates the same rule. CI logs stay shareable on a phone or on a
+    projector. Operators wanting full context use `--json` (gated by
+    local triage) or open the source file at the printed `xliff_id` /
+    `refs` location.
 
     Each finding renders both as a GitHub Actions `::error::` annotation
     and (per CLI tradition) a human-readable trailing line. Extra
@@ -476,7 +478,6 @@ def _format_findings(findings: list[Finding]) -> str:
             f"dict={f.dict_code}",
             f"allowlist_key={f.allowlist_key}",
             f"msgid={f.msgid!r}",
-            f"target={f.target!r}",
         ]
         if f.xliff_id:
             extras.append(f"xliff_id={f.xliff_id}")
@@ -854,26 +855,34 @@ def _selftest() -> int:
                 loaded = load_allowlist(allow)
                 self.assertEqual(loaded, {f"de_DE:{msgid_hash('Hello')}"})
 
-        def test_findings_format_omits_matched_word(self):
+        def test_findings_format_redacts_word_and_target(self):
             # Defence in depth: the rendered output line must not include
-            # the dictionary entry that matched.
+            # the dictionary entry that matched, nor the translated target
+            # (which embeds the matched substring in context).
+            unique_target_marker = "Hallo xyzzy_marker_token"
             f = Finding(
                 locale="de_DE",
                 path=Path("locale/de_DE/LC_MESSAGES/django.po"),
                 line=42,
-                word="xyzzy",  # never echoed
+                word="xyzzy_marker_token",  # never echoed
                 msgid="Hello",
-                target="Hallo xyzzy",
+                target=unique_target_marker,  # never echoed
                 dict_code="de",
                 references=("authentik/admin/api.py:1",),
                 xliff_id=None,
             )
             rendered = _format_findings([f])
-            self.assertNotIn("xyzzy", rendered.split(" target=", 1)[0])
+            # Neither the matched dictionary token nor the full target
+            # string may appear anywhere in the rendered output.
+            self.assertNotIn("xyzzy_marker_token", rendered)
+            self.assertNotIn(unique_target_marker, rendered)
+            self.assertNotIn("target=", rendered)
             # `dict[<code>]` style summary appears instead.
             self.assertIn("profanity-dict[de]", rendered)
             self.assertIn("refs=authentik/admin/api.py:1", rendered)
             self.assertIn(f"allowlist_key=de_DE:{msgid_hash('Hello')}", rendered)
+            # msgid (English source, safe by definition) still present.
+            self.assertIn("msgid='Hello'", rendered)
 
         def test_findings_format_includes_xliff_id(self):
             f = Finding(
