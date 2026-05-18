@@ -22,6 +22,7 @@ import json
 import os
 import re
 import sys
+import time
 import unicodedata
 import urllib.error
 import urllib.request
@@ -30,10 +31,32 @@ from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
-DEFAULT_BASE_URL = (
+# Placeholder for the curated S3 dictionary mirror — to be populated when IT
+# provisions the bucket. Format mirrors the LDNOOBW one-file-per-language
+# convention used by fetch_dictionary (`<base>/<lang>` with no extension).
+# When the URL lands, set this constant to the string and the default below
+# automatically promotes to the curated source. One find-and-replace target,
+# grep for `TODO(s3-dict)` to locate.
+S3_CURATED_DICT_URL: str | None = None  # TODO(s3-dict): set to real URL when provisioned
+
+_LDNOOBW_PLACEHOLDER_URL = (
     "https://raw.githubusercontent.com/LDNOOBW/"
     "List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words/master"
 )
+
+# Default dictionary source. Resolves to the curated S3 URL once the
+# placeholder above is populated; falls back to LDNOOBW until then.
+# Either way, the `PROFANITY_DICT_BASE_URL` env var (set via the
+# `qa-translation-profanity.yml` workflow's repo variable) still wins.
+DEFAULT_BASE_URL = S3_CURATED_DICT_URL or _LDNOOBW_PLACEHOLDER_URL
+
+# Local cache for fetched dictionaries. Keeps CI runs and local triage from
+# slamming the upstream host on every invocation. Per-language files are
+# revalidated against the pin file (see _load_dict_pins) on every cache hit;
+# files older than DICT_CACHE_TTL_SECONDS are always re-fetched even when
+# the pin matches, to catch unpinned dicts that updated upstream.
+_DEFAULT_CACHE_DIR = "~/.cache/authentik-translation-profanity"
+DICT_CACHE_TTL_SECONDS = 24 * 60 * 60  # 24h
 
 # HTTP 404 from the dictionary host means "this language isn't covered" and
 # downgrades to a skip; any other status propagates.
@@ -121,17 +144,116 @@ def parse_dictionary(raw: str) -> list[str]:
     return out
 
 
-def fetch_dictionary(
+def _sha256(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+class DictPinError(ValueError):
+    """Raised when the pin file is malformed or a fetched dictionary's
+    SHA256 disagrees with the pinned value.
+
+    Pin mismatches fail the gate loud (exit 2) rather than silently
+    re-pinning — an unexpected dict change is a curation/security event,
+    not a routine refresh."""
+
+
+_DICT_PIN_LINE_RE = re.compile(r"^([A-Za-z0-9_-]+)\s+([0-9a-fA-F]{64})$")
+
+
+def _default_pin_path() -> Path:
+    return Path(__file__).resolve().parent / ".translation_profanity_dict_pins"
+
+
+def load_dict_pins(path: Path | None = None) -> dict[str, str]:
+    """Read per-language SHA256 pins from the pin file.
+
+    Schema (one entry per line):
+
+        <dict_code>  <sha256-hex>          # optional reason / version note
+
+    `#` comments and blank lines are ignored. A missing file is treated
+    as "no pins" — fetched dicts are accepted without integrity check
+    (matches the v3 default for the LDNOOBW placeholder, where pinning
+    against an external repo's rolling tip isn't useful). Malformed
+    entries raise DictPinError so the file stays PR-reviewable."""
+    if path is None:
+        path = _default_pin_path()
+    if not path.is_file():
+        return {}
+    pins: dict[str, str] = {}
+    errors: list[str] = []
+    for lineno, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        body = raw.split("#", 1)[0].strip()
+        if not body:
+            continue
+        m = _DICT_PIN_LINE_RE.match(body)
+        if not m:
+            errors.append(
+                f"{path}:{lineno}: malformed pin entry: {body!r} — expected "
+                f"'<dict_code>  <sha256-hex>'"
+            )
+            continue
+        pins[m.group(1)] = m.group(2).lower()
+    if errors:
+        raise DictPinError("\n".join(errors))
+    return pins
+
+
+def _resolve_cache_dir(explicit: Path | str | None) -> Path:
+    """Cache-dir precedence: explicit arg > env var > default."""
+    if explicit is not None:
+        return Path(explicit).expanduser()
+    env = os.environ.get("PROFANITY_DICT_CACHE_DIR")
+    if env:
+        return Path(env).expanduser()
+    return Path(_DEFAULT_CACHE_DIR).expanduser()
+
+
+def fetch_dictionary(  # noqa: PLR0913 — small surface, every knob is wired through CLI/env
     code: str,
     base_url: str,
     fetcher=_http_get,
+    *,
+    cache_dir: Path | str | None = None,
+    pins: dict[str, str] | None = None,
+    now: float | None = None,
 ) -> list[str] | None:
     """Returns dictionary entries (already normalized) or None if missing.
 
-    "Missing" covers both HTTP 404 (no dict for that language at the source)
-    and the local-file-not-found case (used by the self-test). Other failures
-    — connection refused, 5xx, malformed UTF-8 — propagate, so a broken
-    dictionary source fails CI loudly rather than silently passing."""
+    "Missing" covers both HTTP 404 (no dict for that language at the
+    source) and the local-file-not-found case (used by the self-test).
+    Other transport failures — connection refused, 5xx, malformed UTF-8 —
+    propagate so a broken dictionary source fails CI loudly.
+
+    Resolution order:
+
+        1. If a fresh-enough (< DICT_CACHE_TTL_SECONDS) cached copy
+           exists and either has no pin or matches its pin, use it.
+        2. Otherwise refetch from `base_url/<code>`.
+        3. If a pin exists for `<code>`, verify the fetched SHA256
+           matches; raise DictPinError on mismatch.
+        4. Persist the fetched bytes to the cache for next run.
+
+    The cache lives at `cache_dir/<code>`; pins come from the file at
+    `scripts/.translation_profanity_dict_pins` (override via load_dict_pins
+    arg). Both default to file-system paths so tests can swap in a tmp
+    directory without monkeypatching."""
+    cache_root = _resolve_cache_dir(cache_dir)
+    pin_map = pins if pins is not None else load_dict_pins()
+    pinned = pin_map.get(code)
+    cache_path = cache_root / code
+    clock = time.time if now is None else (lambda: now)
+
+    # 1. Cache check.
+    if cache_path.is_file():
+        age = clock() - cache_path.stat().st_mtime
+        if age < DICT_CACHE_TTL_SECONDS:
+            cached = cache_path.read_text(encoding="utf-8")
+            if pinned is None or _sha256(cached) == pinned:
+                return parse_dictionary(cached)
+            # Pin mismatch on cache: treat as stale and re-fetch.
+
+    # 2. Fetch fresh.
     url = f"{base_url.rstrip('/')}/{code}"
     try:
         raw = fetcher(url)
@@ -143,6 +265,28 @@ def fetch_dictionary(
         if isinstance(exc.reason, FileNotFoundError):
             return None
         raise
+
+    # 3. Integrity check.
+    if pinned is not None:
+        actual = _sha256(raw)
+        if actual != pinned:
+            raise DictPinError(
+                f"profanity dictionary integrity failure for {code!r}: "
+                f"fetched SHA256 {actual} does not match pinned {pinned}. "
+                f"If this is an intentional upstream update, regenerate "
+                f"the pin in scripts/.translation_profanity_dict_pins."
+            )
+
+    # 4. Persist to cache.
+    try:
+        cache_root.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(raw, encoding="utf-8")
+    except OSError as exc:
+        # Cache writes are best-effort; failing to write must not break
+        # the gate (e.g. read-only filesystems, missing $HOME in some
+        # CI shapes). Log and continue.
+        print(f"warning: could not write dict cache at {cache_path}: {exc}", file=sys.stderr)
+
     return parse_dictionary(raw)
 
 
@@ -491,15 +635,25 @@ def _format_findings(findings: list[Finding]) -> str:
     return "\n".join(lines)
 
 
-def run(args: argparse.Namespace) -> int:
+def run(args: argparse.Namespace) -> int:  # noqa: PLR0915 — linear orchestrator, splitting just hides flow
     root = Path(args.root).resolve()
     base_url = args.base_url or os.environ.get("PROFANITY_DICT_BASE_URL", DEFAULT_BASE_URL)
+    cache_dir = _resolve_cache_dir(args.cache_dir)
     try:
         allowlist = load_allowlist(Path(args.allowlist) if args.allowlist else None)
     except AllowlistError as exc:
         print("allowlist validation failed:", file=sys.stderr)
         print(str(exc), file=sys.stderr)
         return 2
+    try:
+        pins = load_dict_pins(Path(args.pins) if args.pins else None)
+    except DictPinError as exc:
+        print("dict pins validation failed:", file=sys.stderr)
+        print(str(exc), file=sys.stderr)
+        return 2
+
+    if pins:
+        print(f"dict pins active for: {sorted(pins)}", file=sys.stderr)
 
     files = discover_translation_files(root)
     if not files:
@@ -520,7 +674,12 @@ def run(args: argparse.Namespace) -> int:
 
     all_findings: list[Finding] = []
     for code in sorted(by_dict_code):
-        dictionary = fetch_dictionary(code, base_url)
+        try:
+            dictionary = fetch_dictionary(code, base_url, cache_dir=cache_dir, pins=pins)
+        except DictPinError as exc:
+            print("dictionary integrity failure:", file=sys.stderr)
+            print(str(exc), file=sys.stderr)
+            return 2
         if dictionary is None:
             print(f"[{code}] no dictionary at {base_url}/{code} — skipping", file=sys.stderr)
             continue
@@ -725,7 +884,151 @@ def _selftest() -> int:
             def fake_fetch(url):
                 raise urllib.error.HTTPError(url, 404, "not found", None, None)
 
-            self.assertIsNone(fetch_dictionary("xx", "https://example.invalid", fetcher=fake_fetch))
+            with tempfile.TemporaryDirectory() as td:
+                self.assertIsNone(
+                    fetch_dictionary(
+                        "xx",
+                        "https://example.invalid",
+                        fetcher=fake_fetch,
+                        cache_dir=Path(td),
+                        pins={},
+                    )
+                )
+
+        def test_fetch_dictionary_caches_fresh_content(self):
+            calls = []
+
+            def fake_fetch(url):
+                calls.append(url)
+                return PLACEHOLDER_DICT
+
+            with tempfile.TemporaryDirectory() as td:
+                cache = Path(td)
+                # First fetch hits the fetcher.
+                d1 = fetch_dictionary(
+                    "de", "https://example.invalid", fetcher=fake_fetch, cache_dir=cache, pins={}
+                )
+                self.assertEqual(d1, parse_dictionary(PLACEHOLDER_DICT))
+                # Second fetch should reuse the cache (no new fetcher call).
+                d2 = fetch_dictionary(
+                    "de", "https://example.invalid", fetcher=fake_fetch, cache_dir=cache, pins={}
+                )
+                self.assertEqual(d2, d1)
+                self.assertEqual(len(calls), 1, f"expected 1 fetch, got {len(calls)}")
+
+        def test_fetch_dictionary_cache_expiry_triggers_refetch(self):
+            calls = []
+
+            def fake_fetch(url):
+                calls.append(url)
+                return PLACEHOLDER_DICT
+
+            with tempfile.TemporaryDirectory() as td:
+                cache = Path(td)
+                fetch_dictionary(
+                    "de", "https://example.invalid", fetcher=fake_fetch, cache_dir=cache, pins={}
+                )
+                self.assertEqual(len(calls), 1)
+                # Move the clock forward beyond the TTL — cache should be stale.
+                future = time.time() + DICT_CACHE_TTL_SECONDS + 1
+                fetch_dictionary(
+                    "de",
+                    "https://example.invalid",
+                    fetcher=fake_fetch,
+                    cache_dir=cache,
+                    pins={},
+                    now=future,
+                )
+                self.assertEqual(len(calls), 2)
+
+        def test_fetch_dictionary_pin_match_passes(self):
+            def fake_fetch(url):
+                return PLACEHOLDER_DICT
+
+            expected = _sha256(PLACEHOLDER_DICT)
+            with tempfile.TemporaryDirectory() as td:
+                d = fetch_dictionary(
+                    "de",
+                    "https://example.invalid",
+                    fetcher=fake_fetch,
+                    cache_dir=Path(td),
+                    pins={"de": expected},
+                )
+                self.assertEqual(d, parse_dictionary(PLACEHOLDER_DICT))
+
+        def test_fetch_dictionary_pin_mismatch_fails_loud(self):
+            def fake_fetch(url):
+                return PLACEHOLDER_DICT
+
+            wrong = "0" * 64
+            with (
+                tempfile.TemporaryDirectory() as td,
+                self.assertRaises(DictPinError) as ctx,
+            ):
+                fetch_dictionary(
+                    "de",
+                    "https://example.invalid",
+                    fetcher=fake_fetch,
+                    cache_dir=Path(td),
+                    pins={"de": wrong},
+                )
+            self.assertIn("integrity failure", str(ctx.exception))
+
+        def test_fetch_dictionary_pin_mismatch_on_cache_refetches(self):
+            # If a cached file no longer matches the pin (e.g. pin was rotated
+            # but cache still has the old content), the next call must
+            # re-fetch rather than fail loud on the stale cache.
+            calls = []
+
+            def fake_fetch(url):
+                calls.append(url)
+                return PLACEHOLDER_DICT
+
+            expected = _sha256(PLACEHOLDER_DICT)
+            with tempfile.TemporaryDirectory() as td:
+                cache = Path(td)
+                # Pre-populate cache with content that DOESN'T match the pin.
+                cache.mkdir(parents=True, exist_ok=True)
+                (cache / "de").write_text("stale content\n", encoding="utf-8")
+                d = fetch_dictionary(
+                    "de",
+                    "https://example.invalid",
+                    fetcher=fake_fetch,
+                    cache_dir=cache,
+                    pins={"de": expected},
+                )
+                self.assertEqual(d, parse_dictionary(PLACEHOLDER_DICT))
+                self.assertEqual(len(calls), 1)
+                # Cache now contains the freshly-fetched content.
+                self.assertEqual((cache / "de").read_text(encoding="utf-8"), PLACEHOLDER_DICT)
+
+        def test_load_dict_pins_pure_comments_ok(self):
+            with tempfile.TemporaryDirectory() as td:
+                pin_path = Path(td) / "pins"
+                pin_path.write_text(
+                    "# header comment\n"
+                    "\n"
+                    "de  " + ("a" * 64) + "  # v1 of curated dict\n"
+                    "ja  " + ("b" * 64) + "  # v1\n",
+                    encoding="utf-8",
+                )
+                self.assertEqual(
+                    load_dict_pins(pin_path),
+                    {"de": "a" * 64, "ja": "b" * 64},
+                )
+
+        def test_load_dict_pins_malformed_fails_loud(self):
+            with tempfile.TemporaryDirectory() as td:
+                pin_path = Path(td) / "pins"
+                # Hash too short.
+                pin_path.write_text("de  abc123\n", encoding="utf-8")
+                with self.assertRaises(DictPinError) as ctx:
+                    load_dict_pins(pin_path)
+                self.assertIn("malformed pin entry", str(ctx.exception))
+
+        def test_load_dict_pins_missing_file_returns_empty(self):
+            with tempfile.TemporaryDirectory() as td:
+                self.assertEqual(load_dict_pins(Path(td) / "absent"), {})
 
         def test_run_blocks_on_match(self):
             with tempfile.TemporaryDirectory() as td:
@@ -742,6 +1045,8 @@ def _selftest() -> int:
                     root=str(root),
                     base_url=f"file://{dict_dir}",
                     allowlist=None,
+                    pins="/dev/null",
+                    cache_dir=str(root / "cache"),
                     json=False,
                 )
                 rc = run(ns)
@@ -762,6 +1067,8 @@ def _selftest() -> int:
                     root=str(root),
                     base_url=f"file://{dict_dir}",
                     allowlist=None,
+                    pins="/dev/null",
+                    cache_dir=str(root / "cache"),
                     json=False,
                 )
                 self.assertEqual(run(ns), 0)
@@ -786,6 +1093,8 @@ def _selftest() -> int:
                     root=str(root),
                     base_url=f"file://{dict_dir}",
                     allowlist=str(allow),
+                    pins="/dev/null",
+                    cache_dir=str(root / "cache"),
                     json=False,
                 )
                 self.assertEqual(run(ns), 0)
@@ -812,6 +1121,8 @@ def _selftest() -> int:
                     root=str(root),
                     base_url=f"file://{dict_dir}",
                     allowlist=str(allow),
+                    pins="/dev/null",
+                    cache_dir=str(root / "cache"),
                     json=False,
                 )
                 self.assertEqual(run(ns), 1)
@@ -922,6 +1233,24 @@ def main(argv: list[str] | None = None) -> int:
             "Path to the allowlist. Each entry is "
             "'<locale>:<msgid_hash>  # reason' on its own line; bare hashes "
             "or missing-reason entries cause the scanner to fail loud."
+        ),
+    )
+    parser.add_argument(
+        "--pins",
+        default=None,
+        help=(
+            "Path to the per-language SHA256 pin file. Defaults to "
+            "scripts/.translation_profanity_dict_pins next to this script. "
+            "Set to /dev/null to disable pinning."
+        ),
+    )
+    parser.add_argument(
+        "--cache-dir",
+        default=None,
+        help=(
+            "Local cache for fetched dictionaries. Defaults to "
+            f"$PROFANITY_DICT_CACHE_DIR or {_DEFAULT_CACHE_DIR}. "
+            f"Cached files older than {DICT_CACHE_TTL_SECONDS // 3600}h are re-fetched."
         ),
     )
     parser.add_argument("--json", action="store_true", help="Emit findings as JSON")

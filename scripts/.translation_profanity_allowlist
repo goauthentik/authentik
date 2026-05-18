@@ -17,6 +17,24 @@
 # rewording. The allowlist statement is "this English phrase in this
 # locale is acceptable", not "this exact translated string is acceptable".
 #
+# Post-S3 policy (effective once the curated dictionary takes over via
+# TODO(s3-dict) in scripts/translation_profanity_check.py):
+#
+#   1. Start empty. The curated dict should have a low false-positive
+#      rate by design — if it doesn't, fix the dict, don't mass-seed
+#      this file.
+#   2. Add entries per-finding with a one-line justification (UX term,
+#      compound-word collision, regional usage, etc.). Cite the
+#      relevant issue / Slack thread when possible.
+#   3. When the dict's SHA256 pin is rotated (see
+#      scripts/.translation_profanity_dict_pins) the operator SHOULD
+#      walk this file: an entry that suppressed a finding under the old
+#      dict may be over-broad or no longer needed under the new dict.
+#      Stale entries are tolerated but invite drift; reviewers should
+#      push back on adding entries without expiring old ones.
+#   4. The hard "no profanity text in repo" rule still holds — entries
+#      contain only English-msgid hashes + non-profane reason text.
+#
 # When the gate flags a legitimate translation (e.g. an anatomical or
 # UX term that overlaps with the upstream dictionary), copy the printed
 # `allowlist_key=` value here and add a one-line justification.
