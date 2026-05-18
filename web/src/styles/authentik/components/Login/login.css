@@ -33,6 +33,66 @@
  * - The pf-c-login__footer is slotted into the flow executor, and requires a
  *  delicate balance of inheriting styles from the login page while ensuring sufficient contrast against the background.
  */
+:root {
+  --pf-c-login--PaddingTop: var(--pf-global--spacer--lg);
+  --pf-c-login--PaddingBottom: var(--pf-global--spacer--lg);
+  --pf-c-login--xl--BackgroundImage: none;
+  --pf-c-login__container--xl--GridColumnGap: var(--pf-global--spacer--3xl);
+  --pf-c-login__container--MaxWidth: 31.25rem;
+  --pf-c-login__container--xl--MaxWidth: none;
+  --pf-c-login__container--PaddingLeft: 6.125rem;
+  --pf-c-login__container--PaddingRight: 6.125rem;
+  --pf-c-login__container--xl--GridTemplateColumns: 34rem minmax(auto, 34rem);
+  --pf-c-login__header--MarginBottom: var(--pf-global--spacer--md);
+  --pf-c-login__header--PaddingLeft: var(--pf-global--spacer--md);
+  --pf-c-login__header--PaddingRight: var(--pf-global--spacer--md);
+  --pf-c-login__header--xl--MarginBottom: var(--pf-global--spacer--2xl);
+  --pf-c-login__header--xl--MarginTop: var(--pf-global--spacer--3xl);
+  --pf-c-login__header--c-brand--MarginBottom: var(--pf-global--spacer--lg);
+  --pf-c-login__header--c-brand--xl--MarginBottom: var(--pf-global--spacer--2xl);
+  --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
+  --pf-c-login__main--MarginBottom: var(--pf-global--spacer--lg);
+  --pf-c-login__main-header--PaddingTop: var(--pf-global--spacer--2xl);
+  --pf-c-login__main-header--PaddingRight: var(--pf-global--spacer--xl);
+  --pf-c-login__main-header--PaddingBottom: var(--pf-global--spacer--md);
+  --pf-c-login__main-header--PaddingLeft: var(--pf-global--spacer--xl);
+  --pf-c-login__main-header--md--PaddingRight: var(--pf-global--spacer--2xl);
+  --pf-c-login__main-header--md--PaddingLeft: var(--pf-global--spacer--2xl);
+  --pf-c-login__main-header--ColumnGap: var(--pf-global--spacer--md);
+  --pf-c-login__main-header--RowGap: var(--pf-global--spacer--md);
+  --pf-c-login__main-header-desc--MarginBottom: var(--pf-global--spacer--sm);
+  --pf-c-login__main-header-desc--md--MarginBottom: 0;
+  --pf-c-login__main-header-desc--FontSize: var(--pf-global--FontSize--sm);
+  --pf-c-login__main-body--PaddingRight: var(--pf-global--spacer--xl);
+  --pf-c-login__main-body--PaddingBottom: var(--pf-global--spacer--xl);
+  --pf-c-login__main-body--PaddingLeft: var(--pf-global--spacer--xl);
+  --pf-c-login__main-body--md--PaddingRight: var(--pf-global--spacer--2xl);
+  --pf-c-login__main-body--md--PaddingLeft: var(--pf-global--spacer--2xl);
+  --pf-c-login__main-footer--PaddingBottom: var(--pf-global--spacer--3xl);
+  --pf-c-login__main-footer--c-title--MarginBottom: var(--pf-global--spacer--md);
+  --pf-c-login__main-footer-links--PaddingTop: var(--pf-global--spacer--sm);
+  --pf-c-login__main-footer-links--PaddingRight: var(--pf-global--spacer--3xl);
+  --pf-c-login__main-footer-links--PaddingBottom: var(--pf-global--spacer--xl);
+  --pf-c-login__main-footer-links--PaddingLeft: var(--pf-global--spacer--3xl);
+  --pf-c-login__main-footer-links-item--PaddingRight: var(--pf-global--spacer--md);
+  --pf-c-login__main-footer-links-item--PaddingLeft: var(--pf-global--spacer--md);
+  --pf-c-login__main-footer-links-item--MarginBottom: var(--pf-global--spacer--sm);
+  --pf-c-login__main-footer-links-item-link-svg--Fill: var(--pf-global--icon--Color--light);
+  --pf-c-login__main-footer-links-item-link-svg--Width: var(--pf-global--icon--FontSize--lg);
+  --pf-c-login__main-footer-links-item-link-svg--Height: var(--pf-global--icon--FontSize--lg);
+  --pf-c-login__main-footer-links-item-link-svg--hover--Fill: var(--pf-global--icon--Color--dark);
+  --pf-c-login__main-footer-band--PaddingTop: var(--pf-global--spacer--lg);
+  --pf-c-login__main-footer-band--PaddingRight: var(--pf-global--spacer--md);
+  --pf-c-login__main-footer-band--PaddingBottom: var(--pf-global--spacer--lg);
+  --pf-c-login__main-footer-band--PaddingLeft: var(--pf-global--spacer--md);
+  --pf-c-login__main-footer-band--BackgroundColor: var(--pf-global--BackgroundColor--200);
+  --pf-c-login__main-footer-band-item--PaddingTop: var(--pf-global--spacer--md);
+  --pf-c-login__footer--PaddingLeft: var(--pf-global--spacer--md);
+  --pf-c-login__footer--PaddingRight: var(--pf-global--spacer--md);
+  --pf-c-login__footer--c-list--PaddingTop: var(--pf-global--spacer--md);
+  --pf-c-login__footer--c-list--xl--PaddingTop: var(--pf-global--spacer--2xl);
+}
+
 .pf-c-login {
     flex: 1 1 auto;
 

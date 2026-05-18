@@ -233,6 +233,10 @@
     }
 }
 
+ak-flow-executor {
+    width: 100%;
+}
+
 .remember-me-switch {
     display: flex;
     align-items: center;
