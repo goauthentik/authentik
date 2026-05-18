@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 from unittest import TestCase
 from unittest.mock import patch
 
+import freezegun
 import pytest
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -90,6 +91,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         self.logger.debug("Test environment configured")
 
         use_test_broker()
+
+        freezegun.configure(extend_ignore_list=["cryptography"])
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")
