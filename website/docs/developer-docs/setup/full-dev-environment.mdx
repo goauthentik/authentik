@@ -205,6 +205,13 @@ Copy the generated recovery key and paste it into the URL, after the domain. For
 
 ## End-to-end (E2E) setup
 
+authentik ships two end-to-end test suites:
+
+- The Django/Selenium suite under `tests/e2e/` — driven by Django's test runner. It is exercised in CI by the `test-e2e` job in `ci-main.yml`.
+- The browser-side Playwright suite under `web/test/browser/` — driven by `web/playwright.config.js`. It is exercised in CI by the `e2e (playwright)` job in `ci-web.yml` and runs against a live authentik server.
+
+### Django/Selenium suite
+
 Start the E2E test services with the following command:
 
 ```shell
@@ -218,6 +225,40 @@ Alternatively, you can connect directly via VNC on port `5900` using the passwor
 :::info
 When using Docker Desktop, host networking needs to be enabled via **Docker Settings** > **Resources** > **Network** > **Enable host networking**.
 :::
+
+### Playwright suite
+
+The Playwright suite assumes that:
+
+- An authentik stack is reachable at `http://localhost:9000` (override with `AK_TEST_RUNNER_PAGE_URL`).
+- The blueprint at `web/test/blueprints/test-admin-user.yaml` has been applied so that the `test-admin@goauthentik.io` user (password `test-runner`) can log in.
+
+Both prerequisites are satisfied by the standard full development environment described above, plus a one-off blueprint apply. From the repository root:
+
+```shell
+# Make the test admin blueprint discoverable by the worker, then start authentik.
+mkdir -p blueprints/local
+cp web/test/blueprints/test-admin-user.yaml blueprints/local/test-admin-user.yaml
+
+# In separate terminals:
+make run-server
+make run-worker
+```
+
+Once the worker has applied the blueprint, install Playwright's browsers (one-time) and run the suite — these are the same npm scripts CI runs:
+
+```shell
+corepack npm exec --prefix web -- playwright install --with-deps chromium
+corepack npm run --prefix web test:e2e
+```
+
+After a failing run, open the HTML report to inspect traces, screenshots, and (in CI) videos:
+
+```shell
+corepack npm exec --prefix web -- playwright show-report
+```
+
+In CI, the same artifacts are uploaded under the `playwright-report` and `playwright-traces` artifact names on the failed workflow run.
 
 ## Contributing code
 

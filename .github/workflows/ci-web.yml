@@ -12,6 +12,20 @@ on:
       - main
       - version-*
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+  AUTHENTIK_BLUEPRINTS_DIR: "./blueprints"
+  AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST: "true"
+  # Drives the system/bootstrap.yaml blueprint at startup: creates akadmin with
+  # these credentials and flips the Setup flag (Setup.set(True)) so the SPA's
+  # post-login redirect to "/" doesn't bounce through /setup, which would 500
+  # because the OOBE policy refuses to run once akadmin already has a usable
+  # password. See authentik/core/setup/signals.py and blueprints/default/flow-oobe.yaml.
+  AUTHENTIK_BOOTSTRAP_EMAIL: "test-admin@goauthentik.io"
+  AUTHENTIK_BOOTSTRAP_PASSWORD: "test-runner"
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -43,6 +57,246 @@ jobs:
           NODE_ENV: "production"
         working-directory: web/
         run: corepack npm run build
+  e2e:
+    name: e2e (playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      # Required so the "Comment Playwright result on PR" step can update its
+      # marker comment via the gh CLI / REST API.
+      pull-requests: write
+      # Required so the optional "Upload HTML report to S3" step can mint OIDC
+      # credentials with aws-actions/configure-aws-credentials. Harmless when
+      # the upload is gated off.
+      id-token: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+        with:
+          dependencies: system,python,node,go,rust,runtime
+      - name: Build web UI
+        run: corepack npm run --prefix web build
+      - name: Build authentik server (Go)
+        run: | # shell
+          go build -o ./bin/authentik-server ./cmd/server
+          sudo install -m 0755 ./bin/authentik-server /usr/local/bin/authentik-server
+      # The Rust binary is named `authentik` (not `authentik-worker`) to match
+      # `lifecycle/ak`, which probes `command -v authentik` and falls back to
+      # `cargo run --` if the prebuilt binary isn't on PATH. It serves both
+      # `ak worker` and `ak allinone`.
+      - name: Build authentik Rust binary (worker / allinone)
+        run: | # shell
+          cargo build --release --bin authentik
+          sudo install -m 0755 ./target/release/authentik /usr/local/bin/authentik
+      - name: Apply migrations
+        run: uv run python -m lifecycle.migrate
+      - name: Resolve Playwright version
+        id: playwright-version
+        working-directory: web
+        run: | # shell
+          version=$(node -p "require('@playwright/test/package.json').version")
+          if [ -z "$version" ]; then
+            echo "Failed to resolve @playwright/test version" >&2
+            exit 1
+          fi
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+      - name: Install Playwright browsers
+        working-directory: web
+        run: | # shell
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = "true" ]; then
+            corepack npm exec -- playwright install-deps chromium
+          else
+            corepack npm exec -- playwright install --with-deps chromium
+          fi
+      - name: Start authentik server and worker
+        run: | # shell
+          set -euo pipefail
+          mkdir -p /tmp/ak-logs
+
+          # The Go server (authentik-server) spawns gunicorn as a child via PATH lookup
+          # and inherits the env that `uv run` set up for it. Verify gunicorn resolves
+          # under the same launcher so we fail fast here instead of waiting for an
+          # empty 200 from the proxy fallback later.
+          uv run --frozen sh -c 'command -v gunicorn' \
+            || { echo "gunicorn not resolvable from uv run"; exit 1; }
+
+          uv run ak server > /tmp/ak-logs/server.log 2>&1 &
+          echo $! > /tmp/ak-logs/server.pid
+
+          # The Rust worker also opens an HTTP/metrics server on listen.http /
+          # listen.metrics (default :9000 / :9300). On a single CI host that races the
+          # Go server's binds and silently steals :9000, leaving Playwright talking to
+          # a healthcheck-only axum router that returns 200/empty for /if/* paths.
+          # Pin the worker to disjoint ports so the Go server keeps the public 9000.
+          AUTHENTIK_LISTEN__HTTP="[::]:9001" \
+          AUTHENTIK_LISTEN__METRICS="[::]:9301" \
+          uv run ak worker > /tmp/ak-logs/worker.log 2>&1 &
+          echo $! > /tmp/ak-logs/worker.pid
+      - name: Wait for authentik to be ready
+        run: | # shell
+          set -euo pipefail
+          # Readiness probes must verify the Go server is actually serving the request,
+          # not just that *something* on :9000 returned 200. The Go proxy stamps
+          # `X-authentik-version` on its static responses and the rendered flow page
+          # contains the <ak-flow-executor> custom element — both are absent from the
+          # worker's axum healthcheck router, so checking either rules out the
+          # port-collision failure mode.
+          timeout 240 bash -c '
+            until curl -fsS -o /dev/null http://localhost:9000/-/health/ready/; do
+              sleep 2
+            done'
+          timeout 300 bash -c '
+            until curl -fsS http://localhost:9000/if/flow/default-authentication-flow/ \
+              | grep -q "ak-flow-executor"; do
+              sleep 3
+            done'
+      - name: Run Playwright tests
+        working-directory: web
+        env:
+          AK_TEST_RUNNER_PAGE_URL: http://localhost:9000
+        run: corepack npm run test:e2e
+      # Reporting / upload steps below intentionally use `!cancelled()` rather
+      # than `failure()`: a cancelled run (e.g. superseded by a newer push) is
+      # not a real result and shouldn't produce reviewer-facing artifacts or
+      # comments. `if-no-files-found: ignore` keeps the "passed" case quiet.
+      - name: Upload Playwright HTML report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report
+          path: web/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Upload Playwright traces and videos
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-traces
+          path: web/test-results/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Upload authentik server and worker logs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: authentik-logs
+          path: /tmp/ak-logs/
+          retention-days: 14
+          if-no-files-found: ignore
+      - name: Parse Playwright results
+        id: playwright-results
+        if: ${{ !cancelled() }}
+        run: | # shell
+          set -euo pipefail
+          report=web/playwright-report/results.json
+          if [ ! -f "$report" ]; then
+            {
+              echo "available=false"
+              echo "passed=0"
+              echo "failed=0"
+              echo "flaky=0"
+              echo "skipped=0"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          {
+            echo "available=true"
+            echo "passed=$(jq -r '.stats.expected // 0' "$report")"
+            echo "failed=$(jq -r '.stats.unexpected // 0' "$report")"
+            echo "flaky=$(jq -r '.stats.flaky // 0' "$report")"
+            echo "skipped=$(jq -r '.stats.skipped // 0' "$report")"
+          } >> "$GITHUB_OUTPUT"
+      # The S3 publishing pair below is intentionally gated off until the
+      # `authentik-playwright-artifacts` bucket is provisioned by infra. Flip
+      # the repo variable `PLAYWRIGHT_S3_ENABLED=true` to turn it on; the URL
+      # baked into the PR comment below already points at the eventual key.
+      - name: Configure AWS credentials for HTML report upload
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && vars.PLAYWRIGHT_S3_ENABLED == 'true' }}
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
+        with:
+          role-to-assume: "arn:aws:iam::016170277896:role/github_goauthentik_authentik"
+          aws-region: eu-central-1
+      - name: Upload HTML report to S3
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && vars.PLAYWRIGHT_S3_ENABLED == 'true' }}
+        env:
+          S3_BUCKET: authentik-playwright-artifacts
+          S3_KEY_PREFIX: pr-${{ github.event.pull_request.number }}/run-${{ github.run_id }}/attempt-${{ github.run_attempt }}
+        run: | # shell
+          set -euo pipefail
+          if [ ! -d web/playwright-report ]; then
+            echo "No playwright-report/ produced; skipping S3 upload"
+            exit 0
+          fi
+          # Reports are stamped with run_id + attempt in S3_KEY_PREFIX, so a given
+          # key is immutable once written — safe to cache aggressively. 30 days
+          # matches the retention-days on the GHA artifact upload above.
+          aws s3 cp \
+            --recursive \
+            --acl=public-read \
+            --cache-control "public, max-age=2592000, immutable" \
+            web/playwright-report/ \
+            "s3://${S3_BUCKET}/${S3_KEY_PREFIX}/"
+      # Same-repo guard: fork PRs run with a read-only GITHUB_TOKEN (even after
+      # maintainer approval), so the comment + edit calls would 403. Skip cleanly
+      # rather than failing the job on every fork PR run.
+      - name: Comment Playwright result on PR
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          AVAILABLE: ${{ steps.playwright-results.outputs.available }}
+          PASSED: ${{ steps.playwright-results.outputs.passed }}
+          FAILED: ${{ steps.playwright-results.outputs.failed }}
+          FLAKY: ${{ steps.playwright-results.outputs.flaky }}
+          SKIPPED: ${{ steps.playwright-results.outputs.skipped }}
+          S3_ENABLED: ${{ vars.PLAYWRIGHT_S3_ENABLED }}
+          REPORT_URL: https://authentik-playwright-artifacts.s3.amazonaws.com/pr-${{ github.event.pull_request.number }}/run-${{ github.run_id }}/attempt-${{ github.run_attempt }}/index.html
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}
+        run: | # shell
+          set -euo pipefail
+          marker='<!-- playwright-result -->'
+
+          if [ "$AVAILABLE" = "true" ]; then
+            if [ "$FAILED" -gt 0 ]; then
+              status='❌ Failed'
+            elif [ "$FLAKY" -gt 0 ]; then
+              status='⚠️ Passed with flakes'
+            else
+              status='✅ Passed'
+            fi
+            stats=$(printf '| Result | Count |\n|---|---|\n| ✅ Passed | %s |\n| ❌ Failed | %s |\n| ⚠️ Flaky | %s |\n| ⏭️ Skipped | %s |\n' "$PASSED" "$FAILED" "$FLAKY" "$SKIPPED")
+          else
+            status='⚠️ No results produced'
+            stats='The job did not produce `playwright-report/results.json`. The suite likely crashed before the JSON reporter wrote its output — see the workflow run for setup-step failures.'
+          fi
+
+          if [ "$S3_ENABLED" = "true" ]; then
+            report_line=$(printf '[HTML report](%s) · [Workflow run](%s)' "$REPORT_URL" "$RUN_URL")
+          else
+            report_line=$(printf '[Workflow run](%s) · _HTML report hosting is gated off until the `authentik-playwright-artifacts` S3 bucket is provisioned (`vars.PLAYWRIGHT_S3_ENABLED`). Until then, download the `playwright-report` artifact from the run page._' "$RUN_URL")
+          fi
+
+          body=$(printf '%s\n## Playwright e2e — %s\n\n%s\n\n%s\n' "$marker" "$status" "$stats" "$report_line")
+
+          existing=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            --paginate \
+            --jq "[.[] | select(.body != null and (.body | startswith(\"$marker\")))] | .[0].id // empty")
+
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${existing}" -f body="$body" > /dev/null
+            echo "Updated existing comment ${existing}"
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" -f body="$body" > /dev/null
+            echo "Created new playwright-result comment"
+          fi
   ci-web-mark:
     if: always()
     needs:

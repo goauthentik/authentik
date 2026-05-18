@@ -17,8 +17,6 @@ test.describe("Session Lifecycle", () => {
     test.beforeAll(
         'Ensure "Enable Remember me on this device" is on for the default identification stage',
         async ({ browser }, { title: testName }) => {
-            if (Date.now()) return;
-
             const context = await browser.newContext();
             const page = await context.newPage();
             const navigator = new NavigatorFixture(page, testName);

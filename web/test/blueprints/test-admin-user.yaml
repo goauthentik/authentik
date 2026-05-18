@@ -1,6 +1,19 @@
 version: 1
+metadata:
+    name: Playwright e2e test admin
 entries:
-    - attrs:
+    - model: authentik_core.group
+      state: present
+      identifiers:
+          name: "authentik Admins"
+      attrs:
+          is_superuser: true
+      id: admin-group
+    - model: authentik_core.user
+      state: present
+      identifiers:
+          username: akadmin
+      attrs:
           email: test-admin@goauthentik.io
           is_active: true
           name: authentik Default Admin
@@ -8,9 +21,4 @@ entries:
           path: users
           type: internal
           groups:
-              - !Find [authentik_core.group, [name, "authentik Admins"]]
-          conditions: []
-      identifiers:
-          username: akadmin
-      model: authentik_core.user
-      state: present
+              - !KeyOf admin-group
