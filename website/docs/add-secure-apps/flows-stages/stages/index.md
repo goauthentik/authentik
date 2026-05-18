@@ -84,9 +84,9 @@ To bind a user or a group to a stage binding for a specific flow, follow these s
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Flows and Stages > Flows**.
 3. In the list of flows, click the name of the flow to which you want to bind one or more stages.
-4. On the Flow page, click the **Stage Bindings** tab at the top.
+4. On that Flow's detail page, click the **Stage Bindings** tab at the top.
 5. In the list, locate the stage binding to which you want to bind a user or group, and then **click the caret (>) to expand the stage binding details.**
-6. In the expanded area, click **Create or bind**.
+6. In the expanded area, click **Create or bind...**.
 7. Under **Bind Existing**, select either **Bind a user** or **Bind a group**.
 8. In the drop-down list, select the group or user.
 9. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the box.
