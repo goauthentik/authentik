@@ -51,7 +51,7 @@ packages/tsconfig                       @goauthentik/frontend
 web/                                    @goauthentik/frontend
 # Locale
 /locale/                                @goauthentik/backend @goauthentik/frontend
-/locale/*/dictionaries                 @goauthentik/frontend @goauthentik/docs
+/locale/*/dictionaries                  @goauthentik/frontend @goauthentik/docs
 web/xliff/                              @goauthentik/backend @goauthentik/frontend
 # Docs
 website/                                @goauthentik/docs
