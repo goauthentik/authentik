@@ -76,7 +76,7 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
             - Set the **Signing Certificate** to any available certificate.
             - Set **NameID Property Mapping** to `PostHog name_id`.
             - Add `authentik default SAML Mapping: Email`, `PostHog name_id`, `PostHog first_name`, and `PostHog last_name` to **Selected User Property Mappings**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 ## PostHog configuration

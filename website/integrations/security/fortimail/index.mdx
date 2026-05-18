@@ -55,7 +55,7 @@ You can configure either Admin Portal SSO or User Portal SSO (or both), dependin
         - Under **Advanced protocol settings**:
             - Select any available certificate as the **Signing Certificate** and enable **Sign Assertions**.
             - Ensure that `authentik default SAML Mapping: Username` is selected as a **Selected User Property Mappings**; other mappings are optional and can be removed if not needed.
-    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to control which administrators see the FortiMail Admin application on the **My Applications** page.
+    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to control which administrators see the FortiMail Admin application on the **Application Dashboard** page.
 
 3. Click **Submit** to save the application and provider.
 
@@ -109,7 +109,7 @@ To support the integration of the FortiMail User Portal with authentik, you need
         - Set the **ACS URL** to `https://fortimailuser.company/sp2/sso/SAML2/POST`.
         - Set the **Audience** to `https://fortimailuser.company/sp`.
         - Under **Advanced protocol settings**, choose any available certificate as the **Signing Certificate** and enable **Sign Assertions**. Ensure `authentik default SAML Mapping: Email` is selected as a **Selected User Property Mapping**; other mappings are optional and can be removed if not needed.
-    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) to control which end users see the FortiMail webmail application on the **My Applications** page.
+    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) to control which end users see the FortiMail webmail application on the **Application Dashboard** page.
 
 3. Click **Submit** to save the application and provider.
 
