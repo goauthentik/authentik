@@ -30,7 +30,6 @@ export const styles = css`
         gap: var(--ak-v2-c-flow__card--Gap);
         inline-size: var(--ak-v2-c-flow__card--InlineSize);
         min-block-size: var(--ak-v2-c-flow__card--MinBlockSize);
-        padding: var(--ak-v2-c-flow__card--Padding);
     }
 
     [part="branding"] {
