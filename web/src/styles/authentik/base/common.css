@@ -19,6 +19,12 @@
     }
 }
 
+@media (not (prefers-contrast: more)) {
+    input {
+        outline: none;
+    }
+}
+
 /* #endregion */
 
 /* #region Modifiers */
