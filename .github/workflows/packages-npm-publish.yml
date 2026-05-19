@@ -32,6 +32,16 @@ jobs:
           - packages/logger-js
           - packages/esbuild-plugin-live-reload
     steps:
+      # Network observability for the highest-value job in this repo: it
+      # exchanges an OIDC token for an npm publish credential and has read
+      # access to a checkout of main. `audit` mode logs every outbound
+      # connection and surfaces anomalous egress in the Step Security
+      # Insights dashboard; promotion to `block` with an explicit
+      # allowed-endpoints list should follow once we have one or two real
+      # publish runs to baseline against.
+      - uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        with:
+          egress-policy: audit
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           fetch-depth: 2
