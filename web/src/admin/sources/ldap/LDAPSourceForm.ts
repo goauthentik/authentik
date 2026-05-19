@@ -14,7 +14,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { RadioOption } from "#elements/forms/Radio";
 
-import { placeholderHelperText } from "#admin/helperText";
+import { justInTimeSearchFilterText, placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 
 import {
@@ -112,6 +112,14 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 name="syncUsers"
                 label=${msg("Sync users")}
                 ?checked=${this.instance?.syncUsers ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="syncUsersJustInTime"
+                label=${msg("Sync users just-in-time")}
+                ?checked=${this.instance?.syncUsersJustInTime ?? true}
+                help=${msg(
+                    "Enable this option to automatically sync users just-in-time into Authentik as they login/authenticate.",
+                )}
             ></ak-switch-input>
             <ak-switch-input
                 name="syncUsersPassword"
@@ -345,6 +353,21 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg("Consider Objects matching this filter to be Groups.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("User just-in-time search filter")}
+                        required
+                        name="userJustInTimeSearchFilter"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.userJustInTimeSearchFilter || "(|(cn=%(id)s)(mail=%(id)s))"}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${userJustInTimeSearchFilterText}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal

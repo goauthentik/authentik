@@ -23508,6 +23508,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: sync_users_just_in_time
+        schema:
+          type: boolean
+      - in: query
         name: sync_parent_group
         schema:
           type: string
@@ -23522,6 +23526,10 @@ paths:
           type: boolean
       - in: query
         name: user_membership_attribute
+        schema:
+          type: string
+      - in: query
+        name: user_just_in_time_search_filter
         schema:
           type: string
       - in: query
@@ -42287,6 +42295,9 @@ components:
           type: string
           title: Addition Group DN
           description: Prepended to Base DN for Group-queries.
+        user_just_in_time_search_filter:
+          type: string
+          description: Filter used when searching for user accounts when JIT user syncing is enabled. %(id)s patterns are replaced with the identifier the user attempts to log in with.
         user_object_filter:
           type: string
           description: Consider Objects matching this filter to be Users.
@@ -42308,6 +42319,10 @@ components:
             LDAP
         sync_users:
           type: boolean
+        sync_users_just_in_time:
+          type: boolean
+          description: Sync users into Authentik JIT if they don't yet exist in the
+            database
         sync_users_password:
           type: boolean
           description: When a user changes their password, sync it back to LDAP. This
@@ -42510,6 +42525,10 @@ components:
           type: string
           title: Addition Group DN
           description: Prepended to Base DN for Group-queries.
+        user_just_in_time_search_filter:
+          type: string
+          minLength: 1
+          description: Filter used when searching for user accounts when JIT user syncing is enabled. %(id)s patterns are replaced with the identifier the user attempts to log in with.
         user_object_filter:
           type: string
           minLength: 1
@@ -42536,6 +42555,10 @@ components:
             LDAP
         sync_users:
           type: boolean
+        sync_users_just_in_time:
+          type: boolean
+          description: Sync users into Authentik JIT if they don't yet exist in the
+            database
         sync_users_password:
           type: boolean
           description: When a user changes their password, sync it back to LDAP. This
@@ -49516,6 +49539,10 @@ components:
           type: string
           title: Addition Group DN
           description: Prepended to Base DN for Group-queries.
+        user_just_in_time_search_filter:
+          type: string
+          minLength: 1
+          description: Filter used when searching for user accounts when JIT user syncing is enabled. %(id)s patterns are replaced with the identifier the user attempts to log in with.
         user_object_filter:
           type: string
           minLength: 1
@@ -49542,6 +49569,10 @@ components:
             LDAP
         sync_users:
           type: boolean
+        sync_users_just_in_time:
+          type: boolean
+          description: Sync users into Authentik JIT if they don't yet exist in the
+            database
         sync_users_password:
           type: boolean
           description: When a user changes their password, sync it back to LDAP. This
