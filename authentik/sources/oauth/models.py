@@ -66,6 +66,15 @@ class OAuthSource(NonCreatableType, Source):
     additional_scopes = models.TextField(
         default="", blank=True, verbose_name=_("Additional Scopes")
     )
+    additional_url_params = models.TextField(
+        default="",
+        blank=True,
+        verbose_name=_("Additional URL Parameters"),
+        help_text=_(
+            "Expression that returns a dictionary of additional parameters "
+            "to append to the authorization URL."
+        ),
+    )
     consumer_key = models.TextField()
     consumer_secret = models.TextField()
 
