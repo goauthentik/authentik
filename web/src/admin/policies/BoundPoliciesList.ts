@@ -208,7 +208,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
         ];
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No Policies bound.")}</span>

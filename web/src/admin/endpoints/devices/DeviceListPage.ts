@@ -59,7 +59,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
         );
     }
 
-    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: TemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
