@@ -3,6 +3,8 @@ title: Custom CSS
 slug: /brands/custom-css
 ---
 
+import ThemeAccessibilityWarning from "./_theme-accessibility-warning.mdx";
+
 You can add custom CSS to further customize the look of authentik. Some areas where custom CSS can be applied include:
 
 - The [flow executor](https://api.goauthentik.io/flow-executor/) (login and enrollment pages)
@@ -172,13 +174,7 @@ settings:
         base: light
 ```
 
-:::warning Accessibility consideration
-
-authentik's base theme prioritizes accessibility and may adjust colors and styles based on user preferences or system settings. The browser or operating system may also override the enforced theme to respect user accessibility settings, such as high contrast mode.
-
-Think carefully before enforcing a specific color scheme, as it may conflict with the user's accessibility needs. Overriding accessibility settings may also have legal implications under accessibility laws and regulations in certain jurisdictions.
-
-:::
+<ThemeAccessibilityWarning />
 
 ### Hide the locale selector
 

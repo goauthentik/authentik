@@ -1,0 +1,25 @@
+## Admin interface settings
+
+The following settings are specific to the Admin interface.
+
+### Items per page
+
+`settings.pagination.perPage: integer`
+
+How many items should be retrieved per page. **Defaults to 20.**
+
+```yaml
+settings:
+    pagination:
+        perPage: 50
+```
+
+### Default user path
+
+Prefilled path to use when creating a new user in the Admin interface. **Defaults to `user`.**
+
+```yaml
+settings:
+    defaults:
+        userPath: staff
+```

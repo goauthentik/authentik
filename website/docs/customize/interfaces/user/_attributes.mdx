@@ -1,0 +1,39 @@
+## Application Dashboard settings
+
+The following settings are specific to the Application Dashboard page.
+
+## Show edit option on Application Dashboard
+
+`settings.enabledFeatures.applicationEdit: boolean`
+
+If the user is a superuser, whether an _Edit Application_ option is shown on the **Application Dashboard** page. **Defaults to `false`.**
+
+```yaml
+settings:
+    enabledFeatures:
+        applicationEdit: true
+```
+
+## Application Dashboard layout
+
+`settings.layout.type: row | 2-column | 3-column`
+
+Which layout to use for the **Application Dashboard** page. **Defaults to `row`.**
+
+```yaml
+settings:
+    layout:
+        type: 3-column
+```
+
+### Show the Application Dashboard search bar
+
+`settings.enabledFeatures.search`
+
+Whether the Search bar appears on the Application Dashboard page. **Defaults to `true`.**
+
+```yaml
+settings:
+    enabledFeatures:
+        search: false
+```

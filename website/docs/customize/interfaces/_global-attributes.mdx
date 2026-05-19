@@ -1,0 +1,99 @@
+import ThemeAccessibilityWarning from "../../sys-mgmt/brands/_theme-accessibility-warning.mdx";
+
+## Global customization
+
+### Navbar user display
+
+`settings.navbar.userDisplay: username | name | email`
+
+How the user's display name is formatted. **Defaults to `username`.**
+
+```yaml title="Changing the user's display name format"
+settings:
+    navbar:
+        userDisplay: name
+```
+
+### Show the API Request drawer
+
+`settings.enabledFeatures.apiDrawer`
+
+Whether the API Request appears in the navigation bar. **Defaults to `true`.**
+
+```yaml title="Hiding the API Request drawer"
+settings:
+    enabledFeatures:
+        apiDrawer: false
+```
+
+### Show the Notification drawer
+
+`settings.enabledFeatures.notificationDrawer`
+
+Whether the Notification drawer appears in the navigation bar. **Defaults to `true`.**
+
+```yaml title="Hiding the Notification drawer"
+settings:
+    enabledFeatures:
+        notificationDrawer: false
+```
+
+### Show the user settings menu
+
+`settings.enabledFeatures.settings`
+
+Whether the user settings menu appears in the navigation bar. **Defaults to `true`.**
+
+```yaml title="Hiding the user settings menu"
+settings:
+    enabledFeatures:
+        settings: false
+```
+
+### Default theme mode
+
+`settings.theme.base: automatic | dark | light`
+
+The default theme mode for the interface. When unset, authentik uses the user's preferred color scheme, or light mode if no preference is set. Setting this to `dark` or `light` enforces that color scheme for all users, regardless of their preferences. **Defaults to `automatic`**
+
+
+```yaml title="Enforcing dark mode for the interface"
+settings:
+    theme:
+        base: dark
+```
+
+<ThemeAccessibilityWarning />
+
+### Background CSS
+
+`settings.theme.background: string (CSS)`
+
+CSS that is applied to the background of the user interface, for example to set a custom background color, gradient, or image.
+
+```yaml title="Setting a custom background image for the interface"
+settings:
+    theme:
+        background: >
+            background: url('https://picsum.photos/1920/1080');
+            filter: blur(8px);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+```
+
+For more details on customizing the theme, see our [Custom CSS documentation](../../sys-mgmt/brands/custom-css.mdx).
+
+### Default locale
+
+`settings.locale: string (BCP 47 language tag)`
+
+The default locale used by the interface. Set this on the default brand to configure the language instance-wide, or on user and group attributes to configure defaults for specific users or group memberships. Users can still choose their own preferred locale in user settings. **Defaults to `en` (English)**
+
+```yaml title="Setting the default locale to Japanese"
+settings:
+    locale: ja-JP
+```
+
+
+For more details, see the [Brand settings](../../sys-mgmt/brands/index.md#branding-settings) documentation.

@@ -3,6 +3,10 @@ title: Customize the User interface
 sidebar_label: User interface
 ---
 
+import EnabledFeaturesList from "../\_enabled-features-list.mdx";
+import GlobalAttributes from "../\_global-attributes.mdx";
+import UserAttributes from "./_attributes.mdx";
+
 The User interface can be customized using attributes configured in [Brands](../../../sys-mgmt/brands/index.md).
 
 To add, remove, or modify attributes for a brand, log in as an administrator and navigate to **System > Brands > Other global settings > Attributes**.
@@ -21,24 +25,8 @@ The following settings for attributes are grouped by:
 - General attributes (used on both the Admin interface and the User interface)
 - User interface only
 
-import Enabledfeatureslist from "../\_enabledfeatureslist.mdx";
+<EnabledFeaturesList />
 
-<Enabledfeatureslist />
+<UserAttributes />
 
-#### `settings.enabledFeatures.applicationEdit` (User interface only)
-
-Display the Edit option for each application on the **Application Dashboard** page (only shown when the user is a superuser).
-
-import Generalattributes from "../\_generalattributes.mdx";
-
-<Generalattributes />
-
-### Settings for the User interface only
-
-#### `settings.layout.type`
-
-Which layout to use for the **Application Dashboard** page. Defaults to `row`. Choices: `row`, `2-column`, `3-column`
-
-import Global from "../_global/global.mdx";
-
-<Global />
+<GlobalAttributes />

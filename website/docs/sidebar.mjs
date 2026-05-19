@@ -460,7 +460,12 @@ const items = [
                 //#region Interfaces
                 type: "category",
                 label: "Interfaces",
+                link: {
+                    type: "doc",
+                    id: "customize/interfaces/index",
+                },
                 items: [
+                    "customize/interfaces/index",
                     "customize/interfaces/flow/index",
                     "customize/interfaces/user/index",
                     "customize/interfaces/admin/index",
