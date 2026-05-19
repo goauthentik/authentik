@@ -49,7 +49,9 @@ class LDAPBackend(InbuiltBackend):
                         LOGGER.debug("Syncing user failed.")
                         return None
                 else:
-                    LOGGER.debug(f"Searched returned {len(search_results)} results. User not found.")
+                    LOGGER.debug(
+                        f"Searched returned {len(search_results)} results. User not found."
+                    )
                     return None
             else:
                 return None

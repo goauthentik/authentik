@@ -14,7 +14,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { RadioOption } from "#elements/forms/Radio";
 
-import { justInTimeSearchFilterText, placeholderHelperText } from "#admin/helperText";
+import { placeholderHelperText, userJustInTimeSearchFilterText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 
 import {
@@ -362,13 +362,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     >
                         <input
                             type="text"
-                            value="${this.instance?.userJustInTimeSearchFilter || "(|(cn=%(id)s)(mail=%(id)s))"}"
+                            value="${this.instance?.userJustInTimeSearchFilter ||
+                            "(|(cn=%(id)s)(mail=%(id)s))"}"
                             class="pf-c-form-control"
                             required
                         />
-                        <p class="pf-c-form__helper-text">
-                            ${userJustInTimeSearchFilterText}
-                        </p>
+                        <p class="pf-c-form__helper-text">${userJustInTimeSearchFilterText}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group membership field")}
