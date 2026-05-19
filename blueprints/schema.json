@@ -12627,6 +12627,12 @@
                     "title": "Addition Group DN",
                     "description": "Prepended to Base DN for Group-queries."
                 },
+                "user_just_in_time_search_filter": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "User just in time search filter",
+                    "description": "Filter used when searching for user accounts when just-in-time user syncing is enabled. Placeholders like `%(id)s` are replaced with the identifier the user attempts to log in with."
+                },
                 "user_object_filter": {
                     "type": "string",
                     "minLength": 1,
@@ -12665,6 +12671,11 @@
                 "sync_users": {
                     "type": "boolean",
                     "title": "Sync users"
+                },
+                "sync_users_just_in_time": {
+                    "type": "boolean",
+                    "title": "Sync users just in time",
+                    "description": "Enable this option to automatically sync users Just In Time into Authentik as they login/authenticate."
                 },
                 "sync_users_password": {
                     "type": "boolean",

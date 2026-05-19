@@ -584,10 +584,12 @@ export interface SourcesLdapListRequest {
     sni?: boolean;
     startTls?: boolean;
     syncGroups?: boolean;
+    syncJustInTime?: boolean;
     syncParentGroup?: string;
     syncUsers?: boolean;
     syncUsersPassword?: boolean;
     userMembershipAttribute?: string;
+    justInTimeSearchFilter?: string;
     userObjectFilter?: string;
     userPropertyMappings?: Array<string>;
 }
@@ -5873,6 +5875,10 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["sync_groups"] = requestParameters["syncGroups"];
         }
 
+        if (requestParameters["syncJustInTime"] != null) {
+            queryParameters["sync_just_in_time"] = requestParameters["syncJustInTime"];
+        }
+
         if (requestParameters["syncParentGroup"] != null) {
             queryParameters["sync_parent_group"] = requestParameters["syncParentGroup"];
         }
@@ -5888,6 +5894,11 @@ export class SourcesApi extends runtime.BaseAPI {
         if (requestParameters["userMembershipAttribute"] != null) {
             queryParameters["user_membership_attribute"] =
                 requestParameters["userMembershipAttribute"];
+        }
+
+        if (requestParameters["justInTimeSearchFilter"] != null) {
+            queryParameters["just_in_time_search_filter"] =
+                requestParameters["justInTimeSearchFilter"];
         }
 
         if (requestParameters["userObjectFilter"] != null) {

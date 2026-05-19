@@ -143,6 +143,7 @@ entries:
           sync_users: true
           sync_users_password: true
           user_membership_attribute: distinguishedName
+          just_in_time_search_filter: (|(cn=%(id)s)(mail=%(id)s))
           user_object_filter: (objectClass=person)
           user_property_mappings:
               - !Find [

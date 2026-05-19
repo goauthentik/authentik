@@ -1,12 +1,16 @@
 """authentik LDAP Authentication Backend"""
 
 from django.http import HttpRequest
+from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 from ldap3.core.exceptions import LDAPException, LDAPInvalidCredentialsResult
 from structlog.stdlib import get_logger
 
 from authentik.core.auth import InbuiltBackend
 from authentik.core.models import User
 from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPSource
+from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 
@@ -32,9 +36,26 @@ class LDAPBackend(InbuiltBackend):
         """Try to bind as either user_dn or mail with password.
         Returns True on success, otherwise False"""
         users = User.objects.filter(**filters)
+        user: User = None
         if not users.exists():
-            return None
-        user: User = users.first()
+            if source.sync_just_in_time:
+                LOGGER.debug("User not found. Searching for them.")
+                sync = UserLDAPSynchronizer(source, Task())
+                search_results = sync.search_users(**filters)
+                if len(search_results) == 1:
+                    LOGGER.debug("Found user and saving them to DB.")
+                    user = sync.sync_user(search_results[0])
+                    if user == None:
+                        LOGGER.debug("Syncing user failed.")
+                        return None
+                else:
+                    LOGGER.debug(f"Searched returned {len(search_results)} results. User not found.")
+                    return None
+            else:
+                return None
+        else:
+            user = users.first()
+
         if LDAP_DISTINGUISHED_NAME not in user.attributes:
             LOGGER.debug("User doesn't have DN set, assuming not LDAP imported.", user=user)
             return None

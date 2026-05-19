@@ -111,6 +111,10 @@ class LDAPSource(IncomingSyncSource):
         default="(objectClass=person)",
         help_text=_("Consider Objects matching this filter to be Users."),
     )
+    user_just_in_time_search_filter = models.TextField(
+        default="(|(cn=%(id)s)(mail=%(id)s))",
+        help_text=_("Filter used when searching for user accounts when just-in-time user syncing is enabled. Placeholders like `%(id)s` are replaced with the identifier the user attempts to log in with."),
+    )
     user_membership_attribute = models.TextField(
         default=LDAP_DISTINGUISHED_NAME,
         help_text=_("Attribute which matches the value of `group_membership_field`."),
@@ -132,6 +136,10 @@ class LDAPSource(IncomingSyncSource):
     )
 
     sync_users = models.BooleanField(default=True)
+    sync_users_just_in_time = models.BooleanField(
+        default=False,
+        help_text=_("Enable this option to automatically sync users Just In Time into Authentik as they login/authenticate."),
+    )
     sync_users_password = models.BooleanField(
         default=True,
         help_text=_(

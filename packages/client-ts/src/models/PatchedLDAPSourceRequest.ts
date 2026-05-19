@@ -161,6 +161,12 @@ export interface PatchedLDAPSourceRequest {
      */
     additionalGroupDn?: string;
     /**
+     * Filter used when searching for user accounts when JIT user syncing is enabled. %(id)s patterns are replaced with the identifier the user attempts to log in with.
+     * @type {string}
+     * @memberof PatchedLDAPSourceRequest
+     */
+    justInTimeSearchFilter?: string;
+    /**
      * Consider Objects matching this filter to be Users.
      * @type {string}
      * @memberof PatchedLDAPSourceRequest
@@ -202,6 +208,12 @@ export interface PatchedLDAPSourceRequest {
      * @memberof PatchedLDAPSourceRequest
      */
     syncUsers?: boolean;
+    /**
+     * Sync users into Authentik JIT if they don't yet exist in the database
+     * @type {boolean}
+     * @memberof PatchedLDAPSourceRequest
+     */
+    syncJustInTime?: boolean;
     /**
      * When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.
      * @type {boolean}
@@ -296,6 +308,10 @@ export function PatchedLDAPSourceRequestFromJSONTyped(
             json["additional_user_dn"] == null ? undefined : json["additional_user_dn"],
         additionalGroupDn:
             json["additional_group_dn"] == null ? undefined : json["additional_group_dn"],
+        justInTimeSearchFilter:
+            json["just_in_time_search_filter"] == null
+                ? undefined
+                : json["just_in_time_search_filter"],
         userObjectFilter:
             json["user_object_filter"] == null ? undefined : json["user_object_filter"],
         groupObjectFilter:
@@ -313,6 +329,7 @@ export function PatchedLDAPSourceRequestFromJSONTyped(
                 ? undefined
                 : json["password_login_update_internal_password"],
         syncUsers: json["sync_users"] == null ? undefined : json["sync_users"],
+        syncJustInTime: json["sync_just_in_time"] == null ? undefined : json["sync_just_in_time"],
         syncUsersPassword:
             json["sync_users_password"] == null ? undefined : json["sync_users_password"],
         syncGroups: json["sync_groups"] == null ? undefined : json["sync_groups"],
@@ -363,6 +380,7 @@ export function PatchedLDAPSourceRequestToJSONTyped(
         base_dn: value["baseDn"],
         additional_user_dn: value["additionalUserDn"],
         additional_group_dn: value["additionalGroupDn"],
+        just_in_time_search_filter: value["justInTimeSearchFilter"],
         user_object_filter: value["userObjectFilter"],
         group_object_filter: value["groupObjectFilter"],
         group_membership_field: value["groupMembershipField"],
@@ -370,6 +388,7 @@ export function PatchedLDAPSourceRequestToJSONTyped(
         object_uniqueness_field: value["objectUniquenessField"],
         password_login_update_internal_password: value["passwordLoginUpdateInternalPassword"],
         sync_users: value["syncUsers"],
+        sync_just_in_time: value["syncJustInTime"],
         sync_users_password: value["syncUsersPassword"],
         sync_groups: value["syncGroups"],
         sync_parent_group: value["syncParentGroup"],
