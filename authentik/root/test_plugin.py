@@ -29,6 +29,7 @@ def pytest_sessionstart(*_, **__):
     from datetime import UTC, datetime
 
     from cryptography.x509.verification import PolicyBuilder
+
     PolicyBuilder().time(datetime.now(tz=UTC))
     yield
 
