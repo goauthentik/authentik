@@ -11,4 +11,6 @@ export const placeholderHelperText = msg(
     "Path template for users created. Use placeholders like `%(slug)s` to insert the source slug.",
 );
 
-export const userJustInTimeSearchFilterText = msg("Filter used when searching for user accounts when just-in-time user syncing is enabled. Placeholders like `%(id)s` are replaced with the identifier the user attempts to log in with.");
+export const userJustInTimeSearchFilterText = msg(
+    "Filter used when searching for user accounts when just-in-time user syncing is enabled. Placeholders like `%(id)s` are replaced with the identifier the user attempts to log in with.",
+);

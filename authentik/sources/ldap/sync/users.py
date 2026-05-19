@@ -41,15 +41,13 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
         return "users"
 
     def search_users(self, username: str) -> list[dict]:
-        jit_search_filter = self._source.just_in_time_search_filter % {
-            "id": username
-        }
+        jit_search_filter = self._source.user_just_in_time_search_filter % {"id": username}
         self._connection.search(
-                    search_base=self.base_dn_users,
-                    search_filter=f"(&{jit_search_filter}{self._source.user_object_filter})",
-                    search_scope=SUBTREE,
-                    attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
-                )
+            search_base=self.base_dn_users,
+            search_filter=f"(&{jit_search_filter}{self._source.user_object_filter})",
+            search_scope=SUBTREE,
+            attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
+        )
         return self._connection.response
 
     def get_objects(self, **kwargs) -> Generator:
@@ -155,8 +153,6 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             ).save()
         else:
             self._logger.debug("Synced User", user=ak_user.username, created=created)
-            MicrosoftActiveDirectory(self._source, self._task).sync(
-                attributes, ak_user, created
-            )
+            MicrosoftActiveDirectory(self._source, self._task).sync(attributes, ak_user, created)
             FreeIPA(self._source, self._task).sync(attributes, ak_user, created)
             return ak_user

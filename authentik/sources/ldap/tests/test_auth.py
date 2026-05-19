@@ -121,3 +121,34 @@ class LDAPSyncTests(TestCase):
                     backend.authenticate(None, username="user0_sn", password=LDAP_PASSWORD),
                     user,
                 )
+
+    def test_auth_user_jit(self):
+        """Test Just-In-Time provisioning during authentication"""
+        self.source.sync_users_just_in_time = True
+        self.source.object_uniqueness_field = "uid"
+        self.source.user_just_in_time_search_filter = "(uid=%(id)s)"
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(name__startswith="authentik default LDAP Mapping")
+                | Q(name__startswith="authentik default OpenLDAP Mapping")
+            )
+        )
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            backend = LDAPBackend()
+
+            user = backend.authenticate(
+                None,
+                username="user0_sn",
+                password=LDAP_PASSWORD,
+            )
+
+            self.assertIsNotNone(user)
+            self.assertEqual(user.username, "user0_sn")
+
+            # Verify user was provisioned into the DB
+            created_user = User.objects.get(username="user0_sn")
+            self.assertEqual(created_user.pk, user.pk)
