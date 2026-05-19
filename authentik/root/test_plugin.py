@@ -19,6 +19,17 @@ def pytest_sessionstart(*_, **__):
     """Clear the console ahead of the pytest output starting"""
     if not IS_CI:
         print("\x1b[2J\x1b[H")
+    # Pre-warm cryptography's PyO3 PyDateTime type cache with the real
+    # datetime class. If the first extraction happens under @freeze_time
+    # (e.g. in MTLSStageTests), PyO3 caches freezegun's FakeDatetime,
+    # which breaks every later test that passes a real datetime into
+    # cryptography ("TypeError: 'datetime' object is not an instance
+    # of 'FakeDatetime'"). The discard is intentional — only side
+    # effect needed is the type-cache initialization.
+    from datetime import UTC, datetime
+
+    from cryptography.x509.verification import PolicyBuilder
+    PolicyBuilder().time(datetime.now(tz=UTC))
     yield
 
 
