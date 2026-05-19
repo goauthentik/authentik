@@ -27,6 +27,8 @@ jobs:
         env:
           NETLIFY_SITE_ID: eb246b7b-1d83-4f69-89f7-01a936b4ca59
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        # Pinned netlify-cli major. A global `npm install -g` ignores the
+        # repo .npmrc and runs lifecycle scripts; `npx --package` honors
+        # the .npmrc (which sets ignore-scripts=true) and pins the version.
         run: |
-          npm install -g netlify-cli
-          netlify deploy --dir=source_docs --prod
+          npx --yes --package=netlify-cli@26 -- netlify deploy --dir=source_docs --prod
