@@ -30,7 +30,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -106,32 +106,7 @@ const recoveryButtonStyles = css`
 export class UserListPage extends WithBrandConfig(
     WithCapabilitiesConfig(WithSession(TablePage<User>)),
 ) {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
-    supportsQL = true;
-
-    protected override searchEnabled = true;
-    public override searchPlaceholder = msg("Search by username, email, etc...");
-    public override searchLabel = msg("User Search");
-
-    public pageTitle = msg("Users");
-    public pageDescription = "";
-    public pageIcon = "pf-icon pf-icon-user";
-
-    @property()
-    order = "last_login";
-
-    @property()
-    activePath;
-
-    @state()
-    hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
-
-    @state()
-    userPaths?: UserPath;
-
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...TablePage.styles,
         PFDescriptionList,
         PFCard,
@@ -139,16 +114,46 @@ export class UserListPage extends WithBrandConfig(
         recoveryButtonStyles,
     ];
 
-    constructor() {
-        super();
-        const defaultPath = DefaultUIConfig.defaults.userPath;
-        this.activePath = getURLParam<string>("path", defaultPath);
-        if (this.uiConfig.defaults.userPath !== defaultPath) {
-            this.activePath = this.uiConfig.defaults.userPath;
-        }
+    #api = new CoreApi(DEFAULT_CONFIG);
+
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override supportsQL = true;
+
+    protected override searchEnabled = true;
+    public override searchPlaceholder = msg("Search by username, email, etc...");
+    public override searchLabel = msg("User Search");
+
+    public override pageTitle = msg("Users");
+    public override pageDescription = "";
+    public override pageIcon = "pf-icon pf-icon-user";
+
+    @property({ type: String })
+    public order = "last_login";
+
+    @property({ type: String, useDefault: true })
+    public activePath: string = DefaultUIConfig.defaults.userPath;
+
+    @state()
+    protected hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
+
+    @state()
+    protected userPaths: UserPath | null = null;
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        const initialDefaultUserPath = DefaultUIConfig.defaults.userPath;
+        const brandDefaultUserPath = this.uiConfig.defaults.userPath;
+
+        this.activePath = getURLParam<string>(
+            "path",
+            brandDefaultUserPath || initialDefaultUserPath,
+        );
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<User>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
@@ -160,6 +165,18 @@ export class UserListPage extends WithBrandConfig(
         });
         return users;
     }
+
+    protected buildExportParams = async (): Promise<CoreUsersExportCreateRequest> => {
+        return {
+            ...(await this.defaultEndpointConfig()),
+            pathStartswith: this.activePath,
+            isActive: this.hideDeactivated ? true : undefined,
+        };
+    };
+
+    protected createExport = (params: CoreUsersExportCreateRequest) => {
+        return this.#api.coreUsersExportCreate(params);
+    };
 
     protected override rowLabel(item: User): string {
         if (item.name) {
@@ -177,7 +194,9 @@ export class UserListPage extends WithBrandConfig(
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    //#region Renderering
+
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         const { currentUser, originalUser } = this;
 
@@ -230,7 +249,7 @@ export class UserListPage extends WithBrandConfig(
             </ak-forms-delete-bulk>`;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): SlottedTemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <div class="pf-c-input-group">
@@ -267,7 +286,7 @@ export class UserListPage extends WithBrandConfig(
         </div>`;
     }
 
-    row(item: User): SlottedTemplateResult[] {
+    protected override row(item: User): SlottedTemplateResult[] {
         const { currentUser } = this;
 
         const impersonationVisible =
@@ -316,7 +335,7 @@ export class UserListPage extends WithBrandConfig(
         ];
     }
 
-    renderExpanded(item: User): TemplateResult {
+    protected override renderExpanded(item: User): SlottedTemplateResult {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
@@ -372,12 +391,11 @@ export class UserListPage extends WithBrandConfig(
         </dl>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return html` <ak-forms-modal>
                 <span slot="submit">${msg("Create User")}</span>
                 <span slot="header">${msg("New User")}</span>
-                <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
+                <ak-user-form default-path=${this.activePath} slot="form"></ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New User")}</button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
@@ -389,21 +407,12 @@ export class UserListPage extends WithBrandConfig(
                 </button>
             </ak-forms-modal>
             <ak-reports-export-button
-                .createExport=${(params: CoreUsersExportCreateRequest) => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate(params);
-                }}
-                .exportParams=${async () => {
-                    return {
-                        ...(await this.defaultEndpointConfig()),
-                        pathStartswith: this.activePath,
-                        isActive: this.hideDeactivated ? true : undefined,
-                    };
-                }}
-            ></ak-reports-export-button>
-        `;
+                .createExport=${this.createExport}
+                .exportParams=${this.buildExportParams}
+            ></ak-reports-export-button>`;
     }
 
-    protected renderSidebarBefore(): TemplateResult {
+    protected override renderSidebarBefore(): SlottedTemplateResult {
         return html`<aside aria-labelledby="sidebar-left-panel-header" class="pf-c-sidebar__panel">
             <div class="pf-c-card">
                 <div
@@ -427,6 +436,8 @@ export class UserListPage extends WithBrandConfig(
             </div>
         </aside>`;
     }
+
+    //#endregion
 }
 
 declare global {

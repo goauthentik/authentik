@@ -73,25 +73,25 @@ export abstract class TablePage<T extends object> extends Table<T> {
      * Render content before the sidebar.
      * @abstract
      */
-    protected renderSidebarBefore?(): TemplateResult;
+    protected renderSidebarBefore?(): SlottedTemplateResult;
 
     /**
      * Render content after the sidebar.
      * @abstract
      */
-    protected renderSidebarAfter?(): TemplateResult;
+    protected renderSidebarAfter?(): SlottedTemplateResult;
 
     /**
      * Render content before the main section.
      * @abstract
      */
-    protected renderSectionBefore?(): TemplateResult;
+    protected renderSectionBefore?(): SlottedTemplateResult;
 
     /**
      * Render content after the main section.
      * @abstract
      */
-    protected renderSectionAfter?(): TemplateResult;
+    protected renderSectionAfter?(): SlottedTemplateResult;
 
     //#endregion
 
@@ -116,7 +116,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
     /**
      * Render the empty state.
      */
-    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: TemplateResult): SlottedTemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
