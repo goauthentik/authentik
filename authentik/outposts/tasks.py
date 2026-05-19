@@ -1,7 +1,7 @@
 """outpost tasks"""
 
 from hashlib import sha256
-from os import R_OK, access
+from os import R_OK, access, environ
 from pathlib import Path
 from socket import gethostname
 from typing import Any
@@ -189,17 +189,30 @@ def outpost_connection_discovery():
                     name=kubeconfig_local_name,
                     kubeconfig=safe_load(_kubeconfig),
                 )
-    unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
-    socket = Path(unix_socket_path)
-    if socket.exists() and access(socket, R_OK):
-        self.info("Detected local docker socket")
-        if len(DockerServiceConnection.objects.filter(local=True)) == 0:
-            self.info("Created Service Connection for docker")
-            DockerServiceConnection.objects.create(
-                name="Local Docker connection",
-                local=True,
-                url=unix_socket_path,
-            )
+    # Detect a local Docker-API-compatible socket. Docker, Podman (rootful and
+    # rootless), and socket proxies all expose the same API surface, so any of
+    # these can drive the outpost controller.
+    candidate_sockets: list[str] = [urlparse(DEFAULT_UNIX_SOCKET).path]
+    # Podman rootful socket (managed by `podman.socket` systemd unit).
+    candidate_sockets.append("/run/podman/podman.sock")
+    # Podman rootless socket (per-user, started via `systemctl --user`).
+    runtime_dir = environ.get("XDG_RUNTIME_DIR")
+    if runtime_dir:
+        candidate_sockets.append(f"{runtime_dir}/podman/podman.sock")
+    for candidate in candidate_sockets:
+        socket = Path(candidate)
+        if not (socket.exists() and access(socket, R_OK)):
+            continue
+        self.info(f"Detected local container socket at {candidate}")
+        if DockerServiceConnection.objects.filter(local=True).exists():
+            break
+        self.info("Created Service Connection for local container socket")
+        DockerServiceConnection.objects.create(
+            name="Local Docker connection",
+            local=True,
+            url=candidate,
+        )
+        break
 
 
 @actor(description=_("Terminate session on all outposts."))

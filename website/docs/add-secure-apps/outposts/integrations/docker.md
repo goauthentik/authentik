@@ -39,6 +39,35 @@ authentik requires the following permissions from the Docker API:
 - Containers/Remove: Removal of outposts
 - System/Info: Gather information about the version of Docker running
 
+## Podman
+
+Podman exposes a Docker-compatible REST API, so the Docker integration works against Podman with no code changes — point the integration at Podman's socket.
+
+Enable the API socket on the host:
+
+```shell
+# Rootful (system-wide)
+sudo systemctl enable --now podman.socket
+# Rootless (per-user)
+systemctl --user enable --now podman.socket
+loginctl enable-linger "$USER"
+```
+
+The socket lives at:
+
+- Rootful: `/run/podman/podman.sock`
+- Rootless: `$XDG_RUNTIME_DIR/podman/podman.sock` (typically `/run/user/<uid>/podman/podman.sock`)
+
+If the authentik worker runs on the same host (a typical Quadlet or `podman compose` deployment), bind-mount the socket into the worker container. From authentik 2026.8 onwards, the startup discovery task auto-creates a local service connection when it finds either `/var/run/docker.sock` or `/run/podman/podman.sock`. On 2026.5 and earlier, mount the Podman socket to the Docker path inside the worker:
+
+```
+/run/podman/podman.sock:/var/run/docker.sock
+```
+
+Or set `DOCKER_HOST=unix:///run/podman/podman.sock` in the worker environment — the Docker SDK that the outpost controller uses honors this variable.
+
+For a step-by-step walkthrough, see the [Podman with Quadlet installation](../../../install-config/install/podman-quadlet.mdx) guide.
+
 ## Docker Socket Proxy
 
 Mounting the Docker socket to a container comes with some inherent security risks. Applications inside these containers have unfettered access to the full Docker API, which can be used to gain unauthorized access to sensitive Docker functions.
