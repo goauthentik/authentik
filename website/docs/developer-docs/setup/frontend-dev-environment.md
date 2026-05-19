@@ -55,6 +55,20 @@ If you're focusing solely on frontend development, you can create a minimal deve
     make web-watch
     ```
 
+    :::info npm install scripts are disabled by default
+
+    The repository's `.npmrc` sets `ignore-scripts=true` so `preinstall`/`install`/`postinstall` lifecycle scripts do not run during `npm ci`. This is intentional: it neutralizes the dominant npm supply-chain attack pattern (recent examples: "Shai-Hulud" and "Mini Shai-Hulud") at the cost of skipping a few legitimate native-binary unpacks.
+
+    If the watch build fails because a package needs its install script (commonly `esbuild`, `chromedriver`, `tree-sitter`, or `tree-sitter-json`), rebuild only that package:
+
+    ```shell
+    npm rebuild --foreground-scripts esbuild chromedriver tree-sitter tree-sitter-json
+    ```
+
+    **Do not** edit `.npmrc` to flip `ignore-scripts` off — that re-introduces the risk repo-wide.
+
+    :::
+
 5. In a new terminal, navigate to the cloned repository root and start the backend containers with Docker Compose.
 
     ```shell

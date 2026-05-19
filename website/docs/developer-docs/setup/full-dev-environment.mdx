@@ -126,6 +126,20 @@ Install all required JavaScript and Python dependencies and create an isolated P
 make install
 ```
 
+:::info npm install scripts are disabled by default
+
+The repository's `.npmrc` sets `ignore-scripts=true`, which prevents `preinstall`/`install`/`postinstall` lifecycle scripts from running during `npm ci`. This neutralizes the most common npm supply-chain attack pattern (recent examples: "Shai-Hulud" and "Mini Shai-Hulud") at the cost of skipping legitimate native-binary unpacking for a few packages.
+
+If a build step fails because a package needs its install script (commonly `esbuild`, `chromedriver`, `tree-sitter`, or `tree-sitter-json`), rebuild it explicitly:
+
+```shell
+npm rebuild --foreground-scripts esbuild chromedriver tree-sitter tree-sitter-json
+```
+
+**Do not** edit `.npmrc` to flip `ignore-scripts` off — that re-introduces the risk repo-wide.
+
+:::
+
 ### Generate development configuration
 
 Create a local configuration file that uses the local databases for development:
