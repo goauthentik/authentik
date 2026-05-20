@@ -89,7 +89,7 @@ dev = [
   "djangorestframework-stubs[compatible-mypy]==3.16.9",
   "drf-jsonschema-serializer==3.0.0",
   "freezegun==1.5.5",
-  "importlib-metadata==8.7.1",
+  "importlib-metadata==9.0.0",
   "k5test==0.10.4",
   "lxml-stubs==0.5.1",
   "mypy==1.20.2",
