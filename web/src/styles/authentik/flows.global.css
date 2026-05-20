@@ -14,6 +14,7 @@
 @import "./base/globals.css";
 @import "./base/common.css";
 @import "./base/placeholder.css";
+@import "#elements/ak-drawer/ak-drawer.root.css";
 
 @import "#styles/locales/ja/globals.css";
 @import "#styles/locales/ko/globals.css";

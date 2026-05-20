@@ -54,7 +54,7 @@ import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
-import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, ModelEnum, User, UserTypeEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, PropertyValues, TemplateResult } from "lit";
@@ -192,7 +192,10 @@ export class UserViewPage extends WithLicenseSummary(
     protected renderActionButtons(user: User) {
         const showImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
-        const showLockdown = this.hasEnterpriseLicense && user.pk !== this.currentUser?.pk;
+        const showLockdown =
+            this.hasEnterpriseLicense &&
+            user.pk !== this.currentUser?.pk &&
+            user.type !== UserTypeEnum.InternalServiceAccount;
 
         const displayName = formatUserDisplayName(user);
 
