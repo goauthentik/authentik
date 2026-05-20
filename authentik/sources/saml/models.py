@@ -91,8 +91,7 @@ class SAMLSource(Source):
     issuer_override = models.TextField(
         blank=True,
         default=None,
-        verbose_name=_("Issuer"),
-        help_text=_("Also known as Entity ID. Defaults the Metadata URL."),
+        help_text=_("Also known as Entity ID. Defaults to the Metadata URL."),
     )
 
     sso_url = models.TextField(

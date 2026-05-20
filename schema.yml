@@ -50849,8 +50849,7 @@ components:
           description: Flow used before authentication.
         issuer_override:
           type: string
-          title: Issuer
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1
@@ -54634,8 +54633,7 @@ components:
           description: Flow used before authentication.
         issuer_override:
           type: string
-          title: Issuer
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         url_issuer:
           type: string
           description: Get the resolved Issuer, falling back to the metadata URL when
@@ -54844,8 +54842,7 @@ components:
           description: Flow used before authentication.
         issuer_override:
           type: string
-          title: Issuer
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1

@@ -124,7 +124,7 @@ export interface PatchedSAMLSourceRequest {
      */
     preAuthenticationFlow?: string;
     /**
-     * Also known as Entity ID. Defaults the Metadata URL.
+     * Also known as Entity ID. Defaults to the Metadata URL.
      * @type {string}
      * @memberof PatchedSAMLSourceRequest
      */
