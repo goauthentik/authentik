@@ -1,0 +1,13 @@
+:::info NPM install scripts are disabled by default
+
+The repository's `.npmrc` sets `ignore-scripts=true` so `preinstall`/`install`/`postinstall` lifecycle scripts do not run during `npm ci`. This neutralizes a dominant NPM supply-chain attack pattern at the cost of skipping a few legitimate native-binary unpacks.
+
+If the watch build fails because a package needs its install script (commonly `esbuild`, `chromedriver`, `tree-sitter`, or `tree-sitter-json`), rebuild only that package:
+
+```shell
+npm rebuild --foreground-scripts esbuild chromedriver tree-sitter tree-sitter-json
+```
+
+**Do not** edit `.npmrc` to flip `ignore-scripts` off — that re-introduces the risk repo-wide.
+
+:::
