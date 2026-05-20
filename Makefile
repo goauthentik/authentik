@@ -106,8 +106,9 @@ migrate: ## Run the Authentik Django server's migrations
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
-aws-cfn:
-	cd lifecycle/aws && npm i && $(UV) run npm run aws-cfn
+aws-cfn: node-install
+	corepack npm install --prefix lifecycle/aws
+	$(UV) run corepack npm run aws-cfn --prefix lifecycle/aws
 
 run:  ## Run the main authentik server and worker processes
 	$(UV) run ak allinone
@@ -125,7 +126,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
+install: node-install web-install core-install  ## Install all requires dependencies for `node`, `web` and `core`
 
 dev-drop-db:
 	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
@@ -228,39 +229,55 @@ gen-dev-config:  ## Generate a local development config file
 ## Node.js
 #########################
 
-node-install:  ## Install the necessary libraries to build Node.js packages
-	npm ci
-	npm ci --prefix web
+# Packages whose install/postinstall scripts are required for correct
+# operation (binary downloads, native bindings). The root .npmrc sets
+# `ignore-scripts=true` to block dependency lifecycle scripts by default;
+# this list is rebuilt explicitly with scripts re-enabled. Audit any
+# additions: each entry runs arbitrary code at install time.
+TRUSTED_INSTALL_SCRIPTS := esbuild chromedriver tree-sitter tree-sitter-json
+
+node-preinstall: ## Install corepack and lint the runtime to ensure the correct Node.js version is being used before installing dependencies.
+	node ./scripts/node/setup-corepack.mjs
+	node ./scripts/node/lint-runtime.mjs
+
+node-install: node-preinstall ## Install the necessary libraries to build Node.js packages
+	corepack npm ci
 
 #########################
 ## Web
 #########################
 
+web-install: ## Install the necessary libraries to build the Authentik UI
+	corepack npm ci --prefix web
+
+web-postinstall:  ## Trigger postinstall scripts for packages with native bindings or binary downloads, which are blocked by default for security reasons.
+	corepack npm rebuild --prefix web --ignore-scripts=false --foreground-scripts $(TRUSTED_INSTALL_SCRIPTS)
+
 web-build: node-install  ## Build the Authentik UI
-	npm run --prefix web build
+	corepack npm run --prefix web build
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
 web-test: ## Run tests for the Authentik UI
-	npm run --prefix web test
+	corepack npm run --prefix web test
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
-	npm run --prefix web watch
+	corepack npm run --prefix web watch
 web-storybook-watch:  ## Build and run the storybook documentation server
-	npm run --prefix web storybook
+	corepack npm run --prefix web storybook
 
 web-lint-fix:
-	npm run --prefix web prettier
+	corepack npm run --prefix web prettier
 
 web-lint:
-	npm run --prefix web lint
-	npm run --prefix web lit-analyse
+	corepack npm run --prefix web lint
+	corepack npm run --prefix web lit-analyse
 
 web-check-compile:
-	npm run --prefix web tsc
+	corepack npm run --prefix web tsc
 
 web-i18n-extract:
-	npm run --prefix web extract-locales
+	corepack npm run --prefix web extract-locales
 
 #########################
 ## Docs
@@ -268,35 +285,36 @@ web-i18n-extract:
 
 docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Authentik docs source code, lint the code, and compile it
 
-docs-install:
-	npm ci --prefix website
+docs-install: node-install  ## Install the necessary libraries to build the Authentik documentation
+	corepack npm ci --prefix website
 
 docs-lint-fix: lint-spellcheck
-	npm run --prefix website prettier
+	corepack npm run --prefix website prettier
 
 docs-build:
-	npm run --prefix website build
+	node ./scripts/node/lint-runtime.mjs website
+	corepack npm run --prefix website build
 
 docs-watch:  ## Build and watch the topics documentation
-	npm run --prefix website start
+	corepack npm run --prefix website start
 
 integrations: docs-lint-fix integrations-build ## Fix formatting issues in the integrations source code, lint the code, and compile it
 
 integrations-build:
-	npm run --prefix website -w integrations build
+	corepack npm run --prefix website -w integrations build
 
 integrations-watch:  ## Build and watch the Integrations documentation
-	npm run --prefix website -w integrations start
+	corepack npm run --prefix website -w integrations start
 
 docs-api-build:
-	npm run --prefix website -w api build
+	corepack npm run --prefix website -w api build
 
 docs-api-watch:  ## Build and watch the API documentation
-	npm run --prefix website -w api generate
-	npm run --prefix website -w api start
+	corepack npm run --prefix website -w api generate
+	corepack npm run --prefix website -w api start
 
 docs-api-clean: ## Clean generated API documentation
-	npm run --prefix website -w api build:api:clean
+	corepack npm run --prefix website -w api build:api:clean
 
 #########################
 ## Docker

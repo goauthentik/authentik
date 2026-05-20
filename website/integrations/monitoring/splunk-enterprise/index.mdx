@@ -108,7 +108,7 @@ Splunk expects the SAML assertion to include user role, email, and display name 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -121,7 +121,7 @@ Splunk expects the SAML assertion to include user role, email, and display name 
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
             - Add the Splunk property mappings that you created earlier.
             - Remove `authentik default SAML Mapping: Groups`, because Splunk roles are sent from application entitlements instead of authentik groups.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 ### Create application entitlements for Splunk roles

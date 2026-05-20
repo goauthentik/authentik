@@ -1,0 +1,141 @@
+/* ----------- CSS Custom Properties for DRAWER  --------------------------- */
+
+:root {
+    --ak-v2-c-drawer__content--FlexBasis: 100%;
+    --ak-v2-c-drawer__content--BackgroundColor: var(--ak-v2-global--ContentSurface);
+    --ak-v2-c-drawer__content--ZIndex: var(--ak-v2-global--ZIndex--xs, auto);
+    --ak-v2-c-drawer__panel--MinWidth: 50%;
+    --ak-v2-c-drawer__panel--MaxHeight: auto;
+    --ak-v2-c-drawer__panel--ZIndex: var(--ak-v2-global--ZIndex--sm);
+    --ak-v2-c-drawer__panel--BackgroundColor: var(--ak-v2-global--ContentSurface);
+    --ak-v2-c-drawer__panel--TransitionDuration: var(--ak-v2-global--TransitionDuration);
+    --ak-v2-c-drawer__panel--TransitionProperty: margin, transform, box-shadow, flex-basis;
+    --ak-v2-c-drawer__panel--FlexBasis: 100%;
+    --ak-v2-c-drawer__panel--md--FlexBasis--min: 1.5rem;
+    --ak-v2-c-drawer__panel--md--FlexBasis: 50%;
+    --ak-v2-c-drawer__panel--md--FlexBasis--max: 100%;
+    --ak-v2-c-drawer__panel--xl--MinWidth: 28.125rem;
+    --ak-v2-c-drawer__panel--xl--FlexBasis: 28.125rem;
+    --ak-v2-c-drawer--m-panel-bottom__panel--md--MinHeight: 50%;
+    --ak-v2-c-drawer--m-panel-bottom__panel--xl--MinHeight: 18.75rem;
+    --ak-v2-c-drawer--m-panel-bottom__panel--xl--FlexBasis: 18.75rem;
+    --ak-v2-c-drawer__panel--m-resizable--FlexDirection: row;
+    --ak-v2-c-drawer__panel--m-resizable--md--FlexBasis--min: var(
+        --ak-v2-c-drawer__splitter--m-vertical--Width
+    );
+    --ak-v2-c-drawer__panel--m-resizable--MinWidth: 1.5rem;
+    --ak-v2-c-drawer--m-panel-bottom__panel--m-resizable--FlexDirection: column;
+    --ak-v2-c-drawer--m-panel-bottom__panel--m-resizable--md--FlexBasis--min: 1.5rem;
+    --ak-v2-c-drawer--m-panel-bottom__panel--m-resizable--MinHeight: 1.5rem;
+    --ak-v2-c-drawer__splitter--Height: 0.5625rem;
+    --ak-v2-c-drawer__splitter--Width: 100%;
+    --ak-v2-c-drawer__splitter--BackgroundColor: var(--ak-v2-global--ContentSurface);
+    --ak-v2-c-drawer__splitter--Cursor: row-resize;
+    --ak-v2-c-drawer__splitter--m-vertical--Height: 100%;
+    --ak-v2-c-drawer__splitter--m-vertical--Width: 0.5625rem;
+    --ak-v2-c-drawer__splitter--m-vertical--Cursor: col-resize;
+    --ak-v2-c-drawer--m-inline__splitter--focus--OutlineOffset: -0.0625rem;
+    --ak-v2-c-drawer__splitter--after--BorderColor: var(--ak-v2-global--BorderColor--100);
+    --ak-v2-c-drawer__splitter--after--border-width--base: var(--ak-v2-global--BorderWidth--sm);
+    --ak-v2-c-drawer__splitter--after--BorderTopWidth: 0;
+    --ak-v2-c-drawer__splitter--after--BorderRightWidth: var(
+        --ak-v2-c-drawer__splitter--after--border-width--base
+    );
+    --ak-v2-c-drawer__splitter--after--BorderBottomWidth: 0;
+    --ak-v2-c-drawer__splitter--after--BorderLeftWidth: 0;
+    --ak-v2-c-drawer--m-panel-left__splitter--after--BorderLeftWidth: var(
+        --ak-v2-c-drawer__splitter--after--border-width--base
+    );
+    --ak-v2-c-drawer--m-panel-bottom__splitter--after--BorderBottomWidth: var(
+        --ak-v2-c-drawer__splitter--after--border-width--base
+    );
+    --ak-v2-c-drawer--m-inline__splitter--m-vertical--Width: 0.625rem;
+    --ak-v2-c-drawer--m-inline__splitter-handle--Left: 50%;
+    --ak-v2-c-drawer--m-inline__splitter--after--BorderRightWidth: var(
+        --ak-v2-c-drawer__splitter--after--border-width--base
+    );
+    --ak-v2-c-drawer--m-inline__splitter--after--BorderLeftWidth: var(
+        --ak-v2-c-drawer__splitter--after--border-width--base
+    );
+    --ak-v2-c-drawer--m-inline--m-panel-bottom__splitter--Height: 0.625rem;
+    --ak-v2-c-drawer--m-inline--m-panel-bottom__splitter-handle--Top: 50%;
+    --ak-v2-c-drawer--m-inline--m-panel-bottom__splitter--after--BorderTopWidth: var(
+        --ak-v2-c-drawer__splitter--after--border-width--base
+    );
+    --ak-v2-c-drawer__splitter-handle--Top: 50%;
+    --ak-v2-c-drawer__splitter-handle--Left: calc(
+        50% - var(--ak-v2-c-drawer__splitter--after--border-width--base)
+    );
+    --ak-v2-c-drawer--m-panel-left__splitter-handle--Left: 50%;
+    --ak-v2-c-drawer--m-panel-bottom__splitter-handle--Top: calc(
+        50% - var(--ak-v2-c-drawer__splitter--after--border-width--base)
+    );
+    --ak-v2-c-drawer__splitter-handle--after--BorderColor: var(--ak-v2-global--Color--200);
+    --ak-v2-c-drawer__splitter-handle--after--BorderTopWidth: var(--ak-v2-global--BorderWidth--sm);
+    --ak-v2-c-drawer__splitter-handle--after--BorderRightWidth: 0;
+    --ak-v2-c-drawer__splitter-handle--after--BorderBottomWidth: var(
+        --ak-v2-global--BorderWidth--sm
+    );
+    --ak-v2-c-drawer__splitter-handle--after--BorderLeftWidth: 0;
+    --ak-v2-c-drawer__splitter--hover__splitter-handle--after--BorderColor: var(
+        --ak-v2-global--Color--100
+    );
+    --ak-v2-c-drawer__splitter--focus__splitter-handle--after--BorderColor: var(
+        --ak-v2-global--Color--100
+    );
+    --ak-v2-c-drawer__splitter--m-vertical__splitter-handle--after--BorderTopWidth: 0;
+    --ak-v2-c-drawer__splitter--m-vertical__splitter-handle--after--BorderRightWidth: var(
+        --ak-v2-global--BorderWidth--sm
+    );
+    --ak-v2-c-drawer__splitter--m-vertical__splitter-handle--after--BorderBottomWidth: 0;
+    --ak-v2-c-drawer__splitter--m-vertical__splitter-handle--after--BorderLeftWidth: var(
+        --ak-v2-global--BorderWidth--sm
+    );
+    --ak-v2-c-drawer__splitter-handle--after--Width: 0.75rem;
+    --ak-v2-c-drawer__splitter-handle--after--Height: 0.25rem;
+    --ak-v2-c-drawer__splitter--m-vertical__splitter-handle--after--Width: 0.25rem;
+    --ak-v2-c-drawer__splitter--m-vertical__splitter-handle--after--Height: 0.75rem;
+}
+
+@media screen and (min-width: 1200px) {
+    :root {
+        --ak-v2-c-drawer__panel--MinWidth: var(--ak-v2-c-drawer__panel--xl--MinWidth);
+    }
+}
+
+:root {
+    --ak-v2-c-drawer__panel--BoxShadow: none;
+    --ak-v2-c-drawer--m-expanded--m-panel-bottom__panel--BoxShadow: var(
+        --ak-v2-global--BoxShadow--lg-top
+    );
+    --ak-v2-c-drawer--m-expanded__panel--BoxShadow: var(--ak-v2-global--BoxShadow--lg-left);
+}
+
+:root {
+    --ak-v2-c-drawer--m-expanded--m-panel-left__panel--BoxShadow: var(
+        --ak-v2-global--BoxShadow--lg-right
+    );
+}
+
+:root {
+    --ak-v2-c-drawer__panel--after--Width: var(--ak-v2-global--BorderWidth--sm);
+    --ak-v2-c-drawer--m-panel-bottom__panel--after--Height: var(--ak-v2-global--BorderWidth--sm);
+    --ak-v2-c-drawer__panel--after--BackgroundColor: transparent;
+    --ak-v2-c-drawer--m-inline--m-expanded__panel--after--BackgroundColor: var(
+        --ak-v2-global--BorderColor--100
+    );
+    --ak-v2-c-drawer--m-inline__panel--PaddingLeft: var(--ak-v2-c-drawer__panel--after--Width);
+    --ak-v2-c-drawer--m-panel-left--m-inline__panel--PaddingRight: var(
+        --ak-v2-c-drawer__panel--after--Width
+    );
+    --ak-v2-c-drawer--m-panel-bottom--m-inline__panel--PaddingTop: var(
+        --ak-v2-c-drawer__panel--after--Width
+    );
+}
+
+html[data-theme="dark"],
+.ak-t-dark,
+.pf-t-dark {
+    --ak-v2-c-drawer__panel--BackgroundColor: var(--ak-v2-global--ContentSurface);
+    --ak-v2-c-drawer__splitter--BackgroundColor: transparent;
+}
