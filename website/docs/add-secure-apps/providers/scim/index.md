@@ -105,7 +105,7 @@ Users that are synchronized via a SCIM provider are controlled through applicati
 
 If no users are bound to the SCIM application, the SCIM provider synchronizes all users.
 
-When a user is no longer assigned to the application - either directly or through a group - and a SCIM sync task runs, that user is deprovisioned from the target SCIM endpoint.
+When a user is no longer assigned to the application—either directly or through a group—and a SCIM sync task runs, that user is deprovisioned from the target SCIM endpoint.
 
 Use **Exclude service accounts** in the SCIM provider settings when you do not want service accounts to be synchronized.
 
