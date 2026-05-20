@@ -1,0 +1,189 @@
+---
+title: Integrate with OpenCloud
+sidebar_label: OpenCloud
+support_level: community
+---
+
+## What is OpenCloud?
+
+> OpenCloud is an open-source content collaboration platform for storing, syncing, and sharing files, built on the Infinite Scale (oCIS) architecture.
+>
+> -- https://opencloud.eu
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `opencloud.company` is the FQDN of the OpenCloud installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+This guide covers integrating authentik with the [`opencloud-compose`](https://github.com/opencloud-eu/opencloud-compose) Docker deployment. OpenCloud only supports authentication via OpenID Connect (OIDC).
+
+Choose your setup below. The **Web only** tab logs in through the browser. The **Web, desktop & mobile** tab also enables the native sync clients, which each use a distinct client ID and require some extra issuer configuration.
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+<Tabs
+  defaultValue="web"
+  values={[
+    { label: "Web only", value: "web" },
+    { label: "Web, desktop & mobile", value: "all" },
+  ]}
+>
+  <TabItem value="web">
+
+## authentik configuration
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application**.
+    - **Application**: provide a name and note the **slug**.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect**.
+    - **Configure the Provider**:
+        - **Client type**: `Public`
+        - **Client ID**: `web`
+        - **Redirect URIs**:
+            - Strict: `https://opencloud.company/oidc-callback.html`
+            - Strict: `https://opencloud.company/oidc-silent-redirect.html`
+            - Strict: `https://opencloud.company/`
+        - **Signing Key**: select any available key.
+        - **Scopes**: `openid`, `profile`, `email`.
+3. Click **Submit**.
+
+## OpenCloud configuration
+
+In the `opencloud-compose` project, enable the external IdP overlay in `COMPOSE_FILE`. This replaces OpenCloud's built-in IdP, so login goes through authentik only.
+
+```bash
+COMPOSE_FILE=docker-compose.yml:idm/external-idp.yml:custom/authentik-roles.yml
+```
+
+Set the OIDC values in `.env`:
+
+```bash
+OC_DOMAIN=opencloud.company
+IDP_DOMAIN=authentik.company
+IDP_ISSUER_URL=https://authentik.company/application/o/<application_slug>/
+OC_OIDC_CLIENT_ID=web
+OC_OIDC_CLIENT_SCOPES=openid profile email
+WEBFINGER_WEB_OIDC_CLIENT_ID=web
+WEBFINGER_WEB_OIDC_CLIENT_SCOPES=openid profile email
+```
+
+:::info
+`WEBFINGER_WEB_OIDC_CLIENT_ID` is required — the Web UI reads its client ID from WebFinger, and login will not start if it is empty.
+:::
+
+Create `custom/authentik-roles.yml` to assign every user the default role:
+
+```yaml
+---
+services:
+    opencloud:
+        environment:
+            PROXY_ROLE_ASSIGNMENT_DRIVER: "default"
+            GRAPH_ASSIGN_DEFAULT_USER_ROLE: "true"
+```
+
+Recreate the stack:
+
+```bash
+docker compose up -d
+```
+
+## Configuration verification
+
+Open `https://opencloud.company` in a new browser window. You are redirected to authentik to log in, and after authenticating you are returned to OpenCloud.
+
+  </TabItem>
+  <TabItem value="all">
+
+OpenCloud's web, desktop, Android, and iOS clients each use a distinct client ID but must validate tokens against **one** issuer. authentik gives every application its own issuer by default, so this setup uses **GLOBAL issuer mode** (all providers share `https://authentik.company/`) plus a reverse proxy that serves OIDC discovery at that shared issuer.
+
+## 1. Serve discovery at the shared issuer
+
+With GLOBAL issuer mode, tokens carry `iss = https://authentik.company/`, but authentik only serves discovery at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`. Put a reverse proxy in front of authentik that rewrites the root discovery path to one provider's discovery. Any reverse proxy works; for example, with Caddy:
+
+```caddy
+# Forward authentik.company to this; it in turn forwards to authentik.
+:8081 {
+	@discovery path /.well-known/openid-configuration
+	rewrite @discovery /application/o/<application_slug>/.well-known/openid-configuration
+	reverse_proxy authentik-upstream:9000 {
+		# keep authentik building https URLs if it is behind TLS termination
+		header_up X-Forwarded-Proto https
+	}
+}
+```
+
+## 2. authentik configuration
+
+Create one **Application + OAuth2/OpenID Connect provider** pair per client. On **every** provider set the same values:
+
+- **Client type**: `Public`
+- **Signing Key**: the **same** key for all providers (the shared issuer exposes a single `jwks_uri`, so all clients' tokens must be signed by one key).
+- **Issuer mode** (under Advanced protocol settings): `Same identifier is used for all providers`.
+- **Scopes**: `openid`, `profile`, `email`, and `offline_access` (the latter is required for the desktop/mobile sync clients to receive a refresh token).
+
+Then set the per-client **Client ID** and **Redirect URIs**:
+
+| Client  | Client ID          | Redirect URIs                                                                               |
+| ------- | ------------------ | ------------------------------------------------------------------------------------------- |
+| Web     | `web`              | Strict: `https://opencloud.company/oidc-callback.html`, `…/oidc-silent-redirect.html`, `…/` |
+| Desktop | `OpenCloudDesktop` | Regex: `http://127.0.0.1(:[0-9]+)?(/.*)?` and `http://localhost(:[0-9]+)?(/.*)?`            |
+| Android | `OpenCloudAndroid` | Strict: `oc://android.opencloud.eu`                                                         |
+| iOS     | `OpenCloudIOS`     | Strict: `oc://ios.opencloud.eu`                                                             |
+
+## 3. OpenCloud configuration
+
+Use the same overlay and role override as the **Web only** tab, but point `OC_OIDC_ISSUER` at the shared (root) issuer and give each platform its WebFinger client ID.
+
+```bash
+COMPOSE_FILE=docker-compose.yml:idm/external-idp.yml:custom/authentik-roles.yml
+```
+
+```bash
+OC_DOMAIN=opencloud.company
+IDP_DOMAIN=authentik.company
+IDP_ISSUER_URL=https://authentik.company/
+OC_OIDC_CLIENT_ID=web
+OC_OIDC_CLIENT_SCOPES=openid profile email
+
+WEBFINGER_WEB_OIDC_CLIENT_ID=web
+WEBFINGER_WEB_OIDC_CLIENT_SCOPES=openid profile email
+WEBFINGER_DESKTOP_OIDC_CLIENT_ID=OpenCloudDesktop
+WEBFINGER_DESKTOP_OIDC_CLIENT_SCOPES=openid profile email offline_access
+WEBFINGER_IOS_OIDC_CLIENT_ID=OpenCloudIOS
+WEBFINGER_IOS_OIDC_CLIENT_SCOPES=openid profile email offline_access
+WEBFINGER_ANDROID_OIDC_CLIENT_ID=OpenCloudAndroid
+WEBFINGER_ANDROID_OIDC_CLIENT_SCOPES=openid profile email offline_access
+```
+
+Create `custom/authentik-roles.yml` to assign every user the default role:
+
+```yaml
+---
+services:
+    opencloud:
+        environment:
+            PROXY_ROLE_ASSIGNMENT_DRIVER: "default"
+            GRAPH_ASSIGN_DEFAULT_USER_ROLE: "true"
+```
+
+Recreate the stack:
+
+```bash
+docker compose up -d
+```
+
+## Configuration verification
+
+Open `https://opencloud.company` in a browser, and add the account in the Desktop, iOS, and Android apps using the same server URL. Each client is redirected to authentik to log in and returned to the client afterwards.
+
+  </TabItem>
+</Tabs>
+
+## Resources
+
+- [OpenCloud documentation](https://docs.opencloud.eu/)
+- [opencloud-compose](https://github.com/opencloud-eu/opencloud-compose)
