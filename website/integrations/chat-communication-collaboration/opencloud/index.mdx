@@ -100,7 +100,7 @@ Open `https://opencloud.company` in a new browser window. You are redirected to 
 
 OpenCloud's web, desktop, Android, and iOS clients each use a distinct client ID but must validate tokens against **one** issuer. authentik gives every application its own issuer by default, so this setup uses **GLOBAL issuer mode** (all providers share `https://authentik.company/`) plus a reverse proxy that serves OIDC discovery at that shared issuer.
 
-## 1. Serve discovery at the shared issuer
+## Reverse proxy configuration
 
 With GLOBAL issuer mode enabled, tokens use an issuer of `iss = https://authentik.company/`, but authentik only exposes OpenID Connect discovery at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`. To reconcile this, place a reverse proxy in front of authentik that maps the root discovery URL to a specific provider’s discovery endpoint. Any reverse proxy can handle this; for example, with Caddy:
 
