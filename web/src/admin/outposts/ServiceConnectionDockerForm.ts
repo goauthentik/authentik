@@ -7,6 +7,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import { DockerServiceConnection, OutpostsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -41,8 +43,18 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
@@ -58,8 +70,18 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
             >
             </ak-switch-input>
 
-            <ak-form-element-horizontal label=${msg("Docker URL")} required name="url">
+            <ak-form-element-horizontal required name="url">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "url",
+                        required: true,
+                    },
+                    msg("Docker URL"),
+                )}
                 <input
+                    id="url"
                     type="text"
                     value="${ifDefined(this.instance?.url)}"
                     class="pf-c-form-control pf-m-monospace"
@@ -76,11 +98,17 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("TLS Verification Certificate")}
-                name="tlsVerification"
-            >
+            <ak-form-element-horizontal name="tlsVerification">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "tlsVerification",
+                    },
+                    msg("TLS Verification Certificate"),
+                )}
                 <ak-crypto-certificate-search
+                    id="tlsVerification"
                     .certificate=${this.instance?.tlsVerification}
                 ></ak-crypto-certificate-search>
                 <p class="pf-c-form__helper-text">
@@ -89,11 +117,17 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("TLS Authentication Certificate/SSH Keypair")}
-                name="tlsAuthentication"
-            >
+            <ak-form-element-horizontal name="tlsAuthentication">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "tlsAuthentication",
+                    },
+                    msg("TLS Authentication Certificate/SSH Keypair"),
+                )}
                 <ak-crypto-certificate-search
+                    id="tlsAuthentication"
                     .certificate=${this.instance?.tlsAuthentication}
                 ></ak-crypto-certificate-search>
                 <p class="pf-c-form__helper-text">

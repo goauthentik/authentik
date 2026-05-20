@@ -71,7 +71,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
             ></ak-text-input>
 
             ${this.intent === IntentEnum.AppPassword
-                ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
+                ? html`<ak-form-element-horizontal name="expires">
                       ${AKLabel(
                           {
                               slot: "label",

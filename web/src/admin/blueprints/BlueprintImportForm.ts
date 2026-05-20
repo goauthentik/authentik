@@ -79,8 +79,16 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
 
     renderResult(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Successful")}>
-                <div class="pf-c-form__group-label">
+            <ak-form-element-horizontal>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "import-result",
+                    },
+                    msg("Successful"),
+                )}
+                <div id="import-result" class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
                             <ak-status-label ?good=${this.result?.success}></ak-status-label>
@@ -88,8 +96,16 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
                     </div>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Log messages")}>
-                <ak-log-viewer .items=${this.result?.logs}></ak-log-viewer>
+            <ak-form-element-horizontal>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "import-log-messages",
+                    },
+                    msg("Log messages"),
+                )}
+                <ak-log-viewer id="import-log-messages" .items=${this.result?.logs}></ak-log-viewer>
             </ak-form-element-horizontal>
         `;
     }
@@ -148,8 +164,17 @@ export class BlueprintImportForm extends Form<ManagedBlueprintsImportCreateReque
                   `
                 : null}
             ${this.source === BlueprintSource.File
-                ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
+                ? html`<ak-form-element-horizontal name="path">
+                      ${AKLabel(
+                          {
+                              slot: "label",
+                              className: "pf-c-form__group-label",
+                              htmlFor: "path",
+                          },
+                          msg("Path"),
+                      )}
                       <ak-search-select
+                          id="path"
                           placeholder=${msg("Select a blueprint...")}
                           .fetchObjects=${async (query?: string): Promise<BlueprintFile[]> => {
                               const items = await new ManagedApi(

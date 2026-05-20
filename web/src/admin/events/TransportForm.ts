@@ -10,6 +10,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     EventsApi,
     NotificationTransport,
@@ -111,8 +113,18 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 )}
             >
             </ak-switch-input>
-            <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
+            <ak-form-element-horizontal required name="mode">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "mode",
+                        required: true,
+                    },
+                    msg("Mode"),
+                )}
                 <ak-radio
+                    id="mode"
                     @change=${(ev: CustomEvent<{ value: TransportModeEnum }>) => {
                         this.onModeChange(ev.detail.value);
                     }}
@@ -148,12 +160,17 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 ?required=${this.showWebhook}
             >
             </ak-hidden-text-input>
-            <ak-form-element-horizontal
-                ?hidden=${!this.showWebhook}
-                label=${msg("Webhook Certificate Authority")}
-                name="webhookCa"
-            >
+            <ak-form-element-horizontal ?hidden=${!this.showWebhook} name="webhookCa">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "webhookCa",
+                    },
+                    msg("Webhook Certificate Authority"),
+                )}
                 <ak-crypto-certificate-search
+                    id="webhookCa"
                     .certificate=${this.instance?.webhookCa}
                 ></ak-crypto-certificate-search>
                 <p class="pf-c-form__helper-text">
@@ -162,12 +179,17 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                ?hidden=${!this.showWebhook}
-                label=${msg("Webhook Body Mapping")}
-                name="webhookMappingBody"
-            >
+            <ak-form-element-horizontal ?hidden=${!this.showWebhook} name="webhookMappingBody">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "webhookMappingBody",
+                    },
+                    msg("Webhook Body Mapping"),
+                )}
                 <ak-search-select
+                    id="webhookMappingBody"
                     .fetchObjects=${async (
                         query?: string,
                     ): Promise<NotificationWebhookMapping[]> => {
@@ -191,12 +213,17 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                ?hidden=${!this.showWebhook}
-                label=${msg("Webhook Header Mapping")}
-                name="webhookMappingHeaders"
-            >
+            <ak-form-element-horizontal ?hidden=${!this.showWebhook} name="webhookMappingHeaders">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "webhookMappingHeaders",
+                    },
+                    msg("Webhook Header Mapping"),
+                )}
                 <ak-search-select
+                    id="webhookMappingHeaders"
                     .fetchObjects=${async (
                         query?: string,
                     ): Promise<NotificationWebhookMapping[]> => {
@@ -225,10 +252,19 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             <ak-form-element-horizontal
                 ?hidden=${!this.showEmail}
                 ?required=${this.showEmail}
-                label=${msg("Email Subject Prefix")}
                 name="emailSubjectPrefix"
             >
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "emailSubjectPrefix",
+                        required: this.showEmail,
+                    },
+                    msg("Email Subject Prefix"),
+                )}
                 <input
+                    id="emailSubjectPrefix"
                     type="text"
                     value="${this.instance?.emailSubjectPrefix || "authentik Notification: "}"
                     class="pf-c-form-control"
@@ -239,10 +275,18 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             <ak-form-element-horizontal
                 ?hidden=${!this.showEmail}
                 ?required=${this.showEmail}
-                label=${msg("Email Template")}
                 name="emailTemplate"
             >
-                <select name="users" class="pf-c-form-control">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "emailTemplate",
+                        required: this.showEmail,
+                    },
+                    msg("Email Template"),
+                )}
+                <select id="emailTemplate" name="users" class="pf-c-form-control">
                     ${this.templates?.map((template) => {
                         const selected =
                             this.instance?.emailTemplate === template.name ||

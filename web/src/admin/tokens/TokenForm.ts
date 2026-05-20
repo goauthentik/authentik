@@ -101,8 +101,18 @@ export class TokenForm extends ModelForm<Token, string> {
                 help=${msg("Unique identifier the token is referenced by.")}
             ></ak-text-input>
 
-            <ak-form-element-horizontal label=${msg("User")} required name="user">
+            <ak-form-element-horizontal required name="user">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "user",
+                        required: true,
+                    },
+                    msg("User"),
+                )}
                 <ak-search-select
+                    id="user"
                     placeholder=${msg("Select a user...")}
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
@@ -141,8 +151,18 @@ export class TokenForm extends ModelForm<Token, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Intent")} required name="intent">
+            <ak-form-element-horizontal required name="intent">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "intent",
+                        required: true,
+                    },
+                    msg("Intent"),
+                )}
                 <ak-radio
+                    id="intent"
                     .options=${[
                         {
                             label: msg("API Token"),

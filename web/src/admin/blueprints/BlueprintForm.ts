@@ -11,6 +11,8 @@ import { docLink } from "#common/global";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
 import YAML from "yaml";
@@ -77,8 +79,18 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
@@ -107,8 +119,17 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 </div>
                 <div class="pf-c-card__footer">
                     ${this.source === BlueprintSource.File
-                        ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
+                        ? html`<ak-form-element-horizontal name="path">
+                              ${AKLabel(
+                                  {
+                                      slot: "label",
+                                      className: "pf-c-form__group-label",
+                                      htmlFor: "path",
+                                  },
+                                  msg("Path"),
+                              )}
                               <ak-search-select
+                                  id="path"
                                   .fetchObjects=${async (
                                       query?: string,
                                   ): Promise<BlueprintFile[]> => {
@@ -170,8 +191,17 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                           </ak-text-input>`
                         : nothing}
                     ${this.source === BlueprintSource.Internal
-                        ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
+                        ? html`<ak-form-element-horizontal name="content">
+                              ${AKLabel(
+                                  {
+                                      slot: "label",
+                                      className: "pf-c-form__group-label",
+                                      htmlFor: "content",
+                                  },
+                                  msg("Blueprint"),
+                              )}
                               <ak-codemirror
+                                  id="content"
                                   mode="yaml"
                                   raw
                                   value="${ifDefined(this.instance?.content)}"
@@ -183,8 +213,17 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
 
             <ak-form-group label="${msg("Additional settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Context")} name="context">
+                    <ak-form-element-horizontal name="context">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "context",
+                            },
+                            msg("Context"),
+                        )}
                         <ak-codemirror
+                            id="context"
                             mode="yaml"
                             value="${YAML.stringify(this.instance?.context ?? {})}"
                         >

@@ -243,12 +243,18 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                         )}
                     >
                     </ak-switch-input>
-                    <ak-form-element-horizontal
-                        label=${msg("Denied action")}
-                        required
-                        name="deniedAction"
-                    >
+                    <ak-form-element-horizontal required name="deniedAction">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "deniedAction",
+                                required: true,
+                            },
+                            msg("Denied action"),
+                        )}
                         <ak-radio
+                            id="deniedAction"
                             .options=${[
                                 {
                                     label: "MESSAGE_CONTINUE",
@@ -282,12 +288,18 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Policy engine mode")}
-                        required
-                        name="policyEngineMode"
-                    >
+                    <ak-form-element-horizontal required name="policyEngineMode">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "policyEngineMode",
+                                required: true,
+                            },
+                            msg("Policy engine mode"),
+                        )}
                         <ak-radio
+                            id="policyEngineMode"
                             .options=${policyEngineModes}
                             .value=${this.instance?.policyEngineMode}
                         >

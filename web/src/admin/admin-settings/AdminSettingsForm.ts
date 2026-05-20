@@ -17,6 +17,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -200,8 +202,17 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${settings.reputationUpperLimit ?? DEFAULT_REPUTATION_UPPER_LIMIT}"
                 help=${msg("Reputation cannot increase higher than this value. Zero or positive.")}
             ></ak-number-input>
-            <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
+            <ak-form-element-horizontal name="footerLinks">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "footerLinks",
+                    },
+                    msg("Footer links"),
+                )}
                 <ak-array-input
+                    id="footerLinks"
                     .items=${settings.footerLinks ?? []}
                     .newItem=${() => ({ name: "", href: "" })}
                     .row=${(f?: FooterLink) =>

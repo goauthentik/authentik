@@ -15,6 +15,8 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     oauth2ProvidersProvider,
     oauth2ProvidersSelector,
@@ -88,11 +90,17 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
             </ak-switch-input>
             <ak-form-group label="${msg("Authentication settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Authorization Flow")}
-                        name="authorizationFlow"
-                    >
+                    <ak-form-element-horizontal name="authorizationFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "authorizationFlow",
+                            },
+                            msg("Authorization Flow"),
+                        )}
                         <ak-flow-search
+                            id="authorizationFlow"
                             label=${msg("Authorization Flow")}
                             flowType=${FlowDesignationEnum.Authorization}
                             .currentFlow=${this.instance?.authorizationFlow}
@@ -119,11 +127,17 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         ?checked=${this.instance?.authTerminateSessionOnExpiry ?? true}
                     >
                     </ak-switch-input>
-                    <ak-form-element-horizontal
-                        label=${msg("Federated OAuth2/OpenID Providers")}
-                        name="jwtFederationProviders"
-                    >
+                    <ak-form-element-horizontal name="jwtFederationProviders">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "jwtFederationProviders",
+                            },
+                            msg("Federated OAuth2/OpenID Providers"),
+                        )}
                         <ak-dual-select-dynamic-selected
+                            id="jwtFederationProviders"
                             .provider=${oauth2ProvidersProvider}
                             .selector=${oauth2ProvidersSelector(
                                 this.instance?.jwtFederationProviders,
@@ -141,11 +155,17 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
             </ak-form-group>
             <ak-form-group label="${msg("Device compliance settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Challenge certificate")}
-                        name="challengeKey"
-                    >
+                    <ak-form-element-horizontal name="challengeKey">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "challengeKey",
+                            },
+                            msg("Challenge certificate"),
+                        )}
                         <ak-crypto-certificate-search
+                            id="challengeKey"
                             label=${msg("Certificate")}
                             placeholder=${msg("Select a certificate...")}
                             certificate=${ifPresent(this.instance?.challengeKey)}

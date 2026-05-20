@@ -7,6 +7,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { Form } from "#elements/forms/Form";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     CoreApi,
     CoreGroupsListRequest,
@@ -58,8 +60,17 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
     }
 
     renderSelectUser() {
-        return html`<ak-form-element-horizontal label=${msg("User")} name="syncObjectId">
+        return html`<ak-form-element-horizontal name="syncObjectId">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "syncObjectId",
+                },
+                msg("User"),
+            )}
             <ak-search-select
+                id="syncObjectId"
                 .fetchObjects=${async (query?: string): Promise<User[]> => {
                     const args: CoreUsersListRequest = {
                         ordering: "username",
@@ -85,8 +96,17 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
     }
 
     renderSelectGroup() {
-        return html` <ak-form-element-horizontal label=${msg("Group")} name="syncObjectId">
+        return html` <ak-form-element-horizontal name="syncObjectId">
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "syncObjectId",
+                },
+                msg("Group"),
+            )}
             <ak-search-select
+                id="syncObjectId"
                 .fetchObjects=${async (query?: string): Promise<Group[]> => {
                     const args: CoreGroupsListRequest = {
                         ordering: "name",
@@ -109,8 +129,16 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
     }
 
     renderResult(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Log messages")}>
-            <ak-log-viewer .items=${this.result?.messages}></ak-log-viewer>
+        return html`<ak-form-element-horizontal>
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "sync-log-messages",
+                },
+                msg("Log messages"),
+            )}
+            <ak-log-viewer id="sync-log-messages" .items=${this.result?.messages}></ak-log-viewer>
         </ak-form-element-horizontal> `;
     }
 

@@ -11,6 +11,8 @@ import { PFSize } from "#common/enums";
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     InitialPermissions,
     Permission,
@@ -77,8 +79,18 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                 value="${ifDefined(this.instance?.name)}"
             >
             </ak-text-input>
-            <ak-form-element-horizontal label=${msg("Role")} required name="role">
+            <ak-form-element-horizontal required name="role">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "role",
+                        required: true,
+                    },
+                    msg("Role"),
+                )}
                 <ak-search-select
+                    id="role"
                     placeholder=${msg("Select a role...")}
                     .fetchObjects=${async (query?: string): Promise<Role[]> => {
                         const args: RbacRolesListRequest = {
@@ -110,8 +122,17 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Permissions")} name="permissions">
+            <ak-form-element-horizontal name="permissions">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "permissions",
+                    },
+                    msg("Permissions"),
+                )}
                 <ak-dual-select-provider
+                    id="permissions"
                     .provider=${(page: number, search?: string): Promise<DataProvision> => {
                         return new RbacApi(DEFAULT_CONFIG)
                             .rbacPermissionsList({

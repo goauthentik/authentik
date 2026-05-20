@@ -6,6 +6,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import { KubernetesServiceConnection, OutpostsApi } from "@goauthentik/api";
 
 import YAML from "yaml";
@@ -45,8 +47,18 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     }
 
     protected override renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
@@ -60,8 +72,17 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 help=${msg("Requires Docker socket/Kubernetes Integration.")}
             >
             </ak-switch-input>
-            <ak-form-element-horizontal label=${msg("Kubeconfig")} name="kubeconfig">
+            <ak-form-element-horizontal name="kubeconfig">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "kubeconfig",
+                    },
+                    msg("Kubeconfig"),
+                )}
                 <ak-codemirror
+                    id="kubeconfig"
                     mode="yaml"
                     value="${YAML.stringify(this.instance?.kubeconfig ?? {})}"
                 >

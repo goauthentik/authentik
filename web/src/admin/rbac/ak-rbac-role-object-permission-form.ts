@@ -9,6 +9,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     ModelEnum,
     PaginatedPermissionList,
@@ -96,8 +98,17 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                 )}</span
             >
             <form class="pf-c-form pf-m-horizontal">
-                <ak-form-element-horizontal label=${msg("Role")} name="role">
+                <ak-form-element-horizontal name="role">
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: "role",
+                        },
+                        msg("Role"),
+                    )}
                     <ak-search-select
+                        id="role"
                         placeholder=${msg("Select a role...")}
                         .fetchObjects=${async (query?: string): Promise<Role[]> => {
                             const args: RbacRolesListRequest = {

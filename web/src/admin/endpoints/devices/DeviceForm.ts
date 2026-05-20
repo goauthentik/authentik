@@ -9,6 +9,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import { EndpointDevice, EndpointsApi } from "@goauthentik/api";
 
 import YAML from "yaml";
@@ -47,13 +49,31 @@ export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
                 value=${ifDefined(this.instance?.name)}
                 required
             ></ak-text-input>
-            <ak-form-element-horizontal label=${msg("Device Group")} name="accessGroup">
+            <ak-form-element-horizontal name="accessGroup">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "accessGroup",
+                    },
+                    msg("Device Group"),
+                )}
                 <ak-endpoints-device-group-search
+                    id="accessGroup"
                     .group=${this.instance?.accessGroup}
                 ></ak-endpoints-device-group-search>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
+            <ak-form-element-horizontal name="attributes">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "attributes",
+                    },
+                    msg("Attributes"),
+                )}
                 <ak-codemirror
+                    id="attributes"
                     mode="yaml"
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"
                 >

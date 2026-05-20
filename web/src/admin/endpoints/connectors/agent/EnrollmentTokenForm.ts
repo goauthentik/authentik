@@ -116,8 +116,17 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
                 required
                 ?autofocus=${!this.instance}
             ></ak-text-input>
-            <ak-form-element-horizontal label=${msg("Device Access Group")} name="deviceGroup">
+            <ak-form-element-horizontal name="deviceGroup">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "deviceGroup",
+                    },
+                    msg("Device Access Group"),
+                )}
                 <ak-endpoints-device-group-search
+                    id="deviceGroup"
                     .group=${this.instance?.deviceGroup}
                 ></ak-endpoints-device-group-search>
                 <p class="pf-c-form__helper-text">

@@ -13,6 +13,8 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { CoreApi, Group, RbacApi, Role, User, UserTypeEnum } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
@@ -264,8 +266,17 @@ export class UserForm extends ModelForm<User, number> {
                     </p>`}
             ></ak-text-input>
 
-            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
+            <ak-form-element-horizontal name="attributes">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "attributes",
+                    },
+                    msg("Attributes"),
+                )}
                 <ak-codemirror
+                    id="attributes"
                     mode="yaml"
                     value="${YAML.stringify(
                         this.instance?.attributes ?? UserForm.defaultUserAttributes,
