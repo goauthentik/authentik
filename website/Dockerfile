@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.9.0-trixie@sha256:7a99c607c2a73ea54f8c554d10bc790569fb7d1173638d5a9f56a23923fe2f87 AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.9.0-trixie@sha256:e588aafb1146d1dfdc9227195d4fb779fba528b2b937ac5b729a0c269cfb7595 AS docs-builder
 
 ENV NODE_ENV=production
 
