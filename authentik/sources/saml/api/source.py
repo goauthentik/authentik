@@ -25,7 +25,7 @@ class SAMLSourceSerializer(SourceSerializer):
     def get_url_issuer(self, instance: SAMLSource) -> str:
         """Get the resolved Issuer, falling back to the metadata URL when unset"""
         if "request" not in self._context:
-            return instance.issuer or ""
+            return instance.issuer_override or ""
         return instance.get_issuer(self._context["request"]._request)
 
     def validate(self, attrs: dict):
@@ -45,7 +45,7 @@ class SAMLSourceSerializer(SourceSerializer):
         fields = SourceSerializer.Meta.fields + [
             "group_matching_mode",
             "pre_authentication_flow",
-            "issuer",
+            "issuer_override",
             "url_issuer",
             "sso_url",
             "slo_url",
@@ -81,7 +81,7 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
         "policy_engine_mode",
         "user_matching_mode",
         "pre_authentication_flow",
-        "issuer",
+        "issuer_override",
         "sso_url",
         "slo_url",
         "allow_idp_initiated",

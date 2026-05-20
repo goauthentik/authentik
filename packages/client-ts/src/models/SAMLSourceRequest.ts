@@ -128,7 +128,7 @@ export interface SAMLSourceRequest {
      * @type {string}
      * @memberof SAMLSourceRequest
      */
-    issuer?: string;
+    issuerOverride?: string;
     /**
      * URL that the initial Login request is sent to.
      * @type {string}
@@ -266,7 +266,7 @@ export function SAMLSourceRequestFromJSONTyped(
                 ? undefined
                 : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
         preAuthenticationFlow: json["pre_authentication_flow"],
-        issuer: json["issuer"] == null ? undefined : json["issuer"],
+        issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
         ssoUrl: json["sso_url"],
         sloUrl: json["slo_url"] == null ? undefined : json["slo_url"],
         allowIdpInitiated:
@@ -327,7 +327,7 @@ export function SAMLSourceRequestToJSONTyped(
         icon: value["icon"],
         group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
         pre_authentication_flow: value["preAuthenticationFlow"],
-        issuer: value["issuer"],
+        issuer_override: value["issuerOverride"],
         sso_url: value["ssoUrl"],
         slo_url: value["sloUrl"],
         allow_idp_initiated: value["allowIdpInitiated"],

@@ -24373,7 +24373,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: issuer
+        name: issuer_override
         schema:
           type: string
       - in: query
@@ -50847,8 +50847,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
+          title: Issuer
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string
@@ -54631,8 +54632,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
+          title: Issuer
           description: Also known as Entity ID. Defaults the Metadata URL.
         url_issuer:
           type: string
@@ -54840,8 +54842,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
+          title: Issuer
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string

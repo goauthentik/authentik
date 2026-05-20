@@ -226,10 +226,10 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             ${msg("Optional URL if the IDP supports Single-Logout.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Issuer")} name="issuer">
+                    <ak-form-element-horizontal label=${msg("Issuer")} name="issuerOverride">
                         <input
                             type="text"
-                            value="${ifDefined(this.instance?.issuer)}"
+                            value="${ifDefined(this.instance?.issuerOverride)}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">

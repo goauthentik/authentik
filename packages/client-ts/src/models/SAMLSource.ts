@@ -178,7 +178,7 @@ export interface SAMLSource {
      * @type {string}
      * @memberof SAMLSource
      */
-    issuer?: string;
+    issuerOverride?: string;
     /**
      * Get the resolved Issuer, falling back to the metadata URL when unset
      * @type {string}
@@ -336,7 +336,7 @@ export function SAMLSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
                 ? undefined
                 : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
         preAuthenticationFlow: json["pre_authentication_flow"],
-        issuer: json["issuer"] == null ? undefined : json["issuer"],
+        issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
         urlIssuer: json["url_issuer"],
         ssoUrl: json["sso_url"],
         sloUrl: json["slo_url"] == null ? undefined : json["slo_url"],
@@ -409,7 +409,7 @@ export function SAMLSourceToJSONTyped(
         icon: value["icon"],
         group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
         pre_authentication_flow: value["preAuthenticationFlow"],
-        issuer: value["issuer"],
+        issuer_override: value["issuerOverride"],
         sso_url: value["ssoUrl"],
         slo_url: value["sloUrl"],
         allow_idp_initiated: value["allowIdpInitiated"],
