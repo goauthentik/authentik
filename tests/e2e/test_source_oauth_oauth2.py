@@ -160,7 +160,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.get(self.live_server_url)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -177,7 +177,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         # At this point we've been redirected back
         # and we're asked for the username
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
+        prompt_stage = self.get_shadow_root("ak-stage-prompt")
 
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").click()
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys("foo")
@@ -196,7 +196,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.get(self.url("authentik_flows:default-invalidation"))
         sleep(1)
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(

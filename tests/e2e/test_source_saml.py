@@ -154,7 +154,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.get(self.live_server_url)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -216,7 +216,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.get(self.live_server_url)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -230,7 +230,7 @@ class TestSourceSAML(SeleniumTestCase):
         sleep(1)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertIn(
             source.name,
@@ -291,7 +291,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.get(self.live_server_url)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -353,7 +353,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.get(self.live_server_url)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -380,7 +380,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.get(self.live_server_url)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(

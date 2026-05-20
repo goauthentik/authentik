@@ -270,7 +270,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             )
         )
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        session_end_stage = self.get_shadow_root("ak-stage-session-end")
         session_end_stage.find_element(By.ID, "logout").click()
 
     @retry()
@@ -327,7 +327,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         sleep(1)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertIn(
             app.name,

@@ -126,7 +126,7 @@ class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):
 
         # Wait for identification stage to load (ensures passkey challenge is triggered)
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        self.get_shadow_root("ak-stage-identification", flow_executor)
+        self.get_shadow_root("ak-stage-identification")
 
         # The virtual authenticator should automatically respond to the conditional WebAuthn request
         # triggered by the identification stage when passkey_challenge is present.

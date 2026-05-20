@@ -86,7 +86,8 @@ class SeleniumTestMixin(E2ETestMixin):
         except RequestException as exc:
             if path.exists() and not IS_CI:
                 self.logger.info(
-                    "Failed to download chrome extension, using cached copy", path=path
+                    "Failed to download chrome extension, using cached copy",
+                    path=path,
                 )
                 return path
             raise exc
@@ -94,7 +95,9 @@ class SeleniumTestMixin(E2ETestMixin):
 
     @cached_property
     def driver_container(self) -> Container:
-        return self.docker_client.containers.list(filters={"label": "io.goauthentik.tests"})[0]
+        return self.docker_client.containers.list(
+            filters={"label": "io.goauthentik.tests"}
+        )[0]
 
     def tearDown(self):
         super().tearDown()
@@ -105,7 +108,9 @@ class SeleniumTestMixin(E2ETestMixin):
         # for some reason this removes the `get_log` API from Remote Webdriver
         # and only keeps it on the local Chrome web driver, even when using
         # a remote chrome driver...? (nvm the fact this was released as a minor version)
-        for line in self.driver.execute(Command.GET_LOG, {"type": "browser"})["value"]:
+        for line in self.driver.execute(Command.GET_LOG, {"type": "browser"})[
+            "value"
+        ]:
             print(line["message"])
         if IS_CI:
             print("::endgroup::")
@@ -196,7 +201,10 @@ class SeleniumTestMixin(E2ETestMixin):
 
         if "redirecting" in inner_html.lower():
             try:
-                wait.until(lambda d: "redirecting" not in get_inner_html_safely().lower())
+                wait.until(
+                    lambda d: "redirecting"
+                    not in get_inner_html_safely().lower()
+                )
             except TimeoutException:
                 snippet = get_text_safely()[:500].replace("\n", " ")
                 inner_html = get_inner_html_safely()
@@ -231,8 +239,24 @@ class SeleniumTestMixin(E2ETestMixin):
 
         return body_json
 
+    def find_flow_element(
+        self, selector: str, timeout: float = 10
+    ) -> WebElement:
+        """Find an element by selector inside a Flow, regardless of its shadow state"""
+
+        wait = WebDriverWait(self.driver, timeout)
+        try:
+            return wait.until(
+                lambda d: d.find_element(By.CSS_SELECTOR, selector)
+            )
+        except:
+            self.fail("Timed out waiting for {selector} to appear")
+
     def get_shadow_root(
-        self, selector: str, container: WebElement | WebDriver | None = None, timeout: float = 10
+        self,
+        selector: str,
+        container: WebElement | WebDriver | None = None,
+        timeout: float = 10,
     ) -> WebElement:
         """Get the shadow root of a web component specified by `selector`."""
         if not container:
@@ -241,7 +265,9 @@ class SeleniumTestMixin(E2ETestMixin):
         host: WebElement | None = None
 
         try:
-            host = wait.until(lambda c: c.find_element(By.CSS_SELECTOR, selector))
+            host = wait.until(
+                lambda c: c.find_element(By.CSS_SELECTOR, selector)
+            )
         except TimeoutException:
             self.fail(f"Timed out waiting for shadow host {selector} to appear")
 
@@ -279,7 +305,8 @@ class SeleniumTestMixin(E2ETestMixin):
 
             def find_element(self, by: str, selector: str) -> WebElement:
                 return self.container.execute_script(
-                    "return document.__shady_native_querySelector(arguments[0])", selector
+                    "return document.__shady_native_querySelector(arguments[0])",
+                    selector,
                 )
 
         return wrapper(self.driver)
@@ -290,8 +317,8 @@ class SeleniumTestMixin(E2ETestMixin):
 
         if "ak-stage-identification" not in skip_stages:
             if shadow_dom:
-                flow_executor = self.get_shadow_root("ak-flow-executor")
-                identification_stage = self.get_shadow_root(
+                flow_executor = self.find_flow_element("ak-flow-executor")
+                identification_stage = self.find_flow_element(
                     "ak-stage-identification", flow_executor
                 )
             else:
@@ -299,33 +326,45 @@ class SeleniumTestMixin(E2ETestMixin):
                 identification_stage = self.shady_dom()
 
             wait = WebDriverWait(identification_stage, self.wait_timeout)
-            wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=uidField]")))
+            wait.until(
+                ec.presence_of_element_located(
+                    (By.CSS_SELECTOR, "input[name=uidField]")
+                )
+            )
 
-            identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").click()
-            identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
-                self.user.username
-            )
-            identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
-                Keys.ENTER
-            )
+            identification_stage.find_element(
+                By.CSS_SELECTOR, "input[name=uidField]"
+            ).click()
+            identification_stage.find_element(
+                By.CSS_SELECTOR, "input[name=uidField]"
+            ).send_keys(self.user.username)
+            identification_stage.find_element(
+                By.CSS_SELECTOR, "input[name=uidField]"
+            ).send_keys(Keys.ENTER)
 
         if "ak-stage-password" not in skip_stages:
             if shadow_dom:
-                flow_executor = self.get_shadow_root("ak-flow-executor")
-                password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
+                flow_executor = self.find_flow_element("ak-flow-executor")
+                password_stage = self.find_flow_element(
+                    "ak-stage-password", flow_executor
+                )
             else:
                 flow_executor = self.shady_dom()
                 password_stage = self.shady_dom()
 
             wait = WebDriverWait(password_stage, self.wait_timeout)
-            wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=password]")))
+            wait.until(
+                ec.presence_of_element_located(
+                    (By.CSS_SELECTOR, "input[name=password]")
+                )
+            )
 
-            password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
-                self.user.username
-            )
-            password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
-                Keys.ENTER
-            )
+            password_stage.find_element(
+                By.CSS_SELECTOR, "input[name=password]"
+            ).send_keys(self.user.username)
+            password_stage.find_element(
+                By.CSS_SELECTOR, "input[name=password]"
+            ).send_keys(Keys.ENTER)
         sleep(1)
 
     def assert_user(self, expected_user: User):

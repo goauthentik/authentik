@@ -2,6 +2,8 @@ import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 
+import { light } from "#elements/directives/light";
+
 import { ErrorProp } from "#components/ak-field-errors";
 
 import { FlowUserDetails } from "#flow/FormStatic";
@@ -32,51 +34,53 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
     }
 
     render(): TemplateResult {
-        return html`<ak-flow-card .challenge=${this.challenge}>
-            <form class="pf-c-form" @submit=${this.submitForm}>
-                ${FlowUserDetails({ challenge: this.challenge })}
+        return light(
+            html`<ak-flow-card .challenge=${this.challenge}>
+                <form class="pf-c-form" @submit=${this.submitForm}>
+                    ${FlowUserDetails({ challenge: this.challenge })}
 
-                <input
-                    name="username"
-                    type="text"
-                    autocomplete="username"
-                    hidden
-                    readonly
-                    value="${this.challenge?.pendingUser ?? ""}"
-                />
-                <ak-flow-input-password
-                    label=${msg("Password")}
-                    grab-focus
-                    class="pf-c-form__group"
-                    .errors=${this.#errors("password")}
-                    ?allow-show-password=${!!this.challenge?.allowShowPassword}
-                    prefill=${PasswordManagerPrefill.password ?? ""}
-                ></ak-flow-input-password>
-                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
-                    <legend class="sr-only">${msg("Form actions")}</legend>
-                    <button
-                        name="continue"
-                        type="submit"
-                        class="pf-c-button pf-m-primary pf-m-block"
-                    >
-                        ${msg("Continue")}
-                    </button>
-                </fieldset>
-            </form>
-            ${this.challenge?.recoveryUrl
-                ? html`<fieldset
-                      slot="footer-band"
-                      part="additional-actions"
-                      name="additional-actions"
-                      class="ak-c-fieldset pf-c-login__main-footer-band"
-                  >
-                      <legend class="sr-only">${msg("Additional actions")}</legend>
-                      <div class="pf-c-login__main-footer-band-item">
-                          <a href="${this.challenge.recoveryUrl}">${msg("Forgot password?")}</a>
-                      </div>
-                  </fieldset>`
-                : null}
-        </ak-flow-card>`;
+                    <input
+                        name="username"
+                        type="text"
+                        autocomplete="username"
+                        hidden
+                        readonly
+                        value="${this.challenge?.pendingUser ?? ""}"
+                    />
+                    <ak-flow-input-password
+                        label=${msg("Password")}
+                        grab-focus
+                        class="pf-c-form__group"
+                        .errors=${this.#errors("password")}
+                        ?allow-show-password=${!!this.challenge?.allowShowPassword}
+                        prefill=${PasswordManagerPrefill.password ?? ""}
+                    ></ak-flow-input-password>
+                    <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
+                        <legend class="sr-only">${msg("Form actions")}</legend>
+                        <button
+                            name="continue"
+                            type="submit"
+                            class="pf-c-button pf-m-primary pf-m-block"
+                        >
+                            ${msg("Continue")}
+                        </button>
+                    </fieldset>
+                </form>
+                ${this.challenge?.recoveryUrl
+                    ? html`<fieldset
+                          slot="footer-band"
+                          part="additional-actions"
+                          name="additional-actions"
+                          class="ak-c-fieldset pf-c-login__main-footer-band"
+                      >
+                          <legend class="sr-only">${msg("Additional actions")}</legend>
+                          <div class="pf-c-login__main-footer-band-item">
+                              <a href="${this.challenge.recoveryUrl}">${msg("Forgot password?")}</a>
+                          </div>
+                      </fieldset>`
+                    : null}
+            </ak-flow-card>`
+        );
     }
 }
 

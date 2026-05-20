@@ -116,7 +116,7 @@ class TestProviderProxy(SeleniumTestCase):
         sleep(2)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        session_end_stage = self.get_shadow_root("ak-stage-session-end")
         flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
         title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
 
@@ -202,7 +202,7 @@ class TestProviderProxy(SeleniumTestCase):
         sleep(2)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        session_end_stage = self.get_shadow_root("ak-stage-session-end")
         flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
         title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
 

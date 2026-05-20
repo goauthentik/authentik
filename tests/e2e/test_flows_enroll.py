@@ -73,7 +73,7 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         # Email stage
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        email_stage = self.get_shadow_root("ak-stage-email", flow_executor)
+        email_stage = self.get_shadow_root("ak-stage-email")
 
         wait = WebDriverWait(email_stage, self.wait_timeout)
 
@@ -94,7 +94,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         sleep(2)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage = self.get_shadow_root("ak-stage-consent")
         consent_stage.find_element(
             By.CSS_SELECTOR,
             "[type=submit]",
@@ -108,7 +108,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         """Fill out initial stages"""
         # Identification stage, click enroll
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -120,7 +120,7 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         # First prompt stage
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
+        prompt_stage = self.get_shadow_root("ak-stage-prompt")
         wait = WebDriverWait(prompt_stage, self.wait_timeout)
 
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=username]")))
@@ -136,7 +136,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         # Second prompt stage
         sleep(1)
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
+        prompt_stage = self.get_shadow_root("ak-stage-prompt")
         wait = WebDriverWait(prompt_stage, self.wait_timeout)
 
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=name]")))
@@ -168,7 +168,7 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         # Email stage
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        email_stage = self.get_shadow_root("ak-stage-email", flow_executor)
+        email_stage = self.get_shadow_root("ak-stage-email")
 
         wait = WebDriverWait(email_stage, self.wait_timeout)
 
@@ -194,7 +194,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertEqual(
             "Continue to confirm this email address.",
@@ -206,7 +206,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.get(confirmation_link)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
-        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage = self.get_shadow_root("ak-stage-consent")
         consent_stage.find_element(
             By.CSS_SELECTOR,
             "[type=submit]",
