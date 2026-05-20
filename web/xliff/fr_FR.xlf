@@ -2415,10 +2415,6 @@
   <source>Authenticate SCIM requests using a static token.</source>
   <target>Authentifier les requêtes SCIM avec un jeton statique.</target>
 </trans-unit>
-<trans-unit id="s0e1641692e0dac94">
-  <source>OAuth</source>
-  <target>OAuth</target>
-</trans-unit>
 <trans-unit id="s1c34cb0a4cccc041">
   <source>Authenticate SCIM requests using OAuth.</source>
   <target>Authentifier les requêtes SCIM avec OAuth.</target>
@@ -3713,25 +3709,9 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <source>EntityID/Issuer</source>
   <target>EntitéID/Émetteur</target>
 </trans-unit>
-<trans-unit id="scd2984ee5552643a">
-  <source>SSO URL (Post)</source>
-  <target>URL SSO (Post)</target>
-</trans-unit>
-<trans-unit id="saa79b47f60c66458">
-  <source>SSO URL (Redirect)</source>
-  <target>URL SSO (Redirect)</target>
-</trans-unit>
 <trans-unit id="s2da51a6287118ba8">
   <source>SSO URL (IdP-initiated Login)</source>
   <target>URL SSO (IdP-initiated Login)</target>
-</trans-unit>
-<trans-unit id="s0a57e911e457302b">
-  <source>SLO URL (Post)</source>
-  <target>URL SLO (Post)</target>
-</trans-unit>
-<trans-unit id="s1e7308bb1ca323e1">
-  <source>SLO URL (Redirect)</source>
-  <target>URL SLO (Redirect)</target>
 </trans-unit>
 <trans-unit id="sd2c58d7c6dddc515">
   <source>SAML Metadata</source>
@@ -5628,8 +5608,7 @@ doesn&apos;t pass when either or both of the selected options are equal or above
 </trans-unit>
 <trans-unit id="s67dedada007d4067">
   <source>Failed to disconnected source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
-  <target>Erreur de la déconnexion de la source :
-        <x id="0" equiv-text="${exc}"/></target>
+  <target>Erreur de la déconnexion de la source : <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></target>
 </trans-unit>
 <trans-unit id="s7a4f059aaa029719">
   <source>Connect</source>
@@ -11813,7 +11792,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 </trans-unit>
 <trans-unit id="s539942ab7cc7210e">
   <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/></source>
-  <target>Erreur lors de la suppression de <x id="0" equiv-text="${this.objectLabel}"/></target>
+  <target>Échec lors de la suppression de <x id="0" equiv-text="${this.objectLabel}"/></target>
 </trans-unit>
 <trans-unit id="sc420894701de5ea3">
   <source>Modify</source>
@@ -12107,12 +12086,15 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 </trans-unit>
 <trans-unit id="saa5ed8446baaba70">
   <source>Negate Result</source>
+  <target>Inverser le résultat</target>
 </trans-unit>
 <trans-unit id="s5387aa645962312a">
   <source>Failure Result</source>
+  <target>Résultat d&apos;échec</target>
 </trans-unit>
 <trans-unit id="sea62de98f2e25e03">
   <source>Device Classes</source>
+  <target>Classes d&apos;appareil</target>
 </trans-unit>
 <trans-unit id="s41938ae69656ef53">
   <source>User Fields</source>
@@ -12120,6 +12102,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 </trans-unit>
 <trans-unit id="s02b73793e5b4e1ba">
   <source>This flag is deprecated.</source>
+  <target>Cette option est dépréciée.</target>
 </trans-unit>
 <trans-unit id="s8655c52824caac63">
   <source>If checked, the launch URL will open in a new browser tab or window from the user&apos;s application library.</source>
@@ -12135,15 +12118,19 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 </trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
+  <target>Pas de préférence : le navigateur peut proposer tout authentificateur disponible</target>
 </trans-unit>
 <trans-unit id="s4611c85865abcba9">
   <source>Platform: a non-removable authenticator built into the device, such as Touch ID, Face ID, or Windows Hello</source>
+  <target>Plateforme : un authentificateur non supprimable, intégré dans l&apos;appareil, comme Touch ID, Face ID ou Windows Hello</target>
 </trans-unit>
 <trans-unit id="s0003d0e3fcdacabc">
   <source>Cross-platform: a roaming authenticator, such as a YubiKey or Google Titan</source>
+  <target>Multiplateforme : un authentificateur externe, comme une Yubikey ou une Google Titan</target>
 </trans-unit>
 <trans-unit id="sc157c7dcb3d1b096">
   <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as &apos;No preference&apos;, a value is inferred from the selected hints for backward compatibility with older browsers.</source>
+  <target>Contrôler le paramètre authenticatorAttachment envoyé au navigateur durant l&apos;enregistrement WebAuthn. Si des Indices sont configurés et que cette option est laissé à &apos;Pas de préférence&apos;, une valeur est déduite des indices sélectionnés pour une rétrocompatibilité avec les navigateurs plus anciens.</target>
 </trans-unit>
 <trans-unit id="s1baea1b8ac34d554">
   <source>New Invitation</source>
@@ -12163,6 +12150,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 </trans-unit>
 <trans-unit id="s79108cb25e7bf07b">
   <source>Opens the new invitation wizard, which will create a new enrollment flow and invitation stage.</source>
+  <target>Ouvre l&apos;assistant de nouvelle invitation, qui va créer un nouveau flux d&apos;enregistrement et une étape d&apos;invitation.</target>
 </trans-unit>
 <trans-unit id="sb7809157a3ccf613">
   <source>with New Enrollment Flow and Invitation Stage...</source>
@@ -12186,39 +12174,51 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 </trans-unit>
 <trans-unit id="s967a2db7049dc90e">
   <source><x id="0" equiv-text="${step}"/> failed</source>
+  <target>Échec de <x id="0" equiv-text="${step}"/></target>
 </trans-unit>
 <trans-unit id="s971d4cc0ecd106b7">
   <source>Importing enrollment flow blueprint</source>
+  <target>Importer un plan de flux d&apos;enregistrement</target>
 </trans-unit>
 <trans-unit id="sf3b89a70e20af6c8">
   <source>Blueprint validation failed</source>
+  <target>Échec de validation du plan</target>
 </trans-unit>
 <trans-unit id="sa04b7204708f4f74">
   <source>Flow with slug &quot;<x id="0" equiv-text="${slugToLookup}"/>&quot; not found after import</source>
+  <target>Flux avec slug &amp;quot;<x id="0" equiv-text="${slugToLookup}"/>&amp;quot; non trouvé après l&apos;import</target>
 </trans-unit>
 <trans-unit id="s3354be88ad29d171">
   <source>Creating invitation</source>
+  <target>Créer une invitation</target>
 </trans-unit>
 <trans-unit id="s07f41353777196ea">
   <source>The flow selected in the previous step. The invitation will be bound to this flow.</source>
+  <target>Le flux sélectionnée dans l&apos;étape précédente. L&apos;invitation sera liée à ce flux.</target>
 </trans-unit>
 <trans-unit id="s7209a11f97da9aff">
   <source>No invitation available to send</source>
+  <target>Aucune invitation à envoyer disponible </target>
 </trans-unit>
 <trans-unit id="s2772d8285b905006">
   <source>Failed to queue invitation emails</source>
+  <target>Échec de la mise en file d&apos;attente des courriels d&apos;invitation</target>
 </trans-unit>
 <trans-unit id="s3b7910ab9c47a2e3">
   <source>No enrollment flows with invitation stages found</source>
+  <target>Aucun flux d&apos;enregistrement avec une étape d&apos;invitation trouvée</target>
 </trans-unit>
 <trans-unit id="sa3ca03297e00591c">
   <source>You can create a new enrollment flow and invitation stage right here, or cancel and bind an invitation stage to an existing flow manually.</source>
+  <target>Vous pouvez créer un nouveau flux d&apos;enregistrement et une étape d&apos;invitation ici, ou annuler et lier manuellement une étape d&apos;invitation à un flux existant.</target>
 </trans-unit>
 <trans-unit id="s06db43e56ca76be8">
   <source>Create a new enrollment flow</source>
+  <target>Créer un nouveau flux d&apos;enregistrement</target>
 </trans-unit>
 <trans-unit id="s8acc687c55e8ccbf">
   <source>Only enrollment flows that have an invitation stage bound to them are listed here.</source>
+  <target>Seuls les flux d&apos;enregistrement qui ont une étape d&apos;invitation liée sont listés ici.</target>
 </trans-unit>
 <trans-unit id="s5b3bafd8ffe553ec">
   <source>Flow name</source>
@@ -12226,9 +12226,11 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 </trans-unit>
 <trans-unit id="s699cd34b0dcb4c56">
   <source>Name for the new enrollment flow.</source>
+  <target>Nom pour le nouveau flux d&apos;enregistrement.</target>
 </trans-unit>
 <trans-unit id="s8fb6d1bb698d32a0">
   <source>Flow slug</source>
+  <target>Slug de flux</target>
 </trans-unit>
 <trans-unit id="s0211c07612cf8c97">
   <source>Invitation stage name</source>
@@ -12240,12 +12242,15 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 </trans-unit>
 <trans-unit id="saaa9fd0d3ebc35aa">
   <source>Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.</source>
+  <target>Les utilisateurs enregistrés sont créés en tant qu&apos;externe (par ex. clients, invités). Les nouveaux utilisateurs seront placés sous utilisateurs/externe.</target>
 </trans-unit>
 <trans-unit id="s726dff63487da085">
   <source>Enrolled users are created as internal (e.g. employees). New users will be placed under users/internal.</source>
+  <target>Les utilisateurs enregistrés sont créés en tant qu&apos;interne (par ex. employés). Les nouveaux utilisateurs seront placés sous utilisateurs/interne.</target>
 </trans-unit>
 <trans-unit id="sc1358130ac327120">
   <source>If enabled, the stage will jump to the next stage when no invitation is given. If disabled, the flow will be cancelled without a valid invitation.</source>
+  <target>Si activé, l&apos;étape sautera jusqu&apos;à la prochaine étape si aucune invitation n&apos;est donnée. Si désactivé, le flux sera annulé sans invitation valide.</target>
 </trans-unit>
 <trans-unit id="s09fdd952c6eaf7da">
   <source>No invitation was created.</source>
@@ -12253,6 +12258,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 </trans-unit>
 <trans-unit id="s00febd85a4889bb1">
   <source>Redirect the user to a static URL or another flow, optionally with all gathered context.</source>
+  <target>Redirige l&apos;utilisateur vers une URL statique ou un autre flux, éventuellement avec tout le contexte collecté.</target>
 </trans-unit>
 <trans-unit id="sdbc1d47f0f0ed54d">
   <source>The element could not be loaded. This may be due to a missing import or a version mismatch.</source>
@@ -12273,6 +12279,78 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l&apo
 <trans-unit id="s2656433a3b1f7e86">
   <source>My applications</source>
   <target>Mes applications</target>
+</trans-unit>
+<trans-unit id="sac974f7c36f0c5c1">
+  <source>SAML Endpoint</source>
+  <target>Point de terminaison SAML</target>
+</trans-unit>
+<trans-unit id="sfb0aa7e424580866">
+  <source>SAML provider endpoint. Use this URL for SP configuration.</source>
+  <target>Point de terminaison du fournisseur SAML. Utilisez cette URL pour la configuration du fournisseur de service (SP).</target>
+</trans-unit>
+<trans-unit id="s2be14ff0704995c7">
+  <source>Throttling settings</source>
+  <target>Paramètres de régulation</target>
+</trans-unit>
+<trans-unit id="s05b71dc850552880">
+  <source>Email OTP throttling factor</source>
+  <target>Facteur de régulation des courriels d&apos;OTP</target>
+</trans-unit>
+<trans-unit id="s55c0221c9247ad7d">
+  <source>SMS OTP throttling factor</source>
+  <target>Facteur de régulation des SMS d&apos;OPT</target>
+</trans-unit>
+<trans-unit id="sd63868fff5022ef6">
+  <source>TOTP throttling factor</source>
+  <target>Facteur de régulation du TOTP</target>
+</trans-unit>
+<trans-unit id="s89361efde7c66054">
+  <source>Static OTP throttling factor</source>
+  <target>Facteur de régulation des OTP statiques</target>
+</trans-unit>
+<trans-unit id="s3162a5abea92514e">
+  <source>View Credentials</source>
+  <target>Voir les identifiants</target>
+</trans-unit>
+<trans-unit id="s7cbd6ddbb3cdbda4">
+  <source>OAuth (Silent)</source>
+  <target>OAuth (silencieux)</target>
+</trans-unit>
+<trans-unit id="sf74719393c9d600b">
+  <source>OAuth (Interactive)</source>
+  <target>OAuth (interactif)</target>
+</trans-unit>
+<trans-unit id="s364366c872ccd349">
+  <source>Authenticate SCIM requests using OAuth, interactively authorized.</source>
+  <target>Authentifier les requêtes SCIM en utilisant OAuth, avec autorisation interactive.</target>
+</trans-unit>
+<trans-unit id="s67dbb822a17bf6fc">
+  <source>OAuth Token last updated</source>
+  <target>Dernière mise à jour du jeton OAuth</target>
+</trans-unit>
+<trans-unit id="sb586db2f11959745">
+  <source>OAuth Token expires</source>
+  <target>Jeton OAuth expire</target>
+</trans-unit>
+<trans-unit id="s4011de0d7365d106">
+  <source>OAuth Status</source>
+  <target>Statut OAuth</target>
+</trans-unit>
+<trans-unit id="s169a1a1dce3987b8">
+  <source>Authenticated</source>
+  <target>Authentifié</target>
+</trans-unit>
+<trans-unit id="s02e7dfce69646f50">
+  <source>No token saved</source>
+  <target>Aucun jeton sauvegardé</target>
+</trans-unit>
+<trans-unit id="sde2c41117de5db9d">
+  <source>(Re-)authenticate</source>
+  <target>(Ré-)authentifier</target>
+</trans-unit>
+<trans-unit id="s13c4adf0d185f12e">
+  <source>OAuth Callback URL</source>
+  <target>URL de rappel OAuth</target>
 </trans-unit>
 </body>
 </file>

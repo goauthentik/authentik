@@ -22,6 +22,7 @@ Gestionnaire
 ghec
 Gitea
 Gravitee
+grommunio
 HACS
 Homarr
 Informatique

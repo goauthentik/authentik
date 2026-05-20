@@ -128,6 +128,7 @@ class SessionEndChallenge(WithUserInfoChallenge):
     application_launch_url = CharField(required=False)
 
     invalidation_flow_url = CharField(required=False)
+    overview_url = CharField(required=False)
     brand_name = CharField(required=True)
 
 
