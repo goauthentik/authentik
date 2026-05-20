@@ -188,7 +188,7 @@ The **SSF Config URL** will be blank until the SSF provider is assigned to an ap
 
 ### 5. Assign SSF permissions
 
-The authentik user you will use to test the stream connection to Apple Business Manager must either be a member of the authenik Admins group (such as the default `akadmin` account) or have permission to **Add stream to SSF provider**.
+The authentik user you will use to test the stream connection to Apple Business Manager must either be a member of the authentik Admins group (such as the default `akadmin` account) or have permission to **Add stream to SSF provider**.
 
 If not using a superuser account, you can assign the correct permission by following these steps:
 
