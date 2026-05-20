@@ -104,9 +104,9 @@ export class FlowExecutor extends Interface implements StageHost {
 
     //#region Internal State
 
-    readonly #logger = ConsoleLogger.prefix("flow-executor");
+    protected readonly logger = ConsoleLogger.prefix("flow-executor");
 
-    readonly #api: FlowsApi;
+    private readonly api: FlowsApi;
 
     // Listen for challenge-forwarding events from iframe-based third-party
     // verifiers (Device Compliance)
@@ -119,17 +119,17 @@ export class FlowExecutor extends Interface implements StageHost {
 
     //region Live event handlers
 
-    handleChallengeRequest = (event: AKFlowUpdateChallengeRequest) => {
+    protected handleChallengeRequest = (event: AKFlowUpdateChallengeRequest) => {
         this.challenge = event.challenge;
     };
 
-    handleSubordinateSubmit = (event: AKFlowSubmitRequest) => {
+    protected handleSubordinateSubmit = (event: AKFlowSubmitRequest) => {
         // prettier-ignore
         const { request: { payload, options } } = event;
         this.submit(payload, options);
     };
 
-    handleFlowUpdate() {
+    protected handleFlowUpdate() {
         this.dispatchEvent(new AKFlowInfoUpdateEvent(this.challenge?.flowInfo));
     }
 
@@ -140,7 +140,7 @@ export class FlowExecutor extends Interface implements StageHost {
     constructor() {
         configureSentry();
         super();
-        this.#api = new FlowsApi(DEFAULT_CONFIG);
+        this.api = new FlowsApi(DEFAULT_CONFIG);
         this.addController(this.#flowIframeMessageController);
         this.addController(this.#flowMultitabController);
         this.addEventListener(AKFlowUpdateChallengeRequest.eventName, this.handleChallengeRequest);
@@ -161,11 +161,11 @@ export class FlowExecutor extends Interface implements StageHost {
 
     protected refresh = async () => {
         if (!this.flowSlug) {
-            this.#logger.debug("Skipping refresh, no flow slug provided");
+            this.logger.debug("Skipping refresh, no flow slug provided");
             return Promise.resolve();
         }
 
-        const fetch = this.#api.flowsExecutorGet({
+        const fetch = this.api.flowsExecutorGet({
             flowSlug: this.flowSlug,
             query: window.location.search.substring(1),
         });
@@ -195,7 +195,7 @@ export class FlowExecutor extends Interface implements StageHost {
 
         if (!this.flowSlug) {
             if (import.meta.env.AK_BUNDLER === "storybook") {
-                this.#logger.debug("Skipping submit flow slug check in storybook");
+                this.logger.debug("Skipping submit flow slug check in storybook");
                 return true;
             }
 
@@ -220,7 +220,7 @@ export class FlowExecutor extends Interface implements StageHost {
             component,
         } as FlowChallengeResponseRequest;
 
-        const solve = this.#api.flowsExecutorSolve({
+        const solve = this.api.flowsExecutorSolve({
             flowSlug: this.flowSlug,
             query: window.location.search.substring(1),
             flowChallengeResponseRequest,

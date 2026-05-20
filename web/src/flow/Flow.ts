@@ -85,7 +85,7 @@ export class Flow extends WithBrandConfig(Interface) {
     public static readonly DefaultLayout: FlowLayoutEnum =
         globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFLogin,
         PFDrawer,
         PFButton,
@@ -99,7 +99,7 @@ export class Flow extends WithBrandConfig(Interface) {
 
     //#region Properties
 
-    @property()
+    @property({ type: String })
     public slug: string = window.location.pathname.split("/")[3];
 
     // Reflection is required to trigger the correct behavior with CSS;
@@ -122,7 +122,7 @@ export class Flow extends WithBrandConfig(Interface) {
 
     readonly #wsController = new FlowWebsocketClientController(this);
 
-    readonly #logger = ConsoleLogger.prefix("flow");
+    protected readonly logger = ConsoleLogger.prefix("flow");
 
     //#endregion
 
@@ -200,12 +200,12 @@ export class Flow extends WithBrandConfig(Interface) {
     @listen(AKSessionAuthenticatedEvent)
     protected onSessionAuthenticated = () => {
         if (document.hidden) {
-            this.#logger.debug("Reloading after session authenticated in background tab");
+            this.logger.debug("Reloading after session authenticated in background tab");
             window.location.reload();
         }
     };
 
-    get #layoutUsesSidebarFrames(): boolean {
+    private get layoutUsesSidebarFrames(): boolean {
         return (
             this.layout === FlowLayoutEnum.SidebarLeftFrameBackground ||
             this.layout === FlowLayoutEnum.SidebarRightFrameBackground
@@ -213,8 +213,7 @@ export class Flow extends WithBrandConfig(Interface) {
     }
 
     #synchronizeBackground() {
-        if (!(this.background || this.backgroundThemedUrls) || this.#layoutUsesSidebarFrames)
-            return;
+        if (!(this.background || this.backgroundThemedUrls) || this.layoutUsesSidebarFrames) return;
 
         const background = this.backgroundThemedUrls?.[this.activeTheme] || this.background;
 
@@ -241,11 +240,10 @@ export class Flow extends WithBrandConfig(Interface) {
     // branding visuals, if they like.
     //
     protected renderFrameBackground() {
-        return guard([this.layout, this.background], () => {
-            if (!this.#layoutUsesSidebarFrames) return nothing;
+        const { layout, background, layoutUsesSidebarFrames } = this;
 
-            const { background } = this;
-            if (!background) return nothing;
+        return guard([layout, background], () => {
+            if (!(layoutUsesSidebarFrames && background)) return nothing;
 
             return html`
                 <div class="ak-c-login__content" part="content">
