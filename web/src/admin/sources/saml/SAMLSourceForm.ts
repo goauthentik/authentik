@@ -300,7 +300,10 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                             "When enabled, the IdP is requested to force re-authentication of the user, even if the user has an existing session.",
                         )}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("Issuer")} name="issuerOverride">
+                    <ak-form-element-horizontal
+                        label=${msg("Issuer override")}
+                        name="issuerOverride"
+                    >
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.issuerOverride)}"
