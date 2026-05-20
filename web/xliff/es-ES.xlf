@@ -10581,15 +10581,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="s4fd2fe9adfd426e9">
   <source>Select an option...</source>
 </trans-unit>
-<trans-unit id="s4a45bb66596356ce">
-  <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
-</trans-unit>
-<trans-unit id="sdec65ee663d8a048">
-  <source>Choose type</source>
-</trans-unit>
-<trans-unit id="s32db18dac74db6c3">
-  <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
-</trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
 </trans-unit>
@@ -10702,9 +10693,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="s2b9ad6a5bc47ea5d">
   <source>Create or bind...</source>
-</trans-unit>
-<trans-unit id="s9ec971c7789af83a">
-  <source>Bind New Stage</source>
 </trans-unit>
 <trans-unit id="s0bc6ba00a01970db">
   <source>Select the type of stage you want to create.</source>
@@ -11189,6 +11177,24 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="s92c038a5e1dade49">
   <source>Application Dashboard</source>
+</trans-unit>
+<trans-unit id="s633e3919f46a8cd3">
+  <source>View details of role "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="sc1fc93e04011152f">
+  <source>New Stage</source>
+</trans-unit>
+<trans-unit id="wizard.step.choose-type.generic">
+  <source>Choose type</source>
+  <note from="lit-localize">Generic label for the initial step in the creation wizard where the type of the entity being created is selected, used when no singular entity name is provided.</note>
+</trans-unit>
+<trans-unit id="wizard.step.choose-type">
+  <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
+  <note from="lit-localize">Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example 'Choose User Type' or 'Choose Group Type'.</note>
+</trans-unit>
+<trans-unit id="wizard.step.details">
+  <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
+  <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example 'User Details' or 'Group Details'.</note>
 </trans-unit>
 </body>
 </file>
