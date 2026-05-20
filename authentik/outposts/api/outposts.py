@@ -23,6 +23,7 @@ from authentik.lib.utils.time import timedelta_from_string, timedelta_string_val
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
 from authentik.outposts.models import (
+    OUR_VERSION,
     Outpost,
     OutpostConfig,
     OutpostType,
@@ -188,7 +189,7 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
                     "uid": state.uid,
                     "last_seen": state.last_seen,
                     "version": state.version,
-                    "version_should": state.version_should,
+                    "version_should": OUR_VERSION,
                     "version_outdated": state.version_outdated,
                     "build_hash": state.build_hash,
                     "golang_version": state.golang_version,
