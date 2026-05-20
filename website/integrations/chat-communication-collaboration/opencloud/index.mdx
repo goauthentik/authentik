@@ -118,14 +118,22 @@ With GLOBAL issuer mode, tokens carry `iss = https://authentik.company/`, but au
 
 ## 2. authentik configuration
 
-Create one **Application + OAuth2/OpenID Connect provider** pair per client. On **every** provider set the same values:
+Repeat these steps for **each** of the four clients (Web, Desktop, Android, and iOS), using the per-client values from the table below.
 
-- **Client type**: `Public`
-- **Signing Key**: the **same** key for all providers (the shared issuer exposes a single `jwks_uri`, so all clients' tokens must be signed by one key).
-- **Issuer mode** (under Advanced protocol settings): `Same identifier is used for all providers`.
-- **Scopes**: `openid`, `profile`, `email`, and `offline_access` (the latter is required for the desktop/mobile sync clients to receive a refresh token).
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application**.
+    - **Application**: provide a name and note the **slug**.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect**.
+    - **Configure the Provider**:
+        - **Client type**: `Public`
+        - **Client ID**: the client's value from the table below.
+        - **Redirect URIs**: the client's value from the table below.
+        - **Signing Key**: select the **same** key for all four providers (the shared issuer exposes a single `jwks_uri`, so all clients' tokens must be signed by one key).
+        - **Scopes**: `openid`, `profile`, `email`, and `offline_access` (required for the desktop and mobile sync clients to receive a refresh token).
+        - **Issuer mode** (under **Advanced protocol settings**): `Same identifier is used for all providers`.
+3. Click **Submit**.
 
-Then set the per-client **Client ID** and **Redirect URIs**:
+The per-client **Client ID** and **Redirect URIs**:
 
 | Client  | Client ID          | Redirect URIs                                                                               |
 | ------- | ------------------ | ------------------------------------------------------------------------------------------- |
@@ -136,11 +144,13 @@ Then set the per-client **Client ID** and **Redirect URIs**:
 
 ## 3. OpenCloud configuration
 
-Use the same overlay and role override as the **Web only** tab, but point `OC_OIDC_ISSUER` at the shared (root) issuer and give each platform its WebFinger client ID.
+In the `opencloud-compose` project, enable the external IdP overlay in `COMPOSE_FILE`. This replaces OpenCloud's built-in IdP, so login goes through authentik only.
 
 ```bash
 COMPOSE_FILE=docker-compose.yml:idm/external-idp.yml:custom/authentik-roles.yml
 ```
+
+Set the OIDC values in `.env`. `OC_OIDC_ISSUER` points at the shared (root) issuer, and each client uses its own WebFinger client ID:
 
 ```bash
 OC_DOMAIN=opencloud.company
