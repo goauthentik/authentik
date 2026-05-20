@@ -13,7 +13,7 @@ from django.db import IntegrityError, models, transaction
 from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
-from packaging.version import Version, parse
+from packaging.version import parse
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -463,7 +463,6 @@ class OutpostState:
     uid: str
     last_seen: datetime | None = field(default=None)
     version: str | None = field(default=None)
-    version_should: Version = field(default=OUR_VERSION)
     build_hash: str = field(default="")
     golang_version: str = field(default="")
     openssl_enabled: bool = field(default=False)
