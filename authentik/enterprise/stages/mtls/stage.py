@@ -14,6 +14,7 @@ from cryptography.x509 import (
     load_pem_x509_certificate,
 )
 from cryptography.x509.verification import PolicyBuilder, Store, VerificationError
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 from authentik.brands.models import Brand
@@ -138,9 +139,9 @@ class MTLSStageView(ChallengeStageView):
         authorities_cert = [x.certificate for x in authorities]
         for _cert in certs:
             try:
-                PolicyBuilder().store(Store(authorities_cert)).build_client_verifier().verify(
-                    _cert, []
-                )
+                PolicyBuilder().store(Store(authorities_cert)).time(
+                    now()
+                ).build_client_verifier().verify(_cert, [])
                 return _cert
             except (
                 InvalidSignature,
