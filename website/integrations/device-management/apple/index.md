@@ -148,7 +148,7 @@ Alternatively, you can import an existing key.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **System** > **Certificates** and click **Import Existing Certificate-Key Pair**.
-3. Provide a **Certificate Name**, paste the contents of your **Certificate**, and _optionally_ paste your **Private Key**.
+3. Provide a **Certificate Name**, paste the contents of your **Certificate**.
 4. Click **Import Certificate-Key Pair**.
 
 ### 3. Create OIDC provider
@@ -183,12 +183,12 @@ While the OIDC provider handles the authentication flow, you'll need to create a
 3. Click **Create**.
 
 :::note A Blank SSF Config URL is expected
-The **SSF Config URL** will be blank until the SSF provider is assigned to an application as a backchannel provider. We'll return to collect this URL after creating the application.
+The **SSF Config URL** will be blank until the SSF provider is assigned to an application as a backchannel provider.
 :::
 
 ### 5. Assign SSF permissions
 
-The authentik user you will use to test the stream connection to Apple Business Manager must either have the role of superuser (such as the default `akadmin` account) or have permission to **Add stream to SSF provider**.
+The authentik user you will use to test the stream connection to Apple Business Manager must either be a member of the authentik Admins group (such as the default `akadmin` account) or have permission to **Add stream to SSF provider**.
 
 If not using a superuser account, you can assign the correct permission by following these steps:
 
@@ -212,22 +212,21 @@ If not using a superuser account, you can assign the correct permission by follo
 
 3. Click **Create application**.
 4. Navigate to **Application** > **Providers** and click on the name of the SSF provider.
-5. On the **Overview** tab, take note of the `SSF Config URL` value.
+5. On the **Overview** tab, take note of the **SSF Config URL** value.
 6. Navigate to **Application** > **Providers** and click on the name of the OIDC provider.
-7. On the **Overview** tab, take note of the `OpenID Configuration URL` value.
+7. On the **Overview** tab, take note of the **OpenID Configuration URL** value.
 
 ### 7. Confirm and modify copied authentik values
 
-Before proceeding to Apple Business Manager, let's go over the values that you have copied from authentik.
+Before proceeding to Apple Business Manager, ensure that you have noted the following values from authentik:
 
-- Verify that you have all the necessary values:
     - From the OIDC provider:
-        - `Client ID`
-        - `Client Secret`
-        - `OpenID Configuration URL`
+        - Client ID
+        - Client Secret
+        - OpenID Configuration URL
 
     - From the SSF provider:
-        - `SSF Config URL`
+        - SSF Config URL
 
 ## Apple Business Manager configuration
 
@@ -240,7 +239,7 @@ Similar to a personal Apple account, a _Managed Apple Account_ uses an email add
 By verifying the domain, Apple Business Manager will delegate ownership of any accounts with a matching email address to the organization, allowing for centralized management of devices, apps, and services.
 
 1. Log in to the [Apple Business Manager dashboard](https://business.apple.com/) as an administrator.
-2. Click **your account name** in the sidebar, then select **Preferences**.
+2. Click your account name in the sidebar, then select **Preferences**.
 3. From the Preferences page, select **Managed Apple Accounts** tab, click **Add Domain**, and then provide your domain name.
    Apple will generate a DNS TXT record that you'll need to add to your domain's DNS settings.
 4. Wait for DNS propagation and click **Verify** to complete the domain verification process.
@@ -280,14 +279,14 @@ You're now ready to configure federated authentication with authentik.
 
 1. Log in to the [Apple Business Manager dashboard](https://business.apple.com/) as an administrator.
 2. Click **your account name** in the sidebar, then select **Preferences**.
-3. From the Preferences page, select **Managed Apple Accounts** tab, and click **Get Started** under the "User sign in and directory sync" section.
+3. From the Preferences page, select **Managed Apple Accounts** tab, and click **Get Started** under the **User sign in and directory sync** section.
 4. To define how you want users to sign in, choose **Custom Identity Provider** and click **Continue**.
 5. On the **Set up your Custom Identity Provider** page, use the following values:
     - **Name**: `authentik`
-    - **Client ID**: `Client ID` from authentik
-    - **Client Secret**: `Client Secret` from authentik
-    - **SSF Config URL**: `SSF Config URL` from authentik
-    - **OpenID Config URL**: `OpenID Configuration URL` from authentik
+    - **Client ID**: Client ID from authentik
+    - **Client Secret**: Client Secret from authentik
+    - **SSF Config URL**: SSF Config URL from authentik
+    - **OpenID Config URL**: OpenID Configuration URL from authentik
 
 6. Click **Continue** to begin Apple's verification of your configuration.
 7. When prompted to authenticate through your authentik instance, provide your credentials and click **Log In**.
