@@ -53,19 +53,20 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
         if source.additional_url_params == "":
             return {}
 
-        evaluator = BaseEvaluator()
-        evaluator._context = {
-            "http_request": self.request,
-        }
-
         plan: FlowPlan = self.request.session.get(SESSION_KEY_PLAN, None)
         req = PolicyRequest(user=User())
+        req.http_request = self.request
         if plan:
             req.context = plan.context
             if user := plan.context.get(PLAN_CONTEXT_PENDING_USER):
                 req.user = user
 
-        evaluator._context["request"] = req
+        evaluator = BaseEvaluator()
+        evaluator._context = {
+            "context": req.context,
+            "http_request": self.request,
+            "request": req,
+        }
 
         try:
             result = evaluator.evaluate(source.additional_url_params)

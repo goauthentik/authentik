@@ -243,12 +243,18 @@ class TestOAuthSource(APITestCase):
 
     def test_source_redirect_additional_url_params_flow_context(self):
         """test redirect view with additional URL params expression using flow context"""
-        self.source.additional_url_params = 'return {"login_hint": request.user.email}'
+        self.source.additional_url_params = """
+        return {
+            "login_hint": "foo@authentik.company",
+            "prompt": context["prompt"]
+        }
+        """
         self.source.save()
         user = User(email="foo@authentik.company")
         session = self.client.session
         plan = FlowPlan(generate_id())
         plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        plan.context["prompt"] = "select_account"
         session[SESSION_KEY_PLAN] = plan
         session.save()
         res = self.client.get(
@@ -260,6 +266,7 @@ class TestOAuthSource(APITestCase):
         self.assertEqual(res.status_code, 302)
         qs = parse_qs(res.url)
         self.assertEqual(qs["login_hint"], ["foo@authentik.company"])
+        self.assertEqual(qs["prompt"], ["select_account"])
 
     def test_source_redirect_additional_url_params_reserved_blocked(self):
         """test that reserved OAuth params cannot be overridden via expression"""
