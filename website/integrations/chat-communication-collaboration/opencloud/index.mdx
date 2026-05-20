@@ -94,7 +94,7 @@ Open `https://opencloud.company` in a new browser window. You are redirected to 
   </TabItem>
   <TabItem value="all">
 
-OpenCloud's web, desktop, Android, and iOS clients each use a distinct client ID but must validate tokens against **one** issuer. authentik gives every application its own issuer by default, so this setup uses **GLOBAL issuer mode** (all providers share `https://authentik.company/`) plus a reverse proxy that serves OIDC discovery at that shared issuer.
+OpenCloud's web, desktop, Android, and iOS clients each use a distinct client ID, but must validate tokens against one issuer. authentik gives every application its own issuer by default, so this setup uses **GLOBAL issuer mode** (all providers share `https://authentik.company/`) plus a reverse proxy that serves OIDC discovery at that shared issuer.
 
 ## Reverse proxy configuration
 
