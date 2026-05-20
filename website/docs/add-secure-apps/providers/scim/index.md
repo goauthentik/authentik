@@ -101,7 +101,7 @@ You can limit which users and groups a SCIM provider synchronizes. User filterin
 
 ### User filtering
 
-Users provisioned via a SCIM provider are controlled through application access policies. When a SCIM provider is configured as a backchannel provider for an application, only users who are bound to that application are provisioned. A common setup is to bind a group to the SCIM application so that all members of that group are provisioned to the target SCIM endpoint.
+Users that are synchronized via a SCIM provider are controlled through application access policies. When a SCIM provider is configured as a backchannel provider for an application, only users who are bound to that application are synchronized. A common setup is to bind a group to the SCIM application so that all members of that group are synchronized to the target SCIM endpoint.
 
 If no users are bound to the SCIM application, the SCIM provider synchronizes all users.
 
