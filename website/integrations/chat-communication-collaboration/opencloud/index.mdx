@@ -71,7 +71,7 @@ WEBFINGER_WEB_OIDC_CLIENT_SCOPES=openid profile email
 ```
 
 :::info
-`WEBFINGER_WEB_OIDC_CLIENT_ID` is required — the Web UI reads its client ID from WebFinger, and login will not start if it is empty.
+`WEBFINGER_WEB_OIDC_CLIENT_ID` is required as the Web UI reads its client ID from WebFinger, and login will not start if it is empty.
 :::
 
 Create `custom/authentik-roles.yml` to assign every user the default role:
@@ -85,11 +85,7 @@ services:
             GRAPH_ASSIGN_DEFAULT_USER_ROLE: "true"
 ```
 
-Recreate the stack:
-
-```bash
-docker compose up -d
-```
+Then reboot your docker containers.
 
 ## Configuration verification
 
@@ -180,11 +176,7 @@ services:
             GRAPH_ASSIGN_DEFAULT_USER_ROLE: "true"
 ```
 
-Recreate the stack:
-
-```bash
-docker compose up -d
-```
+Then reboot your docker containers.
 
 ## Configuration verification
 
@@ -195,5 +187,5 @@ Open `https://opencloud.company` in a browser, and add the account in the Deskto
 
 ## Resources
 
-- [OpenCloud documentation](https://docs.opencloud.eu/)
+- [OpenCloud docs — Integrating external OpenID Connect Identity Providers](https://docs.opencloud.eu/docs/admin/configuration/authentication-and-user-management/external-idp)
 - [opencloud-compose](https://github.com/opencloud-eu/opencloud-compose)
