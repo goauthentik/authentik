@@ -38,7 +38,7 @@ dependencies = [
   "geopy==2.4.1",
   "google-api-python-client==2.196.0",
   "gssapi==1.11.1",
-  "gunicorn==25.3.0",
+  "gunicorn==26.0.0",
   "jsonpatch==1.33",
   "jwcrypto==1.5.7",
   "kubernetes==35.0.0",
