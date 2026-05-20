@@ -670,3 +670,17 @@ class TestAuthNRequest(TestCase):
         request = AuthNRequestParser(self.provider).idp_initiated()
         self.assertEqual(request.id, None)
         self.assertEqual(request.relay_state, self.provider.default_relay_state)
+        self.assertFalse(request.force_authn)
+
+    def test_force_authn(self):
+        """Test that ForceAuthn from the SP is parsed from the AuthNRequest"""
+        self.source.force_authn = True
+        self.source.save()
+        http_request = self.request_factory.get("/")
+
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        self.assertTrue(parsed_request.force_authn)
