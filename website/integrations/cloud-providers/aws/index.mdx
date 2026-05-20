@@ -56,7 +56,7 @@ To support the integration of AWS with authentik using SAML, you need to create 
         - Under **Advanced Protocol Settings**:
             - Set an available signing certificate.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -102,7 +102,7 @@ To support the integration of AWS with authentik using SCIM, you need to create 
 #### Create property mappings
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SCIM Mapping**, and click **Next**.
+2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SCIM Provider Mapping**, and click **Next**.
 3. Configure the first _user mapping_ property mapping:
     - **Name**: Provide a name lexically lower than `authentik default` (e.g. `AWS SCIM User mapping`).
     - **Expression**:

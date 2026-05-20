@@ -10,12 +10,22 @@ WORKDIR /static
 COPY ./packages /packages
 COPY ./web/packages /static/packages
 
+RUN --mount=type=bind,target=/static/package.json,src=./package.json \
+    --mount=type=bind,target=/static/package-lock.json,src=./package-lock.json \
+    --mount=type=bind,target=/static/web/package.json,src=./web/package.json \
+    --mount=type=bind,target=/static/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/static/scripts/node/,src=./scripts/node/ \
+    --mount=type=bind,target=/static/packages/logger-js/,src=./packages/logger-js/ \
+    node ./scripts/node/setup-corepack.mjs --force && \
+    node ./scripts/node/lint-runtime.mjs ./web
+
 COPY package.json /
+
 RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
     --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/static/scripts,src=./web/scripts \
     --mount=type=cache,target=/root/.npm \
-    npm ci
+    corepack npm ci
 
 COPY web .
 RUN npm run build-proxy

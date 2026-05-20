@@ -54916,6 +54916,7 @@ components:
       enum:
       - token
       - oauth
+      - oauth_interactive
       type: string
     SCIMMapping:
       type: object
@@ -55050,6 +55051,24 @@ components:
           type: object
           additionalProperties: {}
           description: Additional OAuth parameters, such as grant_type
+        auth_oauth_token_last_updated:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        auth_oauth_token_expires:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        auth_oauth_url_callback:
+          type: string
+          nullable: true
+          readOnly: true
+        auth_oauth_url_start:
+          type: string
+          nullable: true
+          readOnly: true
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
@@ -55082,6 +55101,10 @@ components:
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
+      - auth_oauth_token_expires
+      - auth_oauth_token_last_updated
+      - auth_oauth_url_callback
+      - auth_oauth_url_start
       - component
       - meta_model_name
       - name
@@ -55939,6 +55962,8 @@ components:
         application_launch_url:
           type: string
         invalidation_flow_url:
+          type: string
+        overview_url:
           type: string
         brand_name:
           type: string

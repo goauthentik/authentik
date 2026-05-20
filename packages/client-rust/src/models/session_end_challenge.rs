@@ -35,6 +35,8 @@ pub struct SessionEndChallenge {
         skip_serializing_if = "Option::is_none"
     )]
     pub invalidation_flow_url: Option<String>,
+    #[serde(rename = "overview_url", skip_serializing_if = "Option::is_none")]
+    pub overview_url: Option<String>,
     #[serde(rename = "brand_name")]
     pub brand_name: String,
 }
@@ -55,6 +57,7 @@ impl SessionEndChallenge {
             application_name: None,
             application_launch_url: None,
             invalidation_flow_url: None,
+            overview_url: None,
             brand_name,
         }
     }
