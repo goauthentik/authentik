@@ -34,7 +34,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
     }
 
     render(): TemplateResult {
-        return light(
+        return html`${light(
             html`<ak-flow-card .challenge=${this.challenge}>
                 <form class="pf-c-form" @submit=${this.submitForm}>
                     ${FlowUserDetails({ challenge: this.challenge })}
@@ -80,7 +80,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                       </fieldset>`
                     : null}
             </ak-flow-card>`
-        );
+        )}`;
     }
 }
 
