@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build web
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26 AS web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
@@ -21,7 +21,8 @@ RUN --mount=type=bind,target=/static/package.json,src=./package.json \
 
 COPY package.json /
 
-RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
+RUN --mount=type=bind,target=/static/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/static/package.json,src=./web/package.json \
     --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/static/scripts,src=./web/scripts \
     --mount=type=cache,target=/root/.npm \
@@ -31,7 +32,7 @@ COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.2-trixie@sha256:4a7137ea573f79c86ae451ff05817ed762ef5597fcf732259e97abeb3108d873 AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.3-trixie@sha256:f34e7161a14638b812ce491bd89c81718f309cac6ec0ffe016e5fbcb4bdc8c06 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
