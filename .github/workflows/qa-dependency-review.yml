@@ -4,7 +4,7 @@ name: QA - Dependency review
 # Blocks PRs that introduce a dependency with a known vulnerability above
 # the configured severity threshold. Covers every ecosystem GitHub's
 # Advisory Database supports — for this repo that's npm, Go modules,
-# Python (pip/uv), and GitHub Actions.
+# Python (pip/uv), Cargo, and GitHub Actions.
 
 on:
   pull_request:
