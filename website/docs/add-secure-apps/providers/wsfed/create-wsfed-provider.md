@@ -7,13 +7,13 @@ An authentik WS-Federation provider is typically created as part of an applicati
 ## Create a WS-Federation provider and application pair
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications > Applications** and click **New Provider** to create an application and provider pair.
+2. Navigate to **Applications > Applications** and click **New Application** to create an application and provider pair.
 3. On the **New application** page, define the application details, and then click **Next**.
 4. Select **WS-Federation Provider** as the **Provider Type**, and then click **Next**.
 5. On the **Configure WS-Federation Provider** page, provide a name for the provider, select an authorization flow, and the two required configuration settings:
     - **Reply URL**: Enter the application callback URL, where the token should be sent. This is the specific endpoint on an RP (application) where an Identity Provider (STS) sends the security token and authentication response after a successful login.
     - **Realm**: Enter the identifier (string) of the requesting realm; that is, the Relying Party (RP) or application receiving the token. Realm is similar to the SAML 2.0 Entity ID.
-6. Click **Submit** to create both the application and the provider.
+6. Click **Create Application** to create both the application and the provider.
 
 ## Export authentik WS-Federation provider metadata
 

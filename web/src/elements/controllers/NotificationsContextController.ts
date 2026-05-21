@@ -13,8 +13,9 @@ import {
     NotificationsMixin,
 } from "#elements/mixins/notifications";
 import { SessionMixin } from "#elements/mixins/session";
-import { createPaginatedNotificationListFrom } from "#elements/notifications/utils";
 import type { ReactiveElementHost } from "#elements/types";
+
+import { createPaginatedNotificationListFrom } from "#components/notifications/utils";
 
 import { EventsApi } from "@goauthentik/api";
 
