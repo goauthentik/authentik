@@ -23,7 +23,7 @@ class TestFlowsRecovery(SeleniumTestCase):
     def initial_stages(self, user: User):
         """Fill out initial stages"""
         # Identification stage, click recovery
-        identification_stage = self.get_shadow_root("ak-stage-identification")
+        identification_stage = self.find_flow_element("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -36,14 +36,20 @@ class TestFlowsRecovery(SeleniumTestCase):
         ).click()
 
         # First prompt stage
-        identification_stage = self.get_shadow_root("ak-stage-identification")
+        identification_stage = self.find_flow_element("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=uidField]")))
-        identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
-            user.username
+        wait.until(
+            ec.presence_of_element_located(
+                (By.CSS_SELECTOR, "input[name=uidField]")
+            )
         )
-        identification_stage.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
+        identification_stage.find_element(
+            By.CSS_SELECTOR, "input[name=uidField]"
+        ).send_keys(user.username)
+        identification_stage.find_element(
+            By.CSS_SELECTOR, ".pf-c-button"
+        ).click()
 
     @retry()
     @apply_blueprint(
@@ -60,7 +66,9 @@ class TestFlowsRecovery(SeleniumTestCase):
         ident_stage: IdentificationStage = IdentificationStage.objects.get(
             name="default-authentication-identification"
         )
-        ident_stage.recovery_flow = Flow.objects.filter(slug="default-recovery-flow").first()
+        ident_stage.recovery_flow = Flow.objects.filter(
+            slug="default-recovery-flow"
+        ).first()
         ident_stage.save()
 
         user = create_test_admin_user()
@@ -74,15 +82,21 @@ class TestFlowsRecovery(SeleniumTestCase):
         wait = WebDriverWait(email_stage, self.wait_timeout)
 
         # Wait for the success message so we know the email is sent
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, ".pf-c-form p")))
+        wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, ".pf-c-form p"))
+        )
 
         # Open mailpit
         self.driver.get("http://localhost:8025")
 
         # Click on first message
-        self.wait.until(ec.presence_of_element_located((By.CLASS_NAME, "message")))
+        self.wait.until(
+            ec.presence_of_element_located((By.CLASS_NAME, "message"))
+        )
         self.driver.find_element(By.CLASS_NAME, "message").click()
-        self.driver.switch_to.frame(self.driver.find_element(By.ID, "preview-html"))
+        self.driver.switch_to.frame(
+            self.driver.find_element(By.ID, "preview-html")
+        )
         self.driver.find_element(By.ID, "confirm").click()
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
@@ -101,11 +115,17 @@ class TestFlowsRecovery(SeleniumTestCase):
 
         new_password = generate_id()
 
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=password]")))
-        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(new_password)
-        prompt_stage.find_element(By.CSS_SELECTOR, "input[name=password_repeat]").send_keys(
-            new_password
+        wait.until(
+            ec.presence_of_element_located(
+                (By.CSS_SELECTOR, "input[name=password]")
+            )
         )
+        prompt_stage.find_element(
+            By.CSS_SELECTOR, "input[name=password]"
+        ).send_keys(new_password)
+        prompt_stage.find_element(
+            By.CSS_SELECTOR, "input[name=password_repeat]"
+        ).send_keys(new_password)
         prompt_stage.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
         sleep(2)
 
