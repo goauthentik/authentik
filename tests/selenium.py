@@ -238,7 +238,7 @@ class SeleniumTestMixin(E2ETestMixin):
         wait = WebDriverWait(self.driver, timeout)
         try:
             return wait.until(lambda d: d.find_element(By.CSS_SELECTOR, selector))
-        except:
+        except TimeoutException:
             self.fail("Timed out waiting for {selector} to appear")
 
     def get_shadow_root(
