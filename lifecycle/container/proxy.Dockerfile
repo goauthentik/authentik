@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build web
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26 AS web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
@@ -21,7 +21,8 @@ RUN --mount=type=bind,target=/static/package.json,src=./package.json \
 
 COPY package.json /
 
-RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
+RUN --mount=type=bind,target=/static/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/static/package.json,src=./web/package.json \
     --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/static/scripts,src=./web/scripts \
     --mount=type=cache,target=/root/.npm \
