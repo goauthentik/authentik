@@ -17,8 +17,6 @@ test.describe("Session Lifecycle", () => {
     test.beforeAll(
         'Ensure "Enable Remember me on this device" is on for the default identification stage',
         async ({ browser }, { title: testName }) => {
-            if (Date.now()) return;
-
             const context = await browser.newContext();
             const page = await context.newPage();
             const navigator = new NavigatorFixture(page, testName);
@@ -99,6 +97,23 @@ test.describe("Session Lifecycle", () => {
             await signOutLink.click();
 
             await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
+            await session.$identificationStage.waitFor({ state: "visible" });
+
+            const passwordEmbedded = await session.$passwordField.isVisible();
+
+            if (passwordEmbedded) {
+                // Password is embedded in the identification stage, so the Not-you UI never renders.
+                // Remember-me's only observable effect is the pre-filled username field.
+                await expect(
+                    session.$usernameField,
+                    "Username pre-filled from remember-me",
+                ).toHaveValue(GOOD_USERNAME);
+
+                return;
+            }
+
+            await session.$submitButton.click();
+            await session.$passwordStage.waitFor({ state: "visible" });
 
             const notYouLink = page.getByRole("link", { name: "Not you?" });
 
