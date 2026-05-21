@@ -51,7 +51,6 @@ class TestFlowsStageSetup(SeleniumTestCase):
             )
         )
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         prompt_stage = self.get_shadow_root("ak-stage-prompt")
 
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(new_password)

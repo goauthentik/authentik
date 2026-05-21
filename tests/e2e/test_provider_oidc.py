@@ -126,7 +126,10 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/auth/callback")
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    "http://localhost:9009/auth/callback",
+                )
             ],
             authorization_flow=authorization_flow,
             grant_types=[GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN],
@@ -153,7 +156,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
 
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertIn(
@@ -239,7 +241,10 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/auth/callback")
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    "http://localhost:9009/auth/callback",
+                )
             ],
             grant_types=[GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN],
         )
@@ -265,7 +270,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
 
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertIn(
@@ -344,7 +348,10 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/auth/callback")
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    "http://localhost:9009/auth/callback",
+                )
             ],
             grant_types=[GrantType.AUTHORIZATION_CODE],
         )

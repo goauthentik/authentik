@@ -304,10 +304,8 @@ class SeleniumTestMixin(E2ETestMixin):
 
         if "ak-stage-identification" not in skip_stages:
             if shadow_dom:
-                flow_executor = self.find_flow_element("ak-flow-executor")
                 identification_stage = self.find_flow_element("ak-stage-identification")
             else:
-                flow_executor = self.shady_dom()
                 identification_stage = self.shady_dom()
 
             wait = WebDriverWait(identification_stage, self.wait_timeout)
@@ -323,10 +321,8 @@ class SeleniumTestMixin(E2ETestMixin):
 
         if "ak-stage-password" not in skip_stages:
             if shadow_dom:
-                flow_executor = self.find_flow_element("ak-flow-executor")
                 password_stage = self.find_flow_element("ak-stage-password")
             else:
-                flow_executor = self.shady_dom()
                 password_stage = self.shady_dom()
 
             wait = WebDriverWait(password_stage, self.wait_timeout)

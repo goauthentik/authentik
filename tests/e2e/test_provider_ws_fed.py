@@ -8,7 +8,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
-from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
+from authentik.enterprise.providers.ws_federation.models import (
+    WSFederationProvider,
+)
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.providers.saml.models import SAMLPropertyMapping
@@ -170,7 +172,6 @@ class TestProviderWSFed(SeleniumTestCase):
 
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertIn(

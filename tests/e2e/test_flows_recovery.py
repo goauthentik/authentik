@@ -23,7 +23,6 @@ class TestFlowsRecovery(SeleniumTestCase):
     def initial_stages(self, user: User):
         """Fill out initial stages"""
         # Identification stage, click recovery
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
@@ -37,7 +36,6 @@ class TestFlowsRecovery(SeleniumTestCase):
         ).click()
 
         # First prompt stage
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
@@ -71,7 +69,6 @@ class TestFlowsRecovery(SeleniumTestCase):
         self.initial_stages(user)
 
         # Email stage
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         email_stage = self.get_shadow_root("ak-stage-email")
 
         wait = WebDriverWait(email_stage, self.wait_timeout)
@@ -92,7 +89,6 @@ class TestFlowsRecovery(SeleniumTestCase):
 
         sleep(2)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         consent_stage = self.get_shadow_root("ak-stage-consent")
         consent_stage.find_element(
             By.CSS_SELECTOR,
@@ -100,7 +96,6 @@ class TestFlowsRecovery(SeleniumTestCase):
         ).click()
 
         # We can now enter the new password
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         prompt_stage = self.get_shadow_root("ak-stage-prompt")
         wait = WebDriverWait(prompt_stage, self.wait_timeout)
 

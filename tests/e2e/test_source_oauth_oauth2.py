@@ -37,7 +37,12 @@ class TestSourceOAuth2(SeleniumTestCase):
             image="ghcr.io/dexidp/dex:v2.44.0",
             ports={"5556": "5556"},
             healthcheck=Healthcheck(
-                test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],
+                test=[
+                    "CMD",
+                    "wget",
+                    "--spider",
+                    "http://localhost:5556/dex/healthz",
+                ],
                 interval=5 * 1_000 * 1_000_000,
                 start_period=1 * 1_000 * 1_000_000,
             ),
@@ -159,7 +164,6 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.create_objects()
         self.driver.get(self.live_server_url)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
@@ -176,7 +180,6 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         # At this point we've been redirected back
         # and we're asked for the username
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         prompt_stage = self.get_shadow_root("ak-stage-prompt")
 
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").click()
@@ -195,7 +198,6 @@ class TestSourceOAuth2(SeleniumTestCase):
         # We're logged in at the end of this, log out and re-login
         self.driver.get(self.url("authentik_flows:default-invalidation"))
         sleep(1)
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
@@ -239,7 +241,10 @@ class TestSourceOAuth2(SeleniumTestCase):
         sleep(3)
 
         self.driver.get(
-            self.url("authentik_sources_oauth:oauth-client-login", source_slug=self.slug)
+            self.url(
+                "authentik_sources_oauth:oauth-client-login",
+                source_slug=self.slug,
+            )
         )
 
         self.login_via_oauth_provider()

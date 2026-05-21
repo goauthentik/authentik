@@ -104,7 +104,6 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.create_objects()
         self.driver.get(self.live_server_url)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
@@ -132,4 +131,10 @@ class TestSourceOAuth1(SeleniumTestCase):
         # Wait until we've logged in
         self.wait_for_url(self.if_user_url())
 
-        self.assert_user(User(username="example-user", name="test name", email="foo@example.com"))
+        self.assert_user(
+            User(
+                username="example-user",
+                name="test name",
+                email="foo@example.com",
+            )
+        )

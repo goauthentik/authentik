@@ -153,7 +153,6 @@ class TestSourceSAML(SeleniumTestCase):
 
         self.driver.get(self.live_server_url)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
@@ -215,7 +214,6 @@ class TestSourceSAML(SeleniumTestCase):
 
         self.driver.get(self.live_server_url)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
@@ -229,7 +227,6 @@ class TestSourceSAML(SeleniumTestCase):
         ).click()
         sleep(1)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertIn(
@@ -290,7 +287,6 @@ class TestSourceSAML(SeleniumTestCase):
 
         self.driver.get(self.live_server_url)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
@@ -352,7 +348,6 @@ class TestSourceSAML(SeleniumTestCase):
 
         self.driver.get(self.live_server_url)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
@@ -379,7 +374,6 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.delete_all_cookies()
         self.driver.get(self.live_server_url)
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 

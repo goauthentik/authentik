@@ -81,7 +81,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             client_secret=self.client_secret,
             client_type=ClientType.CONFIDENTIAL,
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    "http://localhost:3000/login/github",
+                )
             ],
             authorization_flow=authorization_flow,
             grant_types=[GrantType.AUTHORIZATION_CODE],
@@ -139,7 +142,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             client_secret=self.client_secret,
             client_type=ClientType.CONFIDENTIAL,
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    "http://localhost:3000/login/github",
+                )
             ],
             authorization_flow=authorization_flow,
             grant_types=[GrantType.AUTHORIZATION_CODE],
@@ -157,7 +163,6 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         sleep(3)
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
         consent_stage = self.get_shadow_root("ak-stage-consent")
 
         self.assertIn(
@@ -213,7 +218,10 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             client_secret=self.client_secret,
             client_type=ClientType.CONFIDENTIAL,
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    "http://localhost:3000/login/github",
+                )
             ],
             authorization_flow=authorization_flow,
             grant_types=[GrantType.AUTHORIZATION_CODE],
