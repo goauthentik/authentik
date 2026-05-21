@@ -54,6 +54,14 @@ type ChallengeProps = LitPropertyRecord<BaseStage<NonNullable<ChallengeTypes>, o
  *
  * @remarks
  *
+ * - Controls the API transactions and the topmost Challenge
+ * - Controls the transition from one Challenge to the next
+ * - Loads and displays the current Stage according to the current Challenge
+ * - Wraps all errors in a format that any application shell can display
+ * - Provides the Iframe controller for third-party verifiers
+ * - Provides the Multitab controller to send/receive messages to other tabs
+ *   open to the current domain
+ *
  * A *Flow* is a series of steps the authentik server takes to perform one of
  * its core functions, such as authentication, enrollment, or account recovery.
  * A *stage* is one step; a *challenge* is a stage that requires user input to
@@ -62,6 +70,21 @@ type ChallengeProps = LitPropertyRecord<BaseStage<NonNullable<ChallengeTypes>, o
  * The purpose of the FlowExecutor is to receive a challenge, select the
  * client-side component (also called "stages") best suited to showing the
  * request to the user, send the input to the server and deal with the response.
+ *
+ * @listens FlowUpdateChallenge - When a stage requires a change of Challenge
+ *
+ * @listens FlowSubmitRequest - When a stage has an out-of-band payload to
+ * deliver to the server.
+ *
+ * @event FlowInfoUpdateEvent - Sent to the shell. May contain decorative
+ * updates
+ *
+ * @event FlowLoadingEvent - Sent to the shell when a load from the server is
+ * initiated. Carries a promise that resolves when a loading event ends. Used to
+ * control show/hide of loading indicators.
+ *
+ * @event FlowAdvanceEvent - Sent to the shell when a stage transitions. Used to
+ * notify any debuggers (such as the FlowInspector) to update its state.
  *
  * @attr {string} slug - The slug of the flow to execute.
  *

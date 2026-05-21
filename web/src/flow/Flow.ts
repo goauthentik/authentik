@@ -48,9 +48,16 @@ const isContextualFlowInfo = (v: unknown): v is ContextualFlowInfo =>
 /**
  * The application shell for authentik flows and the Flow Executor.
  *
- * Provides the decorations and features that go around the executor:
- * background, layout, locale selector, flow inspector button, headers, footers,
- * and the iframe if provided.
+ * @remarks
+ *
+ * - Provides the Brand context
+ * - Provides the Flow Websocket Controller for messages and notifications
+ * - Provides the Theme controller
+ * - Houses the Flow Inspector controls
+ * - Houses the Locale controls
+ * - Sets document title for tabs and windows
+ * - Sets the layout according to the global settings
+ * - Initializes the FlowExecutor and places it in the lightDOM
  *
  * @attr {string} slug - The slug of the flow to execute. Prop-drilled to the executor.
  *
@@ -60,14 +67,23 @@ const isContextualFlowInfo = (v: unknown): v is ContextualFlowInfo =>
  * @slot footer - The page-level footer content.  Currently filled by `ak-brand-links`.
  *
  * @part main - The main container for the flow content.
+ *
  * @part flow-executor - Wrapper around ak-flow-executor
+ *
  * @part content - The container for the stage content.
+ *
  * @part content-iframe - The iframe element when using a frame background layout.
+ *
  * @part footer - The footer container.
+ *
  * @part locale-select - The locale select component.
+ *
  * @part branding - The branding element, used for the background image in some layouts.
+ *
  * @part loading-overlay - The loading overlay element.
+ *
  * @part locale-select-label - The label of the locale select component.
+ *
  * @part locale-select-select - The select element of the locale select component.
  *
  * NOTE: This is the application shell, the top-level component. From here, we
