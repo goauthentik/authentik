@@ -34,14 +34,14 @@ import Tabs from "@theme/Tabs";
 
 Pick one mode and stay in it. The unit content is identical; only the install location and the socket paths differ.
 
-| Aspect                    | Rootful                              | Rootless                                             |
-| ------------------------- | ------------------------------------ | ---------------------------------------------------- |
-| Unit directory            | `/etc/containers/systemd/`           | `~/.config/containers/systemd/`                      |
-| Reload command            | `sudo systemctl daemon-reload`       | `systemctl --user daemon-reload`                     |
+| Aspect                    | Rootful                                         | Rootless                                          |
+| ------------------------- | ----------------------------------------------- | ------------------------------------------------- |
+| Unit directory            | `/etc/containers/systemd/`                      | `~/.config/containers/systemd/`                   |
+| Reload command            | `sudo systemctl daemon-reload`                  | `systemctl --user daemon-reload`                  |
 | Start command             | `sudo systemctl start authentik-server.service` | `systemctl --user start authentik-server.service` |
-| Podman API socket         | `/run/podman/podman.sock`            | `$XDG_RUNTIME_DIR/podman/podman.sock`                |
-| Outpost auto-deploy works | Yes, out of the box                  | Yes, with `loginctl enable-linger`                   |
-| Bind ports below 1024     | Yes                                  | Requires `net.ipv4.ip_unprivileged_port_start`       |
+| Podman API socket         | `/run/podman/podman.sock`                       | `$XDG_RUNTIME_DIR/podman/podman.sock`             |
+| Outpost auto-deploy works | Yes, out of the box                             | Yes, with `loginctl enable-linger`                |
+| Bind ports below 1024     | Yes                                             | Requires `net.ipv4.ip_unprivileged_port_start`    |
 
 If in doubt, start rootful. The rest of this guide assumes rootful paths; for rootless, substitute the paths from the table above.
 
