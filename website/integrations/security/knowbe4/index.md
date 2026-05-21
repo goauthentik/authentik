@@ -56,12 +56,9 @@ To support the integration of KnowBe4 with authentik, you need to create an appl
     - Enable **Enable SAML SSO**.
     - **IdP SSO Target URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **IdP Cert Fingerprint**: select **SHA-256** and enter the **Certificate Fingerprint (SHA256)** value from authentik.
-
-:::warning Test before enforcing SAML
-After you verify that SSO works, decide whether to enable **Disable non-SAML Logins for All Users**. If you enable this option, all bypass URLs are disabled. If you keep password logins available for administrators, you can use the **Bypass-SSO Login URL** displayed in KnowBe4 to recover from an SSO misconfiguration.
-:::
-
-6. Enable **Allow Account Creation from SAML Login** if you want KnowBe4 to create users the first time they sign in with SAML.
+6. Review the optional SAML settings before saving:
+    - Enable **Allow Account Creation from SAML Login** if you want KnowBe4 to create users the first time they sign in with SAML.
+    - After you verify that SSO works, decide whether to enable **Disable non-SAML Logins for All Users**. If you enable it, decide whether to also enable **Allow Admins with MFA to Bypass SAML Login** so MFA-protected administrators can use KnowBe4's bypass URL to recover from an SSO misconfiguration.
 7. Click **Save SAML Settings**.
 
 ## Reconfigure authentik provider
@@ -75,7 +72,7 @@ After you verify that SSO works, decide whether to enable **Disable non-SAML Log
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with KnowBe4, log out of KnowBe4 and open the KnowBe4 login page in a private or incognito browser window. Enter an email address that uses SSO and confirm that you are redirected to authentik for authentication and then back to the KnowBe4 console.
+To confirm that authentik is properly configured with KnowBe4, log out of KnowBe4 and then open the KnowBe4 login page in a private or incognito browser window. Enter an email address that uses SSO and confirm that you are redirected to authentik for authentication and then back to the KnowBe4 console.
 
 ## Resources
 
