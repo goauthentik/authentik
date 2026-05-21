@@ -211,6 +211,6 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         self.driver.switch_to.window(confirm_tab)
         self.driver.refresh()
-        flow_executor = self.get_shadow_root("ak-flow-executor")
+        flow_executor = self.find_flow_element("ak-flow-executor")
         wait = WebDriverWait(flow_executor, self.wait_timeout)
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-stage-access-denied")))
