@@ -77,10 +77,39 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     mkdir -p /usr/share/GeoIP && \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
+<<<<<<< HEAD
 # Stage 4: Download uv
 FROM ghcr.io/astral-sh/uv:0.9.18@sha256:5713fa8217f92b80223bc83aac7db36ec80a84437dbc0d04bbc659cae030d8c9 AS uv
 # Stage 5: Base python image
 FROM ghcr.io/goauthentik/fips-python:3.14.2-slim-trixie-fips@sha256:46c0658052e43ad303da39e461ad106c499a03fabd3512d05ff586e506507242 AS python-base
+=======
+# Stage: download Rust toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7726387c78b5787d2146868c2ccc8948a3591d0a5a6436f7780c8c28acc76341 AS rust-toolchain
+
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+ENV PATH="/root/.cargo/bin:$PATH"
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
+    apt-get update && \
+    # Required for installing pip packages
+    apt-get install -y --no-install-recommends \
+    # Build essentials
+    build-essential && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none && \
+    rustup install && \
+    rustup default "$(sed -n 's/channel = "\(.*\)"/\1/p' rust-toolchain.toml)" && \
+    rustc --version && \
+    cargo --version
+
+RUN cat /root/.rustup/settings.toml
+
+# Stage: Download uv
+FROM ghcr.io/astral-sh/uv:0.11.5@sha256:555ac94f9a22e656fc5f2ce5dfee13b04e94d099e46bb8dd3a73ec7263f2e484 AS uv
+# Stage: Base python image
+FROM ghcr.io/goauthentik/fips-python:3.14.5-slim-trixie-fips@sha256:4fde79ded5d9c341576aa423b6637fcce465f89b48fabbebebdc8273a5cb0a1f AS python-base
+>>>>>>> 52471a6afe (core: bump goauthentik/fips-python from 3.14.3-slim-trixie-fips to 3.14.5-slim-trixie-fips in /lifecycle/container (#22518))
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
