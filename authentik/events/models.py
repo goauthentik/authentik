@@ -326,6 +326,19 @@ class NotificationTransport(TasksModel, SerializerModel):
     email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
+<<<<<<< HEAD
+=======
+    webhook_ca = models.ForeignKey(
+        CertificateKeyPair,
+        null=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
+        help_text=_(
+            "When set, the selected certificate is used to "
+            "validate the certificate of the webhook server."
+        ),
+    )
+>>>>>>> b9e1b27d59 (events: fix certificate typo (#22542))
     webhook_mapping_body = models.ForeignKey(
         "NotificationWebhookMapping",
         on_delete=models.SET_DEFAULT,
