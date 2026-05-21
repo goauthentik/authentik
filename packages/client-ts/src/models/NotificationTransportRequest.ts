@@ -40,7 +40,7 @@ export interface NotificationTransportRequest {
      */
     webhookUrl?: string;
     /**
-     * When set, the selected ceritifcate is used to validate the certificate of the webhook server.
+     * When set, the selected certificate is used to validate the certificate of the webhook server.
      * @type {string}
      * @memberof NotificationTransportRequest
      */

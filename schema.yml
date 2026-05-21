@@ -43900,7 +43900,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: When set, the selected ceritifcate is used to validate the
+          description: When set, the selected certificate is used to validate the
             certificate of the webhook server.
         webhook_mapping_body:
           type: string
@@ -43942,7 +43942,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: When set, the selected ceritifcate is used to validate the
+          description: When set, the selected certificate is used to validate the
             certificate of the webhook server.
         webhook_mapping_body:
           type: string
@@ -49769,7 +49769,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: When set, the selected ceritifcate is used to validate the
+          description: When set, the selected certificate is used to validate the
             certificate of the webhook server.
         webhook_mapping_body:
           type: string
