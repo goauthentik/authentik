@@ -22,6 +22,7 @@ Gestionnaire
 ghec
 Gitea
 Gravitee
+grommunio
 HACS
 Homarr
 Informatique
@@ -34,6 +35,7 @@ Komodo
 Kubeconfig
 Mautic
 Mobilizon
+myabsorb
 Observium
 Ofair
 Ollama
