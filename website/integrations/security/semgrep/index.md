@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Semgrep with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Semgrep with authentik, you need to create several property mappings and then create an application/provider pair in authentik.
 
 ### Create property mappings
 
@@ -64,7 +64,7 @@ To support the integration of Semgrep with authentik, you need to create an appl
             - Add the five **Property mappings** that you created in the previous section.
             - Set **NameID Property Mapping** to `semgrep-email`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-3. Click **Submit** to save the new application and provider.
+3. Click **Create Application** to save the new application and provider.
 
 ## Semgrep configuration
 
