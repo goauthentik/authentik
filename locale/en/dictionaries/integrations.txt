@@ -35,6 +35,7 @@ Komodo
 Kubeconfig
 Mautic
 Mobilizon
+myabsorb
 Observium
 Ofair
 Ollama
