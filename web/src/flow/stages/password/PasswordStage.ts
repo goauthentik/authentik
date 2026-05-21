@@ -79,7 +79,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                           </div>
                       </fieldset>`
                     : null}
-            </ak-flow-card>`
+            </ak-flow-card>`,
         )}`;
     }
 }
