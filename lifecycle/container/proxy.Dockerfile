@@ -21,7 +21,8 @@ RUN --mount=type=bind,target=/static/package.json,src=./package.json \
 
 COPY package.json /
 
-RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
+RUN --mount=type=bind,target=/static/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/static/package.json,src=./web/package.json \
     --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/static/scripts,src=./web/scripts \
     --mount=type=cache,target=/root/.npm \

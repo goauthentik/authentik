@@ -24,7 +24,8 @@ WORKDIR /work/web
 COPY ./packages /work/packages
 COPY ./web/packages /work/web/packages
 
-RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
+RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
+    --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
