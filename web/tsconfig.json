@@ -3,6 +3,10 @@
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
         "ignoreDeprecations": "6.0",
+        // Nothing references the web package, so it does not need to act as a
+        // composite project. Disabling composite lets us exclude `packages/`
+        // (each subpackage owns its own tsconfig + build) without TS6307.
+        "composite": false,
         "types": ["node"],
         "checkJs": true,
         "allowJs": true,
@@ -68,6 +72,10 @@
         "storybook-static",
         "src/**/*.test.ts",
         "./tests",
+        // Workspace subpackages each own their tsconfig and build. Including
+        // them here pulls ~1k files (notably the OpenAPI client in
+        // packages/client-ts) into every `tsc -p .` for no benefit.
+        "packages",
         // TODO: @lit/localize-tools v0.8.0 has a nullish coalescing typing error.
         // Remove when we upgrade past that.
         "scripts/pseudolocalize.mjs",

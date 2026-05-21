@@ -4,7 +4,7 @@ sidebar_label: Technitium DNS
 support_level: community
 ---
 
-## What is Technitium DNS
+## What is Technitium DNS?
 
 > Technitium DNS Server is a free, open source, cross-platform, authoritative and recursive DNS server that can be self-hosted for privacy and security, software development, and testing on small to medium-sized networks.
 >
@@ -63,7 +63,7 @@ Technitium DNS uses the `roles` claim to map SSO users to local groups. Create a
         - Select any available signing key.
         - Ensure that the `openid`, `email`, and `profile` scopes are selected. Remove the `email` scope if you prefer usernames to use the preferred username claim instead of the email address.
         - Under **Advanced protocol settings** > **Selected Scopes**, add the scope mapping that you created in the previous section.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

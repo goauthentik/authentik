@@ -4,7 +4,7 @@ sidebar_label: Terrakube
 support_level: community
 ---
 
-## What is Terrakube
+## What is Terrakube?
 
 > Terrakube is an open-source collaboration platform designed for managing remote Infrastructure-as-Code (IaC) operations with Terraform. It serves as an alternative to proprietary tools like Terraform Enterprise.
 >
@@ -36,7 +36,7 @@ To support the integration of Terrakube with authentik, you need to create an ap
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://terrakube-dex.company/dex/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

@@ -4,7 +4,7 @@ sidebar_label: Glitchtip
 support_level: community
 ---
 
-## What is Glitchtip
+## What is Glitchtip?
 
 > Bugs are inevitable in web development. The important thing is to catch them when they appear. With GlitchTip, you can rest easy knowing that if your web app throws an error or goes down, you will be notified immediately. GlitchTip combines error tracking and uptime monitoring in one open-source package to keep you and your team fully up-to-date on the status of your projects.
 >
@@ -36,7 +36,7 @@ To support the integration of Glitchtip with authentik, you need to create an ap
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://glitchtip.company/accounts/oidc/authentik/login/callback/`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

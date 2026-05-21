@@ -4,7 +4,7 @@ sidebar_label: Seerr
 support_level: community
 ---
 
-## What is Seerr
+## What is Seerr?
 
 > Seerr (previously Jellyseerr) is a free and open source application for managing requests in your media library. It integrates with media servers like Jellyfin, Plex, and Emby, and services such as Sonarr and Radarr.
 >
@@ -27,7 +27,7 @@ To support the integration of Seerr with authentik, you need to create an applic
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Set a `Strict` redirect URI to `https://seerr.company/login`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional):_ you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user’s **My applications** page.
+    - **Configure Bindings** _(optional):_ you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user’s **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

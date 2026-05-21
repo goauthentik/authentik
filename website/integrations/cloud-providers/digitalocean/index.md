@@ -4,7 +4,7 @@ sidebar_label: DigitalOcean
 support_level: community
 ---
 
-## What is DigitalOcean
+## What is DigitalOcean?
 
 > DigitalOcean is a cloud infrastructure provider that offers developers simple, scalable virtual servers (droplets), managed databases, and other cloud services to deploy and manage applications efficiently.
 >
@@ -77,7 +77,7 @@ To support the integration of DigitalOcean with authentik, you need to create a 
         - Under **Advanced protocol settings**:
             - Add the `profile` scope created in the previous section. Do not remove authentik’s `authentik default OAuth Mapping: OpenID 'profile'`, as claims such as `name` are required by DigitalOcean.
             - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

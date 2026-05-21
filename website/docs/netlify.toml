@@ -10,7 +10,7 @@
 [build]
   base    = "website"
   package = "docs"
-  command = "npm run build -w docs"
+  command = "npm ci --prefix ../packages/docusaurus-config && npm run build -w docs"
   publish = "docs/build"
 
 [dev]
