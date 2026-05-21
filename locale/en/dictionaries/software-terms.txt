@@ -75,6 +75,7 @@ aaguid
 adsi
 akflow
 akprox
+allinone
 asns
 cbor
 copylefted
