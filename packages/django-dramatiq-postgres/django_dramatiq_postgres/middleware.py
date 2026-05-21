@@ -47,8 +47,7 @@ class HTTPServer(BaseHTTPServer):
 
         self.address_family = (
             socket.AF_INET6
-            if socket.has_dualstack_ipv6()
-            and isinstance(ip_address(host), IPv6Address)
+            if socket.has_dualstack_ipv6() and isinstance(ip_address(host), IPv6Address)
             else socket.AF_INET
         )
 
@@ -121,9 +120,7 @@ class TaskStateAfterMiddleware(Middleware):
 
 
 class FullyQualifiedActorName(Middleware):
-    def before_declare_actor(
-        self, broker: Broker, actor: Actor[Any, Any]
-    ) -> None:
+    def before_declare_actor(self, broker: Broker, actor: Actor[Any, Any]) -> None:
         actor.actor_name = f"{actor.fn.__module__}.{actor.fn.__name__}"
 
 
@@ -138,11 +135,9 @@ class CurrentTask(Middleware):
         self.logger = get_logger(__name__, type(self))
 
     # This is a list of tasks, so that in tests, when a task calls another task, this acts as a pile
-    _TASKS: contextvars.ContextVar[list[TaskBase] | None] = (
-        contextvars.ContextVar(
-            "_TASKS",
-            default=None,
-        )
+    _TASKS: contextvars.ContextVar[list[TaskBase] | None] = contextvars.ContextVar(
+        "_TASKS",
+        default=None,
     )
 
     @classmethod
@@ -152,9 +147,7 @@ class CurrentTask(Middleware):
             raise CurrentTaskNotFound()
         return task[-1]
 
-    def before_process_message(
-        self, broker: Broker, message: MessageProxy
-    ) -> None:
+    def before_process_message(self, broker: Broker, message: MessageProxy) -> None:
         tasks = self._TASKS.get()
         if tasks is None:
             tasks = []
@@ -237,9 +230,7 @@ class MetricsMiddleware(Middleware):
     ) -> None:
         super().__init__()
         self.prefix = prefix
-        self.labels: list[str] = (
-            labels if labels is not None else ["queue_name", "actor_name"]
-        )
+        self.labels: list[str] = labels if labels is not None else ["queue_name", "actor_name"]
 
         self.delayed_messages: set[str] = set()
         self.message_start_times: dict[str, int] = {}
@@ -325,25 +316,15 @@ class MetricsMiddleware(Middleware):
     def after_nack(self, broker: Broker, message: MessageProxy) -> None:
         self.total_rejected_messages.labels(*self._make_labels(message)).inc()
 
-    def after_enqueue(
-        self, broker: Broker, message: Message[Any], delay: int
-    ) -> None:
+    def after_enqueue(self, broker: Broker, message: Message[Any], delay: int) -> None:
         if "retries" in message.options:
-            self.total_retried_messages.labels(
-                *self._make_labels(message)
-            ).inc()
+            self.total_retried_messages.labels(*self._make_labels(message)).inc()
 
-    def before_delay_message(
-        self, broker: Broker, message: MessageProxy
-    ) -> None:
+    def before_delay_message(self, broker: Broker, message: MessageProxy) -> None:
         self.delayed_messages.add(message.message_id)
-        self.in_progress_delayed_messages.labels(
-            *self._make_labels(message)
-        ).inc()
+        self.in_progress_delayed_messages.labels(*self._make_labels(message)).inc()
 
-    def before_process_message(
-        self, broker: Broker, message: MessageProxy
-    ) -> None:
+    def before_process_message(self, broker: Broker, message: MessageProxy) -> None:
         labels = self._make_labels(message)
         if message.message_id in self.delayed_messages:
             self.delayed_messages.remove(message.message_id)
@@ -362,9 +343,7 @@ class MetricsMiddleware(Middleware):
     ) -> None:
         labels = self._make_labels(message)
 
-        message_start_time = self.message_start_times.pop(
-            message.message_id, current_millis()
-        )
+        message_start_time = self.message_start_times.pop(message.message_id, current_millis())
         message_duration = current_millis() - message_start_time
         self.messages_durations.labels(*labels).observe(message_duration)
 
