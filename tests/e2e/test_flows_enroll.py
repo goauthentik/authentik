@@ -105,7 +105,7 @@ class TestFlowsEnroll(SeleniumTestCase):
     def initial_stages(self):
         """Fill out initial stages"""
         # Identification stage, click enroll
-        identification_stage = self.get_shadow_root("ak-stage-identification")
+        identification_stage = self.find_flow_element("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
