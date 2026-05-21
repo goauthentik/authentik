@@ -2,11 +2,11 @@
 title: Podman with Quadlet installation
 ---
 
-This installation method runs authentik as a set of systemd-managed Podman containers using [Quadlet](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html). Quadlet ships with Podman 4.4 and later, and is the recommended way to run long-lived Podman workloads under systemd.
+This installation method runs authentik as a set of systemd-managed Podman containers using [Quadlet](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html). Quadlet ships with Podman 4.4 and later and is the recommended way to run long-lived Podman workloads under systemd.
 
-Compared to running `podman compose`, Quadlet gives you:
+Compared to running `podman compose`, Quadlet provides:
 
-- First-class systemd integration: each container is a real `.service` unit, with restart policies, dependencies, journald logs, and `systemctl` controls.
+- First-class systemd integration: each container is a native `.service` unit with restart policies, dependencies, journald logs, and `systemctl` controls.
 - No `podman-compose` runtime dependency.
 - The same unit files work for rootful (`/etc/containers/systemd/`) and rootless (`~/.config/containers/systemd/`) deployments.
 
@@ -14,13 +14,14 @@ This guide covers a single-host deployment suitable for small-scale production o
 
 ## Requirements
 
-- Podman 4.4 or newer (Quadlet support; 5.0+ recommended)
-- systemd 250 or newer
+- A host with at least 2 CPU cores and 2 GB of RAM
+- Podman 4.4 or later with Quadlet support (5.0 or later is recommended)
+- systemd 250 or later
 - A user account, either:
-    - `root` for a system-wide (rootful) deployment, or
-    - A regular user with `loginctl enable-linger <user>` for a rootless deployment
+    - `root` for a system-wide (rootful) deployment
+    - A regular user with lingering enabled via `loginctl enable-linger <user>` for a rootless deployment
 
-Verify Podman is new enough:
+To verify that Podman and Quadlet meet the version requirements, run:
 
 ```shell
 podman --version
@@ -32,22 +33,22 @@ podman --version
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-Pick one mode and stay in it. The unit content is identical; only the install location and the socket paths differ.
+Choose one mode and stick with it. The unit content is identical; only the installation paths and socket locations differ.
 
-| Aspect                    | Rootful                                         | Rootless                                          |
-| ------------------------- | ----------------------------------------------- | ------------------------------------------------- |
-| Unit directory            | `/etc/containers/systemd/`                      | `~/.config/containers/systemd/`                   |
-| Reload command            | `sudo systemctl daemon-reload`                  | `systemctl --user daemon-reload`                  |
-| Start command             | `sudo systemctl start authentik-server.service` | `systemctl --user start authentik-server.service` |
-| Podman API socket         | `/run/podman/podman.sock`                       | `$XDG_RUNTIME_DIR/podman/podman.sock`             |
-| Outpost auto-deploy works | Yes, out of the box                             | Yes, with `loginctl enable-linger`                |
-| Bind ports below 1024     | Yes                                             | Requires `net.ipv4.ip_unprivileged_port_start`    |
+| Aspect                               | Rootful                                         | Rootless                                          |
+| ------------------------------------ | ----------------------------------------------- | ------------------------------------------------- |
+| Unit directory                       | `/etc/containers/systemd/`                      | `~/.config/containers/systemd/`                   |
+| Reload command                       | `sudo systemctl daemon-reload`                  | `systemctl --user daemon-reload`                  |
+| Start command                        | `sudo systemctl start authentik-server.service` | `systemctl --user start authentik-server.service` |
+| Podman API socket path               | `/run/podman/podman.sock`                       | `$XDG_RUNTIME_DIR/podman/podman.sock`             |
+| Support for Outpost auto-deploy      | Yes, out of the box                             | Yes, with `loginctl enable-linger`                |
+| Support for binding ports below 1024 | Yes                                             | Requires `net.ipv4.ip_unprivileged_port_start`    |
 
-If in doubt, start rootful. The rest of this guide assumes rootful paths; for rootless, substitute the paths from the table above.
+If you are unsure, prefer rootful. The rest of this guide uses rootful paths; for rootless, substitute the paths from the table above.
 
 ## Prepare the host
 
-Create a state directory that the containers will mount, and generate a PostgreSQL password and an authentik secret key:
+Create a state directory for the containers to mount, and generate a PostgreSQL password and an authentik secret key:
 
 ```shell
 sudo mkdir -p /var/lib/authentik/{data,certs,custom-templates}
@@ -60,7 +61,7 @@ EOF
 sudo chmod 600 /etc/authentik/authentik.env
 ```
 
-:::info
+:::info PostgreSQL password length limitation
 Because of a PostgreSQL limitation, passwords longer than 99 characters are not supported. See the [PostgreSQL mailing list discussion](https://www.postgresql.org/message-id/09512C4F-8CB9-4021-B455-EF4C4F0D55A0@amazon.com).
 :::
 
@@ -200,7 +201,7 @@ sudo systemctl daemon-reload
 sudo systemctl start authentik-server.service authentik-worker.service
 ```
 
-Quadlet pulls images lazily on first start; the initial run takes a few minutes. Tail the logs to watch the migration:
+Quadlet pulls images lazily on first start, so the initial run maky take a few minutes. Tail the logs to watch the migration:
 
 ```shell
 journalctl -u authentik-server.service -f
@@ -208,7 +209,7 @@ journalctl -u authentik-server.service -f
 
 ## Custom ports
 
-To bind on 80/443 instead of 9000/9443, edit the `PublishPort=` lines in `authentik-server.container` and reload:
+To bind on ports 80/443 instead of 9000/9443, edit the `PublishPort=` lines in `authentik-server.container` and reload:
 
 ```ini
 PublishPort=80:9000
@@ -224,14 +225,14 @@ For rootless deployments, lower `net.ipv4.ip_unprivileged_port_start` via sysctl
 
 ## Upgrading
 
-Quadlet does not auto-pull on restart. To upgrade authentik:
+Quadlet does not automatically pull new images on restart. To upgrade authentik:
 
 ```shell
 sudo podman pull ghcr.io/goauthentik/server:latest
 sudo systemctl restart authentik-server.service authentik-worker.service
 ```
 
-For pinned versions, change the `Image=` line to a specific tag (for example `ghcr.io/goauthentik/server:2026.5.0`) and `systemctl daemon-reload && systemctl restart`.
+For pinned versions, edit the `Image=` line to a specific tag (for example `ghcr.io/goauthentik/server:2026.5.0`) and `systemctl daemon-reload && systemctl restart`.
 
 ## Access authentik
 
@@ -245,7 +246,7 @@ If you run into issues, refer to our [troubleshooting docs](../../troubleshootin
 
 ## SELinux
 
-On SELinux-enabled distributions (RHEL, Rocky, Fedora, etc.), every `Volume=` line above uses the `:Z` suffix, which relabels the host path with a private container label. This is what you want for `/var/lib/authentik/` data directories.
+On SELinux-enabled distributions (RHEL, Rocky, Fedora, etc.), every `Volume=` line above uses the `:Z` suffix, which relabels the host path with a private container label. This is appropriate for `/var/lib/authentik/` data directories.
 
 The Podman socket bind mount also uses `:Z`. If you would rather not relabel the system socket, use `:z` (shared label) or drop the suffix and add a permissive policy explicitly.
 
@@ -257,7 +258,7 @@ Through the 2026.5 release, authentik's startup task only auto-detected `/var/ru
 Volume=/run/podman/podman.sock:/var/run/docker.sock:Z
 ```
 
-Alternatively, set `DOCKER_HOST=unix:///run/podman/podman.sock` in `/etc/authentik/authentik.env` — the Docker SDK that authentik uses honors this variable.
+Alternatively, set `DOCKER_HOST=unix:///run/podman/podman.sock` in `/etc/authentik/authentik.env`; the Docker SDK that authentik uses honors this variable.
 
 ## First steps in authentik
 

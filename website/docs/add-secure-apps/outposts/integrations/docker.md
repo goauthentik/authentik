@@ -43,17 +43,22 @@ authentik requires the following permissions from the Docker API:
 
 Podman exposes a Docker-compatible REST API, so the Docker integration works against Podman with no code changes — point the integration at Podman's socket.
 
-Enable the API socket on the host:
+You can enable the API socket on the host system-wide:
 
 ```shell
 # Rootful (system-wide)
 sudo systemctl enable --now podman.socket
+```
+
+Or on a per-user basis:
+
+```
 # Rootless (per-user)
 systemctl --user enable --now podman.socket
 loginctl enable-linger "$USER"
 ```
 
-The socket lives at:
+The socket is located at:
 
 - Rootful: `/run/podman/podman.sock`
 - Rootless: `$XDG_RUNTIME_DIR/podman/podman.sock` (typically `/run/user/<uid>/podman/podman.sock`)
