@@ -201,7 +201,7 @@ sudo systemctl daemon-reload
 sudo systemctl start authentik-server.service authentik-worker.service
 ```
 
-Quadlet pulls images lazily on first start, so the initial run maky take a few minutes. Tail the logs to watch the migration:
+Quadlet pulls images lazily on first start, so the initial run may take a few minutes. Tail the logs to watch the migration:
 
 ```shell
 journalctl -u authentik-server.service -f
