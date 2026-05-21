@@ -357,6 +357,12 @@ export abstract class Table<T extends object, D = T>
         if (this.searchEnabled) {
             this.search = getURLParam(this.#searchParam, "");
         }
+
+        // Use `fetch()` rather than `#synchronizeRefreshSchedule()` here: the
+        // latter only flushes a *previously deferred* refresh and would no-op
+        // when a parent (e.g. `AKModal`) has already forced `visible = true`
+        // before the first update cycle, leaving the table empty on open.
+        this.fetch();
     }
 
     public override disconnectedCallback(): void {
@@ -401,11 +407,6 @@ export abstract class Table<T extends object, D = T>
         if (changedProperties.has("visible") && this.hasUpdated) {
             this.#synchronizeRefreshSchedule();
         }
-    }
-
-    protected override firstUpdated(changedProperties: PropertyValues<this>): void {
-        super.firstUpdated(changedProperties);
-        this.#synchronizeRefreshSchedule();
     }
 
     //#endregion
