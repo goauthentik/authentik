@@ -79,7 +79,7 @@ export class ServiceAccountResultPage extends WizardPage<UserWizardState> {
         this.host.cancelable = false;
     };
 
-    public formatNextLabel(): SlottedTemplateResult | null {
+    public override formatNextLabel(): SlottedTemplateResult | null {
         return ButtonKindLabelRecord.close();
     }
 
