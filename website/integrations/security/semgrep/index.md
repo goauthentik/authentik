@@ -15,7 +15,7 @@ support_level: community
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `company.com` is the email domain used by users who sign in to Semgrep.
+- `some.company` is the email domain used by users who sign in to Semgrep.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -70,7 +70,7 @@ To support the integration of Semgrep with authentik, you need to create several
 
 1. Log in to [Semgrep AppSec Platform](https://semgrep.dev/login) as an administrator.
 2. Navigate to **Settings** > **Access** > **Login methods**.
-3. In the **Single sign-on (SSO)** section, set **Email domain** to `company.com` and click **Initialize**.
+3. In the **Single sign-on (SSO)** section, set **Email domain** to `some.company` and click **Initialize**.
 4. In the **Configure Single Sign-On** dialog, select **Custom SAML**.
 5. When Semgrep shows the service provider values, copy the following values and keep this window open:
     - **SSO URL**
