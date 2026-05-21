@@ -37,12 +37,6 @@ const { pino } = await import("pino").catch(() => {
 export const DEFAULT_PINO_LOGGER_OPTIONS = {
     enabled: true,
     level: "info",
-    transport: {
-        target: "./transport.js",
-        options: /** @satisfies {PrettyOptions} */ ({
-            colorize: true,
-        }),
-    },
 };
 
 //#endregion
