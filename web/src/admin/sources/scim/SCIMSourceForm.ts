@@ -64,6 +64,16 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                 label=${msg("Enabled")}
                 ?checked=${this.instance?.enabled ?? true}
             ></ak-switch-input>
+            <ak-switch-input
+                name="managedObjectsOnly"
+                label=${msg("Managed objects only")}
+                ?checked=${this.instance?.managedObjectsOnly ?? false}
+            ></ak-switch-input>
+            <p class="pf-c-form__helper-text">
+                ${msg(
+                    "When enabled, this SCIM source only manages users and groups it created. Tenant-wide correlation, unrestricted group membership, and destructive DELETE are disabled.",
+                )}
+            </p>
 
             <ak-form-group open label="${msg("SCIM Attribute mapping")}">
                 <div class="pf-c-form">

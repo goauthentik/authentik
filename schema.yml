@@ -51074,6 +51074,9 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        managed_objects_only:
+          type: boolean
+          description: Only manage users and groups created by this SCIM source.
     PatchedSCIMSourceUserRequest:
       type: object
       description: SCIMSourceUser Serializer
@@ -55329,6 +55332,9 @@ components:
           readOnly: true
         user_path_template:
           type: string
+        managed_objects_only:
+          type: boolean
+          description: Only manage users and groups created by this SCIM source.
         root_url:
           type: string
           description: Get Root URL
@@ -55492,6 +55498,9 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        managed_objects_only:
+          type: boolean
+          description: Only manage users and groups created by this SCIM source.
       required:
       - name
       - slug
