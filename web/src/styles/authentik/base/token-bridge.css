@@ -1,0 +1,97 @@
+/*
+ * Runtime bridge from authentik's public semantic tokens to existing
+ * PatternFly 4 variables. This keeps old component CSS working while new
+ * custom CSS can target the shorter --ak-* surface.
+ */
+
+:root,
+:host {
+    /* Legacy authentik bridge */
+    --ak-accent: var(--ak-color-accent, #fd4b2d);
+
+    /* PatternFly 4 compatibility bridge */
+    --pf-global--primary-color--100: var(--ak-color-primary, oklab(0.522 -0.0434 -0.1717));
+    --pf-global--primary-color--200: var(--ak-color-primary-hover, oklab(0.3763 -0.0324 -0.1182));
+    --pf-global--link--Color: var(
+        --ak-color-link,
+        var(--ak-color-primary, oklab(0.522 -0.0434 -0.1717))
+    );
+    --pf-global--link--Color--hover: var(
+        --ak-color-link-hover,
+        var(--ak-color-primary-hover, oklab(0.3763 -0.0324 -0.1182))
+    );
+    --pf-global--link--Color--visited: var(--ak-color-link-visited, oklab(0.3679 0.0535 -0.1797));
+    --pf-global--Color--100: var(--ak-color-text, oklab(0.1957 -0 0));
+    --pf-global--Color--200: var(--ak-color-text-muted, oklab(0.5364 -0.0026 -0.0089));
+    --pf-global--BackgroundColor--100: var(--ak-color-surface, oklab(1 -0 0));
+    --pf-global--BackgroundColor--150: var(--ak-color-surface-raised, oklab(0.9851 -0 0));
+    --pf-global--BackgroundColor--200: var(--ak-color-surface-muted, oklab(0.9551 -0 0));
+    --pf-global--BorderColor--100: var(--ak-color-border, #d2d2d2);
+    --pf-global--BorderColor--200: var(--ak-color-border-strong, #8a8d90);
+    --pf-global--info-color--100: var(--ak-color-info, oklab(0.6689 -0.0608 -0.1513));
+    --pf-global--success-color--100: var(--ak-color-success, oklab(0.5549 -0.1071 0.0852));
+    --pf-global--warning-color--100: var(--ak-color-warning, oklab(0.7864 0.0298 0.1604));
+    --pf-global--danger-color--100: var(--ak-color-danger, oklab(0.5331 0.1798 0.1034));
+    --pf-global--FontFamily--sans-serif: var(
+        --ak-font-family-body,
+        var(--ak-font-family-sans-serif, sans-serif)
+    );
+    --pf-global--FontFamily--heading--sans-serif: var(
+        --ak-font-family-heading,
+        var(--ak-generic-display, sans-serif)
+    );
+    --pf-global--FontFamily--monospace: var(
+        --ak-font-family-code,
+        var(--ak-font-family-monospace, monospace)
+    );
+    --pf-global--FontSize--xs: var(--ak-font-size-xs, 0.75rem);
+    --pf-global--FontSize--sm: var(--ak-font-size-sm, 0.875rem);
+    --pf-global--FontSize--md: var(--ak-font-size-md, 1rem);
+    --pf-global--FontSize--lg: var(--ak-font-size-lg, 1.125rem);
+    --pf-global--FontSize--xl: var(--ak-font-size-xl, 1.25rem);
+    --pf-global--FontSize--2xl: var(--ak-font-size-2xl, 1.5rem);
+    --pf-global--FontSize--3xl: var(--ak-font-size-3xl, 1.75rem);
+    --pf-global--FontSize--4xl: var(--ak-font-size-4xl, 2.25rem);
+    --pf-global--LineHeight--sm: var(--ak-line-height-sm, 1.3);
+    --pf-global--LineHeight--md: var(--ak-line-height-md, 1.5);
+    --pf-global--spacer--xs: var(--ak-space-xs, 0.25rem);
+    --pf-global--spacer--sm: var(--ak-space-sm, 0.5rem);
+    --pf-global--spacer--md: var(--ak-space-md, 1rem);
+    --pf-global--spacer--lg: var(--ak-space-lg, 1.5rem);
+    --pf-global--spacer--xl: var(--ak-space-xl, 2rem);
+    --pf-global--spacer--2xl: var(--ak-space-2xl, 3rem);
+    --pf-global--spacer--3xl: var(--ak-space-3xl, 4rem);
+    --pf-global--spacer--4xl: var(--ak-space-4xl, 5rem);
+    --pf-global--BorderRadius--sm: var(--ak-radius-sm, 3px);
+    --pf-global--BorderRadius--lg: var(--ak-radius-pill, 30em);
+    --pf-global--BorderWidth--sm: var(--ak-border-width-sm, 1px);
+    --pf-global--BorderWidth--md: var(--ak-border-width-md, 2px);
+    --pf-global--BorderWidth--lg: var(--ak-border-width-lg, 3px);
+    --pf-global--TransitionDuration: var(--ak-duration-normal, 250ms);
+    --pf-global--TimingFunction: var(--ak-easing-standard, cubic-bezier(0.645, 0.045, 0.355, 1));
+
+    /* Shadows. Directional variants (top/right/bottom/left) intentionally
+     * stay on PatternFly's own theme-switched values — they're niche enough
+     * that exposing four extra public tokens per size isn't worth it. */
+    --pf-global--BoxShadow--sm: var(--ak-shadow-sm);
+    --pf-global--BoxShadow--md: var(--ak-shadow-md);
+    --pf-global--BoxShadow--lg: var(--ak-shadow-lg);
+    --pf-global--BoxShadow--xl: var(--ak-shadow-xl);
+    --pf-global--BoxShadow--inset: var(--ak-shadow-inset);
+
+    /* Font weights. semi-bold is deliberately NOT bridged because PatternFly's
+     * default --pf-global--FontWeight--semi-bold is 700 (same as bold) unless
+     * the Overpass font scale is active. Aliasing it to 600 here would silently
+     * shift every consumer of the PF var. */
+    --pf-global--FontWeight--light: var(--ak-font-weight-light, 300);
+    --pf-global--FontWeight--normal: var(--ak-font-weight-normal, 400);
+    --pf-global--FontWeight--bold: var(--ak-font-weight-bold, 700);
+
+    /* Z-index scale. */
+    --pf-global--ZIndex--xs: var(--ak-z-index-xs, 100);
+    --pf-global--ZIndex--sm: var(--ak-z-index-sm, 200);
+    --pf-global--ZIndex--md: var(--ak-z-index-md, 300);
+    --pf-global--ZIndex--lg: var(--ak-z-index-lg, 400);
+    --pf-global--ZIndex--xl: var(--ak-z-index-xl, 500);
+    --pf-global--ZIndex--2xl: var(--ak-z-index-2xl, 600);
+}

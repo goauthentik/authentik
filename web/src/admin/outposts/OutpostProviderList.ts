@@ -1,6 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#components/sync/SyncObjectForm";
+import "#elements/sync/SyncObjectForm";
 import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 
 import { StaticTable } from "#elements/table/StaticTable";

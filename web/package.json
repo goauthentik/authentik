@@ -104,6 +104,7 @@
         "@goauthentik/esbuild-plugin-live-reload": "^2.0.1",
         "@goauthentik/eslint-config": "^1.3.0",
         "@goauthentik/prettier-config": "^3.5.0",
+        "@goauthentik/theme": "^1.0.0",
         "@goauthentik/tsconfig": "^1.0.9",
         "@hcaptcha/types": "^1.1.0",
         "@lit/context": "^1.1.6",
@@ -204,6 +205,7 @@
         "@esbuild/linux-arm64": "^0.28.0",
         "@esbuild/linux-x64": "^0.28.0",
         "@goauthentik/prettier-config-dev": "../packages/prettier-config",
+        "@goauthentik/theme-dev": "../packages/theme",
         "@rollup/rollup-darwin-arm64": "^4.61.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.61.1",
         "@rollup/rollup-linux-x64-gnu": "^4.61.1"
@@ -215,7 +217,8 @@
         "build": {
             "command": "${NODE_RUNNER} scripts/build-web.mjs",
             "dependencies": [
-                "build-locales"
+                "build-locales",
+                "build-theme"
             ],
             "files": [
                 "src/**/*.{css,jpg,png,ts,js,json}",
@@ -253,8 +256,28 @@
         "build-proxy": {
             "command": "node scripts/build-web.mjs --styles-only",
             "dependencies": [
-                "build-locales"
+                "build-locales",
+                "build-theme"
             ]
+        },
+        "build-theme": {
+            "#comment": [
+                "Rebuilds packages/theme/dist/* when its lib/ sources change.",
+                "Without this, edits to lib/tokens/*.js silently produce stale CSS",
+                "because dist/ is generated only on `npm run build` inside the",
+                "theme package. We declare files but not output because wireit",
+                "requires outputs to live within the workspace package; the real",
+                "outputs sit alongside the theme package's sources."
+            ],
+            "command": "npm run build -w @goauthentik/theme",
+            "files": [
+                "../packages/theme/lib/**/*",
+                "../packages/theme/scripts/**/*",
+                "../packages/theme/styleframe.config.mjs",
+                "../packages/theme/package.json",
+                "../packages/theme/tsconfig.json"
+            ],
+            "output": []
         },
         "lint:components": {
             "command": "lit-analyzer src"

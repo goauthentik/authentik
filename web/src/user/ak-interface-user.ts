@@ -1,7 +1,7 @@
 import "#components/ak-nav-buttons";
 import "#elements/banner/EnterpriseStatusBanner";
-import "#components/notifications/APIDrawer";
-import "#components/notifications/NotificationDrawer";
+import "#elements/notifications/APIDrawer";
+import "#elements/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
 
 import { globalAK } from "#common/global";
@@ -13,16 +13,15 @@ import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { listen } from "#elements/decorators/listen";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
-import { ifPresent } from "#elements/utils/attributes";
-import { ThemedImage } from "#elements/utils/images";
-
-import { AKDrawerChangeEvent } from "#components/notifications/events";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import {
     DrawerState,
     persistDrawerParams,
     readDrawerParams,
     renderNotificationDrawerPanel,
-} from "#components/notifications/utils";
+} from "#elements/notifications/utils";
+import { ifPresent } from "#elements/utils/attributes";
+import { ThemedImage } from "#elements/utils/images";
 
 import Styles from "#user/ak-interface-user.css";
 import { ROUTES } from "#user/Routes";

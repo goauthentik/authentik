@@ -1,4 +1,4 @@
-import { DrawerState, readDrawerParams } from "#components/notifications/utils";
+import { DrawerState, readDrawerParams } from "#elements/notifications/utils";
 
 /**
  * Event dispatched when the state of the interface drawers changes.

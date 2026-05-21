@@ -10,10 +10,10 @@ import { formatUserDisplayName } from "#common/users";
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import { isDefaultAvatar } from "#elements/utils/images";
 
 import Styles from "#components/ak-nav-button.css";
-import { AKDrawerChangeEvent } from "#components/notifications/events";
 
 import { CoreApi } from "@goauthentik/api";
 

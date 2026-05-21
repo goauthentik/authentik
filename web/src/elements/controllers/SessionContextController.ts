@@ -20,9 +20,8 @@ import {
     SessionMixin,
     UIConfigContext,
 } from "#elements/mixins/session";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import type { ReactiveElementHost } from "#elements/types";
-
-import { AKDrawerChangeEvent } from "#components/notifications/events";
 
 import { CoreApi, SessionUser } from "@goauthentik/api";
 

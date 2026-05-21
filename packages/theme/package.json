@@ -1,0 +1,118 @@
+{
+    "name": "@goauthentik/theme",
+    "version": "1.0.0",
+    "description": "Styleframe-based design system for authentik.",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/theme"
+    },
+    "scripts": {
+        "build": "npm run build:types && npm run build:assets && npm run build:dtcg && npm run build:format",
+        "build:assets": "node scripts/build.mjs",
+        "build:dtcg": "styleframe dtcg export --config styleframe.config.mjs --output dist/tokens.dtcg.json --collection authentik",
+        "build:format": "node scripts/format-dist.mjs",
+        "build:types": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prepare": "npm run build",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "watch": "tsc -p . --watch"
+    },
+    "type": "module",
+    "types": "./out/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./out/index.d.ts",
+            "node": "./lib/node.js",
+            "browser": "./index.js",
+            "import": "./index.js"
+        },
+        "./build": {
+            "types": "./out/lib/node.d.ts",
+            "import": "./lib/node.js"
+        },
+        "./index.css": "./dist/index.css",
+        "./color.css": "./dist/color.css",
+        "./typography.css": "./dist/typography.css",
+        "./spacing.css": "./dist/spacing.css",
+        "./shape.css": "./dist/shape.css",
+        "./shadow.css": "./dist/shadow.css",
+        "./motion.css": "./dist/motion.css",
+        "./z-index.css": "./dist/z-index.css",
+        "./tokens.dtcg.json": "./dist/tokens.dtcg.json",
+        "./tokens.dtcg.resolver.json": "./dist/tokens.dtcg.resolver.json"
+    },
+    "dependencies": {
+        "@styleframe/core": "^3.5.0",
+        "@styleframe/dtcg": "^1.1.0",
+        "@styleframe/theme": "^3.7.0",
+        "@styleframe/transpiler": "^3.3.0",
+        "styleframe": "^3.7.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.3",
+        "@goauthentik/prettier-config": "../prettier-config",
+        "@goauthentik/tsconfig": "../tsconfig",
+        "@styleframe/cli": "^4.0.0",
+        "@types/node": "^25.7.0",
+        "eslint": "^9.39.3",
+        "pino": "^10.3.1",
+        "pino-pretty": "^13.1.2",
+        "prettier": "^3.8.3",
+        "prettier-plugin-packagejson": "^3.0.2",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.59.3"
+    },
+    "files": [
+        "./index.js",
+        "lib/**/*",
+        "out/**/*",
+        "dist/**/*"
+    ],
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.14.1"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24",
+            "onFail": "ignore"
+        },
+        "packageManager": {
+            "name": "npm",
+            "version": ">=11.14.1",
+            "onFail": "ignore"
+        }
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "@typescript-eslint/eslint-plugin": {
+            "typescript": "$typescript"
+        },
+        "@typescript-eslint/parser": {
+            "typescript": "$typescript"
+        },
+        "format-imports": {
+            "eslint": "$eslint"
+        },
+        "typescript-eslint": {
+            "typescript": "$typescript"
+        }
+    },
+    "peerDependenciesMeta": {
+        "pino": {
+            "optional": true
+        },
+        "pino-pretty": {
+            "optional": true
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

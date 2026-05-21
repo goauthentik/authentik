@@ -2,8 +2,8 @@
  * @file Notification drawer utilities.
  */
 
-import "#components/notifications/APIDrawer";
-import "#components/notifications/NotificationDrawer";
+import "#elements/notifications/APIDrawer";
+import "#elements/notifications/NotificationDrawer";
 
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 

@@ -8,7 +8,7 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
 import "#elements/events/LogViewer";
-import "#components/sync/SyncStatusCard";
+import "#elements/sync/SyncStatusCard";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
 

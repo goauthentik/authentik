@@ -4,10 +4,9 @@ import { MessageLevel } from "#common/messages";
 
 import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
+import { createPaginatedNotificationListFrom } from "#elements/notifications/utils";
 import { createMixin } from "#elements/types";
-
-import { AKDrawerChangeEvent } from "#components/notifications/events";
-import { createPaginatedNotificationListFrom } from "#components/notifications/utils";
 
 import { ConsoleLogger } from "#logger/browser";
 

@@ -9,7 +9,7 @@ import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
-import "#components/sync/SyncStatusCard";
+import "#elements/sync/SyncStatusCard";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";

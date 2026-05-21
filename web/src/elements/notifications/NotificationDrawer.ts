@@ -10,10 +10,9 @@ import { formatElapsedTime } from "#common/temporal";
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
-
-import { AKDrawerChangeEvent } from "#components/notifications/events";
 
 import { Notification } from "@goauthentik/api";
 

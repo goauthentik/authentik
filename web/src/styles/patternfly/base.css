@@ -2,6 +2,7 @@
 @import "@patternfly/patternfly/base/patternfly-globals.css";
 @import "@patternfly/patternfly/base/patternfly-fa-icons.css";
 @import "@patternfly/patternfly/base/patternfly-pf-icons.css";
+@import "../authentik/base/token-bridge.css";
 
 a {
     font-weight: var(--pf-global--link--FontWeight);

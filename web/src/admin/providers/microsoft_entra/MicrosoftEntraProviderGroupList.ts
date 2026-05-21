@@ -1,6 +1,6 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#components/sync/SyncObjectForm";
+import "#elements/sync/SyncObjectForm";
 
 import { aki } from "#common/api/client";
 

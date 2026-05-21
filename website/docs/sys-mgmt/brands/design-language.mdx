@@ -1,0 +1,115 @@
+---
+title: Design Language
+slug: /brands/design-language
+sidebar_label: Design Language
+---
+
+authentik's design language is the small set of stable conventions — colors, spacing, typography, motion, shadows, stacking — that every screen in the interface uses to render itself. Authoring those decisions in one place means a brand operator can override a handful of CSS variables and get a coherent result across every flow, dialog, and admin view, without targeting individual components.
+
+This page describes the **what** and **why** of the design language. For practical "how do I change X" recipes, see [Custom CSS](./custom-css.mdx).
+
+:::warning Advanced topic
+
+Custom CSS is an advanced feature. Improper use may lead to unexpected behavior or visual issues. Test changes in a safe environment before applying them to production.
+
+:::
+
+## How the design system is organised
+
+The system has three layers. The layer you target depends on how much of the interface you intend to affect.
+
+| Layer                      | Example                                                       | What it controls                                                                | Recommended audience                      |
+| -------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------- |
+| **Semantic tokens**        | `--ak-color-primary`, `--ak-space-md`, `--ak-shadow-lg`       | The shared design decisions every component reads. Affects the whole interface. | Brand custom CSS, themes.                 |
+| **Component-local tokens** | `--ak-c-login__main--BackgroundColor`, drawer width variables | One component's tunable knobs.                                                  | When a single component needs adjustment. |
+| **CSS parts**              | `ak-flow-executor::part(locale-select)`                       | Structural hooks a component intentionally exposes.                             | Targeted layout or visibility changes.    |
+
+Most brand customisation stays at the first layer. The lower layers are escape hatches.
+
+## Token groups
+
+The semantic surface is around 60 tokens, organised by concern. Every token name follows the pattern `--ak-{group}-{member}`.
+
+| Group          | Public tokens                                                                                                                                                                                                     | Notes                                                                                                          |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `color`        | `accent`, `primary`, `primary-hover`, `text`, `text-muted`, `link`, `link-hover`, `link-visited`, `surface`, `surface-muted`, `surface-raised`, `border`, `border-strong`, `info`, `success`, `warning`, `danger` | The full semantic palette. `link` defaults to `primary`; override one and the other follows.                   |
+| `font.family`  | `body`, `heading`, `code`                                                                                                                                                                                         | High-level font stacks.                                                                                        |
+| `font.size`    | `xs` through `4xl`                                                                                                                                                                                                | The text size scale.                                                                                           |
+| `font.weight`  | `light`, `normal`, `bold`                                                                                                                                                                                         | `semi-bold` is intentionally omitted because PatternFly conflates it with `bold` under the default font stack. |
+| `line-height`  | `sm`, `md`                                                                                                                                                                                                        | Compact vs default.                                                                                            |
+| `space`        | `xs` through `4xl`                                                                                                                                                                                                | The spacing scale. Use these instead of hardcoded `px` or `rem` values.                                        |
+| `radius`       | `sm`, `pill`                                                                                                                                                                                                      | `sm` for compact rounding; `pill` for fully-rounded badges and tags.                                           |
+| `border-width` | `sm`, `md`, `lg`                                                                                                                                                                                                  |                                                                                                                |
+| `shadow`       | `sm`, `md`, `lg`, `xl`, `inset`                                                                                                                                                                                   | Theme-aware — dark mode uses stronger shadow opacity.                                                          |
+| `duration`     | `normal`                                                                                                                                                                                                          | The default transition duration. Adjust to make the whole interface feel snappier or calmer.                   |
+| `easing`       | `standard`                                                                                                                                                                                                        | The default cubic-bezier curve.                                                                                |
+| `z-index`      | `xs` through `2xl`                                                                                                                                                                                                | The stacking scale matches PatternFly's tiers (100..600).                                                      |
+
+## Naming conventions
+
+A few rules keep names predictable. If you're writing custom CSS or generating themes programmatically, these patterns hold across every token:
+
+- **One semantic tier.** Token names express design decisions, not raw values. `--ak-color-primary` is the name; there's no public `--ak-color-brand-500` underneath it. If your brand needs a full custom palette, you remap the semantic tokens rather than reaching for a primitive palette.
+- **A single size scale: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`.** Used consistently across `space`, `font.size`, `radius`, `border-width`, `shadow`, and `z-index`. There are no descriptive scales like `extraTight` or `loose`.
+- **Spelled-out group names.** `z-index`, not `z`. `border-width`, not `bw`. Discoverable in IDE autocomplete and brand custom CSS without having to memorise abbreviations.
+- **Private variables use a different prefix.** Variables starting with `--_` or `--ak-c-` are component-local and undocumented. They may change between authentik releases. Avoid targeting them in custom CSS unless a release explicitly documents one as stable.
+
+## Light and dark themes
+
+The design language ships with two themes out of the box. Both are toggled by the `data-theme` attribute on `html`:
+
+```css title="Switching themes"
+html[data-theme="dark"] {
+    /* dark theme overrides apply here */
+}
+```
+
+A third theme — `reduced` — is reserved for users who explicitly opt into reduced motion (in addition to the browser-level `prefers-reduced-motion` media query, which fires automatically). authentik respects both, so most operators don't need to do anything to support reduced motion users.
+
+When you override semantic tokens in your custom CSS, follow the same pattern: provide light values under `:root`, then dark values under `html[data-theme="dark"]`. See [Custom CSS · Theme-based styling](./custom-css.mdx) for a worked example.
+
+## Consuming tokens outside authentik
+
+If your organisation has its own design tooling, you can pull authentik's tokens in directly. The token system is published as the [`@goauthentik/theme`](https://www.npmjs.com/package/@goauthentik/theme) npm package, with three output formats:
+
+| Path                                           | Format        | Use case                                                                    |
+| ---------------------------------------------- | ------------- | --------------------------------------------------------------------------- |
+| `@goauthentik/theme/index.css`                 | CSS           | Drop into a stylesheet to mirror authentik's tokens in another web surface. |
+| `@goauthentik/theme/color.css` (and per group) | CSS           | Cherry-pick one category — for example, just colors, or just shadows.       |
+| `@goauthentik/theme/tokens.dtcg.json`          | DTCG 2025.10  | Import into Tokens Studio, Terrazzo, Figma, or any other DTCG-aware tool.   |
+| `@goauthentik/theme/tokens.dtcg.resolver.json` | DTCG resolver | Companion document that describes the `Dark` and `Reduced` theme modifiers. |
+
+The DTCG JSON files are intended to be read or hand-edited; they're formatted and validated as part of the package's build.
+
+## Stability
+
+The `--ak-*` semantic tokens are the public API. authentik treats them as a stable contract within a major version:
+
+- Names won't be renamed without a deprecation cycle.
+- Values may shift to follow design improvements, but the _role_ a token plays (primary, surface, text-muted, etc.) is stable.
+- New tokens may be added.
+- Tokens may be removed only after a deprecation notice in the release notes.
+
+Anything _not_ in the `--ak-*` namespace — `--ak-c-*`, `--pf-*`, `--_*`, internal class names — is implementation detail. Custom CSS targeting those names may break between releases. Treat them as escape hatches for situations the semantic surface doesn't cover yet, and report any cases where you find yourself reaching for them so we can promote those to public tokens.
+
+## Further reading
+
+- [Custom CSS](./custom-css.mdx) — practical recipes and troubleshooting for brand custom CSS.
+
+## References
+
+- [Design Tokens Community Group](https://www.designtokens.org/)
+- [Design Tokens Format Module 2025.10](https://www.designtokens.org/tr/2025.10/format/)
+- [DTCG examples (terrazzoapp/dtcg-examples)](https://github.com/terrazzoapp/dtcg-examples)
+- [Styleframe](https://styleframe.dev) — TypeScript CSS authoring system used by `@goauthentik/theme`.
+- [Tokens Studio](https://tokens.studio/)
+- [Terrazzo](https://terrazzo.io/)
+- [PatternFly tokens](https://www.patternfly.org/tokens/about-tokens/)
+- [PatternFly token usage](https://www.patternfly.org/tokens/develop-with-tokens/)
+- [NL Design System token convention](https://nldesignsystem.nl/handboek/developer/design-token-conventie/)
+- [GC Design System design tokens](https://design-system.canada.ca/en/styles/design-tokens/)
+- [USWDS design tokens](https://designsystem.digital.gov/design-tokens/)
+- [Open UI](https://open-ui.org/)
+- [MDN cascade layers](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@layer)
+- [MDN CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/--*)
+- [MDN CSS Shadow Parts](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_shadow_parts)
