@@ -1,0 +1,390 @@
+---
+title: AKQL (authentik Query Language)
+sidebar_label: AKQL search
+---
+
+import { KeyBindingsTable } from "@goauthentik/docusaurus-theme/components/KeyBindingsTable";
+
+**AKQL** (authentik Query Language) is the advanced search syntax used throughout the authentik Admin interface. It lets you filter long lists, such as events, users, and groups, by writing structured expressions like `action = "login"` or `context.geo.country = "Germany"` instead of relying on a single free-text search.
+
+AKQL is built on top of [DjangoQL](https://github.com/ivelum/djangoql). Originally an enterprise-only feature, it became available to everyone in the open source version starting with [authentik 2026.5](../releases/2026/v2026.5.md).
+
+## Where you can use AKQL
+
+AKQL is available anywhere authentik shows a search field backed by the query language, as well as directly through the API:
+
+- **Events log**: **Admin interface** > **Events** > **Logs**. See [Logging events](./events/logging-events.mdx#advanced-queries).
+- **Users list**: **Admin interface** > **Directory** > **Users**. See [Manage users](../users-sources/user/user_basic_operations.md#advanced-queries).
+- **Groups list**: **Admin interface** > **Directory** > **Groups**.
+- **Event Matcher policies**: the **Matching query** field of an [Event Matcher policy](../customize/policies/index.md), which lets you match events using the same syntax. See [Use AKQL in an Event Matcher policy](#use-akql-in-an-event-matcher-policy).
+- **The REST API**: the `search` query parameter on list endpoints. See [Use AKQL through the API](#use-akql-through-the-api).
+
+The fields you can query differ per object type, because each list exposes its own set of searchable fields. See [Searchable fields by area](#searchable-fields-by-area).
+
+:::info Fallback to plain search
+If what you type isn't a valid AKQL expression, authentik doesn't return an error. Instead, it falls back to a plain case-insensitive substring search across that list's default search fields. This means a bare word like `bob` still works as a simple search, while `username = "bob"` runs as a structured AKQL query.
+:::
+
+## Query structure
+
+The basic building block of an AKQL query is a single **comparison**, written as:
+
+```
+field operator value
+```
+
+For example:
+
+```
+username = "bob"
+```
+
+You can combine multiple comparisons with the [logical operators](#combine-conditions) `and` and `or`, and group them with parentheses.
+
+### Fields
+
+A field is the name of an attribute to filter on, such as `username`, `action`, or `is_active`. The fields available depend on the list you are searching (see [Searchable fields by area](#searchable-fields-by-area)).
+
+To reach a value nested inside a related object or a JSON field, use a dot (`.`) to separate each part of the path:
+
+```
+user.username = "bob"
+```
+
+```
+context.geo.country = "Germany"
+```
+
+See [Query nested and JSON fields](#query-nested-and-json-fields) for details.
+
+### Operators
+
+The operator that's valid for a given comparison depends on the [type of the field](#field-types). The full set of operators is:
+
+| Operator         | Meaning                                | Applies to              |
+| ---------------- | -------------------------------------- | ----------------------- |
+| `=`              | Equal to (exact match)                 | All field types         |
+| `!=`             | Not equal to                           | All field types         |
+| `>`              | Greater than                           | Numbers, dates, strings |
+| `>=`             | Greater than or equal to               | Numbers, dates, strings |
+| `<`              | Less than                              | Numbers, dates, strings |
+| `<=`             | Less than or equal to                  | Numbers, dates, strings |
+| `~`              | Contains (case-insensitive substring)  | Strings, dates          |
+| `!~`             | Does not contain (case-insensitive)    | Strings, dates          |
+| `startswith`     | Starts with (case-insensitive)         | Strings                 |
+| `not startswith` | Does not start with (case-insensitive) | Strings                 |
+| `endswith`       | Ends with (case-insensitive)           | Strings                 |
+| `not endswith`   | Does not end with (case-insensitive)   | Strings                 |
+| `in (…)`         | Matches any value in the list          | All field types         |
+| `not in (…)`     | Matches none of the values in the list | All field types         |
+
+:::info `~` is "contains", not regex
+The `~` and `!~` operators perform a case-insensitive substring match (an SQL `LIKE`), not a regular-expression match. For example, `username ~ "adm"` matches `akadmin` and `administrator`.
+:::
+
+### Values
+
+Values are typed. The way you write a value tells AKQL what type it is:
+
+| Type    | How to write it                            | Examples             |
+| ------- | ------------------------------------------ | -------------------- |
+| String  | Wrapped in double `"` or single `'` quotes | `"bob"`, `'login'`   |
+| Integer | A whole number                             | `42`, `-7`           |
+| Float   | A decimal or exponent number               | `3.14`, `1e3`        |
+| Boolean | `True` or `False` (capitalized)            | `is_active = False`  |
+| Null    | `None`                                     | `email = None`       |
+| List    | Comma-separated values inside parentheses  | `("ana", "akadmin")` |
+
+A few things to keep in mind:
+
+- The keywords `True`, `False`, and `None` are **capitalized**, while the operators `and`, `or`, `not`, `in`, `startswith`, and `endswith` are **lowercase**.
+- Strings support escape sequences such as `\"`, `\\`, `\n`, `\t`, and Unicode escapes like `é`.
+- You can only compare a field to `None` if that field is nullable.
+- Lists are only used with the `in` and `not in` operators.
+
+### Combine conditions
+
+Combine multiple comparisons with `and` and `or`, and use parentheses to group them:
+
+```
+action = "login" and user.username = "bob"
+```
+
+```
+action = "login" or action = "logout"
+```
+
+```
+(action = "login" or action = "logout") and user.username = "bob"
+```
+
+:::tip Use parentheses to be explicit
+When you mix `and` and `or` in the same query, wrap each group in parentheses so the grouping is unambiguous and the query does what you expect.
+:::
+
+There is **no standalone `not` operator** to negate a whole expression. The `not` keyword is only valid as part of `not in`, `not startswith`, and `not endswith`. To express "not equal", use `!=`; to express "does not contain", use `!~`.
+
+## Field types
+
+Every searchable field has a type, which determines the operators and values it accepts.
+
+| Type        | Accepts                                            | Valid operators                                                            |
+| ----------- | -------------------------------------------------- | -------------------------------------------------------------------------- |
+| String      | Quoted strings                                     | `=`, `!=`, `>`, `>=`, `<`, `<=`, `~`, `!~`, `startswith`, `endswith`, `in` |
+| Integer     | Whole numbers                                      | `=`, `!=`, `>`, `>=`, `<`, `<=`, `in`                                      |
+| Boolean     | `True`, `False` (and `None` if nullable)           | `=`, `!=`                                                                  |
+| Choice      | Quoted strings from a fixed set of options         | Same as String                                                             |
+| Date/time   | Quoted timestamps (see below)                      | `=`, `!=`, `>`, `>=`, `<`, `<=`, `~`, `!~`                                 |
+| JSON/nested | Reached via dot notation; values behave as strings | Same as String                                                             |
+
+### Choice fields
+
+Choice fields, such as an event's `action` or a user's `type`, only accept a value from a fixed set of options. The Admin interface suggests the valid options as you type. You can match against either the stored value or its human-readable label.
+
+### Date and time fields
+
+Date and time fields, such as an event's `created` timestamp, are compared against quoted timestamps in one of these formats:
+
+- `"YYYY-MM-DD"` — for example `"2024-01-30"`
+- `"YYYY-MM-DD HH:MM"` — for example `"2024-01-30 09:00"`
+- `"YYYY-MM-DD HH:MM:SS"` — for example `"2024-01-30 09:00:15"`
+
+```
+created > "2024-01-01"
+```
+
+```
+created >= "2024-01-30 09:00" and created < "2024-01-30 17:00"
+```
+
+The `~` operator on a date field performs a substring match on the text form of the timestamp, which is handy for matching a whole day: `created ~ "2024-01-30"`.
+
+## Query nested and JSON fields
+
+Some of the most useful fields, such as a user's `attributes` or an event's `context`, are JSON objects. You can drill into them using dot notation, where each part after the field name is a key in the JSON object:
+
+```
+attributes.department = "engineering"
+```
+
+```
+context.http_request.method = "POST"
+```
+
+```
+context.geo.country = "Germany"
+```
+
+Key points about JSON and nested fields:
+
+- **You can query any key path that exists in the data**, even if the Admin interface doesn't suggest it in autocomplete. Autocomplete only knows about a curated set of known keys, but the query itself works on whatever keys are actually stored.
+- Values inside JSON fields are matched as strings, so all the [string operators](#operators) (`=`, `~`, `startswith`, and so on) are available.
+- When a field is a related object or JSON object, such as `user`, `brand`, or `context` on events, you must use a compound path (for example `user.username`, not `user`).
+
+## Searchable fields by area
+
+The set of fields you can query is specific to each list.
+
+### Events
+
+Available in **Events** > **Logs**.
+
+| Field              | Type      | Description                                                                    |
+| ------------------ | --------- | ------------------------------------------------------------------------------ |
+| `action`           | Choice    | The [event action](./events/event-actions.md), such as `login`.                |
+| `event_uuid`       | String    | The event's unique identifier.                                                 |
+| `app`              | String    | The application or authentik component that emitted the event.                 |
+| `client_ip`        | String    | The client IP address associated with the event.                               |
+| `user.pk`          | Integer   | The acting user's primary key.                                                 |
+| `user.username`    | String    | The acting user's username.                                                    |
+| `user.email`       | String    | The acting user's email address.                                               |
+| `brand.pk`         | String    | The primary key of the [brand](../customize/branding.md) active for the event. |
+| `brand.app`        | String    | The brand's app label.                                                         |
+| `brand.name`       | String    | The brand's name.                                                              |
+| `brand.model_name` | String    | The brand's model name.                                                        |
+| `context.*`        | JSON      | Arbitrary event context (see below).                                           |
+| `created`          | Date/time | When the event occurred.                                                       |
+
+The `context` field is freeform JSON whose keys depend on the event type. Commonly available paths include:
+
+- `context.http_request.path`, `context.http_request.method`, `context.http_request.request_id`, `context.http_request.user_agent`, and `context.http_request.args.*`
+- `context.geo.country`, `context.geo.city`, and other geolocation keys (when [GeoIP](./ops/geoip.mdx) is configured)
+- `context.authorized_application.name` and other details of the application involved in the event
+
+### Users
+
+Available in **Directory** > **Users**.
+
+| Field          | Type    | Description                                                             |
+| -------------- | ------- | ----------------------------------------------------------------------- |
+| `username`     | String  | The user's username.                                                    |
+| `name`         | String  | The user's display name.                                                |
+| `email`        | String  | The user's email address.                                               |
+| `path`         | String  | The user's path within the directory.                                   |
+| `is_active`    | Boolean | Whether the account is active (nullable).                               |
+| `type`         | Choice  | The user type, such as `internal` or `external`.                        |
+| `attributes.*` | JSON    | Any [custom attribute](../users-sources/user/user_ref.mdx) on the user. |
+
+### Groups
+
+Available in **Directory** > **Groups**.
+
+| Field          | Type    | Description                                           |
+| -------------- | ------- | ----------------------------------------------------- |
+| `name`         | String  | The group's name.                                     |
+| `is_superuser` | Boolean | Whether the group grants superuser access (nullable). |
+| `attributes.*` | JSON    | Any custom attribute on the group.                    |
+
+## Examples
+
+### Event examples
+
+```
+action = "login"
+```
+
+```
+action in ("login", "login_failed")
+```
+
+```
+app startswith "authentik"
+```
+
+```
+client_ip = "10.0.0.1"
+```
+
+```
+user.username in ("ana", "akadmin")
+```
+
+```
+brand.name = "my brand"
+```
+
+```
+context.geo.country = "Germany"
+```
+
+```
+context.http_request.method = "POST"
+```
+
+```
+context.authorized_application.name = "My app"
+```
+
+```
+action = "login_failed" and context.geo.country != "United States"
+```
+
+For more on the kinds of events you can match, see [Event actions](./events/event-actions.md).
+
+### User examples
+
+```
+is_active = False
+```
+
+```
+username = "bob"
+```
+
+```
+email endswith "@authentik.company"
+```
+
+```
+type = "internal" and is_active = True
+```
+
+```
+attributes.department = "engineering"
+```
+
+```
+name ~ "admin" or username ~ "admin"
+```
+
+### Group examples
+
+```
+is_superuser = True
+```
+
+```
+name startswith "Eng"
+```
+
+```
+attributes.role = "admin"
+```
+
+## Use AKQL through the API
+
+Every API list endpoint that supports AKQL accepts the query in the `search` query parameter. URL-encode the query string.
+
+```
+GET /api/v3/core/users/?search=username%20%3D%20%22bob%22
+```
+
+The response's pagination object includes an `autocomplete` field describing the searchable schema for that endpoint, which is what powers autocomplete in the Admin interface.
+
+As in the UI, if the `search` value isn't valid AKQL, the endpoint falls back to a plain substring search across its default search fields rather than returning an error.
+
+## Use AKQL in an Event Matcher policy
+
+[Event Matcher policies](../customize/policies/index.md) can match events using an AKQL query, giving you far more precise matching than the individual **Action**, **App**, **Client IP**, and **Model** fields alone.
+
+1. In the Admin interface, navigate to **Customization** > **Policies**.
+2. Create or edit an **Event Matcher Policy**.
+3. In the **Matching query** field, enter an AKQL query that uses the [event fields](#events). For example:
+
+    ```
+    action = "login_failed" and context.geo.country != "United States"
+    ```
+
+When the policy runs, the query is evaluated against the event being processed. The policy passes if the event matches the query. The query is combined with any other criteria set on the policy (such as **Action** or **App**), and all of the set criteria must match.
+
+## Autocomplete and keyboard shortcuts
+
+In the Admin interface, the AKQL search field offers autocomplete suggestions for fields, operators, and (where applicable) values as you type.
+
+:::info
+
+1. If a list of operators or values doesn't appear in the drop-down menu, you can still type it manually.
+2. Autocomplete only suggests known fields. For JSON fields, you can still query any key path that exists in the data even if it isn't suggested.
+
+:::
+
+The following keyboard shortcuts are available in the AKQL search field:
+
+<KeyBindingsTable
+    aria-label="Keyboard shortcuts for the AKQL search"
+    bindings={[
+        [
+            "Autocomplete",
+            [
+                ["Select next suggestion", <kbd aria-label="Down arrow">↓</kbd>],
+                ["Select previous suggestion", <kbd aria-label="Up arrow">↑</kbd>],
+                ["Accept the current suggestion", <kbd aria-label="Tab key">Tab</kbd>],
+                ["Accept the current suggestion", <kbd aria-label="Enter key">Enter</kbd>],
+                ["Dismiss suggestions", <kbd aria-label="Escape key">ESC</kbd>],
+            ],
+        ],
+        [
+            "Search",
+            [
+                ["Submit the current query", <kbd aria-label="Enter key">Enter</kbd>],
+                ["Clear the current query", <kbd aria-label="Escape key">ESC</kbd>],
+            ],
+        ],
+    ]}
+/>
+
+## Troubleshooting
+
+- **My query returns everything (or runs as a plain search).** This usually means the query isn't valid AKQL, so authentik fell back to a plain substring search. Check that strings are quoted, that you're using a field that exists for that list, and that JSON/related fields use a compound path (for example `user.username`, not `user`).
+- **"Unknown field" behavior.** Querying a field that the list doesn't expose causes the query to fail parsing and fall back to plain search. Confirm the field name against [Searchable fields by area](#searchable-fields-by-area).
+- **Negation isn't working.** There is no standalone `not`. Use `!=` instead of `not =`, `!~` instead of `not ~`, and the `not in` / `not startswith` / `not endswith` forms.

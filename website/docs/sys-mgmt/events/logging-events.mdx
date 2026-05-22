@@ -51,6 +51,8 @@ To review, download, or delete past data exports, navigate to **Events** > **Dat
 
 You can construct advanced queries to find specific event logs. In the Admin interface, navigate to **Events** > **Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
+These queries use [AKQL (authentik Query Language)](../akql.mdx). For the full syntax, operators, and value types, see the [AKQL reference](../akql.mdx).
+
 - **Field**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brand`, `context`, `created`
 - **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
 - **Values**: `True`, `False`, `None`, and more
@@ -68,7 +70,7 @@ action = "login"
 ```
 
 ```sh Search event by authorized application context
-authorized_application.name = "My app"
+context.authorized_application.name = "My app"
 ```
 
 ```sh Search event by country

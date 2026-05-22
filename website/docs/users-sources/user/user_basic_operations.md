@@ -33,6 +33,8 @@ To create a super-user, you need to add the user to a group that has super-user 
 
 You can create advanced queries to locate specific users within the list shown under **Directory** > **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
+These queries use [AKQL (authentik Query Language)](../../sys-mgmt/akql.mdx). For the full syntax, operators, and value types, see the [AKQL reference](../../sys-mgmt/akql.mdx).
+
 - **Field**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
 
 - **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
@@ -43,7 +45,7 @@ You can create advanced queries to locate specific users within the list shown u
     - search user by status: `is_active = False`
     - search user by username: `username = "bob"`
     - search user by email address: `email = "bob@authentik.company"`
-    - search user by attribute: `attribute.my_custom_attribute = "foo"`
+    - search user by attribute: `attributes.my_custom_attribute = "foo"`
 
 :::info
 
