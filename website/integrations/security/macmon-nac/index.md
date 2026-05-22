@@ -40,11 +40,12 @@ Older versions of authentik set this value to `authentik` by default. If you're 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://macmon.company/login/?acs`.
         - Set the **Audience** to `https://macmon.company/login/?acs`.
+        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
-            - Set an available signing certificate.
-            - Enable both **Sign Assertions** and **Sign Responses**.
-            - Set **NameID Property Mapping** to the email mapping you selected (for example, `authentik default SAML Mapping: Email`).
-              macmon NAC expects the NameID format `E-mail address`, so ensure that the chosen mapping provides the user’s email address.
+            - Set **Signing Certificate** to an available certificate.
+            - Enable **Sign Responses**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+            - Set **Default NameID Policy** to **Email address**.
               You can optionally add mappings for additional claims such as `firstName`, `surName`, `memberOf`, or `description` if macmon NAC will use them.
     - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to control which users see the macmon NAC application on the **Application Dashboard** page.
 
@@ -77,3 +78,7 @@ macmon NAC provisions new users automatically when they authenticate through SSO
 ## Configuration verification
 
 To confirm that authentik is properly configured with macmon NAC, log out of macmon NAC. On the macmon NAC portal select **Single Sign-On**. You should be redirected to authentik to log in, and if successful, you should then be redirected to the macmon NAC interface.
+
+## Resources
+
+- [Belden - macmon Network Access Control (NAC)](https://www.belden.com/products/industrial-networking-cybersecurity/software-solutions/macmon-network-access-control-software)
