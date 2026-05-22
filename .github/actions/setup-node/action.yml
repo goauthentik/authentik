@@ -54,10 +54,9 @@ runs:
     - name: Install monorepo dependencies
       if: ${{ contains(inputs.dependencies, 'monorepo') }}
       shell: bash
-      timeout-minutes: 5
       run: | #shell
         node ./scripts/node/lint-lockfile.mjs
-        corepack npm ci
+        timeout 5m corepack npm ci
     - name: Setup Node.js (Working Directory)
       if: ${{ contains(inputs.dependencies, 'working-directory') }}
       uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
@@ -68,7 +67,6 @@ runs:
     - name: Install working directory dependencies
       if: ${{ contains(inputs.dependencies, 'working-directory') }}
       shell: bash
-      timeout-minutes: 5
       run: | # shell
         corepack install
 
@@ -76,4 +74,4 @@ runs:
         echo "npm version: $(corepack npm --version)"
 
         node ./scripts/node/lint-lockfile.mjs ${{ inputs.working-directory }}
-        corepack npm ci --prefix ${{ inputs.working-directory }}
+        timeout 5m corepack npm ci --prefix ${{ inputs.working-directory }}
