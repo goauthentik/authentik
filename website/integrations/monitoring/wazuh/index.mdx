@@ -52,6 +52,12 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 
 ### Create an application and provider in authentik
 
+:::warning SAML provider changes in authentik 2026.5
+authentik 2026.5 introduces changes to how the SAML provider behaves. Specifically, the provider now automatically sets the **Issuer** value to: `https://authentik.company/application/saml/<application_slug>/metadata/`
+
+Older versions of authentik set this value to `authentik` by default. If you're running an older version, please set **Issuer** to `https://authentik.company/application/saml/<application_slug>/metadata/`, where `<application_slug>` is the **slug** that you selected for the application.
+:::
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
@@ -59,8 +65,6 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 - **Choose a Provider type**: Select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **ACS URL**: `https://wazuh-dashboard.company/_opendistro/_security/saml/acs`
-    - **Issuer**: `authentik`
-    - **Service Provider Binding**: `Post`
     - **Audience**: `wazuh-saml`
     - Under **Advanced protocol settings**:
         - **Signing Certificate**: select an existing certificate. If you do not already have one, create it under **System** > **Certificates** before configuring the provider.
@@ -127,7 +131,7 @@ The file `wazuh_authentik_meta.xml` serves as a placeholder for your SAML Metada
                 config:
                     idp:
                         metadata_file: "/etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml"
-                        entity_id: "authentik"
+                        entity_id: "https://authentik.company/application/saml/<application_slug>/metadata/"
                     sp:
                         entity_id: "wazuh-saml"
                     kibana_url: "https://wazuh-dashboard.company/"
