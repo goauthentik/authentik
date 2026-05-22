@@ -29,6 +29,7 @@ class DeviceView(View):
     client_id: str
     provider: OAuth2Provider
     scopes: set[str] = []
+    dpop_jkt: str | None = None
 
     def parse_request(self):
         """Parse incoming request"""
@@ -62,6 +63,8 @@ class DeviceView(View):
             )
             self.scopes = self.scopes.intersection(default_scope_names)
 
+        self.dpop_jkt = self.request.POST.get("dpop_jkt")
+
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         throttle = AnonRateThrottle()
         throttle.rate = CONFIG.get("throttle.providers.oauth2.device", "20/hour")
@@ -78,7 +81,10 @@ class DeviceView(View):
             return TokenResponse(exc.create_dict(request), status=400)
         until = timedelta_from_string(self.provider.access_code_validity)
         token: DeviceToken = DeviceToken.objects.create(
-            expires=now() + until, provider=self.provider, _scope=" ".join(self.scopes)
+            expires=now() + until,
+            provider=self.provider,
+            _scope=" ".join(self.scopes),
+            dpop_jkt=self.dpop_jkt,
         )
         device_url = self.request.build_absolute_uri(
             reverse("authentik_providers_oauth2_root:device-login")

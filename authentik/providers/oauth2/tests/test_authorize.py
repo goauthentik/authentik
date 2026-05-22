@@ -9,7 +9,7 @@ from django.utils import translation
 from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.common.oauth.constants import SCOPE_OFFLINE_ACCESS, SCOPE_OPENID, TOKEN_TYPE
+from authentik.common.oauth.constants import SCOPE_BOUND_KEY, SCOPE_OFFLINE_ACCESS, SCOPE_OPENID, TOKEN_TYPE
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
@@ -819,3 +819,38 @@ class TestAuthorize(OAuthTestCase):
         self.assertEqual(response.status_code, 302)
         plan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER], "foo")
+
+    def test_dpop_jkt_persisted(self):
+        """Test that dpop_jkt is persisted in the authorization code"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        dpop_jkt = "n4bQgYhMfWWaL-qgxVrQFaO_TxsrC4Is0V1sFbDwCgg"
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                "scope": f"{SCOPE_OPENID} {SCOPE_BOUND_KEY}",
+                "dpop_jkt": dpop_jkt,
+            },
+        )
+        code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
+        self.assertIsNotNone(code)
+        self.assertEqual(code.dpop_jkt, dpop_jkt)
+        self.assertEqual(
+            response.url,
+            f"foo://localhost?code={code.code}&state={state}",
+        )

@@ -11,6 +11,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -29,7 +30,9 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_DEVICE_CODE,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
+    JWT_TYPE_DPOP_ID_TOKEN,
     PKCE_METHOD_S256,
+    SCOPE_BOUND_KEY,
     SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
 )
@@ -65,6 +68,7 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
     ScopeMapping,
 )
+from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator, code_sha256
 from authentik.providers.oauth2.utils import (
     TokenResponse,
     cors_allow,
@@ -97,6 +101,8 @@ class TokenParams:
     user: User | None = None
 
     code_verifier: str | None = None
+    dpop_proof: str | None = None
+    dpop_jwk: dict | None = None
 
     raw_code: InitVar[str] = ""
     raw_token: InitVar[str] = ""
@@ -125,6 +131,8 @@ class TokenParams:
             scope=set(request.POST.get("scope", "").split()),
             # PKCE parameter.
             code_verifier=request.POST.get("code_verifier"),
+            # DPoP proof-of-possession header (RFC 9449)
+            dpop_proof=request.headers.get("DPoP"),
         )
 
     def __check_scopes(self):
@@ -163,6 +171,43 @@ class TokenParams:
                     "User not authenticated for application", user=self.user, app_slug=app.slug
                 )
                 raise TokenError("invalid_grant")
+
+    def _validate_dpop(
+        self,
+        request: HttpRequest,
+        dpop_jkt: str | None,
+        raw_code: str | None = None,
+        flow_name: str = "token",
+    ) -> None:
+        """Validate DPoP proof for key-bound tokens.
+
+        :param request: The current HTTP request
+        :param dpop_jkt: The expected JWK thumbprint (from auth request or previous token)
+        :param raw_code: The raw authorization code or device code (for c_s256 computation)
+        :param flow_name: Description of flow for logging (e.g., "authorization code")
+        :raises TokenError: If DPoP validation fails
+        """
+        if not self.dpop_proof:
+            LOGGER.warning("Missing DPoP proof for key-bound token", flow_name=flow_name)
+            raise TokenError("invalid_request")
+        if dpop_jkt is None:
+            LOGGER.warning("bound_key scope requested but no dpop_jkt", flow_name=flow_name)
+            raise TokenError("invalid_request")
+        try:
+            kwargs = {}
+            if raw_code is not None:
+                kwargs["expected_c_s256"] = code_sha256(raw_code)
+            token_url = request.build_absolute_uri(reverse("authentik_providers_oauth2:token"))
+            self.dpop_jwk = DPoPValidator().validate(
+                self.dpop_proof,
+                expected_htm="POST",
+                expected_htu=token_url,
+                expected_jkt=dpop_jkt,
+                **kwargs,
+            )
+        except DPoPError as exc:
+            LOGGER.warning("DPoP validation failed", flow_name=flow_name, exc=str(exc))
+            raise TokenError("invalid_request") from exc
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
         if self.grant_type not in self.provider.grant_types:
@@ -252,6 +297,14 @@ class TokenParams:
         if not self.authorization_code.code_challenge and self.code_verifier:
             raise TokenError("invalid_grant")
 
+        if SCOPE_BOUND_KEY in self.authorization_code.scope:
+            self._validate_dpop(
+                request,
+                self.authorization_code.dpop_jkt,
+                raw_code=raw_code,
+                flow_name="authorization code",
+            )
+
     def __check_redirect_uri(self, request: HttpRequest):
         allowed_redirect_urls = self.provider.authorization_redirect_uris
         # At this point, no provider should have a blank redirect_uri, in case they do
@@ -327,6 +380,13 @@ class TokenParams:
                 provider=self.refresh_token.provider,
             ).from_http(request, user=self.refresh_token.user)
             raise TokenError("invalid_grant")
+
+        if self.refresh_token.dpop_jkt:
+            self._validate_dpop(
+                request,
+                self.refresh_token.dpop_jkt,
+                flow_name="refresh token",
+            )
 
     def __post_init_client_credentials(self, request: HttpRequest):
         # client_credentials flow with client assertion
@@ -545,6 +605,14 @@ class TokenParams:
             raise TokenError("invalid_grant")
         self.device_code = code
 
+        if SCOPE_BOUND_KEY in self.device_code.scope:
+            self._validate_dpop(
+                request,
+                self.device_code.dpop_jkt,
+                raw_code=device_code,
+                flow_name="device code",
+            )
+
     def __create_user_from_jwt(
         self, token: dict[str, Any], app: Application, source: OAuthSource, request: HttpRequest
     ):
@@ -636,6 +704,17 @@ class TokenView(View):
         except UserAuthError as error:
             return TokenResponse(error.create_dict(request), status=403)
 
+    def _get_id_token_jwt_type(self) -> str | None:
+        """Return dpop+id_token if key binding is active, else None"""
+        if self.params.dpop_jwk is not None:
+            return JWT_TYPE_DPOP_ID_TOKEN
+        return None
+
+    def _add_cnf_to_id_token(self, id_token: IDToken) -> None:
+        """Add cnf claim to ID Token when key binding is active"""
+        if self.params.dpop_jwk is not None:
+            id_token.cnf = {"jwk": self.params.dpop_jwk}
+
     def create_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
         now = timezone.now()
@@ -655,9 +734,11 @@ class TokenView(View):
             self.request,
         )
         access_id_token.nonce = self.params.authorization_code.nonce
+        self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
 
+        id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
@@ -665,7 +746,7 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": access_token.id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
         }
 
         if SCOPE_OFFLINE_ACCESS in self.params.authorization_code.scope:
@@ -677,6 +758,7 @@ class TokenView(View):
                 provider=self.provider,
                 auth_time=self.params.authorization_code.auth_time,
                 session=self.params.authorization_code.session,
+                dpop_jkt=self.params.authorization_code.dpop_jkt,
             )
             id_token = IDToken.new(
                 self.provider,
@@ -685,6 +767,7 @@ class TokenView(View):
             )
             id_token.nonce = self.params.authorization_code.nonce
             id_token.at_hash = access_token.at_hash
+            self._add_cnf_to_id_token(id_token)
             refresh_token.id_token = id_token
             refresh_token.save()
             response["refresh_token"] = refresh_token.token
@@ -711,21 +794,24 @@ class TokenView(View):
             auth_time=self.params.refresh_token.auth_time,
             session=self.params.refresh_token.session,
         )
-        access_token.id_token = IDToken.new(
+        access_id_token = IDToken.new(
             self.provider,
             access_token,
             self.request,
         )
+        self._add_cnf_to_id_token(access_id_token)
+        access_token.id_token = access_id_token
         access_token.save()
 
-        res = {
+        id_token_jwt_type = self._get_id_token_jwt_type()
+        response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
             "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": access_token.id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
         }
 
         refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
@@ -741,6 +827,7 @@ class TokenView(View):
                 provider=self.provider,
                 auth_time=self.params.refresh_token.auth_time,
                 session=self.params.refresh_token.session,
+                dpop_jkt=self.params.refresh_token.dpop_jkt,
             )
             id_token = IDToken.new(
                 self.provider,
@@ -749,15 +836,16 @@ class TokenView(View):
             )
             id_token.nonce = self.params.refresh_token.id_token.nonce
             id_token.at_hash = access_token.at_hash
+            self._add_cnf_to_id_token(id_token)
             refresh_token.id_token = id_token
             refresh_token.save()
 
             # Mark old token as revoked
             self.params.refresh_token.revoked = True
             self.params.refresh_token.save()
-            res["refresh_token"] = refresh_token.token
+            response["refresh_token"] = refresh_token.token
 
-        return res
+        return response
 
     def create_client_credentials_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""
@@ -801,13 +889,16 @@ class TokenView(View):
             auth_time=auth_event.created if auth_event else now,
             session=self.params.device_code.session,
         )
-        access_token.id_token = IDToken.new(
+        access_id_token = IDToken.new(
             self.provider,
             access_token,
             self.request,
         )
+        self._add_cnf_to_id_token(access_id_token)
+        access_token.id_token = access_id_token
         access_token.save()
 
+        id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
@@ -815,7 +906,7 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": access_token.id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
         }
 
         if SCOPE_OFFLINE_ACCESS in self.params.device_code.scope:
@@ -826,6 +917,7 @@ class TokenView(View):
                 expires=refresh_token_expiry,
                 provider=self.provider,
                 auth_time=auth_event.created if auth_event else now,
+                dpop_jkt=self.params.device_code.dpop_jkt,
             )
             id_token = IDToken.new(
                 self.provider,
@@ -833,6 +925,7 @@ class TokenView(View):
                 self.request,
             )
             id_token.at_hash = access_token.at_hash
+            self._add_cnf_to_id_token(id_token)
             refresh_token.id_token = id_token
             refresh_token.save()
             response["refresh_token"] = refresh_token.token
