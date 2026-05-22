@@ -93,7 +93,7 @@ The **Issuer mode** setting (under **Advanced protocol settings** controls the v
 | Mode (UI label)                                                                 | `iss` value                                                   |
 | ------------------------------------------------------------------------------- | ------------------------------------------------------------- |
 | **Each provider has a different issuer, based on the application slug** (default) | `https://authentik.company/application/o/<application_slug>/` |
-| _Same identifier is used for all providers_                                     | `https://authentik.company/`                                  |
+| **Same identifier is used for all providers**                                     | `https://authentik.company/`                                  |
 
 By default, authentik uses per-provider mode: every provider has a unique issuer derived from its application slug. This is the recommended setting, and matches how the discovery and JWKS endpoints are structured, since both are served under the per-application `/application/o/<application_slug>/` path.
 
