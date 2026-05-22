@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Semgrep with authentik, you need to create several property mappings and then create an application/provider pair in authentik.
+To support the integration of Semgrep with authentik, you need to create several property mappings and an application/provider pair in authentik.
 
 ### Create property mappings
 
