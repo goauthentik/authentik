@@ -47,6 +47,7 @@ type logrusAdapter struct {
 	entry *logrus.Entry
 }
 
+<<<<<<< HEAD
 func (l *logrusAdapter) Debug(format string, args ...interface{}) {
 	l.entry.Debugf(format, args...)
 }
@@ -60,12 +61,30 @@ func (l *logrusAdapter) Error(format string, args ...interface{}) {
 	l.entry.Errorf(format, args...)
 }
 func (l *logrusAdapter) With(args ...interface{}) protocol.Logger {
+=======
+func (l *logrusAdapter) fields(args ...any) map[string]any {
+>>>>>>> 0e4af73baf (providers/radius: fix eap debug logging (#22551))
 	f := make(map[string]any, len(args)/2)
 	i := Fields(args).Iterator()
 	for i.Next() {
 		k, v := i.At()
 		f[k] = v
 	}
-	e := l.entry.WithFields(f)
-	return &logrusAdapter{e}
+	return f
+}
+
+func (l *logrusAdapter) Debug(msg string, args ...any) {
+	l.entry.WithFields(l.fields(args...)).Debug(msg)
+}
+func (l *logrusAdapter) Info(msg string, args ...any) {
+	l.entry.WithFields(l.fields(args...)).Info(msg)
+}
+func (l *logrusAdapter) Warn(msg string, args ...any) {
+	l.entry.WithFields(l.fields(args...)).Warn(msg)
+}
+func (l *logrusAdapter) Error(msg string, args ...any) {
+	l.entry.WithFields(l.fields(args...)).Error(msg)
+}
+func (l *logrusAdapter) With(args ...any) protocol.Logger {
+	return &logrusAdapter{l.entry.WithFields(l.fields(args...))}
 }
