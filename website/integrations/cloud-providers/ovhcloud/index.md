@@ -22,6 +22,12 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 ### Create an application and provider in authentik
 
+:::warning SAML provider changes in authentik 2026.5
+authentik 2025.6 introduces changes to how the SAML provider behaves. Specifically, the provider now automatically sets the **Issuer** value to: `https://authentik.company/application/saml/<application_slug>/metadata/`
+
+Older versions of authentik set this value to `authentik` by default. If you're running an older version, please set **Issuer** to `https://authentik.company/application/saml/<application_slug>/metadata/`, where `<application_slug>` is the **slug** that you selected for the application.
+:::
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
