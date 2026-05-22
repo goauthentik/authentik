@@ -232,7 +232,7 @@ class SeleniumTestMixin(E2ETestMixin):
 
         return body_json
 
-    def find_flow_element(self, selector: str, timeout: float = 10) -> WebElement:
+    def find_light_element(self, selector: str, timeout: float = 10) -> WebElement:
         """Find an element by selector inside a Flow, regardless of its shadow state"""
 
         wait = WebDriverWait(self.driver, timeout)
@@ -304,7 +304,7 @@ class SeleniumTestMixin(E2ETestMixin):
 
         if "ak-stage-identification" not in skip_stages:
             if shadow_dom:
-                identification_stage = self.find_flow_element("ak-stage-identification")
+                identification_stage = self.find_light_element("ak-stage-identification")
             else:
                 identification_stage = self.shady_dom()
 
@@ -321,7 +321,7 @@ class SeleniumTestMixin(E2ETestMixin):
 
         if "ak-stage-password" not in skip_stages:
             if shadow_dom:
-                password_stage = self.find_flow_element("ak-stage-password")
+                password_stage = self.find_light_element("ak-stage-password")
             else:
                 password_stage = self.shady_dom()
 

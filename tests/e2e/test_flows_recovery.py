@@ -23,7 +23,7 @@ class TestFlowsRecovery(SeleniumTestCase):
     def initial_stages(self, user: User):
         """Fill out initial stages"""
         # Identification stage, click recovery
-        identification_stage = self.find_flow_element("ak-stage-identification")
+        identification_stage = self.find_light_element("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(
@@ -36,7 +36,7 @@ class TestFlowsRecovery(SeleniumTestCase):
         ).click()
 
         # First prompt stage
-        identification_stage = self.find_flow_element("ak-stage-identification")
+        identification_stage = self.find_light_element("ak-stage-identification")
         wait = WebDriverWait(identification_stage, self.wait_timeout)
 
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=uidField]")))
