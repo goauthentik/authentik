@@ -208,7 +208,6 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
 
 4. On the Wazuh Dashboard server, add these lines to the `/etc/wazuh-dashboard/opensearch_dashboards.yml` file. If the entry `opensearch_security.session.keepalive` already exists in your config, change it to `false`.
 
-
     ```yaml showLineNumbers
     opensearch_security.auth.type: "saml"
     server.xsrf.allowlist:
@@ -220,9 +219,7 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
     opensearch_security.session.keepalive: false
     ```
 
-
     Use this config block if you want to use both authentication methods (username/password and SSO):
-
 
     ```yaml showLineNumbers
     opensearch_security.auth.type: ["basicauth", "saml"]
