@@ -202,7 +202,7 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
 
     Click **Save role mapping**
 
-4. On the Wazuh Dashboard server, add these lines to the `/etc/wazuh-dashboard/opensearch_dashboards.yml` file.
+4. On the Wazuh Dashboard server, add these lines to the `/etc/wazuh-dashboard/opensearch_dashboards.yml` file. If the entry `opensearch_security.session.keepalive` already exists in your config, simply change it to `false`
 
 
     ```yaml showLineNumbers
@@ -216,7 +216,8 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
     opensearch_security.session.keepalive: false
     ```
 
-If you want to use both authentication methods (username/password and SSO) use this config:
+
+    If you want to use both authentication methods (username/password and SSO) use this config:
 
 
     ```yaml showLineNumbers
