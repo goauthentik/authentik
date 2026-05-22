@@ -86,6 +86,25 @@ Using back-channel logout (a server-to-server notification mechanism) allows an 
 
 For more information, see our [OAuth2/OpenID Connect front-channel and back-channel logout](./frontchannel_and_backchannel_logout.mdx) documentation.
 
+## Issuer mode
+
+The **Issuer mode** setting (under **Advanced protocol settings** controls the value authentik uses for the `iss` (issuer) claim in the tokens it signs, and for the `issuer` field in the provider's [OpenID Connect discovery document](#oauth2-endpoints-and-bindings).
+
+| Mode (UI label)                                                                 | `iss` value                                                   |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| _Each provider has a different issuer, based on the application slug_ (default) | `https://authentik.company/application/o/<application_slug>/` |
+| _Same identifier is used for all providers_                                     | `https://authentik.company/`                                  |
+
+By default, authentik uses per-provider mode: every provider has a unique issuer derived from its application slug. This is the recommended setting, and it matches how the discovery and JWKS endpoints are structured, since both are served under the per-application `/application/o/<application_slug>/` path.
+
+### Global issuer mode
+
+Setting the issuer mode to _Same identifier is used for all providers_ (referred to internally as **global** mode) makes every OAuth2 provider on the authentik instance share the same issuer: the root URL of the instance (`https://authentik.company/`).
+
+:::warning
+Global issuer mode still serves the discovery document at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`, not at the root issuer URL.
+:::
+
 ## OAuth 2.0 flows and grant types
 
 There are three general flows of OAuth 2.0:
