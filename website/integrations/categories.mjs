@@ -10,6 +10,7 @@ export default [
     ["documentation", "Documentation"],
     ["hypervisors-orchestrators", "Hypervisors / Orchestrators"],
     ["infrastructure", "Infrastructure"],
+    ["learning", "Learning"],
     ["networking", "Networking"],
     ["media", "Media"],
     ["miscellaneous", "Miscellaneous"],
