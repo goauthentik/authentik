@@ -1054,7 +1054,8 @@ const items = [
             type: "generated-index",
             title: "Releases",
             slug: "releases",
-            description: "Release Notes for recent authentik versions",
+            description:
+                "Read the latest authentik release notes, including upgrade guidance, breaking changes, new features, and fixes for supported versions.",
         },
         items: createReleaseSidebarEntries(releases),
     },
