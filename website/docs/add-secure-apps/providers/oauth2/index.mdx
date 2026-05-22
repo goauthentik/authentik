@@ -99,7 +99,7 @@ By default, authentik uses per-provider mode: every provider has a unique issuer
 
 ### Global issuer mode
 
-Setting the issuer mode to _Same identifier is used for all providers_ (referred to internally as **global** mode) makes every OAuth2 provider on the authentik instance share the same issuer: the root URL of the instance (`https://authentik.company/`).
+Setting the issuer mode to **Same identifier is used for all providers** (referred to internally as **global** mode) makes every OAuth2 provider on the authentik instance share the same issuer: the root URL of the instance (`https://authentik.company/`).
 
 :::warning
 Global issuer mode still serves the discovery document at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`, not at the root issuer URL.
