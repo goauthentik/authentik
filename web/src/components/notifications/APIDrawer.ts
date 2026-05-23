@@ -5,7 +5,8 @@ import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
-import { AKDrawerChangeEvent } from "#elements/notifications/events";
+
+import { AKDrawerChangeEvent } from "#components/notifications/events";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -80,14 +81,9 @@ export class APIDrawer extends AKElement {
 
     @listen(AKRequestPostEvent, { target: window })
     protected enqueueRequest = ({ requestInfo }: AKRequestPostEvent) => {
-        this.requests.push(requestInfo);
-
-        this.requests.sort((a, b) => a.time - b.time).reverse();
-        if (this.requests.length > 50) {
-            this.requests.shift();
-        }
-
-        this.requestUpdate();
+        this.requests = [requestInfo, ...this.requests]
+            .toSorted((a, b) => b.time - a.time)
+            .slice(0, 50);
     };
 
     render(): TemplateResult {
