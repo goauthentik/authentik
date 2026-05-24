@@ -101,11 +101,8 @@ class DeviceAuthFedAuthentication(BaseAuthentication):
         if not raw_token:
             LOGGER.warning("Missing token")
             return None
-<<<<<<< HEAD
-        device = Device.filter_not_expired(name=request.query_params.get("device")).first()
-=======
         device = (
-            Device.objects.filter(
+            Device.filter_not_expired(
                 Q(
                     name=request.query_params.get("device"),
                 )
@@ -120,7 +117,6 @@ class DeviceAuthFedAuthentication(BaseAuthentication):
             .distinct()
             .first()
         )
->>>>>>> 3e74ab9916 (endpoints/connectors/agent: allow federated auth via ssh hostkey lookup (#22594))
         if not device:
             LOGGER.warning("Couldn't find device")
             return None
