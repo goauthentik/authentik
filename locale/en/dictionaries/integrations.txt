@@ -48,6 +48,7 @@ Organizr
 Packagify
 Palo
 Papra
+Personio
 PhotoPrism
 pfSense
 phpipam
