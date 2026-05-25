@@ -10,8 +10,6 @@ support_level: community
 >
 > -- https://www.veeam.com/products/veeam-data-platform/backup-recovery.html
 
-This guide was tested with Veeam Backup & Replication 13.0.1 and authentik 2026.5.0.
-
 ## Preparation
 
 The following placeholders are used in this guide:
