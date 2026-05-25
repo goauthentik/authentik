@@ -32,7 +32,7 @@ jobs:
           mkdir -p website/help
           touch web/dist/test website/help/test
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v8
+        uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee # v8
         with:
           version: latest
           args: --timeout 5000s --verbose
