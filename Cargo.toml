@@ -59,7 +59,7 @@ reqwest = { version = "= 0.13.3", features = [
   "rustls",
   "stream",
 ] }
-reqwest-middleware = { version = "= 0.5.1", features = [
+reqwest-middleware = { version = "= 0.5.2", features = [
   "form",
   "json",
   "multipart",
