@@ -44512,6 +44512,12 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        discord_guild_id:
+          type: string
+          nullable: true
+          title: Guild ID
+          description: The Discord guild ID to sync roles from
+          maxLength: 20
       required:
       - callback_url
       - component
@@ -44696,6 +44702,12 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        discord_guild_id:
+          type: string
+          nullable: true
+          title: Guild ID
+          description: The Discord guild ID to sync roles from
+          maxLength: 20
       required:
       - consumer_key
       - consumer_secret
@@ -50034,6 +50046,12 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+        discord_guild_id:
+          type: string
+          nullable: true
+          title: Guild ID
+          description: The Discord guild ID to sync roles from
+          maxLength: 20
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
