@@ -452,7 +452,7 @@ dev = [
     { name = "requests-mock", specifier = "==1.12.1" },
     { name = "ruff", specifier = "==0.15.14" },
     { name = "selenium", specifier = "==4.44.0" },
-    { name = "types-channels", specifier = "==4.3.0.20260508" },
+    { name = "types-channels", specifier = "==4.3.0.20260518" },
     { name = "types-docker", specifier = "==7.1.0.20260512" },
     { name = "types-jwcrypto", specifier = "==1.5.7.20260513" },
     { name = "types-ldap3", specifier = "==2.9.13.20260508" },
@@ -3622,15 +3622,15 @@ wheels = [
 
 [[package]]
 name = "types-channels"
-version = "4.3.0.20260508"
+version = "4.3.0.20260518"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "django-stubs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/55/d4/78268dc53a02af2ad7578f906698a6e138d4fe68b570b3fd717290370e05/types_channels-4.3.0.20260508.tar.gz", hash = "sha256:44fc25e1b4e6f10ce38034976e79aae99ece516ae6662c70f8d29fd617daa818", size = 15492, upload-time = "2026-05-08T04:52:16.731Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/16/35/e1048eb8dc607873682a60bb034870b5135b34ee7c788c77012b04e179fa/types_channels-4.3.0.20260518.tar.gz", hash = "sha256:c1045a7f6e36b127e0c1c776a1727734cbbd1e36c4340414985ad4c3dde48d20", size = 15549, upload-time = "2026-05-18T06:06:16.092Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/71/ac/2e9c4dd8b35360a0b53d6a93b414d7fd76405442ce61d6d5e55f57db76fc/types_channels-4.3.0.20260508-py3-none-any.whl", hash = "sha256:94780ca12a97a8b151c415cef5e893fdcc79de19c30a527396a296902beedebd", size = 21112, upload-time = "2026-05-08T04:52:15.862Z" },
+    { url = "https://files.pythonhosted.org/packages/fc/e3/939312e5a5f184fe54f17e323a81426d19eddde0ed25ed745fcba5c8e515/types_channels-4.3.0.20260518-py3-none-any.whl", hash = "sha256:98443bd8a5892d87b535b3b54a409441d401a60df3c426f82a79faae12bdd8e7", size = 21120, upload-time = "2026-05-18T06:06:15.045Z" },
 ]
 
 [[package]]
