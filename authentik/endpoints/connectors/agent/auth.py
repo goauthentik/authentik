@@ -1,6 +1,6 @@
 from typing import Any
 
-from django.db.models import Model
+from django.db.models import Model, Q
 from django.http import HttpRequest
 from django.utils.timezone import now
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
@@ -101,7 +101,22 @@ class DeviceAuthFedAuthentication(BaseAuthentication):
         if not raw_token:
             LOGGER.warning("Missing token")
             return None
-        device = Device.filter_not_expired(name=request.query_params.get("device")).first()
+        device = (
+            Device.filter_not_expired(
+                Q(
+                    name=request.query_params.get("device"),
+                )
+                | Q(
+                    **{
+                        "deviceconnection__devicefactsnapshot__"
+                        "data__vendor__goauthentik.io/platform__"
+                        "ssh_host_keys__contains": request.query_params.get("device"),
+                    }
+                )
+            )
+            .distinct()
+            .first()
+        )
         if not device:
             LOGGER.warning("Couldn't find device")
             return None
