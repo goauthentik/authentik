@@ -53,6 +53,7 @@ class ServiceProviderMetadata:
         )
         provider.sp_binding = self.acs_binding
         provider.acs_url = self.acs_location
+        provider.audience = self.entity_id
         provider.default_name_id_policy = self.name_id_policy
         # Single Logout Service
         if self.sls_location:

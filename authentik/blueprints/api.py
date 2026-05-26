@@ -217,10 +217,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(
         request={"multipart/form-data": BlueprintUploadSerializer},
-        responses={
-            204: BlueprintImportResultSerializer,
-            400: BlueprintImportResultSerializer,
-        },
+        responses={200: BlueprintImportResultSerializer},
     )
     @action(url_path="import", detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
     @validate(
@@ -247,21 +244,13 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
 
         import_response = self.BlueprintImportResultSerializer(
             data={
-                "logs": [],
-                "success": False,
+                "logs": [LogEventSerializer(log).data for log in logs],
+                "success": valid,
             }
         )
         import_response.is_valid(raise_exception=True)
 
-        import_response.initial_data["logs"] = [LogEventSerializer(log).data for log in logs]
-        import_response.initial_data["success"] = valid
-        import_response.is_valid()
-        if not valid:
-            return Response(data=import_response.initial_data, status=200)
-
-        successful = importer.apply()
-        import_response.initial_data["success"] = successful
-        import_response.is_valid()
-        if not successful:
-            return Response(data=import_response.initial_data, status=200)
+        if valid:
+            import_response.initial_data["success"] = importer.apply()
+            import_response.is_valid()
         return Response(data=import_response.initial_data, status=200)

@@ -27,7 +27,7 @@ This documentation lists only the settings that you need to change from their de
 A trusted web certificate is required to be bound to the GlobalProtect Portal. This can be signed by a trusted internal Root Certificate Authority (CA); however, a self-signed certificate, a certificate outside of its validity, or a non-standard confirming certificate (such as a lifespan not trusted by modern browsers) will error out on SAML authentication.
 :::
 
-## authentik Configuration
+## authentik configuration
 
 To support the integration of GlobalProtect with authentik, you need to create an application/provider pair in authentik.
 
@@ -39,8 +39,6 @@ To support the integration of GlobalProtect with authentik, you need to create a
     - **Choose a Provider type**: Select **SAML Provider**.
     - **Configure the Provider**:
         - Set the **ACS URL** to `https://gp.company:443/SAML20/SP/ACS`. (Note the absence of the trailing slash and the inclusion of the web interface port)
-        - Set the **Issuer** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
-        - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, select an available **Signing certificate**.
 3. Click **Submit** to save the new application and provider.
 

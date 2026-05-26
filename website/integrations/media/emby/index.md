@@ -38,7 +38,7 @@ This documentation lists only the settings that you need to change from their de
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **LDAP Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name) and the authorization flow to use for this provider.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -66,7 +66,7 @@ Create a dedicated service account for Emby LDAP authentication by following the
 ## Emby configuration
 
 1. Access your Emby server and log in using the administrator account or the currently configured local administrator credentials.
-2. Click the **cog icon** (settings) located at the top right corner of the screen to access the dashboard settings.
+2. Click the **cog icon** (settings) located at the top-right corner of the screen to access the dashboard settings.
 3. Navigate to the **Plugins** section and click **Catalog** at the top of the page.
 4. Find and install the "LDAP Authentication" plugin. Restart Emby if prompted to complete the installation.
 5. After installation, return to the plugins section and click on the "LDAP Authentication" plugin to open its settings.
@@ -84,7 +84,7 @@ Create a dedicated service account for Emby LDAP authentication by following the
 
 7. Click **Save** to apply your configuration.
 
-## Configuration Verification
+## Configuration verification
 
 Log out of Emby and attempt to log back in using your LDAP credentials from authentik. Logging in with an email address isn't supported, therefore use your **username**.
 

@@ -36,14 +36,10 @@ entries:
       attrs:
         order: 50
         initial_value: |
-          target_uuid = (http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
-          current_user_uuid = str(getattr(user, "pk", "") or getattr(http_request.user, "pk", ""))
-          is_self_service = not target_uuid or target_uuid == current_user_uuid
-          pending_user = None
-          if target_uuid and not is_self_service:
-              from authentik.core.models import User
-
-              pending_user = User.objects.filter(pk=target_uuid).first()
+          actor_uuid = str(getattr(http_request.user, "pk", ""))
+          pending_user = user if getattr(user, "is_authenticated", False) else None
+          target_uuid = str(getattr(pending_user, "pk", ""))
+          is_self_service = not target_uuid or target_uuid == actor_uuid
           if is_self_service:
               return (
                   "<p><strong>You are about to lock down your own account.</strong></p>"
@@ -63,14 +59,15 @@ entries:
           from django.utils.html import escape
 
           if pending_user:
-              email = escape(pending_user.email or pending_user.name or "No email")
-              user_html = f"<p><code>{escape(pending_user.username)}</code> ({email})</p>"
+              detail = pending_user.email or pending_user.name
+              user_html = f"<code>{escape(pending_user.username)}</code>"
+              if detail and detail != pending_user.username:
+                  user_html = f"{user_html} ({escape(detail)})"
           else:
-              user_html = "<p>the account selected when this one-time lockdown link was created</p>"
+              user_html = "the account selected when this one-time lockdown link was created"
 
           return (
-              "<p><strong>You are about to lock down the following account:</strong></p>"
-              f"{user_html}"
+              f"<p><strong>You are about to lock down the following account:</strong> {user_html}</p>"
               "<p>This is an emergency action for cutting off access to the account right away. "
               "It does not lock the administrator who opened this page.</p>"
               "<p><strong>This will immediately:</strong></p>"
@@ -99,9 +96,9 @@ entries:
       attrs:
         order: 100
         initial_value: |
-          target_uuid = (http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
-          current_user_uuid = str(getattr(user, "pk", "") or getattr(http_request.user, "pk", ""))
-          is_self_service = not target_uuid or target_uuid == current_user_uuid
+          actor_uuid = str(getattr(http_request.user, "pk", ""))
+          target_uuid = str(getattr(user, "pk", ""))
+          is_self_service = not target_uuid or target_uuid == actor_uuid
           if is_self_service:
               info = (
                   "Use this if you no longer trust your current password or sessions. "
@@ -134,9 +131,9 @@ entries:
       attrs:
         order: 200
         placeholder: |
-          target_uuid = (http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
-          current_user_uuid = str(getattr(user, "pk", "") or getattr(http_request.user, "pk", ""))
-          is_self_service = not target_uuid or target_uuid == current_user_uuid
+          actor_uuid = str(getattr(http_request.user, "pk", ""))
+          target_uuid = str(getattr(user, "pk", ""))
+          is_self_service = not target_uuid or target_uuid == actor_uuid
           if is_self_service:
               return "Describe why you are locking your account..."
           return "Describe why this account is being locked down..."
@@ -184,14 +181,10 @@ entries:
       attrs:
         order: 300
         initial_value: |
-          target_uuid = (http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
           from django.utils.html import escape
-          from authentik.core.models import User
 
-          if target_uuid:
-              target = User.objects.filter(pk=target_uuid).first()
-              if target:
-                  return f"<p><code>{escape(target.username)}</code> has been locked down.</p>"
+          if getattr(user, "is_authenticated", False):
+              return f"<p><code>{escape(user.username)}</code> has been locked down.</p>"
 
           return "<p>The selected account has been locked down.</p>"
         initial_value_expression: true
@@ -221,9 +214,9 @@ entries:
       attrs:
         name: default-account-lockdown-admin-policy
         expression: |
-          target_uuid = (request.http_request.session.get("authentik/flows/get", {}) or {}).get("user_uuid")
-          current_user_uuid = str(getattr(request.user, "pk", "") or getattr(request.http_request.user, "pk", ""))
-          return bool(target_uuid) and target_uuid != current_user_uuid
+          actor_uuid = str(getattr(request.http_request.user, "pk", ""))
+          target_uuid = str(getattr(request.user, "pk", ""))
+          return bool(target_uuid) and target_uuid != actor_uuid
       identifiers:
         name: default-account-lockdown-admin-policy
       id: admin-policy
