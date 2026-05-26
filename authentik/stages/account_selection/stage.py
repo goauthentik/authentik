@@ -48,6 +48,11 @@ class AccountSelectionChallengeUser(PassiveSerializer):
     is_hint = BooleanField()
 
 
+def user_matches_hint(user: User, hint: str) -> bool:
+    """Check whether an account matches the supplied login hint."""
+    return hint in {user.uuid.hex, user.email, user.username}
+
+
 class AccountSelectionChallenge(Challenge):
     """Challenge for selecting a browser-local account."""
 
@@ -69,16 +74,15 @@ class AccountSelectionStageView(ChallengeStageView):
 
     response_class = AccountSelectionChallengeResponse
 
-    def get_account_users(self) -> list[User]:
+    def get_account_users(self, hint: str = "") -> list[User]:
         """Get known users for this browser session in display order."""
         current_account = []
         if self.request.user.is_authenticated:
             current_account.append(self.request.user.uuid.hex)
         users = get_known_account_users(self.request, current_account)
-        hint = self.get_account_hint()
         if not hint:
             return users
-        return sorted(users, key=lambda user: not self.user_matches_hint(user, hint))
+        return sorted(users, key=lambda user: not user_matches_hint(user, hint))
 
     def get_account_hint(self) -> str:
         """Return a suggested account identifier from the flow context or query."""
@@ -88,18 +92,21 @@ class AccountSelectionStageView(ChallengeStageView):
             or ""
         )
 
-    def user_matches_hint(self, user: User, hint: str) -> bool:
-        """Check whether an account matches the supplied login hint."""
-        return hint in {user.uuid.hex, user.email, user.username}
+    def get_requested_account_uid(self) -> str:
+        """Return an explicitly requested account UID from the flow context or query."""
+        return (
+            self.executor.plan.context.get(PLAN_CONTEXT_ACCOUNT_SELECTION_USER_UID)
+            or self.request.session.get(SESSION_KEY_GET, {}).get(QS_ACCOUNT_UID)
+            or ""
+        )
 
-    def serialize_account(self, user: User) -> dict[str, object]:
+    def serialize_account(self, user: User, hint: str = "") -> dict[str, object]:
         """Serialize a selectable account."""
         is_current = (
             self.request.user.is_authenticated
             and not isinstance(self.request.user, AnonymousUser)
             and user.pk == self.request.user.pk
         )
-        hint = self.get_account_hint()
         return {
             "uid": user.uuid.hex,
             "username": user.username,
@@ -107,13 +114,14 @@ class AccountSelectionStageView(ChallengeStageView):
             "email": user.email,
             "avatar": get_avatar(user, self.request),
             "is_current": is_current,
-            "is_hint": bool(hint and self.user_matches_hint(user, hint)),
+            "is_hint": bool(hint and user_matches_hint(user, hint)),
         }
 
     def get_challenge(self) -> AccountSelectionChallenge:
         """Show the current account and live remembered accounts for this browser."""
         application = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, Application())
-        accounts = [self.serialize_account(user) for user in self.get_account_users()]
+        hint = self.get_account_hint()
+        accounts = [self.serialize_account(user, hint) for user in self.get_account_users(hint)]
         return AccountSelectionChallenge(
             data={
                 "component": COMPONENT,
@@ -123,10 +131,8 @@ class AccountSelectionStageView(ChallengeStageView):
         )
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Auto-select an account when the flow was started with an account hint."""
-        selected_account = self.executor.plan.context.get(
-            PLAN_CONTEXT_ACCOUNT_SELECTION_USER_UID
-        ) or request.session.get(SESSION_KEY_GET, {}).get(QS_ACCOUNT_UID)
+        """Auto-select an account when authentik requested a specific account UID."""
+        selected_account = self.get_requested_account_uid()
         if selected_account:
             return self.switch_to_account(selected_account)
         return super().get(request, *args, **kwargs)
@@ -173,7 +179,6 @@ class AccountSelectionStageView(ChallengeStageView):
         if not account_session or not account_session.session:
             return self.executor.stage_invalid()
         set_account_selection_context(
-            self.request,
             self.executor.plan.context,
             selected_user,
             account_session.session.session_key,

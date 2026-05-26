@@ -19,7 +19,12 @@ from authentik.common.oauth.constants import QS_LOGIN_HINT
 from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_REDIRECT, FlowPlanner
+from authentik.flows.planner import (
+    PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_REDIRECT,
+    FlowPlanner,
+)
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.lib.utils.urls import is_url_absolute
 from authentik.policies.engine import PolicyEngine
@@ -131,18 +136,12 @@ def get_live_account_sessions(request: HttpRequest) -> dict[str, AuthenticatedSe
 
 def get_known_account_session(
     request: HttpRequest,
-    account_uid: str | None = None,
-    login_hint: str | None = None,
+    account_uid: str,
 ) -> AuthenticatedSession | None:
     """Return a live remembered session matching a selected account."""
-    if not account_uid and not login_hint:
-        return None
     for session in get_live_account_sessions(request).values():
-        if account_uid and session.user.uuid.hex != account_uid:
-            continue
-        if login_hint and login_hint not in {session.user.email, session.user.username}:
-            continue
-        return session
+        if session.user.uuid.hex == account_uid:
+            return session
     return None
 
 
@@ -253,7 +252,6 @@ def append_account_selection_hint(url: str, user: User) -> str:
 
 
 def set_account_selection_context(
-    request: HttpRequest,
     flow_context: dict,
     user: User,
     session_key: str,
@@ -287,8 +285,6 @@ def start_account_selection_flow_response(
     if login_hint := request.GET.get(QS_LOGIN_HINT):
         context[PLAN_CONTEXT_ACCOUNT_SELECTION_LOGIN_HINT] = login_hint
     if application:
-        from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
-
         context[PLAN_CONTEXT_APPLICATION] = application
     planner = FlowPlanner(flow)
     planner.use_cache = False
