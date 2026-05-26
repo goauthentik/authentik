@@ -54,6 +54,7 @@ If you need to enable advanced OIDC configurations, please refer to the [Using t
 
 ```json
     "domains": {
+        "": {
             "authStrategies": {
                 "oidc": {
                     "issuer": "https://authentik.company/application/o/meshcentral/",
@@ -61,7 +62,9 @@ If you need to enable advanced OIDC configurations, please refer to the [Using t
                     "clientsecret": "<Client Secret>",
                     "newAccounts": true
                 }
-            },
+            }
+        }
+    }
 ```
 
 To ensure everything is setup correctly, restart your MeshCentral instance and visit the main page. You should be greeted with a new button to allow signing in with OIDC.
