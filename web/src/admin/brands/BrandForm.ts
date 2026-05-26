@@ -309,6 +309,21 @@ export class BrandForm extends ModelForm<Brand, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("Account selection flow")}
+                        name="flowAccountSelection"
+                    >
+                        <ak-flow-search
+                            placeholder=${msg("Select an account selection flow...")}
+                            flowType=${FlowDesignationEnum.AccountSelection}
+                            .currentFlow=${this.instance?.flowAccountSelection}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Flow used when users choose or switch between browser-local accounts.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Device code flow")}
                         name="flowDeviceCode"
                     >

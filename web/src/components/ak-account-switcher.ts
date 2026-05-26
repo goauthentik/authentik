@@ -35,13 +35,16 @@ export class AccountSwitcher extends WithSession(AKElement) {
             next: `${window.location.pathname}${window.location.search}${window.location.hash}`,
         });
         const loginHint = account?.email || account?.username;
+        const accountSelectionFlow = globalAK().brand.flowAccountSelection;
+        if (account?.uid && accountSelectionFlow) {
+            query.set("account_uid", account.uid);
+            return `${globalAK().api.base}if/flow/${accountSelectionFlow}/?${query.toString()}`;
+        }
+        if (!account?.uid) {
+            query.set("add_account", "true");
+        }
         if (loginHint) {
             query.set("login_hint", loginHint);
-        }
-        if (account?.uid) {
-            query.set("account_uid", account.uid);
-        } else {
-            query.set("add_account", "true");
         }
         return `${globalAK().api.base}flows/-/default/authentication/?${query.toString()}`;
     }

@@ -3,11 +3,11 @@ import "#flow/components/ak-flow-card";
 import { BaseStage } from "#flow/stages/base";
 
 import type {
-    OAuthAccountSelectionChallenge,
-    OAuthAccountSelectionChallengeResponseRequest,
-    OAuthAccountSelectionUser,
+    AccountSelectionChallenge,
+    AccountSelectionChallengeUser,
+    AccountSelectionChallengeResponseRequest,
 } from "@goauthentik/api";
-import { OAuthAccountSelectionChallengeResponseActionEnum } from "@goauthentik/api";
+import { AccountSelectionChallengeResponseActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -19,10 +19,10 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-@customElement("ak-stage-oauth-account-selection")
-export class OAuthAccountSelectionStage extends BaseStage<
-    OAuthAccountSelectionChallenge,
-    OAuthAccountSelectionChallengeResponseRequest
+@customElement("ak-stage-account-selection")
+export class AccountSelectionStage extends BaseStage<
+    AccountSelectionChallenge,
+    AccountSelectionChallengeResponseRequest
 > {
     static styles: CSSResult[] = [
         PFLogin,
@@ -70,21 +70,26 @@ export class OAuthAccountSelectionStage extends BaseStage<
                 color: var(--pf-global--Color--200);
                 font-size: 0.875rem;
             }
+
+            .account-button.pf-m-primary .account-meta {
+                color: var(--pf-global--palette--white);
+            }
         `,
     ];
 
-    renderAccount(account: OAuthAccountSelectionUser): TemplateResult {
+    renderAccount(account: AccountSelectionChallengeUser): TemplateResult {
         const label = account.name || account.username || account.email;
         const secondary =
             account.email && account.email !== label ? account.email : account.username;
         return html`<button
             type="button"
-            class="pf-c-button pf-m-secondary account-button"
+            class="pf-c-button ${account.isHint ? "pf-m-primary" : "pf-m-secondary"} account-button"
+            ?autofocus=${account.isHint}
             @click=${() =>
                 this.host.submit({
                     action: account.isCurrent
-                        ? OAuthAccountSelectionChallengeResponseActionEnum.Continue
-                        : OAuthAccountSelectionChallengeResponseActionEnum.Switch,
+                        ? AccountSelectionChallengeResponseActionEnum.Continue
+                        : AccountSelectionChallengeResponseActionEnum.Switch,
                     selectedAccount: account.uid,
                 })}
         >
@@ -103,11 +108,11 @@ export class OAuthAccountSelectionStage extends BaseStage<
             <form class="pf-c-form">
                 <div class="pf-c-form__group">
                     <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
-                        ${msg("Choose an account")}
+                        ${msg("Continue as")}
                     </h3>
                     ${app
                         ? html`<p class="pf-u-mb-md">
-                              ${msg(str`Continue to ${app} with one of these accounts.`)}
+                              ${msg(str`Select which account to use for ${app}.`)}
                           </p>`
                         : nothing}
                 </div>
@@ -123,7 +128,7 @@ export class OAuthAccountSelectionStage extends BaseStage<
                         class="pf-c-button pf-m-link pf-m-block"
                         @click=${() =>
                             this.host.submit({
-                                action: OAuthAccountSelectionChallengeResponseActionEnum.Login,
+                                action: AccountSelectionChallengeResponseActionEnum.Login,
                             })}
                     >
                         ${msg("Use another account")}
@@ -134,10 +139,10 @@ export class OAuthAccountSelectionStage extends BaseStage<
     }
 }
 
-export default OAuthAccountSelectionStage;
+export default AccountSelectionStage;
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-stage-oauth-account-selection": OAuthAccountSelectionStage;
+        "ak-stage-account-selection": AccountSelectionStage;
     }
 }

@@ -18,6 +18,7 @@ import (
 
 // FlowChallengeResponseRequest - struct for FlowChallengeResponseRequest
 type FlowChallengeResponseRequest struct {
+	AccountSelectionChallengeResponseRequest        *AccountSelectionChallengeResponseRequest
 	AppleChallengeResponseRequest                   *AppleChallengeResponseRequest
 	AuthenticatorDuoChallengeResponseRequest        *AuthenticatorDuoChallengeResponseRequest
 	AuthenticatorEmailChallengeResponseRequest      *AuthenticatorEmailChallengeResponseRequest
@@ -36,7 +37,6 @@ type FlowChallengeResponseRequest struct {
 	IdentificationChallengeResponseRequest          *IdentificationChallengeResponseRequest
 	IframeLogoutChallengeResponseRequest            *IframeLogoutChallengeResponseRequest
 	NativeLogoutChallengeResponseRequest            *NativeLogoutChallengeResponseRequest
-	OAuthAccountSelectionChallengeResponseRequest   *OAuthAccountSelectionChallengeResponseRequest
 	OAuthDeviceCodeChallengeResponseRequest         *OAuthDeviceCodeChallengeResponseRequest
 	OAuthDeviceCodeFinishChallengeResponseRequest   *OAuthDeviceCodeFinishChallengeResponseRequest
 	PasswordChallengeResponseRequest                *PasswordChallengeResponseRequest
@@ -45,6 +45,13 @@ type FlowChallengeResponseRequest struct {
 	RedirectChallengeResponseRequest                *RedirectChallengeResponseRequest
 	TelegramChallengeResponseRequest                *TelegramChallengeResponseRequest
 	UserLoginChallengeResponseRequest               *UserLoginChallengeResponseRequest
+}
+
+// AccountSelectionChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns AccountSelectionChallengeResponseRequest wrapped in FlowChallengeResponseRequest
+func AccountSelectionChallengeResponseRequestAsFlowChallengeResponseRequest(v *AccountSelectionChallengeResponseRequest) FlowChallengeResponseRequest {
+	return FlowChallengeResponseRequest{
+		AccountSelectionChallengeResponseRequest: v,
+	}
 }
 
 // AppleChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns AppleChallengeResponseRequest wrapped in FlowChallengeResponseRequest
@@ -170,13 +177,6 @@ func IframeLogoutChallengeResponseRequestAsFlowChallengeResponseRequest(v *Ifram
 func NativeLogoutChallengeResponseRequestAsFlowChallengeResponseRequest(v *NativeLogoutChallengeResponseRequest) FlowChallengeResponseRequest {
 	return FlowChallengeResponseRequest{
 		NativeLogoutChallengeResponseRequest: v,
-	}
-}
-
-// OAuthAccountSelectionChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns OAuthAccountSelectionChallengeResponseRequest wrapped in FlowChallengeResponseRequest
-func OAuthAccountSelectionChallengeResponseRequestAsFlowChallengeResponseRequest(v *OAuthAccountSelectionChallengeResponseRequest) FlowChallengeResponseRequest {
-	return FlowChallengeResponseRequest{
-		OAuthAccountSelectionChallengeResponseRequest: v,
 	}
 }
 
@@ -327,6 +327,18 @@ func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 		} else {
 			dst.TelegramChallengeResponseRequest = nil
 			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as TelegramChallengeResponseRequest: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'ak-stage-account-selection'
+	if jsonDict["component"] == "ak-stage-account-selection" {
+		// try to unmarshal JSON data into AccountSelectionChallengeResponseRequest
+		err = json.Unmarshal(data, &dst.AccountSelectionChallengeResponseRequest)
+		if err == nil {
+			return nil // data stored in dst.AccountSelectionChallengeResponseRequest, return on the first match
+		} else {
+			dst.AccountSelectionChallengeResponseRequest = nil
+			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as AccountSelectionChallengeResponseRequest: %s", err.Error())
 		}
 	}
 
@@ -498,18 +510,6 @@ func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	// check if the discriminator value is 'ak-stage-oauth-account-selection'
-	if jsonDict["component"] == "ak-stage-oauth-account-selection" {
-		// try to unmarshal JSON data into OAuthAccountSelectionChallengeResponseRequest
-		err = json.Unmarshal(data, &dst.OAuthAccountSelectionChallengeResponseRequest)
-		if err == nil {
-			return nil // data stored in dst.OAuthAccountSelectionChallengeResponseRequest, return on the first match
-		} else {
-			dst.OAuthAccountSelectionChallengeResponseRequest = nil
-			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as OAuthAccountSelectionChallengeResponseRequest: %s", err.Error())
-		}
-	}
-
 	// check if the discriminator value is 'ak-stage-password'
 	if jsonDict["component"] == "ak-stage-password" {
 		// try to unmarshal JSON data into PasswordChallengeResponseRequest
@@ -575,6 +575,10 @@ func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src FlowChallengeResponseRequest) MarshalJSON() ([]byte, error) {
+	if src.AccountSelectionChallengeResponseRequest != nil {
+		return json.Marshal(&src.AccountSelectionChallengeResponseRequest)
+	}
+
 	if src.AppleChallengeResponseRequest != nil {
 		return json.Marshal(&src.AppleChallengeResponseRequest)
 	}
@@ -647,10 +651,6 @@ func (src FlowChallengeResponseRequest) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.NativeLogoutChallengeResponseRequest)
 	}
 
-	if src.OAuthAccountSelectionChallengeResponseRequest != nil {
-		return json.Marshal(&src.OAuthAccountSelectionChallengeResponseRequest)
-	}
-
 	if src.OAuthDeviceCodeChallengeResponseRequest != nil {
 		return json.Marshal(&src.OAuthDeviceCodeChallengeResponseRequest)
 	}
@@ -691,6 +691,10 @@ func (obj *FlowChallengeResponseRequest) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
+	if obj.AccountSelectionChallengeResponseRequest != nil {
+		return obj.AccountSelectionChallengeResponseRequest
+	}
+
 	if obj.AppleChallengeResponseRequest != nil {
 		return obj.AppleChallengeResponseRequest
 	}
@@ -763,10 +767,6 @@ func (obj *FlowChallengeResponseRequest) GetActualInstance() interface{} {
 		return obj.NativeLogoutChallengeResponseRequest
 	}
 
-	if obj.OAuthAccountSelectionChallengeResponseRequest != nil {
-		return obj.OAuthAccountSelectionChallengeResponseRequest
-	}
-
 	if obj.OAuthDeviceCodeChallengeResponseRequest != nil {
 		return obj.OAuthDeviceCodeChallengeResponseRequest
 	}
@@ -805,6 +805,10 @@ func (obj *FlowChallengeResponseRequest) GetActualInstance() interface{} {
 
 // Get the actual instance value
 func (obj FlowChallengeResponseRequest) GetActualInstanceValue() interface{} {
+	if obj.AccountSelectionChallengeResponseRequest != nil {
+		return *obj.AccountSelectionChallengeResponseRequest
+	}
+
 	if obj.AppleChallengeResponseRequest != nil {
 		return *obj.AppleChallengeResponseRequest
 	}
@@ -875,10 +879,6 @@ func (obj FlowChallengeResponseRequest) GetActualInstanceValue() interface{} {
 
 	if obj.NativeLogoutChallengeResponseRequest != nil {
 		return *obj.NativeLogoutChallengeResponseRequest
-	}
-
-	if obj.OAuthAccountSelectionChallengeResponseRequest != nil {
-		return *obj.OAuthAccountSelectionChallengeResponseRequest
 	}
 
 	if obj.OAuthDeviceCodeChallengeResponseRequest != nil {

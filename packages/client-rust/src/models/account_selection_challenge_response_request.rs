@@ -10,23 +10,23 @@ use serde::{Deserialize, Serialize};
 
 use crate::models;
 
-/// OAuthAccountSelectionChallengeResponseRequest : OAuth account selection response.
+/// AccountSelectionChallengeResponseRequest : Account selection response.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct OAuthAccountSelectionChallengeResponseRequest {
+pub struct AccountSelectionChallengeResponseRequest {
     #[serde(rename = "component", skip_serializing_if = "Option::is_none")]
     pub component: Option<String>,
     #[serde(rename = "action")]
-    pub action: models::OAuthAccountSelectionChallengeResponseActionEnum,
+    pub action: models::AccountSelectionChallengeResponseActionEnum,
     #[serde(rename = "selected_account", skip_serializing_if = "Option::is_none")]
     pub selected_account: Option<String>,
 }
 
-impl OAuthAccountSelectionChallengeResponseRequest {
-    /// OAuth account selection response.
+impl AccountSelectionChallengeResponseRequest {
+    /// Account selection response.
     pub fn new(
-        action: models::OAuthAccountSelectionChallengeResponseActionEnum,
-    ) -> OAuthAccountSelectionChallengeResponseRequest {
-        OAuthAccountSelectionChallengeResponseRequest {
+        action: models::AccountSelectionChallengeResponseActionEnum,
+    ) -> AccountSelectionChallengeResponseRequest {
+        AccountSelectionChallengeResponseRequest {
             component: None,
             action,
             selected_account: None,

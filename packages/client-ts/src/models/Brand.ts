@@ -101,6 +101,12 @@ export interface Brand {
      * @type {string}
      * @memberof Brand
      */
+    flowAccountSelection?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof Brand
+     */
     flowDeviceCode?: string | null;
     /**
      *
@@ -171,6 +177,8 @@ export function BrandFromJSONTyped(json: any, ignoreDiscriminator: boolean): Bra
         flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
         flowUserSettings:
             json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
+        flowAccountSelection:
+            json["flow_account_selection"] == null ? undefined : json["flow_account_selection"],
         flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
         flowLockdown: json["flow_lockdown"] == null ? undefined : json["flow_lockdown"],
         defaultApplication:
@@ -207,6 +215,7 @@ export function BrandToJSONTyped(
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
         flow_user_settings: value["flowUserSettings"],
+        flow_account_selection: value["flowAccountSelection"],
         flow_device_code: value["flowDeviceCode"],
         flow_lockdown: value["flowLockdown"],
         default_application: value["defaultApplication"],

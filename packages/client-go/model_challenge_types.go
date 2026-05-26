@@ -19,6 +19,7 @@ import (
 // ChallengeTypes - struct for ChallengeTypes
 type ChallengeTypes struct {
 	AccessDeniedChallenge            *AccessDeniedChallenge
+	AccountSelectionChallenge        *AccountSelectionChallenge
 	AppleLoginChallenge              *AppleLoginChallenge
 	AuthenticatorDuoChallenge        *AuthenticatorDuoChallenge
 	AuthenticatorEmailChallenge      *AuthenticatorEmailChallenge
@@ -38,7 +39,6 @@ type ChallengeTypes struct {
 	IdentificationChallenge          *IdentificationChallenge
 	IframeLogoutChallenge            *IframeLogoutChallenge
 	NativeLogoutChallenge            *NativeLogoutChallenge
-	OAuthAccountSelectionChallenge   *OAuthAccountSelectionChallenge
 	OAuthDeviceCodeChallenge         *OAuthDeviceCodeChallenge
 	OAuthDeviceCodeFinishChallenge   *OAuthDeviceCodeFinishChallenge
 	PasswordChallenge                *PasswordChallenge
@@ -55,6 +55,13 @@ type ChallengeTypes struct {
 func AccessDeniedChallengeAsChallengeTypes(v *AccessDeniedChallenge) ChallengeTypes {
 	return ChallengeTypes{
 		AccessDeniedChallenge: v,
+	}
+}
+
+// AccountSelectionChallengeAsChallengeTypes is a convenience function that returns AccountSelectionChallenge wrapped in ChallengeTypes
+func AccountSelectionChallengeAsChallengeTypes(v *AccountSelectionChallenge) ChallengeTypes {
+	return ChallengeTypes{
+		AccountSelectionChallenge: v,
 	}
 }
 
@@ -188,13 +195,6 @@ func IframeLogoutChallengeAsChallengeTypes(v *IframeLogoutChallenge) ChallengeTy
 func NativeLogoutChallengeAsChallengeTypes(v *NativeLogoutChallenge) ChallengeTypes {
 	return ChallengeTypes{
 		NativeLogoutChallenge: v,
-	}
-}
-
-// OAuthAccountSelectionChallengeAsChallengeTypes is a convenience function that returns OAuthAccountSelectionChallenge wrapped in ChallengeTypes
-func OAuthAccountSelectionChallengeAsChallengeTypes(v *OAuthAccountSelectionChallenge) ChallengeTypes {
-	return ChallengeTypes{
-		OAuthAccountSelectionChallenge: v,
 	}
 }
 
@@ -371,6 +371,18 @@ func (dst *ChallengeTypes) UnmarshalJSON(data []byte) error {
 		} else {
 			dst.AccessDeniedChallenge = nil
 			return fmt.Errorf("failed to unmarshal ChallengeTypes as AccessDeniedChallenge: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'ak-stage-account-selection'
+	if jsonDict["component"] == "ak-stage-account-selection" {
+		// try to unmarshal JSON data into AccountSelectionChallenge
+		err = json.Unmarshal(data, &dst.AccountSelectionChallenge)
+		if err == nil {
+			return nil // data stored in dst.AccountSelectionChallenge, return on the first match
+		} else {
+			dst.AccountSelectionChallenge = nil
+			return fmt.Errorf("failed to unmarshal ChallengeTypes as AccountSelectionChallenge: %s", err.Error())
 		}
 	}
 
@@ -554,18 +566,6 @@ func (dst *ChallengeTypes) UnmarshalJSON(data []byte) error {
 		}
 	}
 
-	// check if the discriminator value is 'ak-stage-oauth-account-selection'
-	if jsonDict["component"] == "ak-stage-oauth-account-selection" {
-		// try to unmarshal JSON data into OAuthAccountSelectionChallenge
-		err = json.Unmarshal(data, &dst.OAuthAccountSelectionChallenge)
-		if err == nil {
-			return nil // data stored in dst.OAuthAccountSelectionChallenge, return on the first match
-		} else {
-			dst.OAuthAccountSelectionChallenge = nil
-			return fmt.Errorf("failed to unmarshal ChallengeTypes as OAuthAccountSelectionChallenge: %s", err.Error())
-		}
-	}
-
 	// check if the discriminator value is 'ak-stage-password'
 	if jsonDict["component"] == "ak-stage-password" {
 		// try to unmarshal JSON data into PasswordChallenge
@@ -659,6 +659,10 @@ func (src ChallengeTypes) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AccessDeniedChallenge)
 	}
 
+	if src.AccountSelectionChallenge != nil {
+		return json.Marshal(&src.AccountSelectionChallenge)
+	}
+
 	if src.AppleLoginChallenge != nil {
 		return json.Marshal(&src.AppleLoginChallenge)
 	}
@@ -735,10 +739,6 @@ func (src ChallengeTypes) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.NativeLogoutChallenge)
 	}
 
-	if src.OAuthAccountSelectionChallenge != nil {
-		return json.Marshal(&src.OAuthAccountSelectionChallenge)
-	}
-
 	if src.OAuthDeviceCodeChallenge != nil {
 		return json.Marshal(&src.OAuthDeviceCodeChallenge)
 	}
@@ -789,6 +789,10 @@ func (obj *ChallengeTypes) GetActualInstance() interface{} {
 	}
 	if obj.AccessDeniedChallenge != nil {
 		return obj.AccessDeniedChallenge
+	}
+
+	if obj.AccountSelectionChallenge != nil {
+		return obj.AccountSelectionChallenge
 	}
 
 	if obj.AppleLoginChallenge != nil {
@@ -867,10 +871,6 @@ func (obj *ChallengeTypes) GetActualInstance() interface{} {
 		return obj.NativeLogoutChallenge
 	}
 
-	if obj.OAuthAccountSelectionChallenge != nil {
-		return obj.OAuthAccountSelectionChallenge
-	}
-
 	if obj.OAuthDeviceCodeChallenge != nil {
 		return obj.OAuthDeviceCodeChallenge
 	}
@@ -919,6 +919,10 @@ func (obj *ChallengeTypes) GetActualInstance() interface{} {
 func (obj ChallengeTypes) GetActualInstanceValue() interface{} {
 	if obj.AccessDeniedChallenge != nil {
 		return *obj.AccessDeniedChallenge
+	}
+
+	if obj.AccountSelectionChallenge != nil {
+		return *obj.AccountSelectionChallenge
 	}
 
 	if obj.AppleLoginChallenge != nil {
@@ -995,10 +999,6 @@ func (obj ChallengeTypes) GetActualInstanceValue() interface{} {
 
 	if obj.NativeLogoutChallenge != nil {
 		return *obj.NativeLogoutChallenge
-	}
-
-	if obj.OAuthAccountSelectionChallenge != nil {
-		return *obj.OAuthAccountSelectionChallenge
 	}
 
 	if obj.OAuthDeviceCodeChallenge != nil {

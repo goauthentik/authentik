@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from time import time
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -16,7 +17,12 @@ from django.utils.http import http_date
 
 from authentik.common.oauth.constants import QS_LOGIN_HINT
 from authentik.core.models import AuthenticatedSession, User
+from authentik.flows.exceptions import FlowNonApplicableException
+from authentik.flows.models import Flow, FlowDesignation
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_REDIRECT, FlowPlanner
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.lib.utils.urls import is_url_absolute
+from authentik.policies.engine import PolicyEngine
 from authentik.root.middleware import SessionMiddleware
 
 COOKIE_NAME_KNOWN_ACCOUNTS = "authentik_accounts"
@@ -24,6 +30,10 @@ KNOWN_ACCOUNTS_MAX = 5
 KNOWN_ACCOUNTS_AGE = int(timedelta(days=365).total_seconds())
 QS_ACCOUNT_UID = "account_uid"
 QS_ADD_ACCOUNT = "add_account"
+PLAN_CONTEXT_ACCOUNT_SWITCH_SESSION_KEY = "account_switch_session_key"
+PLAN_CONTEXT_ACCOUNT_SWITCH_USER_UID = "account_switch_user_uid"
+PLAN_CONTEXT_ACCOUNT_SELECTION_USER_UID = "account_selection_user_uid"
+PLAN_CONTEXT_ACCOUNT_SELECTION_LOGIN_HINT = "account_selection_login_hint"
 
 
 @dataclass(frozen=True)
@@ -136,6 +146,23 @@ def get_known_account_session(
     return None
 
 
+def get_live_account_session(
+    account_uid: str,
+    session_key: str,
+) -> AuthenticatedSession | None:
+    """Return a live authenticated session for a specific account."""
+    active_users = User.objects.filter(uuid=account_uid, is_active=True).exclude_anonymous()
+    return (
+        AuthenticatedSession.objects.select_related("session", "user")
+        .filter(
+            session__session_key=session_key,
+            session__expires__gt=timezone.now(),
+            user__in=active_users,
+        )
+        .first()
+    )
+
+
 def set_session_key_cookie(
     response: HttpResponse,
     request: HttpRequest,
@@ -177,6 +204,14 @@ def set_session_cookie(
     )
 
 
+def get_next_url(request: HttpRequest, next_arg_name: str) -> str:
+    """Return a safe next URL from the current request."""
+    next_url = request.GET.get(next_arg_name)
+    if not next_url or is_url_absolute(next_url):
+        return reverse("authentik_core:root-redirect")
+    return next_url
+
+
 def start_fresh_session(response: HttpResponse, request: HttpRequest) -> HttpResponse:
     """Set the browser's primary session cookie to a new anonymous session."""
     fresh_session = request.session.__class__(
@@ -192,22 +227,76 @@ def start_fresh_session(response: HttpResponse, request: HttpRequest) -> HttpRes
     )
 
 
-def switch_known_account_response(
+def get_account_selection_flow(request: HttpRequest) -> Flow | None:
+    """Return the brand account selection flow or the first applicable fallback."""
+    brand_flow = getattr(request.brand, "flow_account_selection", None)
+    if brand_flow:
+        return brand_flow
+    flows = Flow.objects.filter(designation=FlowDesignation.ACCOUNT_SELECTION).order_by("slug")
+    for flow in flows:
+        engine = PolicyEngine(flow, request.user, request)
+        engine.build()
+        if engine.result.passing:
+            return flow
+    return None
+
+
+def append_account_selection_hint(url: str, user: User) -> str:
+    """Append account selection hints when returning to OAuth authorize."""
+    parts = urlsplit(url)
+    if parts.path != reverse("authentik_providers_oauth2:authorize"):
+        return url
+    query = dict(parse_qsl(parts.query, keep_blank_values=True))
+    query[QS_ACCOUNT_UID] = user.uuid.hex
+    query[QS_LOGIN_HINT] = user.email or user.username
+    return urlunsplit(parts._replace(query=urlencode(query)))
+
+
+def set_account_selection_context(
     request: HttpRequest,
-    next_arg_name: str,
+    flow_context: dict,
+    user: User,
+    session_key: str,
+) -> None:
+    """Store the selected account on a flow plan for later verification and switching."""
+    flow_context[PLAN_CONTEXT_PENDING_USER] = user
+    flow_context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = user.email or user.username
+    flow_context[PLAN_CONTEXT_ACCOUNT_SWITCH_USER_UID] = user.uuid.hex
+    flow_context[PLAN_CONTEXT_ACCOUNT_SWITCH_SESSION_KEY] = session_key
+    if PLAN_CONTEXT_REDIRECT in flow_context:
+        flow_context[PLAN_CONTEXT_REDIRECT] = append_account_selection_hint(
+            flow_context[PLAN_CONTEXT_REDIRECT],
+            user,
+        )
+
+
+def start_account_selection_flow_response(
+    request: HttpRequest,
+    next_url: str,
+    application=None,
 ) -> HttpResponse | None:
-    """Switch to a live browser-local account session before starting authentication."""
-    account_session = get_known_account_session(
-        request,
-        account_uid=request.GET.get(QS_ACCOUNT_UID),
-        login_hint=request.GET.get(QS_LOGIN_HINT),
-    )
-    if not account_session:
+    """Start the brand account selection flow."""
+    flow = get_account_selection_flow(request)
+    if not flow:
         return None
-    next_url = request.GET.get(next_arg_name)
-    if not next_url or is_url_absolute(next_url):
-        next_url = reverse("authentik_core:root-redirect")
-    return set_session_cookie(redirect(next_url), request, account_session)
+    context = {
+        PLAN_CONTEXT_REDIRECT: next_url,
+    }
+    if account_uid := request.GET.get(QS_ACCOUNT_UID):
+        context[PLAN_CONTEXT_ACCOUNT_SELECTION_USER_UID] = account_uid
+    if login_hint := request.GET.get(QS_LOGIN_HINT):
+        context[PLAN_CONTEXT_ACCOUNT_SELECTION_LOGIN_HINT] = login_hint
+    if application:
+        from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
+
+        context[PLAN_CONTEXT_APPLICATION] = application
+    planner = FlowPlanner(flow)
+    planner.use_cache = False
+    try:
+        plan = planner.plan(request, context)
+    except FlowNonApplicableException:
+        return None
+    return plan.to_redirect(request, flow)
 
 
 def start_additional_account_login_response(request: HttpRequest) -> HttpResponse | None:
@@ -230,7 +319,9 @@ def account_selection_authentication_response(
     response = start_additional_account_login_response(request)
     if response is not None:
         return response
-    return switch_known_account_response(request, next_arg_name)
+    if request.GET.get(QS_ACCOUNT_UID) or request.GET.get(QS_LOGIN_HINT):
+        return start_account_selection_flow_response(request, get_next_url(request, next_arg_name))
+    return None
 
 
 def remember_account(response: HttpResponse, request: HttpRequest, user: User) -> HttpResponse:

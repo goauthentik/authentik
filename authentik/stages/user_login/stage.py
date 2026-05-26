@@ -11,12 +11,13 @@ from django.utils.translation import gettext as _
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
-from authentik.core.account_selection import remember_account
+from authentik.core.account_selection import append_account_selection_hint, remember_account
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_REDIRECT
 from authentik.flows.stage import ChallengeStageView
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.password import BACKEND_INBUILT
@@ -181,6 +182,12 @@ class UserLoginStageView(ChallengeStageView):
             Session.objects.filter(
                 authenticatedsession__user=user,
             ).exclude(session_key=self.request.session.session_key).delete()
+        next_url = self.request.session.get(SESSION_KEY_GET, {}).get(NEXT_ARG_NAME)
+        if next_url:
+            self.executor.plan.context[PLAN_CONTEXT_REDIRECT] = append_account_selection_hint(
+                next_url,
+                user,
+            )
         if remember is None:
             return self.set_known_device_cookie(user)
         return remember_account(self.executor.stage_ok(), self.request, user)

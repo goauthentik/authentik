@@ -13,6 +13,8 @@ use crate::models;
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "component")]
 pub enum FlowChallengeResponseRequest {
+    #[serde(rename = "ak-stage-account-selection")]
+    AkStageAccountSelection(models::AccountSelectionChallengeResponseRequest),
     #[serde(rename = "ak-source-oauth-apple")]
     AkSourceOauthApple(models::AppleChallengeResponseRequest),
     #[serde(rename = "ak-stage-authenticator-duo")]
@@ -49,8 +51,6 @@ pub enum FlowChallengeResponseRequest {
     AkProviderIframeLogout(models::IframeLogoutChallengeResponseRequest),
     #[serde(rename = "ak-provider-saml-native-logout")]
     AkProviderSamlNativeLogout(models::NativeLogoutChallengeResponseRequest),
-    #[serde(rename = "ak-stage-oauth-account-selection")]
-    AkStageOauthAccountSelection(models::OAuthAccountSelectionChallengeResponseRequest),
     #[serde(rename = "ak-provider-oauth2-device-code")]
     AkProviderOauth2DeviceCode(models::OAuthDeviceCodeChallengeResponseRequest),
     #[serde(rename = "ak-provider-oauth2-device-code-finish")]
@@ -71,6 +71,6 @@ pub enum FlowChallengeResponseRequest {
 
 impl Default for FlowChallengeResponseRequest {
     fn default() -> Self {
-        Self::AkSourceOauthApple(Default::default())
+        Self::AkStageAccountSelection(Default::default())
     }
 }

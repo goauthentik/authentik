@@ -12,6 +12,11 @@
  * Do not edit the class manually.
  */
 
+import type { AccountSelectionChallengeResponseRequest } from "./AccountSelectionChallengeResponseRequest";
+import {
+    AccountSelectionChallengeResponseRequestFromJSONTyped,
+    AccountSelectionChallengeResponseRequestToJSON,
+} from "./AccountSelectionChallengeResponseRequest";
 import type { AppleChallengeResponseRequest } from "./AppleChallengeResponseRequest";
 import {
     AppleChallengeResponseRequestFromJSONTyped,
@@ -102,11 +107,6 @@ import {
     NativeLogoutChallengeResponseRequestFromJSONTyped,
     NativeLogoutChallengeResponseRequestToJSON,
 } from "./NativeLogoutChallengeResponseRequest";
-import type { OAuthAccountSelectionChallengeResponseRequest } from "./OAuthAccountSelectionChallengeResponseRequest";
-import {
-    OAuthAccountSelectionChallengeResponseRequestFromJSONTyped,
-    OAuthAccountSelectionChallengeResponseRequestToJSON,
-} from "./OAuthAccountSelectionChallengeResponseRequest";
 import type { OAuthDeviceCodeChallengeResponseRequest } from "./OAuthDeviceCodeChallengeResponseRequest";
 import {
     OAuthDeviceCodeChallengeResponseRequestFromJSONTyped,
@@ -163,6 +163,7 @@ export type FlowChallengeResponseRequest =
     | ({ component: "ak-source-oauth-apple" } & AppleChallengeResponseRequest)
     | ({ component: "ak-source-plex" } & PlexAuthenticationChallengeResponseRequest)
     | ({ component: "ak-source-telegram" } & TelegramChallengeResponseRequest)
+    | ({ component: "ak-stage-account-selection" } & AccountSelectionChallengeResponseRequest)
     | ({ component: "ak-stage-authenticator-duo" } & AuthenticatorDuoChallengeResponseRequest)
     | ({ component: "ak-stage-authenticator-email" } & AuthenticatorEmailChallengeResponseRequest)
     | ({ component: "ak-stage-authenticator-sms" } & AuthenticatorSMSChallengeResponseRequest)
@@ -181,9 +182,6 @@ export type FlowChallengeResponseRequest =
     | ({ component: "ak-stage-email" } & EmailChallengeResponseRequest)
     | ({ component: "ak-stage-endpoint-agent" } & EndpointAgentChallengeResponseRequest)
     | ({ component: "ak-stage-identification" } & IdentificationChallengeResponseRequest)
-    | ({
-          component: "ak-stage-oauth-account-selection";
-      } & OAuthAccountSelectionChallengeResponseRequest)
     | ({ component: "ak-stage-password" } & PasswordChallengeResponseRequest)
     | ({ component: "ak-stage-prompt" } & PromptChallengeResponseRequest)
     | ({ component: "ak-stage-user-login" } & UserLoginChallengeResponseRequest)
@@ -240,6 +238,12 @@ export function FlowChallengeResponseRequestFromJSONTyped(
             return Object.assign({}, TelegramChallengeResponseRequestFromJSONTyped(json, true), {
                 component: "ak-source-telegram",
             } as const);
+        case "ak-stage-account-selection":
+            return Object.assign(
+                {},
+                AccountSelectionChallengeResponseRequestFromJSONTyped(json, true),
+                { component: "ak-stage-account-selection" } as const,
+            );
         case "ak-stage-authenticator-duo":
             return Object.assign(
                 {},
@@ -314,12 +318,6 @@ export function FlowChallengeResponseRequestFromJSONTyped(
                 IdentificationChallengeResponseRequestFromJSONTyped(json, true),
                 { component: "ak-stage-identification" } as const,
             );
-        case "ak-stage-oauth-account-selection":
-            return Object.assign(
-                {},
-                OAuthAccountSelectionChallengeResponseRequestFromJSONTyped(json, true),
-                { component: "ak-stage-oauth-account-selection" } as const,
-            );
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeResponseRequestFromJSONTyped(json, true), {
                 component: "ak-stage-password",
@@ -385,6 +383,10 @@ export function FlowChallengeResponseRequestToJSONTyped(
             return Object.assign({}, TelegramChallengeResponseRequestToJSON(value), {
                 component: "ak-source-telegram",
             } as const);
+        case "ak-stage-account-selection":
+            return Object.assign({}, AccountSelectionChallengeResponseRequestToJSON(value), {
+                component: "ak-stage-account-selection",
+            } as const);
         case "ak-stage-authenticator-duo":
             return Object.assign({}, AuthenticatorDuoChallengeResponseRequestToJSON(value), {
                 component: "ak-stage-authenticator-duo",
@@ -440,10 +442,6 @@ export function FlowChallengeResponseRequestToJSONTyped(
         case "ak-stage-identification":
             return Object.assign({}, IdentificationChallengeResponseRequestToJSON(value), {
                 component: "ak-stage-identification",
-            } as const);
-        case "ak-stage-oauth-account-selection":
-            return Object.assign({}, OAuthAccountSelectionChallengeResponseRequestToJSON(value), {
-                component: "ak-stage-oauth-account-selection",
             } as const);
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeResponseRequestToJSON(value), {

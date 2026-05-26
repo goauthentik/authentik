@@ -16,46 +16,46 @@ import (
 	"fmt"
 )
 
-// checks if the OAuthAccountSelectionChallenge type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &OAuthAccountSelectionChallenge{}
+// checks if the AccountSelectionChallenge type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AccountSelectionChallenge{}
 
-// OAuthAccountSelectionChallenge Challenge for selecting which account to authorize with.
-type OAuthAccountSelectionChallenge struct {
-	FlowInfo             *ContextualFlowInfo         `json:"flow_info,omitempty"`
-	Component            *string                     `json:"component,omitempty"`
-	ResponseErrors       *map[string][]ErrorDetail   `json:"response_errors,omitempty"`
-	ApplicationName      string                      `json:"application_name"`
-	Accounts             []OAuthAccountSelectionUser `json:"accounts"`
+// AccountSelectionChallenge Challenge for selecting a browser-local account.
+type AccountSelectionChallenge struct {
+	FlowInfo             *ContextualFlowInfo             `json:"flow_info,omitempty"`
+	Component            *string                         `json:"component,omitempty"`
+	ResponseErrors       *map[string][]ErrorDetail       `json:"response_errors,omitempty"`
+	ApplicationName      string                          `json:"application_name"`
+	Accounts             []AccountSelectionChallengeUser `json:"accounts"`
 	AdditionalProperties map[string]interface{}
 }
 
-type _OAuthAccountSelectionChallenge OAuthAccountSelectionChallenge
+type _AccountSelectionChallenge AccountSelectionChallenge
 
-// NewOAuthAccountSelectionChallenge instantiates a new OAuthAccountSelectionChallenge object
+// NewAccountSelectionChallenge instantiates a new AccountSelectionChallenge object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewOAuthAccountSelectionChallenge(applicationName string, accounts []OAuthAccountSelectionUser) *OAuthAccountSelectionChallenge {
-	this := OAuthAccountSelectionChallenge{}
-	var component string = "ak-stage-oauth-account-selection"
+func NewAccountSelectionChallenge(applicationName string, accounts []AccountSelectionChallengeUser) *AccountSelectionChallenge {
+	this := AccountSelectionChallenge{}
+	var component string = "ak-stage-account-selection"
 	this.Component = &component
 	this.ApplicationName = applicationName
 	this.Accounts = accounts
 	return &this
 }
 
-// NewOAuthAccountSelectionChallengeWithDefaults instantiates a new OAuthAccountSelectionChallenge object
+// NewAccountSelectionChallengeWithDefaults instantiates a new AccountSelectionChallenge object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewOAuthAccountSelectionChallengeWithDefaults() *OAuthAccountSelectionChallenge {
-	this := OAuthAccountSelectionChallenge{}
-	var component string = "ak-stage-oauth-account-selection"
+func NewAccountSelectionChallengeWithDefaults() *AccountSelectionChallenge {
+	this := AccountSelectionChallenge{}
+	var component string = "ak-stage-account-selection"
 	this.Component = &component
 	return &this
 }
 
 // GetFlowInfo returns the FlowInfo field value if set, zero value otherwise.
-func (o *OAuthAccountSelectionChallenge) GetFlowInfo() ContextualFlowInfo {
+func (o *AccountSelectionChallenge) GetFlowInfo() ContextualFlowInfo {
 	if o == nil || IsNil(o.FlowInfo) {
 		var ret ContextualFlowInfo
 		return ret
@@ -65,7 +65,7 @@ func (o *OAuthAccountSelectionChallenge) GetFlowInfo() ContextualFlowInfo {
 
 // GetFlowInfoOk returns a tuple with the FlowInfo field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionChallenge) GetFlowInfoOk() (*ContextualFlowInfo, bool) {
+func (o *AccountSelectionChallenge) GetFlowInfoOk() (*ContextualFlowInfo, bool) {
 	if o == nil || IsNil(o.FlowInfo) {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *OAuthAccountSelectionChallenge) GetFlowInfoOk() (*ContextualFlowInfo, b
 }
 
 // HasFlowInfo returns a boolean if a field has been set.
-func (o *OAuthAccountSelectionChallenge) HasFlowInfo() bool {
+func (o *AccountSelectionChallenge) HasFlowInfo() bool {
 	if o != nil && !IsNil(o.FlowInfo) {
 		return true
 	}
@@ -82,12 +82,12 @@ func (o *OAuthAccountSelectionChallenge) HasFlowInfo() bool {
 }
 
 // SetFlowInfo gets a reference to the given ContextualFlowInfo and assigns it to the FlowInfo field.
-func (o *OAuthAccountSelectionChallenge) SetFlowInfo(v ContextualFlowInfo) {
+func (o *AccountSelectionChallenge) SetFlowInfo(v ContextualFlowInfo) {
 	o.FlowInfo = &v
 }
 
 // GetComponent returns the Component field value if set, zero value otherwise.
-func (o *OAuthAccountSelectionChallenge) GetComponent() string {
+func (o *AccountSelectionChallenge) GetComponent() string {
 	if o == nil || IsNil(o.Component) {
 		var ret string
 		return ret
@@ -97,7 +97,7 @@ func (o *OAuthAccountSelectionChallenge) GetComponent() string {
 
 // GetComponentOk returns a tuple with the Component field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionChallenge) GetComponentOk() (*string, bool) {
+func (o *AccountSelectionChallenge) GetComponentOk() (*string, bool) {
 	if o == nil || IsNil(o.Component) {
 		return nil, false
 	}
@@ -105,7 +105,7 @@ func (o *OAuthAccountSelectionChallenge) GetComponentOk() (*string, bool) {
 }
 
 // HasComponent returns a boolean if a field has been set.
-func (o *OAuthAccountSelectionChallenge) HasComponent() bool {
+func (o *AccountSelectionChallenge) HasComponent() bool {
 	if o != nil && !IsNil(o.Component) {
 		return true
 	}
@@ -114,12 +114,12 @@ func (o *OAuthAccountSelectionChallenge) HasComponent() bool {
 }
 
 // SetComponent gets a reference to the given string and assigns it to the Component field.
-func (o *OAuthAccountSelectionChallenge) SetComponent(v string) {
+func (o *AccountSelectionChallenge) SetComponent(v string) {
 	o.Component = &v
 }
 
 // GetResponseErrors returns the ResponseErrors field value if set, zero value otherwise.
-func (o *OAuthAccountSelectionChallenge) GetResponseErrors() map[string][]ErrorDetail {
+func (o *AccountSelectionChallenge) GetResponseErrors() map[string][]ErrorDetail {
 	if o == nil || IsNil(o.ResponseErrors) {
 		var ret map[string][]ErrorDetail
 		return ret
@@ -129,7 +129,7 @@ func (o *OAuthAccountSelectionChallenge) GetResponseErrors() map[string][]ErrorD
 
 // GetResponseErrorsOk returns a tuple with the ResponseErrors field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionChallenge) GetResponseErrorsOk() (*map[string][]ErrorDetail, bool) {
+func (o *AccountSelectionChallenge) GetResponseErrorsOk() (*map[string][]ErrorDetail, bool) {
 	if o == nil || IsNil(o.ResponseErrors) {
 		return nil, false
 	}
@@ -137,7 +137,7 @@ func (o *OAuthAccountSelectionChallenge) GetResponseErrorsOk() (*map[string][]Er
 }
 
 // HasResponseErrors returns a boolean if a field has been set.
-func (o *OAuthAccountSelectionChallenge) HasResponseErrors() bool {
+func (o *AccountSelectionChallenge) HasResponseErrors() bool {
 	if o != nil && !IsNil(o.ResponseErrors) {
 		return true
 	}
@@ -146,12 +146,12 @@ func (o *OAuthAccountSelectionChallenge) HasResponseErrors() bool {
 }
 
 // SetResponseErrors gets a reference to the given map[string][]ErrorDetail and assigns it to the ResponseErrors field.
-func (o *OAuthAccountSelectionChallenge) SetResponseErrors(v map[string][]ErrorDetail) {
+func (o *AccountSelectionChallenge) SetResponseErrors(v map[string][]ErrorDetail) {
 	o.ResponseErrors = &v
 }
 
 // GetApplicationName returns the ApplicationName field value
-func (o *OAuthAccountSelectionChallenge) GetApplicationName() string {
+func (o *AccountSelectionChallenge) GetApplicationName() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -162,7 +162,7 @@ func (o *OAuthAccountSelectionChallenge) GetApplicationName() string {
 
 // GetApplicationNameOk returns a tuple with the ApplicationName field value
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionChallenge) GetApplicationNameOk() (*string, bool) {
+func (o *AccountSelectionChallenge) GetApplicationNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -170,14 +170,14 @@ func (o *OAuthAccountSelectionChallenge) GetApplicationNameOk() (*string, bool) 
 }
 
 // SetApplicationName sets field value
-func (o *OAuthAccountSelectionChallenge) SetApplicationName(v string) {
+func (o *AccountSelectionChallenge) SetApplicationName(v string) {
 	o.ApplicationName = v
 }
 
 // GetAccounts returns the Accounts field value
-func (o *OAuthAccountSelectionChallenge) GetAccounts() []OAuthAccountSelectionUser {
+func (o *AccountSelectionChallenge) GetAccounts() []AccountSelectionChallengeUser {
 	if o == nil {
-		var ret []OAuthAccountSelectionUser
+		var ret []AccountSelectionChallengeUser
 		return ret
 	}
 
@@ -186,7 +186,7 @@ func (o *OAuthAccountSelectionChallenge) GetAccounts() []OAuthAccountSelectionUs
 
 // GetAccountsOk returns a tuple with the Accounts field value
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionChallenge) GetAccountsOk() ([]OAuthAccountSelectionUser, bool) {
+func (o *AccountSelectionChallenge) GetAccountsOk() ([]AccountSelectionChallengeUser, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -194,11 +194,11 @@ func (o *OAuthAccountSelectionChallenge) GetAccountsOk() ([]OAuthAccountSelectio
 }
 
 // SetAccounts sets field value
-func (o *OAuthAccountSelectionChallenge) SetAccounts(v []OAuthAccountSelectionUser) {
+func (o *AccountSelectionChallenge) SetAccounts(v []AccountSelectionChallengeUser) {
 	o.Accounts = v
 }
 
-func (o OAuthAccountSelectionChallenge) MarshalJSON() ([]byte, error) {
+func (o AccountSelectionChallenge) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -206,7 +206,7 @@ func (o OAuthAccountSelectionChallenge) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o OAuthAccountSelectionChallenge) ToMap() (map[string]interface{}, error) {
+func (o AccountSelectionChallenge) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.FlowInfo) {
 		toSerialize["flow_info"] = o.FlowInfo
@@ -227,7 +227,7 @@ func (o OAuthAccountSelectionChallenge) ToMap() (map[string]interface{}, error) 
 	return toSerialize, nil
 }
 
-func (o *OAuthAccountSelectionChallenge) UnmarshalJSON(data []byte) (err error) {
+func (o *AccountSelectionChallenge) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -250,15 +250,15 @@ func (o *OAuthAccountSelectionChallenge) UnmarshalJSON(data []byte) (err error) 
 		}
 	}
 
-	varOAuthAccountSelectionChallenge := _OAuthAccountSelectionChallenge{}
+	varAccountSelectionChallenge := _AccountSelectionChallenge{}
 
-	err = json.Unmarshal(data, &varOAuthAccountSelectionChallenge)
+	err = json.Unmarshal(data, &varAccountSelectionChallenge)
 
 	if err != nil {
 		return err
 	}
 
-	*o = OAuthAccountSelectionChallenge(varOAuthAccountSelectionChallenge)
+	*o = AccountSelectionChallenge(varAccountSelectionChallenge)
 
 	additionalProperties := make(map[string]interface{})
 
@@ -274,38 +274,38 @@ func (o *OAuthAccountSelectionChallenge) UnmarshalJSON(data []byte) (err error) 
 	return err
 }
 
-type NullableOAuthAccountSelectionChallenge struct {
-	value *OAuthAccountSelectionChallenge
+type NullableAccountSelectionChallenge struct {
+	value *AccountSelectionChallenge
 	isSet bool
 }
 
-func (v NullableOAuthAccountSelectionChallenge) Get() *OAuthAccountSelectionChallenge {
+func (v NullableAccountSelectionChallenge) Get() *AccountSelectionChallenge {
 	return v.value
 }
 
-func (v *NullableOAuthAccountSelectionChallenge) Set(val *OAuthAccountSelectionChallenge) {
+func (v *NullableAccountSelectionChallenge) Set(val *AccountSelectionChallenge) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableOAuthAccountSelectionChallenge) IsSet() bool {
+func (v NullableAccountSelectionChallenge) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableOAuthAccountSelectionChallenge) Unset() {
+func (v *NullableAccountSelectionChallenge) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableOAuthAccountSelectionChallenge(val *OAuthAccountSelectionChallenge) *NullableOAuthAccountSelectionChallenge {
-	return &NullableOAuthAccountSelectionChallenge{value: val, isSet: true}
+func NewNullableAccountSelectionChallenge(val *AccountSelectionChallenge) *NullableAccountSelectionChallenge {
+	return &NullableAccountSelectionChallenge{value: val, isSet: true}
 }
 
-func (v NullableOAuthAccountSelectionChallenge) MarshalJSON() ([]byte, error) {
+func (v NullableAccountSelectionChallenge) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableOAuthAccountSelectionChallenge) UnmarshalJSON(src []byte) error {
+func (v *NullableAccountSelectionChallenge) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

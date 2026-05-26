@@ -55,6 +55,9 @@ class Brand(SerializerModel):
     flow_user_settings = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_user_settings"
     )
+    flow_account_selection = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="brand_account_selection"
+    )
     flow_device_code = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_device_code"
     )

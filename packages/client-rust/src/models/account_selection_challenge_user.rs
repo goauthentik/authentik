@@ -10,9 +10,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::models;
 
-/// OAuthAccountSelectionUser : Account shown by the OAuth account selection stage.
+/// AccountSelectionChallengeUser : Account shown by the account selection stage.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct OAuthAccountSelectionUser {
+pub struct AccountSelectionChallengeUser {
     #[serde(rename = "uid")]
     pub uid: String,
     #[serde(rename = "username")]
@@ -25,10 +25,12 @@ pub struct OAuthAccountSelectionUser {
     pub avatar: String,
     #[serde(rename = "is_current")]
     pub is_current: bool,
+    #[serde(rename = "is_hint")]
+    pub is_hint: bool,
 }
 
-impl OAuthAccountSelectionUser {
-    /// Account shown by the OAuth account selection stage.
+impl AccountSelectionChallengeUser {
+    /// Account shown by the account selection stage.
     pub fn new(
         uid: String,
         username: String,
@@ -36,14 +38,16 @@ impl OAuthAccountSelectionUser {
         email: String,
         avatar: String,
         is_current: bool,
-    ) -> OAuthAccountSelectionUser {
-        OAuthAccountSelectionUser {
+        is_hint: bool,
+    ) -> AccountSelectionChallengeUser {
+        AccountSelectionChallengeUser {
             uid,
             username,
             name,
             email,
             avatar,
             is_current,
+            is_hint,
         }
     }
 }

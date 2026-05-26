@@ -10,9 +10,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::models;
 
-/// OAuthAccountSelectionChallenge : Challenge for selecting which account to authorize with.
+/// AccountSelectionChallenge : Challenge for selecting a browser-local account.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
-pub struct OAuthAccountSelectionChallenge {
+pub struct AccountSelectionChallenge {
     #[serde(rename = "flow_info", skip_serializing_if = "Option::is_none")]
     pub flow_info: Option<models::ContextualFlowInfo>,
     #[serde(rename = "component", skip_serializing_if = "Option::is_none")]
@@ -22,16 +22,16 @@ pub struct OAuthAccountSelectionChallenge {
     #[serde(rename = "application_name")]
     pub application_name: String,
     #[serde(rename = "accounts")]
-    pub accounts: Vec<models::OAuthAccountSelectionUser>,
+    pub accounts: Vec<models::AccountSelectionChallengeUser>,
 }
 
-impl OAuthAccountSelectionChallenge {
-    /// Challenge for selecting which account to authorize with.
+impl AccountSelectionChallenge {
+    /// Challenge for selecting a browser-local account.
     pub fn new(
         application_name: String,
-        accounts: Vec<models::OAuthAccountSelectionUser>,
-    ) -> OAuthAccountSelectionChallenge {
-        OAuthAccountSelectionChallenge {
+        accounts: Vec<models::AccountSelectionChallengeUser>,
+    ) -> AccountSelectionChallenge {
+        AccountSelectionChallenge {
             flow_info: None,
             component: None,
             response_errors: None,

@@ -15,6 +15,10 @@
 import type {
     AccountLockdownStage,
     AccountLockdownStageRequest,
+    AccountSelectionStage,
+    AccountSelectionStageRequest,
+    AccountSwitchStage,
+    AccountSwitchStageRequest,
     AuthenticatorAttachmentEnum,
     AuthenticatorDuoStage,
     AuthenticatorDuoStageDeviceImportResponse,
@@ -64,6 +68,8 @@ import type {
     NetworkBindingEnum,
     NotConfiguredActionEnum,
     PaginatedAccountLockdownStageList,
+    PaginatedAccountSelectionStageList,
+    PaginatedAccountSwitchStageList,
     PaginatedAuthenticatorDuoStageList,
     PaginatedAuthenticatorEmailStageList,
     PaginatedAuthenticatorEndpointGDTCStageList,
@@ -96,6 +102,8 @@ import type {
     PasswordStage,
     PasswordStageRequest,
     PatchedAccountLockdownStageRequest,
+    PatchedAccountSelectionStageRequest,
+    PatchedAccountSwitchStageRequest,
     PatchedAuthenticatorDuoStageRequest,
     PatchedAuthenticatorEmailStageRequest,
     PatchedAuthenticatorEndpointGDTCStageRequest,
@@ -156,6 +164,10 @@ import type {
 import {
     AccountLockdownStageFromJSON,
     AccountLockdownStageRequestToJSON,
+    AccountSelectionStageFromJSON,
+    AccountSelectionStageRequestToJSON,
+    AccountSwitchStageFromJSON,
+    AccountSwitchStageRequestToJSON,
     AuthenticatorDuoStageDeviceImportResponseFromJSON,
     AuthenticatorDuoStageFromJSON,
     AuthenticatorDuoStageManualDeviceImportRequestToJSON,
@@ -197,6 +209,8 @@ import {
     MutualTLSStageFromJSON,
     MutualTLSStageRequestToJSON,
     PaginatedAccountLockdownStageListFromJSON,
+    PaginatedAccountSelectionStageListFromJSON,
+    PaginatedAccountSwitchStageListFromJSON,
     PaginatedAuthenticatorDuoStageListFromJSON,
     PaginatedAuthenticatorEmailStageListFromJSON,
     PaginatedAuthenticatorEndpointGDTCStageListFromJSON,
@@ -229,6 +243,8 @@ import {
     PasswordStageFromJSON,
     PasswordStageRequestToJSON,
     PatchedAccountLockdownStageRequestToJSON,
+    PatchedAccountSelectionStageRequestToJSON,
+    PatchedAccountSwitchStageRequestToJSON,
     PatchedAuthenticatorDuoStageRequestToJSON,
     PatchedAuthenticatorEmailStageRequestToJSON,
     PatchedAuthenticatorEndpointGDTCStageRequestToJSON,
@@ -318,6 +334,74 @@ export interface StagesAccountLockdownUpdateRequest {
 }
 
 export interface StagesAccountLockdownUsedByListRequest {
+    stageUuid: string;
+}
+
+export interface StagesAccountSelectionSelectionCreateRequest {
+    accountSelectionStageRequest: AccountSelectionStageRequest;
+}
+
+export interface StagesAccountSelectionSelectionDestroyRequest {
+    stageUuid: string;
+}
+
+export interface StagesAccountSelectionSelectionListRequest {
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
+
+export interface StagesAccountSelectionSelectionPartialUpdateRequest {
+    stageUuid: string;
+    patchedAccountSelectionStageRequest?: PatchedAccountSelectionStageRequest;
+}
+
+export interface StagesAccountSelectionSelectionRetrieveRequest {
+    stageUuid: string;
+}
+
+export interface StagesAccountSelectionSelectionUpdateRequest {
+    stageUuid: string;
+    accountSelectionStageRequest: AccountSelectionStageRequest;
+}
+
+export interface StagesAccountSelectionSelectionUsedByListRequest {
+    stageUuid: string;
+}
+
+export interface StagesAccountSelectionSwitchCreateRequest {
+    accountSwitchStageRequest: AccountSwitchStageRequest;
+}
+
+export interface StagesAccountSelectionSwitchDestroyRequest {
+    stageUuid: string;
+}
+
+export interface StagesAccountSelectionSwitchListRequest {
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
+
+export interface StagesAccountSelectionSwitchPartialUpdateRequest {
+    stageUuid: string;
+    patchedAccountSwitchStageRequest?: PatchedAccountSwitchStageRequest;
+}
+
+export interface StagesAccountSelectionSwitchRetrieveRequest {
+    stageUuid: string;
+}
+
+export interface StagesAccountSelectionSwitchUpdateRequest {
+    stageUuid: string;
+    accountSwitchStageRequest: AccountSwitchStageRequest;
+}
+
+export interface StagesAccountSelectionSwitchUsedByListRequest {
     stageUuid: string;
 }
 
@@ -1936,6 +2020,1020 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.stagesAccountLockdownUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSelectionCreate without sending the request
+     */
+    async stagesAccountSelectionSelectionCreateRequestOpts(
+        requestParameters: StagesAccountSelectionSelectionCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["accountSelectionStageRequest"] == null) {
+            throw new runtime.RequiredError(
+                "accountSelectionStageRequest",
+                'Required parameter "accountSelectionStageRequest" was null or undefined when calling stagesAccountSelectionSelectionCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/selection/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AccountSelectionStageRequestToJSON(
+                requestParameters["accountSelectionStageRequest"],
+            ),
+        };
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionCreateRaw(
+        requestParameters: StagesAccountSelectionSelectionCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountSelectionStage>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSelectionCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountSelectionStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionCreate(
+        requestParameters: StagesAccountSelectionSelectionCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountSelectionStage> {
+        const response = await this.stagesAccountSelectionSelectionCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSelectionDestroy without sending the request
+     */
+    async stagesAccountSelectionSelectionDestroyRequestOpts(
+        requestParameters: StagesAccountSelectionSelectionDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountSelectionSelectionDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/selection/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionDestroyRaw(
+        requestParameters: StagesAccountSelectionSelectionDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSelectionDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionDestroy(
+        requestParameters: StagesAccountSelectionSelectionDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.stagesAccountSelectionSelectionDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSelectionList without sending the request
+     */
+    async stagesAccountSelectionSelectionListRequestOpts(
+        requestParameters: StagesAccountSelectionSelectionListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/selection/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionListRaw(
+        requestParameters: StagesAccountSelectionSelectionListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAccountSelectionStageList>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSelectionListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAccountSelectionStageListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionList(
+        requestParameters: StagesAccountSelectionSelectionListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAccountSelectionStageList> {
+        const response = await this.stagesAccountSelectionSelectionListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSelectionPartialUpdate without sending the request
+     */
+    async stagesAccountSelectionSelectionPartialUpdateRequestOpts(
+        requestParameters: StagesAccountSelectionSelectionPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountSelectionSelectionPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/selection/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedAccountSelectionStageRequestToJSON(
+                requestParameters["patchedAccountSelectionStageRequest"],
+            ),
+        };
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionPartialUpdateRaw(
+        requestParameters: StagesAccountSelectionSelectionPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountSelectionStage>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSelectionPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountSelectionStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionPartialUpdate(
+        requestParameters: StagesAccountSelectionSelectionPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountSelectionStage> {
+        const response = await this.stagesAccountSelectionSelectionPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSelectionRetrieve without sending the request
+     */
+    async stagesAccountSelectionSelectionRetrieveRequestOpts(
+        requestParameters: StagesAccountSelectionSelectionRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountSelectionSelectionRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/selection/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionRetrieveRaw(
+        requestParameters: StagesAccountSelectionSelectionRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountSelectionStage>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSelectionRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountSelectionStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionRetrieve(
+        requestParameters: StagesAccountSelectionSelectionRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountSelectionStage> {
+        const response = await this.stagesAccountSelectionSelectionRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSelectionUpdate without sending the request
+     */
+    async stagesAccountSelectionSelectionUpdateRequestOpts(
+        requestParameters: StagesAccountSelectionSelectionUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountSelectionSelectionUpdate().',
+            );
+        }
+
+        if (requestParameters["accountSelectionStageRequest"] == null) {
+            throw new runtime.RequiredError(
+                "accountSelectionStageRequest",
+                'Required parameter "accountSelectionStageRequest" was null or undefined when calling stagesAccountSelectionSelectionUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/selection/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AccountSelectionStageRequestToJSON(
+                requestParameters["accountSelectionStageRequest"],
+            ),
+        };
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionUpdateRaw(
+        requestParameters: StagesAccountSelectionSelectionUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountSelectionStage>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSelectionUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountSelectionStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountSelectionStage viewset.
+     */
+    async stagesAccountSelectionSelectionUpdate(
+        requestParameters: StagesAccountSelectionSelectionUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountSelectionStage> {
+        const response = await this.stagesAccountSelectionSelectionUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSelectionUsedByList without sending the request
+     */
+    async stagesAccountSelectionSelectionUsedByListRequestOpts(
+        requestParameters: StagesAccountSelectionSelectionUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountSelectionSelectionUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/selection/{stage_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesAccountSelectionSelectionUsedByListRaw(
+        requestParameters: StagesAccountSelectionSelectionUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSelectionUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesAccountSelectionSelectionUsedByList(
+        requestParameters: StagesAccountSelectionSelectionUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAccountSelectionSelectionUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSwitchCreate without sending the request
+     */
+    async stagesAccountSelectionSwitchCreateRequestOpts(
+        requestParameters: StagesAccountSelectionSwitchCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["accountSwitchStageRequest"] == null) {
+            throw new runtime.RequiredError(
+                "accountSwitchStageRequest",
+                'Required parameter "accountSwitchStageRequest" was null or undefined when calling stagesAccountSelectionSwitchCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/switch/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AccountSwitchStageRequestToJSON(requestParameters["accountSwitchStageRequest"]),
+        };
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchCreateRaw(
+        requestParameters: StagesAccountSelectionSwitchCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountSwitchStage>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSwitchCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountSwitchStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchCreate(
+        requestParameters: StagesAccountSelectionSwitchCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountSwitchStage> {
+        const response = await this.stagesAccountSelectionSwitchCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSwitchDestroy without sending the request
+     */
+    async stagesAccountSelectionSwitchDestroyRequestOpts(
+        requestParameters: StagesAccountSelectionSwitchDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountSelectionSwitchDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/switch/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchDestroyRaw(
+        requestParameters: StagesAccountSelectionSwitchDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSwitchDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchDestroy(
+        requestParameters: StagesAccountSelectionSwitchDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.stagesAccountSelectionSwitchDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSwitchList without sending the request
+     */
+    async stagesAccountSelectionSwitchListRequestOpts(
+        requestParameters: StagesAccountSelectionSwitchListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/switch/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchListRaw(
+        requestParameters: StagesAccountSelectionSwitchListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedAccountSwitchStageList>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSwitchListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedAccountSwitchStageListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchList(
+        requestParameters: StagesAccountSelectionSwitchListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedAccountSwitchStageList> {
+        const response = await this.stagesAccountSelectionSwitchListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSwitchPartialUpdate without sending the request
+     */
+    async stagesAccountSelectionSwitchPartialUpdateRequestOpts(
+        requestParameters: StagesAccountSelectionSwitchPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountSelectionSwitchPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/switch/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedAccountSwitchStageRequestToJSON(
+                requestParameters["patchedAccountSwitchStageRequest"],
+            ),
+        };
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchPartialUpdateRaw(
+        requestParameters: StagesAccountSelectionSwitchPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountSwitchStage>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSwitchPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountSwitchStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchPartialUpdate(
+        requestParameters: StagesAccountSelectionSwitchPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountSwitchStage> {
+        const response = await this.stagesAccountSelectionSwitchPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSwitchRetrieve without sending the request
+     */
+    async stagesAccountSelectionSwitchRetrieveRequestOpts(
+        requestParameters: StagesAccountSelectionSwitchRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountSelectionSwitchRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/switch/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchRetrieveRaw(
+        requestParameters: StagesAccountSelectionSwitchRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountSwitchStage>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSwitchRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountSwitchStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchRetrieve(
+        requestParameters: StagesAccountSelectionSwitchRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountSwitchStage> {
+        const response = await this.stagesAccountSelectionSwitchRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSwitchUpdate without sending the request
+     */
+    async stagesAccountSelectionSwitchUpdateRequestOpts(
+        requestParameters: StagesAccountSelectionSwitchUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountSelectionSwitchUpdate().',
+            );
+        }
+
+        if (requestParameters["accountSwitchStageRequest"] == null) {
+            throw new runtime.RequiredError(
+                "accountSwitchStageRequest",
+                'Required parameter "accountSwitchStageRequest" was null or undefined when calling stagesAccountSelectionSwitchUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/switch/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AccountSwitchStageRequestToJSON(requestParameters["accountSwitchStageRequest"]),
+        };
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchUpdateRaw(
+        requestParameters: StagesAccountSelectionSwitchUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AccountSwitchStage>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSwitchUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AccountSwitchStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * AccountSwitchStage viewset.
+     */
+    async stagesAccountSelectionSwitchUpdate(
+        requestParameters: StagesAccountSelectionSwitchUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AccountSwitchStage> {
+        const response = await this.stagesAccountSelectionSwitchUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAccountSelectionSwitchUsedByList without sending the request
+     */
+    async stagesAccountSelectionSwitchUsedByListRequestOpts(
+        requestParameters: StagesAccountSelectionSwitchUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesAccountSelectionSwitchUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/account_selection/switch/{stage_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            `{${"stage_uuid"}}`,
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesAccountSelectionSwitchUsedByListRaw(
+        requestParameters: StagesAccountSelectionSwitchUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAccountSelectionSwitchUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesAccountSelectionSwitchUsedByList(
+        requestParameters: StagesAccountSelectionSwitchUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAccountSelectionSwitchUsedByListRaw(
             requestParameters,
             initOverrides,
         );

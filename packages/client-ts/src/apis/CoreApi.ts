@@ -244,6 +244,7 @@ export interface CoreBrandsListRequest {
     clientCertificates?: Array<string>;
     _default?: boolean;
     domain?: string;
+    flowAccountSelection?: string;
     flowAuthentication?: string;
     flowDeviceCode?: string;
     flowInvalidation?: string;
@@ -2207,6 +2208,10 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["domain"] != null) {
             queryParameters["domain"] = requestParameters["domain"];
+        }
+
+        if (requestParameters["flowAccountSelection"] != null) {
+            queryParameters["flow_account_selection"] = requestParameters["flowAccountSelection"];
         }
 
         if (requestParameters["flowAuthentication"] != null) {

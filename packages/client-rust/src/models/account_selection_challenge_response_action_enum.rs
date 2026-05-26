@@ -12,7 +12,7 @@ use crate::models;
 
 ///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum OAuthAccountSelectionChallengeResponseActionEnum {
+pub enum AccountSelectionChallengeResponseActionEnum {
     #[serde(rename = "continue")]
     Continue,
     #[serde(rename = "login")]
@@ -21,7 +21,7 @@ pub enum OAuthAccountSelectionChallengeResponseActionEnum {
     Switch,
 }
 
-impl std::fmt::Display for OAuthAccountSelectionChallengeResponseActionEnum {
+impl std::fmt::Display for AccountSelectionChallengeResponseActionEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::Continue => write!(f, "continue"),
@@ -31,8 +31,8 @@ impl std::fmt::Display for OAuthAccountSelectionChallengeResponseActionEnum {
     }
 }
 
-impl Default for OAuthAccountSelectionChallengeResponseActionEnum {
-    fn default() -> OAuthAccountSelectionChallengeResponseActionEnum {
+impl Default for AccountSelectionChallengeResponseActionEnum {
+    fn default() -> AccountSelectionChallengeResponseActionEnum {
         Self::Continue
     }
 }

@@ -95,6 +95,12 @@ export interface PatchedBrandRequest {
      * @type {string}
      * @memberof PatchedBrandRequest
      */
+    flowAccountSelection?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof PatchedBrandRequest
+     */
     flowDeviceCode?: string | null;
     /**
      *
@@ -165,6 +171,8 @@ export function PatchedBrandRequestFromJSONTyped(
         flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
         flowUserSettings:
             json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
+        flowAccountSelection:
+            json["flow_account_selection"] == null ? undefined : json["flow_account_selection"],
         flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
         flowLockdown: json["flow_lockdown"] == null ? undefined : json["flow_lockdown"],
         defaultApplication:
@@ -201,6 +209,7 @@ export function PatchedBrandRequestToJSONTyped(
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
         flow_user_settings: value["flowUserSettings"],
+        flow_account_selection: value["flowAccountSelection"],
         flow_device_code: value["flowDeviceCode"],
         flow_lockdown: value["flowLockdown"],
         default_application: value["defaultApplication"],

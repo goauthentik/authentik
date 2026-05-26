@@ -134,6 +134,10 @@ export const ModelEnum = {
         "authentik_stages_authenticator_webauthn.authenticatorwebauthnstage",
     AuthentikStagesAuthenticatorWebauthnWebauthndevice:
         "authentik_stages_authenticator_webauthn.webauthndevice",
+    AuthentikStagesAccountSelectionAccountselectionstage:
+        "authentik_stages_account_selection.accountselectionstage",
+    AuthentikStagesAccountSelectionAccountswitchstage:
+        "authentik_stages_account_selection.accountswitchstage",
     AuthentikStagesCaptchaCaptchastage: "authentik_stages_captcha.captchastage",
     AuthentikStagesConsentConsentstage: "authentik_stages_consent.consentstage",
     AuthentikStagesDenyDenystage: "authentik_stages_deny.denystage",

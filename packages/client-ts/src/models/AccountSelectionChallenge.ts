@@ -12,72 +12,72 @@
  * Do not edit the class manually.
  */
 
+import type { AccountSelectionChallengeUser } from "./AccountSelectionChallengeUser";
+import {
+    AccountSelectionChallengeUserFromJSON,
+    AccountSelectionChallengeUserToJSON,
+} from "./AccountSelectionChallengeUser";
 import type { ContextualFlowInfo } from "./ContextualFlowInfo";
 import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
 import type { ErrorDetail } from "./ErrorDetail";
-import type { OAuthAccountSelectionUser } from "./OAuthAccountSelectionUser";
-import {
-    OAuthAccountSelectionUserFromJSON,
-    OAuthAccountSelectionUserToJSON,
-} from "./OAuthAccountSelectionUser";
 
 /**
- * Challenge for selecting which account to authorize with.
+ * Challenge for selecting a browser-local account.
  * @export
- * @interface OAuthAccountSelectionChallenge
+ * @interface AccountSelectionChallenge
  */
-export interface OAuthAccountSelectionChallenge {
+export interface AccountSelectionChallenge {
     /**
      *
      * @type {ContextualFlowInfo}
-     * @memberof OAuthAccountSelectionChallenge
+     * @memberof AccountSelectionChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
      * @type {string}
-     * @memberof OAuthAccountSelectionChallenge
+     * @memberof AccountSelectionChallenge
      */
     component?: string;
     /**
      *
      * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof OAuthAccountSelectionChallenge
+     * @memberof AccountSelectionChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
      * @type {string}
-     * @memberof OAuthAccountSelectionChallenge
+     * @memberof AccountSelectionChallenge
      */
     applicationName: string;
     /**
      *
-     * @type {Array<OAuthAccountSelectionUser>}
-     * @memberof OAuthAccountSelectionChallenge
+     * @type {Array<AccountSelectionChallengeUser>}
+     * @memberof AccountSelectionChallenge
      */
-    accounts: Array<OAuthAccountSelectionUser>;
+    accounts: Array<AccountSelectionChallengeUser>;
 }
 
 /**
- * Check if a given object implements the OAuthAccountSelectionChallenge interface.
+ * Check if a given object implements the AccountSelectionChallenge interface.
  */
-export function instanceOfOAuthAccountSelectionChallenge(
+export function instanceOfAccountSelectionChallenge(
     value: object,
-): value is OAuthAccountSelectionChallenge {
+): value is AccountSelectionChallenge {
     if (!("applicationName" in value) || value["applicationName"] === undefined) return false;
     if (!("accounts" in value) || value["accounts"] === undefined) return false;
     return true;
 }
 
-export function OAuthAccountSelectionChallengeFromJSON(json: any): OAuthAccountSelectionChallenge {
-    return OAuthAccountSelectionChallengeFromJSONTyped(json, false);
+export function AccountSelectionChallengeFromJSON(json: any): AccountSelectionChallenge {
+    return AccountSelectionChallengeFromJSONTyped(json, false);
 }
 
-export function OAuthAccountSelectionChallengeFromJSONTyped(
+export function AccountSelectionChallengeFromJSONTyped(
     json: any,
     ignoreDiscriminator: boolean,
-): OAuthAccountSelectionChallenge {
+): AccountSelectionChallenge {
     if (json == null) {
         return json;
     }
@@ -87,16 +87,16 @@ export function OAuthAccountSelectionChallengeFromJSONTyped(
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         applicationName: json["application_name"],
-        accounts: (json["accounts"] as Array<any>).map(OAuthAccountSelectionUserFromJSON),
+        accounts: (json["accounts"] as Array<any>).map(AccountSelectionChallengeUserFromJSON),
     };
 }
 
-export function OAuthAccountSelectionChallengeToJSON(json: any): OAuthAccountSelectionChallenge {
-    return OAuthAccountSelectionChallengeToJSONTyped(json, false);
+export function AccountSelectionChallengeToJSON(json: any): AccountSelectionChallenge {
+    return AccountSelectionChallengeToJSONTyped(json, false);
 }
 
-export function OAuthAccountSelectionChallengeToJSONTyped(
-    value?: OAuthAccountSelectionChallenge | null,
+export function AccountSelectionChallengeToJSONTyped(
+    value?: AccountSelectionChallenge | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -108,6 +108,6 @@ export function OAuthAccountSelectionChallengeToJSONTyped(
         component: value["component"],
         response_errors: value["responseErrors"],
         application_name: value["applicationName"],
-        accounts: (value["accounts"] as Array<any>).map(OAuthAccountSelectionUserToJSON),
+        accounts: (value["accounts"] as Array<any>).map(AccountSelectionChallengeUserToJSON),
     };
 }

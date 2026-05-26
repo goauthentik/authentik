@@ -27,6 +27,8 @@ pub enum FlowDesignationEnum {
     Recovery,
     #[serde(rename = "stage_configuration")]
     StageConfiguration,
+    #[serde(rename = "account_selection")]
+    AccountSelection,
 }
 
 impl std::fmt::Display for FlowDesignationEnum {
@@ -39,6 +41,7 @@ impl std::fmt::Display for FlowDesignationEnum {
             Self::Unenrollment => write!(f, "unenrollment"),
             Self::Recovery => write!(f, "recovery"),
             Self::StageConfiguration => write!(f, "stage_configuration"),
+            Self::AccountSelection => write!(f, "account_selection"),
         }
     }
 }

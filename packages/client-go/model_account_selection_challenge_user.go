@@ -16,47 +16,49 @@ import (
 	"fmt"
 )
 
-// checks if the OAuthAccountSelectionUser type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &OAuthAccountSelectionUser{}
+// checks if the AccountSelectionChallengeUser type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AccountSelectionChallengeUser{}
 
-// OAuthAccountSelectionUser Account shown by the OAuth account selection stage.
-type OAuthAccountSelectionUser struct {
+// AccountSelectionChallengeUser Account shown by the account selection stage.
+type AccountSelectionChallengeUser struct {
 	Uid                  string `json:"uid"`
 	Username             string `json:"username"`
 	Name                 string `json:"name"`
 	Email                string `json:"email"`
 	Avatar               string `json:"avatar"`
 	IsCurrent            bool   `json:"is_current"`
+	IsHint               bool   `json:"is_hint"`
 	AdditionalProperties map[string]interface{}
 }
 
-type _OAuthAccountSelectionUser OAuthAccountSelectionUser
+type _AccountSelectionChallengeUser AccountSelectionChallengeUser
 
-// NewOAuthAccountSelectionUser instantiates a new OAuthAccountSelectionUser object
+// NewAccountSelectionChallengeUser instantiates a new AccountSelectionChallengeUser object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewOAuthAccountSelectionUser(uid string, username string, name string, email string, avatar string, isCurrent bool) *OAuthAccountSelectionUser {
-	this := OAuthAccountSelectionUser{}
+func NewAccountSelectionChallengeUser(uid string, username string, name string, email string, avatar string, isCurrent bool, isHint bool) *AccountSelectionChallengeUser {
+	this := AccountSelectionChallengeUser{}
 	this.Uid = uid
 	this.Username = username
 	this.Name = name
 	this.Email = email
 	this.Avatar = avatar
 	this.IsCurrent = isCurrent
+	this.IsHint = isHint
 	return &this
 }
 
-// NewOAuthAccountSelectionUserWithDefaults instantiates a new OAuthAccountSelectionUser object
+// NewAccountSelectionChallengeUserWithDefaults instantiates a new AccountSelectionChallengeUser object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewOAuthAccountSelectionUserWithDefaults() *OAuthAccountSelectionUser {
-	this := OAuthAccountSelectionUser{}
+func NewAccountSelectionChallengeUserWithDefaults() *AccountSelectionChallengeUser {
+	this := AccountSelectionChallengeUser{}
 	return &this
 }
 
 // GetUid returns the Uid field value
-func (o *OAuthAccountSelectionUser) GetUid() string {
+func (o *AccountSelectionChallengeUser) GetUid() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -67,7 +69,7 @@ func (o *OAuthAccountSelectionUser) GetUid() string {
 
 // GetUidOk returns a tuple with the Uid field value
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionUser) GetUidOk() (*string, bool) {
+func (o *AccountSelectionChallengeUser) GetUidOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -75,12 +77,12 @@ func (o *OAuthAccountSelectionUser) GetUidOk() (*string, bool) {
 }
 
 // SetUid sets field value
-func (o *OAuthAccountSelectionUser) SetUid(v string) {
+func (o *AccountSelectionChallengeUser) SetUid(v string) {
 	o.Uid = v
 }
 
 // GetUsername returns the Username field value
-func (o *OAuthAccountSelectionUser) GetUsername() string {
+func (o *AccountSelectionChallengeUser) GetUsername() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -91,7 +93,7 @@ func (o *OAuthAccountSelectionUser) GetUsername() string {
 
 // GetUsernameOk returns a tuple with the Username field value
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionUser) GetUsernameOk() (*string, bool) {
+func (o *AccountSelectionChallengeUser) GetUsernameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -99,12 +101,12 @@ func (o *OAuthAccountSelectionUser) GetUsernameOk() (*string, bool) {
 }
 
 // SetUsername sets field value
-func (o *OAuthAccountSelectionUser) SetUsername(v string) {
+func (o *AccountSelectionChallengeUser) SetUsername(v string) {
 	o.Username = v
 }
 
 // GetName returns the Name field value
-func (o *OAuthAccountSelectionUser) GetName() string {
+func (o *AccountSelectionChallengeUser) GetName() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -115,7 +117,7 @@ func (o *OAuthAccountSelectionUser) GetName() string {
 
 // GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionUser) GetNameOk() (*string, bool) {
+func (o *AccountSelectionChallengeUser) GetNameOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -123,12 +125,12 @@ func (o *OAuthAccountSelectionUser) GetNameOk() (*string, bool) {
 }
 
 // SetName sets field value
-func (o *OAuthAccountSelectionUser) SetName(v string) {
+func (o *AccountSelectionChallengeUser) SetName(v string) {
 	o.Name = v
 }
 
 // GetEmail returns the Email field value
-func (o *OAuthAccountSelectionUser) GetEmail() string {
+func (o *AccountSelectionChallengeUser) GetEmail() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -139,7 +141,7 @@ func (o *OAuthAccountSelectionUser) GetEmail() string {
 
 // GetEmailOk returns a tuple with the Email field value
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionUser) GetEmailOk() (*string, bool) {
+func (o *AccountSelectionChallengeUser) GetEmailOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -147,12 +149,12 @@ func (o *OAuthAccountSelectionUser) GetEmailOk() (*string, bool) {
 }
 
 // SetEmail sets field value
-func (o *OAuthAccountSelectionUser) SetEmail(v string) {
+func (o *AccountSelectionChallengeUser) SetEmail(v string) {
 	o.Email = v
 }
 
 // GetAvatar returns the Avatar field value
-func (o *OAuthAccountSelectionUser) GetAvatar() string {
+func (o *AccountSelectionChallengeUser) GetAvatar() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -163,7 +165,7 @@ func (o *OAuthAccountSelectionUser) GetAvatar() string {
 
 // GetAvatarOk returns a tuple with the Avatar field value
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionUser) GetAvatarOk() (*string, bool) {
+func (o *AccountSelectionChallengeUser) GetAvatarOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -171,12 +173,12 @@ func (o *OAuthAccountSelectionUser) GetAvatarOk() (*string, bool) {
 }
 
 // SetAvatar sets field value
-func (o *OAuthAccountSelectionUser) SetAvatar(v string) {
+func (o *AccountSelectionChallengeUser) SetAvatar(v string) {
 	o.Avatar = v
 }
 
 // GetIsCurrent returns the IsCurrent field value
-func (o *OAuthAccountSelectionUser) GetIsCurrent() bool {
+func (o *AccountSelectionChallengeUser) GetIsCurrent() bool {
 	if o == nil {
 		var ret bool
 		return ret
@@ -187,7 +189,7 @@ func (o *OAuthAccountSelectionUser) GetIsCurrent() bool {
 
 // GetIsCurrentOk returns a tuple with the IsCurrent field value
 // and a boolean to check if the value has been set.
-func (o *OAuthAccountSelectionUser) GetIsCurrentOk() (*bool, bool) {
+func (o *AccountSelectionChallengeUser) GetIsCurrentOk() (*bool, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -195,11 +197,35 @@ func (o *OAuthAccountSelectionUser) GetIsCurrentOk() (*bool, bool) {
 }
 
 // SetIsCurrent sets field value
-func (o *OAuthAccountSelectionUser) SetIsCurrent(v bool) {
+func (o *AccountSelectionChallengeUser) SetIsCurrent(v bool) {
 	o.IsCurrent = v
 }
 
-func (o OAuthAccountSelectionUser) MarshalJSON() ([]byte, error) {
+// GetIsHint returns the IsHint field value
+func (o *AccountSelectionChallengeUser) GetIsHint() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.IsHint
+}
+
+// GetIsHintOk returns a tuple with the IsHint field value
+// and a boolean to check if the value has been set.
+func (o *AccountSelectionChallengeUser) GetIsHintOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.IsHint, true
+}
+
+// SetIsHint sets field value
+func (o *AccountSelectionChallengeUser) SetIsHint(v bool) {
+	o.IsHint = v
+}
+
+func (o AccountSelectionChallengeUser) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -207,7 +233,7 @@ func (o OAuthAccountSelectionUser) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o OAuthAccountSelectionUser) ToMap() (map[string]interface{}, error) {
+func (o AccountSelectionChallengeUser) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["uid"] = o.Uid
 	toSerialize["username"] = o.Username
@@ -215,6 +241,7 @@ func (o OAuthAccountSelectionUser) ToMap() (map[string]interface{}, error) {
 	toSerialize["email"] = o.Email
 	toSerialize["avatar"] = o.Avatar
 	toSerialize["is_current"] = o.IsCurrent
+	toSerialize["is_hint"] = o.IsHint
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -223,7 +250,7 @@ func (o OAuthAccountSelectionUser) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *OAuthAccountSelectionUser) UnmarshalJSON(data []byte) (err error) {
+func (o *AccountSelectionChallengeUser) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -234,6 +261,7 @@ func (o *OAuthAccountSelectionUser) UnmarshalJSON(data []byte) (err error) {
 		"email",
 		"avatar",
 		"is_current",
+		"is_hint",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -250,15 +278,15 @@ func (o *OAuthAccountSelectionUser) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varOAuthAccountSelectionUser := _OAuthAccountSelectionUser{}
+	varAccountSelectionChallengeUser := _AccountSelectionChallengeUser{}
 
-	err = json.Unmarshal(data, &varOAuthAccountSelectionUser)
+	err = json.Unmarshal(data, &varAccountSelectionChallengeUser)
 
 	if err != nil {
 		return err
 	}
 
-	*o = OAuthAccountSelectionUser(varOAuthAccountSelectionUser)
+	*o = AccountSelectionChallengeUser(varAccountSelectionChallengeUser)
 
 	additionalProperties := make(map[string]interface{})
 
@@ -269,44 +297,45 @@ func (o *OAuthAccountSelectionUser) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "email")
 		delete(additionalProperties, "avatar")
 		delete(additionalProperties, "is_current")
+		delete(additionalProperties, "is_hint")
 		o.AdditionalProperties = additionalProperties
 	}
 
 	return err
 }
 
-type NullableOAuthAccountSelectionUser struct {
-	value *OAuthAccountSelectionUser
+type NullableAccountSelectionChallengeUser struct {
+	value *AccountSelectionChallengeUser
 	isSet bool
 }
 
-func (v NullableOAuthAccountSelectionUser) Get() *OAuthAccountSelectionUser {
+func (v NullableAccountSelectionChallengeUser) Get() *AccountSelectionChallengeUser {
 	return v.value
 }
 
-func (v *NullableOAuthAccountSelectionUser) Set(val *OAuthAccountSelectionUser) {
+func (v *NullableAccountSelectionChallengeUser) Set(val *AccountSelectionChallengeUser) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableOAuthAccountSelectionUser) IsSet() bool {
+func (v NullableAccountSelectionChallengeUser) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableOAuthAccountSelectionUser) Unset() {
+func (v *NullableAccountSelectionChallengeUser) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableOAuthAccountSelectionUser(val *OAuthAccountSelectionUser) *NullableOAuthAccountSelectionUser {
-	return &NullableOAuthAccountSelectionUser{value: val, isSet: true}
+func NewNullableAccountSelectionChallengeUser(val *AccountSelectionChallengeUser) *NullableAccountSelectionChallengeUser {
+	return &NullableAccountSelectionChallengeUser{value: val, isSet: true}
 }
 
-func (v NullableOAuthAccountSelectionUser) MarshalJSON() ([]byte, error) {
+func (v NullableAccountSelectionChallengeUser) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableOAuthAccountSelectionUser) UnmarshalJSON(src []byte) error {
+func (v *NullableAccountSelectionChallengeUser) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

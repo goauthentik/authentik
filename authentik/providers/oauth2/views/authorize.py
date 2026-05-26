@@ -35,6 +35,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.account_selection import (
     QS_ACCOUNT_UID,
     get_known_account_users,
+    start_account_selection_flow_response,
 )
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
@@ -48,7 +49,6 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
@@ -71,7 +71,6 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
-from authentik.providers.oauth2.views.account_selection import OAuthAccountSelectionStage
 from authentik.providers.oauth2.views.flow_context import (
     PLAN_CONTEXT_PARAMS,
     SESSION_KEY_LAST_LOGIN_UID,
@@ -444,12 +443,16 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if SESSION_KEY_LAST_LOGIN_UID in self.request.session:
             return response
         account_users = get_known_account_users(self.request)
-        if not account_users or SESSION_KEY_PLAN not in self.request.session:
+        if not account_users:
             return response
-        plan = self.request.session[SESSION_KEY_PLAN]
-        plan.insert_stage(in_memory_stage(OAuthAccountSelectionStage), index=0)
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return response
+        return (
+            start_account_selection_flow_response(
+                self.request,
+                self.request.get_full_path(),
+                getattr(self, "application", None),
+            )
+            or response
+        )
 
     def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
         request.context["oauth_scopes"] = self.params.scope
@@ -555,7 +558,13 @@ class AuthorizationFlowInitView(PolicyAccessView):
         except FlowNonApplicableException:
             return self.handle_no_permission_authenticated()
         if show_account_selection:
-            plan.insert_stage(in_memory_stage(OAuthAccountSelectionStage), index=0)
+            response = start_account_selection_flow_response(
+                self.request,
+                self.request.get_full_path(),
+                self.application,
+            )
+            if response:
+                return response
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
         if PROMPT_CONSENT in self.params.prompt:

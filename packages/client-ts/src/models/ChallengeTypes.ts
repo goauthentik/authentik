@@ -17,6 +17,11 @@ import {
     AccessDeniedChallengeFromJSONTyped,
     AccessDeniedChallengeToJSON,
 } from "./AccessDeniedChallenge";
+import type { AccountSelectionChallenge } from "./AccountSelectionChallenge";
+import {
+    AccountSelectionChallengeFromJSONTyped,
+    AccountSelectionChallengeToJSON,
+} from "./AccountSelectionChallenge";
 import type { AppleLoginChallenge } from "./AppleLoginChallenge";
 import { AppleLoginChallengeFromJSONTyped, AppleLoginChallengeToJSON } from "./AppleLoginChallenge";
 import type { AuthenticatorDuoChallenge } from "./AuthenticatorDuoChallenge";
@@ -88,11 +93,6 @@ import {
     NativeLogoutChallengeFromJSONTyped,
     NativeLogoutChallengeToJSON,
 } from "./NativeLogoutChallenge";
-import type { OAuthAccountSelectionChallenge } from "./OAuthAccountSelectionChallenge";
-import {
-    OAuthAccountSelectionChallengeFromJSONTyped,
-    OAuthAccountSelectionChallengeToJSON,
-} from "./OAuthAccountSelectionChallenge";
 import type { OAuthDeviceCodeChallenge } from "./OAuthDeviceCodeChallenge";
 import {
     OAuthDeviceCodeChallengeFromJSONTyped,
@@ -140,6 +140,7 @@ export type ChallengeTypes =
     | ({ component: "ak-source-plex" } & PlexAuthenticationChallenge)
     | ({ component: "ak-source-telegram" } & TelegramLoginChallenge)
     | ({ component: "ak-stage-access-denied" } & AccessDeniedChallenge)
+    | ({ component: "ak-stage-account-selection" } & AccountSelectionChallenge)
     | ({ component: "ak-stage-authenticator-duo" } & AuthenticatorDuoChallenge)
     | ({ component: "ak-stage-authenticator-email" } & AuthenticatorEmailChallenge)
     | ({ component: "ak-stage-authenticator-sms" } & AuthenticatorSMSChallenge)
@@ -155,7 +156,6 @@ export type ChallengeTypes =
     | ({ component: "ak-stage-endpoint-agent" } & EndpointAgentChallenge)
     | ({ component: "ak-stage-flow-error" } & FlowErrorChallenge)
     | ({ component: "ak-stage-identification" } & IdentificationChallenge)
-    | ({ component: "ak-stage-oauth-account-selection" } & OAuthAccountSelectionChallenge)
     | ({ component: "ak-stage-password" } & PasswordChallenge)
     | ({ component: "ak-stage-prompt" } & PromptChallenge)
     | ({ component: "ak-stage-session-end" } & SessionEndChallenge)
@@ -207,6 +207,10 @@ export function ChallengeTypesFromJSONTyped(
         case "ak-stage-access-denied":
             return Object.assign({}, AccessDeniedChallengeFromJSONTyped(json, true), {
                 component: "ak-stage-access-denied",
+            } as const);
+        case "ak-stage-account-selection":
+            return Object.assign({}, AccountSelectionChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-account-selection",
             } as const);
         case "ak-stage-authenticator-duo":
             return Object.assign({}, AuthenticatorDuoChallengeFromJSONTyped(json, true), {
@@ -267,10 +271,6 @@ export function ChallengeTypesFromJSONTyped(
         case "ak-stage-identification":
             return Object.assign({}, IdentificationChallengeFromJSONTyped(json, true), {
                 component: "ak-stage-identification",
-            } as const);
-        case "ak-stage-oauth-account-selection":
-            return Object.assign({}, OAuthAccountSelectionChallengeFromJSONTyped(json, true), {
-                component: "ak-stage-oauth-account-selection",
             } as const);
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeFromJSONTyped(json, true), {
@@ -349,6 +349,10 @@ export function ChallengeTypesToJSONTyped(
             return Object.assign({}, AccessDeniedChallengeToJSON(value), {
                 component: "ak-stage-access-denied",
             } as const);
+        case "ak-stage-account-selection":
+            return Object.assign({}, AccountSelectionChallengeToJSON(value), {
+                component: "ak-stage-account-selection",
+            } as const);
         case "ak-stage-authenticator-duo":
             return Object.assign({}, AuthenticatorDuoChallengeToJSON(value), {
                 component: "ak-stage-authenticator-duo",
@@ -408,10 +412,6 @@ export function ChallengeTypesToJSONTyped(
         case "ak-stage-identification":
             return Object.assign({}, IdentificationChallengeToJSON(value), {
                 component: "ak-stage-identification",
-            } as const);
-        case "ak-stage-oauth-account-selection":
-            return Object.assign({}, OAuthAccountSelectionChallengeToJSON(value), {
-                component: "ak-stage-oauth-account-selection",
             } as const);
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeToJSON(value), {

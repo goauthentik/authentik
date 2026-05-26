@@ -36,6 +36,7 @@ type ApiCoreBrandsListRequest struct {
 	clientCertificates            *[]string
 	default_                      *bool
 	domain                        *string
+	flowAccountSelection          *string
 	flowAuthentication            *string
 	flowDeviceCode                *string
 	flowInvalidation              *string
@@ -87,6 +88,11 @@ func (r ApiCoreBrandsListRequest) Default_(default_ bool) ApiCoreBrandsListReque
 
 func (r ApiCoreBrandsListRequest) Domain(domain string) ApiCoreBrandsListRequest {
 	r.domain = &domain
+	return r
+}
+
+func (r ApiCoreBrandsListRequest) FlowAccountSelection(flowAccountSelection string) ApiCoreBrandsListRequest {
+	r.flowAccountSelection = &flowAccountSelection
 	return r
 }
 
@@ -226,6 +232,9 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 	}
 	if r.domain != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "domain", r.domain, "form", "")
+	}
+	if r.flowAccountSelection != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_account_selection", r.flowAccountSelection, "form", "")
 	}
 	if r.flowAuthentication != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_authentication", r.flowAuthentication, "form", "")

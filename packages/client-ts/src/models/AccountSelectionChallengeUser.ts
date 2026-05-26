@@ -13,72 +13,79 @@
  */
 
 /**
- * Account shown by the OAuth account selection stage.
+ * Account shown by the account selection stage.
  * @export
- * @interface OAuthAccountSelectionUser
+ * @interface AccountSelectionChallengeUser
  */
-export interface OAuthAccountSelectionUser {
+export interface AccountSelectionChallengeUser {
     /**
      *
      * @type {string}
-     * @memberof OAuthAccountSelectionUser
+     * @memberof AccountSelectionChallengeUser
      */
     uid: string;
     /**
      *
      * @type {string}
-     * @memberof OAuthAccountSelectionUser
+     * @memberof AccountSelectionChallengeUser
      */
     username: string;
     /**
      *
      * @type {string}
-     * @memberof OAuthAccountSelectionUser
+     * @memberof AccountSelectionChallengeUser
      */
     name: string;
     /**
      *
      * @type {string}
-     * @memberof OAuthAccountSelectionUser
+     * @memberof AccountSelectionChallengeUser
      */
     email: string;
     /**
      *
      * @type {string}
-     * @memberof OAuthAccountSelectionUser
+     * @memberof AccountSelectionChallengeUser
      */
     avatar: string;
     /**
      *
      * @type {boolean}
-     * @memberof OAuthAccountSelectionUser
+     * @memberof AccountSelectionChallengeUser
      */
     isCurrent: boolean;
+    /**
+     *
+     * @type {boolean}
+     * @memberof AccountSelectionChallengeUser
+     */
+    isHint: boolean;
 }
 
 /**
- * Check if a given object implements the OAuthAccountSelectionUser interface.
+ * Check if a given object implements the AccountSelectionChallengeUser interface.
  */
-export function instanceOfOAuthAccountSelectionUser(
+export function instanceOfAccountSelectionChallengeUser(
     value: object,
-): value is OAuthAccountSelectionUser {
+): value is AccountSelectionChallengeUser {
     if (!("uid" in value) || value["uid"] === undefined) return false;
     if (!("username" in value) || value["username"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("email" in value) || value["email"] === undefined) return false;
     if (!("avatar" in value) || value["avatar"] === undefined) return false;
     if (!("isCurrent" in value) || value["isCurrent"] === undefined) return false;
+    if (!("isHint" in value) || value["isHint"] === undefined) return false;
     return true;
 }
 
-export function OAuthAccountSelectionUserFromJSON(json: any): OAuthAccountSelectionUser {
-    return OAuthAccountSelectionUserFromJSONTyped(json, false);
+export function AccountSelectionChallengeUserFromJSON(json: any): AccountSelectionChallengeUser {
+    return AccountSelectionChallengeUserFromJSONTyped(json, false);
 }
 
-export function OAuthAccountSelectionUserFromJSONTyped(
+export function AccountSelectionChallengeUserFromJSONTyped(
     json: any,
     ignoreDiscriminator: boolean,
-): OAuthAccountSelectionUser {
+): AccountSelectionChallengeUser {
     if (json == null) {
         return json;
     }
@@ -89,15 +96,16 @@ export function OAuthAccountSelectionUserFromJSONTyped(
         email: json["email"],
         avatar: json["avatar"],
         isCurrent: json["is_current"],
+        isHint: json["is_hint"],
     };
 }
 
-export function OAuthAccountSelectionUserToJSON(json: any): OAuthAccountSelectionUser {
-    return OAuthAccountSelectionUserToJSONTyped(json, false);
+export function AccountSelectionChallengeUserToJSON(json: any): AccountSelectionChallengeUser {
+    return AccountSelectionChallengeUserToJSONTyped(json, false);
 }
 
-export function OAuthAccountSelectionUserToJSONTyped(
-    value?: OAuthAccountSelectionUser | null,
+export function AccountSelectionChallengeUserToJSONTyped(
+    value?: AccountSelectionChallengeUser | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -111,5 +119,6 @@ export function OAuthAccountSelectionUserToJSONTyped(
         email: value["email"],
         avatar: value["avatar"],
         is_current: value["isCurrent"],
+        is_hint: value["isHint"],
     };
 }

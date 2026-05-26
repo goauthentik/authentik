@@ -13,6 +13,7 @@ from django.utils.timezone import now
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
     PROMPT_SELECT_ACCOUNT,
+    QS_LOGIN_HINT,
     SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
     TOKEN_TYPE,
@@ -21,7 +22,7 @@ from authentik.core.account_selection import COOKIE_NAME_KNOWN_ACCOUNTS, QS_ADD_
 from authentik.core.models import Application, AuthenticatedSession, Session, User
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
@@ -41,6 +42,7 @@ from authentik.providers.oauth2.views.authorize import (
     OAuthAuthorizationParams,
 )
 from authentik.providers.oauth2.views.provider import ProviderInfoView
+from authentik.stages.account_selection.models import AccountSelectionStage, AccountSwitchStage
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD
 
@@ -72,6 +74,24 @@ class TestAuthorize(OAuthTestCase):
             )
             accounts.append({"uid": user.uuid.hex, "session": session.session_key})
         self.client.cookies[COOKIE_NAME_KNOWN_ACCOUNTS] = dumps(accounts)
+
+    def setup_account_selection_flow(self):
+        """Create a default brand account selection flow."""
+        account_flow = create_test_flow(FlowDesignation.ACCOUNT_SELECTION)
+        brand = create_test_brand()
+        brand.flow_account_selection = account_flow
+        brand.save()
+        FlowStageBinding.objects.create(
+            target=account_flow,
+            stage=AccountSelectionStage.objects.create(name=generate_id()),
+            order=10,
+        )
+        FlowStageBinding.objects.create(
+            target=account_flow,
+            stage=AccountSwitchStage.objects.create(name=generate_id()),
+            order=100,
+        )
+        return account_flow
 
     def test_disallowed_grant_type(self):
         """Test with disallowed grant type"""
@@ -862,8 +882,9 @@ class TestAuthorize(OAuthTestCase):
         self.assertNotIn(global_auth.slug, response.url)
 
     def test_prompt_select_account_shows_account_selection(self):
-        """Test prompt=select_account shows the account selection stage"""
+        """Test prompt=select_account starts the brand account selection flow."""
         flow = create_test_flow()
+        account_flow = self.setup_account_selection_flow()
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
@@ -887,14 +908,17 @@ class TestAuthorize(OAuthTestCase):
             data=authorize_query,
         )
         self.assertEqual(response.status_code, 302)
-        self.assertIn(flow.slug, response.url)
-        challenge_response = self.client.get(self.get_flow_executor_url(flow, authorize_query))
-        self.assertEqual(challenge_response.json()["component"], "ak-stage-oauth-account-selection")
+        self.assertIn(account_flow.slug, response.url)
+        challenge_response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": account_flow.slug})
+        )
+        self.assertEqual(challenge_response.json()["component"], "ak-stage-account-selection")
         self.assertEqual(challenge_response.json()["accounts"][0]["username"], user.username)
 
     def test_prompt_select_account_shows_before_authorization_flow_stages(self):
         """Test prompt=select_account is shown before the provider authorization flow."""
         flow = create_test_flow()
+        account_flow = self.setup_account_selection_flow()
         FlowStageBinding.objects.create(
             target=flow, stage=DummyStage.objects.create(name=generate_id()), order=10
         )
@@ -921,12 +945,16 @@ class TestAuthorize(OAuthTestCase):
             data=authorize_query,
         )
         self.assertEqual(response.status_code, 302)
-        challenge_response = self.client.get(self.get_flow_executor_url(flow, authorize_query))
-        self.assertEqual(challenge_response.json()["component"], "ak-stage-oauth-account-selection")
+        self.assertIn(account_flow.slug, response.url)
+        challenge_response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": account_flow.slug})
+        )
+        self.assertEqual(challenge_response.json()["component"], "ak-stage-account-selection")
 
     def test_known_accounts_show_account_selection_by_default(self):
         """Test multiple remembered browser accounts show the account selection stage"""
         flow = create_test_flow()
+        account_flow = self.setup_account_selection_flow()
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
@@ -950,9 +978,12 @@ class TestAuthorize(OAuthTestCase):
             data=authorize_query,
         )
         self.assertEqual(response.status_code, 302)
-        challenge_response = self.client.get(self.get_flow_executor_url(flow, authorize_query))
+        self.assertIn(account_flow.slug, response.url)
+        challenge_response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": account_flow.slug})
+        )
         challenge = challenge_response.json()
-        self.assertEqual(challenge["component"], "ak-stage-oauth-account-selection")
+        self.assertEqual(challenge["component"], "ak-stage-account-selection")
         self.assertEqual(
             [account["username"] for account in challenge["accounts"]],
             [user.username, other_user.username],
@@ -997,8 +1028,9 @@ class TestAuthorize(OAuthTestCase):
         self.assertEqual(challenge_response.json()["component"], "ak-stage-autosubmit")
 
     def test_account_selection_switch_requests_authentication(self):
-        """Test selecting a remembered non-current account starts authentication"""
+        """Test selecting a remembered non-current account runs the switch flow."""
         flow = create_test_flow()
+        account_flow = self.setup_account_selection_flow()
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
@@ -1022,36 +1054,34 @@ class TestAuthorize(OAuthTestCase):
             data=authorize_query,
         )
         self.assertEqual(response.status_code, 302)
-        self.client.get(self.get_flow_executor_url(flow, authorize_query))
+        self.assertIn(account_flow.slug, response.url)
+        self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": account_flow.slug})
+        )
         switch_response = self.client.post(
-            self.get_flow_executor_url(flow, authorize_query),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": account_flow.slug}),
             data=json_dumps(
                 {
-                    "component": "ak-stage-oauth-account-selection",
+                    "component": "ak-stage-account-selection",
                     "action": "switch",
                     "selected_account": other_user.uuid.hex,
                 }
             ),
             content_type="application/json",
         )
+        self.assertEqual(switch_response.status_code, 302)
+        switch_response = self.client.get(switch_response.url)
         self.assertEqual(switch_response.json()["component"], "xak-flow-redirect")
         redirect = switch_response.json()["to"]
         parsed = parse_qs(urlparse(redirect).query)
-        self.assertEqual(
-            urlparse(redirect).path,
-            reverse("authentik_flows:default-authentication"),
-        )
         self.assertEqual(parsed["login_hint"], [other_user.email])
         self.assertEqual(parsed["account_uid"], [other_user.uuid.hex])
-        authorize_query = parse_qs(urlparse(parsed["next"][0]).query)
-        self.assertEqual(authorize_query["client_id"], ["test"])
-        self.assertNotIn("query", authorize_query)
-        self.assertEqual(authorize_query["login_hint"], [other_user.email])
-        self.assertEqual(authorize_query["account_uid"], [other_user.uuid.hex])
+        self.assertEqual(urlparse(redirect).path, reverse("authentik_providers_oauth2:authorize"))
 
     def test_account_selection_login_requests_authentication(self):
         """Test using another account restarts authorization with normal OAuth parameters."""
         flow = create_test_flow()
+        account_flow = self.setup_account_selection_flow()
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
@@ -1074,12 +1104,15 @@ class TestAuthorize(OAuthTestCase):
             data=authorize_query,
         )
         self.assertEqual(response.status_code, 302)
-        self.client.get(self.get_flow_executor_url(flow, authorize_query))
+        self.assertIn(account_flow.slug, response.url)
+        self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": account_flow.slug})
+        )
         login_response = self.client.post(
-            self.get_flow_executor_url(flow, authorize_query),
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": account_flow.slug}),
             data=json_dumps(
                 {
-                    "component": "ak-stage-oauth-account-selection",
+                    "component": "ak-stage-account-selection",
                     "action": "login",
                 }
             ),
@@ -1100,8 +1133,9 @@ class TestAuthorize(OAuthTestCase):
         self.assertNotIn("query", authorize_query)
 
     def test_prompt_select_account_ignores_login_hint(self):
-        """Test prompt=select_account doesn't auto-select the login_hint user"""
+        """Test prompt=select_account suggests but doesn't auto-select the login_hint user."""
         flow = create_test_flow()
+        account_flow = self.setup_account_selection_flow()
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
@@ -1111,7 +1145,9 @@ class TestAuthorize(OAuthTestCase):
             grant_types=[GrantType.AUTHORIZATION_CODE],
         )
         Application.objects.create(name="app", slug="app", provider=provider)
-        self.client.force_login(create_test_admin_user())
+        user = create_test_admin_user()
+        other_user = create_test_admin_user("other-user")
+        self.remember_live_accounts(user, other_user)
         response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
             data={
@@ -1120,12 +1156,19 @@ class TestAuthorize(OAuthTestCase):
                 "state": generate_id(),
                 "redirect_uri": "http://localhost",
                 "prompt": PROMPT_SELECT_ACCOUNT,
-                "login_hint": "foo",
+                QS_LOGIN_HINT: other_user.email,
             },
         )
         self.assertEqual(response.status_code, 302)
+        self.assertIn(account_flow.slug, response.url)
         plan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertNotIn(PLAN_CONTEXT_PENDING_USER_IDENTIFIER, plan.context)
+        challenge_response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": account_flow.slug})
+        )
+        accounts = challenge_response.json()["accounts"]
+        self.assertEqual(accounts[0]["username"], other_user.username)
+        self.assertTrue(accounts[0]["is_hint"])
 
     def test_prompt_none_select_account(self):
         """Test prompt=none and prompt=select_account return account_selection_required"""

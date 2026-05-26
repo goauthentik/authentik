@@ -1,0 +1,31 @@
+version: 1
+metadata:
+  name: Default - Account selection flow
+entries:
+- attrs:
+    designation: account_selection
+    name: Account selection
+    title: Account selection
+    authentication: none
+  identifiers:
+    slug: default-account-selection-flow
+  model: authentik_flows.flow
+  id: flow
+- identifiers:
+    name: default-account-selection-picker
+  id: default-account-selection-picker
+  model: authentik_stages_account_selection.accountselectionstage
+- identifiers:
+    name: default-account-selection-switch
+  id: default-account-selection-switch
+  model: authentik_stages_account_selection.accountswitchstage
+- identifiers:
+    order: 10
+    stage: !KeyOf default-account-selection-picker
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- identifiers:
+    order: 100
+    stage: !KeyOf default-account-selection-switch
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding

@@ -35,6 +35,7 @@ type Brand struct {
 	FlowRecovery                  NullableString `json:"flow_recovery,omitempty"`
 	FlowUnenrollment              NullableString `json:"flow_unenrollment,omitempty"`
 	FlowUserSettings              NullableString `json:"flow_user_settings,omitempty"`
+	FlowAccountSelection          NullableString `json:"flow_account_selection,omitempty"`
 	FlowDeviceCode                NullableString `json:"flow_device_code,omitempty"`
 	FlowLockdown                  NullableString `json:"flow_lockdown,omitempty"`
 	// When set, external users will be redirected to this application after authenticating.
@@ -523,6 +524,49 @@ func (o *Brand) UnsetFlowUserSettings() {
 	o.FlowUserSettings.Unset()
 }
 
+// GetFlowAccountSelection returns the FlowAccountSelection field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Brand) GetFlowAccountSelection() string {
+	if o == nil || IsNil(o.FlowAccountSelection.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.FlowAccountSelection.Get()
+}
+
+// GetFlowAccountSelectionOk returns a tuple with the FlowAccountSelection field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Brand) GetFlowAccountSelectionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FlowAccountSelection.Get(), o.FlowAccountSelection.IsSet()
+}
+
+// HasFlowAccountSelection returns a boolean if a field has been set.
+func (o *Brand) HasFlowAccountSelection() bool {
+	if o != nil && o.FlowAccountSelection.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFlowAccountSelection gets a reference to the given NullableString and assigns it to the FlowAccountSelection field.
+func (o *Brand) SetFlowAccountSelection(v string) {
+	o.FlowAccountSelection.Set(&v)
+}
+
+// SetFlowAccountSelectionNil sets the value for FlowAccountSelection to be an explicit nil
+func (o *Brand) SetFlowAccountSelectionNil() {
+	o.FlowAccountSelection.Set(nil)
+}
+
+// UnsetFlowAccountSelection ensures that no value is present for FlowAccountSelection, not even an explicit nil
+func (o *Brand) UnsetFlowAccountSelection() {
+	o.FlowAccountSelection.Unset()
+}
+
 // GetFlowDeviceCode returns the FlowDeviceCode field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Brand) GetFlowDeviceCode() string {
 	if o == nil || IsNil(o.FlowDeviceCode.Get()) {
@@ -804,6 +848,9 @@ func (o Brand) ToMap() (map[string]interface{}, error) {
 	if o.FlowUserSettings.IsSet() {
 		toSerialize["flow_user_settings"] = o.FlowUserSettings.Get()
 	}
+	if o.FlowAccountSelection.IsSet() {
+		toSerialize["flow_account_selection"] = o.FlowAccountSelection.Get()
+	}
 	if o.FlowDeviceCode.IsSet() {
 		toSerialize["flow_device_code"] = o.FlowDeviceCode.Get()
 	}
@@ -879,6 +926,7 @@ func (o *Brand) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_recovery")
 		delete(additionalProperties, "flow_unenrollment")
 		delete(additionalProperties, "flow_user_settings")
+		delete(additionalProperties, "flow_account_selection")
 		delete(additionalProperties, "flow_device_code")
 		delete(additionalProperties, "flow_lockdown")
 		delete(additionalProperties, "default_application")
