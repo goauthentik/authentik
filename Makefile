@@ -186,7 +186,7 @@ gen-changelog:  ## (Release) generate the changelog based from the commits since
 	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
 	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
 	grep -Eo 'cherry-pick (#\d+)' merged_to_last | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
-	grep -vf cherry_picked_to_last merged_to_current | grep -vE '^- (ci:|website)|: bump ' | sort > changelog.md
+	grep -vf cherry_picked_to_last merged_to_current | grep -vE '^- (ci:|website)' | sort > changelog.md
 	rm merged_to_current
 	rm merged_to_last
 	rm cherry_picked_to_last
