@@ -2,20 +2,20 @@
 title: Account selection stages
 ---
 
-The Account Selection and Account Switch stages let users choose between live accounts that are already known in the same browser.
+Account selection stages let users choose which remembered authentik account should continue a flow.
 
 ## Overview
 
-authentik remembers accounts in a signed browser cookie after login. The Account Selection stage reads that browser-local list, filters out stale sessions, and shows the user the current account plus any other remembered accounts that still have a live authentik session.
+authentik can remember multiple accounts in the same browser after successful login. The remembered account list is stored in a signed browser cookie, but an account is only shown when its authentik session is still active.
 
-The Account Switch stage activates the account selected by an earlier Account Selection stage. Keeping the switch as a separate stage lets you insert other stages between selection and activation, such as an Authenticator Validation stage to require MFA before switching accounts.
+Two stages work together:
 
-The default account-selection flow contains:
+- **Account Selection stage**: shows the current account and other live remembered accounts.
+- **Account Switch stage**: activates the account selected by the Account Selection stage.
 
-1. An Account Selection stage.
-2. An Account Switch stage.
+Keeping selection and activation separate lets you add verification stages between them. For example, you can require MFA before the selected account becomes the active browser session.
 
-The default brand uses this flow for account switching and OpenID Connect `prompt=select_account` requests.
+authentik includes a default account-selection flow and assigns it to the default brand. The flow is used by the user interface account switcher and by OpenID Connect requests that need account selection.
 
 ## Configuration options
 
@@ -29,38 +29,40 @@ The default brand uses this flow for account switching and OpenID Connect `promp
 
 ## Flow integration
 
-Use these stages in a flow with the **Account Selection** designation.
+Account selection stages should be bound to a flow with the **Account Selection** designation.
 
-For normal account switching, bind the stages in this order:
+A typical account-selection flow uses this order:
 
 1. Account Selection stage.
 2. Optional verification stages, such as [Authenticator Validation](../authenticator_validate/index.md).
 3. Account Switch stage.
 
-The Account Selection stage stores the selected account in the flow context. The Account Switch stage then verifies that the remembered session still exists and belongs to the selected active user before it changes the browser's primary authentik session cookie.
+The Account Selection stage stores the selected account in the flow context. The Account Switch stage validates that the remembered session still exists, belongs to the selected active user, and is safe to activate before changing the browser's primary authentik session.
 
 ## Brand integration
 
-Brands can select an account-selection flow. When configured, authentik uses that brand flow for:
+Each brand can select an account-selection flow. When configured, authentik uses the brand's flow for:
 
-- the account switcher in the user interface
-- OpenID Connect authorization requests with `prompt=select_account`
-- OpenID Connect authorization requests where the browser has multiple live remembered accounts
+- the account switcher in the user interface;
+- OpenID Connect authorization requests with `prompt=select_account`;
+- OpenID Connect authorization requests where the browser has multiple live remembered accounts.
 
-If no brand-specific flow is configured, authentik falls back to the first applicable flow with the **Account Selection** designation.
+If no brand flow is configured, authentik falls back to the first applicable flow with the **Account Selection** designation.
 
 ## Notes
 
 ### Requiring MFA on account switch
 
-To require MFA before a remembered account becomes active, insert an Authenticator Validation stage between the Account Selection and Account Switch stages.
+To require MFA before an account switch, insert an [Authenticator Validation stage](../authenticator_validate/index.md) between the Account Selection stage and the Account Switch stage.
 
-The selected account is set as the pending user before the MFA stage runs, so authenticator policies and device lookups evaluate against the account that will be switched to.
+The selected account is set as the pending user before the validation stage runs. Authenticator policies and device lookups therefore evaluate against the account that will become active.
 
 ### Account hints
 
-When an account-selection flow is started with a login hint, authentik places the matching remembered account first and treats it as the primary action. The hint does not by itself switch accounts; the user must still choose the account unless an explicit account identifier is supplied by authentik's own account switcher.
+When a flow starts with a login hint, authentik places the matching remembered account first. The hint does not switch accounts by itself; the user must still choose an account unless authentik starts the flow from its own account switcher with an explicit account identifier.
+
+OpenID Connect providers can trigger this behavior with `prompt=select_account`. They can also send `login_hint` to suggest which remembered account should appear first.
 
 ### Adding another account
 
-When the user chooses to add another account, authentik starts the default authentication flow in a fresh anonymous browser session. The existing remembered sessions remain available so the user can switch back later.
+When the user chooses to use another account, authentik starts the default authentication flow in a fresh anonymous browser session. Existing remembered sessions remain available so the user can switch back later.
