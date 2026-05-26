@@ -32,9 +32,7 @@ export class AccountSelectionStageForm extends BaseStageForm<AccountSelectionSta
     }
 
     protected override renderForm(): TemplateResult {
-        return html`<span>
-                ${msg("Prompt the user to select a browser-local account.")}
-            </span>
+        return html`<span> ${msg("Prompt the user to select a browser-local account.")} </span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

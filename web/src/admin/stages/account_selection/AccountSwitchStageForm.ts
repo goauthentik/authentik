@@ -33,9 +33,7 @@ export class AccountSwitchStageForm extends BaseStageForm<AccountSwitchStage> {
 
     protected override renderForm(): TemplateResult {
         return html`<span>
-                ${msg(
-                    "Activate the account selected by an earlier Account Selection stage.",
-                )}
+                ${msg("Activate the account selected by an earlier Account Selection stage.")}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

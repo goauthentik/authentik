@@ -36,15 +36,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
     @property({ type: Boolean, reflect: true })
     apiDrawerOpen = false;
 
-    static styles = [
-        PFDisplay,
-        PFBrand,
-        PFPage,
-        PFButton,
-        PFDrawer,
-        PFNotificationBadge,
-        Styles,
-    ];
+    static styles = [PFDisplay, PFBrand, PFPage, PFButton, PFDrawer, PFNotificationBadge, Styles];
 
     protected renderAPIDrawerTrigger() {
         const { apiDrawer } = this.uiConfig.enabledFeatures;
