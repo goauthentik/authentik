@@ -5,6 +5,9 @@
 .account-switcher {
     font-size: var(--pf-global--FontSize--md);
     line-height: var(--pf-global--LineHeight--md);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .account-switcher-container {
@@ -21,8 +24,8 @@
     gap: var(--pf-global--spacer--sm);
 }
 
-.account-switcher-toggle {
-    display: inline-flex;
+.pf-c-dropdown__toggle.pf-m-plain.account-switcher-toggle {
+    display: flex;
     align-items: center;
     gap: var(--pf-global--spacer--sm);
     min-height: 2rem;
