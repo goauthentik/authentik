@@ -132,23 +132,13 @@ If a target has no applicable bindings, authentik treats the result as passing b
 
 A flow-stage binding attaches a stage to a flow and defines the order in which that stage runs.
 
-Flow-stage bindings are also called stage bindings. authentik uses them while building the flow plan that determines which stages a user will see and in what order.
+Flow-stage bindings are also called stage bindings. authentik uses them while building the [flow plan](../flows-stages/flow/planner.md) that determines which stages a user will see and in what order.
 
 This matters because stages are reusable objects. The same stage can appear in multiple flows, but each flow-stage binding can have its own policies, users, groups, order, and evaluation settings. When you bind a policy to a stage in a specific flow, you are binding it to that flow-stage binding, not to the reusable stage definition itself.
 
 ### When authentik evaluates stage-binding policies
 
-Flow-stage bindings have two evaluation settings:
-
-- **Evaluate when flow is planned**: authentik evaluates the binding while it is building the flow plan. If the binding does not pass at planning time, the stage is not added to the plan.
-- **Evaluate when the stage is run**: authentik adds the stage to the flow plan, then evaluates the binding again immediately before the stage is shown. If the binding no longer passes, authentik removes that stage from the flow plan.
-
-The second option is useful when the decision depends on context that is only available later in the flow. For example, after an identification stage completes, a subsequent stage binding can assess the identified user and then trigger a CAPTCHA or Deny stage as needed.
-
-In other words:
-
-- use **Evaluate when flow is planned** when the decision can already be made before the user reaches the stage
-- use **Evaluate when the stage is run** when the decision depends on flow context that is created by an earlier stage
+Flow-stage bindings can evaluate policies when the flow is planned, when the stage is run, or both. For the full behavior and guidance on choosing the right setting, see [Flow Planner](../flows-stages/flow/planner.md#planning-and-stage-policies).
 
 ## What to remember
 

@@ -290,6 +290,7 @@ const items = [
                             id: "add-secure-apps/flows-stages/flow/index",
                         },
                         items: [
+                            "add-secure-apps/flows-stages/flow/planner",
                             "add-secure-apps/flows-stages/flow/inspector",
                             "add-secure-apps/flows-stages/flow/context/index",
                             {
