@@ -19,7 +19,12 @@ from authentik.common.oauth.constants import (
     SCOPE_OPENID,
     TOKEN_TYPE,
 )
-from authentik.core.account_selection import COOKIE_NAME_KNOWN_ACCOUNTS, QS_ADD_ACCOUNT
+from authentik.core.account_selection import (
+    COOKIE_NAME_KNOWN_ACCOUNTS,
+    QS_ACCOUNT_UID,
+    QS_ADD_ACCOUNT,
+    append_account_selection_hint,
+)
 from authentik.core.models import Application, AuthenticatedSession, Session, User
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
@@ -93,6 +98,21 @@ class TestAuthorize(OAuthTestCase):
             order=100,
         )
         return account_flow
+
+    def test_append_account_selection_hint_preserves_repeated_params(self):
+        """Test account-selection hints don't collapse repeated authorization params."""
+        user = create_test_admin_user()
+        authorize_url = (
+            reverse("authentik_providers_oauth2:authorize")
+            + "?scope=openid&resource=one&resource=two"
+        )
+
+        hinted_url = append_account_selection_hint(authorize_url, user)
+
+        parsed = parse_qs(urlparse(hinted_url).query)
+        self.assertEqual(parsed["resource"], ["one", "two"])
+        self.assertEqual(parsed[QS_ACCOUNT_UID], [user.uuid.hex])
+        self.assertEqual(parsed[QS_LOGIN_HINT], [user.email])
 
     def test_disallowed_grant_type(self):
         """Test with disallowed grant type"""

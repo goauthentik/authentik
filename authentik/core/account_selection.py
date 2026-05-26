@@ -244,9 +244,17 @@ def append_account_selection_hint(url: str, user: User) -> str:
     parts = urlsplit(url)
     if parts.path != reverse("authentik_providers_oauth2:authorize"):
         return url
-    query = dict(parse_qsl(parts.query, keep_blank_values=True))
-    query[QS_ACCOUNT_UID] = user.uuid.hex
-    query[QS_LOGIN_HINT] = user.email or user.username
+    query = [
+        (key, value)
+        for key, value in parse_qsl(parts.query, keep_blank_values=True)
+        if key not in {QS_ACCOUNT_UID, QS_LOGIN_HINT}
+    ]
+    query.extend(
+        [
+            (QS_ACCOUNT_UID, user.uuid.hex),
+            (QS_LOGIN_HINT, user.email or user.username),
+        ]
+    )
     return urlunsplit(parts._replace(query=urlencode(query)))
 
 
