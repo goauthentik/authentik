@@ -46,20 +46,16 @@ class KnownAccount:
     """Browser-local account reference."""
 
     uid: str
-    session_key: str | None = None
+    session_key: str
 
 
 def _coerce_known_account(raw_account: object) -> KnownAccount | None:
-    """Parse account cookie entries, accepting the legacy UUID-only format."""
-    if isinstance(raw_account, str):
-        return KnownAccount(uid=raw_account)
+    """Parse account cookie entries."""
     if not isinstance(raw_account, dict):
         return None
     uid = raw_account.get("uid")
     session_key = raw_account.get("session")
-    if not isinstance(uid, str):
-        return None
-    if session_key is not None and not isinstance(session_key, str):
+    if not isinstance(uid, str) or not isinstance(session_key, str):
         return None
     return KnownAccount(uid=uid, session_key=session_key)
 
@@ -112,8 +108,8 @@ def get_known_account_users(
 
 def get_live_account_sessions(request: HttpRequest) -> dict[str, AuthenticatedSession]:
     """Return live remembered sessions keyed by user UUID."""
-    known_accounts = [account for account in get_known_accounts(request) if account.session_key]
-    session_keys = [account.session_key for account in known_accounts if account.session_key]
+    known_accounts = get_known_accounts(request)
+    session_keys = [account.session_key for account in known_accounts]
     if not session_keys:
         return {}
     active_users = User.objects.filter(is_active=True).exclude_anonymous()
@@ -322,6 +318,9 @@ def account_selection_authentication_response(
 
 def remember_account(response: HttpResponse, request: HttpRequest, user: User) -> HttpResponse:
     """Remember a user as selectable on this browser without authenticating them."""
+    session_key = request.session.session_key
+    if not session_key:
+        return response
     live_account_ids = set(get_live_account_sessions(request))
     existing_accounts = [
         account
@@ -329,15 +328,10 @@ def remember_account(response: HttpResponse, request: HttpRequest, user: User) -
         if account.uid != user.uuid.hex and account.uid in live_account_ids
     ]
     accounts = [
-        KnownAccount(uid=user.uuid.hex, session_key=request.session.session_key),
+        KnownAccount(uid=user.uuid.hex, session_key=session_key),
         *existing_accounts,
     ][:KNOWN_ACCOUNTS_MAX]
-    payload = [
-        {"uid": account.uid, "session": account.session_key}
-        if account.session_key
-        else account.uid
-        for account in accounts
-    ]
+    payload = [{"uid": account.uid, "session": account.session_key} for account in accounts]
     cookie_kwargs = {
         "path": settings.SESSION_COOKIE_PATH,
         "domain": settings.SESSION_COOKIE_DOMAIN,
