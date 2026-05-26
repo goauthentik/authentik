@@ -213,13 +213,16 @@ def start_fresh_session(response: HttpResponse, request: HttpRequest) -> HttpRes
         last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
     )
     fresh_session.create()
-    return set_session_key_cookie(
+    response = set_session_key_cookie(
         response,
         request,
         fresh_session.session_key,
         AnonymousUser(),
         fresh_session.get_expiry_date(),
     )
+    request.session.save()
+    request.session.modified = False
+    return response
 
 
 def get_account_selection_flow(request: HttpRequest) -> Flow | None:

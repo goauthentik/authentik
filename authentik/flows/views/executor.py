@@ -561,13 +561,15 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
             to=str(redirect_url),
             current=request.path,
         )
-        return HttpChallengeResponse(
+        response = HttpChallengeResponse(
             RedirectChallenge(
                 {
                     "to": str(redirect_url),
                 }
             )
         )
+        response.cookies.update(source.cookies)
+        return response
     if isinstance(source, TemplateResponse):
         return HttpChallengeResponse(
             ShellChallenge(

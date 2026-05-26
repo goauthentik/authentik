@@ -4,6 +4,7 @@ from json import dumps as json_dumps
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs, urlencode, urlparse
 
+from django.conf import settings
 from django.core.signing import dumps
 from django.test import RequestFactory
 from django.urls import reverse
@@ -1092,6 +1093,7 @@ class TestAuthorize(OAuthTestCase):
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         self.client.force_login(create_test_admin_user())
+        current_session_key = self.client.session.session_key
         authorize_query = {
             "response_type": "code",
             "client_id": "test",
@@ -1119,6 +1121,11 @@ class TestAuthorize(OAuthTestCase):
             content_type="application/json",
         )
         self.assertEqual(login_response.json()["component"], "xak-flow-redirect")
+        self.assertIn(settings.SESSION_COOKIE_NAME, login_response.cookies)
+        self.assertNotEqual(
+            login_response.cookies[settings.SESSION_COOKIE_NAME].value,
+            current_session_key,
+        )
         redirect = login_response.json()["to"]
         parsed = parse_qs(urlparse(redirect).query)
         self.assertEqual(
