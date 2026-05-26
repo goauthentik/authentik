@@ -65,6 +65,7 @@ from authentik.api.search.fields import (
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
+from authentik.core.account_selection import get_known_account_users
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     JSONDictField,
@@ -451,6 +452,17 @@ class UserSelfSerializer(ModelSerializer):
         }
 
 
+class AccountSelectionUserSerializer(PassiveSerializer):
+    """Browser-local account that can be selected from the UI."""
+
+    uid = CharField(read_only=True)
+    username = CharField(read_only=True)
+    name = CharField(read_only=True, allow_blank=True)
+    email = CharField(read_only=True, allow_blank=True)
+    avatar = CharField(read_only=True)
+    is_current = BooleanField(read_only=True)
+
+
 class SessionUserSerializer(PassiveSerializer):
     """Response for the /user/me endpoint, returns the currently active user (as `user` property)
     and, if this user is being impersonated, the original user in the `original` property.
@@ -458,6 +470,7 @@ class SessionUserSerializer(PassiveSerializer):
 
     user = UserSelfSerializer()
     original = UserSelfSerializer(required=False)
+    accounts = AccountSelectionUserSerializer(many=True)
 
 
 class UserPasswordSetSerializer(PassiveSerializer):
@@ -796,6 +809,24 @@ class UserViewSet(
                     status=500,
                 )
 
+    def _serialize_account_selection_user(self, user: User) -> dict[str, Any]:
+        """Serialize an account remembered by this browser."""
+        return {
+            "uid": user.uuid.hex,
+            "username": user.username,
+            "name": user.name,
+            "email": user.email,
+            "avatar": get_avatar(user, self.request),
+            "is_current": user.pk == self.request.user.pk,
+        }
+
+    def _get_account_selection_users(self) -> list[User]:
+        """Return active known accounts, including the current session user first."""
+        current_account = []
+        if self.request.user.is_authenticated:
+            current_account.append(self.request.user.uuid.hex)
+        return get_known_account_users(self.request, current_account)
+
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
     @action(
         url_path="me",
@@ -808,7 +839,13 @@ class UserViewSet(
         """Get information about current user"""
         context = {"request": request}
         serializer = SessionUserSerializer(
-            data={"user": UserSelfSerializer(instance=request.user, context=context).data}
+            data={
+                "user": UserSelfSerializer(instance=request.user, context=context).data,
+                "accounts": [
+                    self._serialize_account_selection_user(user)
+                    for user in self._get_account_selection_users()
+                ],
+            }
         )
         if SESSION_KEY_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSelfSerializer(

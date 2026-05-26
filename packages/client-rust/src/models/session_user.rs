@@ -18,15 +18,18 @@ pub struct SessionUser {
     pub user: models::UserSelf,
     #[serde(rename = "original", skip_serializing_if = "Option::is_none")]
     pub original: Option<models::UserSelf>,
+    #[serde(rename = "accounts")]
+    pub accounts: Vec<models::AccountSelectionUser>,
 }
 
 impl SessionUser {
     /// Response for the /user/me endpoint, returns the currently active user (as `user` property)
     /// and, if this user is being impersonated, the original user in the `original` property.
-    pub fn new(user: models::UserSelf) -> SessionUser {
+    pub fn new(user: models::UserSelf, accounts: Vec<models::AccountSelectionUser>) -> SessionUser {
         SessionUser {
             user,
             original: None,
+            accounts,
         }
     }
 }

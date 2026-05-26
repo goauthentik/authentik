@@ -34010,6 +34010,35 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
+    AccountSelectionUser:
+      type: object
+      description: Browser-local account that can be selected from the UI.
+      properties:
+        uid:
+          type: string
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        email:
+          type: string
+          readOnly: true
+        avatar:
+          type: string
+          readOnly: true
+        is_current:
+          type: boolean
+          readOnly: true
+      required:
+      - avatar
+      - email
+      - is_current
+      - name
+      - uid
+      - username
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -36556,6 +36585,7 @@ components:
       - $ref: '#/components/schemas/IdentificationChallenge'
       - $ref: '#/components/schemas/IframeLogoutChallenge'
       - $ref: '#/components/schemas/NativeLogoutChallenge'
+      - $ref: '#/components/schemas/OAuthAccountSelectionChallenge'
       - $ref: '#/components/schemas/OAuthDeviceCodeChallenge'
       - $ref: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
       - $ref: '#/components/schemas/PasswordChallenge'
@@ -36589,6 +36619,7 @@ components:
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
           ak-provider-iframe-logout: '#/components/schemas/IframeLogoutChallenge'
           ak-provider-saml-native-logout: '#/components/schemas/NativeLogoutChallenge'
+          ak-stage-oauth-account-selection: '#/components/schemas/OAuthAccountSelectionChallenge'
           ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallenge'
           ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
           ak-stage-password: '#/components/schemas/PasswordChallenge'
@@ -39444,6 +39475,7 @@ components:
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
       - $ref: '#/components/schemas/IframeLogoutChallengeResponseRequest'
       - $ref: '#/components/schemas/NativeLogoutChallengeResponseRequest'
+      - $ref: '#/components/schemas/OAuthAccountSelectionChallengeResponseRequest'
       - $ref: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
       - $ref: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
       - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
@@ -39473,6 +39505,7 @@ components:
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
           ak-provider-iframe-logout: '#/components/schemas/IframeLogoutChallengeResponseRequest'
           ak-provider-saml-native-logout: '#/components/schemas/NativeLogoutChallengeResponseRequest'
+          ak-stage-oauth-account-selection: '#/components/schemas/OAuthAccountSelectionChallengeResponseRequest'
           ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
           ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
           ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
@@ -44320,6 +44353,73 @@ components:
       - provider_info
       - token
       - user_info
+    OAuthAccountSelectionChallenge:
+      type: object
+      description: Challenge for selecting which account to authorize with.
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-oauth-account-selection
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        application_name:
+          type: string
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuthAccountSelectionUser'
+      required:
+      - accounts
+      - application_name
+    OAuthAccountSelectionChallengeResponseActionEnum:
+      enum:
+      - continue
+      - login
+      - switch
+      type: string
+    OAuthAccountSelectionChallengeResponseRequest:
+      type: object
+      description: OAuth account selection response.
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-oauth-account-selection
+        action:
+          $ref: '#/components/schemas/OAuthAccountSelectionChallengeResponseActionEnum'
+        selected_account:
+          type: string
+      required:
+      - action
+    OAuthAccountSelectionUser:
+      type: object
+      description: Account shown by the OAuth account selection stage.
+      properties:
+        uid:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        avatar:
+          type: string
+        is_current:
+          type: boolean
+      required:
+      - avatar
+      - email
+      - is_current
+      - name
+      - uid
+      - username
     OAuthDeviceCodeChallenge:
       type: object
       description: OAuth Device code challenge
@@ -55981,7 +56081,12 @@ components:
           $ref: '#/components/schemas/UserSelf'
         original:
           $ref: '#/components/schemas/UserSelf'
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountSelectionUser'
       required:
+      - accounts
       - user
     Settings:
       type: object

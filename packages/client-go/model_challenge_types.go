@@ -38,6 +38,7 @@ type ChallengeTypes struct {
 	IdentificationChallenge          *IdentificationChallenge
 	IframeLogoutChallenge            *IframeLogoutChallenge
 	NativeLogoutChallenge            *NativeLogoutChallenge
+	OAuthAccountSelectionChallenge   *OAuthAccountSelectionChallenge
 	OAuthDeviceCodeChallenge         *OAuthDeviceCodeChallenge
 	OAuthDeviceCodeFinishChallenge   *OAuthDeviceCodeFinishChallenge
 	PasswordChallenge                *PasswordChallenge
@@ -187,6 +188,13 @@ func IframeLogoutChallengeAsChallengeTypes(v *IframeLogoutChallenge) ChallengeTy
 func NativeLogoutChallengeAsChallengeTypes(v *NativeLogoutChallenge) ChallengeTypes {
 	return ChallengeTypes{
 		NativeLogoutChallenge: v,
+	}
+}
+
+// OAuthAccountSelectionChallengeAsChallengeTypes is a convenience function that returns OAuthAccountSelectionChallenge wrapped in ChallengeTypes
+func OAuthAccountSelectionChallengeAsChallengeTypes(v *OAuthAccountSelectionChallenge) ChallengeTypes {
+	return ChallengeTypes{
+		OAuthAccountSelectionChallenge: v,
 	}
 }
 
@@ -546,6 +554,18 @@ func (dst *ChallengeTypes) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	// check if the discriminator value is 'ak-stage-oauth-account-selection'
+	if jsonDict["component"] == "ak-stage-oauth-account-selection" {
+		// try to unmarshal JSON data into OAuthAccountSelectionChallenge
+		err = json.Unmarshal(data, &dst.OAuthAccountSelectionChallenge)
+		if err == nil {
+			return nil // data stored in dst.OAuthAccountSelectionChallenge, return on the first match
+		} else {
+			dst.OAuthAccountSelectionChallenge = nil
+			return fmt.Errorf("failed to unmarshal ChallengeTypes as OAuthAccountSelectionChallenge: %s", err.Error())
+		}
+	}
+
 	// check if the discriminator value is 'ak-stage-password'
 	if jsonDict["component"] == "ak-stage-password" {
 		// try to unmarshal JSON data into PasswordChallenge
@@ -715,6 +735,10 @@ func (src ChallengeTypes) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.NativeLogoutChallenge)
 	}
 
+	if src.OAuthAccountSelectionChallenge != nil {
+		return json.Marshal(&src.OAuthAccountSelectionChallenge)
+	}
+
 	if src.OAuthDeviceCodeChallenge != nil {
 		return json.Marshal(&src.OAuthDeviceCodeChallenge)
 	}
@@ -843,6 +867,10 @@ func (obj *ChallengeTypes) GetActualInstance() interface{} {
 		return obj.NativeLogoutChallenge
 	}
 
+	if obj.OAuthAccountSelectionChallenge != nil {
+		return obj.OAuthAccountSelectionChallenge
+	}
+
 	if obj.OAuthDeviceCodeChallenge != nil {
 		return obj.OAuthDeviceCodeChallenge
 	}
@@ -967,6 +995,10 @@ func (obj ChallengeTypes) GetActualInstanceValue() interface{} {
 
 	if obj.NativeLogoutChallenge != nil {
 		return *obj.NativeLogoutChallenge
+	}
+
+	if obj.OAuthAccountSelectionChallenge != nil {
+		return *obj.OAuthAccountSelectionChallenge
 	}
 
 	if obj.OAuthDeviceCodeChallenge != nil {

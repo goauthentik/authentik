@@ -8,6 +8,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
+from authentik.flows.views.executor import QS_QUERY
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
@@ -605,6 +606,20 @@ class TestIdentificationStage(FlowTestCase):
                 component="ak-stage-identification",
                 pending_user_identifier="foo",
             )
+
+    def test_prefill_login_hint(self):
+        """Username prefill from flow executor query login_hint."""
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={QS_QUERY: "login_hint=foo"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            pending_user_identifier="foo",
+        )
 
     def test_prefill_simple(self):
         """Username prefill from existing flow context"""

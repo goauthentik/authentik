@@ -88,6 +88,11 @@ import {
     NativeLogoutChallengeFromJSONTyped,
     NativeLogoutChallengeToJSON,
 } from "./NativeLogoutChallenge";
+import type { OAuthAccountSelectionChallenge } from "./OAuthAccountSelectionChallenge";
+import {
+    OAuthAccountSelectionChallengeFromJSONTyped,
+    OAuthAccountSelectionChallengeToJSON,
+} from "./OAuthAccountSelectionChallenge";
 import type { OAuthDeviceCodeChallenge } from "./OAuthDeviceCodeChallenge";
 import {
     OAuthDeviceCodeChallengeFromJSONTyped,
@@ -150,6 +155,7 @@ export type ChallengeTypes =
     | ({ component: "ak-stage-endpoint-agent" } & EndpointAgentChallenge)
     | ({ component: "ak-stage-flow-error" } & FlowErrorChallenge)
     | ({ component: "ak-stage-identification" } & IdentificationChallenge)
+    | ({ component: "ak-stage-oauth-account-selection" } & OAuthAccountSelectionChallenge)
     | ({ component: "ak-stage-password" } & PasswordChallenge)
     | ({ component: "ak-stage-prompt" } & PromptChallenge)
     | ({ component: "ak-stage-session-end" } & SessionEndChallenge)
@@ -261,6 +267,10 @@ export function ChallengeTypesFromJSONTyped(
         case "ak-stage-identification":
             return Object.assign({}, IdentificationChallengeFromJSONTyped(json, true), {
                 component: "ak-stage-identification",
+            } as const);
+        case "ak-stage-oauth-account-selection":
+            return Object.assign({}, OAuthAccountSelectionChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-oauth-account-selection",
             } as const);
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeFromJSONTyped(json, true), {
@@ -398,6 +408,10 @@ export function ChallengeTypesToJSONTyped(
         case "ak-stage-identification":
             return Object.assign({}, IdentificationChallengeToJSON(value), {
                 component: "ak-stage-identification",
+            } as const);
+        case "ak-stage-oauth-account-selection":
+            return Object.assign({}, OAuthAccountSelectionChallengeToJSON(value), {
+                component: "ak-stage-oauth-account-selection",
             } as const);
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeToJSON(value), {

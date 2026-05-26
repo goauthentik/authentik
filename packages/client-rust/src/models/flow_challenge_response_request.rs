@@ -49,6 +49,8 @@ pub enum FlowChallengeResponseRequest {
     AkProviderIframeLogout(models::IframeLogoutChallengeResponseRequest),
     #[serde(rename = "ak-provider-saml-native-logout")]
     AkProviderSamlNativeLogout(models::NativeLogoutChallengeResponseRequest),
+    #[serde(rename = "ak-stage-oauth-account-selection")]
+    AkStageOauthAccountSelection(models::OAuthAccountSelectionChallengeResponseRequest),
     #[serde(rename = "ak-provider-oauth2-device-code")]
     AkProviderOauth2DeviceCode(models::OAuthDeviceCodeChallengeResponseRequest),
     #[serde(rename = "ak-provider-oauth2-device-code-finish")]

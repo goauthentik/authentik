@@ -55,6 +55,8 @@ from authentik.stages.password.stage import (
     authenticate,
 )
 
+QS_LOGIN_HINT = "login_hint"
+
 
 class LoginChallengeMixin:
     """Base login challenge for Identification stage"""
@@ -398,8 +400,10 @@ class IdentificationStageView(ChallengeStageView):
                 ui_sources.append(button)
         challenge.initial_data["sources"] = ui_sources
 
-        # Pre-fill username from login_hint unless user clicked "Not you?"
-        if prefill := self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER_IDENTIFIER):
+        # Pre-fill username from an upstream hint without skipping identification.
+        if prefill := self.executor.plan.context.get(
+            PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+        ) or get_qs.get(QS_LOGIN_HINT):
             challenge.initial_data["pending_user_identifier"] = prefill
 
         return challenge

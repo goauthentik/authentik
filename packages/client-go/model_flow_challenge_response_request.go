@@ -36,6 +36,7 @@ type FlowChallengeResponseRequest struct {
 	IdentificationChallengeResponseRequest          *IdentificationChallengeResponseRequest
 	IframeLogoutChallengeResponseRequest            *IframeLogoutChallengeResponseRequest
 	NativeLogoutChallengeResponseRequest            *NativeLogoutChallengeResponseRequest
+	OAuthAccountSelectionChallengeResponseRequest   *OAuthAccountSelectionChallengeResponseRequest
 	OAuthDeviceCodeChallengeResponseRequest         *OAuthDeviceCodeChallengeResponseRequest
 	OAuthDeviceCodeFinishChallengeResponseRequest   *OAuthDeviceCodeFinishChallengeResponseRequest
 	PasswordChallengeResponseRequest                *PasswordChallengeResponseRequest
@@ -169,6 +170,13 @@ func IframeLogoutChallengeResponseRequestAsFlowChallengeResponseRequest(v *Ifram
 func NativeLogoutChallengeResponseRequestAsFlowChallengeResponseRequest(v *NativeLogoutChallengeResponseRequest) FlowChallengeResponseRequest {
 	return FlowChallengeResponseRequest{
 		NativeLogoutChallengeResponseRequest: v,
+	}
+}
+
+// OAuthAccountSelectionChallengeResponseRequestAsFlowChallengeResponseRequest is a convenience function that returns OAuthAccountSelectionChallengeResponseRequest wrapped in FlowChallengeResponseRequest
+func OAuthAccountSelectionChallengeResponseRequestAsFlowChallengeResponseRequest(v *OAuthAccountSelectionChallengeResponseRequest) FlowChallengeResponseRequest {
+	return FlowChallengeResponseRequest{
+		OAuthAccountSelectionChallengeResponseRequest: v,
 	}
 }
 
@@ -490,6 +498,18 @@ func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	// check if the discriminator value is 'ak-stage-oauth-account-selection'
+	if jsonDict["component"] == "ak-stage-oauth-account-selection" {
+		// try to unmarshal JSON data into OAuthAccountSelectionChallengeResponseRequest
+		err = json.Unmarshal(data, &dst.OAuthAccountSelectionChallengeResponseRequest)
+		if err == nil {
+			return nil // data stored in dst.OAuthAccountSelectionChallengeResponseRequest, return on the first match
+		} else {
+			dst.OAuthAccountSelectionChallengeResponseRequest = nil
+			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as OAuthAccountSelectionChallengeResponseRequest: %s", err.Error())
+		}
+	}
+
 	// check if the discriminator value is 'ak-stage-password'
 	if jsonDict["component"] == "ak-stage-password" {
 		// try to unmarshal JSON data into PasswordChallengeResponseRequest
@@ -627,6 +647,10 @@ func (src FlowChallengeResponseRequest) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.NativeLogoutChallengeResponseRequest)
 	}
 
+	if src.OAuthAccountSelectionChallengeResponseRequest != nil {
+		return json.Marshal(&src.OAuthAccountSelectionChallengeResponseRequest)
+	}
+
 	if src.OAuthDeviceCodeChallengeResponseRequest != nil {
 		return json.Marshal(&src.OAuthDeviceCodeChallengeResponseRequest)
 	}
@@ -739,6 +763,10 @@ func (obj *FlowChallengeResponseRequest) GetActualInstance() interface{} {
 		return obj.NativeLogoutChallengeResponseRequest
 	}
 
+	if obj.OAuthAccountSelectionChallengeResponseRequest != nil {
+		return obj.OAuthAccountSelectionChallengeResponseRequest
+	}
+
 	if obj.OAuthDeviceCodeChallengeResponseRequest != nil {
 		return obj.OAuthDeviceCodeChallengeResponseRequest
 	}
@@ -847,6 +875,10 @@ func (obj FlowChallengeResponseRequest) GetActualInstanceValue() interface{} {
 
 	if obj.NativeLogoutChallengeResponseRequest != nil {
 		return *obj.NativeLogoutChallengeResponseRequest
+	}
+
+	if obj.OAuthAccountSelectionChallengeResponseRequest != nil {
+		return *obj.OAuthAccountSelectionChallengeResponseRequest
 	}
 
 	if obj.OAuthDeviceCodeChallengeResponseRequest != nil {

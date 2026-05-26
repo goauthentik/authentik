@@ -23,6 +23,7 @@ from sentry_sdk.api import set_tag
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
+from authentik.core.account_selection import account_selection_authentication_response
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
 from authentik.flows.challenge import (
@@ -528,6 +529,10 @@ class ToDefaultFlow(View):
         raise Http404
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
+        if self.designation == FlowDesignation.AUTHENTICATION:
+            response = account_selection_authentication_response(request, NEXT_ARG_NAME)
+            if response is not None:
+                return response
         flow = ToDefaultFlow.get_flow(request, self.designation)
         # If user already has a pending plan, clear it so we don't have to later.
         if SESSION_KEY_PLAN in self.request.session:

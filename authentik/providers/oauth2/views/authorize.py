@@ -24,12 +24,17 @@ from authentik.common.oauth.constants import (
     PROMPT_CONSENT,
     PROMPT_LOGIN,
     PROMPT_NONE,
+    PROMPT_SELECT_ACCOUNT,
     QS_LOGIN_HINT,
     SCOPE_GITHUB,
     SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
     TOKEN_TYPE,
     UI_LOCALES,
+)
+from authentik.core.account_selection import (
+    QS_ACCOUNT_UID,
+    get_known_account_users,
 )
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
@@ -43,6 +48,7 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
@@ -65,6 +71,11 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
+from authentik.providers.oauth2.views.account_selection import OAuthAccountSelectionStage
+from authentik.providers.oauth2.views.flow_context import (
+    PLAN_CONTEXT_PARAMS,
+    SESSION_KEY_LAST_LOGIN_UID,
+)
 from authentik.providers.oauth2.views.userinfo import UserInfoView
 from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
@@ -74,10 +85,7 @@ from authentik.stages.consent.stage import (
 
 LOGGER = get_logger()
 
-PLAN_CONTEXT_PARAMS = "goauthentik.io/providers/oauth2/params"
-SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
-
-ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
+ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN, PROMPT_SELECT_ACCOUNT}
 
 
 @dataclass(slots=True)
@@ -369,6 +377,15 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.params.state,
             )
             raise RequestValidationError(error.get_response(self.request))
+        if PROMPT_NONE in self.params.prompt and PROMPT_SELECT_ACCOUNT in self.params.prompt:
+            # Account selection always requires user interaction, which prompt=none disallows.
+            error = AuthorizeError(
+                self.params.redirect_uri,
+                "account_selection_required",
+                self.params.grant_type,
+                self.params.state,
+            )
+            raise RequestValidationError(error.get_response(self.request))
 
     def resolve_provider_application(self):
         client_id = self.request.GET.get("client_id")
@@ -376,9 +393,63 @@ class AuthorizationFlowInitView(PolicyAccessView):
         self.application = self.provider.application
 
     def modify_flow_context(self, flow: Flow, context: dict[str, Any]) -> dict[str, Any]:
-        if QS_LOGIN_HINT in self.request.GET:
+        selected_account_uid = self.request.GET.get(QS_ACCOUNT_UID)
+        if QS_LOGIN_HINT in self.request.GET and (
+            PROMPT_SELECT_ACCOUNT not in self.params.prompt
+            or (
+                self.request.user.is_authenticated
+                and selected_account_uid == self.request.user.uuid.hex
+            )
+        ):
             context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = self.request.GET.get(QS_LOGIN_HINT)
         return super().modify_flow_context(flow, context)
+
+    def needs_fresh_login_event(self, login_uid: str) -> bool:
+        """Check if the authorization request needs the authentication flow to run."""
+        previous_login_uid = self.request.session.get(SESSION_KEY_LAST_LOGIN_UID)
+        if previous_login_uid and login_uid != previous_login_uid:
+            return False
+        if PROMPT_LOGIN in self.params.prompt:
+            return True
+        return PROMPT_SELECT_ACCOUNT in self.params.prompt and previous_login_uid == login_uid
+
+    def has_fresh_login_event(self, login_uid: str) -> bool:
+        """Check if a previous forced login completed and should satisfy this request."""
+        previous_login_uid = self.request.session.get(SESSION_KEY_LAST_LOGIN_UID)
+        return bool(previous_login_uid and login_uid != previous_login_uid)
+
+    def cleanup_fresh_login_event(self, login_uid: str) -> None:
+        """Clear the re-authentication marker after a new login event exists."""
+        if self.has_fresh_login_event(login_uid):
+            self.request.session.pop(SESSION_KEY_LAST_LOGIN_UID, None)
+
+    def should_show_account_selection(self, login_uid: str) -> bool:
+        """Check if the authorization flow should prompt for an account choice."""
+        if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
+            return False
+        if self.has_fresh_login_event(login_uid):
+            return False
+        if (
+            self.request.user.is_authenticated
+            and self.request.GET.get(QS_ACCOUNT_UID) == self.request.user.uuid.hex
+        ):
+            return False
+        account_users = get_known_account_users(self.request, [self.request.user.uuid.hex])
+        return PROMPT_SELECT_ACCOUNT in self.params.prompt or len(account_users) > 1
+
+    def handle_no_permission(self) -> HttpResponse:
+        response = super().handle_no_permission()
+        if PROMPT_NONE in self.params.prompt or PROMPT_LOGIN in self.params.prompt:
+            return response
+        if SESSION_KEY_LAST_LOGIN_UID in self.request.session:
+            return response
+        account_users = get_known_account_users(self.request)
+        if not account_users or SESSION_KEY_PLAN not in self.request.session:
+            return response
+        plan = self.request.session[SESSION_KEY_PLAN]
+        plan.insert_stage(in_memory_stage(OAuthAccountSelectionStage), index=0)
+        self.request.session[SESSION_KEY_PLAN] = plan
+        return response
 
     def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
         request.context["oauth_scopes"] = self.params.scope
@@ -454,17 +525,13 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 # in case this request has both max_age and prompt=login
                 self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
                 return self.handle_no_permission()
-        # If prompt=login, we need to re-authenticate the user regardless
-        # Check if we're not already doing the re-authentication
-        if PROMPT_LOGIN in self.params.prompt:
-            # No previous login UID saved, so save the current uid and trigger
-            # re-login, or previous login UID matches current one, so no re-login happened yet
-            if (
-                SESSION_KEY_LAST_LOGIN_UID not in self.request.session
-                or login_uid == self.request.session[SESSION_KEY_LAST_LOGIN_UID]
-            ):
-                self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
-                return self.handle_no_permission()
+        # If prompt=login or prompt=select_account, we need to run the authentication
+        # flow regardless. Check if we're not already doing the re-authentication.
+        if self.needs_fresh_login_event(login_uid):
+            self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
+            return self.handle_no_permission()
+        show_account_selection = self.should_show_account_selection(login_uid)
+        self.cleanup_fresh_login_event(login_uid)
         scope_descriptions = UserInfoView().get_scope_descriptions(
             self.params.scope, self.params.provider
         )
@@ -487,6 +554,8 @@ class AuthorizationFlowInitView(PolicyAccessView):
             )
         except FlowNonApplicableException:
             return self.handle_no_permission_authenticated()
+        if show_account_selection:
+            plan.insert_stage(in_memory_stage(OAuthAccountSelectionStage), index=0)
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
         if PROMPT_CONSENT in self.params.prompt:

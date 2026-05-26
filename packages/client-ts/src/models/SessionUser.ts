@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { AccountSelectionUser } from "./AccountSelectionUser";
+import { AccountSelectionUserFromJSON, AccountSelectionUserToJSON } from "./AccountSelectionUser";
 import type { UserSelf } from "./UserSelf";
 import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf";
 
@@ -34,6 +36,12 @@ export interface SessionUser {
      * @memberof SessionUser
      */
     original?: UserSelf;
+    /**
+     *
+     * @type {Array<AccountSelectionUser>}
+     * @memberof SessionUser
+     */
+    accounts: Array<AccountSelectionUser>;
 }
 
 /**
@@ -41,6 +49,7 @@ export interface SessionUser {
  */
 export function instanceOfSessionUser(value: object): value is SessionUser {
     if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("accounts" in value) || value["accounts"] === undefined) return false;
     return true;
 }
 
@@ -55,6 +64,7 @@ export function SessionUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         user: UserSelfFromJSON(json["user"]),
         original: json["original"] == null ? undefined : UserSelfFromJSON(json["original"]),
+        accounts: (json["accounts"] as Array<any>).map(AccountSelectionUserFromJSON),
     };
 }
 
@@ -73,5 +83,6 @@ export function SessionUserToJSONTyped(
     return {
         user: UserSelfToJSON(value["user"]),
         original: UserSelfToJSON(value["original"]),
+        accounts: (value["accounts"] as Array<any>).map(AccountSelectionUserToJSON),
     };
 }

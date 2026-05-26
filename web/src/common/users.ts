@@ -124,6 +124,7 @@ function createGuestSession(): SessionUser {
             settings: {},
             systemPermissions: [],
         },
+        accounts: [],
     };
 
     return guest;

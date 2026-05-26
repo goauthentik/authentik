@@ -20,6 +20,7 @@ CLIENT_ASSERTION_TYPE_JWT = "urn:ietf:params:oauth:client-assertion-type:jwt-bea
 PROMPT_NONE = "none"
 PROMPT_CONSENT = "consent"
 PROMPT_LOGIN = "login"
+PROMPT_SELECT_ACCOUNT = "select_account"
 
 PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS = "goauthentik.io/providers/oauth2/iframe_sessions"
 PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI = "goauthentik.io/providers/oauth2/post_logout_redirect_uri"

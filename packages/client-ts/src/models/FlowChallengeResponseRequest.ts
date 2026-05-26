@@ -102,6 +102,11 @@ import {
     NativeLogoutChallengeResponseRequestFromJSONTyped,
     NativeLogoutChallengeResponseRequestToJSON,
 } from "./NativeLogoutChallengeResponseRequest";
+import type { OAuthAccountSelectionChallengeResponseRequest } from "./OAuthAccountSelectionChallengeResponseRequest";
+import {
+    OAuthAccountSelectionChallengeResponseRequestFromJSONTyped,
+    OAuthAccountSelectionChallengeResponseRequestToJSON,
+} from "./OAuthAccountSelectionChallengeResponseRequest";
 import type { OAuthDeviceCodeChallengeResponseRequest } from "./OAuthDeviceCodeChallengeResponseRequest";
 import {
     OAuthDeviceCodeChallengeResponseRequestFromJSONTyped,
@@ -176,6 +181,9 @@ export type FlowChallengeResponseRequest =
     | ({ component: "ak-stage-email" } & EmailChallengeResponseRequest)
     | ({ component: "ak-stage-endpoint-agent" } & EndpointAgentChallengeResponseRequest)
     | ({ component: "ak-stage-identification" } & IdentificationChallengeResponseRequest)
+    | ({
+          component: "ak-stage-oauth-account-selection";
+      } & OAuthAccountSelectionChallengeResponseRequest)
     | ({ component: "ak-stage-password" } & PasswordChallengeResponseRequest)
     | ({ component: "ak-stage-prompt" } & PromptChallengeResponseRequest)
     | ({ component: "ak-stage-user-login" } & UserLoginChallengeResponseRequest)
@@ -306,6 +314,12 @@ export function FlowChallengeResponseRequestFromJSONTyped(
                 IdentificationChallengeResponseRequestFromJSONTyped(json, true),
                 { component: "ak-stage-identification" } as const,
             );
+        case "ak-stage-oauth-account-selection":
+            return Object.assign(
+                {},
+                OAuthAccountSelectionChallengeResponseRequestFromJSONTyped(json, true),
+                { component: "ak-stage-oauth-account-selection" } as const,
+            );
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeResponseRequestFromJSONTyped(json, true), {
                 component: "ak-stage-password",
@@ -426,6 +440,10 @@ export function FlowChallengeResponseRequestToJSONTyped(
         case "ak-stage-identification":
             return Object.assign({}, IdentificationChallengeResponseRequestToJSON(value), {
                 component: "ak-stage-identification",
+            } as const);
+        case "ak-stage-oauth-account-selection":
+            return Object.assign({}, OAuthAccountSelectionChallengeResponseRequestToJSON(value), {
+                component: "ak-stage-oauth-account-selection",
             } as const);
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeResponseRequestToJSON(value), {

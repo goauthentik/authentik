@@ -53,6 +53,8 @@ pub enum ChallengeTypes {
     AkProviderIframeLogout(models::IframeLogoutChallenge),
     #[serde(rename = "ak-provider-saml-native-logout")]
     AkProviderSamlNativeLogout(models::NativeLogoutChallenge),
+    #[serde(rename = "ak-stage-oauth-account-selection")]
+    AkStageOauthAccountSelection(models::OAuthAccountSelectionChallenge),
     #[serde(rename = "ak-provider-oauth2-device-code")]
     AkProviderOauth2DeviceCode(models::OAuthDeviceCodeChallenge),
     #[serde(rename = "ak-provider-oauth2-device-code-finish")]
