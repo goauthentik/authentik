@@ -29,7 +29,7 @@ To support the integration of FortiAnalyzer with authentik, you need to create a
 
 ### Create a property mapping in authentik
 
-FortiAnalyzer expects a SAML attribute named `username` that contains the value used to identify the administrator account. Create a custom SAML property mapping that exposes this value. This example uses the authentik username, but you can return any user attribute that matches the FortiAnalyzer administrator identifier.
+FortiAnalyzer expects a SAML attribute named `username` that contains the value used to identify the administrator account. This example uses the authentik username, but you can return any user attribute that matches the FortiAnalyzer administrator identifier.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
