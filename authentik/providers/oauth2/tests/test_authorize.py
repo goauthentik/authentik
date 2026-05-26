@@ -1125,7 +1125,7 @@ class TestAuthorize(OAuthTestCase):
             urlparse(redirect).path,
             reverse("authentik_flows:default-authentication"),
         )
-        self.assertEqual(parsed[QS_ADD_ACCOUNT], ["true"])
+        self.assertNotIn(QS_ADD_ACCOUNT, parsed)
         authorize_url = parsed["next"][0]
         authorize_query = parse_qs(urlparse(authorize_url).query)
         self.assertEqual(authorize_query["client_id"], ["test"])

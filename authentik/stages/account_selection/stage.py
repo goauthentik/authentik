@@ -16,7 +16,6 @@ from authentik.core.account_selection import (
     PLAN_CONTEXT_ACCOUNT_SWITCH_SESSION_KEY,
     PLAN_CONTEXT_ACCOUNT_SWITCH_USER_UID,
     QS_ACCOUNT_UID,
-    QS_ADD_ACCOUNT,
     get_known_account_session,
     get_known_account_users,
     get_live_account_session,
@@ -150,7 +149,6 @@ class AccountSelectionStageView(ChallengeStageView):
         """Start login for an account that is not currently remembered."""
         query = {
             NEXT_ARG_NAME: self.get_next_url(),
-            QS_ADD_ACCOUNT: "true",
         }
         url = reverse("authentik_flows:default-authentication")
         self.executor.cancel()
