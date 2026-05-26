@@ -28,6 +28,7 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
+from authentik.crypto.models import CertificateKeyPair
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -326,8 +327,6 @@ class NotificationTransport(TasksModel, SerializerModel):
     email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
-<<<<<<< HEAD
-=======
     webhook_ca = models.ForeignKey(
         CertificateKeyPair,
         null=True,
@@ -338,7 +337,6 @@ class NotificationTransport(TasksModel, SerializerModel):
             "validate the certificate of the webhook server."
         ),
     )
->>>>>>> b9e1b27d59 (events: fix certificate typo (#22542))
     webhook_mapping_body = models.ForeignKey(
         "NotificationWebhookMapping",
         on_delete=models.SET_DEFAULT,
