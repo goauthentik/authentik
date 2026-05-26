@@ -7,11 +7,11 @@ from django_dramatiq_postgres.models import ScheduleBase
 from psqlextra.manager import PostgresManager
 
 from authentik.lib.models import SerializerModel
-from authentik.tasks.models import TasksModel
+from authentik.tasks.models import Task, TasksModel
 from authentik.tasks.schedules.common import ScheduleSpec
 
 
-class Schedule(TasksModel, SerializerModel, ScheduleBase):
+class Schedule(SerializerModel, ScheduleBase):
     identifier = models.TextField(
         editable=False,
         null=True,
@@ -47,6 +47,14 @@ class Schedule(TasksModel, SerializerModel, ScheduleBase):
 
     def __str__(self):
         return f"Schedule {self.actor_name}:{self.uid}"
+
+    @property
+    def tasks(self):
+        """Return tasks created by this schedule without cascading deletes to task history."""
+        return Task.objects.filter(
+            rel_obj_content_type=ContentType.objects.get_for_model(self),
+            rel_obj_id=str(self.pk),
+        )
 
     @property
     def uid(self) -> str:

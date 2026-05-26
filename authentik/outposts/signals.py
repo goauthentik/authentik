@@ -1,6 +1,7 @@
 """authentik outpost signals"""
 
 from django.core.cache import cache
+from django.db import transaction
 from django.db.models.signals import m2m_changed, post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
@@ -151,13 +152,21 @@ post_save.connect(outpost_reverse_related_post_save, sender=CertificateKeyPair, 
 @receiver(pre_delete, sender=Outpost)
 def outpost_pre_delete_cleanup(sender, instance: Outpost, **_):
     """Ensure that Outpost's user is deleted (which will delete the token through cascade)"""
-    instance.user.delete()
-    cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, instance)
-    outpost_controller.send_with_options(
-        args=(instance.pk.hex,),
-        kwargs={"action": "down", "from_cache": True},
-        uid=instance.name,
-    )
+    if user := instance.service_account:
+        user.delete()
+
+    outpost_pk = instance.pk.hex
+    outpost_name = instance.name
+
+    def send_teardown():
+        cache.set(CACHE_KEY_OUTPOST_DOWN % outpost_pk, instance)
+        outpost_controller.send_with_options(
+            args=(outpost_pk,),
+            kwargs={"action": "down", "from_cache": True},
+            uid=outpost_name,
+        )
+
+    transaction.on_commit(send_teardown)
 
 
 @receiver(pre_delete, sender=AuthenticatedSession)

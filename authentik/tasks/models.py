@@ -3,7 +3,7 @@ from typing import Self
 from uuid import UUID, uuid4
 
 import pgtrigger
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -216,12 +216,16 @@ class TaskLog(InternallyManagedMixin, models.Model):
 
 
 class TasksModel(models.Model):
-    tasks = GenericRelation(
-        Task, content_type_field="rel_obj_content_type", object_id_field="rel_obj_id"
-    )
-
     class Meta:
         abstract = True
+
+    @property
+    def tasks(self):
+        """Return related task history without making tasks owned child rows."""
+        return Task.objects.filter(
+            rel_obj_content_type=ContentType.objects.get_for_model(self),
+            rel_obj_id=str(self.pk),
+        )
 
 
 class WorkerStatus(models.Model):

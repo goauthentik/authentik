@@ -371,7 +371,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     @property
     def user(self) -> User:
         """Get/create user with access to all required objects"""
-        user = User.objects.filter(username=self.user_identifier).first()
+        user = self.service_account
         user_created = False
         if not user:
             user: User = User.objects.create(username=self.user_identifier)
@@ -394,6 +394,11 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         if user_created:
             self.build_user_permissions(user)
         return user
+
+    @property
+    def service_account(self) -> User | None:
+        """Get the outpost's existing service account without creating it."""
+        return User.objects.filter(username=self.user_identifier).first()
 
     @property
     def token_identifier(self) -> str:
