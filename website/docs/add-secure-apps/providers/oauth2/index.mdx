@@ -8,7 +8,7 @@ In authentik, you can [create](./create-oauth2-provider.md) an [OAuth 2.0](https
 
 It's important to understand how authentik works with and supports the OAuth 2.0 protocol, so before taking a [closer look at OAuth 2.0 protocol](#about-oauth-20-and-oidc) itself, let's cover a bit about authentik.
 
-authentik can act either as the OP (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth 2.0 to authenticate). If you want to configure authentik as an OP, creare OAuth2 provider. If you want authentik to serve as the RP, then configure a [source](../../../users-sources/sources/index.md). Of course, authentik can serve as both the RP and OP, if you want to use the authentik OAuth provider and also use sources.
+authentik can act either as the OP (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth 2.0 to authenticate). If you want to configure authentik as an OP, create an OAuth 2.0 provider. If you want authentik to serve as the RP, then configure a [source](../../../users-sources/sources/index.md). Of course, authentik can serve as both the RP and OP, if you want to use the authentik OAuth provider and also use sources.
 
 authentik supports all standard OAuth 2.0 flows (authorization code, client_credentials, implicit, hybrid, device code) and grant types, and follows the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth 2.0 in authentik supports PKCE, [GitHub compatibility](./github-compatibility.md), and the RP receives data from our scope mapping system.
 
@@ -99,7 +99,7 @@ By default, authentik uses per-provider mode: every provider has a unique issuer
 
 ### Global issuer mode
 
-Setting the issuer mode to **Same identifier is used for all providers** (referred to internally as **global** mode) makes every OAuth2 provider on the authentik instance share the same issuer: the root URL of the instance (`https://authentik.company/`).
+Setting the issuer mode to **Same identifier is used for all providers** (referred to internally as **global** mode) makes every OAuth 2.0 provider on the authentik instance share the same issuer: the root URL of the instance (`https://authentik.company/`).
 
 :::info Well-known location
 Global issuer mode still serves the discovery document at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`, not at the root issuer URL.
