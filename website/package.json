@@ -113,6 +113,8 @@
             "detect-package-manager": "file:./vendored/detect-package-manager",
             "shelljs": "0.10.0"
         },
+        "shelljs": "0.10.0",
+        "detect-package-manager": "file:./vendored/detect-package-manager",
         "typescript-eslint": {
             "typescript": "$typescript"
         }
