@@ -67,7 +67,7 @@ def get_known_accounts(request: HttpRequest) -> list[KnownAccount]:
         return []
     try:
         accounts = loads(raw_accounts, max_age=KNOWN_ACCOUNTS_AGE)
-    except (BadSignature, SignatureExpired, TypeError, ValueError):
+    except BadSignature, SignatureExpired, TypeError, ValueError:
         return []
     if not isinstance(accounts, list):
         return []
@@ -100,9 +100,7 @@ def get_known_account_users(
     users = User.objects.filter(uuid__in=known_account_ids, is_active=True).exclude_anonymous()
     users_by_id = {user.uuid.hex: user for user in users}
     return [
-        users_by_id[account_id]
-        for account_id in known_account_ids
-        if account_id in users_by_id
+        users_by_id[account_id] for account_id in known_account_ids if account_id in users_by_id
     ]
 
 
