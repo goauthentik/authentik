@@ -14,6 +14,7 @@ from rest_framework.fields import BooleanField, CharField, ChoiceField, DictFiel
 from rest_framework.serializers import ValidationError
 from sentry_sdk import start_span
 
+from authentik.common.oauth.constants import QS_LOGIN_HINT
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, Source, User
 from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_DEVICE_AUTH_TOKEN
@@ -54,8 +55,6 @@ from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD_ARGS,
     authenticate,
 )
-
-QS_LOGIN_HINT = "login_hint"
 
 
 class LoginChallengeMixin:

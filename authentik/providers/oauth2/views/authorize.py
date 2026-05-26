@@ -71,10 +71,6 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
-from authentik.providers.oauth2.views.flow_context import (
-    PLAN_CONTEXT_PARAMS,
-    SESSION_KEY_LAST_LOGIN_UID,
-)
 from authentik.providers.oauth2.views.userinfo import UserInfoView
 from authentik.stages.consent.models import ConsentMode, ConsentStage
 from authentik.stages.consent.stage import (
@@ -84,6 +80,8 @@ from authentik.stages.consent.stage import (
 
 LOGGER = get_logger()
 
+PLAN_CONTEXT_PARAMS = "goauthentik.io/providers/oauth2/params"
+SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN, PROMPT_SELECT_ACCOUNT}
 
 
