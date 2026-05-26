@@ -9796,7 +9796,9 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>API keys can be obtained from the
                         <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}&#10;                                &gt;${formatAPISource()}&lt;/a&#10;                            &gt;.`}"/></source>
   <target>API-nøkler kan skaffes fra
-                         <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}                                 &gt;${formatAPISource()}&lt;/a                             &gt;.`}"/></target>
+                         <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}
+                                &gt;${formatAPISource()}&lt;/a
+                            &gt;.`}"/></target>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 <trans-unit id="s87f858ca3c8e5579">
