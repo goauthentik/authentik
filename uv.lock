@@ -457,7 +457,7 @@ dev = [
     { name = "types-jwcrypto", specifier = "==1.5.7.20260513" },
     { name = "types-ldap3", specifier = "==2.9.13.20260508" },
     { name = "types-requests", specifier = "==2.33.0.20260513" },
-    { name = "types-zxcvbn", specifier = "==4.5.0.20260508" },
+    { name = "types-zxcvbn", specifier = "==4.5.0.20260518" },
 ]
 
 [[package]]
@@ -3715,11 +3715,11 @@ wheels = [
 
 [[package]]
 name = "types-zxcvbn"
-version = "4.5.0.20260508"
+version = "4.5.0.20260518"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/0d/76/bbd475d85f0c59ef09a9bd8884f03c5978b056982100c3227532f445b029/types_zxcvbn-4.5.0.20260508.tar.gz", hash = "sha256:582fe928b3517c1166864223561f547c0bf5638add6a3df7fd5b8726cb5e39e5", size = 9467, upload-time = "2026-05-08T04:47:11.336Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/54/f4fdf18b7e9fe8c961a95ab04fcc6d00ed47b0d8abb5b65d745a90eaf0cd/types_zxcvbn-4.5.0.20260518.tar.gz", hash = "sha256:d95506da8635093576a56386f808fe2a2013da1b91d6c2cc56d1e2a1783cac5f", size = 9576, upload-time = "2026-05-18T06:04:20.079Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a5/15/830dab69646abb85357525f98596b2affc19ea8e2d68b90f7eb9ea255111/types_zxcvbn-4.5.0.20260508-py3-none-any.whl", hash = "sha256:e8193cd5c2e0437a3d4a4190ff55464d4d9e2a5b85a94c6c00bbebaf1e70345d", size = 10828, upload-time = "2026-05-08T04:47:10.581Z" },
+    { url = "https://files.pythonhosted.org/packages/ef/d4/ea0d35a3290168e967895f9d0e5121264fabe6555f57e82033def10b8d02/types_zxcvbn-4.5.0.20260518-py3-none-any.whl", hash = "sha256:763a9d96a2e84357dbe89b751d570474bb91200d3060cbb4cb7b4583db42a946", size = 10830, upload-time = "2026-05-18T06:04:19.291Z" },
 ]
 
 [[package]]
