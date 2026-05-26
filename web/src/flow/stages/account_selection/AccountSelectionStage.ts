@@ -1,23 +1,23 @@
 import "#flow/components/ak-flow-card";
 
+import { docLink } from "#common/global";
+
 import { BaseStage } from "#flow/stages/base";
 
 import type {
     AccountSelectionChallenge,
-    AccountSelectionChallengeUser,
     AccountSelectionChallengeResponseRequest,
+    AccountSelectionChallengeUser,
 } from "@goauthentik/api";
 import { AccountSelectionChallengeResponseActionEnum } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-stage-account-selection")
 export class AccountSelectionStage extends BaseStage<
@@ -27,14 +27,23 @@ export class AccountSelectionStage extends BaseStage<
     static styles: CSSResult[] = [
         PFLogin,
         PFForm,
-        PFSpacing,
         PFButton,
-        PFTitle,
         css`
             .account-list {
                 display: flex;
                 flex-direction: column;
                 gap: 0.5rem;
+            }
+
+            .account-selection-help {
+                color: var(--pf-global--Color--200);
+                font-size: var(--pf-global--FontSize--sm);
+                line-height: 1.4;
+                margin-block: 0;
+            }
+
+            .account-selection-help a {
+                margin-inline-start: 0.25rem;
             }
 
             .account-button {
@@ -46,6 +55,14 @@ export class AccountSelectionStage extends BaseStage<
                 padding: 0.625rem 0.75rem;
                 text-align: left;
                 width: 100%;
+            }
+
+            .account-button-hint {
+                box-shadow: inset 0.25rem 0 0 var(--pf-global--primary-color--100);
+            }
+
+            .account-button-hint .account-name {
+                color: var(--pf-global--primary-color--100);
             }
 
             .account-button img {
@@ -70,10 +87,6 @@ export class AccountSelectionStage extends BaseStage<
                 color: var(--pf-global--Color--200);
                 font-size: 0.875rem;
             }
-
-            .account-button.pf-m-primary .account-meta {
-                color: var(--pf-global--palette--white);
-            }
         `,
     ];
 
@@ -83,8 +96,9 @@ export class AccountSelectionStage extends BaseStage<
             account.email && account.email !== label ? account.email : account.username;
         return html`<button
             type="button"
-            class="pf-c-button ${account.isHint ? "pf-m-primary" : "pf-m-secondary"} account-button"
-            ?autofocus=${account.isHint}
+            class="pf-c-button pf-m-secondary account-button ${account.isHint
+                ? "account-button-hint"
+                : ""}"
             @click=${() =>
                 this.host.submit({
                     action: account.isCurrent
@@ -102,19 +116,21 @@ export class AccountSelectionStage extends BaseStage<
     }
 
     render(): TemplateResult {
-        const app = this.challenge?.applicationName || "";
         const accounts = this.challenge?.accounts ?? [];
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
                 <div class="pf-c-form__group">
-                    <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
-                        ${msg("Continue as")}
-                    </h3>
-                    ${app
-                        ? html`<p class="pf-u-mb-md">
-                              ${msg(str`Select which account to use for ${app}.`)}
-                          </p>`
-                        : nothing}
+                    <p class="account-selection-help">
+                        ${msg("Choose which signed-in account authentik should use for this flow.")}
+                        <a
+                            href=${docLink(
+                                "/add-secure-apps/flows-stages/stages/account_selection/",
+                            )}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >${msg("Learn more")}</a
+                        >
+                    </p>
                 </div>
 
                 <div class="pf-c-form__group account-list">
