@@ -1,13 +1,5 @@
 :host {
-    display: inline-flex;
-    align-items: center;
-    height: 2rem;
-    margin-inline-start: var(--pf-global--spacer--xl);
-}
-
-/* help ken i cant get it to work */
-:host {
-    --account-switcher-optical-offset: -7px;
+    display: contents;
 }
 
 .account-switcher {
@@ -16,9 +8,9 @@
 }
 
 .account-switcher-container {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    height: 2rem;
+    min-height: 100%;
 }
 
 .account-switcher .pf-c-dropdown__menu {
@@ -32,38 +24,31 @@
 .account-switcher-toggle {
     display: inline-flex;
     align-items: center;
-    column-gap: 0;
-    height: 2rem;
+    gap: var(--pf-global--spacer--sm);
     min-height: 2rem;
     padding-block: 0;
     padding-inline: var(--pf-global--spacer--sm);
     font-size: var(--pf-global--FontSize--md);
     line-height: 1;
+    vertical-align: middle;
 }
 
-/* help ken i cant get it to work */
 .account-switcher-toggle-label {
     display: inline-flex;
     align-items: center;
-    height: 2rem;
+    min-height: 2rem;
     max-width: 12rem;
     overflow: hidden;
-    line-height: 1;
+    line-height: 2rem;
     text-overflow: ellipsis;
-    transform: translateY(var(--account-switcher-optical-offset));
     white-space: nowrap;
 }
 
 .account-switcher-toggle .pf-c-dropdown__toggle-icon {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 0.75rem;
-    height: 2rem;
     margin-block-start: 0;
-    margin-inline-start: 0.125rem;
     line-height: 1;
-    transform: translateY(var(--account-switcher-optical-offset));
 }
 
 .account-switcher-avatar {
@@ -81,11 +66,6 @@
     font-size: var(--pf-global--FontSize--md);
     line-height: 1;
     overflow: hidden;
-}
-
-/* help ken i cant get it to work */
-.account-switcher-avatar + .account-switcher-toggle-label {
-    margin-inline-start: var(--pf-global--spacer--sm);
 }
 
 .account-switcher-avatar img {

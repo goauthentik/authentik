@@ -100,8 +100,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
         if (!currentUser) {
             return nothing;
         }
-        const displayName =
-            formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;
+        const displayName = formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;
         const currentAccount = this.accounts.find((account) => account.isCurrent);
 
         return html`<div class="account-switcher-container">

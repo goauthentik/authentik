@@ -36,7 +36,15 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
     @property({ type: Boolean, reflect: true })
     apiDrawerOpen = false;
 
-    static styles = [PFDisplay, PFBrand, PFPage, PFButton, PFDrawer, PFNotificationBadge, Styles];
+    static styles = [
+        PFDisplay,
+        PFBrand,
+        PFPage,
+        PFButton,
+        PFDrawer,
+        PFNotificationBadge,
+        Styles,
+    ];
 
     protected renderAPIDrawerTrigger() {
         const { apiDrawer } = this.uiConfig.enabledFeatures;
@@ -167,7 +175,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 ${this.renderNotificationDrawerTrigger()}
                 <!-- -->
                 ${this.renderSettings()}
-                <ak-account-switcher class="pf-c-page__header-tools-item"></ak-account-switcher>
+                <ak-account-switcher></ak-account-switcher>
                 <slot name="extra"></slot>
             </div>
             ${this.renderImpersonation()}
