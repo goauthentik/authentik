@@ -129,7 +129,7 @@ To allow un-authenticated requests to certain paths/URLs, you can use the _Unaut
 
 Each new line is interpreted as a regular expression, and is compiled and checked using the standard Golang regex parser.
 
-The behaviour of this field changes depending on which mode you're in.
+The behavior of this field changes depending on which mode you're in.
 
 ### Proxy and Forward auth (single application)
 

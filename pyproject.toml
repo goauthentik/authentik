@@ -7,7 +7,7 @@ requires-python = "==3.14.*"
 dependencies = [
   "ak-guardian==3.2.0",
   "argon2-cffi==25.1.0",
-  "cachetools==7.1.2",
+  "cachetools==7.1.4",
   "channels==4.3.2",
   "cryptography==48.0.0",
   "dacite==1.9.2",
@@ -76,9 +76,9 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.254.0",
+  "aws-cdk-lib==2.255.0",
   "bandit==1.9.4",
-  "black==26.3.1",
+  "black==26.5.1",
   "bpython==0.26",
   "colorama==0.4.6",
   "constructs==10.6.0",
@@ -101,14 +101,14 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==9.0.3",
   "requests-mock==1.12.1",
-  "ruff==0.15.13",
+  "ruff==0.15.14",
   "selenium==4.44.0",
-  "types-channels==4.3.0.20260508",
-  "types-docker==7.1.0.20260512",
-  "types-jwcrypto==1.5.7.20260513",
-  "types-ldap3==2.9.13.20260508",
-  "types-requests==2.33.0.20260513",
-  "types-zxcvbn==4.5.0.20260508",
+  "types-channels==4.3.0.20260518",
+  "types-docker==7.1.0.20260518",
+  "types-jwcrypto==1.5.7.20260518",
+  "types-ldap3==2.9.13.20260518",
+  "types-requests==2.33.0.20260518",
+  "types-zxcvbn==4.5.0.20260518",
 ]
 
 [tool.uv]
