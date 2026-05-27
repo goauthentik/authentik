@@ -1122,12 +1122,12 @@ class ExpiringModel(models.Model):
             return None
 
     @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:
+    def filter_not_expired(cls, *args, **kwargs) -> QuerySet[Self]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
-        for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):
+        for obj in cls.objects.filter(*args, **kwargs).filter(Q(expires__lt=now(), expiring=True)):
             obj.delete()
-        return cls.objects.filter(**kwargs)
+        return cls.objects.filter(*args, **kwargs)
 
     @property
     def is_expired(self) -> bool:
