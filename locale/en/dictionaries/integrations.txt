@@ -35,10 +35,12 @@ Komodo
 Kubeconfig
 Mautic
 Mobilizon
+myabsorb
 Observium
 Ofair
 Ollama
 Omada
+Omnissa
 omniauth
 openwebui
 OPNsense
@@ -47,6 +49,7 @@ Organizr
 Packagify
 Palo
 Papra
+Personio
 PhotoPrism
 pfSense
 phpipam
