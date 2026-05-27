@@ -27,6 +27,29 @@ To create a super-user, you need to add the user to a group that has super-user 
 Super-user permission is inherited by all descendant groups. Make sure you review every member of every descendant group to prevent accidentally granting super-user permission.
 :::
 
+## Advanced queries for groups {#advanced-queries}
+
+You can create advanced queries to locate specific groups within the list shown under **Directory** > **Groups** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+
+These queries use [AKQL (authentik Query Language)](../../sys-mgmt/akql.mdx). For the full syntax, operators, and value types, see the [AKQL reference](../../sys-mgmt/akql.mdx).
+
+- **Field**: `name`, `is_superuser`, `attributes`
+
+- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
+
+- **Values**: `True`, `False`, `None`, and more
+
+- **Example queries**:
+    - search group by name: `name = "admins"`
+    - search group by superuser status: `is_superuser = True`
+    - search group by attribute: `attributes.my_custom_attribute = "foo"`
+
+:::info
+
+1. To dismiss the drop-down menu option, click **ESC**.
+2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
+   :::
+
 ## Modify a group
 
 To edit the group's name, parent groups, whether the group grants superuser permissions, associated roles, and any custom attributes, click the Edit icon beside the role's name. Make the changes and then click **Update**.
