@@ -3,11 +3,11 @@ import "#admin/sources/ldap/LDAPSourceConnectivity";
 import "#admin/sources/ldap/LDAPSourceUserList";
 import "#admin/sources/ldap/LDAPSourceGroupList";
 import "#admin/events/ObjectChangelog";
+import "#components/sync/SyncStatusCard";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/sync/SyncStatusCard";
 import "#elements/tasks/ScheduleList";
 
 import { DEFAULT_CONFIG } from "#common/api/config";

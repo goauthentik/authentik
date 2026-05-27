@@ -5,7 +5,7 @@ authentik_enterprise: true
 
 For more information about using an Entra ID provider, see the [Entra ID Overview](./index.md) documentation.
 
-Your Entra ID tenant must be configured before you [create a Entra ID provider](./create-entra-provider.md).
+Your Entra ID tenant must be configured before you [create an Entra ID provider](./create-entra-provider.md).
 
 This involves creating an app registration, generating a secret, and configuring the required API permissions.
 
