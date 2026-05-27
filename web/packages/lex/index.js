@@ -25,7 +25,7 @@
  *
  * @callback LexerAction
  * @this {Lexer}
- * @param {...string} match
+ * @param {...string[]} match
  * @returns {Token | Token[] | null | void}
  */
 

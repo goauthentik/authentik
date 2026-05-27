@@ -27,11 +27,26 @@ class TestWSFedSignIn(TestCase):
             name=generate_id(),
             authorization_flow=self.flow,
             signing_kp=self.cert,
+            acs_url="https://t.goauthentik.io",
+            audience="foo",
         )
         self.app = Application.objects.create(
             name=generate_id(), slug=generate_id(), provider=self.provider
         )
         self.factory = RequestFactory()
+
+    def test_wreply(self):
+        request = self.factory.get(
+            "/?wreply=https://t.goauthentik.io/foo&wa=wsignin1.0&wtrealm=foo",
+            user=get_anonymous_user(),
+        )
+        SignInRequest.parse(request)
+        with self.assertRaises(ValueError):
+            request = self.factory.get(
+                "/?wreply=https://t.goauthentik.io.invalid.com&wa=wsignin1.0&wtrealm=foo",
+                user=get_anonymous_user(),
+            )
+            SignInRequest.parse(request)
 
     def test_token_gen(self):
         request = self.factory.get("/", user=get_anonymous_user())

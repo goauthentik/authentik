@@ -66,18 +66,17 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because you will use it when configuring PostHog.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://posthog.company/complete/saml/`.
         - Set the **Audience** to `https://posthog.company`.
-        - Set the **Service Provider Binding** to `POST`.
         - Under **Advanced protocol settings**:
             - Set the **Signing Certificate** to any available certificate.
             - Set **NameID Property Mapping** to `PostHog name_id`.
             - Add `authentik default SAML Mapping: Email`, `PostHog name_id`, `PostHog first_name`, and `PostHog last_name` to **Selected User Property Mappings**.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 ## PostHog configuration
@@ -86,8 +85,8 @@ PostHog requires a permanent ID attribute named `name_id`. PostHog can use the m
 2. Navigate to **Organization settings** > **Authentication domains**.
 3. If your users' email domain is not already listed, add it and complete PostHog's domain verification process.
 4. Open the SAML configuration for the verified domain and configure the following settings:
-    - **SAML ACS URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-    - **SAML Entity ID**: `https://authentik.company/application/saml/<application_slug>/`
+    - **SAML ACS URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **SAML Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
     - **SAML X.509 Certificate**: paste the public certificate from the signing certificate that you selected for the authentik SAML provider.
 5. Save the SAML configuration.
 

@@ -41,7 +41,7 @@ To support the integration of Portainer with authentik, you need to create an ap
     - Set a `Strict` redirect URI to `https://portainer.company/`.
     - Select any available signing key.
     - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -111,7 +111,7 @@ We will also presume that two application entitlements have been created in auth
         }
         ```
 
-        In the expression above, we filter on the entitlement names `Portainer Admins` and `Portainer Users`. You can use any entitlements that exist on the Portainer application. Ensure that the names entered here exactly match those setup in authentik, as they are case-sensitive.
+        In the expression above, we filter on the entitlement names `Portainer Admins` and `Portainer Users`. You can use any entitlements that exist on the Portainer application. Ensure that the names entered here exactly match those set up in authentik, as they are case-sensitive.
 
 3. Click **Finish**.
 4. Navigate to **Applications** > **Providers**.

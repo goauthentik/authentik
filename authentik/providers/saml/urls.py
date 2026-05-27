@@ -4,19 +4,26 @@ from django.urls import path
 
 from authentik.providers.saml.api.property_mappings import SAMLPropertyMappingViewSet
 from authentik.providers.saml.api.providers import SAMLProviderViewSet
-from authentik.providers.saml.views import metadata, sso
+from authentik.providers.saml.views import metadata, sso, unified
 from authentik.providers.saml.views.sp_slo import (
     SPInitiatedSLOBindingPOSTView,
     SPInitiatedSLOBindingRedirectView,
 )
 
 urlpatterns = [
-    # Base path for Issuer/Entity ID
+    # Unified Endpoint - handles SSO and SLO based on message type
     path(
         "<slug:application_slug>/",
-        sso.SAMLSSOBindingRedirectView.as_view(),
+        unified.SAMLUnifiedView.as_view(),
         name="base",
     ),
+    # IdP-initiated
+    path(
+        "<slug:application_slug>/init/",
+        sso.SAMLSSOBindingInitView.as_view(),
+        name="init",
+    ),
+    # LEGACY Endpoints (backward compatibility)
     # SSO Bindings
     path(
         "<slug:application_slug>/sso/binding/redirect/",

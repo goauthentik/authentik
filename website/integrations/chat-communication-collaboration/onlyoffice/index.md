@@ -33,7 +33,7 @@ Scroll down to _ONLYOFFICE SP Metadata_, and copy the _SP Entity ID (link to met
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik Setup
+## authentik setup
 
 Create an application in authentik, and create a SAML Provider by using _SAML Provider from Metadata_. Give the provider a name, and upload the XML file you've downloaded in the previous step.
 
@@ -41,7 +41,7 @@ Edit the resulting Provider, and ensure _Signing Certificate_ is set to any cert
 
 Navigate on the _Metadata_ tab on the Provider page, and click _Copy download URL_.
 
-## OnlyOffice Setup
+## OnlyOffice setup
 
 Navigate back to your OnlyOffice Control panel, and paste the URL into _Load metadata from XML to fill the required fields automatically_, and click the upload button next to the input field.
 
@@ -51,4 +51,4 @@ Under _Attribute Mapping_, set the following values
 - _Last Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
 - _Email_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 
-Click save and a new SSO button will appear on the OnlyOffice login page.
+Click **Save** and a new SSO button appears on the OnlyOffice login page.

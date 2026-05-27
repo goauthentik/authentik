@@ -33,7 +33,7 @@ To support the integration of VMware Cloud Director with authentik, you need to 
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://clouddirector.company/login/oauth?service=provider`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 :::info Tenant configuration
 The redirect URI is for provider level configuration. If you're configuring a tenant-level integration in VMware Cloud Director, use the URI displayed in [step 2 of the VMware Cloud Director configuration](#vmware-cloud-director-configuration).
@@ -67,7 +67,7 @@ If you're configuring the integration on a tenant-level in Cloud Director, navig
     - Select the Cloud Director role you wish to map to those authentik groups in the **Assign Role** dropdown.
     - Click **SAVE**.
 
-## Configuration Verification
+## Configuration verification
 
 To verify the integration of authentik with VMware Cloud Director, log out of Cloud Director, then on the login page click the "Sign in with OIDC" button. If you specified a custom string on step 9, it is displayed instead. You will be redirected to authentik, and once authenticated, you will be logged in to Cloud Director.
 

@@ -50,7 +50,6 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
     - Upload the metadata file from FortiGate (you will get this in the FortiGate configuration steps).
     - Set the **ACS URL** to `https://fortigate.company/remote/saml/login`.
-    - Set the **Issuer** to `https://authentik.company/`.
     - Set the **Audience** to `http://fortigate.company/remote/saml/metadata/`.
     - Set the **SLS URL** to `http://fortigate.company/remote/saml/logout/`.
     - Under **Advanced protocol settings**:
@@ -66,7 +65,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ## FortiGate configuration
 
-### Setup SAML SP
+### Set up SAML SP
 
 1. SSH into the FortiGate (if you are using vdom, change to the correct vdom).
 2. The configuration will be written to `/data/config/config.conf`. Copy and paste the following configuration, replacing the placeholders with your values:
@@ -78,9 +77,9 @@ config user saml
         set entity-id "http://fortigate.company/remote/saml/metadata/"
         set single-sign-on-url "https://fortigate.company/remote/saml/login"
         set single-logout-url "https://fortigate.company/remote/saml/logout"
-        set idp-entity-id "https://authentik.company/"
-        set idp-single-sign-on-url "https://authentik.company/application/saml/fortigate-sslvpn/sso/binding/redirect/"
-        set idp-single-logout-url "https://authentik.company/application/saml/fortigate-sslvpn/slo/binding/redirect/"
+        set idp-entity-id "https://authentik.company/application/saml/fortigate-sslvpn/metadata/"
+        set idp-single-sign-on-url "https://authentik.company/application/saml/fortigate-sslvpn/"
+        set idp-single-logout-url "https://authentik.company/application/saml/fortigate-sslvpn/"
         set idp-cert "your-authentik-cert"
         set user-name "http://schemas.goauthentik.io/2021/02/saml/username"
         set group-name "http://schemas.xmlsoap.org/claims/Group"
