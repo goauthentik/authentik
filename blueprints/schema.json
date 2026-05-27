@@ -13069,11 +13069,7 @@
                     "description": "How to perform authentication during an authorization_code token request flow"
                 },
                 "discord_guild_id": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "maxLength": 20,
+                    "type": "string",
                     "title": "Guild ID",
                     "description": "The Discord guild ID to sync roles from"
                 }

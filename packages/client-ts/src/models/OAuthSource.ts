@@ -256,7 +256,7 @@ export interface OAuthSource {
      * @type {string}
      * @memberof OAuthSource
      */
-    discordGuildId?: string | null;
+    discordGuildId?: string;
 }
 
 /**

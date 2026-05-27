@@ -13,9 +13,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="oauthsource",
             name="discord_guild_id",
-            field=models.CharField(
+            field=models.TextField(
                 help_text="The Discord guild ID to sync roles from",
-                max_length=20,
                 null=True,
                 verbose_name="Guild ID",
             ),

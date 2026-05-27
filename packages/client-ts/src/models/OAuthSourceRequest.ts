@@ -198,7 +198,7 @@ export interface OAuthSourceRequest {
      * @type {string}
      * @memberof OAuthSourceRequest
      */
-    discordGuildId?: string | null;
+    discordGuildId?: string;
 }
 
 /**

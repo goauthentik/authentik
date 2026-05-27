@@ -198,7 +198,7 @@ export interface PatchedOAuthSourceRequest {
      * @type {string}
      * @memberof PatchedOAuthSourceRequest
      */
-    discordGuildId?: string | null;
+    discordGuildId?: string;
 }
 
 /**

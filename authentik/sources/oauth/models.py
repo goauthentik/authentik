@@ -84,9 +84,8 @@ class OAuthSource(NonCreatableType, Source):
         ),
     )
 
-    discord_guild_id = models.CharField(
-        max_length=20,
-        null=True,
+    discord_guild_id = models.TextField(
+        default="",
         blank=True,
         help_text=_("The Discord guild ID to sync roles from"),
         verbose_name=_("Guild ID"),
