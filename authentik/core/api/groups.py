@@ -120,6 +120,19 @@ class GroupSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_inherited_roles", "false")).lower() == "true"
 
+    def get_fields(self):
+        # When the client passes ?include_users=false, drop the implicit
+        # `users` primary-key field from the output entirely. DRF's default
+        # PrimaryKeyRelatedField(many=True) otherwise walks the M2M to
+        # collect user PKs for every group, defeating the stated purpose
+        # of the flag and re-introducing the N+1 shape the caller was
+        # trying to avoid. Writes still come through with the default
+        # include_users=true, so create/update remain unaffected.
+        fields = super().get_fields()
+        if not self._should_include_users:
+            fields.pop("users", None)
+        return fields
+
     @extend_schema_field(PartialUserSerializer(many=True))
     def get_users_obj(self, instance: Group) -> list[PartialUserSerializer] | None:
         if not self._should_include_users:
