@@ -20,7 +20,7 @@ When these stages are successfully completed, authentik logs in the user.
 
 By default, policies bound to stage bindings are evaluated dynamically, right before the stage is presented to the user. This flexibility allows the login process to continue, change, or stop, based on the success or failure of each policy.
 
-This behavior can be altered by enabling the **Evaluate when flow is planned** option on the stage binding. With this setting, authentik uses the [Flow Planner](./planner.md) to evaluate the stage binding's policies when the flow starts and include the stage in the flow plan only when those policies pass.
+You can change this behavior by enabling the **Evaluate when flow is planned** option on the stage binding. When this option is enabled, authentik uses the [Flow Planner](./planner.md) to evaluate the stage binding's policies when the flow starts, and includes the stage in the flow plan only if those policies pass.
 
 ## Policies and permissions
 

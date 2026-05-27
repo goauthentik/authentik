@@ -138,7 +138,12 @@ This matters because stages are reusable objects. The same stage can appear in m
 
 ### When authentik evaluates stage-binding policies
 
-Flow-stage bindings can evaluate policies when the flow is planned, when the stage is run, or both. For the full behavior and guidance on choosing the right setting, see [Flow Planner](../flows-stages/flow/planner.md#planning-and-stage-policies).
+Flow-stage bindings have two policy evaluation options:
+
+- **Evaluate when flow is planned**: authentik evaluates policies while building the flow plan.
+- **Evaluate when stage is run**: authentik evaluates policies immediately before presenting the stage.
+
+At least one of these options must be enabled, and both can be enabled at the same time. For the full behavior and guidance on choosing the right setting, see [Flow Planner](../flows-stages/flow/planner.md#planning-and-stage-policies).
 
 ## What to remember
 
