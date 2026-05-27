@@ -68,7 +68,6 @@ pub async fn init(tasks: &mut Tasks) -> Result<()> {
         .min_connections(1)
         .max_connections(4)
         .acquire_time_level(LevelFilter::Trace)
-        .max_lifetime(config.postgresql.conn_max_age.map(Duration::from_secs))
         .test_before_acquire(config.postgresql.conn_health_checks)
         .after_connect(|conn, _meta| {
             Box::pin(async move {
@@ -83,6 +82,11 @@ pub async fn init(tasks: &mut Tasks) -> Result<()> {
                 Ok(())
             })
         });
+
+    let pool_options = match config.postgresql.conn_max_age {
+        Some(0) => pool_options.after_release(|_conn, _meta| Box::pin(async { Ok(false) })),
+        other => pool_options.max_lifetime(other.map(Duration::from_secs)),
+    };
 
     let pool = pool_options.connect_with(options).await?;
     DB.get_or_init(|| pool);
