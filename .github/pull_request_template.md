@@ -15,7 +15,7 @@
 ### Linked issues
 
 <!--
-Use `closes #N` to auto-close on merge. Use `refs #N` for related issues that this PR does not close.
+Use `closes #N` to auto-close an issue on merge. Use `refs #N` for related issues that this PR does not close.
 -->
 
 ---
