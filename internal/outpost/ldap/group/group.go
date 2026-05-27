@@ -30,7 +30,18 @@ func (lg *LDAPGroup) Entry() *ldap.Entry {
 		return value
 	})
 
-	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCGroupOfNames, constants.OCAKGroup, constants.OCPosixGroup}
+	// RFC 4519 §3.5 / §3.6 define groupOfNames and groupOfUniqueNames with
+	// member (resp. uniqueMember) as a MUST attribute, so an entry that
+	// advertises those object classes without any members is schema-invalid
+	// and breaks strict LDAP client libraries that validate incoming
+	// attributes against the declared schema. Keep the authentik-specific
+	// classes and posixGroup (neither of which requires `member`) on
+	// member-less groups, and only add groupOfNames / groupOfUniqueNames
+	// when we actually have members to publish.
+	objectClass := []string{constants.OCGroup, constants.OCAKGroup, constants.OCPosixGroup}
+	if len(lg.Member) > 0 {
+		objectClass = append(objectClass, constants.OCGroupOfUniqueNames, constants.OCGroupOfNames)
+	}
 	if lg.IsVirtualGroup {
 		objectClass = append(objectClass, constants.OCAKVirtualGroup)
 	}
