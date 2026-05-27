@@ -132,7 +132,7 @@ Repeat these steps for **each** of the four clients (Web, Desktop, Android, and 
         - **Client ID**: the client's value from the table above.
         - **Redirect URIs**: the client's value from the table above.
         - **Signing Key**: select the **same** key for all four providers (the shared issuer exposes a single `jwks_uri`, so all clients' tokens must be signed by one key).
-        - **Scopes**: `openid`, `profile`, `email`, and `offline_access` (required for the desktop and mobile sync clients to receive a refresh token).
+        - Under **Advanced protocol settings**, add `offline_access` to **Selected scopes**.
     - **Under advanced protocol settings**:
         - **Issuer mode**: `Same identifier is used for all providers`.
 3. Click **Submit**.
