@@ -88,10 +88,10 @@ For more information, see our [OAuth2/OpenID Connect front-channel and back-chan
 
 ## Issuer mode
 
-The **Issuer mode** setting (under **Advanced protocol settings**) controls the value that authentik uses for the `iss` (issuer) claim in the tokens it signs, and for the `issuer` field in the provider's [OpenID Connect discovery document](#oauth2-endpoints-and-bindings).
+The **Issuer mode** setting (under **Advanced protocol settings**) controls the value that authentik uses for the `iss` (issuer) claim in the tokens it signs, and for the `issuer` field in the provider's [OpenID Connect discovery document](#oauth-20-endpoints-and-bindings).
 
-| Mode (UI label)                                                                 | `iss` value                                                   |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Mode (UI label)                                                                   | `iss` value                                                   |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------- |
 | **Each provider has a different issuer, based on the application slug** (default) | `https://authentik.company/application/o/<application_slug>/` |
 | **Same identifier is used for all providers**                                     | `https://authentik.company/`                                  |
 
