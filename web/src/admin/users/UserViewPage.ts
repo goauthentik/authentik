@@ -8,6 +8,8 @@ import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
+import "#admin/users/oauth/UserAccessTokenList";
+import "#admin/users/oauth/UserRefreshTokenList";
 import "#components/DescriptionList";
 import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
@@ -18,8 +20,6 @@ import "#elements/Tabs";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/ModalForm";
-import "#elements/oauth/UserAccessTokenList";
-import "#elements/oauth/UserRefreshTokenList";
 import "#elements/user/SessionList";
 import "#elements/user/UserConsentList";
 import "#elements/user/UserReputationList";
@@ -54,7 +54,7 @@ import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 
-import { CapabilitiesEnum, CoreApi, ModelEnum, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, ModelEnum, User, UserTypeEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, PropertyValues, TemplateResult } from "lit";
@@ -192,7 +192,10 @@ export class UserViewPage extends WithLicenseSummary(
     protected renderActionButtons(user: User) {
         const showImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
-        const showLockdown = this.hasEnterpriseLicense && user.pk !== this.currentUser?.pk;
+        const showLockdown =
+            this.hasEnterpriseLicense &&
+            user.pk !== this.currentUser?.pk &&
+            user.type !== UserTypeEnum.InternalServiceAccount;
 
         const displayName = formatUserDisplayName(user);
 

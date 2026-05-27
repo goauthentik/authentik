@@ -53,7 +53,7 @@ You can repeat this process for other OUs and objects within Active Directory.
 By default, Windows Server 2025 requires LDAP signing, which can disrupt authentik’s Active Directory connectivity if LDAPS is not in use. This can be addressed by enabling LDAPS or by disabling LDAP signing on the domain controller, with the understanding that the latter option carries security implications.
 :::
 
-## authentik Setup
+## authentik setup
 
 To support the integration of authentik with Active Directory, you will need to create a new LDAP Source in authentik.
 
@@ -92,6 +92,6 @@ To support the integration of authentik with Active Directory, you will need to 
 
     ![](./03_additional_perms.png)
 
-6. To finalise the Active Directory setup, you need to enable the backend "authentik LDAP" in the Password Stage.
+6. To finalize the Active Directory setup, you need to enable the backend "authentik LDAP" in the Password Stage.
 
     ![](./11_ak_stage.png)

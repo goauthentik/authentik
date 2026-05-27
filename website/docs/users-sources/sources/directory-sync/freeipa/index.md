@@ -11,7 +11,7 @@ The following placeholders are used in this guide:
 - `freeipa.company` is the Name of the domain.
 - `ipa1.freeipa.company` is the Name of the FreeIPA server.
 
-## FreeIPA Setup
+## FreeIPA setup
 
 1. Log in to FreeIPA.
 
@@ -42,7 +42,7 @@ The following placeholders are used in this guide:
 Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Password Change at the Next Login](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/linux_domain_identity_authentication_and_policy_guide/user-authentication#user-passwords-no-expiry)
 :::
 
-## authentik Setup
+## authentik setup
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues.

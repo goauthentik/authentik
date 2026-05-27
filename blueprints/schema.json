@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2026.5.0-rc1 Blueprint schema",
+    "title": "authentik 2026.8.0-rc1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -8373,7 +8373,7 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Webhook ca",
-                    "description": "When set, the selected ceritifcate is used to validate the certificate of the webhook server."
+                    "description": "When set, the selected certificate is used to validate the certificate of the webhook server."
                 },
                 "webhook_mapping_body": {
                     "type": "string",
@@ -11203,7 +11203,8 @@
                     "type": "string",
                     "enum": [
                         "token",
-                        "oauth"
+                        "oauth",
+                        "oauth_interactive"
                     ],
                     "title": "Auth mode"
                 },

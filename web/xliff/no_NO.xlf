@@ -1278,10 +1278,6 @@
   <source>Application Name</source>
   <target>Applikasjonsnavn</target>
 </trans-unit>
-<trans-unit id="s704091f8e3dbd721">
-  <source>The name displayed in the application library.</source>
-  <target>Navnet som vises i applikasjonsbiblioteket.</target>
-</trans-unit>
 <trans-unit id="s91f70424f5d5d23e">
   <source>Slug</source>
   <target>Slug</target>
@@ -2405,10 +2401,6 @@
 <trans-unit id="s24d7ac2fc280ca5e">
   <source>Authenticate SCIM requests using a static token.</source>
   <target>Autentiser SCIM-forespørsler ved bruk av et statisk token.</target>
-</trans-unit>
-<trans-unit id="s0e1641692e0dac94">
-  <source>OAuth</source>
-  <target>OAuth</target>
 </trans-unit>
 <trans-unit id="s1c34cb0a4cccc041">
   <source>Authenticate SCIM requests using OAuth.</source>
@@ -3706,25 +3698,9 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <source>EntityID/Issuer</source>
   <target>EntityID/Utsteder</target>
 </trans-unit>
-<trans-unit id="scd2984ee5552643a">
-  <source>SSO URL (Post)</source>
-  <target>SSO-URL (Post)</target>
-</trans-unit>
-<trans-unit id="saa79b47f60c66458">
-  <source>SSO URL (Redirect)</source>
-  <target>SSO-URL (Redirect)</target>
-</trans-unit>
 <trans-unit id="s2da51a6287118ba8">
   <source>SSO URL (IdP-initiated Login)</source>
   <target>SSO-URL (IdP-initiert innlogging)</target>
-</trans-unit>
-<trans-unit id="s0a57e911e457302b">
-  <source>SLO URL (Post)</source>
-  <target>SLO-URL (Post)</target>
-</trans-unit>
-<trans-unit id="s1e7308bb1ca323e1">
-  <source>SLO URL (Redirect)</source>
-  <target>SLO-URL (Redirect)</target>
 </trans-unit>
 <trans-unit id="sd2c58d7c6dddc515">
   <source>SAML Metadata</source>
@@ -5426,6 +5402,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
 </trans-unit>
 <trans-unit id="s547b687213f48489">
   <source>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>&apos;s password</source>
+  <target>Oppdater passordet til <x id="0" equiv-text="${formatUserDisplayName(user)}"/></target>
 </trans-unit>
 <trans-unit id="sce8d867ca5f35304">
   <source>Set password</source>
@@ -10488,14 +10465,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>e.g. my-application</source>
   <target>f.eks. min-applikasjon</target>
 </trans-unit>
-<trans-unit id="s96d43986e69a9db8">
-  <source>The publisher is shown in the application library.</source>
-  <target>Utgiveren vises i applikasjonsbiblioteket.</target>
-</trans-unit>
-<trans-unit id="s4107487a961394e2">
-  <source>The description is shown in the application library and may provide additional information about the application to end users.</source>
-  <target>Beskrivelsen vises i applikasjonsbiblioteket og kan gi ytterligere informasjon om applikasjonen til sluttbrukere.</target>
-</trans-unit>
 <trans-unit id="sfafe0cba4a679e37">
   <source>Select Groups</source>
   <target>Velg grupper</target>
@@ -11566,18 +11535,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Select an option...</source>
   <target>Velg et alternativ...</target>
 </trans-unit>
-<trans-unit id="s4a45bb66596356ce">
-  <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
-  <target>Velg type <x id="0" equiv-text="${this.verboseName}"/></target>
-</trans-unit>
-<trans-unit id="sdec65ee663d8a048">
-  <source>Choose type</source>
-  <target>Velg type</target>
-</trans-unit>
-<trans-unit id="s32db18dac74db6c3">
-  <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
-  <target>Detaljer for <x id="0" equiv-text="${entityLabel}"/></target>
-</trans-unit>
 <trans-unit id="s195ea6447a6b5486">
   <source>Cancel wizard</source>
   <target>Avbryt veiviser</target>
@@ -11727,10 +11684,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Create or bind...</source>
   <target>Opprett eller bind...</target>
 </trans-unit>
-<trans-unit id="s9ec971c7789af83a">
-  <source>Bind New Stage</source>
-  <target>Bind nytt trinn</target>
-</trans-unit>
 <trans-unit id="s0bc6ba00a01970db">
   <source>Select the type of stage you want to create.</source>
   <target>Velg typen trinn du ønsker å opprette.</target>
@@ -11874,316 +11827,527 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="s78a13f8f08d3a317">
   <source>Authorization Code</source>
+  <target>Autorisasjonskode</target>
 </trans-unit>
 <trans-unit id="s9765a1c7821ec626">
   <source>Implicit</source>
+  <target>Implisitt</target>
 </trans-unit>
 <trans-unit id="s6032372e5812d743">
   <source>Hybrid</source>
+  <target>Hybrid</target>
 </trans-unit>
 <trans-unit id="s4c21579d264ff019">
   <source>Refresh token</source>
+  <target>Oppdateringstoken</target>
 </trans-unit>
 <trans-unit id="sec04243bf971ba5c">
   <source>Client credentials</source>
+  <target>Klientlegitimasjon</target>
 </trans-unit>
 <trans-unit id="sf6625f1c093feb17">
   <source>Device-code</source>
+  <target>Enhetskode</target>
 </trans-unit>
 <trans-unit id="sccb6f4a3d1fb9434">
   <source>Grant Types</source>
+  <target>Autorisasjonstyper</target>
 </trans-unit>
 <trans-unit id="s89c63fb4a8cb6d2b">
   <source>Grant types this provider may use.</source>
+  <target>Autorisasjonstyper denne leverandøren kan bruke.</target>
 </trans-unit>
 <trans-unit id="s86a9472dc09ecf48">
   <source>vCenter</source>
+  <target>vCenter</target>
 </trans-unit>
 <trans-unit id="s71724d2ff6637203">
   <source>Altered behavior for usage with VMware vCenter.</source>
+  <target>Endret atferd for bruk med VMware vCenter.</target>
 </trans-unit>
 <trans-unit id="s2ea2e39e4b470249">
   <source>EntityID/Issuer override</source>
+  <target>Overstyring av EntityID/Issuer</target>
 </trans-unit>
 <trans-unit id="sf7aba95a8c43b7b1">
   <source>Sets a custom EntityID/Issuer to override the authentik generated default.</source>
+  <target>Angir en egendefinert EntityID/Issuer for å overstyre standardverdien generert av authentik.</target>
 </trans-unit>
 <trans-unit id="sa3a27a128ad87f31">
   <source>Passwords</source>
+  <target>Passord</target>
 </trans-unit>
 <trans-unit id="s16d13ea527d7fe6b">
   <source>Setting</source>
+  <target>Innstilling</target>
 </trans-unit>
 <trans-unit id="sfef81bb4077a56fd">
   <source>Type a new password...</source>
+  <target>Skriv inn et nytt passord...</target>
 </trans-unit>
 <trans-unit id="sf9ec917e3e986bc1">
   <source>When enabled, your username will be remembered on this device for future logins.</source>
+  <target>Når dette er aktivert, huskes brukernavnet ditt på denne enheten for fremtidige innlogginger.</target>
 </trans-unit>
 <trans-unit id="form.submitting.no-entity">
   <source><x id="0" equiv-text="${submittingVerb}"/>...</source>
+  <target><x id="0" equiv-text="${submittingVerb}"/>...</target>
   <note from="lit-localize">The message shown while a form is being submitted, when no entity name is provided.</note>
 </trans-unit>
 <trans-unit id="sddfad4253602f965">
   <source>Account lockdown flow</source>
+  <target>Flyt for kontolåsing</target>
 </trans-unit>
 <trans-unit id="sda9155d390bca7b4">
   <source>Select an account lockdown flow...</source>
+  <target>Velg en flyt for kontolåsing...</target>
 </trans-unit>
 <trans-unit id="s77321fadb314f860">
   <source>Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.</source>
+  <target>Flyt som brukes når en bruker utløser kontolåsing, for eksempel ved kompromittering. Bør inneholde et trinn for kontolåsing.</target>
 </trans-unit>
 <trans-unit id="sf4ccddbac7b6ec31">
   <source>Account lockdown flows should require authentication so they can only be started from a signed-in session.</source>
+  <target>Flyter for kontolåsing bør kreve autentisering slik at de bare kan startes fra en innlogget økt.</target>
 </trans-unit>
 <trans-unit id="sc9e81e2f575bcf24">
   <source>If no group is selected and &apos;Send notification to event user&apos; is disabled, the rule is disabled.</source>
+  <target>Hvis ingen gruppe er valgt og &apos;Send varsel til hendelsesbruker&apos; er deaktivert, er regelen deaktivert.</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled &apos;Send once&apos; in the notification transport.</source>
+  <target>Når dette er aktivert, sendes varselet til brukeren som utløste hendelsen, i tillegg til eventuelle brukere i gruppen over. Hendelsesbrukeren vil alltid være den første brukeren. For å sende et varsel kun til hendelsesbrukeren, aktiver &apos;Send én gang&apos; i varslingstransporten.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
+  <target>Minimum antall kontrollører</target>
 </trans-unit>
 <trans-unit id="sa80395e2be5324e4">
   <source>Minimum reviewers is per-group</source>
+  <target>Minimum antall kontrollører gjelder per gruppe</target>
 </trans-unit>
 <trans-unit id="se18d75eda2628862">
   <source>The following reviews apply to this object:</source>
+  <target>Følgende vurderinger gjelder for dette objektet:</target>
 </trans-unit>
 <trans-unit id="sea618ff863cfa3da">
   <source>This object has no reviews yet.</source>
+  <target>Dette objektet har ingen vurderinger ennå.</target>
 </trans-unit>
 <trans-unit id="sea74bf2b70c27113">
   <source>Rule</source>
+  <target>Regel</target>
 </trans-unit>
 <trans-unit id="s5ba577d0cda2bad2">
   <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
+  <target>Dette trinnet utfører kontolåsingstiltak på en målbruker. Konfigurer hvilke handlinger som skal utføres når dette trinnet kjøres.</target>
 </trans-unit>
 <trans-unit id="sc2908875e6774352">
   <source>Type a name for this stage...</source>
+  <target>Skriv inn et navn for dette trinnet...</target>
 </trans-unit>
 <trans-unit id="scf443deca2f466b6">
   <source>Deactivate user</source>
+  <target>Deaktiver bruker</target>
 </trans-unit>
 <trans-unit id="s2abd586c2258eae4">
   <source>Deactivate the user account (set is_active to False).</source>
+  <target>Deaktiver brukerkontoen (sett is_active til False).</target>
 </trans-unit>
 <trans-unit id="s89db6a525bb42303">
   <source>Set unusable password</source>
+  <target>Angi ubrukelig passord</target>
 </trans-unit>
 <trans-unit id="s52dc7e97dfbb99dd">
   <source>Set an unusable password for the user.</source>
+  <target>Angi et ubrukelig passord for brukeren.</target>
 </trans-unit>
 <trans-unit id="sb144fbff5de59af3">
   <source>Delete sessions</source>
+  <target>Slett økter</target>
 </trans-unit>
 <trans-unit id="s20fb386bfce5e225">
   <source>Delete all active sessions for the user.</source>
+  <target>Slett alle aktive økter for brukeren.</target>
 </trans-unit>
 <trans-unit id="s6216c07f360073f7">
   <source>Revoke tokens</source>
+  <target>Tilbakekall tokener</target>
 </trans-unit>
 <trans-unit id="s334ebfb3605630b0">
   <source>Revoke all tokens for the user (API, app password, recovery, verification).</source>
+  <target>Tilbakekall alle tokener for brukeren (API, app-passord, gjenoppretting, verifisering).</target>
 </trans-unit>
 <trans-unit id="sdd3dfdd51bfbcd21">
   <source>Self-service completion</source>
+  <target>Fullføring av selvbetjening</target>
 </trans-unit>
 <trans-unit id="s0ef55fed99322c71">
   <source>Configure what happens after a user locks their own account. Since all sessions are deleted, the user cannot continue in the current flow and will be redirected to a separate completion flow.</source>
+  <target>Konfigurer hva som skjer etter at en bruker låser sin egen konto. Siden alle økter slettes, kan ikke brukeren fortsette i gjeldende flyt og blir videresendt til en separat fullføringsflyt.</target>
 </trans-unit>
 <trans-unit id="sa42bdb7e1f7c8b75">
   <source>Completion flow</source>
+  <target>Fullføringsflyt</target>
 </trans-unit>
 <trans-unit id="sf8f0cfd7ce5e081a">
   <source>Select a completion flow...</source>
+  <target>Velg en fullføringsflyt...</target>
 </trans-unit>
 <trans-unit id="s7f8967e8077f2734">
   <source>Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user&apos;s session is deleted.</source>
+  <target>Flyt brukere videresendes til etter kontolåsing via selvbetjening. Denne flyten må ikke kreve autentisering siden brukerens økt er slettet.</target>
 </trans-unit>
 <trans-unit id="se84707d40ed8f349">
   <source>Alert (Info): Static alert box with info styling</source>
+  <target>Varsel (Info): Statisk varselboks med infostil</target>
 </trans-unit>
 <trans-unit id="sb919fcbc8720c669">
   <source>Alert (Warning): Static alert box with warning styling</source>
+  <target>Varsel (Advarsel): Statisk varselboks med advarselsstil</target>
 </trans-unit>
 <trans-unit id="sa50b13d36ee4f763">
   <source>Alert (Danger): Static alert box with danger styling</source>
+  <target>Varsel (Fare): Statisk varselboks med farestil</target>
 </trans-unit>
 <trans-unit id="s1c23a9eed1a415df">
   <source>Warning: You are about to delete user <x id="0" equiv-text="${shouldShowWarning.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
+  <target>Advarsel: Du er i ferd med å slette brukeren <x id="0" equiv-text="${shouldShowWarning.username}"/>, men du er for øyeblikket logget inn som denne brukeren. Fortsett på egen risiko.</target>
 </trans-unit>
 <trans-unit id="s11064f3323dac957">
   <source>Account Lockdown</source>
+  <target>Kontolåsing</target>
 </trans-unit>
 <trans-unit id="s01a8d45397ec133b">
   <source>Security</source>
+  <target>Sikkerhet</target>
 </trans-unit>
 <trans-unit id="s5a1cd1f7b7a43204">
   <source>If you suspect your account has been compromised, you can immediately lock it to prevent unauthorized access.</source>
+  <target>Hvis du mistenker at kontoen din er kompromittert, kan du låse den umiddelbart for å hindre uautorisert tilgang.</target>
 </trans-unit>
 <trans-unit id="s36535ff645fd37f7">
   <source>Lock my account</source>
+  <target>Lås kontoen min</target>
 </trans-unit>
 <trans-unit id="s7abbf11fd03b3c12">
   <source>Bind existing group/user</source>
+  <target>Knytt til eksisterende gruppe/bruker</target>
 </trans-unit>
 <trans-unit id="s33bfd42437266a1f">
   <source>Leave empty to skip certificate validation, or select a certificate/keypair containing the LDAP server CA chain to validate the remote certificate.</source>
+  <target>La stå tomt for å hoppe over sertifikatvalidering, eller velg et sertifikat/nøkkelpar som inneholder LDAP-serverens CA-kjede for å validere det eksterne sertifikatet.</target>
 </trans-unit>
 <trans-unit id="sdcd1a9744efdbd7e">
   <source>Choose Policy Type</source>
+  <target>Velg policytype</target>
 </trans-unit>
 <trans-unit id="saa5ed8446baaba70">
   <source>Negate Result</source>
+  <target>Neger resultat</target>
 </trans-unit>
 <trans-unit id="s5387aa645962312a">
   <source>Failure Result</source>
+  <target>Feilresultat</target>
 </trans-unit>
 <trans-unit id="sea62de98f2e25e03">
   <source>Device Classes</source>
+  <target>Enhetsklasser</target>
 </trans-unit>
 <trans-unit id="s41938ae69656ef53">
   <source>User Fields</source>
+  <target>Brukerfelt</target>
 </trans-unit>
 <trans-unit id="s02b73793e5b4e1ba">
   <source>This flag is deprecated.</source>
-</trans-unit>
-<trans-unit id="s8655c52824caac63">
-  <source>If checked, the launch URL will open in a new browser tab or window from the user&apos;s application library.</source>
-  <target>Hvis krysset av, vil start-URL åpnes i en ny fane eller et nytt vindu fra brukerens applikasjonsbibliotek.</target>
-</trans-unit>
-<trans-unit id="s9eda7101f63a8652">
-  <source>Hide from My applications</source>
-</trans-unit>
-<trans-unit id="s30f30e9c42594a33">
-  <source>If checked, this application will not be shown on the user&apos;s My applications page.</source>
+  <target>Dette flagget er avviklet.</target>
 </trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
+  <target>Ingen preferanse: nettleseren kan tilby en hvilken som helst tilgjengelig autentikator</target>
 </trans-unit>
 <trans-unit id="s4611c85865abcba9">
   <source>Platform: a non-removable authenticator built into the device, such as Touch ID, Face ID, or Windows Hello</source>
+  <target>Plattform: en ikke-flyttbar autentikator innebygd i enheten, for eksempel Touch ID, Face ID eller Windows Hello</target>
 </trans-unit>
 <trans-unit id="s0003d0e3fcdacabc">
   <source>Cross-platform: a roaming authenticator, such as a YubiKey or Google Titan</source>
+  <target>På tvers av plattformer: en flyttbar autentikator, for eksempel en YubiKey eller Google Titan</target>
 </trans-unit>
 <trans-unit id="sc157c7dcb3d1b096">
   <source>Controls the authenticatorAttachment parameter sent to the browser during WebAuthn registration. If Hints are configured and this is left as &apos;No preference&apos;, a value is inferred from the selected hints for backward compatibility with older browsers.</source>
+  <target>Styrer parameteren authenticatorAttachment som sendes til nettleseren under WebAuthn-registrering. Hvis hint er konfigurert og dette er satt til &apos;Ingen preferanse&apos;, utledes en verdi fra de valgte hintene for bakoverkompatibilitet med eldre nettlesere.</target>
 </trans-unit>
 <trans-unit id="s1baea1b8ac34d554">
   <source>New Invitation</source>
+  <target>Ny invitasjon</target>
 </trans-unit>
 <trans-unit id="s03eef6107e28d042">
   <source>New Invitation options</source>
+  <target>Alternativer for ny invitasjon</target>
 </trans-unit>
 <trans-unit id="s0832ff81b9665e6f">
   <source>Opens the new invitation wizard and binds the invitation to an existing enrollment flow.</source>
+  <target>Åpner veiviseren for ny invitasjon og knytter invitasjonen til en eksisterende registreringsflyt.</target>
 </trans-unit>
 <trans-unit id="sc0819dc3d82d9320">
   <source>with Existing Enrollment Flow...</source>
+  <target>med eksisterende registreringsflyt...</target>
 </trans-unit>
 <trans-unit id="s79108cb25e7bf07b">
   <source>Opens the new invitation wizard, which will create a new enrollment flow and invitation stage.</source>
+  <target>Åpner veiviseren for ny invitasjon, som oppretter en ny registreringsflyt og et invitasjonstrinn.</target>
 </trans-unit>
 <trans-unit id="sb7809157a3ccf613">
   <source>with New Enrollment Flow and Invitation Stage...</source>
+  <target>med ny registreringsflyt og invitasjonstrinn...</target>
 </trans-unit>
 <trans-unit id="seb418067e7d6c6e2">
   <source>Create a new invitation with an enrollment flow.</source>
+  <target>Opprett en ny invitasjon med en registreringsflyt.</target>
 </trans-unit>
 <trans-unit id="sfd74a380e957d0d3">
   <source>Enrollment Flow</source>
+  <target>Registreringsflyt</target>
 </trans-unit>
 <trans-unit id="scc869d556216d748">
   <source>Invitation Details</source>
+  <target>Invitasjonsdetaljer</target>
 </trans-unit>
 <trans-unit id="se1fba44a9b284052">
   <source>Invitation Link</source>
+  <target>Invitasjonslenke</target>
 </trans-unit>
 <trans-unit id="s967a2db7049dc90e">
   <source><x id="0" equiv-text="${step}"/> failed</source>
+  <target><x id="0" equiv-text="${step}"/> mislyktes</target>
 </trans-unit>
 <trans-unit id="s971d4cc0ecd106b7">
   <source>Importing enrollment flow blueprint</source>
+  <target>Importerer blueprint for registreringsflyt</target>
 </trans-unit>
 <trans-unit id="sf3b89a70e20af6c8">
   <source>Blueprint validation failed</source>
+  <target>Blueprint-validering mislyktes</target>
 </trans-unit>
 <trans-unit id="sa04b7204708f4f74">
   <source>Flow with slug &quot;<x id="0" equiv-text="${slugToLookup}"/>&quot; not found after import</source>
+  <target>Flyt med slug &quot;<x id="0" equiv-text="${slugToLookup}"/>&quot; ble ikke funnet etter import</target>
 </trans-unit>
 <trans-unit id="s3354be88ad29d171">
   <source>Creating invitation</source>
+  <target>Oppretter invitasjon</target>
 </trans-unit>
 <trans-unit id="s07f41353777196ea">
   <source>The flow selected in the previous step. The invitation will be bound to this flow.</source>
+  <target>Flyten som ble valgt i forrige trinn. Invitasjonen blir knyttet til denne flyten.</target>
 </trans-unit>
 <trans-unit id="s7209a11f97da9aff">
   <source>No invitation available to send</source>
+  <target>Ingen invitasjon tilgjengelig for sending</target>
 </trans-unit>
 <trans-unit id="s2772d8285b905006">
   <source>Failed to queue invitation emails</source>
+  <target>Kunne ikke legge invitasjons-e-poster i kø</target>
 </trans-unit>
 <trans-unit id="s3b7910ab9c47a2e3">
   <source>No enrollment flows with invitation stages found</source>
+  <target>Fant ingen registreringsflyter med invitasjonstrinn</target>
 </trans-unit>
 <trans-unit id="sa3ca03297e00591c">
   <source>You can create a new enrollment flow and invitation stage right here, or cancel and bind an invitation stage to an existing flow manually.</source>
+  <target>Du kan opprette en ny registreringsflyt og et invitasjonstrinn her, eller avbryte og knytte et invitasjonstrinn manuelt til en eksisterende flyt.</target>
 </trans-unit>
 <trans-unit id="s06db43e56ca76be8">
   <source>Create a new enrollment flow</source>
+  <target>Opprett en ny registreringsflyt</target>
 </trans-unit>
 <trans-unit id="s8acc687c55e8ccbf">
   <source>Only enrollment flows that have an invitation stage bound to them are listed here.</source>
+  <target>Bare registreringsflyter som har et invitasjonstrinn knyttet til seg, vises her.</target>
 </trans-unit>
 <trans-unit id="s5b3bafd8ffe553ec">
   <source>Flow name</source>
+  <target>Flytnavn</target>
 </trans-unit>
 <trans-unit id="s699cd34b0dcb4c56">
   <source>Name for the new enrollment flow.</source>
+  <target>Navn på den nye registreringsflyten.</target>
 </trans-unit>
 <trans-unit id="s8fb6d1bb698d32a0">
   <source>Flow slug</source>
+  <target>Flytslug</target>
 </trans-unit>
 <trans-unit id="s0211c07612cf8c97">
   <source>Invitation stage name</source>
+  <target>Navn på invitasjonstrinn</target>
 </trans-unit>
 <trans-unit id="s42b97ef63fb1a795">
   <source>Name for the new invitation stage.</source>
+  <target>Navn på det nye invitasjonstrinnet.</target>
 </trans-unit>
 <trans-unit id="saaa9fd0d3ebc35aa">
   <source>Enrolled users are created as external (e.g. customers, guests). New users will be placed under users/external.</source>
+  <target>Registrerte brukere opprettes som eksterne, for eksempel kunder eller gjester. Nye brukere plasseres under users/external.</target>
 </trans-unit>
 <trans-unit id="s726dff63487da085">
   <source>Enrolled users are created as internal (e.g. employees). New users will be placed under users/internal.</source>
+  <target>Registrerte brukere opprettes som interne, for eksempel ansatte. Nye brukere plasseres under users/internal.</target>
 </trans-unit>
 <trans-unit id="sc1358130ac327120">
   <source>If enabled, the stage will jump to the next stage when no invitation is given. If disabled, the flow will be cancelled without a valid invitation.</source>
+  <target>Hvis dette er aktivert, går trinnet videre til neste trinn når ingen invitasjon er angitt. Hvis det er deaktivert, avbrytes flyten uten en gyldig invitasjon.</target>
 </trans-unit>
 <trans-unit id="s09fdd952c6eaf7da">
   <source>No invitation was created.</source>
+  <target>Ingen invitasjon ble opprettet.</target>
 </trans-unit>
 <trans-unit id="s00febd85a4889bb1">
   <source>Redirect the user to a static URL or another flow, optionally with all gathered context.</source>
+  <target>Videresend brukeren til en statisk URL eller en annen flyt, eventuelt med all innsamlet kontekst.</target>
 </trans-unit>
 <trans-unit id="sdbc1d47f0f0ed54d">
   <source>The element could not be loaded. This may be due to a missing import or a version mismatch.</source>
+  <target>Elementet kunne ikke lastes. Dette kan skyldes en manglende import eller et versjonsavvik.</target>
 </trans-unit>
 <trans-unit id="scf8a3d48f9969535">
   <source>An element could not be loaded. Please try refreshing the page or clearing your cache.</source>
+  <target>Et element kunne ikke lastes. Prøv å oppdatere siden eller tømme hurtigbufferen.</target>
 </trans-unit>
 <trans-unit id="se2f00b2619675217">
   <source>Failed to load element</source>
+  <target>Kunne ikke laste element</target>
 </trans-unit>
-<trans-unit id="s1cf2298d92c327a6">
-  <source>My Applications</source>
-  <target>Mine applikasjoner</target>
+<trans-unit id="sac974f7c36f0c5c1">
+  <source>SAML Endpoint</source>
+  <target>SAML-endepunkt</target>
 </trans-unit>
-<trans-unit id="s2656433a3b1f7e86">
-  <source>My applications</source>
-  <target>Mine applikasjoner</target>
+<trans-unit id="sfb0aa7e424580866">
+  <source>SAML provider endpoint. Use this URL for SP configuration.</source>
+  <target>SAML-leverandørens endepunkt. Bruk denne URL-en for SP-konfigurasjon.</target>
+</trans-unit>
+<trans-unit id="s2be14ff0704995c7">
+  <source>Throttling settings</source>
+  <target>Innstillinger for begrensning</target>
+</trans-unit>
+<trans-unit id="s05b71dc850552880">
+  <source>Email OTP throttling factor</source>
+  <target>Begrensningsfaktor for OTP via e-post</target>
+</trans-unit>
+<trans-unit id="s55c0221c9247ad7d">
+  <source>SMS OTP throttling factor</source>
+  <target>Begrensningsfaktor for SMS-OTP</target>
+</trans-unit>
+<trans-unit id="sd63868fff5022ef6">
+  <source>TOTP throttling factor</source>
+  <target>Begrensningsfaktor for TOTP</target>
+</trans-unit>
+<trans-unit id="s89361efde7c66054">
+  <source>Static OTP throttling factor</source>
+  <target>Begrensningsfaktor for statisk OTP</target>
+</trans-unit>
+<trans-unit id="s3162a5abea92514e">
+  <source>View Credentials</source>
+  <target>Vis legitimasjon</target>
+</trans-unit>
+<trans-unit id="s7cbd6ddbb3cdbda4">
+  <source>OAuth (Silent)</source>
+  <target>OAuth (stille)</target>
+</trans-unit>
+<trans-unit id="sf74719393c9d600b">
+  <source>OAuth (Interactive)</source>
+  <target>OAuth (interaktiv)</target>
+</trans-unit>
+<trans-unit id="s364366c872ccd349">
+  <source>Authenticate SCIM requests using OAuth, interactively authorized.</source>
+  <target>Autentiser SCIM-forespørsler med OAuth, interaktivt autorisert.</target>
+</trans-unit>
+<trans-unit id="s67dbb822a17bf6fc">
+  <source>OAuth Token last updated</source>
+  <target>OAuth-token sist oppdatert</target>
+</trans-unit>
+<trans-unit id="sb586db2f11959745">
+  <source>OAuth Token expires</source>
+  <target>OAuth-token utløper</target>
+</trans-unit>
+<trans-unit id="s4011de0d7365d106">
+  <source>OAuth Status</source>
+  <target>OAuth-status</target>
+</trans-unit>
+<trans-unit id="s169a1a1dce3987b8">
+  <source>Authenticated</source>
+  <target>Autentisert</target>
+</trans-unit>
+<trans-unit id="s02e7dfce69646f50">
+  <source>No token saved</source>
+  <target>Ingen token lagret</target>
+</trans-unit>
+<trans-unit id="sde2c41117de5db9d">
+  <source>(Re-)authenticate</source>
+  <target>Autentiser på nytt</target>
+</trans-unit>
+<trans-unit id="s13c4adf0d185f12e">
+  <source>OAuth Callback URL</source>
+  <target>OAuth-callback-URL</target>
+</trans-unit>
+<trans-unit id="s2736fa38f8fb1b04">
+  <source>The name displayed in the Application Dashboard.</source>
+  <target>Navnet som vises i applikasjonsdashbordet.</target>
+</trans-unit>
+<trans-unit id="sb8bbbd3b5cd45ad2">
+  <source>If checked, the launch URL will open in a new browser tab or window from the user&apos;s Application Dashboard.</source>
+  <target>Hvis dette er merket av, åpnes start-URL-en i en ny nettleserfane eller et nytt vindu fra brukerens applikasjonsdashbord.</target>
+</trans-unit>
+<trans-unit id="s55272b9955f1d985">
+  <source>Hide from Application Dashboard</source>
+  <target>Skjul fra applikasjonsdashbordet</target>
+</trans-unit>
+<trans-unit id="s4e8256e5793952d7">
+  <source>If checked, this application will not be shown on the user&apos;s Application Dashboard.</source>
+  <target>Hvis dette er merket av, vises ikke denne applikasjonen i brukerens applikasjonsdashbord.</target>
+</trans-unit>
+<trans-unit id="s7d9707524fb7e539">
+  <source>The publisher is shown in the Application Dashboard.</source>
+  <target>Utgiveren vises i applikasjonsdashbordet.</target>
+</trans-unit>
+<trans-unit id="sf04a246ad842c3cf">
+  <source>The description is shown in the Application Dashboard and may provide additional information about the application to end users.</source>
+  <target>Beskrivelsen vises i applikasjonsdashbordet og kan gi sluttbrukere tilleggsinformasjon om applikasjonen.</target>
+</trans-unit>
+<trans-unit id="s88c83ac92bfb1f6c">
+  <source>You&apos;ve logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can log out of your authentik account.</source>
+  <target>Du er logget ut av <x id="0" equiv-text="${challenge.applicationName}"/>. Du kan logge ut av authentik-kontoen din.</target>
+</trans-unit>
+<trans-unit id="sa5c3a21cbc762ce9">
+  <source>You&apos;ve logged out of <x id="0" equiv-text="${challenge.applicationName}"/>.</source>
+  <target>Du er logget ut av <x id="0" equiv-text="${challenge.applicationName}"/>.</target>
+</trans-unit>
+<trans-unit id="s92c038a5e1dade49">
+  <source>Application Dashboard</source>
+  <target>Applikasjonsdashbord</target>
+</trans-unit>
+<trans-unit id="s633e3919f46a8cd3">
+  <source>View details of role &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <target>Vis detaljer for rollen &quot;<x id="0" equiv-text="${item.name}"/>&quot;</target>
+</trans-unit>
+<trans-unit id="sc1fc93e04011152f">
+  <source>New Stage</source>
+  <target>Nytt trinn</target>
+</trans-unit>
+<trans-unit id="wizard.step.choose-type.generic">
+  <source>Choose type</source>
+  <target>Velg type</target>
+  <note from="lit-localize">Generic label for the initial step in the creation wizard where the type of the entity being created is selected, used when no singular entity name is provided.</note>
+</trans-unit>
+<trans-unit id="wizard.step.choose-type">
+  <source>Choose <x id="0" equiv-text="${this.verboseName}"/> Type</source>
+  <target>Velg type for <x id="0" equiv-text="${this.verboseName}"/></target>
+  <note from="lit-localize">Label for the initial step in the creation wizard where the type of the entity being created is selected. The placeholder {entity} is replaced with the singular name of the entity, for example &apos;Choose User Type&apos; or &apos;Choose Group Type&apos;.</note>
+</trans-unit>
+<trans-unit id="wizard.step.details">
+  <source><x id="0" equiv-text="${entityLabel}"/> Details</source>
+  <target>Detaljer for <x id="0" equiv-text="${entityLabel}"/></target>
+  <note from="lit-localize">Label for the step in the creation wizard where the details of the entity being created are filled in. The placeholder {entity} is replaced with the name of the entity type, for example &apos;User Details&apos; or &apos;Group Details&apos;.</note>
 </trans-unit>
 </body>
 </file>

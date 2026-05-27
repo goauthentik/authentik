@@ -1,0 +1,152 @@
+---
+title: Integrate with Skyhigh Security
+sidebar_label: Skyhigh Security
+support_level: community
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Skyhigh Security?
+
+> Skyhigh Security Service Edge (SSE) combines Secure Web Gateway (SWG), Cloud Access Security Broker (CASB), Private Access (ZTNA), Data Loss Prevention (DLP), and Remote Browser Isolation (RBI) in the Skyhigh Cloud Platform.
+>
+> -- https://www.skyhighsecurity.com/products/security-service-edge.html
+
+## Preparation
+
+Skyhigh Security has multiple SAML integration points:
+
+- Dashboard administrator login, to manage the Skyhigh Security dashboard.
+- Secure Web Gateway and Private Access, to authenticate users for web and private application access.
+
+:::info Dashboard administrator login
+For dashboard administrator login, the Skyhigh Security administrator users must already exist in Skyhigh Security with attributes that match the users who authenticate with authentik. Automatic user creation and SCIM provisioning are not supported for this integration.
+:::
+
+The following placeholder is used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::warning Keep administrator access
+Keep at least one Skyhigh Security administrator account excluded from SSO so that you can still access Skyhigh Security if the SAML configuration is incorrect.
+:::
+
+## Integration configuration
+
+To support the integration of Skyhigh Security with authentik, create one application/provider pair for each Skyhigh Security SAML integration point that you want to use.
+
+<Tabs
+  defaultValue="dashboard"
+  values={[
+    { label: "Dashboard administrator login", value: "dashboard" },
+    { label: "Secure Web Gateway and Private Access", value: "swg" },
+  ]}>
+  <TabItem value="dashboard">
+
+### authentik configuration
+
+To support dashboard administrator login, create an application/provider pair in authentik.
+
+#### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Temporarily set the **ACS URL** to `https://temp.temp`.
+        - Temporarily set the **Audience** to `https://temp.temp`.
+        - Select a **Signing Certificate**.
+        - Select **authentik default SAML Mapping: Email** as the **NameID Property Mapping**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+4. Open the provider that you created, and note the **EntityID/Issuer** and **SAML Endpoint** values.
+5. Download the signing certificate from the provider's **Related objects** section.
+
+### Skyhigh Security configuration
+
+1. Log in to the Skyhigh Security IAM login page with an administrator account that can manage SSO.
+2. In the top-right **Primary User (Admin)** menu, click **Identity Provider**.
+3. In the **Identity Provider** section, configure the following settings:
+    - **Issuer**: enter the **EntityID/Issuer** value from authentik.
+    - **Certificate**: upload the signing certificate that you downloaded from authentik.
+    - **Login URL**: enter the **SAML Endpoint** value from authentik.
+    - **Signature Algorithm**: select **SHA-256**.
+    - **Request Binding**: select **HTTP-POST**.
+4. In the **User List** section, exclude at least one administrator account from SSO.
+5. Click **Save Changes**.
+6. In the **Service Provider (Skyhigh CASB)** section, note the **Audience** and **Assertion Consumer Service URL** values.
+7. Return to the authentik provider that you created earlier.
+8. Under **Protocol settings**, update the following settings:
+    - **ACS URL**: enter the **Assertion Consumer Service URL** value from Skyhigh Security.
+    - **Audience**: enter the **Audience** value from Skyhigh Security.
+9. Click **Save Changes**.
+
+### Configuration verification
+
+To confirm that authentik is properly configured with Skyhigh Security, open the Skyhigh Security integration that you configured from the authentik application dashboard. You should be redirected to authentik and returned to Skyhigh Security after authentication.
+
+  </TabItem>
+  <TabItem value="swg">
+
+### authentik configuration
+
+To support Secure Web Gateway and Private Access, create an application/provider pair in authentik.
+
+#### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://saml.wgcs.skyhigh.cloud/saml`.
+        - Set the **Audience** to `https://saml.wgcs.skyhigh.cloud/saml`.
+        - Select a **Signing Certificate**.
+        - Select **authentik default SAML Mapping: Email** and **authentik default SAML Mapping: Groups** as **Property mappings**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+4. Open the provider that you created, and note the **EntityID/Issuer** and **SAML Endpoint** values.
+5. Download the signing certificate from the provider's **Related objects** section.
+
+### Skyhigh Security configuration
+
+1. Log in to the Skyhigh Security dashboard as an administrator.
+2. Click the configuration gear and navigate to **Infrastructure** > **Web Gateway Setup**.
+3. Under **Set Up SAML**, click **New SAML**.
+4. Configure the SAML provider as follows:
+    - **SAML Configuration Name**: enter a descriptive name.
+    - **Service Provider's Entity ID**: `https://saml.wgcs.skyhigh.cloud/saml`
+    - **URL of SAML Identity Provider**: enter the **SAML Endpoint** value from authentik.
+    - **Identity Provider Must Sign SAML Assertion**: enable this option.
+    - **Identity Provider's Entity ID**: enter the **EntityID/Issuer** value from authentik.
+    - **User ID attribute in SAML response**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+    - **Group ID attribute in SAML response**: `http://schemas.xmlsoap.org/claims/Group`
+    - **Identity Provider Certificate**: upload the signing certificate that you downloaded from authentik.
+5. Add the domain names that should authenticate with authentik.
+6. Click **Save**.
+7. Publish the web policy.
+
+:::info Policy configuration
+Skyhigh Security policy design, domain ownership, and application access policies are outside the scope of this guide. Ensure that your web and private access policies grant access to users authenticated through authentik.
+:::
+
+### Configuration verification
+
+To confirm that authentik is properly configured with Skyhigh Security, open the Skyhigh Security integration that you configured and sign in with SSO. You should be redirected to authentik and returned to Skyhigh Security after authentication.
+
+  </TabItem>
+</Tabs>
+
+## Resources
+
+- [Skyhigh Security - Security Service Edge SSE Solution](https://www.skyhighsecurity.com/products/security-service-edge.html)
+- [Skyhigh Security - Primary User - Identity Provider](https://success.skyhighsecurity.com/Skyhigh_CASB/03_Skyhigh_RBAC_and_User_Management/Primary_User/Primary_User_-_Identity_Provider)
+- [Skyhigh Security - Configure SAML and SSO for Skyhigh Cloud Administrators](https://success.skyhighsecurity.com/Skyhigh_CASB/Skyhigh_CASB_Settings/SAML_Configuration/Configure_Skyhigh_CASB_Login_for_SAML_and_SSO)
+- [Skyhigh Security - Configure SAML Authentication for Secure Web Gateway](https://success.skyhighsecurity.com/Skyhigh_Secure_Web_Gateway_%28Cloud%29/Secure_Web_Gateway_Setup/Configuring_SAML_Authentication/Configure_SAML_Authentication_for_Secure_Web_Gateway)
+- [Skyhigh Security - Configure SAML Authentication for Private Access](https://success.skyhighsecurity.com/Skyhigh_Private_Access/SAML_Authentication/Configure_SAML_Authentication_for_Private_Access)

@@ -1,18 +1,18 @@
 ---
-title: OAuth 2.0 provider
+title: OAuth2/OpenID provider
 ---
 
 In authentik, an [OAuth 2.0](https://oauth.net/2/) provider authenticates users to an associated application. The provider supports generic OAuth 2.0 clients and OpenID Connect (OIDC) relying parties.
 
 ## authentik and OAuth 2.0
 
-Before looking at the [OAuth 2.0 protocol](#about-oauth-20-and-oidc), it helps to understand the roles authentik can play.
+Before looking at the [OAuth 2.0 protocol](#about-oauth-20-and-oidc), it helps to understand the roles that authentik can play.
 
 authentik can act as the OpenID Provider (OP), where authentik is the identity provider, or as the Relying Party (RP), where authentik uses an external OAuth 2.0 or OIDC provider for authentication. To use authentik as the OP, create an OAuth 2.0 provider and attach it to an application. To use authentik as the RP, configure an OAuth [source](../../../users-sources/sources/index.md). The same authentik instance can act as both an OP and an RP.
 
-authentik supports the standard OAuth 2.0 flows and grant types, including authorization code, client credentials, implicit, hybrid, refresh token, and device code. authentik also follows the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html), supports PKCE and [GitHub compatibility](./github-compatibility.md), and uses scope mappings to control the claims returned to the RP.
+authentik supports standard OAuth 2.0 flows and grant types, including authorization code, client credentials, implicit, hybrid, refresh token, and device code. authentik also follows the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html), supports PKCE and [GitHub compatibility](./github-compatibility.md), and uses [scope mappings](../property-mappings/index.md#scope-mappings-with-oauth2) to control the claims returned to the RP.
 
-The OAuth 2.0 provider includes security-focused configuration options such as configurable signing and encryption keys, short token expiration times, and automatic refresh token rotation.
+The OAuth 2.0 provider includes security-focused configuration options such as no cleartext storage of credentials, configurable signing and encryption keys, short token expiration times, and automatic refresh token rotation.
 
 ## About OAuth 2.0 and OIDC
 
@@ -63,16 +63,22 @@ sequenceDiagram
 | OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration` |
 
 :::caution Reserved application slugs
-Due to how the OAuth2 provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke` as these would conflict with the global OAuth2 endpoints.
+Due to how the OAuth2/OpenID provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke` as these would conflict with the global OAuth2 endpoints.
 :::
 
-### Additional configuration options with redirect URIs
+### Cross-provider token introspection and revocation
+
+The token introspection and revocation endpoints are global OAuth2 endpoints, but access to tokens is still scoped by provider. A client can introspect or revoke tokens issued by the same OAuth2 provider that authenticated the request.
+
+For cross-provider introspection or revocation, authenticate the request with a confidential provider. Then, on the provider that issues the token, select the authenticating provider under **Federated OAuth2/OpenID Providers**. This allows the authenticating provider to introspect and revoke tokens issued by the federated provider.
+
+### Additional configuration options with Redirect URIs
 
 When using an OAuth 2.0 provider in authentik, the OP must validate the redirect URI provided by the RP. An authentik administrator can configure allowed redirect URIs in the provider's **Redirect URI** field.
 
 If you leave the **Redirect URI** field empty when creating a provider and application, authentik saves the first redirect URI used when a user opens the application.
 
-For advanced use cases, an authentik administrator can use regular expressions instead of static redirect URLs. For example, you can use a regular expression to match a group of related redirect URLs instead of listing each URL individually. When matching literal periods in hostnames, escape them as `\.` because an unescaped period in a regular expression matches any character.
+For advanced use cases, an authentik administrator can use regular expressions instead of static redirect URLs. For example, you can use a regular expression to match a group of related redirect URLs instead of listing each URL individually. When matching literal periods in hostnames, escape them as `\.` because, in regular expressions, an unescaped period matches any character.
 
 ### OAuth2/OpenID Connect back-channel logout
 
@@ -84,11 +90,13 @@ For more information, see our [OAuth2/OpenID Connect front-channel and back-chan
 
 There are three general flows of OAuth 2.0:
 
-1. Web-based application authorization (authorization code, implicit, hybrid, and refresh token)
+1. Web-based application authorization (authorization code, implicit, and hybrid)
 2. Client credentials (machine-to-machine)
 3. Device code
 
 The [refresh token](#refresh-token-grant) grant type can be used with several flows to obtain a new access token without another interactive login.
+
+You can define which grant types are available for your OAuth2 provider when you [create and configure the provider](./create-oauth2-provider.md). By default, all types are selected.
 
 ### 1: Web-based application authorization
 
@@ -151,7 +159,7 @@ Scopes can be configured using scope mappings, a type of [property mapping](../p
 By default, every user that has access to an application can request any of the configured scopes. Starting with authentik 2022.4, you can do additional checks for the scope in an expression policy (bound to the application):
 
 ```python
-# There are additional fields set in the context, use `ak_logger.debug(request.context)` to see them.
+# There are additional fields set in the context; use `ak_logger.debug(request.context)` to see them.
 
 if "my-admin-scope" in request.context["oauth_scopes"]:
     return ak_is_group_member(request.user, name="my-admin-group")
@@ -160,7 +168,7 @@ return True
 
 ## Default & special scopes
 
-When a client does not request any scopes, authentik will treat the request as if all configured scopes were requested. Depending on the configured authorization flow, consent still needs to be given, and all scopes are listed there.
+When a client does not request any scopes, authentik treats the request as if all configured scopes were requested. Depending on the configured authorization flow, consent still needs to be given, and all scopes are listed there.
 
 This does _not_ apply to special scopes, as those are not configurable in the provider.
 
@@ -174,13 +182,13 @@ This does _not_ apply to special scopes, as those are not configurable in the pr
 
 ### authentik
 
-- `goauthentik.io/api`: This scope grants the refresh token access to the authentik API on behalf of the user
+- `goauthentik.io/api`: This scope grants the refresh token access to the authentik API on behalf of the user.
 
 ### GitHub compatibility
 
-- `user`: No-op, is accepted for compatibility but does not give access to any resources
-- `read:user`: Same as above
-- `user:email`: Allows read-only access to `/user`, including email address
+- `user`: No-op, is accepted for compatibility but does not give access to any resources.
+- `read:user`: Same as above.
+- `user:email`: Allows read-only access to `/user`, including email address.
 - `read:org`: Allows read-only access to `/user/teams`, listing all the user's groups as teams.
 
 ### Email scope verification
@@ -215,4 +223,4 @@ When **Signing Key** is not selected, authentik signs JWTs symmetrically with th
 
 ### Encryption
 
-authentik can also encrypt JWTs (turning them into JWEs) it issues by selecting an **Encryption Key** in the provider. When selected, all JWTs will be encrypted symmetrically using the selected certificate. authentik uses the `RSA-OAEP-256` algorithm with the `A256CBC-HS512` encryption method.
+authentik can also encrypt JWTs (turning them into JWEs) that it issues by selecting an **Encryption Key** in the provider. When selected, all JWTs will be encrypted using the selected certificate. authentik uses the `RSA-OAEP-256` key management algorithm with the `A256CBC-HS512` content encryption method.
