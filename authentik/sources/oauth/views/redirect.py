@@ -105,8 +105,7 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
                 params["scope"] = source.additional_scopes[1:].split(" ")
             else:
                 params["scope"] += source.additional_scopes.split(" ")
+        params.update(self._try_login_hint_extract())
         params.update(self._eval_additional_url_parameters(source))
-        if "login_hint" not in params:
-            params.update(self._try_login_hint_extract())
 
         return client.get_redirect_url(params)
