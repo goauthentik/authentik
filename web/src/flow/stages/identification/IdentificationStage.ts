@@ -28,7 +28,7 @@ import {
 import { kebabCase } from "change-case";
 import { match } from "ts-pattern";
 
-import { getLocale, msg, str } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, ReactiveControllerHost } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -52,8 +52,14 @@ export const PasswordManagerPrefill: {
     totp?: string;
 } = {};
 
+// `@lit/localize` no longer re-exports `getLocale` at the top level (it
+// is returned from `configureLocalization` instead, see
+// LocaleContextController), so read the active locale from the
+// document's `lang` attribute. The LocaleContextController keeps that
+// attribute in sync with the active locale, so the formatter follows
+// runtime locale changes.
 export const orListFormatter = (): Intl.ListFormat =>
-    new Intl.ListFormat(getLocale(), {
+    new Intl.ListFormat(document.documentElement.lang || undefined, {
         style: "short",
         type: "disjunction",
     });
