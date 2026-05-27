@@ -258,6 +258,7 @@ class Event(SerializerModel, ExpiringModel):
             action=EventAction.CONFIGURATION_WARNING,
             context__deprecation=identifier,
         )
+        cause = str(cause)
         if cause:
             query &= Q(context__cause=cause)
         if Event.objects.filter(query).exists():

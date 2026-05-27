@@ -32,11 +32,13 @@ services:
     restart: always
   diff:
     image: docker.io/openapitools/openapi-diff:2.1.7
-    entrypoint: "/bin/true"
+    # Only run when explicitly invoked (e.g. `make gen-diff`), never on `docker compose up`.
+    profiles:
+      - diff
     restart: no
     network_mode: none
     volumes:
-      - ../:/local:ro
+      - ../:/local
 
 volumes:
   db-data:
