@@ -81,6 +81,7 @@ class SAMLFlowFinalView(ChallengeStageView):
                         "session": auth_session,
                         "name_id": processor.name_id,
                         "name_id_format": processor.name_id_format,
+                        "issuer": processor.issuer,
                         "expires": processor.session_not_on_or_after_datetime,
                         "expiring": True,
                     },
@@ -126,7 +127,7 @@ class SAMLFlowFinalView(ChallengeStageView):
                     "Redirect binding for Service Provider binding is deprecated "
                     "and will be removed in a future version. Use Post binding instead."
                 ),
-                cause=provider,
+                cause=provider.name,
             )
             url_args = {
                 REQUEST_KEY_SAML_RESPONSE: deflate_and_base64_encode(response),

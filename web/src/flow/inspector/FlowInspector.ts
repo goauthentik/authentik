@@ -126,7 +126,7 @@ export class FlowInspector extends AKElement {
 
     protected renderNextStage({ currentPlan, isCompleted }: FlowInspection): TemplateResult {
         return html`<div class="pf-c-card">
-            <fieldset>
+            <fieldset class="ak-c-fieldset">
                 <legend class="pf-c-card__title">${msg("Next stage")}</legend>
                 <div class="pf-c-card__body">
                     <dl class="pf-c-description-list">
@@ -184,7 +184,7 @@ ${stringify(this.getStage(currentPlan?.nextPlannedStage?.stageObj))}</pre
         currentPlan,
     }: FlowInspection): TemplateResult {
         return html`<div class="pf-c-card">
-            <fieldset>
+            <fieldset class="ak-c-fieldset">
                 <legend class="pf-c-card__title">${msg("Plan history")}</legend>
                 <div class="pf-c-card__body">
                     <ol class="pf-c-progress-stepper pf-m-vertical">
@@ -248,7 +248,7 @@ ${stringify(this.getStage(currentPlan?.nextPlannedStage?.stageObj))}</pre
 
     protected renderCurrentPlan({ currentPlan }: FlowInspection): TemplateResult {
         return html`<div class="pf-c-card">
-            <fieldset>
+            <fieldset class="ak-c-fieldset">
                 <legend class="pf-c-card__title">${msg("Current plan context")}</legend>
                 <pre class="pf-c-card__body"><code>${stringify(
                     currentPlan?.planContext,
@@ -259,7 +259,7 @@ ${stringify(this.getStage(currentPlan?.nextPlannedStage?.stageObj))}</pre
 
     protected renderSession({ currentPlan }: FlowInspection): TemplateResult {
         return html`<div class="pf-c-card">
-            <fieldset>
+            <fieldset class="ak-c-fieldset">
                 <legend class="pf-c-card__title">${msg("Session ID")}</legend>
                 <div class="pf-c-card__body">
                     <code class="break"> ${currentPlan?.sessionId} </code>

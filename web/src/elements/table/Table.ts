@@ -357,6 +357,12 @@ export abstract class Table<T extends object, D = T>
         if (this.searchEnabled) {
             this.search = getURLParam(this.#searchParam, "");
         }
+
+        // Use `fetch()` rather than `#synchronizeRefreshSchedule()` here: the
+        // latter only flushes a *previously deferred* refresh and would no-op
+        // when a parent (e.g. `AKModal`) has already forced `visible = true`
+        // before the first update cycle, leaving the table empty on open.
+        this.fetch();
     }
 
     public override disconnectedCallback(): void {
@@ -401,11 +407,6 @@ export abstract class Table<T extends object, D = T>
         if (changedProperties.has("visible") && this.hasUpdated) {
             this.#synchronizeRefreshSchedule();
         }
-    }
-
-    protected override firstUpdated(changedProperties: PropertyValues<this>): void {
-        super.firstUpdated(changedProperties);
-        this.#synchronizeRefreshSchedule();
     }
 
     //#endregion
@@ -996,7 +997,9 @@ export abstract class Table<T extends object, D = T>
      * A simple pagination display, shown at both the top and bottom of the page.
      */
     protected renderTablePagination(): SlottedTemplateResult {
-        if (!this.paginated) return nothing;
+        if (!this.paginated || !this.data || this.data?.pagination.totalPages < 2) {
+            return nothing;
+        }
 
         const handler = (page: number) => {
             this.page = page;
@@ -1054,7 +1057,12 @@ export abstract class Table<T extends object, D = T>
                     <thead aria-label=${msg("Column actions")}>
                         <tr class="pf-c-table__header-row">
                             ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
-                            ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
+                            ${this.expandable
+                                ? html`<th
+                                      class="pf-c-table__toggle pf-m-pressable"
+                                      aria-hidden="true"
+                                  ></th>`
+                                : nothing}
                             ${this.columns.map((column, idx) => {
                                 const [label, orderBy, ariaLabel] = column;
                                 const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;

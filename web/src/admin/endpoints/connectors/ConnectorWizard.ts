@@ -10,6 +10,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { CreateWizard } from "#elements/wizard/CreateWizard";
+import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 
 import { EndpointsApi, TypeCreate } from "@goauthentik/api";
 
@@ -22,6 +23,8 @@ export class AKEndpointConnectorWizard extends CreateWizard {
 
     public static override verboseName = msg("Endpoint Connector");
     public static override verboseNamePlural = msg("Endpoint Connectors");
+
+    public override layout = TypeCreateWizardPageLayouts.grid;
 
     protected apiEndpoint = (requestInit?: RequestInit): Promise<TypeCreate[]> => {
         return this.#api.endpointsConnectorsTypesList(requestInit);

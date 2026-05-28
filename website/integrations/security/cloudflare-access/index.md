@@ -4,7 +4,7 @@ sidebar_label: Cloudflare Access
 support_level: community
 ---
 
-## What is Cloudflare Access
+## What is Cloudflare Access?
 
 > Cloudflare Access is a secure, cloud-based zero-trust solution for managing and authenticating user access to internal applications and resources.
 >
@@ -42,7 +42,7 @@ To support the integration of Cloudflare Access with authentik, you need to crea
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://company.cloudflareaccess.com/cdn-cgi/access/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

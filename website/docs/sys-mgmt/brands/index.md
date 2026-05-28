@@ -71,6 +71,15 @@ When using the [Mutual TLS Stage](../../add-secure-apps/flows-stages/stages/mtls
 
 Attributes such as locale, theme settings (light/dark mode), and custom attributes can be set to a per-brand default value here. Any custom attributes can be retrieved via [`group_attributes()`](../../users-sources/user/user_ref.mdx#object-properties).
 
+To set the UI language for a brand, add `settings.locale` with a supported locale code. For example, to use English across the default brand:
+
+```yaml
+settings:
+    locale: en
+```
+
+To hide the language selector on authentication flows, see [Hide the locale selector](./custom-css.mdx#hide-the-locale-selector).
+
 ## Image optimization
 
 When you use images and icons for a brand's logo, favicon, etc., be aware of the following optimization tips:

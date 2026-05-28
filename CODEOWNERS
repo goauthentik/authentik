@@ -14,6 +14,7 @@ pyproject.toml                          @goauthentik/backend
 uv.lock                                 @goauthentik/backend
 Cargo.toml                              @goauthentik/backend
 Cargo.lock                              @goauthentik/backend
+build.rs                                @goauthentik/backend
 go.mod                                  @goauthentik/backend
 go.sum                                  @goauthentik/backend
 .cargo/                                 @goauthentik/backend
@@ -33,6 +34,7 @@ packages/django-channels-postgres       @goauthentik/backend
 packages/django-postgres-cache          @goauthentik/backend
 packages/django-dramatiq-postgres       @goauthentik/backend
 # Web packages
+.npmrc                                  @goauthentik/frontend
 tsconfig.json                           @goauthentik/frontend
 package.json                            @goauthentik/frontend
 package-lock.json                       @goauthentik/frontend
@@ -49,6 +51,7 @@ packages/tsconfig                       @goauthentik/frontend
 web/                                    @goauthentik/frontend
 # Locale
 /locale/                                @goauthentik/backend @goauthentik/frontend
+/locale/*/dictionaries                  @goauthentik/frontend @goauthentik/docs
 web/xliff/                              @goauthentik/backend @goauthentik/frontend
 # Docs
 website/                                @goauthentik/docs

@@ -172,6 +172,7 @@ SPECTACULAR_SETTINGS = {
     },
     "ENUM_NAME_OVERRIDES": {
         "AppEnum": "authentik.lib.api.Apps",
+        "AuthenticationEnum": "authentik.flows.models.FlowAuthenticationRequirement",
         "ConsentModeEnum": "authentik.stages.consent.models.ConsentMode",
         "CountryCodeEnum": "django_countries.countries",
         "DeviceClassesEnum": "authentik.stages.authenticator_validate.models.DeviceClasses",
@@ -186,6 +187,7 @@ SPECTACULAR_SETTINGS = {
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
+        "RedirectURITypeEnum": "authentik.providers.oauth2.models.RedirectURIType",
         "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
         "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
@@ -219,7 +221,7 @@ REST_FRAMEWORK = {
         "authentik.api.search.ql.QLSearch",
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.OrderingFilter",
+        "authentik.api.ordering.NullsAwareOrderingFilter",
     ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -446,8 +448,6 @@ DRAMATIQ = {
         ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
-        ("authentik.tasks.middleware.WorkerHealthcheckMiddleware", {}),
-        ("authentik.tasks.middleware.WorkerStatusMiddleware", {}),
         (
             "authentik.tasks.middleware.MetricsMiddleware",
             {

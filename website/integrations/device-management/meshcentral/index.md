@@ -4,7 +4,7 @@ sidebar_label: MeshCentral
 support_level: community
 ---
 
-## What is MeshCentral
+## What is MeshCentral?
 
 > MeshCentral is a free, open source, web-based platform for remote device management.
 >
@@ -36,7 +36,7 @@ To support the integration of MeshCentral with authentik, you need to create an 
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://meshcentral.company/auth-oidc-callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

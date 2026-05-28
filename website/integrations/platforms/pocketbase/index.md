@@ -4,7 +4,7 @@ sidebar_label: PocketBase
 support_level: community
 ---
 
-## What is PocketBase
+## What is PocketBase?
 
 > PocketBase is a lightweight backend solution that provides a built-in database, authentication, and file storage.
 > It allows developers to quickly set up and manage backend services without complex configurations.
@@ -43,7 +43,7 @@ To support the integration of PocketBase with authentik, you need to create an a
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://pocketbase.company/api/oauth2-redirect`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

@@ -4,7 +4,7 @@ sidebar_label: Jenkins
 support_level: community
 ---
 
-## What is Jenkins
+## What is Jenkins?
 
 > The leading open source automation server, Jenkins provides hundreds of plugins to support building, deploying and automating any project.
 >
@@ -36,7 +36,7 @@ To support the integration of Jenkins with authentik, you need to create an appl
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://jenkins.company/securityRealm/finishLogin`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

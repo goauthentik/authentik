@@ -4,7 +4,7 @@ sidebar_label: Tautulli
 support_level: community
 ---
 
-## What is Tautulli
+## What is Tautulli?
 
 > Tautulli is an application that you can run alongside your Plex Media Server to monitor activity and track various statistics. These statistics include what has been watched, who watched it, when and where they watched it, and how it was watched.
 >
@@ -61,7 +61,7 @@ Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP 
         - **Send HTTP-Basic Authentication**: enabled
         - **HTTP-Basic Username Key**: `tautulli_user`
         - **HTTP-Basic Password Key**: `tautulli_password`
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -92,4 +92,4 @@ Redeploy Tautulli after updating your `config.ini` file.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Tautulli, log out of Tautulli. Open the authentik application dashboard (**My Applications**) and select the Tautulli application. You should be redirected to Tautulli and automatically logged in.
+To confirm that authentik is properly configured with Tautulli, log out of Tautulli. Open the authentik Application Dashboard and select the Tautulli application. You should be redirected to Tautulli and automatically logged in.
