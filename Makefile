@@ -73,7 +73,7 @@ rust-test:  ## Run the Rust tests
 	$(CARGO) nextest run --workspace
 
 test: ## Run the server tests and produce a coverage report (locally)
-	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)
+	$(UV) run coverage run manage.py test --keepdb $(or $(filter-out $@ all,$(MAKECMDGOALS)),authentik)
 	$(UV) run coverage combine
 	$(UV) run coverage html
 	$(UV) run coverage report
@@ -201,8 +201,8 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 		/local/schema-old.yml \
 		/local/schema.yml
 	rm schema-old.yml
-	$(SED_INPLACE) 's/{/&#123;/g' diff.md
-	$(SED_INPLACE) 's/}/&#125;/g' diff.md
+	$(SED_INPLACE) 's/{/\&#123;/g' diff.md
+	$(SED_INPLACE) 's/}/\&#125;/g' diff.md
 	npx prettier --write diff.md
 
 gen-client-go:  ## Build and install the authentik API for Golang
