@@ -5,6 +5,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.tenants.flags import Flag
+from authentik.tenants.utils import get_current_tenant
 
 
 class TestLocalSettingsAPI(APITestCase):
@@ -13,6 +14,12 @@ class TestLocalSettingsAPI(APITestCase):
     def setUp(self):
         super().setUp()
         self.local_admin = create_test_admin_user()
+        self.tenant = get_current_tenant()
+
+    def tearDown(self):
+        super().tearDown()
+        self.tenant.flags = {}
+        self.tenant.save()
 
     def test_settings_flags(self):
         """Test settings API"""
