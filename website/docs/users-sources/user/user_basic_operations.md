@@ -31,27 +31,7 @@ To create a super-user, you need to add the user to a group that has super-user 
 
 ## Advanced queries for users {#advanced-queries}
 
-You can create advanced queries to locate specific users within the list shown under **Directory** > **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
-
-These queries use [AKQL (authentik Query Language)](../../sys-mgmt/akql.mdx). For the full syntax, operators, and value types, see the [AKQL reference](../../sys-mgmt/akql.mdx).
-
-- **Field**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
-
-- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
-
-- **Values**: `True`, `False`, `None`, and more
-
-- **Example queries**:
-    - search user by status: `is_active = False`
-    - search user by username: `username = "bob"`
-    - search user by email address: `email = "bob@authentik.company"`
-    - search user by attribute: `attributes.my_custom_attribute = "foo"`
-
-:::info
-
-1. To dismiss the drop-down menu option, click **ESC**.
-2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
-   :::
+You can use AKQL to filter the user list in **Directory** > **Users**. For the user fields, operators, examples, and keyboard shortcuts, see the [AKQL reference](../../sys-mgmt/akql.mdx).
 
 ## View user details
 
