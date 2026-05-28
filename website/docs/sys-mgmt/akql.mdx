@@ -200,15 +200,7 @@ action = "login"
 ```
 
 ```
-action in ("login", "login_failed")
-```
-
-```
 app startswith "authentik"
-```
-
-```
-client_ip = "10.0.0.1"
 ```
 
 ```
@@ -216,19 +208,7 @@ user.username in ("ana", "akadmin")
 ```
 
 ```
-brand.name = "my brand"
-```
-
-```
 context.geo.country = "Germany"
-```
-
-```
-context.http_request.method = "POST"
-```
-
-```
-context.authorized_application.name = "My app"
 ```
 
 For more on the kinds of events you can match, see [Event actions](./events/event-actions.md).
@@ -240,33 +220,17 @@ is_active = False
 ```
 
 ```
-username = "bob"
-```
-
-```
 email endswith "@authentik.company"
-```
-
-```
-type = "internal" and is_active = True
 ```
 
 ```
 attributes.department = "engineering"
 ```
 
-```
-name ~ "admin" or username ~ "admin"
-```
-
 ### Group examples
 
 ```
 is_superuser = True
-```
-
-```
-name startswith "Eng"
 ```
 
 ```
@@ -329,4 +293,3 @@ The following keyboard shortcuts are available in the AKQL search field:
         ],
     ]}
 />
-
