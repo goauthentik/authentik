@@ -7,6 +7,7 @@
 # Marc Schmitt, 2025
 # Darek “NeroPcStation” NeroPcStation <dareknowacki2001@gmail.com>, 2025
 # Jens L. <jens@goauthentik.io>, 2026
+# Pawel K. "hatterp" <cyberitsec@proton.me>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-06 00:27+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
-"Last-Translator: Jens L. <jens@goauthentik.io>, 2026\n"
+"Last-Translator: Pawel K. "hatterp" <cyberitsec@proton.me>, 2026
 "Language-Team: Polish (Poland) (https://app.transifex.com/authentik/teams/119923/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -129,7 +130,7 @@ msgstr "Ścieżka albo treść muszą być ustawione."
 #: authentik/blueprints/api.py
 #, python-brace-format
 msgid "User lacks permission to create {model}"
-msgstr ""
+msgstr "Użytkownik nie posiada uprawnień do tworzenia obiektu typu {model}"
 
 #: authentik/blueprints/models.py
 msgid "Managed by authentik"
@@ -440,7 +441,7 @@ msgstr "Otwórz adres URL uruchamiania w nowej karcie lub oknie przeglądarki."
 
 #: authentik/core/models.py
 msgid "Hide this application from the user's My applications page."
-msgstr ""
+msgstr "Ukryj tę aplikację na stronie Moje aplikacje użytkownika."
 
 #: authentik/core/models.py
 msgid "Application"
@@ -654,7 +655,7 @@ msgstr "Za chwilę zalogujesz się do %(application)s."
 
 #: authentik/core/views/interface.py
 msgid "Interface can only be accessed by internal users."
-msgstr ""
+msgstr "Dostęp do interfejsu mogą uzyskać wyłącznie użytkownicy wewnętrzni."
 
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
@@ -3322,7 +3323,7 @@ msgstr ""
 
 #: authentik/sources/ldap/api/sources.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
-msgstr ""
+msgstr "Dozwolone jest tylko jedno źródło LDAP z włączoną synchronizacją haseł"
 
 #: authentik/sources/ldap/models.py
 msgid "Server URI"
@@ -3380,7 +3381,7 @@ msgstr "Rozważ obiekty pasujące do tego filtra jako Użytkownicy."
 
 #: authentik/sources/ldap/models.py
 msgid "Attribute which matches the value of `group_membership_field`."
-msgstr ""
+msgstr "Atrybut, który odpowiada wartości pola `group_membership_field`."
 
 #: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
@@ -3559,6 +3560,7 @@ msgid ""
 "How to perform authentication during an authorization_code token request "
 "flow"
 msgstr ""
+"Sposób przeprowadzenia uwierzytelnienia podczas przepływu żądania tokena (authorization_code token request flow)"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -3626,11 +3628,11 @@ msgstr "Źródła Discord OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "Slack OAuth Source"
-msgstr ""
+msgstr "Źródło OAuth Slack"
 
 #: authentik/sources/oauth/models.py
 msgid "Slack OAuth Sources"
-msgstr ""
+msgstr "Źródła OAuth Slack"
 
 #: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Source"
@@ -3658,11 +3660,11 @@ msgstr "Źródła Azure AD OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "Entra ID OAuth Source"
-msgstr ""
+msgstr "Źródło OAuth Entra ID"
 
 #: authentik/sources/oauth/models.py
 msgid "Entra ID OAuth Sources"
-msgstr ""
+msgstr "Źródła OAuth Entra ID"
 
 #: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Source"
@@ -3698,19 +3700,19 @@ msgstr "Źródła Reddit OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "WeChat OAuth Source"
-msgstr ""
+msgstr "Źródło OAuth WeChat"
 
 #: authentik/sources/oauth/models.py
 msgid "WeChat OAuth Sources"
-msgstr ""
+msgstr "Źródła OAuth WeChat"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mapping"
-msgstr ""
+msgstr "Mapowanie właściwości źródła OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mappings"
-msgstr ""
+msgstr "Mapowania właściwości źródła OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connection"
@@ -3718,21 +3720,22 @@ msgstr "Połączenie źródła OAuth użytkownika"
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connections"
-msgstr "Połączenia źródła OAuth użytkownika"
+msgstr "Połączenia źródła OAuth użytkowników"
 
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connection"
-msgstr ""
+msgstr "Połączenie źródła OAuth grupy"
 
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connections"
-msgstr ""
+msgstr "Połączenia źródła OAuth grup"
 
 #: authentik/sources/oauth/tasks.py
 msgid ""
 "Update OAuth sources' config from well_known, and JWKS info from the "
 "configured URL."
 msgstr ""
+"Aktualizuje konfigurację źródeł OAuth na podstawie punktu końcowego .well-known oraz informacje JWKS ze skonsolidowanego adresu URL."
 
 #: authentik/sources/oauth/views/callback.py
 #, python-brace-format
@@ -3770,11 +3773,11 @@ msgstr "Źródła Plex"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source Property Mapping"
-msgstr ""
+msgstr "Mapowanie właściwości źródła Plex"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source Property Mappings"
-msgstr ""
+msgstr "Mapowania właściwości źródła Plex""
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
@@ -3786,21 +3789,22 @@ msgstr "Połączenia źródła Plex użytkownika"
 
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connection"
-msgstr ""
+msgstr "Połączenie źródła Plex grupy"
 
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connections"
-msgstr ""
+msgstr "Połączenia źródła Plex grup"
 
 #: authentik/sources/plex/tasks.py
 msgid "Check the validity of a Plex source."
-msgstr ""
+msgstr "Sprawdź poprawność działania źródła Plex."
 
 #: authentik/sources/saml/api/source.py
 msgid ""
 "With a Verification Certificate selected, at least one of 'Verify Assertion "
 "Signature' or 'Verify Response Signature' must be selected."
 msgstr ""
+"Po wybraniu certyfikatu weryfikacji należy zaznaczyć przynajmniej jedną z opcji: „Weryfikuj podpis asercji” lub „Weryfikuj podpis odpowiedzi”."
 
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
@@ -4286,7 +4290,7 @@ msgstr "Nie skonfigurowano (dozwolonego) uwierzytelniania MFA."
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "When enabled, a given device can only be registered once."
-msgstr ""
+msgstr "Gdy ta opcja jest włączona, dane urządzenie może być zarejestrowane tylko raz."
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
@@ -4436,6 +4440,9 @@ msgid ""
 "number of attempts exceed recovery_max_attempts within this period, further "
 "attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
+"Okno czasowe używane do zliczania ostatnich prób odzyskiwania konta. Jeśli "
+"liczba prób w tym okresie przekroczy wartość recovery_max_attempts, kolejne "
+"próby będą ograniczane limitami żądań (rate-limited). (Format: hours=1;minutes=2;seconds=3)."
 
 #: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
@@ -4713,6 +4720,8 @@ msgid ""
 "Show the user the 'Remember me on this device' toggle, allowing repeat users"
 " to skip straight to entering their password."
 msgstr ""
+"Pokaż użytkownikowi przełącznik „Zapamiętaj mnie na tym urządzeniu”, "
+"pozwalający powracającym użytkownikom przejść bezpośrednio do wprowadzania hasła."
 
 #: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
@@ -4976,11 +4985,11 @@ msgstr "Hasła się nie zgadzają."
 
 #: authentik/stages/redirect/api.py
 msgid "Target URL should be present when mode is Static."
-msgstr ""
+msgstr "Docelowy adres URL powinien być podany, gdy tryb to Statyczny."
 
 #: authentik/stages/redirect/api.py
 msgid "Target Flow should be present when mode is Flow."
-msgstr ""
+msgstr "Docelowy przepływpowinien być podany, gdy tryb to Przepływ."
 
 #: authentik/stages/redirect/models.py
 msgid "Redirect Stage"
@@ -5032,6 +5041,9 @@ msgid ""
 "expiry,to remember the device the user is logging in from. (Format: "
 "hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
+"Gdy ustawiona jest wartość niezerowa, authentik zapisze ciasteczko z dłuższym "
+"okresem ważności, aby zapamiętać urządzenie, z którego loguje się użytkownik. "
+"(Format: hours=-1;minutes=-2;seconds=-3)"
 
 #: authentik/stages/user_login/models.py
 msgid "User Login Stage"
@@ -5163,11 +5175,11 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Reputation cannot decrease lower than this value. Zero or negative."
-msgstr ""
+msgstr "Reputacja nie może spaść poniżej tej wartości. Zero lub wartość ujemna."
 
 #: authentik/tenants/models.py
 msgid "Reputation cannot increase higher than this value. Zero or positive."
-msgstr ""
+msgstr "Reputacja nie może wzrosnąć powyżej tej wartości. Zero lub wartość dodatnia."
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."
