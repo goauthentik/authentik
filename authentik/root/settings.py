@@ -278,6 +278,7 @@ MIDDLEWARE = [
     "authentik.core.middleware.RequestIDMiddleware",
     "authentik.brands.middleware.BrandMiddleware",
     "authentik.events.middleware.AuditMiddleware",
+    "authentik.root.middleware.ContentSecurityPolicyMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "authentik.root.middleware.CsrfViewMiddleware",

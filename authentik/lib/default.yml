@@ -166,6 +166,8 @@ web:
   timeout_http_read: 30s
   timeout_http_write: 60s
   timeout_http_idle: 120s
+  csp:
+    report_only: false
 
 worker:
   processes: 1

@@ -38,20 +38,22 @@ export interface SelectedFeatureEventDetail {
 
 @customElement("ak-map")
 export class Map extends OlMap {
+    public styles: CSSResult[] = [
+        OlMap.styles,
+        OL,
+        css`
+            :host {
+                display: block;
+            }
+
+            #map {
+                height: 100%;
+            }
+        `,
+    ];
+
     public render() {
         return html`
-            <style>
-                ${OL}
-            </style>
-            <style>
-                :host {
-                    display: block;
-                }
-
-                #map {
-                    height: 100%;
-                }
-            </style>
             <div id="map"></div>
             <slot></slot>
         `;

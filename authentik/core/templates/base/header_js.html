@@ -1,7 +1,7 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 
-<script data-id="authentik-config">
+<script data-id="authentik-config" nonce="{{ csp_nonce }}">
     "use strict";
 
     window.authentik = {

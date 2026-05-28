@@ -12,7 +12,7 @@
 {% comment %}
     @see {@link web/types/webcomponents.d.ts} for type definitions.
 {% endcomment %}
-<script data-id="shady-dom">
+<script data-id="shady-dom" nonce="{{ csp_nonce }}">
     "use strict";
 
     window.ShadyDOM = window.ShadyDOM || {}
@@ -20,7 +20,7 @@
 </script>
 {% endif %}
 {% include "base/header_js.html" %}
-<script data-id="flow-config">
+<script data-id="flow-config" nonce="{{ csp_nonce }}">
     "use strict";
 
     window.authentik.flow = {
@@ -37,7 +37,7 @@
 
 {% block head %}
 <script src="{% versioned_script 'dist/flow/FlowInterface-%v.js' %}" type="module"></script>
-<style data-id="flow-css">
+<style data-id="flow-css" nonce="{{ csp_nonce }}">
   :root {
       --ak-global--background-image: url("{{ flow_background_url|iriencode|safe }}");
   }
@@ -55,10 +55,10 @@
         loading
     >
         {% include "base/placeholder.html" %}
-        
+
         <ak-brand-links name="flow-links" slot="footer"></ak-brand-links>
     </ak-flow-executor>
-    
+
     <ak-flow-inspector
         slot="panel"
         id="flow-inspector"

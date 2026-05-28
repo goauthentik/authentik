@@ -5,6 +5,7 @@ from hashlib import sha512
 from ipaddress import ip_address
 from time import perf_counter, time
 from typing import Any
+from urllib.parse import urlsplit
 
 from channels.exceptions import DenyConnection
 from django.conf import settings
@@ -312,6 +313,126 @@ class ChannelsLoggingMiddleware:
             user_agent=headers.get(b"user-agent", b"").decode(),
             **kwargs,
         )
+
+
+CSP_HEADER_REPORT_ONLY = "Content-Security-Policy-Report-Only"
+CSP_HEADER_ENFORCE = "Content-Security-Policy"
+
+
+class ContentSecurityPolicyMiddleware:
+    """Emit a Content-Security-Policy(-Report-Only) header carrying the per-request nonce.
+
+    The policy is intentionally strict: inline `<script>`/`<style>` are rejected unless
+    they carry the request's nonce (set via `request.request_id` and exposed to templates
+    as `csp_nonce`). External resources from third-party login providers (Apple, Telegram)
+    and configurable captcha hosts are allow-listed below; the report-only mode lets the
+    browser surface anything else as a console violation without breaking the page.
+    """
+
+    get_response: Callable[[HttpRequest], HttpResponse]
+
+    # Hosts that the bundled login flows pull resources from. The captcha stage allows
+    # an admin-configured `js_url`, so the well-known third-party captcha origins are
+    # included here so that report-only output is not drowned in expected violations.
+    SCRIPT_SRC_THIRD_PARTY = (
+        "https://appleid.cdn-apple.com",
+        "https://telegram.org",
+        "https://www.google.com",
+        "https://www.gstatic.com",
+        "https://www.recaptcha.net",
+        "https://js.hcaptcha.com",
+        "https://challenges.cloudflare.com",
+    )
+    FRAME_SRC_THIRD_PARTY = (
+        "https://appleid.apple.com",
+        "https://oauth.telegram.org",
+        "https://www.google.com",
+        "https://newassets.hcaptcha.com",
+        "https://challenges.cloudflare.com",
+    )
+
+    # Dev-only origins. The esbuild live-reload plugin opens an EventSource against
+    # a dynamically chosen localhost port, so localhost on any scheme/port is allowed
+    # when DEBUG is on. Never folded into prod policy.
+    DEBUG_CONNECT_SRC = (
+        "http://localhost:*",
+        "https://localhost:*",
+        "ws://localhost:*",
+        "wss://localhost:*",
+    )
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
+        self.get_response = get_response
+        self.report_only = CONFIG.get_bool("web.csp.report_only", True)
+        self.debug = settings.DEBUG
+        self.sentry_origin = self._sentry_origin(CONFIG.get("error_reporting.sentry_dsn", ""))
+
+    @staticmethod
+    def _sentry_origin(dsn: str) -> str | None:
+        """Pull `scheme://host[:port]` out of a Sentry DSN so the browser SDK
+        can ship envelopes to it. DSNs are `https://<key>@<host>/<project>`."""
+        if not dsn:
+            return None
+        parts = urlsplit(dsn)
+        if not parts.scheme or not parts.hostname:
+            return None
+        host = parts.hostname
+        if parts.port:
+            host = f"{host}:{parts.port}"
+        return f"{parts.scheme}://{host}"
+
+    def _build_policy(self, nonce: str) -> str:
+        nonce_token = f"'nonce-{nonce}'"
+        script_src = ("'self'", nonce_token, *self.SCRIPT_SRC_THIRD_PARTY)
+        # Per CSP3 §6.6.2.2, browsers ignore `'unsafe-inline'` whenever a
+        # nonce is also present in the same source list. Several runtime
+        # libraries we ship (mermaid, PatternFly's own style injections,
+        # DOMPurify's sanitization sandbox) emit `<style>` elements
+        # dynamically without a nonce, so we drop the nonce for styles
+        # and rely on `'unsafe-inline'`. Script-side CSP is unaffected
+        # — the eval/script protections remain strict.
+        style_src = ("'self'", "'unsafe-inline'")
+        frame_src = ("'self'", *self.FRAME_SRC_THIRD_PARTY)
+        connect_src: tuple[str, ...] = ("'self'", "ws:", "wss:")
+        if self.sentry_origin:
+            connect_src = (*connect_src, self.sentry_origin)
+        if self.debug:
+            connect_src = (*connect_src, *self.DEBUG_CONNECT_SRC)
+        directives = {
+            "default-src": ("'self'",),
+            "script-src": script_src,
+            "style-src": style_src,
+            # Inline `style="..."` attributes can't carry a nonce; many libraries
+            # (PatternFly, Lit style bindings) set them dynamically.
+            "style-src-attr": ("'unsafe-inline'",),
+            "img-src": ("'self'", "data:", "blob:", "https:"),
+            "font-src": ("'self'", "data:"),
+            "connect-src": connect_src,
+            "frame-src": frame_src,
+            "media-src": ("'self'",),
+            "worker-src": ("'self'", "blob:"),
+            "object-src": ("'none'",),
+            "base-uri": ("'self'",),
+            "form-action": ("'self'",),
+            "frame-ancestors": ("'none'",),
+        }
+        return "; ".join(f"{name} {' '.join(values)}" for name, values in directives.items())
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        response = self.get_response(request)
+        # Only attach to HTML responses — CSP on JSON/binary responses is just header bloat.
+        content_type = response.get("Content-Type", "")
+        if not content_type.startswith("text/html"):
+            return response
+        nonce = getattr(request, "request_id", None)
+        if not nonce:
+            return response
+        header = CSP_HEADER_REPORT_ONLY if self.report_only else CSP_HEADER_ENFORCE
+        # Don't clobber a policy a downstream view explicitly set.
+        if header in response:
+            return response
+        response[header] = self._build_policy(nonce)
+        return response
 
 
 class LoggingMiddleware:
