@@ -315,7 +315,7 @@ class TestConfig(TestCase):
             {
                 "default": {
                     "DISABLE_SERVER_SIDE_CURSORS": True,
-                    "CONN_MAX_AGE": None,
+                    "CONN_MAX_AGE": 0,
                     "CONN_HEALTH_CHECKS": False,
                     "ENGINE": "psqlextra.backend",
                     "HOST": "foo",
