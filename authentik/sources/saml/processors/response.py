@@ -143,9 +143,21 @@ class ResponseProcessor:
             if datetime.fromisoformat(on_or_after).replace(tzinfo=UTC) < _now:
                 raise SAMLException("Assertion is not valid yet or expired.")
 
-    def _verify_signature(self, signature_node: _Element):
-        """Verify a single signature node"""
-        xmlsec.tree.add_ids(self._root, ["ID"])
+    def _verify_signature(self, signature_node: _Element, target: _Element):
+        """Verify a single signature node against the given target element."""
+        target_id = target.attrib.get("ID")
+        if not target_id:
+            raise InvalidSignature("Signed element is missing an ID attribute.")
+        refs = signature_node.xpath("./ds:SignedInfo/ds:Reference", namespaces=NS_MAP)
+        if len(refs) != 1:
+            raise InvalidSignature("Signature must contain exactly one Reference.")
+        ref_uri = refs[0].get("URI", "")
+        if ref_uri not in ("", f"#{target_id}"):
+            raise InvalidSignature(
+                "Signature Reference URI does not match the signed element's ID."
+            )
+
+        xmlsec.tree.add_ids(target, ["ID"])
 
         ctx = xmlsec.SignatureContext()
         key = xmlsec.Key.from_memory(
@@ -168,24 +180,22 @@ class ResponseProcessor:
         signature_nodes = self._root.xpath("/samlp:Response/ds:Signature", namespaces=NS_MAP)
 
         if len(signature_nodes) != 1:
-            raise InvalidSignature("No Signature exists in the Response element.")
+            raise InvalidSignature("Expected exactly one Signature in the Response element.")
 
-        self._verify_signature(signature_nodes[0])
+        self._verify_signature(signature_nodes[0], self._root)
 
     def _verify_assertion_signature(self):
         """Verify SAML Assertion's Signature (after decryption)"""
         signature_nodes = self._root.xpath(
             "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
         )
-
         if len(signature_nodes) != 1:
-            raise InvalidSignature("No Signature exists in the Assertion element.")
+            raise InvalidSignature("Expected exactly one signed Assertion in the Response.")
+        signature_node = signature_nodes[0]
+        assertion = signature_node.getparent()
 
-        self._verify_signature(signature_nodes[0])
-        parent = signature_nodes[0].getparent()
-        if parent is None or parent.tag != f"{{{NS_SAML_ASSERTION}}}Assertion":
-            raise InvalidSignature("No Signature exists in the Assertion element.")
-        self._assertion = parent
+        self._verify_signature(signature_node, assertion)
+        self._assertion = assertion
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:
