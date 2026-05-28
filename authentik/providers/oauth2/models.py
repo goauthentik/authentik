@@ -88,6 +88,12 @@ class GrantType(models.TextChoices):
     DEVICE_CODE = GRANT_TYPE_DEVICE_CODE
 
 
+# Fallback for decoding previous sessions from 2026.2 to 2026.5
+# https://github.com/goauthentik/authentik/issues/22588
+# TODO: Remove after 2026.8
+GrantTypes = GrantType
+
+
 class ResponseMode(models.TextChoices):
     """https://openid.net/specs/oauth-v2-multiple-response-types-1_0.html#OAuth.Post"""
 
