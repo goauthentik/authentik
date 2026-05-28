@@ -65,7 +65,7 @@ Salesforce JIT provisioning requires specific SAML attributes to create users on
         - **Expression**:
 
             ```python
-            return "00eXXXXXXXXXXXXXXX"
+            return "00eXXXXXXXXXXXXXXX" # Replace with your Salesforce Profile ID
             ```
 
         :::info Find your Salesforce Profile ID
@@ -93,12 +93,18 @@ Salesforce JIT provisioning requires specific SAML attributes to create users on
         - Set **ACS URL** to `https://company.my.salesforce.com?so=00DXXXXXXXXXXXXXXX`, replacing `00DXXXXXXXXXXXXXXX` with your Salesforce Organization ID.
         - Set **Audience** to `https://company.my.salesforce.com`.
         - Under **Advanced protocol settings**:
-            - Select an available **Signing Certificate**. Download this certificate because it is required later.
+            - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
             - Add all five property mappings that you created in the previous section.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
+
+### Download certificate file
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created in the previous section.
+3. Under **Related objects** > **Download signing certificate**, click **Download**. This downloaded file is required in the next section.
 
 ## Salesforce configuration
 
@@ -219,7 +225,7 @@ Salesforce requires specific SCIM attributes that are not included in the defaul
             return {
                 "entitlements": [
                     {
-                        "value": "00eXXXXXXXXXXXXXXX"
+                        "value": "00eXXXXXXXXXXXXXXX" # Replace with your Salesforce Profile ID
                     }
                 ]
             }
