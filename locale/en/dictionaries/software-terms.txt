@@ -93,6 +93,7 @@ frie
 gcsp
 geoip
 glpi
+gosaml
 grecaptcha
 guac
 guacd
@@ -113,6 +114,7 @@ microsoft
 mmdb
 noopener
 noreferrer
+oktadev
 openidc
 ouia
 ouid
