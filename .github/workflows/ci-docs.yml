@@ -22,6 +22,11 @@ jobs:
           - prettier-check
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+        with:
+          node-version-file: website/package.json
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
       - name: Install dependencies
         working-directory: website/
         run: npm ci
