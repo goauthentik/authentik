@@ -29,10 +29,34 @@ def is_dict(value: Any):
     raise ValidationError("Value must be a dictionary, and not have any duplicate keys.")
 
 
+INT_64_MIN = -(2**63)
+INT_64_MAX = 2**63 - 1
+
+
+def normalize_large_integers(value: Any) -> Any:
+    """Normalize integers outside orjson's supported range."""
+    if isinstance(value, dict):
+        return {key: normalize_large_integers(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [normalize_large_integers(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(normalize_large_integers(item) for item in value)
+    if isinstance(value, int) and not isinstance(value, bool):
+        if value < INT_64_MIN or value > INT_64_MAX:
+            return str(value)
+    return value
+
+
 class JSONDictField(JSONField):
     """JSON Field which only allows dictionaries"""
 
     default_validators = [is_dict]
+
+    def to_internal_value(self, data):
+        return normalize_large_integers(super().to_internal_value(data))
+
+    def to_representation(self, value):
+        return normalize_large_integers(super().to_representation(value))
 
 
 class JSONExtension(OpenApiSerializerFieldExtension):
