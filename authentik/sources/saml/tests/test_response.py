@@ -196,10 +196,122 @@ class TestResponseProcessor(TestCase):
         self.assertNotEqual(parser._get_name_id()[1], "bad")
         self.assertEqual(parser._get_name_id()[1], "_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7")
 
-    @freeze_time("2022-10-14T14:15:00")
+    @freeze_time("2014-07-17T01:02:18Z")
+    def test_verification_assertion_xsw_nested_duplicate_id(self):
+        """Nested-duplicate-ID XSW: a forged outer Assertion shares its ID with a
+        nested copy of the original signed Assertion (placed inside <saml:Advice>),
+        so the Signature's Reference URI (#ORIG_ID) matches the outer Assertion's
+        ID *and* dereferences to legitimately-signed content. Must be rejected."""
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_assertion = True
+        self.source.signed_response = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_assertion_xsw_nested.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with self.assertRaises(InvalidSignature):
+            parser.parse()
+
+    @freeze_time("2014-07-17T01:02:18Z")
+    def test_verification_response_uri_empty(self):
+        """Some real-world IdPs (notably some Okta dev-tenant configurations
+        observed in the gosaml2 testdata corpus at saml.oktadev.com) sign the
+        Response with ds:Reference URI="" instead of URI="#<ID>". Per xmldsig
+        §4.4.3.2, URI="" covers the entire enclosing document via the
+        enveloped-signature transform — strictly more attested content than
+        "#<ID>" — so consuming the target is a subset of what was signed."""
+        key = load_fixture("fixtures/signature_cert_uri_empty.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_response_uri_empty.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+
+    @freeze_time("2014-07-17T01:02:18Z")
+    def test_verification_assertion_uri_empty(self):
+        """Symmetric to test_verification_response_uri_empty but for an
+        Assertion-level signature: the same xmldsig "this document" semantics
+        still cover the whole enclosing document, so the Assertion we then
+        consume is part of the attested content. We have no real-world IdP
+        samples emitting this configuration, but the pre-fix code accepted it
+        and the cryptographic guarantee holds, so keep accepting it rather
+        than risk breaking an IdP we haven't sampled."""
+        key = load_fixture("fixtures/signature_cert_assertion_uri_empty.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_assertion = True
+        self.source.signed_response = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_assertion_uri_empty.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+
+    @freeze_time("2014-07-17T01:02:18Z")
+    def test_verification_assertion_xsw3(self):
+        """XSW-3 (signature relocation): a forged Assertion contains a Signature whose
+        ds:Reference URI points to a second Assertion in the document. The signature
+        verifies (because the digest matches the legitimate referenced Assertion),
+        but the verifier must NOT then consume the forged Assertion as if it were
+        signed."""
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_assertion = True
+        self.source.signed_response = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_assertion_xsw3.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with self.assertRaises(InvalidSignature):
+            parser.parse()
+
+    @freeze_time("2014-07-17T01:02:18Z")
     def test_name_id_comment(self):
         """Test comment in name ID"""
-        fixture = load_fixture("fixtures/response_signed_assertion_dup.xml")
+        fixture = load_fixture("fixtures/response_signed_assertion.xml")
         fixture = fixture.replace(
             "_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7",
             "_ce3d2948b4cf20146dee0a0b3dd6f<!--x-->69b6cf86f62d7",
