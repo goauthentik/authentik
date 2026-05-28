@@ -27,35 +27,13 @@ If what you type isn't a valid AKQL expression, authentik doesn't return an erro
 
 ## Query structure
 
-The basic building block of an AKQL query is a single **comparison**, written as:
-
-```
-field | operator | value
-```
-
-For example:
-
-```
-username = "bob"
-```
-
-You can combine multiple comparisons with the [logical operators](#combine-conditions) `and` and `or`, and group them with parentheses.
+The basic building block of an AKQL query is a single **comparison** of the form `<field> <operator> <value>`, for example `username = "bob"`. You can combine multiple comparisons with the [logical operators](#combine-conditions) `and` and `or`, and group them with parentheses.
 
 ### Fields
 
 A field is the name of an attribute to filter on, such as `username`, `action`, or `is_active`. The fields available depend on the list you are searching (see [Searchable fields by area](#searchable-fields-by-area)).
 
-To reach a value nested inside a related object or a JSON field, use a dot (`.`) to separate each part of the path:
-
-```
-user.username = "bob"
-```
-
-```
-context.geo.country = "Germany"
-```
-
-See [Query nested and JSON fields](#query-nested-and-json-fields) for details.
+For values nested inside a related object or a JSON field, use a dot (`.`) to separate each part of the path — for example `user.username` or `context.geo.country`. See [Query nested and JSON fields](#query-nested-and-json-fields) for details.
 
 ### Operators
 
@@ -97,10 +75,9 @@ Values are typed. The way you write a value tells AKQL what type it is:
 
 A few things to keep in mind:
 
-- The keywords `True`, `False`, and `None` are **capitalized**, while the operators `and`, `or`, `not`, `in`, `startswith`, and `endswith` are **lowercase**.
+- The operators `and`, `or`, `not`, `in`, `startswith`, and `endswith` are **lowercase**, while `True`, `False`, and `None` are **capitalized**.
 - Strings support escape sequences such as `\"`, `\\`, `\n`, `\t`, and Unicode escapes like `é`.
 - You can only compare a field to `None` if that field is nullable.
-- Lists are only used with the `in` and `not in` operators.
 
 ### Combine conditions
 
@@ -126,16 +103,7 @@ There is **no standalone `not` operator** to negate a whole expression. The `not
 
 ## Field types
 
-Every searchable field has a type, which determines the operators and values it accepts.
-
-| Type        | Accepts                                            | Valid operators                                                            |
-| ----------- | -------------------------------------------------- | -------------------------------------------------------------------------- |
-| String      | Quoted strings                                     | `=`, `!=`, `>`, `>=`, `<`, `<=`, `~`, `!~`, `startswith`, `endswith`, `in` |
-| Integer     | Whole numbers                                      | `=`, `!=`, `>`, `>=`, `<`, `<=`, `in`                                      |
-| Boolean     | `True`, `False` (and `None` if nullable)           | `=`, `!=`                                                                  |
-| Choice      | Quoted strings from a fixed set of options         | Same as String                                                             |
-| Date/time   | Quoted timestamps (see below)                      | `=`, `!=`, `>`, `>=`, `<`, `<=`, `~`, `!~`                                 |
-| JSON/nested | Reached via dot notation; values behave as strings | Same as String                                                             |
+Every searchable field has a type — string, integer, float, boolean, choice, date/time, or JSON/nested — which determines what operators and values it accepts (see the [operators table](#operators)). Two types have behaviors worth calling out:
 
 ### Choice fields
 
@@ -161,19 +129,7 @@ The `~` operator on a date field performs a substring match on the text form of 
 
 ## Query nested and JSON fields
 
-Some of the most useful fields, such as a user's `attributes` or an event's `context`, are JSON objects. You can drill into them using dot notation, where each part after the field name is a key in the JSON object:
-
-```
-attributes.department = "engineering"
-```
-
-```
-context.http_request.method = "POST"
-```
-
-```
-context.geo.country = "Germany"
-```
+Some of the most useful fields, such as a user's `attributes` or an event's `context`, are JSON objects. You can drill into them using dot notation, where each part after the field name is a key in the JSON object — for example `context.geo.country = "Germany"`.
 
 Key points about JSON and nested fields:
 
@@ -275,10 +231,6 @@ context.http_request.method = "POST"
 context.authorized_application.name = "My app"
 ```
 
-```
-action = "login_failed" and context.geo.country != "United States"
-```
-
 For more on the kinds of events you can match, see [Event actions](./events/event-actions.md).
 
 ### User examples
@@ -331,8 +283,6 @@ GET /api/v3/core/users/?search=username%20%3D%20%22bob%22
 
 The response's pagination object includes an `autocomplete` field describing the searchable schema for that endpoint, which is what powers autocomplete in the Admin interface.
 
-As in the UI, if the `search` value isn't valid AKQL, the endpoint falls back to a plain substring search across its default search fields rather than returning an error.
-
 ## Use AKQL in an Event Matcher policy
 
 [Event Matcher policies](../customize/policies/index.md) can match events using an AKQL query, giving you far more precise matching than the individual **Action**, **App**, **Client IP**, and **Model** fields alone.
@@ -352,10 +302,7 @@ When the policy runs, the query is evaluated against the event being processed. 
 In the Admin interface, the AKQL search field offers autocomplete suggestions for fields, operators, and (where applicable) values as you type.
 
 :::info
-
-1. If a list of operators or values doesn't appear in the drop-down menu, you can still type it manually.
-2. Autocomplete only suggests known fields. For JSON fields, you can still query any key path that exists in the data even if it isn't suggested.
-
+If a list of operators or values doesn't appear in the drop-down menu, you can still type it manually.
 :::
 
 The following keyboard shortcuts are available in the AKQL search field:
@@ -383,8 +330,3 @@ The following keyboard shortcuts are available in the AKQL search field:
     ]}
 />
 
-## Troubleshooting
-
-- **My query returns everything (or runs as a plain search).** This usually means the query isn't valid AKQL, so authentik fell back to a plain substring search. Check that strings are quoted, that you're using a field that exists for that list, and that JSON/related fields use a compound path (for example `user.username`, not `user`).
-- **"Unknown field" behavior.** Querying a field that the list doesn't expose causes the query to fail parsing and fall back to plain search. Confirm the field name against [Searchable fields by area](#searchable-fields-by-area).
-- **Negation isn't working.** There is no standalone `not`. Use `!=` instead of `not =`, `!~` instead of `not ~`, and the `not in` / `not startswith` / `not endswith` forms.
