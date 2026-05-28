@@ -75,6 +75,7 @@ aaguid
 adsi
 akflow
 akprox
+allinone
 asns
 cbor
 copylefted
@@ -164,3 +165,4 @@ yamltags
 zxcvbn
 ~uuid
 ~uuids
+wreply

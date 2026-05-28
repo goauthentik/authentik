@@ -60,7 +60,7 @@ export const LogLevels = /** @type {Level[]} */ (Object.keys(LogLevelLabel));
 /**
  * @callback LoggerFactory
  * @param {string | null} [prefix]
- * @param {...string} args
+ * @param {...string[]} args
  * @returns {Logger}
  */
 
@@ -207,7 +207,7 @@ export function pinoLight(options) {
  * Creates a logger with the given prefix.
  *
  * @param {string} [prefix]
- * @param {...string} args
+ * @param {...string[]} args
  * @returns {Logger}
  *
  */

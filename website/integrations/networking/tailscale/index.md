@@ -4,7 +4,7 @@ sidebar_label: Tailscale
 support_level: community
 ---
 
-## What is Tailscale
+## What is Tailscale?
 
 > Tailscale is a mesh VPN service that creates secure, encrypted, peer-to-peer connections between devices across different networks using the WireGuard protocol.
 >
@@ -54,7 +54,7 @@ To support the integration of Tailscale with authentik, you need to create an ap
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Set a `Strict` redirect URI to `https://login.tailscale.com/a/oauth_response`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

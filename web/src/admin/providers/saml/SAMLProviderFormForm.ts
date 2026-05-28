@@ -15,6 +15,7 @@ import {
     availableHashes,
     DEFAULT_HASH_ALGORITHM,
     digestAlgorithmOptions,
+    logoutMethodOptions,
     retrieveSignatureAlgorithm,
     SAMLSupportedKeyTypes,
 } from "./SAMLProviderOptions.js";
@@ -29,7 +30,6 @@ import {
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
     SAMLBindingsEnum,
-    SAMLLogoutMethods,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
@@ -90,23 +90,6 @@ function renderHasSlsUrl(
     logoutMethod: string,
     setLogoutMethod?: (ev: Event) => void,
 ) {
-    const logoutMethodOptions: RadioOption<string>[] = [
-        {
-            label: msg("Front-channel (Iframe)"),
-            value: SAMLLogoutMethods.FrontchannelIframe,
-            default: true,
-        },
-        {
-            label: msg("Front-channel (Native)"),
-            value: SAMLLogoutMethods.FrontchannelNative,
-        },
-        {
-            label: msg("Back-channel (POST)"),
-            value: SAMLLogoutMethods.Backchannel,
-            disabled: !hasPostBinding,
-        },
-    ];
-
     return html`<ak-radio-input
             label=${msg("SLS Binding")}
             name="slsBinding"
@@ -121,7 +104,7 @@ function renderHasSlsUrl(
         <ak-radio-input
             label=${msg("Logout Method")}
             name="logoutMethod"
-            .options=${logoutMethodOptions}
+            .options=${logoutMethodOptions(hasPostBinding)}
             .value=${logoutMethod}
             help=${msg("Method to use for logout when SLS URL is configured.")}
             @change=${setLogoutMethod}
@@ -195,15 +178,6 @@ export function renderForm({
                     value="${ifDefined(provider.acsUrl)}"
                     required
                     .errorMessages=${errors.acsUrl}
-                ></ak-text-input>
-                <ak-text-input
-                    label=${msg("Issuer")}
-                    input-hint="code"
-                    name="issuer"
-                    value="${provider.issuer || "authentik"}"
-                    required
-                    .errorMessages=${errors.issuer}
-                    help=${msg("Also known as Entity ID.")}
                 ></ak-text-input>
                 <ak-text-input
                     name="audience"
@@ -434,6 +408,15 @@ export function renderForm({
                     .errorMessages=${errors.sessionValidNotOnOrAfter}
                     help=${msg(
                         "When using IDP-initiated logins, the relay state will be set to this value.",
+                    )}
+                ></ak-text-input>
+                <ak-text-input
+                    label=${msg("EntityID/Issuer override")}
+                    name="issuerOverride"
+                    value="${ifDefined(provider.issuerOverride ?? undefined)}"
+                    .errorMessages=${errors.issuerOverride}
+                    help=${msg(
+                        "Sets a custom EntityID/Issuer to override the authentik generated default.",
                     )}
                 ></ak-text-input>
                 <ak-radio-input

@@ -4,7 +4,7 @@ sidebar_label: Komga
 support_level: community
 ---
 
-## What is Komga
+## What is Komga?
 
 > Komga is an open-source comic and manga server that lets users organize, read, and stream their digital comic collections with ease.
 >
@@ -45,7 +45,7 @@ Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index
     - **Advanced protocol settings** > **Scopes**:
         - Add `OAuth Mapping: OpenID 'email' with "email_verified"` to the **Selected Scopes**.
         - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

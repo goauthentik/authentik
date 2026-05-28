@@ -4,6 +4,7 @@ from base64 import b64encode
 
 from defusedxml.lxml import fromstring
 from django.test import TestCase
+from freezegun import freeze_time
 
 from authentik.common.saml.constants import NS_SAML_ASSERTION
 from authentik.core.tests.utils import RequestFactory, create_test_flow
@@ -34,6 +35,7 @@ class TestPropertyMappings(TestCase):
             pre_authentication_flow=create_test_flow(),
         )
 
+    @freeze_time("2022-10-14T14:15:00")
     def test_user_base_properties(self):
         """Test user base properties"""
         properties = self.source.get_base_user_properties(
@@ -61,6 +63,7 @@ class TestPropertyMappings(TestCase):
             properties = self.source.get_base_group_properties(root=ROOT, group_id=group_id)
             self.assertEqual(properties, {"name": group_id})
 
+    @freeze_time("2022-10-14T14:15:00")
     def test_user_property_mappings(self):
         """Test user property mappings"""
         self.source.user_property_mappings.add(
@@ -94,6 +97,7 @@ class TestPropertyMappings(TestCase):
             },
         )
 
+    @freeze_time("2022-10-14T14:15:00")
     def test_group_property_mappings(self):
         """Test group property mappings"""
         self.source.group_property_mappings.add(

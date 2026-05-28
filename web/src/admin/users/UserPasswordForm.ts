@@ -2,26 +2,39 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
 
 import { Form } from "#elements/forms/Form";
+import { ifPresent } from "#elements/utils/attributes";
 import { FocusTarget } from "#elements/utils/focus";
+
+import { AKLabel } from "#components/ak-label";
 
 import { CoreApi, UserPasswordSetRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-user-password-form")
 export class UserPasswordForm extends Form<UserPasswordSetRequest> {
-    public override submitLabel = msg("Set Password");
+    public static shadowRootOptions: ShadowRootInit = {
+        ...Form.shadowRootOptions,
+        delegatesFocus: true,
+    };
+
+    public static override verboseName = msg("Password");
+    public static override verboseNamePlural = msg("Passwords");
+    public static override submittingVerb = msg("Setting");
 
     protected autofocusTarget = new FocusTarget<HTMLInputElement>();
 
     public override focus = this.autofocusTarget.focus;
 
     //#region Properties
+
+    public override submitLabel = msg("Set Password");
+    public override successMessage = msg("Successfully updated password.");
 
     @property({ type: Number })
     public instancePk?: number;
@@ -30,13 +43,15 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
     public label = msg("New Password");
 
     @property({ type: String })
-    public placeholder = msg("New Password");
+    public placeholder = msg("Type a new password...");
 
-    @property({ type: String })
-    public username?: string;
+    @property({ type: String, useDefault: true })
+    public username: string | null = null;
 
-    @property({ type: String })
-    public email?: string;
+    @property({ type: String, useDefault: true })
+    public email: string | null = null;
+
+    public override size = PFSize.Medium;
 
     /**
      * The autocomplete attribute to use for the password field.
@@ -50,17 +65,15 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
 
     //#endregion
 
-    public override getSuccessMessage(): string {
-        return msg("Successfully updated password.");
-    }
-
     public override connectedCallback(): void {
         super.connectedCallback();
         this.addEventListener("focus", this.autofocusTarget.toEventListener());
     }
 
     public override firstUpdated(): void {
-        this.focus();
+        requestAnimationFrame(() => {
+            this.focus();
+        });
     }
 
     protected override async send(data: UserPasswordSetRequest): Promise<void> {
@@ -94,17 +107,26 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
                   />`
                 : nothing}
 
-            <ak-form-element-horizontal label=${this.label} required name="password">
+            <ak-form-element-horizontal required name="password">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "password",
+                        required: true,
+                    },
+                    this.label,
+                )}
                 <input
                     autofocus
                     ${this.autofocusTarget.toRef()}
+                    id="password"
                     type="password"
                     value=""
                     class="pf-c-form-control"
                     required
-                    placeholder=${ifDefined(this.placeholder || this.label)}
-                    aria-label=${this.label}
-                    autocomplete=${ifDefined(this.autocomplete)}
+                    placeholder=${ifPresent(this.placeholder || this.label)}
+                    autocomplete=${ifPresent(this.autocomplete)}
                 />
             </ak-form-element-horizontal>`;
     }

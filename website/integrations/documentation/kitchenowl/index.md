@@ -4,7 +4,7 @@ sidebar_label: KitchenOwl
 support_level: community
 ---
 
-## What is KitchenOwl
+## What is KitchenOwl?
 
 > KitchenOwl is a smart self-hosted grocery list and recipe manager. Easily add items to your shopping list before you go shopping. You can also create recipes and set up meal plans to help you organize your cooking.
 >
@@ -58,7 +58,7 @@ To confirm that authentik is properly configured with KitchenOwl, log out and lo
 
 When signing in using OIDC, you're either logged into the linked account or, if none exists, a new account is created. The account creation will fail if an email already associated with a KitchenOwl account is provided by the identity management.
 
-If you've already started using KitchenOwl or created an account first, you can link an OIDC account to your existing KitchenOwl account. Navigate to **Settings** > click your profile at the top right > **Linked Accounts** and follow the on-screen instructions to link your account.
+If you've already started using KitchenOwl or created an account first, you can link an OIDC account to your existing KitchenOwl account. Navigate to **Settings**, click your profile in the top-right corner, and then click **Linked Accounts** and follow the on-screen instructions to link your account.
 
 Account links are permanent and can only be removed by deleting the KitchenOwl account. Users that signed in using OIDC are normal users that, after setting a password, can also sign in using their username and password. Deleting a user from your OIDC authority will not delete a user from KitchenOwl.
 

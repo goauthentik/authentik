@@ -4,7 +4,7 @@ sidebar_label: Node-RED
 support_level: community
 ---
 
-## What is Node-RED
+## What is Node-RED?
 
 > Node-RED is a programming tool for wiring together hardware devices, APIs and online services in new and interesting ways.
 >
@@ -42,7 +42,7 @@ To support the integration of Node-RED with authentik, you need to create an app
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://nodered.company/auth/strategy/callback/`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

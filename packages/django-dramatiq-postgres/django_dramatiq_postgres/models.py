@@ -159,7 +159,7 @@ class ScheduleBase(models.Model):
 
     def send(self, broker: Broker | None = None) -> Message[Any]:
         broker = broker or get_broker()
-        actor: Actor[Any, Any] = broker.get_actor(self.actor_name)  # type: ignore[no-untyped-call]
+        actor: Actor[Any, Any] = broker.get_actor(self.actor_name)
         return actor.send_with_options(
             args=pickle.loads(self.args),  # nosec
             kwargs=pickle.loads(self.kwargs),  # nosec

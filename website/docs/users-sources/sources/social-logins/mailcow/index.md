@@ -1,5 +1,6 @@
 ---
-title: Mailcow
+title: Log in with Mailcow
+sidebar_label: Mailcow
 tags:
     - source
     - mailcow

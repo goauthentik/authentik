@@ -8,7 +8,6 @@ from inspect import currentframe
 from typing import Any
 from uuid import uuid4
 
-from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.apps import apps
 from django.db import models
@@ -259,6 +258,7 @@ class Event(SerializerModel, ExpiringModel):
             action=EventAction.CONFIGURATION_WARNING,
             context__deprecation=identifier,
         )
+        cause = str(cause)
         if cause:
             query &= Q(context__cause=cause)
         if Event.objects.filter(query).exists():
@@ -361,7 +361,7 @@ class NotificationTransport(TasksModel, SerializerModel):
         default=None,
         on_delete=models.SET_DEFAULT,
         help_text=_(
-            "When set, the selected ceritifcate is used to "
+            "When set, the selected certificate is used to "
             "validate the certificate of the webhook server."
         ),
     )
@@ -410,7 +410,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             )
         notification.save()
         layer = get_channel_layer()
-        async_to_sync(layer.group_send)(
+        layer.group_send_blocking(
             build_user_group(notification.user),
             {
                 "type": "event.notification",

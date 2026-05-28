@@ -63,6 +63,7 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
                 const groupID = kebabCase(groupLabel);
 
                 return html`<fieldset
+                    class="ak-c-fieldset"
                     data-group-id=${ifPresent(groupID)}
                     part="app-group"
                     data-group-index=${groupIndex}

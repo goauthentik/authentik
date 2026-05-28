@@ -10,10 +10,10 @@ import { formatUserDisplayName } from "#common/users";
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
-import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import { isDefaultAvatar } from "#elements/utils/images";
 
 import Styles from "#components/ak-nav-button.css";
+import { AKDrawerChangeEvent } from "#components/notifications/events";
 
 import { CoreApi } from "@goauthentik/api";
 
@@ -207,6 +207,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                     <a
                         href="${globalAK().api.base}flows/-/default/invalidation/"
                         class="pf-c-button pf-m-plain"
+                        aria-label=${msg("Sign out")}
                     >
                         <pf-tooltip position="top" content=${msg("Sign out")}>
                             <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
