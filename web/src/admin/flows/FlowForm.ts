@@ -17,6 +17,7 @@ import { DesignationToLabel, LayoutToLabel } from "#admin/flows/utils";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
+    AuthenticationEnum,
     DeniedActionEnum,
     Flow,
     FlowDesignationEnum,
@@ -24,7 +25,6 @@ import {
     FlowsApi,
     UsageEnum,
 } from "@goauthentik/api";
-import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";

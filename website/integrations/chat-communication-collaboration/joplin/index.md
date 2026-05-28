@@ -4,7 +4,7 @@ sidebar_label: Joplin
 support_level: community
 ---
 
-## What is Joplin Server
+## What is Joplin Server?
 
 > Joplin is an open source note-taking app. Capture your thoughts and securely access them from any device.
 >
@@ -57,11 +57,9 @@ To support the integration of Joplin with authentik, you need to create property
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://joplin.company/api/saml`.
-    - Set the **Issuer** to `authentik`.
-    - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate** and ensure **Sign assertions** and **Sign responses** are enabled.
     - Under **Property mappings**, add the two property mappings created in the previous section.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

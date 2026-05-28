@@ -3,6 +3,7 @@ import { checkObjectShallowEquality } from "#common/collections";
 import { AKElement } from "#elements/Base";
 import { asInvoker, type ModalTemplate } from "#elements/dialogs/invokers";
 import type { DialogInit, TransclusionElementConstructor } from "#elements/dialogs/shared";
+import { ElementConstructorBoundary } from "#elements/errors/boundaries";
 import type { LitPropertyRecord } from "#elements/types";
 import { isAKElementConstructor, StrictUnsafe } from "#elements/utils/unsafe";
 
@@ -159,10 +160,22 @@ export function lookupElementConstructor<T extends CustomElementConstructor>(
     tagName: string,
     registry: CustomElementRegistry = window.customElements,
 ): T {
+    if (!tagName) {
+        // eslint-disable-next-line no-console
+        console.trace(
+            "No tag name provided for lookup. Did this value come from a different version of authentik?",
+        );
+
+        return ElementConstructorBoundary as unknown as T;
+    }
+
     const ElementConstructor = registry.get(tagName);
 
     if (!ElementConstructor) {
-        throw new TypeError(`No custom element defined for tag name: ${tagName}`);
+        // eslint-disable-next-line no-console
+        console.trace(`No custom element defined for tag name: ${tagName}`);
+
+        return ElementConstructorBoundary as unknown as T;
     }
 
     return ElementConstructor as unknown as T;

@@ -22,6 +22,7 @@ import { formatUserDisplayName } from "#common/users";
 import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -56,8 +57,8 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithBrandConfig(
-    WithCapabilitiesConfig(WithSession(TablePage<User>)),
+export class UserListPage extends WithLicenseSummary(
+    WithBrandConfig(WithCapabilitiesConfig(WithSession(TablePage<User>))),
 ) {
     static styles: CSSResult[] = [
         ...TablePage.styles,
@@ -71,6 +72,10 @@ export class UserListPage extends WithBrandConfig(
                 max-height: var(--pf-c-avatar--Height);
                 max-width: var(--pf-c-avatar--Width);
                 vertical-align: middle;
+            }
+            .pf-c-card.tree .pf-c-card__body {
+                padding-left: 0;
+                padding-right: 0;
             }
         `,
     ];
@@ -86,15 +91,15 @@ export class UserListPage extends WithBrandConfig(
     public override searchPlaceholder = msg("Search by username, email, etc...");
     public override searchLabel = msg("User Search");
 
-    public pageTitle = msg("Users");
-    public pageDescription = "";
-    public pageIcon = "pf-icon pf-icon-user";
+    public override pageTitle = msg("Users");
+    public override pageDescription = "";
+    public override pageIcon = "pf-icon pf-icon-user";
 
     @property({ type: String })
-    public order = "last_login";
+    public order = "-last_login";
 
-    @property({ type: String })
-    public activePath: string;
+    @property({ type: String, useDefault: true })
+    public activePath: string = DefaultUIConfig.defaults.userPath;
 
     @state()
     protected hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
@@ -102,27 +107,23 @@ export class UserListPage extends WithBrandConfig(
     @state()
     protected userPaths: UserPath | null = null;
 
-    constructor() {
-        super();
-
-        const defaultPath = DefaultUIConfig.defaults.userPath;
-
-        this.activePath = getURLParam<string>("path", defaultPath);
-
-        if (this.uiConfig.defaults.userPath !== defaultPath) {
-            this.activePath = this.uiConfig.defaults.userPath;
-        }
-    }
-
     protected canImpersonate = false;
 
     public override connectedCallback(): void {
         super.connectedCallback();
 
         this.canImpersonate = this.can(CapabilitiesEnum.CanImpersonate);
+
+        const initialDefaultUserPath = DefaultUIConfig.defaults.userPath;
+        const brandDefaultUserPath = this.uiConfig.defaults.userPath;
+
+        this.activePath = getURLParam<string>(
+            "path",
+            brandDefaultUserPath || initialDefaultUserPath,
+        );
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<User>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await this.#api.coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
@@ -136,6 +137,18 @@ export class UserListPage extends WithBrandConfig(
 
         return users;
     }
+
+    protected buildExportParams = async (): Promise<CoreUsersExportCreateRequest> => {
+        return {
+            ...(await this.defaultEndpointConfig()),
+            pathStartswith: this.activePath,
+            isActive: this.hideDeactivated ? true : undefined,
+        };
+    };
+
+    protected createExport = (params: CoreUsersExportCreateRequest) => {
+        return this.#api.coreUsersExportCreate(params);
+    };
 
     protected override rowLabel(item: User): string {
         if (item.name) {
@@ -153,6 +166,8 @@ export class UserListPage extends WithBrandConfig(
         [msg("Type"), "type"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
+
+    //#region Renderering
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -195,7 +210,7 @@ export class UserListPage extends WithBrandConfig(
                               </div>
                               <h4 class="pf-c-alert__title">
                                   ${msg(
-                                      str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
+                                      str`Warning: You are about to delete user ${shouldShowWarning.username}, but you are currently logged in as this user. Proceed at your own risk.`,
                                   )}
                               </h4>
                           </div>
@@ -244,7 +259,7 @@ export class UserListPage extends WithBrandConfig(
         </div>`;
     }
 
-    protected row(item: User) {
+    protected override row(item: User): SlottedTemplateResult[] {
         const { currentUser } = this;
 
         const showImpersonation = this.canImpersonate && currentUser && item.pk !== currentUser.pk;
@@ -289,7 +304,7 @@ export class UserListPage extends WithBrandConfig(
         ];
     }
 
-    renderExpanded(item: User): TemplateResult {
+    protected override renderExpanded(item: User): SlottedTemplateResult {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
@@ -330,18 +345,6 @@ export class UserListPage extends WithBrandConfig(
         </dl>`;
     }
 
-    protected buildExportParams = async () => {
-        return {
-            ...(await this.defaultEndpointConfig()),
-            pathStartswith: this.activePath,
-            isActive: this.hideDeactivated ? true : undefined,
-        };
-    };
-
-    protected createExport = (params: CoreUsersExportCreateRequest) => {
-        return this.#api.coreUsersExportCreate(params);
-    };
-
     protected renderObjectCreate(): SlottedTemplateResult {
         const { activePath } = this;
 
@@ -365,9 +368,9 @@ export class UserListPage extends WithBrandConfig(
         });
     }
 
-    protected renderSidebarBefore(): TemplateResult {
+    protected renderSidebarBefore(): SlottedTemplateResult {
         return html`<aside aria-labelledby="sidebar-left-panel-header" class="pf-c-sidebar__panel">
-            <div class="pf-c-card">
+            <div class="pf-c-card tree">
                 <div
                     role="heading"
                     aria-level="2"
@@ -389,6 +392,8 @@ export class UserListPage extends WithBrandConfig(
             </div>
         </aside>`;
     }
+
+    //#endregion
 }
 
 declare global {

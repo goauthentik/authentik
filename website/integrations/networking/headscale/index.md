@@ -4,7 +4,7 @@ sidebar_label: Headscale
 support_level: community
 ---
 
-## What is Headscale
+## What is Headscale?
 
 > Headscale is an open source alternative to the Tailscale coordination server and can be self-hosted for a single tailnet. Headscale is a re-implemented version of the Tailscale coordination server, developed independently and completely separate from Tailscale, with its own independent community of users and developers.
 >
@@ -35,7 +35,7 @@ To support the integration of Headscale with authentik, you need to create an ap
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://headscale.company/oidc/callback`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

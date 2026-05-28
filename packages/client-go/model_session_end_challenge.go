@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.5.0-rc1
+API version: 2026.8.0-rc1
 Contact: hello@goauthentik.io
 */
 
@@ -29,6 +29,7 @@ type SessionEndChallenge struct {
 	ApplicationName      *string                   `json:"application_name,omitempty"`
 	ApplicationLaunchUrl *string                   `json:"application_launch_url,omitempty"`
 	InvalidationFlowUrl  *string                   `json:"invalidation_flow_url,omitempty"`
+	OverviewUrl          *string                   `json:"overview_url,omitempty"`
 	BrandName            string                    `json:"brand_name"`
 	AdditionalProperties map[string]interface{}
 }
@@ -299,6 +300,38 @@ func (o *SessionEndChallenge) SetInvalidationFlowUrl(v string) {
 	o.InvalidationFlowUrl = &v
 }
 
+// GetOverviewUrl returns the OverviewUrl field value if set, zero value otherwise.
+func (o *SessionEndChallenge) GetOverviewUrl() string {
+	if o == nil || IsNil(o.OverviewUrl) {
+		var ret string
+		return ret
+	}
+	return *o.OverviewUrl
+}
+
+// GetOverviewUrlOk returns a tuple with the OverviewUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SessionEndChallenge) GetOverviewUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.OverviewUrl) {
+		return nil, false
+	}
+	return o.OverviewUrl, true
+}
+
+// HasOverviewUrl returns a boolean if a field has been set.
+func (o *SessionEndChallenge) HasOverviewUrl() bool {
+	if o != nil && !IsNil(o.OverviewUrl) {
+		return true
+	}
+
+	return false
+}
+
+// SetOverviewUrl gets a reference to the given string and assigns it to the OverviewUrl field.
+func (o *SessionEndChallenge) SetOverviewUrl(v string) {
+	o.OverviewUrl = &v
+}
+
 // GetBrandName returns the BrandName field value
 func (o *SessionEndChallenge) GetBrandName() string {
 	if o == nil {
@@ -352,6 +385,9 @@ func (o SessionEndChallenge) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.InvalidationFlowUrl) {
 		toSerialize["invalidation_flow_url"] = o.InvalidationFlowUrl
+	}
+	if !IsNil(o.OverviewUrl) {
+		toSerialize["overview_url"] = o.OverviewUrl
 	}
 	toSerialize["brand_name"] = o.BrandName
 
@@ -407,6 +443,7 @@ func (o *SessionEndChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "application_name")
 		delete(additionalProperties, "application_launch_url")
 		delete(additionalProperties, "invalidation_flow_url")
+		delete(additionalProperties, "overview_url")
 		delete(additionalProperties, "brand_name")
 		o.AdditionalProperties = additionalProperties
 	}

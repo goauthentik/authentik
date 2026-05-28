@@ -10,7 +10,7 @@ import { WizardPage } from "#elements/wizard/WizardPage";
 import { TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html } from "lit";
+import { css, CSSResult, html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
@@ -89,6 +89,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     //#endregion
 
+    //#region Lifecycle
+
     public reset = () => {
         super.reset();
 
@@ -100,7 +102,13 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         this.host.valid = !!this.selectedType;
     };
 
-    #selectDispatch = (type: TypeCreate) => {
+    protected override updated(changedProperties: PropertyValues<this>): void {
+        if (changedProperties.has("selectedType")) {
+            this.#selectDispatch(this.selectedType);
+        }
+    }
+
+    #selectDispatch = (type: TypeCreate | null) => {
         this.dispatchEvent(
             new CustomEvent("ak-type-create-select", {
                 detail: type,
@@ -109,6 +117,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             }),
         );
     };
+
+    //#endregion
 
     //#region Rendering
 
@@ -217,9 +227,9 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                     aria-describedby=${`${inputID}-description`}
                     @change=${() => {
                         this.selectedType = type;
-                        this.#selectDispatch(type);
                     }}
                     ?disabled=${disabled}
+                    .checked=${selected}
                 />
                 <div
                     aria-selected="${selected ? "true" : "false"}"
@@ -263,7 +273,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             html`<form
                 ${ref(this.formRef)}
                 part="form type-create list"
-                class="pf-c-form pf-m-horizontal ak-m-content-center"
+                class="pf-c-form pf-m-horizontal"
                 role="radiogroup"
                 aria-label=${ifPresent(this.headline)}
             >

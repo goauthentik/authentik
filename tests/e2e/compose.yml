@@ -1,6 +1,6 @@
 services:
   chromium:
-    image: ghcr.io/goauthentik/selenium:145.0-ak-0.40.5
+    image: ghcr.io/goauthentik/selenium:148.0-ak-0.43.1
     shm_size: 2g
     network_mode: host
     restart: always
@@ -11,7 +11,7 @@ services:
     profiles:
       - selenium
   mailpit:
-    image: docker.io/axllent/mailpit:v1.29.6
+    image: docker.io/axllent/mailpit:v1.30.0
     ports:
       - 1025:1025
       - 8025:8025

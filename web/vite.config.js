@@ -41,9 +41,12 @@ export default defineConfig({
         projects: [
             {
                 test: {
-                    include: ["./unit/**/*.{test,spec}.ts", "**/*.unit.{test,spec}.ts"],
-                    name: "unit",
+                    include: ["./test/unit/**/*.{test,spec}.ts", "**/*.unit.{test,spec}.ts"],
+                    name: "Unit Tests",
                     environment: "node",
+                    typecheck: {
+                        tsconfig: "./tsconfig.unit.json",
+                    },
                 },
             },
             {
@@ -51,7 +54,7 @@ export default defineConfig({
                     setupFiles: ["./test/lit/setup.js"],
 
                     include: ["./browser/**/*.{test,spec}.ts", "**/*.browser.{test,spec}.ts"],
-                    name: "browser",
+                    name: "Browser Tests",
                     browser: {
                         enabled: true,
                         provider: playwright(),

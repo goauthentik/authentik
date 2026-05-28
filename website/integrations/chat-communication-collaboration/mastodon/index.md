@@ -4,7 +4,7 @@ sidebar_label: Mastodon
 support_level: community
 ---
 
-## What is Mastodon
+## What is Mastodon?
 
 > Mastodon is free and open-source software for running self-hosted social networking services. It has microblogging features similar to Twitter
 >
@@ -36,7 +36,7 @@ To support the integration of Mastodon with authentik, you need to create an app
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://mastodon.company/auth/auth/openid_connect/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

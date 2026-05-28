@@ -1,6 +1,7 @@
 ---
 title: Release xxxx.x
 slug: "/releases/xxxx.x"
+draft: true
 ---
 
 ## Highlights

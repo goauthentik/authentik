@@ -4,7 +4,7 @@ sidebar_label: Open WebUI
 support_level: community
 ---
 
-## What is Open WebUI
+## What is Open WebUI?
 
 > Open WebUI is a simple, self-hosted AI platform that works entirely offline. It supports tools like Ollama and OpenAI-style APIs and has a built-in engine for RAG tasks.
 >
@@ -37,7 +37,7 @@ To support the integration of Open WebUI with authentik, you need to create an a
     - Set a `Strict` redirect URI to `https://openwebui.company/oauth/oidc/callback`.
     - Select any available signing key.
     - Make sure to leave the **Encryption Key** field empty.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

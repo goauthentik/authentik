@@ -12,7 +12,7 @@ import { AKLabel } from "#components/ak-label";
 import { BaseStage } from "#flow/stages/base";
 import AutoRedirect from "#flow/stages/identification/controllers/AutoRedirectController";
 import CaptchaDisplayController from "#flow/stages/identification/controllers/CaptchaDisplayController";
-import RememberMe from "#flow/stages/identification/controllers/RememberMeController";
+import RememberMeController from "#flow/stages/identification/controllers/RememberMeController";
 import WebauthnController from "#flow/stages/identification/controllers/WebauthnController";
 import Styles from "#flow/stages/identification/styles.css";
 
@@ -30,6 +30,7 @@ import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, ReactiveControllerHost } from "lit";
+import { createRef, ref } from "lit-html/directives/ref.js";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
@@ -44,8 +45,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 type IdentificationFooter = Partial<Pick<IdentificationChallenge, "enrollUrl" | "recoveryUrl">>;
 
 export type IdentificationHost = IdentificationStage & ReactiveControllerHost;
-
-type EmptyString = string | null | undefined;
 
 export const PasswordManagerPrefill: {
     password?: string;
@@ -82,21 +81,26 @@ export class IdentificationStage extends BaseStage<
         PFFormControl,
         PFTitle,
         PFButton,
-        ...RememberMe.styles,
+        ...RememberMeController.styles,
         Styles,
     ];
 
     /**
-     * The ID of the input field.
+     * The ID of the identifier input field, used for accessibility and focus management.
      *
      * @attr
      */
     @property({ type: String, attribute: "input-id" })
     public inputID = "ak-identifier-input";
 
+    protected passwordFieldRef = createRef<HTMLInputElement>();
+
     #form?: HTMLFormElement;
 
-    private rememberMe = new RememberMe(this);
+    public defaultUserIdentification: string | null = null;
+
+    protected rememberMeController: RememberMeController | null = null;
+
     #autoRedirect = new AutoRedirect(this);
     #captcha = new CaptchaDisplayController(this);
     #webauthn = new WebauthnController(this);
@@ -109,15 +113,23 @@ export class IdentificationStage extends BaseStage<
         super();
         // We _define and instantiate_ these fields above, then _read_ them here, and that satisfies
         // the lint pass that there are no unused private fields.
-        this.addController(this.rememberMe);
         this.addController(this.#autoRedirect);
         this.addController(this.#captcha);
         this.addController(this.#webauthn);
     }
 
+    #prepareRememberMeFrame = -1;
+
     public override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
+
         if (changedProperties.has("challenge") && this.challenge) {
+            cancelAnimationFrame(this.#prepareRememberMeFrame);
+
+            this.#prepareRememberMeFrame = requestAnimationFrame(() => {
+                this.prepareRememberMeController();
+            });
+
             this.#createHelperForm();
         }
     }
@@ -127,8 +139,44 @@ export class IdentificationStage extends BaseStage<
         this.addEventListener("focus", this.autofocusTarget.toEventListener());
     }
 
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        cancelAnimationFrame(this.#prepareRememberMeFrame);
+    }
+
     public override firstUpdated(): void {
         this.focus();
+    }
+
+    protected prepareRememberMeController(): void {
+        if (!this.challenge) return;
+
+        const { enableRememberMe, pendingUserIdentifier = null } = this.challenge;
+
+        if (!enableRememberMe) {
+            this.defaultUserIdentification = pendingUserIdentifier;
+
+            if (this.rememberMeController) {
+                this.removeController(this.rememberMeController);
+                this.rememberMeController = null;
+            }
+
+            return;
+        }
+
+        if (!this.rememberMeController) {
+            this.rememberMeController = new RememberMeController(this, {
+                identificationFieldID: this.inputID,
+                identificationFieldRef: this.autofocusTarget.reference,
+                passwordFieldRef: this.passwordFieldRef,
+                pendingUserIdentifier,
+            });
+
+            this.addController(this.rememberMeController);
+        }
+
+        this.defaultUserIdentification = this.rememberMeController.defaultUserIdentification;
     }
 
     //#endregion
@@ -247,11 +295,18 @@ export class IdentificationStage extends BaseStage<
         id: string,
         type: string,
         label: string,
-        username: EmptyString,
-        autocomplete: string,
+        initialUserIdentification: string | null,
+        passwordFields?: boolean,
     ) {
+        // When webauthn is enabled, add "webauthn" to autocomplete to enable passkey autofill
+        let autocomplete: AutoFill = type === "email" ? "email" : "username";
+
+        if (this.#webauthn.live) {
+            autocomplete = `${autocomplete} webauthn`;
+        }
+
         return html`<input
-            ${this.autofocusTarget.toRef()}
+            ${ref(this.autofocusTarget.reference)}
             id=${id}
             type=${type}
             name="uidField"
@@ -259,57 +314,53 @@ export class IdentificationStage extends BaseStage<
             autofocus
             autocomplete=${autocomplete}
             spellcheck="false"
+            inputmode=${type === "email" ? "email" : "text"}
+            autocapitalize="none"
+            enterkeyhint=${passwordFields ? "next" : "go"}
             class="pf-c-form-control"
-            value=${username ?? ""}
+            value=${initialUserIdentification ?? ""}
             required
         />`;
     }
 
     protected renderPasswordFields(challenge: IdentificationChallenge) {
         const { allowShowPassword } = challenge;
-        return html`
-            <ak-flow-input-password
-                label=${msg("Password")}
-                input-id="ak-stage-identification-password"
-                class="pf-c-form__group"
-                .errors=${challenge.responseErrors?.password}
-                ?allow-show-password=${allowShowPassword}
-                prefill=${PasswordManagerPrefill.password ?? ""}
-            ></ak-flow-input-password>
-        `;
+        return html`<ak-flow-input-password
+            .inputRef=${this.passwordFieldRef}
+            label=${msg("Password")}
+            input-id="ak-stage-identification-password"
+            class="pf-c-form__group"
+            .errors=${challenge.responseErrors?.password}
+            ?allow-show-password=${allowShowPassword}
+            prefill=${PasswordManagerPrefill.password ?? ""}
+        ></ak-flow-input-password> `;
     }
 
     protected renderInput(challenge: IdentificationChallenge) {
-        const {
-            flowDesignation,
-            passwordFields,
-            passwordlessUrl,
-            pendingUserIdentifier,
-            primaryAction,
-            userFields,
-        } = challenge;
+        const { flowDesignation, passwordFields, passwordlessUrl, primaryAction, userFields } =
+            challenge;
 
         const fields = (userFields || []).sort();
         if (fields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
 
-        const { inputID, rememberMe } = this;
+        const {
+            inputID,
+            defaultUserIdentification: initialUserIdentification,
+            rememberMeController,
+        } = this;
 
         const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
-        const username = rememberMe.username ?? pendingUserIdentifier;
-
-        // When webauthn is enabled, add "webauthn" to autocomplete to enable passkey autofill
-        const autocomplete: AutoFill = this.#webauthn.live ? "username webauthn" : "username";
 
         // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
             <div class="pf-c-form__group">
                 ${AKLabel({ required: true, htmlFor: inputID }, label)}
-                ${this.renderUidField(inputID, type, label, username, autocomplete)}
-                ${rememberMe.render()}
+                ${this.renderUidField(inputID, type, label, initialUserIdentification, passwordFields)}
+                ${rememberMeController?.renderToggleInput() ?? null}
                 ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
             </div>
             ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
@@ -335,7 +386,7 @@ export class IdentificationStage extends BaseStage<
         return html`<a
             href=${url}
             class="pf-c-button pf-m-secondary pf-m-block"
-            ouiaId="passwordless"
+            data-ouia-component-id="passwordless"
         >
             ${msg("Use a security key")}
         </a> `;
@@ -384,9 +435,8 @@ export class IdentificationStage extends BaseStage<
         return html`<fieldset
             slot="footer"
             part="source-list"
-            role="group"
             name="login-sources"
-            class="pf-c-form__group"
+            class="ak-c-fieldset pf-c-form__group"
         >
             <legend class="sr-only">${msg("Login sources")}</legend>
             ${repeat(
@@ -418,18 +468,19 @@ export class IdentificationStage extends BaseStage<
         return html`<fieldset
             slot="footer-band"
             part="additional-actions"
-            class="pf-c-login__main-footer-band"
+            name="additional-actions"
+            class="ak-c-fieldset pf-c-login__main-footer-band"
         >
             <legend class="sr-only">${msg("Additional actions")}</legend>
             ${enrollUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
                       ${msg("Need an account?")}
-                      <a href="${enrollUrl}" ouiaId="enroll">${msg("Sign up.")}</a>
+                      <a href="${enrollUrl}" data-ouia-component-id="enroll">${msg("Sign up.")}</a>
                   </div>`
                 : nothing}
             ${recoveryUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
-                      <a href="${recoveryUrl}" ouiaId="recovery"
+                      <a href="${recoveryUrl}" data-ouia-component-id="recovery"
                           >${msg("Forgot username or password?")}</a
                       >
                   </div>`
