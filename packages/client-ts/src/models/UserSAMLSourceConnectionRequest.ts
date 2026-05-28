@@ -20,12 +20,6 @@
 export interface UserSAMLSourceConnectionRequest {
     /**
      *
-     * @type {number}
-     * @memberof UserSAMLSourceConnectionRequest
-     */
-    user: number;
-    /**
-     *
      * @type {string}
      * @memberof UserSAMLSourceConnectionRequest
      */
@@ -44,7 +38,6 @@ export interface UserSAMLSourceConnectionRequest {
 export function instanceOfUserSAMLSourceConnectionRequest(
     value: object,
 ): value is UserSAMLSourceConnectionRequest {
-    if (!("user" in value) || value["user"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
@@ -64,7 +57,6 @@ export function UserSAMLSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"],
         source: json["source"],
         identifier: json["identifier"],
     };
@@ -83,7 +75,6 @@ export function UserSAMLSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };

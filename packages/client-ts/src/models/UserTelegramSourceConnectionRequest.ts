@@ -20,12 +20,6 @@
 export interface UserTelegramSourceConnectionRequest {
     /**
      *
-     * @type {number}
-     * @memberof UserTelegramSourceConnectionRequest
-     */
-    user: number;
-    /**
-     *
      * @type {string}
      * @memberof UserTelegramSourceConnectionRequest
      */
@@ -44,7 +38,6 @@ export interface UserTelegramSourceConnectionRequest {
 export function instanceOfUserTelegramSourceConnectionRequest(
     value: object,
 ): value is UserTelegramSourceConnectionRequest {
-    if (!("user" in value) || value["user"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
@@ -64,7 +57,6 @@ export function UserTelegramSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"],
         source: json["source"],
         identifier: json["identifier"],
     };
@@ -85,7 +77,6 @@ export function UserTelegramSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };
