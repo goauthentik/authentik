@@ -8,7 +8,7 @@
 
     --pf-c-modal-box__header--PaddingTop: var(--ak-c-modal-box__header--BlockSpacer);
 
-    --ak-c-modal-box__footer--BlockSpacer: clamp(0.25em, var(--pf-global--spacer--xl), 3cqb);
+    --ak-c-modal-box__footer--BlockSpacer: clamp(0.25em, var(--pf-global--spacer--xl), 2cqb);
     --pf-c-modal-box__footer--PaddingTop: var(--ak-c-modal-box__footer--BlockSpacer);
     --pf-c-modal-box__footer--PaddingBottom: var(--ak-c-modal-box__footer--BlockSpacer);
 }

@@ -17,6 +17,7 @@ import { DesignationToLabel, LayoutToLabel } from "#admin/flows/utils";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
+    AuthenticationEnum,
     DeniedActionEnum,
     Flow,
     FlowDesignationEnum,
@@ -24,7 +25,6 @@ import {
     FlowsApi,
     UsageEnum,
 } from "@goauthentik/api";
-import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -217,6 +217,15 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                         AuthenticationEnum.RequireOutpost}
                     >
                         ${msg("Require Outpost (flow can only be executed from an outpost)")}
+                    </option>
+                    <option
+                        value=${AuthenticationEnum.RequireToken}
+                        ?selected=${this.instance?.authentication ===
+                        AuthenticationEnum.RequireToken}
+                    >
+                        ${msg(
+                            "Require Flow token (flow can only be executed from a generated recovery link)",
+                        )}
                     </option>
                 </select>
                 <p class="pf-c-form__helper-text">

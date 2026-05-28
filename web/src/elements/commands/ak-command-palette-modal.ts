@@ -524,7 +524,7 @@ export class AKCommandPaletteModal extends AKModal {
                     Object.entries(grouped),
                     (_group, groupIdx) => `group-${groupIdx}`,
                     ([groupLabel, commands], groupIdx) => html`
-                        <fieldset part="results-group">
+                        <fieldset class="ak-c-fieldset" part="results-group">
                             <legend
                                 class="${!groupLabel ? "sr-only more-contrast-only" : ""}"
                                 data-label=${ifPresent(groupLabel)}

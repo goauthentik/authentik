@@ -22,31 +22,15 @@ export class FormFixture extends PageFixture {
         fieldName: string | RegExp,
         context: LocatorContext = this.page,
     ) => {
-        const control = context
-            .getByLabel(fieldName, { exact: true })
-            .filter({
-                hasNot: context.getByRole("presentation"),
-            })
-            .and(context.locator(":not(button)"))
-            .or(
-                context.getByRole("textbox", {
-                    name: fieldName,
-                }),
-            )
-            .or(
-                context.getByRole("spinbutton", {
-                    name: fieldName,
-                }),
-            );
+        const textbox = context.getByRole("textbox", { name: fieldName });
+        const searchbox = context.getByRole("searchbox", { name: fieldName });
+        const spinbutton = context.getByRole("spinbutton", { name: fieldName });
+        // Comboboxes (e.g. the Query Language input) wrap an inner textbox.
+        const comboboxTextbox = context
+            .getByRole("combobox", { name: fieldName })
+            .getByRole("textbox");
 
-        const role = await control.getAttribute("role");
-
-        if (role === "combobox") {
-            // Comboboxes, such as our Query Language input need additional handling...
-            const textbox = control.getByRole("textbox");
-
-            return textbox;
-        }
+        const control = textbox.or(searchbox).or(spinbutton).or(comboboxTextbox);
 
         await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
@@ -77,6 +61,8 @@ export class FormFixture extends PageFixture {
 
     /**
      * Search for a row containing the given text.
+     *
+     * @returns A locator for the row entry matching the query.
      */
     public search = async (
         query: string,

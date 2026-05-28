@@ -115,8 +115,8 @@
 /* #region Footer */
 
 fieldset.ak-c-dialog__footer {
-    --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--md);
-    padding-block: calc(var(--ak-fieldset__legend--PaddingInlineBase) / 2);
+    --ak-c-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--md);
+    padding-block: calc(var(--ak-c-fieldset__legend--PaddingInlineBase) / 2);
     border-inline: none;
     border-block-end: none;
 

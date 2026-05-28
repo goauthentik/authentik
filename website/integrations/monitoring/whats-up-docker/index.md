@@ -4,7 +4,7 @@ sidebar_label: What's Up Docker
 support_level: community
 ---
 
-## What is What's Up Docker
+## What is What's Up Docker?
 
 > What's Up Docker (WUD) is an easy-to-use tool that alerts you whenever a new version of your Docker containers is released.
 >
@@ -36,7 +36,7 @@ To support the integration of What's Up Docker with authentik, you need to creat
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://wud.company/auth/oidc/authentik/cb`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

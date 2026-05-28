@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2026.5.0-rc1
+  version: 2026.8.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -3173,6 +3173,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: flow_lockdown
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: flow_recovery
         schema:
           type: string
@@ -4522,6 +4527,41 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/set_password_hash/:
+    post:
+      operationId: core_users_set_password_hash_create
+      description: |-
+        Set a user's password from a pre-hashed Django password value.
+
+        Submit the Django password hash in the shared ``password`` request field.
+
+        This updates authentik's local password verifier only. It does not attempt
+        to propagate the password change to LDAP or Kerberos because no raw password
+        is available from the request payload.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPasswordHashSetRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully changed password
+        '400':
+          description: Bad request
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/used_by/:
     get:
       operationId: core_users_used_by_list
@@ -4550,6 +4590,35 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/account_lockdown/:
+    post:
+      operationId: core_users_account_lockdown_create
+      description: Choose the target account, then return a flow link.
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountLockdownRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+              examples:
+                LockdownFlowURL:
+                  value:
+                    link: https://example.invalid/if/flow/default-account-lockdown/
+                  summary: Lockdown flow URL
+          description: ''
+        '400':
+          description: No lockdown flow configured or the flow is not applicable
+        '403':
+          description: Permission denied (when targeting another user)
   /core/users/export/:
     post:
       operationId: core_users_export_create
@@ -5317,6 +5386,8 @@ paths:
         using this object
       tags:
       - endpoints
+      security:
+      - {}
       responses:
         '200':
           content:
@@ -5361,6 +5432,8 @@ paths:
         using this object
       tags:
       - endpoints
+      security:
+      - {}
       responses:
         '200':
           content:
@@ -5384,6 +5457,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceFactsRequest'
+      security:
+      - {}
       responses:
         '204':
           description: Successfully checked in
@@ -5404,6 +5479,8 @@ paths:
             schema:
               $ref: '#/components/schemas/EnrollRequest'
         required: true
+      security:
+      - {}
       responses:
         '200':
           content:
@@ -9097,7 +9174,7 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
   /lifecycle/iterations/latest/{content_type}/{object_id}/:
     get:
-      operationId: lifecycle_iterations_latest_retrieve
+      operationId: lifecycle_iterations_list_latest
       description: |-
         Mixin to validate that a valid enterprise license
         exists before allowing to save the object
@@ -9114,6 +9191,12 @@ paths:
           type: string
           pattern: ^[^/]+$
         required: true
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: user_is_reviewer
+        schema:
+          type: boolean
       tags:
       - lifecycle
       security:
@@ -9123,7 +9206,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LifecycleIteration'
+                type: array
+                items:
+                  $ref: '#/components/schemas/LifecycleIteration'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -9601,18 +9686,14 @@ paths:
       security:
       - authentik: []
       responses:
-        '204':
+        '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlueprintImportResult'
           description: ''
         '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BlueprintImportResult'
-          description: ''
+          $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /oauth2/access_tokens/:
@@ -18919,7 +19000,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: issuer
+        name: issuer_override
         schema:
           type: string
       - in: query
@@ -20078,7 +20159,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: issuer
+        name: issuer_override
         schema:
           type: string
       - in: query
@@ -26858,6 +26939,222 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/account_lockdown/:
+    get:
+      operationId: stages_account_lockdown_list
+      description: AccountLockdownStage Viewset
+      parameters:
+      - in: query
+        name: deactivate_user
+        schema:
+          type: boolean
+      - in: query
+        name: delete_sessions
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: revoke_tokens
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: self_service_completion_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: set_unusable_password
+        schema:
+          type: boolean
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAccountLockdownStageList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: stages_account_lockdown_create
+      description: AccountLockdownStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountLockdownStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/account_lockdown/{stage_uuid}/:
+    get:
+      operationId: stages_account_lockdown_retrieve
+      description: AccountLockdownStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Account Lockdown Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: stages_account_lockdown_update
+      description: AccountLockdownStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Account Lockdown Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountLockdownStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: stages_account_lockdown_partial_update
+      description: AccountLockdownStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Account Lockdown Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAccountLockdownStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: stages_account_lockdown_destroy
+      description: AccountLockdownStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Account Lockdown Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/account_lockdown/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_account_lockdown_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Account Lockdown Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -33626,6 +33923,93 @@ components:
       required:
       - pending_user
       - pending_user_avatar
+    AccountLockdownStage:
+      type: object
+      description: AccountLockdownStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        deactivate_user:
+          type: boolean
+          description: Deactivate the user account (set is_active to False)
+        set_unusable_password:
+          type: boolean
+          description: Set an unusable password for the user
+        delete_sessions:
+          type: boolean
+          description: Delete all active sessions for the user
+        revoke_tokens:
+          type: boolean
+          description: Revoke all tokens for the user (API, app password, recovery,
+            verification, OAuth)
+        self_service_completion_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to redirect users to after self-service lockdown. This
+            flow should not require authentication since the user's session is deleted.
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    AccountLockdownStageRequest:
+      type: object
+      description: AccountLockdownStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        deactivate_user:
+          type: boolean
+          description: Deactivate the user account (set is_active to False)
+        set_unusable_password:
+          type: boolean
+          description: Set an unusable password for the user
+        delete_sessions:
+          type: boolean
+          description: Delete all active sessions for the user
+        revoke_tokens:
+          type: boolean
+          description: Revoke all tokens for the user (API, app password, recovery,
+            verification, OAuth)
+        self_service_completion_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to redirect users to after self-service lockdown. This
+            flow should not require authentication since the user's session is deleted.
+      required:
+      - name
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -33963,6 +34347,7 @@ components:
       - authentik.enterprise.providers.ssf
       - authentik.enterprise.providers.ws_federation
       - authentik.enterprise.reports
+      - authentik.enterprise.stages.account_lockdown
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
       - authentik.enterprise.stages.source
@@ -34111,6 +34496,9 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
         group:
           type: string
+        meta_hide:
+          type: boolean
+          description: Hide this application from the user's My applications page.
       required:
       - backchannel_providers_obj
       - launch_url
@@ -34192,6 +34580,9 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
         group:
           type: string
+        meta_hide:
+          type: boolean
+          description: Hide this application from the user's My applications page.
       required:
       - name
       - slug
@@ -34221,10 +34612,12 @@ components:
               properties:
                 brand:
                   type: string
+                  nullable: true
                 family:
                   type: string
                 model:
                   type: string
+                  nullable: true
               required:
               - brand
               - family
@@ -34237,12 +34630,16 @@ components:
                   type: string
                 major:
                   type: string
+                  nullable: true
                 minor:
                   type: string
+                  nullable: true
                 patch:
                   type: string
+                  nullable: true
                 patch_minor:
                   type: string
+                  nullable: true
               required:
               - family
               - major
@@ -34355,6 +34752,7 @@ components:
       - require_superuser
       - require_redirect
       - require_outpost
+      - require_token
       type: string
     AuthenticatorAttachmentEnum:
       enum:
@@ -35219,6 +35617,18 @@ components:
           items:
             $ref: '#/components/schemas/WebAuthnDeviceType'
           readOnly: true
+        email_otp_throttling_factor:
+          type: number
+          format: double
+        sms_otp_throttling_factor:
+          type: number
+          format: double
+        totp_otp_throttling_factor:
+          type: number
+          format: double
+        static_otp_throttling_factor:
+          type: number
+          format: double
       required:
       - component
       - flow_set
@@ -35268,6 +35678,18 @@ components:
           items:
             type: string
             format: uuid
+        email_otp_throttling_factor:
+          type: number
+          format: double
+        sms_otp_throttling_factor:
+          type: number
+          format: double
+        totp_otp_throttling_factor:
+          type: number
+          format: double
+        static_otp_throttling_factor:
+          type: number
+          format: double
       required:
       - name
     AuthenticatorValidationChallenge:
@@ -35656,6 +36078,8 @@ components:
         path:
           type: string
           minLength: 1
+        context:
+          type: string
     Brand:
       type: object
       description: Brand Serializer
@@ -35701,6 +36125,10 @@ components:
           format: uuid
           nullable: true
         flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
+        flow_lockdown:
           type: string
           format: uuid
           nullable: true
@@ -35773,6 +36201,10 @@ components:
           format: uuid
           nullable: true
         flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
+        flow_lockdown:
           type: string
           format: uuid
           nullable: true
@@ -36179,6 +36611,7 @@ components:
       - slack
       - sfdc
       - webex
+      - vcenter
       type: string
     Config:
       type: object
@@ -36763,6 +37196,8 @@ components:
           type: string
         flow_device_code:
           type: string
+        flow_lockdown:
+          type: string
         default_locale:
           type: string
           readOnly: true
@@ -36784,6 +37219,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -38632,7 +39068,13 @@ components:
     EventsRequestedEnum:
       enum:
       - https://schemas.openid.net/secevent/caep/event-type/session-revoked
+      - https://schemas.openid.net/secevent/caep/event-type/token-claims-change
       - https://schemas.openid.net/secevent/caep/event-type/credential-change
+      - https://schemas.openid.net/secevent/caep/event-type/assurance-level-change
+      - https://schemas.openid.net/secevent/caep/event-type/device-compliance-change
+      - https://schemas.openid.net/secevent/caep/event-type/session-established
+      - https://schemas.openid.net/secevent/caep/event-type/session-presented
+      - https://schemas.openid.net/secevent/caep/event-type/risk-level-change
       - https://schemas.openid.net/secevent/ssf/event-type/verification
       type: string
     ExpiringBaseGrantModel:
@@ -38644,7 +39086,7 @@ components:
           readOnly: true
           title: ID
         provider:
-          $ref: '#/components/schemas/OAuth2Provider'
+          $ref: '#/components/schemas/Provider'
         user:
           $ref: '#/components/schemas/User'
         is_expired:
@@ -39975,6 +40417,16 @@ components:
       - google_id
       - provider
       - user
+    GrantTypesEnum:
+      enum:
+      - authorization_code
+      - implicit
+      - hybrid
+      - refresh_token
+      - client_credentials
+      - password
+      - urn:ietf:params:oauth:grant-type:device_code
+      type: string
     Group:
       type: object
       description: Group Serializer
@@ -42373,35 +42825,24 @@ components:
           items:
             $ref: '#/components/schemas/Review'
           readOnly: true
+        rule:
+          allOf:
+          - $ref: '#/components/schemas/RelatedRule'
+          readOnly: true
         user_can_review:
           type: boolean
-          readOnly: true
-        reviewer_groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReviewerGroup'
-          readOnly: true
-        min_reviewers:
-          type: integer
-          readOnly: true
-        reviewers:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReviewerUser'
           readOnly: true
       required:
       - content_type
       - grace_period_end
       - id
-      - min_reviewers
       - next_review_date
       - object_admin_url
       - object_id
       - object_verbose
       - opened_on
-      - reviewer_groups
-      - reviewers
       - reviews
+      - rule
       - state
       - user_can_review
     LifecycleIterationRequest:
@@ -43092,6 +43533,7 @@ components:
       - authentik_providers_ssf.ssfprovider
       - authentik_providers_ws_federation.wsfederationprovider
       - authentik_reports.dataexport
+      - authentik_stages_account_lockdown.accountlockdownstage
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
@@ -43391,6 +43833,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/Group'
           readOnly: true
+          nullable: true
         destination_event_user:
           type: boolean
           description: When enabled, notification will be sent to user the user that
@@ -43457,7 +43900,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: When set, the selected ceritifcate is used to validate the
+          description: When set, the selected certificate is used to validate the
             certificate of the webhook server.
         webhook_mapping_body:
           type: string
@@ -43499,7 +43942,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: When set, the selected ceritifcate is used to validate the
+          description: When set, the selected certificate is used to validate the
             certificate of the webhook server.
         webhook_mapping_body:
           type: string
@@ -43634,6 +44077,10 @@ components:
           - $ref: '#/components/schemas/ClientTypeEnum'
           description: Confidential clients are capable of maintaining the confidentiality
             of their credentials. Public clients are incapable
+        grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypesEnum'
         client_id:
           type: string
           maxLength: 255
@@ -43755,6 +44202,10 @@ components:
           - $ref: '#/components/schemas/ClientTypeEnum'
           description: Confidential clients are capable of maintaining the confidentiality
             of their credentials. Public clients are incapable
+        grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypesEnum'
         client_id:
           type: string
           minLength: 1
@@ -44526,6 +44977,21 @@ components:
       - plain
       - S256
       type: string
+    PaginatedAccountLockdownStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountLockdownStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedAgentConnectorList:
       type: object
       properties:
@@ -47294,6 +47760,32 @@ components:
       required:
       - backends
       - name
+    PatchedAccountLockdownStageRequest:
+      type: object
+      description: AccountLockdownStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        deactivate_user:
+          type: boolean
+          description: Deactivate the user account (set is_active to False)
+        set_unusable_password:
+          type: boolean
+          description: Set an unusable password for the user
+        delete_sessions:
+          type: boolean
+          description: Delete all active sessions for the user
+        revoke_tokens:
+          type: boolean
+          description: Revoke all tokens for the user (API, app password, recovery,
+            verification, OAuth)
+        self_service_completion_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to redirect users to after self-service lockdown. This
+            flow should not require authentication since the user's session is deleted.
     PatchedAgentConnectorRequest:
       type: object
       properties:
@@ -47408,6 +47900,9 @@ components:
           $ref: '#/components/schemas/PolicyEngineMode'
         group:
           type: string
+        meta_hide:
+          type: boolean
+          description: Hide this application from the user's My applications page.
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer
@@ -47629,6 +48124,18 @@ components:
           items:
             type: string
             format: uuid
+        email_otp_throttling_factor:
+          type: number
+          format: double
+        sms_otp_throttling_factor:
+          type: number
+          format: double
+        totp_otp_throttling_factor:
+          type: number
+          format: double
+        static_otp_throttling_factor:
+          type: number
+          format: double
     PatchedAuthenticatorWebAuthnStageRequest:
       type: object
       description: AuthenticatorWebAuthnStage Serializer
@@ -47731,6 +48238,10 @@ components:
           format: uuid
           nullable: true
         flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
+        flow_lockdown:
           type: string
           format: uuid
           nullable: true
@@ -49258,7 +49769,7 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: When set, the selected ceritifcate is used to validate the
+          description: When set, the selected certificate is used to validate the
             certificate of the webhook server.
         webhook_mapping_body:
           type: string
@@ -49322,6 +49833,10 @@ components:
           - $ref: '#/components/schemas/ClientTypeEnum'
           description: Confidential clients are capable of maintaining the confidentiality
             of their credentials. Public clients are incapable
+        grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypesEnum'
         client_id:
           type: string
           minLength: 1
@@ -50169,10 +50684,10 @@ components:
           type: string
           description: Value of the audience restriction field of the assertion. When
             left empty, no audience restriction will be added.
-        issuer:
+        issuer_override:
           type: string
-          minLength: 1
-          description: Also known as EntityID
+          description: Also known as EntityID. Providing a value overrides the default
+            issuer generated by authentik.
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -50728,6 +51243,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -52016,6 +52532,9 @@ components:
       - separator
       - hidden
       - static
+      - alert_info
+      - alert_warning
+      - alert_danger
       - ak-locale
       type: string
     PropertyMapping:
@@ -53165,7 +53684,7 @@ components:
           type: string
         redirect_uri_type:
           allOf:
-          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          - $ref: '#/components/schemas/RedirectURITypeEnum'
           default: authorization
       required:
       - matching_mode
@@ -53181,12 +53700,12 @@ components:
           minLength: 1
         redirect_uri_type:
           allOf:
-          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          - $ref: '#/components/schemas/RedirectURITypeEnum'
           default: authorization
       required:
       - matching_mode
       - url
-    RedirectUriTypeEnum:
+    RedirectURITypeEnum:
       enum:
       - authorization
       - logout
@@ -53217,6 +53736,35 @@ components:
       - group_uuid
       - name
       - pk
+    RelatedRule:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        reviewer_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewerGroup'
+          readOnly: true
+        min_reviewers:
+          type: integer
+          readOnly: true
+        reviewers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewerUser'
+          readOnly: true
+      required:
+      - min_reviewers
+      - name
+      - reviewer_groups
+      - reviewers
     Reputation:
       type: object
       description: Reputation Serializer
@@ -53691,9 +54239,10 @@ components:
           type: string
           description: Value of the audience restriction field of the assertion. When
             left empty, no audience restriction will be added.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as EntityID
+          description: Also known as EntityID. Providing a value overrides the default
+            issuer generated by authentik.
         assertion_valid_not_before:
           type: string
           description: 'Assertion valid not before current time + this value (Format:
@@ -53783,6 +54332,18 @@ components:
           type: string
           description: Get metadata download URL
           readOnly: true
+        url_issuer:
+          type: string
+          description: Get Issuer/EntityID URL
+          readOnly: true
+        url_unified:
+          type: string
+          description: Get unified SAML endpoint URL (handles SSO and SLO)
+          readOnly: true
+        url_unified_init:
+          type: string
+          description: Get IdP-initiated SAML URL
+          readOnly: true
         url_sso_post:
           type: string
           description: Get SSO Post URL
@@ -53816,11 +54377,14 @@ components:
       - name
       - pk
       - url_download_metadata
+      - url_issuer
       - url_slo_post
       - url_slo_redirect
       - url_sso_init
       - url_sso_post
       - url_sso_redirect
+      - url_unified
+      - url_unified_init
       - verbose_name
       - verbose_name_plural
     SAMLProviderImportRequest:
@@ -53883,10 +54447,10 @@ components:
           type: string
           description: Value of the audience restriction field of the assertion. When
             left empty, no audience restriction will be added.
-        issuer:
+        issuer_override:
           type: string
-          minLength: 1
-          description: Also known as EntityID
+          description: Also known as EntityID. Providing a value overrides the default
+            issuer generated by authentik.
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -54352,6 +54916,7 @@ components:
       enum:
       - token
       - oauth
+      - oauth_interactive
       type: string
     SCIMMapping:
       type: object
@@ -54486,6 +55051,24 @@ components:
           type: object
           additionalProperties: {}
           description: Additional OAuth parameters, such as grant_type
+        auth_oauth_token_last_updated:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        auth_oauth_token_expires:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        auth_oauth_url_callback:
+          type: string
+          nullable: true
+          readOnly: true
+        auth_oauth_url_start:
+          type: string
+          nullable: true
+          readOnly: true
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
@@ -54518,6 +55101,10 @@ components:
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
+      - auth_oauth_token_expires
+      - auth_oauth_token_last_updated
+      - auth_oauth_url_callback
+      - auth_oauth_url_start
       - component
       - meta_model_name
       - name
@@ -55121,6 +55708,7 @@ components:
       - enabled
       - paused
       - disabled
+      - disabled_deleted
       type: string
     Schedule:
       type: object
@@ -55375,6 +55963,8 @@ components:
           type: string
         invalidation_flow_url:
           type: string
+        overview_url:
+          type: string
         brand_name:
           type: string
       required:
@@ -55471,6 +56061,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -55559,6 +56150,7 @@ components:
             flows_refresh_others:
               type: boolean
               description: Refresh other tabs after successful authentication.
+              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -56694,7 +57286,7 @@ components:
           readOnly: true
           title: ID
         provider:
-          $ref: '#/components/schemas/OAuth2Provider'
+          $ref: '#/components/schemas/Provider'
         user:
           $ref: '#/components/schemas/User'
         is_expired:
@@ -57079,6 +57671,14 @@ components:
       - uid
       - username
       - uuid
+    UserAccountLockdownRequest:
+      type: object
+      description: Choose the target account before starting the lockdown flow.
+      properties:
+        user:
+          type: integer
+          nullable: true
+          description: User to lock. If omitted, locks the current user (self-service).
     UserAccountRequest:
       type: object
       description: Account adding/removing operations
@@ -57549,6 +58149,15 @@ components:
       - identifier
       - source
       - user
+    UserPasswordHashSetRequest:
+      type: object
+      description: Payload to set a users' password hash directly
+      properties:
+        password:
+          type: string
+          minLength: 1
+      required:
+      - password
     UserPasswordSetRequest:
       type: object
       description: Payload to set a users' password directly

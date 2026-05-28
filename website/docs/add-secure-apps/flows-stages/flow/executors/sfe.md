@@ -12,14 +12,14 @@ Currently this flow executor is automatically used for the following browsers:
 
 The following stages are supported:
 
-- [**Identification stage**](../../stages/identification/index.mdx)
+- [**Identification stage**](../../stages/identification/index.md)
 
     :::info
     Only user identifier and user identifier + password stage configurations are supported; sources and passwordless configurations are not supported.
     :::
 
 - [**Password stage**](../../stages/password/index.md)
-- [**Authenticator Validation Stage**](../../stages/authenticator_validate/index.mdx)
+- [**Authenticator Validation Stage**](../../stages/authenticator_validate/index.md)
 
 Compared to the [default flow executor](./if-flow.md), this flow executor does _not_ support the following features:
 

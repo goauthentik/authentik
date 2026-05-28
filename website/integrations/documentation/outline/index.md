@@ -4,7 +4,7 @@ sidebar_label: Outline
 support_level: community
 ---
 
-## What is Outline
+## What is Outline?
 
 > Your team's knowledge base.
 > Lost in a mess of Docs? Never quite sure who has access? Colleagues requesting the same information repeatedly in chat? It’s time to get your team’s knowledge organized.
@@ -38,7 +38,7 @@ To support the integration of Outline with authentik, you need to create an appl
     - Set a `Strict` redirect URI to `https://outline.company/auth/oidc.callback`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, set the **Subject Mode** to **Based on the User's username**.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

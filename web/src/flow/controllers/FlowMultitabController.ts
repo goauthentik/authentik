@@ -40,11 +40,7 @@ export class FlowMultitabController implements ReactiveController {
             return;
         }
 
-        if (
-            isIdentificationChallenge(challenge) &&
-            challenge.applicationPreLaunch &&
-            challenge.applicationPreLaunch !== "blank://blank"
-        ) {
+        if (isIdentificationChallenge(challenge) && challenge.applicationPreLaunch) {
             multiTabOrchestrateLeave();
             window.location.assign(challenge.applicationPreLaunch);
             return;

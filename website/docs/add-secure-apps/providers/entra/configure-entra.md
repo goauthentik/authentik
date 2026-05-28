@@ -5,7 +5,7 @@ authentik_enterprise: true
 
 For more information about using an Entra ID provider, see the [Entra ID Overview](./index.md) documentation.
 
-Your Entra ID tenant must be configured before you [create a Entra ID provider](./create-entra-provider.md).
+Your Entra ID tenant must be configured before you [create an Entra ID provider](./create-entra-provider.md).
 
 This involves creating an app registration, generating a secret, and configuring the required API permissions.
 
@@ -17,7 +17,7 @@ In which case, you must configure each user's email domain as a [verified custom
 Alternatively, if you need to provision users with email domains that you don't control, refer to [Email handling](./create-entra-provider.md#email-handling) for more information.
 :::
 
-## Configuring you Entra ID tenant
+## Configure your Entra ID tenant
 
 1. Log in to the [Entra ID admin center](https://entra.microsoft.com).
 2. Navigate to **App registrations**, click **New registration**, and set the following configurations:

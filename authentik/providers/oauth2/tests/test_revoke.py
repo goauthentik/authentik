@@ -13,7 +13,7 @@ from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
-    ClientTypes,
+    ClientType,
     DeviceToken,
     OAuth2Provider,
     RedirectURI,
@@ -126,7 +126,7 @@ class TesOAuth2Revoke(OAuthTestCase):
 
     def test_revoke_public(self):
         """Test revoke public client"""
-        self.provider.client_type = ClientTypes.PUBLIC
+        self.provider.client_type = ClientType.PUBLIC
         self.provider.save()
         token = AccessToken.objects.create(
             provider=self.provider,
@@ -241,7 +241,7 @@ class TesOAuth2Revoke(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
             signing_key=create_test_cert(),
-            client_type=ClientTypes.PUBLIC,
+            client_type=ClientType.PUBLIC,
         )
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=other_provider)
 
@@ -270,14 +270,14 @@ class TesOAuth2Revoke(OAuthTestCase):
     def test_revoke_provider_fed_public(self):
         """Test revoke with federation. self.provider is a public
         client and other_provider is a public client."""
-        self.provider.client_type = ClientTypes.PUBLIC
+        self.provider.client_type = ClientType.PUBLIC
         self.provider.save()
         other_provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
             signing_key=create_test_cert(),
-            client_type=ClientTypes.PUBLIC,
+            client_type=ClientType.PUBLIC,
         )
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=other_provider)
 

@@ -14,6 +14,8 @@ media
 # Node
 
 node_modules
+corepack.tgz
+.corepack
 
 .cspellcache
 cspell-report.*
@@ -229,6 +231,11 @@ source_docs/
 
 ### Golang ###
 /vendor/
+/server
+/proxy
+/ldap
+/rac
+/radius
 
 ### Docker ###
 tests/openid_conformance/exports/*.zip

@@ -26,6 +26,7 @@ from authentik.flows.models import (
 )
 from authentik.flows.planner import (
     PLAN_CONTEXT_IS_REDIRECTED,
+    PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
     FlowPlanner,
     cache_key,
@@ -128,6 +129,22 @@ class TestFlowPlanner(TestCase):
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         planner.plan(request)
+
+    def test_authentication_require_token(self):
+        """Test flow authentication (require_token)"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.REQUIRE_TOKEN
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+
+        with self.assertRaises(FlowNonApplicableException):
+            planner.plan(request)
+
+        context = {PLAN_CONTEXT_IS_RESTORED: True}
+        planner.plan(request, context)
 
     @patch(
         "authentik.policies.engine.PolicyEngine.result",

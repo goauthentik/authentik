@@ -1,4 +1,3 @@
-import "#admin/applications/ApplicationWizardHint";
 import "#admin/providers/ak-provider-wizard";
 import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
 import "#admin/providers/ldap/LDAPProviderForm";

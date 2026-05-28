@@ -1,5 +1,6 @@
 ---
-title: Telegram
+title: Log in with Telegram
+sidebar_label: Telegram
 support_level: community
 ---
 
