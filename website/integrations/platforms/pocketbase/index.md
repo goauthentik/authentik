@@ -8,7 +8,7 @@ support_level: community
 
 > PocketBase is an open source backend consisting of an embedded SQLite database, realtime subscriptions, built-in auth management, a dashboard UI, and a REST-like API.
 >
-> -- https://pocketbase.io/docs
+> -- https://pocketbase.io
 
 ## Preparation
 
