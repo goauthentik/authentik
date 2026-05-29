@@ -56,6 +56,23 @@ Recommended values:
 
 Score thresholds only apply to hCaptcha Enterprise.
 
+### Cap
+
+Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.
+
+See https://trycap.dev/guide/.
+
+Recommended values:
+
+- **Public key**: public Cap endpoint for the site key path, for example `https://cap.example.com/site-key/`
+- **Private key**: Cap secret key
+- **Interactive**: enabled
+- **JS URL**: `https://cdn.jsdelivr.net/npm/cap-widget`
+- **API URL**: Cap verification endpoint, for example `https://cap.example.com/site-key/siteverify`
+- **Request content type**: JSON
+
+Cap does not use score thresholds.
+
 ### Cloudflare Turnstile
 
 See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recaptcha.

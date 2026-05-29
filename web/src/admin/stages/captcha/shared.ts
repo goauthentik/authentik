@@ -38,6 +38,7 @@ export type CaptchaProviderKey = (typeof CaptchaProviderKeys)[number];
 
 export interface CaptchaProviderPreset {
     formatDisplayName: () => string;
+    formatDescription?: () => string;
     jsUrl: string;
     apiUrl: string;
     requestContentType: CaptchaRequestContentType;
@@ -142,16 +143,20 @@ export const CAPTCHA_PROVIDERS = {
             msg("Cap", {
                 id: "captcha.providers.cap",
             }),
+        formatDescription: () =>
+            msg("Cap is a self-hostable CAPTCHA server that uses proof-of-work challenges.", {
+                id: "captcha.providers.cap.description",
+            }),
         jsUrl: "https://cdn.jsdelivr.net/npm/cap-widget",
         apiUrl: "https://cap.example.com/site-key/siteverify",
         requestContentType: "application/json",
         interactive: true,
         supportsScore: false,
         formatAPISource: () =>
-            msg("Cap setup guide", {
+            msg("Cap documentation", {
                 id: "captcha.providers.cap.setup-guide",
             }),
-        keyURL: "https://capjs.js.org/guide/",
+        keyURL: "https://trycap.dev/guide/",
     },
     custom: {
         formatDisplayName: () =>
@@ -167,8 +172,17 @@ export const CAPTCHA_PROVIDERS = {
     },
 } as const satisfies Record<CaptchaProviderKey, CaptchaProviderPreset>;
 
-export function deriveCapSiteVerifyURL(endpoint: string): string {
-    const normalizedEndpoint = endpoint.endsWith("/") ? endpoint : `${endpoint}/`;
+export function deriveCapSiteVerifyURL(endpoint: string): string | null {
+    const trimmedEndpoint = endpoint.trim();
+
+    if (!URL.canParse(trimmedEndpoint)) {
+        return null;
+    }
+
+    const endpointURL = new URL(trimmedEndpoint);
+    const normalizedEndpoint = endpointURL.href.endsWith("/")
+        ? endpointURL.href
+        : `${endpointURL.href}/`;
 
     return new URL("siteverify", normalizedEndpoint).toString();
 }
@@ -186,7 +200,7 @@ export function detectProviderFromInstance(stage?: CaptchaStage | null): Captcha
 
         if (
             key === "cap" &&
-            stage.jsUrl === preset.jsUrl &&
+            stage.jsUrl?.includes("cap-widget") &&
             stage.requestContentType === preset.requestContentType
         ) {
             return key;

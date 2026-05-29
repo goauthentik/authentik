@@ -37,6 +37,10 @@ import { customElement, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+type CaptchaStageFormRequest = (CaptchaStageRequest | PatchedCaptchaStageRequest) & {
+    capEndpoint?: string;
+};
+
 @customElement("ak-stage-captcha-form")
 export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     public static override readonly styles = [...super.styles, Styles];
@@ -85,12 +89,23 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     public async send(
         data: CaptchaStageRequest | PatchedCaptchaStageRequest,
     ): Promise<CaptchaStage> {
-        if (this.selectedProvider === "cap" && data.publicKey) {
+        const formData = data as CaptchaStageFormRequest;
+
+        if (this.selectedProvider === "cap" && (formData.capEndpoint || formData.publicKey)) {
+            const capEndpoint = formData.capEndpoint || formData.publicKey || "";
+
+            formData.publicKey = capEndpoint;
+            delete formData.capEndpoint;
+
             const presetURL = CAPTCHA_PROVIDERS.cap.apiUrl;
             // The Cap verification URL includes the site key, so derive it from the
             // widget endpoint unless the advanced field was explicitly customized.
             if (!data.apiUrl || data.apiUrl === presetURL) {
-                data.apiUrl = deriveCapSiteVerifyURL(data.publicKey);
+                const siteVerifyURL = deriveCapSiteVerifyURL(capEndpoint);
+
+                if (siteVerifyURL) {
+                    data.apiUrl = siteVerifyURL;
+                }
             }
         }
 
@@ -128,52 +143,72 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
             </p>
 
             ${guard([this.#currentPreset], () => {
-                const { formatAPISource, keyURL } = this.#currentPreset;
+                const { formatAPISource, formatDescription, keyURL } = this.#currentPreset;
 
-                if (!formatAPISource || !keyURL) {
-                    return null;
-                }
+                const description = formatDescription
+                    ? html`<p class="pf-c-form__helper-text">${formatDescription()}</p>`
+                    : null;
+                const providerLink =
+                    formatAPISource && keyURL
+                        ? html`<ak-alert level=${Level.Info} icon="fa-key">
+                              ${this.selectedProvider === "cap"
+                                  ? msg(
+                                        html`Use the
+                                        ${html`<a
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            href=${keyURL}
+                                            >${formatAPISource()}</a
+                                        >`}
+                                        to self-host Cap and configure the endpoint.`,
+                                        {
+                                            id: "captcha.provider-link.cap",
+                                            desc: "Supplementary help text with link to Cap documentation.",
+                                        },
+                                    )
+                                  : msg(
+                                        html`API keys can be obtained from the
+                                        ${html`<a
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                href=${keyURL}
+                                                >${formatAPISource()}</a
+                                            >.`}`,
+                                        {
+                                            id: "captcha.provider-link",
+                                            desc: "Supplementary help text with link to provider dashboard.",
+                                        },
+                                    )}
+                          </ak-alert>`
+                        : null;
 
-                return html`<ak-alert level=${Level.Info} icon="fa-key">
-                    ${msg(
-                        html`API keys can be obtained from the
-                        ${html`<a target="_blank" rel="noopener noreferrer" href=${keyURL}
-                                >${formatAPISource()}</a
-                            >.`}`,
-                        {
-                            id: "captcha.provider-link",
-                            desc: "Supplementary help text with link to provider dashboard.",
-                        },
-                    )}
-                </ak-alert>`;
+                return html`${description} ${providerLink}`;
             })}
         </ak-form-element-horizontal>`;
     }
 
     protected renderKeyFields(): SlottedTemplateResult {
-        const publicKeyLabel =
-            this.selectedProvider === "cap" ? msg("API Endpoint") : msg("Public Key");
-        const publicKeyPlaceholder =
-            this.selectedProvider === "cap"
-                ? msg("https://cap.example.com/site-key/")
-                : msg("Paste your CAPTCHA public key...");
-        const publicKeyHelp =
-            this.selectedProvider === "cap"
-                ? msg("The public Cap endpoint used by the widget, including the site key path.", {
-                      id: "captcha.cap-endpoint.description",
-                      desc: "Description for Cap endpoint field.",
-                  })
-                : msg("The public key is used by authentik to render the CAPTCHA widget.", {
-                      id: "captcha.public-key.description",
-                      desc: "Description for CAPTCHA public key field.",
-                  });
+        const isCapProvider = this.selectedProvider === "cap";
+        const publicKeyLabel = isCapProvider ? msg("Cap Endpoint") : msg("Public Key");
+        const publicKeyPlaceholder = isCapProvider
+            ? msg("https://cap.example.com/site-key/")
+            : msg("Paste your CAPTCHA public key...");
+        const publicKeyHelp = isCapProvider
+            ? msg("The public site-key endpoint of your Cap server.", {
+                  id: "captcha.cap-endpoint.description",
+                  desc: "Description for Cap endpoint field.",
+              })
+            : msg("The public key is used by authentik to render the CAPTCHA widget.", {
+                  id: "captcha.public-key.description",
+                  desc: "Description for CAPTCHA public key field.",
+              });
 
         return html`
             <ak-text-input
                 label=${publicKeyLabel}
                 required
-                name="publicKey"
-                type="text"
+                name=${isCapProvider ? "capEndpoint" : "publicKey"}
+                type=${isCapProvider ? "url" : "text"}
                 value="${ifDefined(this.instance?.publicKey || "")}"
                 autocomplete="off"
                 input-hint="code"
