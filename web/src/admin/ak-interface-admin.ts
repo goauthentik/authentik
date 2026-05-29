@@ -29,15 +29,16 @@ import { renderDialog } from "#elements/dialogs";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
-import { AKDrawerChangeEvent } from "#elements/notifications/events";
+import { navigate } from "#elements/router/RouterOutlet";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { AKDrawerChangeEvent } from "#components/notifications/events";
 import {
     DrawerState,
     persistDrawerParams,
     readDrawerParams,
     renderNotificationDrawerPanel,
-} from "#elements/notifications/utils";
-import { navigate } from "#elements/router/RouterOutlet";
-import { SlottedTemplateResult } from "#elements/types";
+} from "#components/notifications/utils";
 
 import Styles from "#admin/ak-interface-admin.css";
 import { ROUTES } from "#admin/Routes";

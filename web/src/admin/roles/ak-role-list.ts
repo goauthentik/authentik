@@ -18,7 +18,7 @@ import { RoleForm } from "#admin/roles/ak-role-form";
 
 import { RbacApi, Role } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -83,7 +83,11 @@ export class RoleListPage extends TablePage<Role> {
 
     row(item: Role): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
+            html`<a
+                href="#/identity/roles/${item.pk}"
+                aria-label=${msg(str`View details of role "${item.name}"`)}
+                >${item.name}</a
+            >`,
             html`<div class="ak-c-table__actions">${IconEditButton(RoleForm, item.pk)}</div>`,
         ];
     }

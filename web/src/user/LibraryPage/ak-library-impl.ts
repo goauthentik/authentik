@@ -174,7 +174,6 @@ export class LibraryPage extends WithSession(AKElement) {
         includeScore: true,
         shouldSort: true,
         ignoreFieldNorm: true,
-        useExtendedSearch: true,
         threshold: 0.3,
     });
 
