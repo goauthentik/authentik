@@ -276,7 +276,7 @@ class ConfigLoader:
         try:
             return int(value)
         except (ValueError, TypeError) as exc:
-            if value is None or (isinstance(value, str) and value.lower() == "null"):
+            if value is None or (isinstance(value, str) and value.lower() in ("", "null", "none")):
                 return None
             self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
             return default
