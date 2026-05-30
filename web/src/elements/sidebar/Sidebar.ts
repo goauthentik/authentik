@@ -20,10 +20,22 @@ export class Sidebar extends AKElement {
     ];
 
     @property({ type: Boolean })
-    hidden = false;
+    public hidden = false;
+
+    protected defaultSlot: HTMLSlotElement;
+    protected beforeItemsSlot: HTMLSlotElement;
+
+    constructor() {
+        super();
+
+        this.defaultSlot = this.ownerDocument.createElement("slot");
+        this.beforeItemsSlot = this.ownerDocument.createElement("slot");
+        this.beforeItemsSlot.name = "before-items";
+    }
 
     render(): TemplateResult {
         return html`<div part="nav" class="pf-c-nav" role="presentation">
+            ${this.beforeItemsSlot}
             <ul
                 id="global-nav"
                 ?hidden=${this.hidden}
@@ -32,7 +44,7 @@ export class Sidebar extends AKElement {
                 class="pf-c-nav__list ak-m-thin-scrollbar ak-m-scroll-shadows"
                 part="list"
             >
-                <slot></slot>
+                ${this.defaultSlot}
             </ul>
             <ak-sidebar-version
                 exportparts="trigger:about-dialog-trigger, button-content:about-dialog-button-content, product-name, product-version"

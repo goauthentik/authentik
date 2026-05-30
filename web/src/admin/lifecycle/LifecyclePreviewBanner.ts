@@ -13,7 +13,7 @@ export class LifecyclePreviewBanner extends AKElement {
     static styles = [PFBanner];
 
     public render(): TemplateResult {
-        return html`<div class="pf-c-banner pf-m-info">
+        return html`<div class="pf-c-banner pf-m-info ak-m-inset">
             ${msg("Object Lifecycle Management is in preview.")}
             <a href="mailto:hello+feature/lifecycle@goauthentik.io">${msg("Send us feedback!")}</a>
         </div>`;

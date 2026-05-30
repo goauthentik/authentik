@@ -13,6 +13,14 @@
     }
 }
 
+.pf-c-banner.ak-m-inset {
+    margin-block-start: calc(
+        var(--pf-global--spacer--xs) + (var(--pf-global--spacer--form-element) / 2)
+    );
+    margin-inline: var(--pf-global--spacer--md);
+    border-radius: var(--pf-global--BorderRadius--sm);
+}
+
 :host([theme="dark"]) .pf-c-banner {
     &.pf-m-info,
     &.pf-m-blue,

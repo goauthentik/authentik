@@ -35,8 +35,41 @@ ak-sidebar-item:active ak-sidebar-item::part(list-item) {
     background-color: transparent !important;
 }
 
-.command-palette-trigger {
+[part="command-palette-trigger"] {
+    --BackgroundColor: var(--pf-global--BackgroundColor--150);
+    background: var(--BackgroundColor);
+    border-radius: var(--pf-global--BorderRadius--sm);
+    border: 0.5px solid var(--pf-global--BorderColor--100);
     cursor: pointer;
-
+    display: grid;
+    gap: var(--pf-global--spacer--sm);
+    grid-template-columns: [icon] auto [label] 1fr [shortcut-hint] auto;
+    justify-items: start;
+    align-items: center;
+    margin-block-end: var(--pf-global--spacer--form-element);
+    margin-block-start: var(--pf-global--spacer--sm);
+    margin-inline: var(--pf-global--spacer--sm);
+    padding-block: var(--pf-global--spacer--form-element);
+    padding-inline-start: var(--pf-global--spacer--sm);
+    user-select: none;
+    z-index: 1;
+    color: var(--pf-global--Color--200);
     padding-inline-end: var(--pf-global--spacer--sm);
+    position: relative;
+
+    .placeholder {
+        font-style: italic;
+        font-size: var(--pf-global--FontSize--sm);
+    }
+
+    &:hover {
+        --BackgroundColor: var(--pf-global--BackgroundColor--200);
+    }
+
+    .icon {
+        display: block;
+        height: var(--pf-global--icon--FontSize--md);
+        fill: currentColor;
+        stroke: currentColor;
+    }
 }
