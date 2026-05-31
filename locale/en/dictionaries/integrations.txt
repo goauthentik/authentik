@@ -25,6 +25,7 @@ Gravitee
 grommunio
 HACS
 Homarr
+Icinga
 Informatique
 Jellyseerr
 Kimai
