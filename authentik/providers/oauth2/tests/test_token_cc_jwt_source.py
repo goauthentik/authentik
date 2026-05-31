@@ -290,3 +290,135 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
         self.assertEqual(jwt["email"], "test-user@example.com")
         self.assertEqual(jwt["given_name"], "Mapped Test User")
         self.assertEqual(jwt["preferred_username"], test_username)
+
+    def test_successful_group_mapping(self):
+        """Test that groups returned by property mappings are applied to the auto-generated user.
+
+        Regression test: previously, the 'groups' key returned by user property mapping
+        expressions was silently ignored when exchanging a federated JWT (e.g. a SPIRE SVID)
+        for an Authentik access token via the client_credentials grant. Only scalar fields
+        such as username/name/email/attributes were propagated; group membership was not.
+        """
+        from authentik.core.models import SourceGroupMatchingModes
+
+        # Use name_link mode so the pre-existing "MyApp Users" group is found by name,
+        # matching the typical real-world configuration (see authentik.yaml in ai-lab).
+        self.source.group_matching_mode = SourceGroupMatchingModes.NAME_LINK
+        self.source.save()
+        target_group = Group.objects.create(name="MyApp Users")
+        mapping = OAuthSourcePropertyMapping.objects.create(
+            name="spire-group-mapping",
+            expression="""return {
+                "username": info.get("sub"),
+                "name": info.get("sub"),
+                "groups": ["MyApp Users"],
+            }""",
+        )
+        self.source.user_property_mappings.add(mapping)
+
+        token = self.helper_provider.encode(
+            {
+                "sub": "spire-workload//cluster.local/ns/default/sa/myapp",
+                "exp": datetime.now() + timedelta(hours=2),
+            }
+        )
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+                "client_id": self.provider.client_id,
+                "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                "client_assertion": token,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        user = User.objects.filter(
+            username="spire-workload//cluster.local/ns/default/sa/myapp"
+        ).first()
+        self.assertIsNotNone(user)
+        self.assertIn(target_group, user.groups.all(), "User should be in mapped group")
+
+    def test_group_mapping_name_link_existing_group(self):
+        """Test that name_link mode correctly links to an existing group without duplicating it."""
+        from authentik.core.models import SourceGroupMatchingModes
+
+        self.source.group_matching_mode = SourceGroupMatchingModes.NAME_LINK
+        self.source.save()
+        existing_group = Group.objects.create(name="Existing Group")
+        mapping = OAuthSourcePropertyMapping.objects.create(
+            name="group-link-mapping",
+            expression="""return {"username": info.get("sub"), "groups": ["Existing Group"]}""",
+        )
+        self.source.user_property_mappings.add(mapping)
+
+        token = self.helper_provider.encode(
+            {"sub": "link-test-user", "exp": datetime.now() + timedelta(hours=2)}
+        )
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+                "client_id": self.provider.client_id,
+                "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                "client_assertion": token,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        user = User.objects.filter(username="link-test-user").first()
+        self.assertIsNotNone(user)
+        # Must be the same group object — name_link must not create a duplicate
+        self.assertIn(existing_group, user.groups.all())
+        self.assertEqual(Group.objects.filter(name="Existing Group").count(), 1)
+
+    def test_group_mapping_reruns_update_membership(self):
+        """Test that group membership is updated on subsequent token requests."""
+        from authentik.core.models import SourceGroupMatchingModes
+
+        # Use name_link so that pre-created groups are found by name
+        self.source.group_matching_mode = SourceGroupMatchingModes.NAME_LINK
+        self.source.save()
+
+        group_a = Group.objects.create(name="Group A")
+        group_b = Group.objects.create(name="Group B")
+        mapping = OAuthSourcePropertyMapping.objects.create(
+            name="dynamic-group-mapping",
+            expression="""
+groups = info.get("groups", [])
+return {"username": info.get("sub"), "groups": groups}
+""",
+        )
+        self.source.user_property_mappings.add(mapping)
+
+        def _exchange(groups: list[str]):
+            token = self.helper_provider.encode(
+                {
+                    "sub": "update-test-user",
+                    "groups": groups,
+                    "exp": datetime.now() + timedelta(hours=2),
+                }
+            )
+            return self.client.post(
+                reverse("authentik_providers_oauth2:token"),
+                {
+                    "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                    "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+                    "client_id": self.provider.client_id,
+                    "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+                    "client_assertion": token,
+                },
+            )
+
+        # First request: user should be in Group A only
+        self.assertEqual(_exchange(["Group A"]).status_code, 200)
+        user = User.objects.get(username="update-test-user")
+        self.assertIn(group_a, user.groups.all())
+        self.assertNotIn(group_b, user.groups.all())
+
+        # Second request: user should be in Group B only (Group A removed)
+        self.assertEqual(_exchange(["Group B"]).status_code, 200)
+        user.refresh_from_db()
+        self.assertNotIn(group_a, user.groups.all())
+        self.assertIn(group_b, user.groups.all())
