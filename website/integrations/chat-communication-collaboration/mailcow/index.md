@@ -27,20 +27,52 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of mailcow with authentik, you need to create an application/provider pair in authentik.
+To support the integration of mailcow with authentik, you need to create a property mapping, set the `email_verified` attribute on required users, and create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create a property mapping
+
+Mailcow requires that users have a verified email address. The required attribute can be returned via a scope mapping in combination with user attributes. For more information, see [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification).
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
+3. Select **Scope Mapping** as the property mapping type and set the following configuration:
+    - **Name**: Provide a descriptive name
+    - **Scope Name**: `email`
+    - **Expression**:
+
+        ```python
+        return {
+            "email": request.user.email,
+            "email_verified": request.user.attributes.get("email_verified", False)
+        }
+        ```
+
+4. Click **Create**.
+
+### Set `email_verified` user attribute
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Users** and select a user that will use the Mailcow integration.
+3. Click **Edit User**.
+4. Add `email_verified: true` to the **Attributes** field.
+5. Click **Save Changes**
+
+Repeat these steps for all users that need to use the Mailcow integration.
+
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID** and **Client Secret** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://mailcow.company`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://mailcow.company`.
+        - Select any available signing key.
+        - Under **Advanced protocol settings**:
+            - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope from **Selected Scopes**.
+            - Add the scope mapping that you previously created to **Selected Scopes**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
