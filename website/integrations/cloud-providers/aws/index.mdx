@@ -55,13 +55,13 @@ To support the integration of AWS with authentik using SAML, you need to create 
         - Upload the **Service Provider metadata** file from AWS.
         - Under **Advanced Protocol Settings**:
             - Set an available signing certificate.
-            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 :::info NameID
-The NameID field of type email is matched in AWS against the AWS username attribute, not the email attribute.
+IAM Identity Center matches the SAML NameID value against the AWS username attribute, not the email attribute. Make sure the authentik username for each AWS user is email-address formatted and matches the AWS username.
 :::
 
 #### Download metadata file
@@ -117,9 +117,9 @@ To support the integration of AWS with authentik using SCIM, you need to create 
     - **Name**: Provide a descriptive name (e.g. `AWS SCIM Username`).
     - **Expression**:
         ```python
-        # This expression maps the authentik email address attribute to the AWS username attribute.
+        # This expression maps the authentik username to the AWS username attribute.
         return {
-            "userName": request.user.email,
+            "userName": request.user.username,
         }
         ```
 
