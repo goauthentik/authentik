@@ -32,7 +32,7 @@ export interface GroupKerberosSourceConnection {
      * @type {string}
      * @memberof GroupKerberosSourceConnection
      */
-    group: string;
+    readonly group: string;
     /**
      *
      * @type {string}
@@ -110,7 +110,7 @@ export function GroupKerberosSourceConnectionToJSON(json: any): GroupKerberosSou
 export function GroupKerberosSourceConnectionToJSONTyped(
     value?: Omit<
         GroupKerberosSourceConnection,
-        "pk" | "source_obj" | "created" | "last_updated"
+        "pk" | "group" | "source_obj" | "created" | "last_updated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -119,7 +119,6 @@ export function GroupKerberosSourceConnectionToJSONTyped(
     }
 
     return {
-        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };
