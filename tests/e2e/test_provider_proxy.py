@@ -30,6 +30,7 @@ class TestProviderProxy(SeleniumTestCase):
                 "80": "80",
             },
         )
+        self.outpost_port = 0
 
     def start_proxy(self, outpost: Outpost):
         """Start proxy container based on outpost created"""
@@ -43,6 +44,9 @@ class TestProviderProxy(SeleniumTestCase):
             },
         )
         self.outpost_port = container.ports["9000/tcp"][0]["HostPort"]
+        for provider in outpost.providers.all():
+            provider.external_host = f"http://localhost{self.outpost_port}",
+            provider.save()
 
     @retry()
     @apply_blueprint(
