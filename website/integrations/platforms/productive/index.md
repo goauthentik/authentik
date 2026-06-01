@@ -158,7 +158,7 @@ authentik can also provision Productive users with SCIM. SCIM requires SSO to be
 
 To confirm that authentik is properly configured with Productive, log out and open Productive in a private or incognito browser window. Click **Use Single Sign-On (SSO)**, sign in with authentik, and confirm that you are redirected back to Productive.
 
-To confirm that SCIM is properly configured, open the Productive SCIM provider in authentik and click **Run sync again**. After the sync completes, verify that users with access to the Productive application are provisioned in Productive.
+To confirm that SCIM is properly configured, open the Productive SCIM provider in authentik and click the run button on the **Full sync for SCIM provider** task. After the sync completes, verify that users with access to the Productive application are provisioned in Productive.
 
 ## Resources
 
