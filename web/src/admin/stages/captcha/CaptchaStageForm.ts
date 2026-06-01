@@ -213,6 +213,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     help=${msg(
                         "Maximum allowed score to allow continuing. Set to -1 to disable upper bound checking.",
                     )}
+                    ?allowFloat=${true}
                 ></ak-number-input>
                 <ak-switch-input
                     ?checked=${formValues.errorOnInvalidScore}
