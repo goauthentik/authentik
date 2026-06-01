@@ -26,9 +26,7 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
                 return;
             }
 
-            this.value = this.allowFloat
-                ? parseFloat(value)
-                : parseInt(value, 10);
+            this.value = this.allowFloat === true ? parseFloat(value) : parseInt(value, 10);
         };
 
         return html`<input
@@ -41,7 +39,6 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
             min=${ifDefined(this.min)}
             class="pf-c-form-control"
             ?required=${this.required}
-            allowFloat=${this.allowFloat}
         />`;
     }
 }

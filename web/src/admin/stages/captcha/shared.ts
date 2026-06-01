@@ -133,12 +133,16 @@ export function detectProviderFromInstance(stage?: CaptchaStage | null): Captcha
         const preset = CAPTCHA_PROVIDERS[key];
 
         const hasScore =
-            stage.scoreMinThreshold !== undefined &&
-            stage.scoreMaxThreshold !== undefined;
+            stage.scoreMinThreshold !== undefined && stage.scoreMaxThreshold !== undefined;
 
         const scoreValueMatchesPreset = preset.supportsScore === hasScore;
 
-        if (stage.jsUrl === preset.jsUrl && stage.apiUrl === preset.apiUrl && stage.interactive === preset.interactive && scoreValueMatchesPreset) {
+        if (
+            stage.jsUrl === preset.jsUrl &&
+            stage.apiUrl === preset.apiUrl &&
+            stage.interactive === preset.interactive &&
+            scoreValueMatchesPreset
+        ) {
             return key;
         }
     }
