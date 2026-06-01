@@ -20,12 +20,6 @@
 export interface PatchedUserLDAPSourceConnectionRequest {
     /**
      *
-     * @type {number}
-     * @memberof PatchedUserLDAPSourceConnectionRequest
-     */
-    user?: number;
-    /**
-     *
      * @type {string}
      * @memberof PatchedUserLDAPSourceConnectionRequest
      */
@@ -61,7 +55,6 @@ export function PatchedUserLDAPSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"] == null ? undefined : json["user"],
         source: json["source"] == null ? undefined : json["source"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
@@ -82,7 +75,6 @@ export function PatchedUserLDAPSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };
