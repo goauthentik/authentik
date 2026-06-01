@@ -31,9 +31,6 @@ class TestProviderProxyForward(SeleniumTestCase):
         """Start proxy container based on outpost created"""
         self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
-            ports={
-                "9000": "9000",
-            },
             environment={
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
@@ -53,7 +50,7 @@ class TestProviderProxyForward(SeleniumTestCase):
         "system/providers-proxy.yaml",
     )
     @reconcile_app("authentik_crypto")
-    def prepare(self):
+    def prepare(self, external_host: str):
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name=generate_id(),
             mode=ProxyMode.FORWARD_SINGLE,
@@ -62,7 +59,7 @@ class TestProviderProxyForward(SeleniumTestCase):
             ),
             invalidation_flow=Flow.objects.get(slug="default-provider-invalidation-flow"),
             internal_host=f"http://{self.host}",
-            external_host="http://localhost",
+            external_host=external_host,
         )
         # Ensure OAuth2 Params are set
         proxy.set_oauth_defaults()
@@ -81,13 +78,15 @@ class TestProviderProxyForward(SeleniumTestCase):
     @retry()
     def test_traefik(self):
         """Test traefik"""
+        proxy_port = self.get_free_port()
+        proxy_url = f"http://localhost:{proxy_port}"
         local_config_path = (
             Path(__file__).parent / "proxy_forward_auth" / "traefik_single" / "config-static.yaml"
         )
         self.run_container(
             image="docker.io/library/traefik:3.1",
             ports={
-                "80": "80",
+                "80": proxy_port,
             },
             volumes={
                 local_config_path: {
@@ -96,9 +95,9 @@ class TestProviderProxyForward(SeleniumTestCase):
             },
         )
 
-        self.prepare()
+        self.prepare(proxy_url)
 
-        self.driver.get("http://localhost/api")
+        self.driver.get(f"{proxy_url}/api")
         self.login()
         sleep(1)
 
@@ -111,7 +110,7 @@ class TestProviderProxyForward(SeleniumTestCase):
             f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
         )
 
-        self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
+        self.driver.get(f"{proxy_url}/outpost.goauthentik.io/sign_out")
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
@@ -123,22 +122,24 @@ class TestProviderProxyForward(SeleniumTestCase):
     @retry()
     def test_nginx(self):
         """Test nginx"""
-        self.prepare()
+        proxy_port = self.get_free_port()
+        proxy_url = f"http://localhost:{proxy_port}"
+        self.prepare(proxy_url)
 
         # Start nginx last so all hosts are resolvable, otherwise nginx exits
         self.run_container(
             image="docker.io/library/nginx:1.27",
             ports={
-                "80": "80",
+                "80": proxy_port,
             },
             volumes={
-                f"{Path(__file__).parent / "proxy_forward_auth" / "nginx_single" / "nginx.conf"}": {
+                f"{Path(__file__).parent / 'proxy_forward_auth' / 'nginx_single' / 'nginx.conf'}": {
                     "bind": "/etc/nginx/conf.d/default.conf",
                 }
             },
         )
 
-        self.driver.get("http://localhost/api")
+        self.driver.get(f"{proxy_url}/api")
         self.login()
         sleep(1)
 
@@ -151,7 +152,7 @@ class TestProviderProxyForward(SeleniumTestCase):
             f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
         )
 
-        self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
+        self.driver.get(f"{proxy_url}/outpost.goauthentik.io/sign_out")
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
@@ -162,21 +163,23 @@ class TestProviderProxyForward(SeleniumTestCase):
     @retry()
     def test_envoy(self):
         """Test envoy"""
+        proxy_port = self.get_free_port()
+        proxy_url = f"http://localhost:{proxy_port}"
         self.run_container(
             image="docker.io/envoyproxy/envoy:v1.25-latest",
             ports={
-                "10000": "80",
+                "10000": proxy_port,
             },
             volumes={
-                f"{Path(__file__).parent / "proxy_forward_auth" / "envoy_single" / "envoy.yaml"}": {
+                f"{Path(__file__).parent / 'proxy_forward_auth' / 'envoy_single' / 'envoy.yaml'}": {
                     "bind": "/etc/envoy/envoy.yaml",
                 }
             },
         )
 
-        self.prepare()
+        self.prepare(proxy_url)
 
-        self.driver.get("http://localhost/api")
+        self.driver.get(f"{proxy_url}/api")
         self.login()
         sleep(1)
 
@@ -189,7 +192,7 @@ class TestProviderProxyForward(SeleniumTestCase):
             f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
         )
 
-        self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
+        self.driver.get(f"{proxy_url}/outpost.goauthentik.io/sign_out")
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
@@ -200,13 +203,15 @@ class TestProviderProxyForward(SeleniumTestCase):
     @retry()
     def test_caddy(self):
         """Test caddy"""
+        proxy_port = self.get_free_port()
+        proxy_url = f"http://localhost:{proxy_port}"
         local_config_path = (
             Path(__file__).parent / "proxy_forward_auth" / "caddy_single" / "Caddyfile"
         )
         self.run_container(
             image="docker.io/library/caddy:2.8",
             ports={
-                "80": "80",
+                "80": proxy_port,
             },
             volumes={
                 local_config_path: {
@@ -215,9 +220,9 @@ class TestProviderProxyForward(SeleniumTestCase):
             },
         )
 
-        self.prepare()
+        self.prepare(proxy_url)
 
-        self.driver.get("http://localhost/api")
+        self.driver.get(f"{proxy_url}/api")
         self.login()
         sleep(1)
 
@@ -230,7 +235,7 @@ class TestProviderProxyForward(SeleniumTestCase):
             f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
         )
 
-        self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
+        self.driver.get(f"{proxy_url}/outpost.goauthentik.io/sign_out")
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)

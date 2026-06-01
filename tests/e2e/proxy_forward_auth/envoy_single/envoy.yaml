@@ -52,7 +52,7 @@ static_resources:
                   name: local_route
                   virtual_hosts:
                     - name: local_service
-                      domains: ["localhost"]
+                      domains: ["localhost", "localhost:*"]
                       routes:
                         - match:
                             prefix: "/outpost.goauthentik.io"

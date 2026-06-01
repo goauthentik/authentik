@@ -1,5 +1,6 @@
 """authentik e2e testing utilities"""
 
+from socket import socket
 from time import sleep
 from typing import Any
 from unittest.case import TestCase
@@ -38,6 +39,12 @@ class DockerTestCase(TestCase):
     @property
     def docker_labels(self) -> dict[str, str]:
         return {"io.goauthentik.test": self.__label_id}
+
+    def get_free_port(self) -> int:
+        """Find an unused local TCP port for a later container bind."""
+        with socket() as sock:
+            sock.bind(("0.0.0.0", 0))  # nosec: test-only local port discovery.
+            return sock.getsockname()[1]
 
     def wait_for_container(self, container: Container) -> Container:
         """Check that container is health"""
@@ -94,7 +101,7 @@ class DockerTestCase(TestCase):
 
     def tearDown(self) -> None:
         containers: list[Container] = self.docker_client.containers.list(
-            filters={"label": ",".join(f"{x}={y}" for x, y in self.docker_labels.items())}
+            all=True, filters={"label": ",".join(f"{x}={y}" for x, y in self.docker_labels.items())}
         )
         for container in containers:
             self.output_container_logs(container)
