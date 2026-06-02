@@ -20,12 +20,6 @@
 export interface PatchedUserPlexSourceConnectionRequest {
     /**
      *
-     * @type {number}
-     * @memberof PatchedUserPlexSourceConnectionRequest
-     */
-    user?: number;
-    /**
-     *
      * @type {string}
      * @memberof PatchedUserPlexSourceConnectionRequest
      */
@@ -67,7 +61,6 @@ export function PatchedUserPlexSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"] == null ? undefined : json["user"],
         source: json["source"] == null ? undefined : json["source"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
         plexToken: json["plex_token"] == null ? undefined : json["plex_token"],
@@ -89,7 +82,6 @@ export function PatchedUserPlexSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
         plex_token: value["plexToken"],

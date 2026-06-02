@@ -32,7 +32,7 @@ export interface GroupSourceConnection {
      * @type {string}
      * @memberof GroupSourceConnection
      */
-    group: string;
+    readonly group: string;
     /**
      *
      * @type {string}
@@ -106,7 +106,10 @@ export function GroupSourceConnectionToJSON(json: any): GroupSourceConnection {
 }
 
 export function GroupSourceConnectionToJSONTyped(
-    value?: Omit<GroupSourceConnection, "pk" | "source_obj" | "created" | "last_updated"> | null,
+    value?: Omit<
+        GroupSourceConnection,
+        "pk" | "group" | "source_obj" | "created" | "last_updated"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -114,7 +117,6 @@ export function GroupSourceConnectionToJSONTyped(
     }
 
     return {
-        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };
