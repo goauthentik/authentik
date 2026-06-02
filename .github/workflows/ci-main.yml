@@ -276,6 +276,9 @@ jobs:
           corepack npm ci
           corepack npm run build
           corepack npm run build:sfe
+      - name: debug open ports
+        run: |
+          sudo netstat -lnp
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
