@@ -32,7 +32,7 @@ export interface UserPlexSourceConnection {
      * @type {number}
      * @memberof UserPlexSourceConnection
      */
-    user: number;
+    readonly user: number;
     /**
      *
      * @type {string}
@@ -108,7 +108,10 @@ export function UserPlexSourceConnectionToJSON(json: any): UserPlexSourceConnect
 }
 
 export function UserPlexSourceConnectionToJSONTyped(
-    value?: Omit<UserPlexSourceConnection, "pk" | "source_obj" | "created" | "last_updated"> | null,
+    value?: Omit<
+        UserPlexSourceConnection,
+        "pk" | "user" | "source_obj" | "created" | "last_updated"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -116,7 +119,6 @@ export function UserPlexSourceConnectionToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };
