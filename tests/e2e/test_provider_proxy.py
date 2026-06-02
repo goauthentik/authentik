@@ -45,7 +45,7 @@ class TestProviderProxy(SeleniumTestCase):
         )
         self.outpost_port = container.ports["9000/tcp"][0]["HostPort"]
         for provider in outpost.providers.all():
-            provider.external_host = f"http://localhost{self.outpost_port}",
+            provider.external_host = f"http://localhost{self.outpost_port}"
             provider.save()
         container.restart()
 
