@@ -15,7 +15,7 @@ authentik's UI is currently a customized PatternFly 4 system wrapped by Lit web 
 - `web/src/common/stylesheets.ts` centralizes `CSSStyleSheet` creation and adopted stylesheet updates.
 - `web/src/styles/authentik/base/*.css` overrides PatternFly global variables and already contains light and dark theme branches.
 - Brand custom CSS is appended to component style roots, including nested shadow roots.
-- Components mix PF class markup, PF per-component imports, global CSS, inline styles, `part` attributes, and local `--ak-*` variables.
+- Components mix PatternFly class markup, PatternFly per-component imports, global CSS, inline styles, `part` attributes, and local `--ak-*` variables.
 
 This gives good incremental control, but no stable external theming contract. Users have to inspect `--pf-*` and internal `--ak-c-*` names, then hope those names survive upgrades.
 
@@ -129,13 +129,13 @@ Start with handwritten runtime CSS tokens. Add generated files only when token o
 
 ## Migration phases
 
-1. Establish public `--ak-*` semantic tokens mapped to current PF values.
+1. Establish public `--ak-*` semantic tokens mapped to current PatternFly values.
 2. Update custom CSS docs to prefer `--ak-*` over `--pf-*`.
-3. Migrate new or touched authentik components to consume semantic tokens first, PF globals second.
+3. Migrate new or touched authentik components to consume semantic tokens first, PatternFly globals second.
 4. Add token metadata docs generated from the public token list.
 5. Introduce DTCG source files and a compiler when the public token list is stable.
 6. Add cascade layers after global, shadow, and custom CSS order are audited.
-7. De-PF component markup incrementally, starting with components whose styling is already mostly custom.
+7. De-PatternFly component markup incrementally, starting with components whose styling is already mostly custom.
 
 ## Guardrails
 

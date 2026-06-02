@@ -65,7 +65,7 @@ These cascades are independent. Layers in one have no effect in the other. We ca
 
 ### Step 0 — Reserve the layer order
 
-Add a single `@layer` declaration at the top of the document entrypoints and of the per-shadow-root base sheets. **No rule moves into a layer yet.** This is a zero-behavior change that lets downstream PRs reference a stable order.
+Add a single `@layer` declaration at the top of the document entrypoints and at the top of the per-shadow-root base sheets. **No rule moves into a layer yet.** This is a zero-behavior change that lets downstream PRs reference a stable order.
 
 ```css
 /* interface.global.css, flows.global.css, patternfly/base.css */
@@ -89,7 +89,7 @@ After this step, brand custom CSS wins inside shadow roots without specificity d
 
 ### Step 3 — Layer the document cascade
 
-Wrap the per-file imports in `interface.global.css`, `flows.global.css`, and `static.global.css` into their target layers via `@import ... layer(...)`. Audit ordering against current behavior using visual regression on the storybook before merging.
+Wrap the per-file imports in `interface.global.css`, `flows.global.css`, and `static.global.css` into their target layers via `@import ... layer(...)`. Audit ordering against current behavior using visual regression on the Storybook before merging.
 
 ### Step 4 — Move user-facing `branding_custom_css` outside the shadow boundary, layered
 

@@ -14,7 +14,7 @@ Custom CSS is an advanced feature. Improper use may lead to unexpected behavior 
 
 :::
 
-## How the design system is organised
+## How the design system is organized
 
 The system has three layers. The layer you target depends on how much of the interface you intend to affect.
 
@@ -24,11 +24,11 @@ The system has three layers. The layer you target depends on how much of the int
 | **Component-local tokens** | `--ak-c-login__main--BackgroundColor`, drawer width variables | One component's tunable knobs.                                                  | When a single component needs adjustment. |
 | **CSS parts**              | `ak-flow-executor::part(locale-select)`                       | Structural hooks a component intentionally exposes.                             | Targeted layout or visibility changes.    |
 
-Most brand customisation stays at the first layer. The lower layers are escape hatches.
+Most brand customization stays at the first layer. The lower layers are escape hatches.
 
 ## Token groups
 
-The semantic surface is around 60 tokens, organised by concern. Every token name follows the pattern `--ak-{group}-{member}`.
+The semantic surface consists of around 60 tokens, organised by concern. Every token name follows the pattern `--ak-{group}-{member}`.
 
 | Group          | Public tokens                                                                                                                                                                                                     | Notes                                                                                                          |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -64,13 +64,13 @@ html[data-theme="dark"] {
 }
 ```
 
-A third theme — `reduced` — is reserved for users who explicitly opt into reduced motion (in addition to the browser-level `prefers-reduced-motion` media query, which fires automatically). authentik respects both, so most operators don't need to do anything to support reduced motion users.
+A third theme — `reduced` — is reserved for users who explicitly opt into reduced motion (in addition to the browser-level `prefers-reduced-motion` media query, which fires automatically). authentik respects both, so most operators do not need to do anything to support reduced motion users.
 
 When you override semantic tokens in your custom CSS, follow the same pattern: provide light values under `:root`, then dark values under `html[data-theme="dark"]`. See [Custom CSS · Theme-based styling](./custom-css.mdx) for a worked example.
 
 ## Consuming tokens outside authentik
 
-If your organisation has its own design tooling, you can pull authentik's tokens in directly. The token system is published as the [`@goauthentik/theme`](https://www.npmjs.com/package/@goauthentik/theme) npm package, with three output formats:
+If your organization has its own design tooling, you can pull authentik's tokens in directly. The token system is published as the [`@goauthentik/theme`](https://www.npmjs.com/package/@goauthentik/theme) npm package, with three output formats:
 
 | Path                                           | Format        | Use case                                                                    |
 | ---------------------------------------------- | ------------- | --------------------------------------------------------------------------- |
