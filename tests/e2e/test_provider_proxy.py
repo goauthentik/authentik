@@ -47,7 +47,6 @@ class TestProviderProxy(SeleniumTestCase):
         for provider in outpost.providers.all():
             provider.external_host = f"http://localhost{self.outpost_port}"
             provider.save()
-        container.restart()
 
     @retry()
     @apply_blueprint(
@@ -239,7 +238,7 @@ class TestProviderProxyConnect(ChannelsE2ETestCase):
                 slug="default-provider-authorization-implicit-consent"
             ),
             internal_host="http://localhost",
-            external_host="http://localhost:9000",
+            external_host=f"http://localhost{self.outpost_port}",
         )
         # Ensure OAuth2 Params are set
         proxy.set_oauth_defaults()
@@ -257,6 +256,9 @@ class TestProviderProxyConnect(ChannelsE2ETestCase):
 
         self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
+            ports={
+                "9000": "9000",
+            },
             environment={
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
