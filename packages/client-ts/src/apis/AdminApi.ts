@@ -12,29 +12,19 @@
  * Do not edit the class manually.
  */
 
-import type {
-    App,
-    FileList,
-    PatchedSettingsRequest,
-    Settings,
-    SettingsRequest,
-    SystemInfo,
-    UsageEnum,
-    UsedBy,
-    Version,
-    VersionHistory,
-} from "../models/index";
+import { type App, AppFromJSON } from "../models/App";
+import { type FileList, FileListFromJSON } from "../models/FileList";
 import {
-    AppFromJSON,
-    FileListFromJSON,
+    type PatchedSettingsRequest,
     PatchedSettingsRequestToJSON,
-    SettingsFromJSON,
-    SettingsRequestToJSON,
-    SystemInfoFromJSON,
-    UsedByFromJSON,
-    VersionFromJSON,
-    VersionHistoryFromJSON,
-} from "../models/index";
+} from "../models/PatchedSettingsRequest";
+import { type Settings, SettingsFromJSON } from "../models/Settings";
+import { type SettingsRequest, SettingsRequestToJSON } from "../models/SettingsRequest";
+import { type SystemInfo, SystemInfoFromJSON } from "../models/SystemInfo";
+import { type UsageEnum } from "../models/UsageEnum";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+import { type Version, VersionFromJSON } from "../models/Version";
+import { type VersionHistory, VersionHistoryFromJSON } from "../models/VersionHistory";
 import * as runtime from "../runtime";
 
 export interface AdminFileCreateRequest {
@@ -810,7 +800,7 @@ export class AdminApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/admin/version/history/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
