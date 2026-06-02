@@ -4,6 +4,17 @@ services:
     shm_size: 2g
     network_mode: host
     restart: always
+<<<<<<< HEAD:tests/e2e/docker-compose.yml
+=======
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      - io.goauthentik.tests=selenium
+    profiles:
+      - selenium
+    environment:
+      VIDEO_READY_PORT: 9912
+>>>>>>> 9508ac62ce (tests/e2e: fix proxy tests failing due to in-use port (#22785)):tests/e2e/compose.yml
   mailpit:
     image: docker.io/axllent/mailpit:v1.28.0
     ports:
