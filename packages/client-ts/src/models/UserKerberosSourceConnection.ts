@@ -32,7 +32,7 @@ export interface UserKerberosSourceConnection {
      * @type {number}
      * @memberof UserKerberosSourceConnection
      */
-    user: number;
+    readonly user: number;
     /**
      *
      * @type {string}
@@ -110,7 +110,7 @@ export function UserKerberosSourceConnectionToJSON(json: any): UserKerberosSourc
 export function UserKerberosSourceConnectionToJSONTyped(
     value?: Omit<
         UserKerberosSourceConnection,
-        "pk" | "source_obj" | "created" | "last_updated"
+        "pk" | "user" | "source_obj" | "created" | "last_updated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -119,7 +119,6 @@ export function UserKerberosSourceConnectionToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };
