@@ -20,12 +20,6 @@
 export interface UserOAuthSourceConnectionRequest {
     /**
      *
-     * @type {number}
-     * @memberof UserOAuthSourceConnectionRequest
-     */
-    user: number;
-    /**
-     *
      * @type {string}
      * @memberof UserOAuthSourceConnectionRequest
      */
@@ -56,7 +50,6 @@ export interface UserOAuthSourceConnectionRequest {
 export function instanceOfUserOAuthSourceConnectionRequest(
     value: object,
 ): value is UserOAuthSourceConnectionRequest {
-    if (!("user" in value) || value["user"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
@@ -76,7 +69,6 @@ export function UserOAuthSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"],
         source: json["source"],
         identifier: json["identifier"],
         accessToken: json["access_token"] == null ? undefined : json["access_token"],
@@ -99,7 +91,6 @@ export function UserOAuthSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
         access_token: value["accessToken"],

@@ -20,12 +20,6 @@
 export interface UserKerberosSourceConnectionRequest {
     /**
      *
-     * @type {number}
-     * @memberof UserKerberosSourceConnectionRequest
-     */
-    user: number;
-    /**
-     *
      * @type {string}
      * @memberof UserKerberosSourceConnectionRequest
      */
@@ -44,7 +38,6 @@ export interface UserKerberosSourceConnectionRequest {
 export function instanceOfUserKerberosSourceConnectionRequest(
     value: object,
 ): value is UserKerberosSourceConnectionRequest {
-    if (!("user" in value) || value["user"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
@@ -64,7 +57,6 @@ export function UserKerberosSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"],
         source: json["source"],
         identifier: json["identifier"],
     };
@@ -85,7 +77,6 @@ export function UserKerberosSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };
