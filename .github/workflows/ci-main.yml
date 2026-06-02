@@ -279,6 +279,7 @@ jobs:
       - name: debug open ports
         run: |
           sudo netstat -lnp
+          sudo ps aux
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
