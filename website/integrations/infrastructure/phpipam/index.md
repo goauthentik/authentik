@@ -88,7 +88,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
 - Select New Property Mapping > SAML Provider Property Mapping > Next
 
 1. display_name
-    - Mapping Name: phpipam-display-name
+    - Name: phpipam-display-name
     - SAML Attribute Name: display_name
     - Expression:
 
@@ -97,7 +97,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 2. email
-    - Mapping Name: phpipam-email
+    - Name: phpipam-email
     - SAML Attribute Name: email
     - Expression:
 
@@ -106,7 +106,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 3. is_admin
-    - Mapping Name: phpipam-is-admin
+    - Name: phpipam-is-admin
     - SAML Attribute Name: is_admin
     - Expression:
 
@@ -115,7 +115,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 4. groups
-    - Mapping Name: phpipam-groups
+    - Name: phpipam-groups
     - SAML Attribute Name: groups
     - Expression:
 
@@ -127,7 +127,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 5. modules
-    - Mapping Name: phpipam-modules
+    - Name: phpipam-modules
     - SAML Attribute Name: modules
     - Expression:
     ```python
@@ -189,9 +189,9 @@ Select Create New > SAML2 Authentication
 - Use advanced settings: Off
 - Client ID: https://phpipam.company/
 - Strict Mode: Off
-- IDP Issuer: https://authentik.company/application/saml/application_slug/metadata/
-- IDP Login url: https://authentik.company/application/saml/application_slug/
-- IDP Logout url: https://authentik.company/application/saml/application_slug/
+- IDP Issuer: https://authentik.company/application/saml/<application_slug>/metadata/
+- IDP Login url: https://authentik.company/application/saml/<application_slug>/
+- IDP Logout url: https://authentik.company/application/saml/<application_slug>/
 - IDP X.509 public cert: This will be the `.pem` contents of the cert used as the signing certificate
     1. To get this cert, access the authentik installation at authentik.company
     2. Select Applications > Providers > phpipam-saml
