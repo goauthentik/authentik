@@ -33,16 +33,15 @@ class TestProviderProxy(SeleniumTestCase):
 
     def start_proxy(self, outpost: Outpost):
         """Start proxy container based on outpost created"""
-        container = self.run_container(
+        self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
             ports={
-                "9000": None,
+                "9000": "9000",
             },
             environment={
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
         )
-        self.outpost_port = container.ports["9000/tcp"][0]["HostPort"]
 
     @retry()
     @apply_blueprint(
@@ -71,7 +70,7 @@ class TestProviderProxy(SeleniumTestCase):
             ),
             invalidation_flow=Flow.objects.get(slug="default-provider-invalidation-flow"),
             internal_host=f"http://{self.host}",
-            external_host=f"http://localhost{self.outpost_port}",
+            external_host="http://localhost:9000",
         )
         # Ensure OAuth2 Params are set
         proxy.set_oauth_defaults()
@@ -89,7 +88,7 @@ class TestProviderProxy(SeleniumTestCase):
 
         sleep(5)
 
-        self.driver.get(f"http://localhost{self.outpost_port}/api")
+        self.driver.get("http://localhost:9000/api")
         self.login()
         sleep(1)
 
@@ -113,7 +112,7 @@ class TestProviderProxy(SeleniumTestCase):
         self.assertIsNotNone(jwt["sid"], "Missing 'sid' in JWT")
         self.assertIsNotNone(jwt["ak_proxy"], "Missing 'ak_proxy' in JWT")
 
-        self.driver.get(f"http://localhost{self.outpost_port}/outpost.goauthentik.io/sign_out")
+        self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
@@ -156,7 +155,7 @@ class TestProviderProxy(SeleniumTestCase):
             ),
             invalidation_flow=Flow.objects.get(slug="default-provider-invalidation-flow"),
             internal_host=f"http://{self.host}",
-            external_host=f"http://localhost{self.outpost_port}",
+            external_host="http://localhost:9000",
             basic_auth_enabled=True,
             basic_auth_user_attribute="basic-username",
             basic_auth_password_attribute=attr,
@@ -177,7 +176,7 @@ class TestProviderProxy(SeleniumTestCase):
 
         sleep(5)
 
-        self.driver.get(f"http://localhost{self.outpost_port}/api")
+        self.driver.get("http://localhost:9000/api")
         self.login()
         sleep(1)
 
@@ -199,7 +198,7 @@ class TestProviderProxy(SeleniumTestCase):
             f"Authorization header mismatch at {self.driver.current_url}: {snippet}",
         )
 
-        self.driver.get(f"http://localhost{self.outpost_port}/outpost.goauthentik.io/sign_out")
+        self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
 
         flow_executor = self.get_shadow_root("ak-flow-executor")
@@ -234,7 +233,7 @@ class TestProviderProxyConnect(ChannelsE2ETestCase):
                 slug="default-provider-authorization-implicit-consent"
             ),
             internal_host="http://localhost",
-            external_host=f"http://localhost{self.outpost_port}",
+            external_host="http://localhost:9000",
         )
         # Ensure OAuth2 Params are set
         proxy.set_oauth_defaults()
