@@ -30,7 +30,10 @@ To SSH to a configured [Linux host](../agent-deployment/linux.mdx) using the aut
 Edit `~/.ssh/config` and add the following:
 ```
 Host *
-    ForwardAgent yes
+<TabItem value="macOS">
+Edit `~/.ssh/config` and add the following:
+```shell
+Host *
     IdentityAgent "~/Library/Application Support/authentik/agent-ssh.sock"
 ```
 </TabItem>
