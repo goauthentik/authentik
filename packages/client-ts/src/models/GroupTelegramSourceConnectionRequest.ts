@@ -23,12 +23,6 @@ export interface GroupTelegramSourceConnectionRequest {
      * @type {string}
      * @memberof GroupTelegramSourceConnectionRequest
      */
-    group: string;
-    /**
-     *
-     * @type {string}
-     * @memberof GroupTelegramSourceConnectionRequest
-     */
     source: string;
     /**
      *
@@ -44,7 +38,6 @@ export interface GroupTelegramSourceConnectionRequest {
 export function instanceOfGroupTelegramSourceConnectionRequest(
     value: object,
 ): value is GroupTelegramSourceConnectionRequest {
-    if (!("group" in value) || value["group"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     return true;
@@ -64,7 +57,6 @@ export function GroupTelegramSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        group: json["group"],
         source: json["source"],
         identifier: json["identifier"],
     };
@@ -85,7 +77,6 @@ export function GroupTelegramSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };

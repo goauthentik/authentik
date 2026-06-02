@@ -12,44 +12,53 @@
  * Do not edit the class manually.
  */
 
-import type {
-    InitialPermissions,
-    InitialPermissionsRequest,
-    PaginatedExtraRoleObjectPermissionList,
-    PaginatedInitialPermissionsList,
-    PaginatedPermissionList,
-    PaginatedRoleAssignedObjectPermissionList,
-    PaginatedRoleList,
-    PatchedInitialPermissionsRequest,
-    PatchedPermissionAssignRequest,
-    PatchedRoleRequest,
-    Permission,
-    PermissionAssignRequest,
-    PermissionAssignResult,
-    Role,
-    RoleRequest,
-    UsedBy,
-    UserAccountSerializerForRoleRequest,
-} from "../models/index";
+import { type InitialPermissions, InitialPermissionsFromJSON } from "../models/InitialPermissions";
 import {
-    InitialPermissionsFromJSON,
+    type InitialPermissionsRequest,
     InitialPermissionsRequestToJSON,
+} from "../models/InitialPermissionsRequest";
+import {
+    type PaginatedExtraRoleObjectPermissionList,
     PaginatedExtraRoleObjectPermissionListFromJSON,
+} from "../models/PaginatedExtraRoleObjectPermissionList";
+import {
+    type PaginatedInitialPermissionsList,
     PaginatedInitialPermissionsListFromJSON,
+} from "../models/PaginatedInitialPermissionsList";
+import {
+    type PaginatedPermissionList,
     PaginatedPermissionListFromJSON,
+} from "../models/PaginatedPermissionList";
+import {
+    type PaginatedRoleAssignedObjectPermissionList,
     PaginatedRoleAssignedObjectPermissionListFromJSON,
-    PaginatedRoleListFromJSON,
+} from "../models/PaginatedRoleAssignedObjectPermissionList";
+import { type PaginatedRoleList, PaginatedRoleListFromJSON } from "../models/PaginatedRoleList";
+import {
+    type PatchedInitialPermissionsRequest,
     PatchedInitialPermissionsRequestToJSON,
+} from "../models/PatchedInitialPermissionsRequest";
+import {
+    type PatchedPermissionAssignRequest,
     PatchedPermissionAssignRequestToJSON,
-    PatchedRoleRequestToJSON,
+} from "../models/PatchedPermissionAssignRequest";
+import { type PatchedRoleRequest, PatchedRoleRequestToJSON } from "../models/PatchedRoleRequest";
+import { type Permission, PermissionFromJSON } from "../models/Permission";
+import {
+    type PermissionAssignRequest,
     PermissionAssignRequestToJSON,
+} from "../models/PermissionAssignRequest";
+import {
+    type PermissionAssignResult,
     PermissionAssignResultFromJSON,
-    PermissionFromJSON,
-    RoleFromJSON,
-    RoleRequestToJSON,
-    UsedByFromJSON,
+} from "../models/PermissionAssignResult";
+import { type Role, RoleFromJSON } from "../models/Role";
+import { type RoleRequest, RoleRequestToJSON } from "../models/RoleRequest";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+import {
+    type UserAccountSerializerForRoleRequest,
     UserAccountSerializerForRoleRequestToJSON,
-} from "../models/index";
+} from "../models/UserAccountSerializerForRoleRequest";
 import * as runtime from "../runtime";
 
 export interface RbacInitialPermissionsCreateRequest {
@@ -277,7 +286,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/initial_permissions/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -415,7 +424,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/initial_permissions/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -485,7 +494,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/initial_permissions/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -561,7 +570,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/initial_permissions/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -629,7 +638,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/initial_permissions/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -703,10 +712,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/permissions/assigned_by_roles/{uuid}/assign/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -866,10 +872,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/permissions/assigned_by_roles/{uuid}/unassign/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1025,7 +1028,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/permissions/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -1170,10 +1173,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/add_user/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1299,10 +1299,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1459,10 +1456,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1533,10 +1527,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/remove_user/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1599,10 +1590,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1672,10 +1660,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1737,10 +1722,7 @@ export class RbacApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/rbac/roles/{uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
