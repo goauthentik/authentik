@@ -16,6 +16,7 @@ The following placeholders are used in this guide:
 
 - `phpipam.company` is the FQDN of the phpipam.
 - `authentik.company` is the FQDN of the authentik installation.
+- `application_slug` is the short name in Authentik URLs for the application
 - `test-user[0-2]` in place of actual usernames
 - `admin-permission-group` in place of your company naming convention
 - `operator-permission-group` in place of your company naming convention
@@ -38,6 +39,7 @@ You need to ensure users and groups exist before we proceed with the next steps.
 
 The groups are used for property mappings later to give the user the correct permission level in the application. For this documentation there is an example for each of the 3 main default permission levels and an easy way to visualise the differences between them.
 
+Select **Directory > Users**
 1. **Create test-user 0**
     - username: test-user0
     - Name: Test User0
@@ -82,11 +84,11 @@ The groups are used for property mappings later to give the user the correct per
 
 In order to support automatic user provisioning (JIT) with phpIPAM, additional SAML attributes need to be passed. See [phpipam docs](https://github.com/phpipam/phpipam/blob/master/doc/Authentication/SAML2.md#automatic-user-jit-provisioning) for more details about specific attributes to pass.
 
-- Select Property Mappings
-- Select Create > SAML Property Mapping > Next
+- Select Customization > Property Mappings
+- Select New Property Mapping > SAML Provider Property Mapping > Next
 
 1. display_name
-    - Name: phpipam-display-name
+    - Mapping Name: phpipam-display-name
     - SAML Attribute Name: display_name
     - Expression:
 
@@ -95,7 +97,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 2. email
-    - Name: phpipam-email
+    - Mapping Name: phpipam-email
     - SAML Attribute Name: email
     - Expression:
 
@@ -104,7 +106,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 3. is_admin
-    - Name: phpipam-is-admin
+    - Mapping Name: phpipam-is-admin
     - SAML Attribute Name: is_admin
     - Expression:
 
@@ -113,7 +115,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 4. groups
-    - Name: phpipam-groups
+    - Mapping Name: phpipam-groups
     - SAML Attribute Name: groups
     - Expression:
 
@@ -125,7 +127,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 5. modules
-    - Name: phpipam-modules
+    - Mapping Name: phpipam-modules
     - SAML Attribute Name: modules
     - Expression:
     ```python
@@ -139,11 +141,12 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
 
 ### Step 3 - Provider creation
 
-- Select Create > SAML Provider
+- Select Applications > Provider
+- New Provider > SAML Provider
     - Name: phpipam-saml
     - Authorization flow: `default-provider-authorization-explicit-consent`
     - Protocol Settings:
-        - ACS URL: https://phpipam.company/saml2/
+        - ACS URL: https://phpipam.company/index.php?page=saml2
         - Audience: https://phpipam.company/
     - Advanced Protocol Settings:
         - Signing Certificate: authentik: Self-signed Certificate
@@ -156,9 +159,11 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
 
 ### Step 4 - Application creation
 
-Select Create
+- Select Applications > Applications
+- Select New Application with Existing Provider
 
 - Name: phpipam-saml
+- slug: application_slug
 - Provider: phpipam-saml
 
 Edit Policy Bindings to only allow users who have the groups assigned to them access to log in. Without this, any user can log in and be given default no permissions in phpIPAM.
@@ -184,9 +189,9 @@ Select Create New > SAML2 Authentication
 - Use advanced settings: Off
 - Client ID: https://phpipam.company/
 - Strict Mode: Off
-- IDP Issuer: https://authentik.company/application/saml/*application_name*/metadata/
-- IDP Login url: https://authentik.company/application/saml/*application_name*/
-- IDP Logout url: https://authentik.company/application/saml/*application_name*/
+- IDP Issuer: https://authentik.company/application/saml/application_slug/metadata/
+- IDP Login url: https://authentik.company/application/saml/application_slug/
+- IDP Logout url: https://authentik.company/application/saml/application_slug/
 - IDP X.509 public cert: This will be the `.pem` contents of the cert used as the signing certificate
     1. To get this cert, access the authentik installation at authentik.company
     2. Select Applications > Providers > phpipam-saml
