@@ -36,7 +36,7 @@ jobs:
     with:
       image_name: ${{ inputs.image_name }}
       image_arch: arm64
-      runs-on: ubuntu-22.04-arm
+      runs-on: ubuntu-24.04-arm
       registry_dockerhub: ${{ inputs.registry_dockerhub }}
       registry_ghcr: ${{ inputs.registry_ghcr }}
       release: ${{ inputs.release }}
@@ -79,13 +79,13 @@ jobs:
           image-name: ${{ inputs.image_name }}
       - name: Login to Docker Hub
         if: ${{ inputs.registry_dockerhub }}
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
           username: ${{ secrets.DOCKER_CORP_USERNAME }}
           password: ${{ secrets.DOCKER_CORP_PASSWORD }}
       - name: Login to GitHub Container Registry
         if: ${{ inputs.registry_ghcr }}
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
