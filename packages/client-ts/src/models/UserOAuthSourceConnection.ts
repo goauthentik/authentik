@@ -32,7 +32,7 @@ export interface UserOAuthSourceConnection {
      * @type {number}
      * @memberof UserOAuthSourceConnection
      */
-    user: number;
+    readonly user: number;
     /**
      *
      * @type {string}
@@ -117,7 +117,7 @@ export function UserOAuthSourceConnectionToJSON(json: any): UserOAuthSourceConne
 export function UserOAuthSourceConnectionToJSONTyped(
     value?: Omit<
         UserOAuthSourceConnection,
-        "pk" | "source_obj" | "created" | "last_updated"
+        "pk" | "user" | "source_obj" | "created" | "last_updated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -126,7 +126,6 @@ export function UserOAuthSourceConnectionToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),

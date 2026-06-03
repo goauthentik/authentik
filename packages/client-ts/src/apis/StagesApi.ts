@@ -12,273 +12,415 @@
  * Do not edit the class manually.
  */
 
-import type {
-    AccountLockdownStage,
-    AccountLockdownStageRequest,
-    AuthenticatorAttachmentEnum,
-    AuthenticatorDuoStage,
-    AuthenticatorDuoStageDeviceImportResponse,
-    AuthenticatorDuoStageManualDeviceImportRequest,
-    AuthenticatorDuoStageRequest,
-    AuthenticatorEmailStage,
-    AuthenticatorEmailStageRequest,
-    AuthenticatorEndpointGDTCStage,
-    AuthenticatorEndpointGDTCStageRequest,
-    AuthenticatorSMSStage,
-    AuthenticatorSMSStageRequest,
-    AuthenticatorStaticStage,
-    AuthenticatorStaticStageRequest,
-    AuthenticatorTOTPStage,
-    AuthenticatorTOTPStageRequest,
-    AuthenticatorValidateStage,
-    AuthenticatorValidateStageRequest,
-    AuthenticatorWebAuthnStage,
-    AuthenticatorWebAuthnStageRequest,
-    AuthTypeEnum,
-    CaptchaStage,
-    CaptchaStageRequest,
-    CertAttributeEnum,
-    ConsentModeEnum,
-    ConsentStage,
-    ConsentStageRequest,
-    DenyStage,
-    DenyStageRequest,
-    DigitsEnum,
-    DummyStage,
-    DummyStageRequest,
-    DuoDeviceEnrollmentStatus,
-    EmailStage,
-    EmailStageRequest,
-    EndpointStage,
-    EndpointStageRequest,
-    GeoipBindingEnum,
-    IdentificationStage,
-    IdentificationStageRequest,
-    Invitation,
-    InvitationRequest,
-    InvitationSendEmailRequest,
-    InvitationStage,
-    InvitationStageRequest,
-    MutualTLSStage,
-    MutualTLSStageRequest,
-    NetworkBindingEnum,
-    NotConfiguredActionEnum,
-    PaginatedAccountLockdownStageList,
-    PaginatedAuthenticatorDuoStageList,
-    PaginatedAuthenticatorEmailStageList,
-    PaginatedAuthenticatorEndpointGDTCStageList,
-    PaginatedAuthenticatorSMSStageList,
-    PaginatedAuthenticatorStaticStageList,
-    PaginatedAuthenticatorTOTPStageList,
-    PaginatedAuthenticatorValidateStageList,
-    PaginatedAuthenticatorWebAuthnStageList,
-    PaginatedCaptchaStageList,
-    PaginatedConsentStageList,
-    PaginatedDenyStageList,
-    PaginatedDummyStageList,
-    PaginatedEmailStageList,
-    PaginatedEndpointStageList,
-    PaginatedIdentificationStageList,
-    PaginatedInvitationList,
-    PaginatedInvitationStageList,
-    PaginatedMutualTLSStageList,
-    PaginatedPasswordStageList,
-    PaginatedPromptList,
-    PaginatedPromptStageList,
-    PaginatedRedirectStageList,
-    PaginatedSourceStageList,
-    PaginatedStageList,
-    PaginatedUserDeleteStageList,
-    PaginatedUserLoginStageList,
-    PaginatedUserLogoutStageList,
-    PaginatedUserWriteStageList,
-    PaginatedWebAuthnDeviceTypeList,
-    PasswordStage,
-    PasswordStageRequest,
-    PatchedAccountLockdownStageRequest,
-    PatchedAuthenticatorDuoStageRequest,
-    PatchedAuthenticatorEmailStageRequest,
-    PatchedAuthenticatorEndpointGDTCStageRequest,
-    PatchedAuthenticatorSMSStageRequest,
-    PatchedAuthenticatorStaticStageRequest,
-    PatchedAuthenticatorTOTPStageRequest,
-    PatchedAuthenticatorValidateStageRequest,
-    PatchedAuthenticatorWebAuthnStageRequest,
-    PatchedCaptchaStageRequest,
-    PatchedConsentStageRequest,
-    PatchedDenyStageRequest,
-    PatchedDummyStageRequest,
-    PatchedEmailStageRequest,
-    PatchedEndpointStageRequest,
-    PatchedIdentificationStageRequest,
-    PatchedInvitationRequest,
-    PatchedInvitationStageRequest,
-    PatchedMutualTLSStageRequest,
-    PatchedPasswordStageRequest,
-    PatchedPromptRequest,
-    PatchedPromptStageRequest,
-    PatchedRedirectStageRequest,
-    PatchedSourceStageRequest,
-    PatchedUserDeleteStageRequest,
-    PatchedUserLoginStageRequest,
-    PatchedUserLogoutStageRequest,
-    PatchedUserWriteStageRequest,
-    Prompt,
-    PromptChallenge,
-    PromptRequest,
-    PromptStage,
-    PromptStageRequest,
-    PromptTypeEnum,
-    ProviderEnum,
-    RedirectStage,
-    RedirectStageRequest,
-    SourceStage,
-    SourceStageRequest,
-    Stage,
-    StageModeEnum,
-    TypeCreate,
-    UsedBy,
-    UserAttributeEnum,
-    UserCreationModeEnum,
-    UserDeleteStage,
-    UserDeleteStageRequest,
-    UserLoginStage,
-    UserLoginStageRequest,
-    UserLogoutStage,
-    UserLogoutStageRequest,
-    UserSetting,
-    UserTypeEnum,
-    UserVerificationEnum,
-    UserWriteStage,
-    UserWriteStageRequest,
-    WebAuthnDeviceType,
-} from "../models/index";
 import {
+    type AccountLockdownStage,
     AccountLockdownStageFromJSON,
+} from "../models/AccountLockdownStage";
+import {
+    type AccountLockdownStageRequest,
     AccountLockdownStageRequestToJSON,
-    AuthenticatorDuoStageDeviceImportResponseFromJSON,
+} from "../models/AccountLockdownStageRequest";
+import { type AuthenticatorAttachmentEnum } from "../models/AuthenticatorAttachmentEnum";
+import {
+    type AuthenticatorDuoStage,
     AuthenticatorDuoStageFromJSON,
+} from "../models/AuthenticatorDuoStage";
+import {
+    type AuthenticatorDuoStageDeviceImportResponse,
+    AuthenticatorDuoStageDeviceImportResponseFromJSON,
+} from "../models/AuthenticatorDuoStageDeviceImportResponse";
+import {
+    type AuthenticatorDuoStageManualDeviceImportRequest,
     AuthenticatorDuoStageManualDeviceImportRequestToJSON,
+} from "../models/AuthenticatorDuoStageManualDeviceImportRequest";
+import {
+    type AuthenticatorDuoStageRequest,
     AuthenticatorDuoStageRequestToJSON,
+} from "../models/AuthenticatorDuoStageRequest";
+import {
+    type AuthenticatorEmailStage,
     AuthenticatorEmailStageFromJSON,
+} from "../models/AuthenticatorEmailStage";
+import {
+    type AuthenticatorEmailStageRequest,
     AuthenticatorEmailStageRequestToJSON,
+} from "../models/AuthenticatorEmailStageRequest";
+import {
+    type AuthenticatorEndpointGDTCStage,
     AuthenticatorEndpointGDTCStageFromJSON,
+} from "../models/AuthenticatorEndpointGDTCStage";
+import {
+    type AuthenticatorEndpointGDTCStageRequest,
     AuthenticatorEndpointGDTCStageRequestToJSON,
+} from "../models/AuthenticatorEndpointGDTCStageRequest";
+import {
+    type AuthenticatorSMSStage,
     AuthenticatorSMSStageFromJSON,
+} from "../models/AuthenticatorSMSStage";
+import {
+    type AuthenticatorSMSStageRequest,
     AuthenticatorSMSStageRequestToJSON,
+} from "../models/AuthenticatorSMSStageRequest";
+import {
+    type AuthenticatorStaticStage,
     AuthenticatorStaticStageFromJSON,
+} from "../models/AuthenticatorStaticStage";
+import {
+    type AuthenticatorStaticStageRequest,
     AuthenticatorStaticStageRequestToJSON,
+} from "../models/AuthenticatorStaticStageRequest";
+import {
+    type AuthenticatorTOTPStage,
     AuthenticatorTOTPStageFromJSON,
+} from "../models/AuthenticatorTOTPStage";
+import {
+    type AuthenticatorTOTPStageRequest,
     AuthenticatorTOTPStageRequestToJSON,
+} from "../models/AuthenticatorTOTPStageRequest";
+import {
+    type AuthenticatorValidateStage,
     AuthenticatorValidateStageFromJSON,
+} from "../models/AuthenticatorValidateStage";
+import {
+    type AuthenticatorValidateStageRequest,
     AuthenticatorValidateStageRequestToJSON,
+} from "../models/AuthenticatorValidateStageRequest";
+import {
+    type AuthenticatorWebAuthnStage,
     AuthenticatorWebAuthnStageFromJSON,
+} from "../models/AuthenticatorWebAuthnStage";
+import {
+    type AuthenticatorWebAuthnStageRequest,
     AuthenticatorWebAuthnStageRequestToJSON,
-    CaptchaStageFromJSON,
-    CaptchaStageRequestToJSON,
-    ConsentStageFromJSON,
-    ConsentStageRequestToJSON,
-    DenyStageFromJSON,
-    DenyStageRequestToJSON,
-    DummyStageFromJSON,
-    DummyStageRequestToJSON,
+} from "../models/AuthenticatorWebAuthnStageRequest";
+import { type AuthTypeEnum } from "../models/AuthTypeEnum";
+import { type CaptchaStage, CaptchaStageFromJSON } from "../models/CaptchaStage";
+import { type CaptchaStageRequest, CaptchaStageRequestToJSON } from "../models/CaptchaStageRequest";
+import { type CertAttributeEnum } from "../models/CertAttributeEnum";
+import { type ConsentModeEnum } from "../models/ConsentModeEnum";
+import { type ConsentStage, ConsentStageFromJSON } from "../models/ConsentStage";
+import { type ConsentStageRequest, ConsentStageRequestToJSON } from "../models/ConsentStageRequest";
+import { type DenyStage, DenyStageFromJSON } from "../models/DenyStage";
+import { type DenyStageRequest, DenyStageRequestToJSON } from "../models/DenyStageRequest";
+import { type DigitsEnum } from "../models/DigitsEnum";
+import { type DummyStage, DummyStageFromJSON } from "../models/DummyStage";
+import { type DummyStageRequest, DummyStageRequestToJSON } from "../models/DummyStageRequest";
+import {
+    type DuoDeviceEnrollmentStatus,
     DuoDeviceEnrollmentStatusFromJSON,
-    EmailStageFromJSON,
-    EmailStageRequestToJSON,
-    EndpointStageFromJSON,
+} from "../models/DuoDeviceEnrollmentStatus";
+import { type EmailStage, EmailStageFromJSON } from "../models/EmailStage";
+import { type EmailStageRequest, EmailStageRequestToJSON } from "../models/EmailStageRequest";
+import { type EndpointStage, EndpointStageFromJSON } from "../models/EndpointStage";
+import {
+    type EndpointStageRequest,
     EndpointStageRequestToJSON,
+} from "../models/EndpointStageRequest";
+import { type GeoipBindingEnum } from "../models/GeoipBindingEnum";
+import {
+    type IdentificationStage,
     IdentificationStageFromJSON,
+} from "../models/IdentificationStage";
+import {
+    type IdentificationStageRequest,
     IdentificationStageRequestToJSON,
-    InvitationFromJSON,
-    InvitationRequestToJSON,
+} from "../models/IdentificationStageRequest";
+import { type Invitation, InvitationFromJSON } from "../models/Invitation";
+import { type InvitationRequest, InvitationRequestToJSON } from "../models/InvitationRequest";
+import {
+    type InvitationSendEmailRequest,
     InvitationSendEmailRequestToJSON,
-    InvitationStageFromJSON,
+} from "../models/InvitationSendEmailRequest";
+import { type InvitationStage, InvitationStageFromJSON } from "../models/InvitationStage";
+import {
+    type InvitationStageRequest,
     InvitationStageRequestToJSON,
-    MutualTLSStageFromJSON,
+} from "../models/InvitationStageRequest";
+import { type MutualTLSStage, MutualTLSStageFromJSON } from "../models/MutualTLSStage";
+import {
+    type MutualTLSStageRequest,
     MutualTLSStageRequestToJSON,
+} from "../models/MutualTLSStageRequest";
+import { type NetworkBindingEnum } from "../models/NetworkBindingEnum";
+import { type NotConfiguredActionEnum } from "../models/NotConfiguredActionEnum";
+import {
+    type PaginatedAccountLockdownStageList,
     PaginatedAccountLockdownStageListFromJSON,
+} from "../models/PaginatedAccountLockdownStageList";
+import {
+    type PaginatedAuthenticatorDuoStageList,
     PaginatedAuthenticatorDuoStageListFromJSON,
+} from "../models/PaginatedAuthenticatorDuoStageList";
+import {
+    type PaginatedAuthenticatorEmailStageList,
     PaginatedAuthenticatorEmailStageListFromJSON,
+} from "../models/PaginatedAuthenticatorEmailStageList";
+import {
+    type PaginatedAuthenticatorEndpointGDTCStageList,
     PaginatedAuthenticatorEndpointGDTCStageListFromJSON,
+} from "../models/PaginatedAuthenticatorEndpointGDTCStageList";
+import {
+    type PaginatedAuthenticatorSMSStageList,
     PaginatedAuthenticatorSMSStageListFromJSON,
+} from "../models/PaginatedAuthenticatorSMSStageList";
+import {
+    type PaginatedAuthenticatorStaticStageList,
     PaginatedAuthenticatorStaticStageListFromJSON,
+} from "../models/PaginatedAuthenticatorStaticStageList";
+import {
+    type PaginatedAuthenticatorTOTPStageList,
     PaginatedAuthenticatorTOTPStageListFromJSON,
+} from "../models/PaginatedAuthenticatorTOTPStageList";
+import {
+    type PaginatedAuthenticatorValidateStageList,
     PaginatedAuthenticatorValidateStageListFromJSON,
+} from "../models/PaginatedAuthenticatorValidateStageList";
+import {
+    type PaginatedAuthenticatorWebAuthnStageList,
     PaginatedAuthenticatorWebAuthnStageListFromJSON,
+} from "../models/PaginatedAuthenticatorWebAuthnStageList";
+import {
+    type PaginatedCaptchaStageList,
     PaginatedCaptchaStageListFromJSON,
+} from "../models/PaginatedCaptchaStageList";
+import {
+    type PaginatedConsentStageList,
     PaginatedConsentStageListFromJSON,
+} from "../models/PaginatedConsentStageList";
+import {
+    type PaginatedDenyStageList,
     PaginatedDenyStageListFromJSON,
+} from "../models/PaginatedDenyStageList";
+import {
+    type PaginatedDummyStageList,
     PaginatedDummyStageListFromJSON,
+} from "../models/PaginatedDummyStageList";
+import {
+    type PaginatedEmailStageList,
     PaginatedEmailStageListFromJSON,
+} from "../models/PaginatedEmailStageList";
+import {
+    type PaginatedEndpointStageList,
     PaginatedEndpointStageListFromJSON,
+} from "../models/PaginatedEndpointStageList";
+import {
+    type PaginatedIdentificationStageList,
     PaginatedIdentificationStageListFromJSON,
+} from "../models/PaginatedIdentificationStageList";
+import {
+    type PaginatedInvitationList,
     PaginatedInvitationListFromJSON,
+} from "../models/PaginatedInvitationList";
+import {
+    type PaginatedInvitationStageList,
     PaginatedInvitationStageListFromJSON,
+} from "../models/PaginatedInvitationStageList";
+import {
+    type PaginatedMutualTLSStageList,
     PaginatedMutualTLSStageListFromJSON,
+} from "../models/PaginatedMutualTLSStageList";
+import {
+    type PaginatedPasswordStageList,
     PaginatedPasswordStageListFromJSON,
+} from "../models/PaginatedPasswordStageList";
+import {
+    type PaginatedPromptList,
     PaginatedPromptListFromJSON,
+} from "../models/PaginatedPromptList";
+import {
+    type PaginatedPromptStageList,
     PaginatedPromptStageListFromJSON,
+} from "../models/PaginatedPromptStageList";
+import {
+    type PaginatedRedirectStageList,
     PaginatedRedirectStageListFromJSON,
+} from "../models/PaginatedRedirectStageList";
+import {
+    type PaginatedSourceStageList,
     PaginatedSourceStageListFromJSON,
-    PaginatedStageListFromJSON,
+} from "../models/PaginatedSourceStageList";
+import { type PaginatedStageList, PaginatedStageListFromJSON } from "../models/PaginatedStageList";
+import {
+    type PaginatedUserDeleteStageList,
     PaginatedUserDeleteStageListFromJSON,
+} from "../models/PaginatedUserDeleteStageList";
+import {
+    type PaginatedUserLoginStageList,
     PaginatedUserLoginStageListFromJSON,
+} from "../models/PaginatedUserLoginStageList";
+import {
+    type PaginatedUserLogoutStageList,
     PaginatedUserLogoutStageListFromJSON,
+} from "../models/PaginatedUserLogoutStageList";
+import {
+    type PaginatedUserWriteStageList,
     PaginatedUserWriteStageListFromJSON,
+} from "../models/PaginatedUserWriteStageList";
+import {
+    type PaginatedWebAuthnDeviceTypeList,
     PaginatedWebAuthnDeviceTypeListFromJSON,
-    PasswordStageFromJSON,
+} from "../models/PaginatedWebAuthnDeviceTypeList";
+import { type PasswordStage, PasswordStageFromJSON } from "../models/PasswordStage";
+import {
+    type PasswordStageRequest,
     PasswordStageRequestToJSON,
+} from "../models/PasswordStageRequest";
+import {
+    type PatchedAccountLockdownStageRequest,
     PatchedAccountLockdownStageRequestToJSON,
+} from "../models/PatchedAccountLockdownStageRequest";
+import {
+    type PatchedAuthenticatorDuoStageRequest,
     PatchedAuthenticatorDuoStageRequestToJSON,
+} from "../models/PatchedAuthenticatorDuoStageRequest";
+import {
+    type PatchedAuthenticatorEmailStageRequest,
     PatchedAuthenticatorEmailStageRequestToJSON,
+} from "../models/PatchedAuthenticatorEmailStageRequest";
+import {
+    type PatchedAuthenticatorEndpointGDTCStageRequest,
     PatchedAuthenticatorEndpointGDTCStageRequestToJSON,
+} from "../models/PatchedAuthenticatorEndpointGDTCStageRequest";
+import {
+    type PatchedAuthenticatorSMSStageRequest,
     PatchedAuthenticatorSMSStageRequestToJSON,
+} from "../models/PatchedAuthenticatorSMSStageRequest";
+import {
+    type PatchedAuthenticatorStaticStageRequest,
     PatchedAuthenticatorStaticStageRequestToJSON,
+} from "../models/PatchedAuthenticatorStaticStageRequest";
+import {
+    type PatchedAuthenticatorTOTPStageRequest,
     PatchedAuthenticatorTOTPStageRequestToJSON,
+} from "../models/PatchedAuthenticatorTOTPStageRequest";
+import {
+    type PatchedAuthenticatorValidateStageRequest,
     PatchedAuthenticatorValidateStageRequestToJSON,
+} from "../models/PatchedAuthenticatorValidateStageRequest";
+import {
+    type PatchedAuthenticatorWebAuthnStageRequest,
     PatchedAuthenticatorWebAuthnStageRequestToJSON,
+} from "../models/PatchedAuthenticatorWebAuthnStageRequest";
+import {
+    type PatchedCaptchaStageRequest,
     PatchedCaptchaStageRequestToJSON,
+} from "../models/PatchedCaptchaStageRequest";
+import {
+    type PatchedConsentStageRequest,
     PatchedConsentStageRequestToJSON,
+} from "../models/PatchedConsentStageRequest";
+import {
+    type PatchedDenyStageRequest,
     PatchedDenyStageRequestToJSON,
+} from "../models/PatchedDenyStageRequest";
+import {
+    type PatchedDummyStageRequest,
     PatchedDummyStageRequestToJSON,
+} from "../models/PatchedDummyStageRequest";
+import {
+    type PatchedEmailStageRequest,
     PatchedEmailStageRequestToJSON,
+} from "../models/PatchedEmailStageRequest";
+import {
+    type PatchedEndpointStageRequest,
     PatchedEndpointStageRequestToJSON,
+} from "../models/PatchedEndpointStageRequest";
+import {
+    type PatchedIdentificationStageRequest,
     PatchedIdentificationStageRequestToJSON,
+} from "../models/PatchedIdentificationStageRequest";
+import {
+    type PatchedInvitationRequest,
     PatchedInvitationRequestToJSON,
+} from "../models/PatchedInvitationRequest";
+import {
+    type PatchedInvitationStageRequest,
     PatchedInvitationStageRequestToJSON,
+} from "../models/PatchedInvitationStageRequest";
+import {
+    type PatchedMutualTLSStageRequest,
     PatchedMutualTLSStageRequestToJSON,
+} from "../models/PatchedMutualTLSStageRequest";
+import {
+    type PatchedPasswordStageRequest,
     PatchedPasswordStageRequestToJSON,
+} from "../models/PatchedPasswordStageRequest";
+import {
+    type PatchedPromptRequest,
     PatchedPromptRequestToJSON,
+} from "../models/PatchedPromptRequest";
+import {
+    type PatchedPromptStageRequest,
     PatchedPromptStageRequestToJSON,
+} from "../models/PatchedPromptStageRequest";
+import {
+    type PatchedRedirectStageRequest,
     PatchedRedirectStageRequestToJSON,
+} from "../models/PatchedRedirectStageRequest";
+import {
+    type PatchedSourceStageRequest,
     PatchedSourceStageRequestToJSON,
+} from "../models/PatchedSourceStageRequest";
+import {
+    type PatchedUserDeleteStageRequest,
     PatchedUserDeleteStageRequestToJSON,
+} from "../models/PatchedUserDeleteStageRequest";
+import {
+    type PatchedUserLoginStageRequest,
     PatchedUserLoginStageRequestToJSON,
+} from "../models/PatchedUserLoginStageRequest";
+import {
+    type PatchedUserLogoutStageRequest,
     PatchedUserLogoutStageRequestToJSON,
+} from "../models/PatchedUserLogoutStageRequest";
+import {
+    type PatchedUserWriteStageRequest,
     PatchedUserWriteStageRequestToJSON,
-    PromptChallengeFromJSON,
-    PromptFromJSON,
-    PromptRequestToJSON,
-    PromptStageFromJSON,
-    PromptStageRequestToJSON,
-    RedirectStageFromJSON,
+} from "../models/PatchedUserWriteStageRequest";
+import { type Prompt, PromptFromJSON } from "../models/Prompt";
+import { type PromptChallenge, PromptChallengeFromJSON } from "../models/PromptChallenge";
+import { type PromptRequest, PromptRequestToJSON } from "../models/PromptRequest";
+import { type PromptStage, PromptStageFromJSON } from "../models/PromptStage";
+import { type PromptStageRequest, PromptStageRequestToJSON } from "../models/PromptStageRequest";
+import { type PromptTypeEnum } from "../models/PromptTypeEnum";
+import { type ProviderEnum } from "../models/ProviderEnum";
+import { type RedirectStage, RedirectStageFromJSON } from "../models/RedirectStage";
+import {
+    type RedirectStageRequest,
     RedirectStageRequestToJSON,
-    SourceStageFromJSON,
-    SourceStageRequestToJSON,
-    StageFromJSON,
-    TypeCreateFromJSON,
-    UsedByFromJSON,
-    UserDeleteStageFromJSON,
+} from "../models/RedirectStageRequest";
+import { type SourceStage, SourceStageFromJSON } from "../models/SourceStage";
+import { type SourceStageRequest, SourceStageRequestToJSON } from "../models/SourceStageRequest";
+import { type Stage, StageFromJSON } from "../models/Stage";
+import { type StageModeEnum } from "../models/StageModeEnum";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+import { type UserAttributeEnum } from "../models/UserAttributeEnum";
+import { type UserCreationModeEnum } from "../models/UserCreationModeEnum";
+import { type UserDeleteStage, UserDeleteStageFromJSON } from "../models/UserDeleteStage";
+import {
+    type UserDeleteStageRequest,
     UserDeleteStageRequestToJSON,
-    UserLoginStageFromJSON,
+} from "../models/UserDeleteStageRequest";
+import { type UserLoginStage, UserLoginStageFromJSON } from "../models/UserLoginStage";
+import {
+    type UserLoginStageRequest,
     UserLoginStageRequestToJSON,
-    UserLogoutStageFromJSON,
+} from "../models/UserLoginStageRequest";
+import { type UserLogoutStage, UserLogoutStageFromJSON } from "../models/UserLogoutStage";
+import {
+    type UserLogoutStageRequest,
     UserLogoutStageRequestToJSON,
-    UserSettingFromJSON,
-    UserWriteStageFromJSON,
+} from "../models/UserLogoutStageRequest";
+import { type UserSetting, UserSettingFromJSON } from "../models/UserSetting";
+import { type UserTypeEnum } from "../models/UserTypeEnum";
+import { type UserVerificationEnum } from "../models/UserVerificationEnum";
+import { type UserWriteStage, UserWriteStageFromJSON } from "../models/UserWriteStage";
+import {
+    type UserWriteStageRequest,
     UserWriteStageRequestToJSON,
-    WebAuthnDeviceTypeFromJSON,
-} from "../models/index";
+} from "../models/UserWriteStageRequest";
+import { type WebAuthnDeviceType, WebAuthnDeviceTypeFromJSON } from "../models/WebAuthnDeviceType";
 import * as runtime from "../runtime";
 
 export interface StagesAccountLockdownCreateRequest {
@@ -1512,7 +1654,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/account_lockdown/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -1678,7 +1820,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/account_lockdown/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -1751,7 +1893,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/account_lockdown/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -1830,7 +1972,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/account_lockdown/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -1902,7 +2044,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/account_lockdown/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -1970,7 +2112,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/all/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -2108,7 +2250,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/all/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -2223,7 +2365,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/all/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -2409,7 +2551,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -2464,7 +2606,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/enrollment_status/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -2543,7 +2685,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/import_device_manual/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -2613,7 +2755,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/import_devices_automatic/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -2774,7 +2916,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -2847,7 +2989,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -2926,7 +3068,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -2999,7 +3141,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/duo/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -3138,7 +3280,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/email/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -3343,7 +3485,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/email/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -3416,7 +3558,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/email/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -3495,7 +3637,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/email/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -3568,7 +3710,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/email/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -3707,7 +3849,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -3856,7 +3998,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -3929,7 +4071,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -4008,7 +4150,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -4081,7 +4223,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/endpoint_gdtc/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -4220,7 +4362,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/sms/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -4405,7 +4547,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/sms/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -4478,7 +4620,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/sms/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -4557,7 +4699,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/sms/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -4630,7 +4772,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/sms/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -4769,7 +4911,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/static/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -4934,7 +5076,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/static/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -5007,7 +5149,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/static/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -5086,7 +5228,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/static/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -5159,7 +5301,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/static/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -5298,7 +5440,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/totp/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -5458,7 +5600,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/totp/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -5531,7 +5673,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/totp/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -5610,7 +5752,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/totp/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -5683,7 +5825,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/totp/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -5822,7 +5964,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/validate/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -5975,7 +6117,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/validate/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -6048,7 +6190,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/validate/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -6127,7 +6269,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/validate/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -6200,7 +6342,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/validate/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -6339,7 +6481,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -6490,7 +6632,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/webauthn_device_types/{aaguid}/`;
         urlPath = urlPath.replace(
-            `{${"aaguid"}}`,
+            "{aaguid}",
             encodeURIComponent(String(requestParameters["aaguid"])),
         );
 
@@ -6668,7 +6810,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -6741,7 +6883,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -6820,7 +6962,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -6893,7 +7035,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/authenticator/webauthn/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7026,7 +7168,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/captcha/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7170,7 +7312,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/captcha/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7237,7 +7379,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/captcha/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7312,7 +7454,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/captcha/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7379,7 +7521,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/captcha/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7508,7 +7650,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/consent/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7660,7 +7802,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/consent/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7727,7 +7869,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/consent/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7802,7 +7944,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/consent/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7869,7 +8011,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/consent/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -7996,7 +8138,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/deny/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -8144,7 +8286,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/deny/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -8209,7 +8351,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/deny/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -8282,7 +8424,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/deny/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -8347,7 +8489,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/deny/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -8474,7 +8616,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/dummy/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -8622,7 +8764,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/dummy/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -8687,7 +8829,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/dummy/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -8760,7 +8902,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/dummy/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -8825,7 +8967,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/dummy/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -8952,7 +9094,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/email/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -9141,7 +9283,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/email/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -9206,7 +9348,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/email/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -9330,7 +9472,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/email/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -9395,7 +9537,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/email/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -9524,7 +9666,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/endpoints/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -9664,7 +9806,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/endpoints/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -9737,7 +9879,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/endpoints/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -9812,7 +9954,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/endpoints/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -9879,7 +10021,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/endpoints/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -10008,7 +10150,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/identification/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -10185,7 +10327,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/identification/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -10258,7 +10400,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/identification/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -10337,7 +10479,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/identification/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -10404,7 +10546,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/identification/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -10539,7 +10681,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"invite_uuid"}}`,
+            "{invite_uuid}",
             encodeURIComponent(String(requestParameters["inviteUuid"])),
         );
 
@@ -10696,7 +10838,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"invite_uuid"}}`,
+            "{invite_uuid}",
             encodeURIComponent(String(requestParameters["inviteUuid"])),
         );
 
@@ -10765,7 +10907,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"invite_uuid"}}`,
+            "{invite_uuid}",
             encodeURIComponent(String(requestParameters["inviteUuid"])),
         );
 
@@ -10842,7 +10984,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/send_email/`;
         urlPath = urlPath.replace(
-            `{${"invite_uuid"}}`,
+            "{invite_uuid}",
             encodeURIComponent(String(requestParameters["inviteUuid"])),
         );
 
@@ -10916,7 +11058,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"invite_uuid"}}`,
+            "{invite_uuid}",
             encodeURIComponent(String(requestParameters["inviteUuid"])),
         );
 
@@ -10985,7 +11127,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/invitations/{invite_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"invite_uuid"}}`,
+            "{invite_uuid}",
             encodeURIComponent(String(requestParameters["inviteUuid"])),
         );
 
@@ -11122,7 +11264,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/stages/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -11276,7 +11418,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/stages/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -11349,7 +11491,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/stages/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -11428,7 +11570,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/stages/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -11499,7 +11641,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/invitation/stages/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -11632,7 +11774,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/mtls/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -11793,7 +11935,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/mtls/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -11862,7 +12004,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/mtls/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -11937,7 +12079,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/mtls/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -12004,7 +12146,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/mtls/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -12133,7 +12275,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/password/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -12286,7 +12428,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/password/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -12358,7 +12500,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/password/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -12433,7 +12575,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/password/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -12500,7 +12642,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/password/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -12627,7 +12769,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/prompt/prompts/{prompt_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"prompt_uuid"}}`,
+            "{prompt_uuid}",
             encodeURIComponent(String(requestParameters["promptUuid"])),
         );
 
@@ -12783,7 +12925,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/prompt/prompts/{prompt_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"prompt_uuid"}}`,
+            "{prompt_uuid}",
             encodeURIComponent(String(requestParameters["promptUuid"])),
         );
 
@@ -12921,7 +13063,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/prompt/prompts/{prompt_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"prompt_uuid"}}`,
+            "{prompt_uuid}",
             encodeURIComponent(String(requestParameters["promptUuid"])),
         );
 
@@ -12997,7 +13139,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/prompt/prompts/{prompt_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"prompt_uuid"}}`,
+            "{prompt_uuid}",
             encodeURIComponent(String(requestParameters["promptUuid"])),
         );
 
@@ -13062,7 +13204,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/prompt/prompts/{prompt_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"prompt_uuid"}}`,
+            "{prompt_uuid}",
             encodeURIComponent(String(requestParameters["promptUuid"])),
         );
 
@@ -13193,7 +13335,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/prompt/stages/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -13345,7 +13487,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/prompt/stages/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -13414,7 +13556,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/prompt/stages/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -13487,7 +13629,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/prompt/stages/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -13552,7 +13694,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/prompt/stages/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -13685,7 +13827,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/redirect/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -13825,7 +13967,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/redirect/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -13897,7 +14039,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/redirect/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -13972,7 +14114,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/redirect/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -14039,7 +14181,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/redirect/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -14166,7 +14308,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/source/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -14318,7 +14460,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/source/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -14383,7 +14525,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/source/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -14456,7 +14598,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/source/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -14521,7 +14663,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/source/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -14650,7 +14792,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_delete/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -14794,7 +14936,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_delete/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -14867,7 +15009,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_delete/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -14942,7 +15084,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_delete/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -15009,7 +15151,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_delete/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -15138,7 +15280,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_login/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -15307,7 +15449,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_login/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -15380,7 +15522,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_login/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -15455,7 +15597,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_login/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -15522,7 +15664,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_login/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -15651,7 +15793,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_logout/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -15795,7 +15937,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_logout/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -15868,7 +16010,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_logout/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -15943,7 +16085,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_logout/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -16010,7 +16152,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_logout/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -16139,7 +16281,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_write/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -16304,7 +16446,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_write/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -16377,7 +16519,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_write/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -16452,7 +16594,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_write/{stage_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
@@ -16519,7 +16661,7 @@ export class StagesApi extends runtime.BaseAPI {
 
         let urlPath = `/stages/user_write/{stage_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"stage_uuid"}}`,
+            "{stage_uuid}",
             encodeURIComponent(String(requestParameters["stageUuid"])),
         );
 
