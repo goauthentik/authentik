@@ -39,7 +39,7 @@ authentik requires the following permissions from the Docker API:
 - Containers/Remove: Removal of outposts
 - System/Info: Gather information about the version of Docker running
 
-## Podman
+## Podman :ak-version[2026.8]
 
 Podman exposes a Docker-compatible REST API, so the Docker integration works against Podman's socket. The socket lives at a different path depending on whether Podman is running rootful or rootless:
 
@@ -57,7 +57,7 @@ systemctl --user enable --now podman.socket
 loginctl enable-linger "$USER"
 ```
 
-In authentik 2026.8, the worker's startup discovery task scans a candidate list of socket paths _inside the container_ — `/var/run/docker.sock`, `/run/podman/podman.sock`, and `$XDG_RUNTIME_DIR/podman/podman.sock` — and creates a local service connection for the first one it finds. Mount your Podman socket into the worker at any of those paths; you no longer need to remap it to `/var/run/docker.sock` or set `DOCKER_HOST`.
+The worker's startup discovery task scans a candidate list of socket paths _inside the container_ (`/var/run/docker.sock`, `/run/podman/podman.sock`, and `$XDG_RUNTIME_DIR/podman/podman.sock`) and creates a local service connection for the first one it finds. Mount your Podman socket into the worker at any of those paths.
 
 ## Docker Socket Proxy
 
