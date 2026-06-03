@@ -22,6 +22,7 @@ Gestionnaire
 ghec
 Gitea
 Gravitee
+grommunio
 HACS
 Homarr
 Informatique
@@ -34,10 +35,12 @@ Komodo
 Kubeconfig
 Mautic
 Mobilizon
+myabsorb
 Observium
 Ofair
 Ollama
 Omada
+Omnissa
 omniauth
 openwebui
 OPNsense
@@ -46,6 +49,7 @@ Organizr
 Packagify
 Palo
 Papra
+Personio
 PhotoPrism
 pfSense
 phpipam

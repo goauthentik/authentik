@@ -1,12 +1,14 @@
 from datetime import timedelta
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from django.utils.timezone import now
 from requests import Request, RequestException
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import GRANT_TYPE_PASSWORD, GRANT_TYPE_REFRESH_TOKEN
 from authentik.providers.scim.clients.exceptions import SCIMRequestException
-from authentik.sources.oauth.clients.oauth2 import OAuth2Client
+from authentik.providers.scim.models import SCIMAuthenticationMode
+from authentik.sources.oauth.clients.base import BaseOAuthClient
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 
 if TYPE_CHECKING:
@@ -18,23 +20,26 @@ class SCIMOAuthException(SCIMRequestException):
 
 
 class SCIMOAuthAuth:
-
     def __init__(self, provider: SCIMProvider):
         self.provider = provider
         self.user = provider.auth_oauth_user
         self.logger = get_logger().bind()
         self.connection = self.get_connection()
 
-    def retrieve_token(self):
-        if not self.provider.auth_oauth:
-            return None
+    def retrieve_token(self, conn: UserOAuthSourceConnection | None) -> dict[str, Any]:
         source: OAuthSource = self.provider.auth_oauth
-        client = OAuth2Client(source, None)
+        client: BaseOAuthClient = source.source_type.callback_view(request=None).get_client(source)
         access_token_url = source.source_type.access_token_url or ""
         if source.source_type.urls_customizable and source.access_token_url:
             access_token_url = source.access_token_url
         data = client.get_access_token_args(None, None)
-        data["grant_type"] = "password"
+        if self.provider.auth_mode == SCIMAuthenticationMode.OAUTH_SILENT:
+            data["grant_type"] = GRANT_TYPE_PASSWORD
+        elif self.provider.auth_mode == SCIMAuthenticationMode.OAUTH_INTERACTIVE:
+            data["grant_type"] = GRANT_TYPE_REFRESH_TOKEN
+            if not conn:
+                raise SCIMOAuthException(None, "Could not refresh SCIM OAuth token")
+            data["refresh_token"] = conn.refresh_token
         data.update(self.provider.auth_oauth_params)
         try:
             response = client.do_request(
@@ -54,12 +59,14 @@ class SCIMOAuthAuth:
             raise SCIMOAuthException(exc.response, message="Failed to get OAuth token") from exc
 
     def get_connection(self):
-        token = UserOAuthSourceConnection.objects.filter(
-            source=self.provider.auth_oauth, user=self.user, expires__gt=now()
+        if not self.provider.auth_oauth:
+            return None
+        conn = UserOAuthSourceConnection.objects.filter(
+            source=self.provider.auth_oauth, user=self.user
         ).first()
-        if token and token.access_token:
-            return token
-        token = self.retrieve_token()
+        if conn and conn.access_token and conn.expires > now():
+            return conn
+        token = self.retrieve_token(conn)
         access_token = token["access_token"]
         expires_in = int(token.get("expires_in", 0))
         token, _ = UserOAuthSourceConnection.objects.update_or_create(
@@ -67,7 +74,10 @@ class SCIMOAuthAuth:
             user=self.user,
             defaults={
                 "access_token": access_token,
+                "refresh_token": token.get("refresh_token"),
                 "expires": now() + timedelta(seconds=expires_in),
+                # When using `update_or_create`, `last_updated` is not updated
+                "last_updated": now(),
             },
         )
         return token

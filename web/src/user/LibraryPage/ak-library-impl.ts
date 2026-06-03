@@ -174,11 +174,10 @@ export class LibraryPage extends WithSession(AKElement) {
         includeScore: true,
         shouldSort: true,
         ignoreFieldNorm: true,
-        useExtendedSearch: true,
         threshold: 0.3,
     });
 
-    public pageTitle = msg("My Applications");
+    public pageTitle = msg("Application Dashboard");
 
     //#region Lifecycle
 
@@ -432,7 +431,7 @@ export class LibraryPage extends WithSession(AKElement) {
     protected override render() {
         return html`<div class="pf-c-page__main">
             <div class="pf-c-page__header pf-c-content">
-                <h1 class="pf-c-page__title">${msg("My applications")}</h1>
+                <h1 class="pf-c-page__title">${msg("Application Dashboard")}</h1>
                 ${this.searchEnabled ? this.renderSearch() : nothing}
             </div>
             <main

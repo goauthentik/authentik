@@ -7,6 +7,7 @@ import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { DefaultUIConfig } from "#common/ui/config";
 
 import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
@@ -61,8 +62,8 @@ export class UserForm extends ObjectAttributeModelForm<User, number> {
     @property({ attribute: false })
     public targetRole: Role | null = null;
 
-    @property({ type: String, attribute: "default-path" })
-    public defaultPath: string = "users";
+    @property({ type: String, attribute: "default-path", useDefault: true })
+    public defaultPath: string = DefaultUIConfig.defaults.userPath;
 
     @property({ attribute: false })
     public userType: UserTypeEnum | null = null;
