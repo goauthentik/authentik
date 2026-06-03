@@ -118,7 +118,7 @@ RUN cat /root/.rustup/settings.toml
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.11.17@sha256:03bdc89bb9798628846e60c3a9ad19006c8c3c724ccd2985a33145c039a0577b AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.5-slim-trixie-fips@sha256:7a0633910cf4aba773a8b7e7ff3fda90c972e3c992894de86c771249e03398ba AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.5-slim-trixie-fips@sha256:b332680f098882472bc13d5452b7b348bf8e7ef4400588d85aca41acde77c1f4 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
