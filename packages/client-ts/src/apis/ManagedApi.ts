@@ -12,24 +12,25 @@
  * Do not edit the class manually.
  */
 
-import type {
-    BlueprintFile,
-    BlueprintImportResult,
-    BlueprintInstance,
-    BlueprintInstanceRequest,
-    PaginatedBlueprintInstanceList,
-    PatchedBlueprintInstanceRequest,
-    UsedBy,
-} from "../models/index";
+import { type BlueprintFile, BlueprintFileFromJSON } from "../models/BlueprintFile";
 import {
-    BlueprintFileFromJSON,
+    type BlueprintImportResult,
     BlueprintImportResultFromJSON,
-    BlueprintInstanceFromJSON,
+} from "../models/BlueprintImportResult";
+import { type BlueprintInstance, BlueprintInstanceFromJSON } from "../models/BlueprintInstance";
+import {
+    type BlueprintInstanceRequest,
     BlueprintInstanceRequestToJSON,
+} from "../models/BlueprintInstanceRequest";
+import {
+    type PaginatedBlueprintInstanceList,
     PaginatedBlueprintInstanceListFromJSON,
+} from "../models/PaginatedBlueprintInstanceList";
+import {
+    type PatchedBlueprintInstanceRequest,
     PatchedBlueprintInstanceRequestToJSON,
-    UsedByFromJSON,
-} from "../models/index";
+} from "../models/PatchedBlueprintInstanceRequest";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface ManagedBlueprintsApplyCreateRequest {
@@ -109,7 +110,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         let urlPath = `/managed/blueprints/{instance_uuid}/apply/`;
         urlPath = urlPath.replace(
-            `{${"instance_uuid"}}`,
+            "{instance_uuid}",
             encodeURIComponent(String(requestParameters["instanceUuid"])),
         );
 
@@ -295,7 +296,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         let urlPath = `/managed/blueprints/{instance_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"instance_uuid"}}`,
+            "{instance_uuid}",
             encodeURIComponent(String(requestParameters["instanceUuid"])),
         );
 
@@ -524,7 +525,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         let urlPath = `/managed/blueprints/{instance_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"instance_uuid"}}`,
+            "{instance_uuid}",
             encodeURIComponent(String(requestParameters["instanceUuid"])),
         );
 
@@ -597,7 +598,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         let urlPath = `/managed/blueprints/{instance_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"instance_uuid"}}`,
+            "{instance_uuid}",
             encodeURIComponent(String(requestParameters["instanceUuid"])),
         );
 
@@ -672,7 +673,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         let urlPath = `/managed/blueprints/{instance_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"instance_uuid"}}`,
+            "{instance_uuid}",
             encodeURIComponent(String(requestParameters["instanceUuid"])),
         );
 
@@ -739,7 +740,7 @@ export class ManagedApi extends runtime.BaseAPI {
 
         let urlPath = `/managed/blueprints/{instance_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"instance_uuid"}}`,
+            "{instance_uuid}",
             encodeURIComponent(String(requestParameters["instanceUuid"])),
         );
 
