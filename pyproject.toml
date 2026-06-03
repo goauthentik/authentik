@@ -41,7 +41,7 @@ dependencies = [
   "gunicorn==26.0.0",
   "jsonpatch==1.33",
   "jwcrypto==1.5.7",
-  "kubernetes==35.0.0",
+  "kubernetes==36.0.0",
   "ldap3==2.9.1",
   "lxml==6.1.1",
   "msgraph-sdk==1.58.0",
