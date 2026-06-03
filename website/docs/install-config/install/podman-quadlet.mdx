@@ -98,174 +98,52 @@ systemctl --user enable --now podman.socket
 </TabItem>
 </Tabs>
 
-## Create the Quadlet units
+## Download the Quadlet units
 
-All units below live in `/etc/containers/systemd/` (rootful) or `~/.config/containers/systemd/` (rootless). Each `.container` file maps roughly to a service in the [Docker Compose file](./docker-compose.mdx).
+The deployment uses a single pod that hosts PostgreSQL, the server, and the worker so they can reach each other on `localhost` without a custom network. Each `.container` file maps roughly to a service in the [Docker Compose file](./docker-compose.mdx).
 
-The deployment uses a single pod that hosts PostgreSQL, the server, and the worker so they can reach each other on `localhost` without a custom network.
+The unit files are committed under [`lifecycle/quadlet/`](https://github.com/goauthentik/authentik/tree/main/lifecycle/quadlet) in the authentik repository and published to `docs.goauthentik.io/quadlet/`. The `Image=` line on the server and worker units is pinned to the same authentik tag as the Compose file and bumps on every release. To pin a different tag, edit the `Image=` lines after downloading.
 
-Replace `<version>` in the server and worker `Image=` lines below with the authentik release you are deploying (for example `2026.8`); see the [Release Notes](../../../releases/) for the latest tag.
-
-### Pod
-
-```ini title="authentik.pod"
-[Unit]
-Description=authentik server
-
-[Pod]
-PodName=authentik
-PublishPort=9000:9000
-PublishPort=9443:9443
-
-[Install]
-WantedBy=default.target
-```
-
-### PostgreSQL volume
-
-```ini title="authentik-database.volume"
-[Volume]
-VolumeName=authentik-database
-```
-
-### PostgreSQL container
-
-```ini title="authentik-postgresql.container"
-[Unit]
-Description=authentik PostgreSQL
-
-[Container]
-ContainerName=authentik-postgresql
-Image=docker.io/library/postgres:16-alpine
-AutoUpdate=registry
-Pod=authentik.pod
-Volume=authentik-database.volume:/var/lib/postgresql/data
-EnvironmentFile=/etc/authentik/authentik.env
-Environment=POSTGRES_DB=authentik
-Environment=POSTGRES_USER=authentik
-Environment=POSTGRES_PASSWORD=${PG_PASS}
-HealthCmd=pg_isready -d authentik -U authentik
-HealthInterval=30s
-HealthStartPeriod=20s
-HealthTimeout=5s
-HealthRetries=5
-
-[Service]
-Restart=unless-stopped
-
-[Install]
-WantedBy=default.target
-```
-
-### authentik server
-
-```ini title="authentik-server.container"
-[Unit]
-Description=authentik server
-Requires=authentik-postgresql.container
-After=authentik-postgresql.container
-
-[Container]
-ContainerName=authentik-server
-Image=ghcr.io/goauthentik/server:<version>
-AutoUpdate=registry
-Pod=authentik.pod
-Exec=server
-EnvironmentFile=/etc/authentik/authentik.env
-Environment=AUTHENTIK_POSTGRESQL__HOST=localhost
-Environment=AUTHENTIK_POSTGRESQL__NAME=authentik
-Environment=AUTHENTIK_POSTGRESQL__USER=authentik
-Volume=/var/lib/authentik/data:/data:Z
-Volume=/var/lib/authentik/custom-templates:/templates:Z
-PodmanArgs=--shm-size=512m
-
-[Service]
-Restart=unless-stopped
-
-[Install]
-WantedBy=default.target
-```
-
-### authentik worker
-
-The worker shares the pod with the server. Because both default to listening on `:9000` (HTTP) and `:9300` (metrics), shift the worker to a different pair so they do not collide inside the pod's network namespace. The worker also mounts the Podman API socket so it can deploy outposts; pick the tab that matches your install mode.
+The rootless variants live under `lifecycle/quadlet/rootless/` (and `/quadlet/rootless/` on the docs site) and use the systemd specifiers `%h` (home directory) and `%t` (`$XDG_RUNTIME_DIR`), so a single file works for any rootless account.
 
 <Tabs groupId="install-mode">
 <TabItem value="rootful" label="Rootful" default>
 
-```ini title="authentik-worker.container"
-[Unit]
-Description=authentik worker
-Requires=authentik-postgresql.container
-After=authentik-postgresql.container
-
-[Container]
-ContainerName=authentik-worker
-Image=ghcr.io/goauthentik/server:<version>
-AutoUpdate=registry
-Pod=authentik.pod
-Exec=worker
-User=0:0
-EnvironmentFile=/etc/authentik/authentik.env
-Environment=AUTHENTIK_POSTGRESQL__HOST=localhost
-Environment=AUTHENTIK_POSTGRESQL__NAME=authentik
-Environment=AUTHENTIK_POSTGRESQL__USER=authentik
-Environment=AUTHENTIK_LISTEN__HTTP=0.0.0.0:9001
-Environment=AUTHENTIK_LISTEN__METRICS=0.0.0.0:9301
-Volume=/run/podman/podman.sock:/run/podman/podman.sock:Z
-Volume=/var/lib/authentik/data:/data:Z
-Volume=/var/lib/authentik/certs:/certs:Z
-Volume=/var/lib/authentik/custom-templates:/templates:Z
-PodmanArgs=--shm-size=512m
-
-[Service]
-Restart=unless-stopped
-
-[Install]
-WantedBy=default.target
+```shell
+sudo mkdir -p /etc/containers/systemd
+for unit in \
+    authentik.pod \
+    authentik-database.volume \
+    authentik-postgresql.container \
+    authentik-server.container \
+    authentik-worker.container; do
+    curl -fsSL "https://docs.goauthentik.io/quadlet/$unit" \
+        | sudo tee "/etc/containers/systemd/$unit" >/dev/null
+done
 ```
-
-`User=0:0` runs the worker as UID 0 inside the container so it can read the bind-mounted Podman socket. Under rootful Podman the host socket is root-owned; under rootless Podman, UID 0 inside the container maps back to your unprivileged user via the user namespace, so the same setting is safe in both modes.
 
 </TabItem>
 <TabItem value="rootless" label="Rootless">
 
-`%t` and `%h` are systemd specifiers — `%t` expands to `$XDG_RUNTIME_DIR` and `%h` to the calling user's home — so the same unit file works for any rootless account.
-
-```ini title="authentik-worker.container"
-[Unit]
-Description=authentik worker
-Requires=authentik-postgresql.container
-After=authentik-postgresql.container
-
-[Container]
-ContainerName=authentik-worker
-Image=ghcr.io/goauthentik/server:<version>
-AutoUpdate=registry
-Pod=authentik.pod
-Exec=worker
-User=0:0
-EnvironmentFile=%h/.config/authentik/authentik.env
-Environment=AUTHENTIK_POSTGRESQL__HOST=localhost
-Environment=AUTHENTIK_POSTGRESQL__NAME=authentik
-Environment=AUTHENTIK_POSTGRESQL__USER=authentik
-Environment=AUTHENTIK_LISTEN__HTTP=0.0.0.0:9001
-Environment=AUTHENTIK_LISTEN__METRICS=0.0.0.0:9301
-Volume=%t/podman/podman.sock:/run/podman/podman.sock:Z
-Volume=%h/.local/share/authentik/data:/data:Z
-Volume=%h/.local/share/authentik/certs:/certs:Z
-Volume=%h/.local/share/authentik/custom-templates:/templates:Z
-PodmanArgs=--shm-size=512m
-
-[Service]
-Restart=unless-stopped
-
-[Install]
-WantedBy=default.target
+```shell
+mkdir -p ~/.config/containers/systemd
+for unit in \
+    authentik.pod \
+    authentik-database.volume \
+    authentik-postgresql.container \
+    authentik-server.container \
+    authentik-worker.container; do
+    curl -fsSL "https://docs.goauthentik.io/quadlet/rootless/$unit" \
+        -o "$HOME/.config/containers/systemd/$unit"
+done
 ```
 
 </TabItem>
 </Tabs>
+
+The worker shares the pod with the server. Because both default to listening on `:9000` (HTTP) and `:9300` (metrics), the worker unit shifts them to `:9001` and `:9301` so the listeners do not collide inside the pod's network namespace. The worker also mounts the Podman API socket so it can deploy outposts.
+
+`User=0:0` on the worker runs the process as UID 0 inside the container so it can read the bind-mounted Podman socket. Under rootful Podman the host socket is root-owned; under rootless Podman, UID 0 inside the container maps back to the calling user through the user namespace, so the same setting is safe in both modes.
 
 ## Start authentik
 
@@ -368,7 +246,7 @@ podman auto-update
 </TabItem>
 </Tabs>
 
-For pinned upgrades, edit the `Image=` line on each container to the desired tag (for example `ghcr.io/goauthentik/server:<version>` with `<version>` set to a specific release such as `2026.9`), then `daemon-reload && restart`.
+For pinned upgrades, edit the `Image=` line on `authentik-server.container` and `authentik-worker.container` to the desired tag (for example `ghcr.io/goauthentik/server:2026.9`), then `daemon-reload && restart`.
 
 ## SELinux
 

@@ -1,0 +1,24 @@
+[Unit]
+Description=authentik server
+Requires=authentik-postgresql.container
+After=authentik-postgresql.container
+
+[Container]
+ContainerName=authentik-server
+Image=ghcr.io/goauthentik/server:2026.8.0-rc1
+AutoUpdate=registry
+Pod=authentik.pod
+Exec=server
+EnvironmentFile=/etc/authentik/authentik.env
+Environment=AUTHENTIK_POSTGRESQL__HOST=localhost
+Environment=AUTHENTIK_POSTGRESQL__NAME=authentik
+Environment=AUTHENTIK_POSTGRESQL__USER=authentik
+Volume=/var/lib/authentik/data:/data:Z
+Volume=/var/lib/authentik/custom-templates:/templates:Z
+PodmanArgs=--shm-size=512m
+
+[Service]
+Restart=unless-stopped
+
+[Install]
+WantedBy=default.target

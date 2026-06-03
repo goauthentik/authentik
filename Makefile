@@ -162,7 +162,7 @@ endif
 	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml
 	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
 	$(SED_INPLACE) "s/version = \"${current_version}\"/version = \"$(version)\"/" ${PWD}/Cargo.toml ${PWD}/Cargo.lock
-	$(MAKE) gen-build gen-compose aws-cfn
+	$(MAKE) gen-build gen-compose gen-quadlet aws-cfn
 	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION
 
@@ -178,6 +178,9 @@ gen-build:  ## Extract the schema from the database
 
 gen-compose:
 	$(UV) run scripts/generate_compose.py
+
+gen-quadlet:
+	$(UV) run scripts/generate_quadlet.py
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last version
 # These are best-effort guesses based on commit messages
