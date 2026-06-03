@@ -220,7 +220,7 @@ class TasksModel(models.Model):
         abstract = True
 
     @property
-    def tasks(self):
+    def tasks(self) -> QuerySet[Task]:
         """Return related task history without making tasks owned child rows."""
         return Task.objects.filter(
             rel_obj_content_type=ContentType.objects.get_for_model(self),
