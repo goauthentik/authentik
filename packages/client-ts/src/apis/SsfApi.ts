@@ -12,8 +12,12 @@
  * Do not edit the class manually.
  */
 
-import type { DeliveryMethodEnum, PaginatedSSFStreamList, SSFStream } from "../models/index";
-import { PaginatedSSFStreamListFromJSON, SSFStreamFromJSON } from "../models/index";
+import { type DeliveryMethodEnum } from "../models/DeliveryMethodEnum";
+import {
+    type PaginatedSSFStreamList,
+    PaginatedSSFStreamListFromJSON,
+} from "../models/PaginatedSSFStreamList";
+import { type SSFStream, SSFStreamFromJSON } from "../models/SSFStream";
 import * as runtime from "../runtime";
 
 export interface SsfStreamsDestroyRequest {
@@ -65,10 +69,7 @@ export class SsfApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/ssf/streams/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -211,10 +212,7 @@ export class SsfApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/ssf/streams/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
