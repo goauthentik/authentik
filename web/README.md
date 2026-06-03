@@ -3,6 +3,27 @@
 This is the default UI for the authentik server. The documentation is going to be a little sparse
 for awhile, but at least let's get started.
 
+# Setup
+
+Install dependencies from the repo root with `make node-install` (or `make install` for the full
+Python + web + docs bootstrap). This wraps `npm ci` and explicitly rebuilds the small set of
+packages whose install scripts are required for the toolchain to function — currently `esbuild`,
+`chromedriver`, `tree-sitter`, and `tree-sitter-json`.
+
+The repo-root `.npmrc` sets `ignore-scripts=true` to neutralize the dominant npm supply-chain
+attack vector. As a side effect, running `npm ci` directly in this directory will install
+dependencies but skip those rebuilds, leaving `esbuild` and `chromedriver` in a non-functional
+state. If you bypass `make`, run the rebuild step yourself:
+
+```bash
+npm rebuild --ignore-scripts=false --foreground-scripts \
+    esbuild chromedriver tree-sitter tree-sitter-json
+```
+
+New dependencies that ship install scripts must be audited and added to `TRUSTED_INSTALL_SCRIPTS`
+in the repo-root `Makefile`. Each entry is arbitrary code that runs at install time, so the list
+is intentionally small.
+
 # The Theory of the authentik UI
 
 In Peter Naur's 1985 essay [Programming as Theory
@@ -24,7 +45,7 @@ The three contexts corresponds to objects in the API's `model` section, so let's
   password.
 - The current `SessionUser`, the person logged in: username, display name, and various states.
   (Note: the authentik server permits administrators to "impersonate" any other user in order to
-  debug their authentikation experience. If impersonation is active, the `user` field reflects that
+  debug their authentication experience. If impersonation is active, the `user` field reflects that
   user, but it also includes a field, `original`, with the administrator's information.)
 
 (There is a fourth context object, Version, but its use is limited to displaying version information
@@ -111,4 +132,4 @@ settings in JSON files, which do not support comments.
 ### License
 
 This code is licensed under the [MIT License](https://www.tldrlegal.com/license/mit-license).
-[A copy of the license](./LICENSE.txt) is included with this package.
+[A copy of the license](./LICENSE.txt) is included with this project.

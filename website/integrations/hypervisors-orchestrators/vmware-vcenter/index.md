@@ -4,7 +4,7 @@ sidebar_label: VMware vCenter
 support_level: community
 ---
 
-## What is vCenter
+## What is vCenter?
 
 > vCenter Server is the centralized management utility for VMware, and is used to manage virtual machines, multiple ESXi hosts, and all dependent components from a single centralized location. VMware vMotion and svMotion require the use of vCenter and ESXi hosts.
 >
@@ -30,7 +30,7 @@ To support the integration of vCenter with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -38,7 +38,7 @@ To support the integration of vCenter with authentik, you need to create an appl
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://vcenter.company/ui/login/oauth2/authcode`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -73,6 +73,7 @@ To support the integration of vCenter with authentik, you need to create an appl
     - Create a SCIM provider with the name `vcenter-scim`.
     - Paste the Tenant URL into **URL** field for the provider.
     - Paste the token you saved into the **Token** field.
+    - Set **SCIM Compatibility Mode** to `vCenter`.
     - If your vCenter certificate is self-signed (which is the default), toggle **Verify SCIM server's certificates** to be off.
     - Configure options under `User filtering` to your needs.
     - Save the provider.
@@ -82,7 +83,7 @@ To support the integration of vCenter with authentik, you need to create an appl
 9. Return to vCenter.
     - Navigate to **Administration > Access Control > Global Permissions**.
     - Click **Add**.
-    - Select the Domain created above from the dropdown.
+    - Select the domain created above from the drop-down list.
     - Enter the name of the group to which you want to assign permissions.
     - Select the role.
 

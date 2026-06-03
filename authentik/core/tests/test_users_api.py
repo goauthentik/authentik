@@ -1,15 +1,18 @@
 """Test Users API"""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from json import loads
 
+from django.contrib.auth.hashers import make_password
 from django.urls.base import reverse
+from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.brands.models import Brand
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     AuthenticatedSession,
+    Group,
     Session,
     Token,
     User,
@@ -23,7 +26,11 @@ from authentik.core.tests.utils import (
 )
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
+from authentik.rbac.models import Role
 from authentik.stages.email.models import EmailStage
+
+INVALID_PASSWORD_HASH = "not-a-valid-hash"
+INVALID_PASSWORD_HASH_ERROR = "Invalid password hash format. Must be a valid Django password hash."
 
 
 class TestUsersAPI(APITestCase):
@@ -32,6 +39,20 @@ class TestUsersAPI(APITestCase):
     def setUp(self) -> None:
         self.admin = create_test_admin_user()
         self.user = create_test_user()
+
+    def _set_password_hash(self, user: User, password_hash: str, client=None):
+        return (client or self.client).post(
+            reverse("authentik_api:user-set-password-hash", kwargs={"pk": user.pk}),
+            data={"password": password_hash},
+        )
+
+    def _assert_password_hash_set(
+        self, user: User, password: str, password_hash: str, response
+    ) -> None:
+        self.assertEqual(response.status_code, 204, response.data)
+        user.refresh_from_db()
+        self.assertEqual(user.password, password_hash)
+        self.assertTrue(user.check_password(password))
 
     def test_filter_type(self):
         """Test API filtering by type"""
@@ -112,6 +133,26 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"password": ["This field may not be blank."]})
 
+    def test_set_password_hash(self):
+        """Test setting a user's password from a hash."""
+        self.client.force_login(self.admin)
+        password = generate_key()
+        password_hash = make_password(password)
+        response = self._set_password_hash(self.user, password_hash)
+
+        self._assert_password_hash_set(self.user, password, password_hash, response)
+
+    def test_set_password_hash_invalid(self):
+        """Test invalid password hashes are rejected."""
+        self.client.force_login(self.admin)
+        response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"password": [INVALID_PASSWORD_HASH_ERROR]},
+        )
+
     def test_recovery(self):
         """Test user recovery link"""
         flow = create_test_flow(
@@ -127,13 +168,62 @@ class TestUsersAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_recovery_duration(self):
+        """Test user recovery token duration"""
+        Token.objects.all().delete()
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        )
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk}),
+            data={"token_duration": "days=33"},
+        )
+        self.assertEqual(response.status_code, 200)
+        expires = Token.objects.first().expires
+        expected_expires = now() + timedelta(days=33)
+        self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
+
+    def test_recovery_duration_update(self):
+        """Test user recovery token duration update"""
+        Token.objects.all().delete()
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        )
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk}),
+            data={"token_duration": "days=33"},
+        )
+        self.assertEqual(response.status_code, 200)
+        expires = Token.objects.first().expires
+        expected_expires = now() + timedelta(days=33)
+        self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
+        response = self.client.post(
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk}),
+            data={"token_duration": "days=66"},
+        )
+        expires = Token.objects.first().expires
+        expected_expires = now() + timedelta(days=66)
+        self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
+
     def test_recovery_email_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
         self.user.email = ""
         self.user.save()
+        stage = EmailStage.objects.create(name="email")
         response = self.client.post(
-            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
+            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk}),
+            data={"email_stage": stage.pk},
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
@@ -142,7 +232,8 @@ class TestUsersAPI(APITestCase):
         self.user.email = "foo@bar.baz"
         self.user.save()
         response = self.client.post(
-            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
+            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk}),
+            data={"email_stage": stage.pk},
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"non_field_errors": "No recovery flow set."})
@@ -160,7 +251,7 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
         )
         self.assertEqual(response.status_code, 400)
-        self.assertJSONEqual(response.content, {"non_field_errors": "Email stage does not exist."})
+        self.assertJSONEqual(response.content, {"email_stage": ["This field is required."]})
 
     def test_recovery_email(self):
         """Test user recovery link"""
@@ -178,8 +269,8 @@ class TestUsersAPI(APITestCase):
             reverse(
                 "authentik_api:user-recovery-email",
                 kwargs={"pk": self.user.pk},
-            )
-            + f"?email_stage={stage.pk}"
+            ),
+            data={"email_stage": stage.pk},
         )
         self.assertEqual(response.status_code, 204)
 
@@ -209,6 +300,29 @@ class TestUsersAPI(APITestCase):
         token_filter = Token.objects.filter(user=user)
         self.assertTrue(token_filter.exists())
         self.assertTrue(token_filter.first().expiring)
+
+    def test_service_account_set_password_hash(self):
+        """Service account password hash can be set through the API."""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "create_group": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        body = loads(response.content)
+
+        user = User.objects.get(pk=body["user_pk"])
+        self.assertEqual(user.type, UserTypes.SERVICE_ACCOUNT)
+        self.assertFalse(user.has_usable_password())
+
+        password = generate_key()
+        password_hash = make_password(password)
+        response = self._set_password_hash(user, password_hash)
+
+        self._assert_password_hash_set(user, password, password_hash, response)
 
     def test_service_account_no_expire(self):
         """Service account creation without token expiration"""
@@ -740,3 +854,166 @@ class TestUsersAPI(APITestCase):
             response.content,
             {"name": ["This field must be unique."]},
         )
+
+    def test_filter_last_login(self):
+        """Test API filtering by last_login"""
+        from datetime import timedelta
+
+        from django.utils import timezone
+
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+
+        # Create users with different last_login values
+        user_recent = create_test_user()
+        user_recent.last_login = timezone.now()
+        user_recent.save()
+
+        user_old = create_test_user()
+        user_old.last_login = timezone.now() - timedelta(days=400)  # Over 1 year ago
+        user_old.save()
+
+        user_never = create_test_user()
+        user_never.last_login = None  # Never logged in
+        user_never.save()
+
+        # Filter users who logged in before 1 year ago
+        one_year_ago = (timezone.now() - timedelta(days=365)).isoformat()
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"last_login__lt": one_year_ago},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 1)
+        self.assertEqual(body["results"][0]["pk"], user_old.pk)
+
+        # Filter users who have never logged in
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"last_login__isnull": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        # Should include user_never and admin (who hasn't logged in via the app)
+        pks = [r["pk"] for r in body["results"]]
+        self.assertIn(user_never.pk, pks)
+
+    def test_sort_by_last_login(self):
+        """Test API sorting by last_login"""
+        from datetime import timedelta
+
+        from django.utils import timezone
+
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+
+        user1 = create_test_user()
+        user1.last_login = timezone.now() - timedelta(days=10)
+        user1.save()
+
+        user2 = create_test_user()
+        user2.last_login = timezone.now() - timedelta(days=5)
+        user2.save()
+
+        # Ascending order (oldest first)
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"ordering": "last_login"},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        # Users with null last_login come first, then user1 (older), then user2 (newer)
+        self.assertEqual(len(body["results"]), 3)
+
+        # Descending order (newest first)
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"ordering": "-last_login"},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        # user2 should come before user1 (more recent login)
+        pks = [r["pk"] for r in body["results"]]
+        self.assertIn(user1.pk, pks)
+        self.assertIn(user2.pk, pks)
+        # Verify user2 comes before user1 in descending order
+        self.assertLess(pks.index(user2.pk), pks.index(user1.pk))
+
+
+class TestUsersAPIGroupRoleValidation(APITestCase):
+    """Test that PATCH /api/v3/core/users/{pk}/ enforces group and role permission checks."""
+
+    def setUp(self) -> None:
+        self.actor = create_test_user()
+        self.target = create_test_user()
+
+    def _patch(self, data: dict):
+        self.client.force_login(self.actor)
+        return self.client.patch(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.target.pk}),
+            data=data,
+            content_type="application/json",
+        )
+
+    def test_patch_superuser_group_no_perm(self):
+        """Assigning a superuser group without enable_group_superuser must be rejected."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        group = Group.objects.create(name=generate_id(), is_superuser=True)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 400)
+
+    def test_patch_superuser_group_with_perm(self):
+        """Assigning a superuser group with enable_group_superuser must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        self.actor.assign_perms_to_managed_role("authentik_core.enable_group_superuser")
+        group = Group.objects.create(name=generate_id(), is_superuser=True)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+
+    def test_patch_non_superuser_group_no_perm(self):
+        """Assigning a non-superuser group without special permission must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        group = Group.objects.create(name=generate_id(), is_superuser=False)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+
+    def test_patch_existing_superuser_group_no_perm(self):
+        """Keeping an existing superuser group membership without the permission must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        group = Group.objects.create(name=generate_id(), is_superuser=True)
+        self.target.groups.add(group)
+        res = self._patch({"groups": [str(group.pk)]})
+        self.assertEqual(res.status_code, 200)
+
+    def test_patch_role_no_perm(self):
+        """Assigning a new role without change_role must be rejected."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        role = Role.objects.create(name=generate_id())
+        res = self._patch({"roles": [str(role.pk)]})
+        self.assertEqual(res.status_code, 400)
+
+    def test_patch_role_with_perm(self):
+        """Assigning a new role with change_role must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        self.actor.assign_perms_to_managed_role("authentik_rbac.change_role")
+        role = Role.objects.create(name=generate_id())
+        res = self._patch({"roles": [str(role.pk)]})
+        self.assertEqual(res.status_code, 200)
+
+    def test_patch_existing_role_no_perm(self):
+        """Keeping an existing role without change_role must succeed."""
+        self.actor.assign_perms_to_managed_role("authentik_core.view_user")
+        self.actor.assign_perms_to_managed_role("authentik_core.change_user", self.target)
+        role = Role.objects.create(name=generate_id())
+        self.target.roles.add(role)
+        res = self._patch({"roles": [str(role.pk)]})
+        self.assertEqual(res.status_code, 200)

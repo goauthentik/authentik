@@ -2,7 +2,7 @@
 title: Applications
 ---
 
-Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **My applications** page.
+Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **Application Dashboard** page.
 
 When a user logs into authentik, they see a list of the applications for which authentik is configured to provide authentication and authorization (the applications that they are authorized to use).
 
@@ -26,15 +26,13 @@ The following options can be configured:
 - _Name_: This is the name shown for the application card
 - _Launch URL_: The URL that is opened when a user clicks on the application. When left empty, authentik tries to guess it based on the provider
 
-    You can use placeholders in the launch url to build them dynamically based on the logged in user. For example, you can set the Launch URL to `https://goauthentik.io/%(username)s`, which will be replaced with the currently logged in user's username.
+    You can use placeholders in the launch URL to build them dynamically based on the logged-in user. For example, you can set the Launch URL to `https://goauthentik.io/%(username)s`, which will be replaced with the currently logged-in user's username.
 
-    Only applications whose launch URL starts with `http://` or `https://` or are relative URLs are shown on the users' **My applications** page. This can also be used to hide applications that shouldn't be visible on the **My applications** page but are still accessible by users, by setting the _Launch URL_ to `blank://blank`.
+    For a reference of all fields available, see [the API schema for the User object](https://api.goauthentik.io/reference/core-users-retrieve/).
 
-- _Icon (URL)_: Optionally configure an Icon for the application
+    Only apps with launch URLs that begin with `http://` or `https://`, or that use relative paths, appear on the user's **Application Dashboard** page. To keep an app accessible but remove it from that page, use the **Hide from Application Dashboard** option (see [Hide applications](./manage_apps.mdx#hide-applications)).
 
-    If the authentik server does not have a volume mounted under `/media`, you'll get a text input. This accepts absolute URLs. If you've mounted single files into the container, you can reference them using `https://authentik.company/media/my-file.png`.
+- _Icon (URL)_: Optionally configure an icon for the application. You can select from files uploaded to the [Files](../../customize/files.md) library or enter an absolute URL.
 
-    If there is a mount under `/media` or if [S3 storage](../../sys-mgmt/ops/storage-s3.md) is configured, you'll instead see a field to upload a file.
-
-- _Publisher_: Text shown below the application
-- _Description_: Subtext shown on the application card below the publisher
+- _Publisher_: Text shown in the application card's expandable kebab menu (⋮)
+- _Description_: Text shown in the application card's expandable kebab menu (⋮)

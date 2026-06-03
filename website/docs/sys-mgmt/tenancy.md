@@ -8,7 +8,7 @@ This feature is in alpha. Use at your own risk.
 :::
 
 :::info
-This feature is available from 2024.2 and is not to be confused with [brands](../sys-mgmt/brands.md), which were previously called tenants.
+This feature is available from 2024.2 and is not to be confused with [brands](../sys-mgmt/brands/index.md), which were previously called tenants.
 :::
 
 ## About tenants
@@ -35,7 +35,7 @@ Learn more in our documentation about [Enterprise licenses](../enterprise/manage
 
 - Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
 
-- Files are isolated on a per-tenant basis, with each tenant folder named according to the schema_name. For example, `/media/t_example`. The same is true regardless of the storage backend.
+- Files are isolated on a per-tenant basis, with each tenant folder named according to the schema_name. For example, `/data/media/t_example`. The same is true regardless of the storage backend.
 
 - Using an [embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx) with multi-tenancy is not currently supported. Disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` configuration setting.
 

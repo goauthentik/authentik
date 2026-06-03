@@ -2,19 +2,20 @@ import { createMixin } from "#elements/types";
 
 import type { Version } from "@goauthentik/api";
 
-import { consume, Context, createContext } from "@lit/context";
+import { consume, createContext } from "@lit/context";
+import { property } from "lit/decorators.js";
 
 /**
- * The Lit context for application branding.
+ * The Lit context for authentik's version.
  *
  * @category Context
  * @see {@linkcode VersionMixin}
  * @see {@linkcode WithVersion}
  */
 
-export const VersionContext = createContext<Version>(Symbol.for("authentik-version-context"));
+export const VersionContext = createContext<Version | null>(Symbol("authentik-version-context"));
 
-export type VersionContext = Context<symbol, Version>;
+export type VersionContext = typeof VersionContext;
 
 /**
  * A mixin that provides the current version to the element.
@@ -27,7 +28,7 @@ export interface VersionMixin {
      *
      * @format semver
      */
-    readonly version: Version;
+    readonly version: Version | null;
 }
 
 /**
@@ -46,7 +47,8 @@ export const WithVersion = createMixin<VersionMixin>(
                 context: VersionContext,
                 subscribe,
             })
-            public version!: Version;
+            @property({ attribute: false })
+            public version: Version | null = null;
         }
 
         return VersionProvider;

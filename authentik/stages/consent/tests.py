@@ -19,7 +19,7 @@ from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConse
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
-    SESSION_KEY_CONSENT_TOKEN,
+    PLAN_CONTEXT_CONSENT_TOKEN,
 )
 
 
@@ -83,11 +83,10 @@ class TestConsentStage(FlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        session = self.client.session
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {
-                "token": session[SESSION_KEY_CONSENT_TOKEN],
+                "token": self.get_flow_plan().context[PLAN_CONTEXT_CONSENT_TOKEN],
             },
         )
 
@@ -122,7 +121,7 @@ class TestConsentStage(FlowTestCase):
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {
-                "token": session[SESSION_KEY_CONSENT_TOKEN],
+                "token": self.get_flow_plan().context[PLAN_CONTEXT_CONSENT_TOKEN],
             },
         )
         self.assertEqual(response.status_code, 200)

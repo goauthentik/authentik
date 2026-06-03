@@ -2,6 +2,10 @@
 👋 Hi there! Welcome.
 
 Please check the Contributing guidelines: https://docs.goauthentik.io/docs/developer-docs/#how-can-i-contribute
+
+⚠️ IMPORTANT: Make sure you are opening this PR from a FEATURE BRANCH, not from your main branch!
+If you opened this PR from your main branch, please close it and create a new feature branch instead.
+For more information, see: https://docs.goauthentik.io/developer-docs/contributing/#always-use-feature-branches
 -->
 
 ## Details
@@ -22,7 +26,7 @@ REPLACE ME
 
 If an API change has been made
 
--   [ ] The API schema has been updated (`make gen-build`)
+-   [ ] The API schema and clients have been updated (`make gen`)
 
 If changes to the frontend have been made
 

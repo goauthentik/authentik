@@ -4,7 +4,7 @@ sidebar_label: phpIPAM
 support_level: community
 ---
 
-## What is phpIPAM
+## What is phpIPAM?
 
 > phpipam is an open-source web IP address management application (IPAM). Its goal is to provide light, modern and useful IP address management. It is php-based application with MySQL database backend, using jQuery libraries, ajax and HTML5/CSS3 features.
 >
@@ -30,7 +30,7 @@ This is based on authentik 2023.3.1 and phpIPAM 1.5.2
 Only settings that have been modified from default have been listed.
 :::
 
-## authentik Configuration
+## authentik configuration
 
 ### Step 1 - User and Group creation
 
@@ -144,8 +144,6 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     - Authorization flow: `default-provider-authorization-explicit-consent`
     - Protocol Settings:
         - ACS URL: https://phpipam.company/saml2/
-        - Issuer: https://authentik.company
-        - Service Provider Binding: Post
         - Audience: https://phpipam.company/
     - Advanced Protocol Settings:
         - Signing Certificate: authentik: Self-signed Certificate
@@ -163,7 +161,7 @@ Select Create
 - Name: phpipam-saml
 - Provider: phpipam-saml
 
-Edit Policy Bindings to only allow users who have the groups assigned to them, access to login. Without this, any user can login and be given default no permissions in phpIPAM.
+Edit Policy Bindings to only allow users who have the groups assigned to them access to log in. Without this, any user can log in and be given default no permissions in phpIPAM.
 
 Select ipam-saml application
 
@@ -175,9 +173,9 @@ Select ipam-saml application
 Leave all other settings as default
 ![](./ipam-saml-application-bindings.png)
 
-## phpIPAM Configuration
+## phpIPAM configuration
 
-Login as the local administrator account at `phpipam.company`
+Log in as the local administrator account at `phpipam.company`.
 Select Authentication Methods
 Select Create New > SAML2 Authentication
 
@@ -186,14 +184,14 @@ Select Create New > SAML2 Authentication
 - Use advanced settings: Off
 - Client ID: https://phpipam.company/
 - Strict Mode: Off
-- IDP Issuer: https://authentik.company
-- IDP Login url: https://authentik.company/application/saml/*application_name*/sso/binding/redirect/
-- IDP Logout url: https://authentik.company/application/saml/*application_name*/slo/binding/redirect/
-- IDP X.509 public cert: This will be the .pem contents of the cert used as the signing certificate
+- IDP Issuer: https://authentik.company/application/saml/*application_name*/metadata/
+- IDP Login url: https://authentik.company/application/saml/*application_name*/
+- IDP Logout url: https://authentik.company/application/saml/*application_name*/
+- IDP X.509 public cert: This will be the `.pem` contents of the cert used as the signing certificate
     1. To get this cert, access the authentik installation at authentik.company
     2. Select Applications > Providers > phpipam-saml
     3. Select Download signing certificate
-    4. Paste in the contents of the signing certificate into if IDP X.509 field
+    4. Paste the contents of the signing certificate into the IDP X.509 field
 - Sign Authn requests: Off
 
 Leave everything else as default. Save changes
@@ -203,5 +201,5 @@ Leave everything else as default. Save changes
 
 ![](./ipam-saml2-login-location.png)
 Browse to `phpipam.company`, select the SAML2 login hyperlink (or access directly from the authentik application menu)
-From here, you should be able to login as each of the test-users and see the affects the saml attributes has with the permissions set. These can be fine tuned as needed by following the phpipam documentation, but should be enough to get a basic permissive installation working with authentik as the SAML provider.
+From here, you should be able to log in as each of the test users and see the effects the SAML attributes have on the permissions set. These can be fine-tuned as needed by following the phpIPAM documentation, but this should be enough to get a basic permissive installation working with authentik as the SAML provider.
 ![](./phpipam-automatic-user-creation-permissions.png)

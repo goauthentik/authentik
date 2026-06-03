@@ -4,7 +4,7 @@ sidebar_label: Tailscale
 support_level: community
 ---
 
-## What is Tailscale
+## What is Tailscale?
 
 > Tailscale is a mesh VPN service that creates secure, encrypted, peer-to-peer connections between devices across different networks using the WireGuard protocol.
 >
@@ -33,7 +33,7 @@ Use this JSON template for your WebFinger response:
 }
 ```
 
-**Important:** Replace `your@email.com` with the administrator email that you will use when creating your Tailnet. The domain in the email address must match; the domain where the WebFinger endpoint is served, and the domain you will use for Tailscale.
+**Important:** Replace `your@email.com` with the administrator email that you will use when creating your Tailnet. The domain in the email address must match the domain where the WebFinger endpoint is served and the domain you will use for Tailscale.
 :::
 
 :::info
@@ -47,14 +47,14 @@ To support the integration of Tailscale with authentik, you need to create an ap
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Set a `Strict` redirect URI to `https://login.tailscale.com/a/oauth_response`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 

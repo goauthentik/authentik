@@ -1,10 +1,10 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { DualSelectPair } from "#elements/ak-dual-select/types";
+import { DualSelectPair, DualSelectPairSource } from "#elements/ak-dual-select/types";
 
 import { OAuth2Provider, ProvidersApi } from "@goauthentik/api";
 
-const providerToSelect = (provider: OAuth2Provider) => [
+const providerToSelect = (provider: OAuth2Provider): DualSelectPair<OAuth2Provider> => [
     provider.pk,
     provider.name,
     provider.name,
@@ -25,12 +25,14 @@ export async function oauth2ProvidersProvider(page = 1, search = "") {
     };
 }
 
-export function oauth2ProvidersSelector(instanceProviders: number[] | undefined) {
+export function oauth2ProvidersSelector(
+    instanceProviders: number[] | undefined,
+): DualSelectPairSource {
     if (!instanceProviders) {
-        return async (mappings: DualSelectPair<OAuth2Provider>[]) => [];
+        return async () => [];
     }
 
-    return async () => {
+    const fetchOauth2Providers: DualSelectPairSource = async () => {
         const oauthSources = new ProvidersApi(DEFAULT_CONFIG);
         const mappings = await Promise.allSettled(
             instanceProviders.map((instanceId) =>
@@ -43,4 +45,6 @@ export function oauth2ProvidersSelector(instanceProviders: number[] | undefined)
             .map((s) => s.value)
             .map(providerToSelect);
     };
+
+    return fetchOauth2Providers;
 }

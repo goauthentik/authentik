@@ -23,10 +23,16 @@ export default defineConfig({
     testDir: "./test/browser",
     fullyParallel: true,
     forbidOnly: CI,
-    retries: CI ? 2 : 0,
-    workers: CI ? 1 : undefined,
+    retries: CI ? 1 : 0,
+    workers: "50%",
+    maxFailures: CI ? 5 : 2,
     reporter: CI
-        ? "github"
+        ? [
+              // ---
+              ["github"],
+              ["html", { open: "never", outputFolder: "playwright-report" }],
+              ["json", { outputFile: "playwright-report/results.json" }],
+          ]
         : [
               // ---
               ["list", { printSteps: true }],
@@ -36,12 +42,15 @@ export default defineConfig({
         testIdAttribute: "data-test-id",
         baseURL,
         trace: "on-first-retry",
+        screenshot: "only-on-failure",
+        video: CI ? "retain-on-failure" : "off",
+        colorScheme: "dark",
         launchOptions: {
             logger: {
                 isEnabled() {
                     return true;
                 },
-                log: (name, severity, message, args) => {
+                log: (name, severity, message, _args) => {
                     let logger = LoggerCache.get(name);
 
                     if (!logger) {

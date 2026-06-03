@@ -20,7 +20,7 @@ from django.utils import timezone
 from django.views.debug import SafeExceptionReporterFilter
 from geoip2.models import ASN, City
 from guardian.conf import settings
-from guardian.utils import get_anonymous_user
+from guardian.shortcuts import get_anonymous_user
 
 from authentik.blueprints.v1.common import YAMLTag
 from authentik.core.models import User
@@ -34,6 +34,10 @@ ALLOWED_SPECIAL_KEYS = re.compile(
     r"passing|password_change_date|^auth_method(_args)?$",
     flags=re.I,
 )
+
+
+def cleanse_str(raw: Any) -> str:
+    return str(raw).replace("\u0000", "")
 
 
 def cleanse_item(key: str, value: Any) -> Any:
@@ -66,7 +70,7 @@ def cleanse_dict(source: dict[Any, Any]) -> dict[Any, Any]:
 
 def model_to_dict(model: Model) -> dict[str, Any]:
     """Convert model to dict"""
-    name = str(model)
+    name = cleanse_str(model)
     if hasattr(model, "name"):
         name = model.name
     return {
@@ -133,11 +137,11 @@ def sanitize_item(value: Any) -> Any:  # noqa: PLR0911, PLR0912
     if isinstance(value, ASN):
         return ASN_CONTEXT_PROCESSOR.asn_to_dict(value)
     if isinstance(value, Path):
-        return str(value)
+        return cleanse_str(value)
     if isinstance(value, Exception):
-        return str(value)
+        return cleanse_str(value)
     if isinstance(value, YAMLTag):
-        return str(value)
+        return cleanse_str(value)
     if isinstance(value, Enum):
         return value.value
     if isinstance(value, type):
@@ -161,7 +165,7 @@ def sanitize_item(value: Any) -> Any:  # noqa: PLR0911, PLR0912
             raise ValueError("JSON can't represent timezone-aware times.")
         return value.isoformat()
     if isinstance(value, timedelta):
-        return str(value.total_seconds())
+        return cleanse_str(value.total_seconds())
     if callable(value):
         return {
             "type": "callable",
@@ -174,8 +178,8 @@ def sanitize_item(value: Any) -> Any:  # noqa: PLR0911, PLR0912
     try:
         return DjangoJSONEncoder().default(value)
     except TypeError:
-        return str(value)
-    return str(value)
+        return cleanse_str(value)
+    return cleanse_str(value)
 
 
 def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:

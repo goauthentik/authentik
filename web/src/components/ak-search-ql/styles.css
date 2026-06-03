@@ -32,8 +32,7 @@
 
 :host([theme="dark"]) {
     .pf-c-search-input__menu {
-        --pf-c-search-input__menu--BackgroundColor: var(--ak-dark-background-light-ish);
-        color: var(--ak-dark-foreground);
+        --pf-c-search-input__menu--BackgroundColor: var(--pf-global--BackgroundColor--300);
     }
 
     .pf-c-search-input__menu-item {

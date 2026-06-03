@@ -1,8 +1,108 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_LOCALE_REQUEST } from "#common/constants";
 import { isResponseErrorLike } from "#common/errors/network";
+import { UIConfig, UserDisplay } from "#common/ui/config";
 
-import { CoreApi, SessionUser } from "@goauthentik/api";
+import { CoreApi, SessionUser, UserSelf } from "@goauthentik/api";
+
+import { match } from "ts-pattern";
+
+import { msg, str } from "@lit/localize";
+
+export interface ClientSessionPermissions {
+    editApplications: boolean;
+    accessAdmin: boolean;
+}
+
+export type UserLike = Partial<Pick<UserSelf, "username" | "name" | "email">>;
+
+/**
+ * The display name of the current user, according to their UI config settings.
+ */
+export function formatUserDisplayName(user: UserLike | null, uiConfig?: UIConfig): string {
+    if (!user) return "";
+
+    const label = match(uiConfig?.navbar.userDisplay)
+        .with(UserDisplay.username, () => user.username)
+        .with(UserDisplay.name, () => user.name)
+        .with(UserDisplay.email, () => user.email)
+        .with(UserDisplay.none, () => null)
+        .otherwise(() => user.name || user.username);
+
+    return label || "";
+}
+
+const formatUnknownUserLabel = () =>
+    msg("Unknown user", {
+        id: "user.display.unknownUser",
+        desc: "Placeholder for an unknown user, in the format 'Unknown user'.",
+    });
+
+/**
+ * Format a user's display name with disambiguation, such as when multiple users have the same name appearing in a list.
+ */
+export function formatDisambiguatedUserDisplayName(
+    user?: UserLike | null,
+    formatter?: Intl.ListFormat,
+): string;
+export function formatDisambiguatedUserDisplayName(
+    user?: UserLike | null,
+    locale?: Intl.LocalesArgument,
+): string;
+export function formatDisambiguatedUserDisplayName(
+    user?: UserLike | null,
+    localeOrFormatter?: Intl.ListFormat | Intl.LocalesArgument,
+): string {
+    if (!user) {
+        return formatUnknownUserLabel();
+    }
+
+    const formatter =
+        localeOrFormatter instanceof Intl.ListFormat
+            ? localeOrFormatter
+            : new Intl.ListFormat(localeOrFormatter, { style: "narrow", type: "unit" });
+
+    const { username, name, email } = user;
+
+    const segments: string[] = [];
+
+    if (username) {
+        segments.push(username);
+    }
+
+    if (name && name !== username) {
+        if (segments.length === 0) {
+            segments.push(name);
+        } else {
+            segments.push(
+                msg(str`(${name})`, {
+                    id: "user.display.nameInParens",
+                    desc: "The user's name in parentheses, used when the name is different from the username",
+                }),
+            );
+        }
+    }
+    if (email && email !== username) {
+        segments.push(
+            msg(str`<${email}>`, {
+                id: "user.display.emailInAngleBrackets",
+                desc: "The user's email in angle brackets, used when the email is different from the username",
+            }),
+        );
+    }
+
+    if (!segments.length) {
+        return formatUnknownUserLabel();
+    }
+
+    return formatter.format(segments);
+}
+
+/**
+ * Whether the current session is an unauthenticated guest session.
+ */
+export function isGuest(user: UserSelf | null): boolean {
+    return user?.pk === -1;
+}
 
 /**
  * Create a guest session for unauthenticated users.
@@ -16,6 +116,7 @@ function createGuestSession(): SessionUser {
             isSuperuser: false,
             isActive: true,
             groups: [],
+            roles: [],
             avatar: "",
             uid: "",
             username: "",
@@ -28,14 +129,44 @@ function createGuestSession(): SessionUser {
     return guest;
 }
 
-let memoizedSession: SessionUser | null = null;
+let pendingRedirect = false;
 
 /**
- * Refresh the current user session.
+ * Redirect to the default authentication flow, preserving the current URL as "next" parameter.
+ *
+ * @category Session
  */
-export function refreshMe(): Promise<SessionUser> {
-    memoizedSession = null;
-    return me();
+export function redirectToAuthFlow(nextPathname = "/flows/-/default/authentication/"): void {
+    if (pendingRedirect) {
+        console.debug("authentik/users: Redirect already pending, ");
+        return;
+    }
+
+    const { pathname, search, hash } = window.location;
+
+    const authFlowRedirectURL = new URL(nextPathname, window.location.origin);
+
+    authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
+
+    pendingRedirect = true;
+
+    console.debug(
+        `authentik/users: Redirecting to authentication flow at ${authFlowRedirectURL.href}`,
+    );
+
+    window.location.assign(authFlowRedirectURL);
+}
+
+/**
+ * Start account lockdown and follow the returned flow link.
+ */
+export async function startAccountLockdown(user?: number): Promise<void> {
+    const response = await new CoreApi(DEFAULT_CONFIG).coreUsersAccountLockdownCreate({
+        userAccountLockdownRequest: user !== undefined ? { user } : {},
+    });
+    if (response.link) {
+        window.location.assign(response.link);
+    }
 }
 
 /**
@@ -44,53 +175,23 @@ export function refreshMe(): Promise<SessionUser> {
  * This is a memoized function, so it will only make one request per page load.
  *
  * @see {@linkcode refreshMe} to force a refresh.
+ *
+ * @category Session
  */
-export async function me(): Promise<SessionUser> {
-    if (memoizedSession) return memoizedSession;
-
+export async function me(requestInit?: RequestInit): Promise<SessionUser> {
     return new CoreApi(DEFAULT_CONFIG)
-        .coreUsersMeRetrieve()
-        .then((nextSession) => {
-            const locale: string | undefined = nextSession.user.settings.locale;
-
-            if (locale) {
-                console.debug(`authentik/locale: Activating user's configured locale '${locale}'`);
-
-                window.dispatchEvent(
-                    new CustomEvent(EVENT_LOCALE_REQUEST, {
-                        composed: true,
-                        bubbles: true,
-                        detail: { locale },
-                    }),
-                );
-            }
-
-            return nextSession;
-        })
+        .coreUsersMeRetrieve(requestInit)
         .catch(async (error: unknown) => {
             if (isResponseErrorLike(error)) {
                 const { response } = error;
 
                 if (response.status === 401 || response.status === 403) {
-                    const { pathname, search, hash } = window.location;
-
-                    const authFlowRedirectURL = new URL(
-                        `/flows/-/default/authentication/`,
-                        window.location.origin,
-                    );
-
-                    authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
-
-                    window.location.assign(authFlowRedirectURL);
+                    redirectToAuthFlow();
                 }
             }
 
             console.debug("authentik/users: Failed to retrieve user session", error);
 
             return createGuestSession();
-        })
-        .then((nextSession) => {
-            memoizedSession = nextSession;
-            return nextSession;
         });
 }

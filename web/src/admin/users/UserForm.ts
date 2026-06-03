@@ -1,4 +1,4 @@
-import "#admin/users/GroupSelectModal";
+import "#admin/users/ak-user-group-table";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -7,17 +7,19 @@ import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { DefaultUIConfig } from "#common/ui/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
+import { CoreApi, Group, RbacApi, Role, User, UserTypeEnum } from "@goauthentik/api";
 
+import { match } from "ts-pattern";
 import YAML from "yaml";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -45,11 +47,23 @@ const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
 ];
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
-    @property({ attribute: false })
-    group?: Group;
+    #coreAPI = new CoreApi(DEFAULT_CONFIG);
+    #rbacAPI = new RbacApi(DEFAULT_CONFIG);
 
-    @property()
-    defaultPath: string = "users";
+    public static override verboseName = msg("User");
+    public static override verboseNamePlural = msg("Users");
+
+    @property({ attribute: false })
+    public targetGroup: Group | null = null;
+
+    @property({ attribute: false })
+    public targetRole: Role | null = null;
+
+    @property({ type: String, attribute: "default-path", useDefault: true })
+    public defaultPath: string = DefaultUIConfig.defaults.userPath;
+
+    @property({ attribute: false })
+    public userType: UserTypeEnum | null = null;
 
     static get defaultUserAttributes(): { [key: string]: unknown } {
         return {};
@@ -67,54 +81,107 @@ export class UserForm extends ModelForm<User, number> {
         `,
     ];
 
-    loadInstance(pk: number): Promise<User> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersRetrieve({
+    protected override loadInstance(pk: number): Promise<User> {
+        return this.#coreAPI.coreUsersRetrieve({
             id: pk,
         });
     }
 
+    protected override assignInstance(instance: User): void {
+        super.assignInstance(instance);
+
+        const { verboseName, verboseNamePlural } = match(instance.type)
+            .with(UserTypeEnum.Internal, () => ({
+                verboseName: msg("Internal User"),
+                verboseNamePlural: msg("Internal Users"),
+            }))
+            .with(UserTypeEnum.External, () => ({
+                verboseName: msg("External User"),
+                verboseNamePlural: msg("External Users"),
+            }))
+            .with(UserTypeEnum.ServiceAccount, () => ({
+                verboseName: msg("Service Account"),
+                verboseNamePlural: msg("Service Accounts"),
+            }))
+            .otherwise(() => ({
+                verboseName: msg("User"),
+                verboseNamePlural: msg("Users"),
+            }));
+
+        this.verboseName = verboseName;
+        this.verboseNamePlural = verboseNamePlural;
+    }
+
     getSuccessMessage(): string {
         if (this.instance) {
-            return msg("Successfully updated user.");
+            return msg("User updated.");
         }
-        if (this.group) {
-            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        if (this.targetGroup) {
+            return msg(str`User created and added to group ${this.targetGroup.name}`);
         }
-        return msg("Successfully created user.");
+        if (this.targetRole) {
+            return msg(str`User created and added to role ${this.targetRole.name}`);
+        }
+
+        return msg("User created.");
     }
 
     async send(data: User): Promise<User> {
         if (data.attributes === null) {
             data.attributes = UserForm.defaultUserAttributes;
         }
+
+        if (this.userType) {
+            data.type = this.userType;
+        }
+
         let user;
+
         if (this.instance?.pk) {
-            user = await new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+            user = await this.#coreAPI.coreUsersPartialUpdate({
                 id: this.instance.pk,
                 patchedUserRequest: data,
             });
         } else {
             data.groups = [];
-            user = await new CoreApi(DEFAULT_CONFIG).coreUsersCreate({
+            data.roles = [];
+
+            user = await this.#coreAPI.coreUsersCreate({
                 userRequest: data,
             });
         }
-        if (this.group) {
-            await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
-                groupUuid: this.group.pk,
+
+        if (this.targetGroup) {
+            await this.#coreAPI.coreGroupsAddUserCreate({
+                groupUuid: this.targetGroup.pk,
                 userAccountRequest: {
                     pk: user.pk,
                 },
             });
         }
+
+        if (this.targetRole) {
+            await this.#rbacAPI.rbacRolesAddUserCreate({
+                uuid: this.targetRole.pk,
+                userAccountSerializerForRoleRequest: {
+                    pk: user.pk,
+                },
+            });
+        }
+
         return user;
     }
 
-    renderForm(): TemplateResult {
-        return html` <ak-text-input
+    protected override renderForm(): SlottedTemplateResult {
+        const placeholder =
+            this.userType === UserTypeEnum.Internal
+                ? msg("Type a username for the internal user...")
+                : msg("Type a username for the external user...");
+
+        return html`<ak-text-input
                 name="username"
                 label=${msg("Username")}
-                placeholder=${msg("Type a username for the user...")}
+                placeholder=${placeholder}
                 autocomplete="off"
                 value="${ifDefined(this.instance?.username)}"
                 input-hint="code"
@@ -135,28 +202,29 @@ export class UserForm extends ModelForm<User, number> {
                 help=${msg("The user's display name.")}
             ></ak-text-input>
 
-            <ak-radio-input
-                label=${msg("User type")}
-                required
-                name="type"
-                .value=${this.instance?.type}
-                .options=${[
-                    ...UserTypeOptions,
-                    ...(this.instance
-                        ? [
-                              {
-                                  label: msg("Internal Service account"),
-                                  value: UserTypeEnum.InternalServiceAccount,
-                                  disabled: true,
-                                  description: html`${msg(
-                                      "Managed by authentik and cannot be assigned manually.",
-                                  )}`,
-                              },
-                          ]
-                        : []),
-                ] satisfies RadioOption<UserTypeEnum>[]}
-            >
-            </ak-radio-input>
+            ${this.userType
+                ? null
+                : html`<ak-radio-input
+                      label=${msg("User type")}
+                      required
+                      name="type"
+                      .value=${this.instance?.type}
+                      .options=${[
+                          ...UserTypeOptions,
+                          ...(this.instance
+                              ? [
+                                    {
+                                        label: msg("Internal Service account"),
+                                        value: UserTypeEnum.InternalServiceAccount,
+                                        disabled: true,
+                                        description: html`${msg(
+                                            "Managed by authentik and cannot be assigned manually.",
+                                        )}`,
+                                    },
+                                ]
+                              : []),
+                      ] satisfies RadioOption<UserTypeEnum>[]}
+                  ></ak-radio-input>`}
             <ak-text-input
                 name="email"
                 label=${msg("Email Address")}
@@ -198,7 +266,7 @@ export class UserForm extends ModelForm<User, number> {
 
             <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(
                         this.instance?.attributes ?? UserForm.defaultUserAttributes,
                     )}"

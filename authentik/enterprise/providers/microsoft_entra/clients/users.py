@@ -43,28 +43,17 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         except TypeError as exc:
             raise StopSync(exc, obj) from exc
 
-    def delete(self, obj: User):
+    def delete(self, identifier: str):
         """Delete user"""
-        microsoft_user = MicrosoftEntraProviderUser.objects.filter(
-            provider=self.provider, user=obj
-        ).first()
-        if not microsoft_user:
-            self.logger.debug("User does not exist in Microsoft, skipping")
-            return None
-        with transaction.atomic():
-            response = None
-            if self.provider.user_delete_action == OutgoingSyncDeleteAction.DELETE:
-                response = self._request(
-                    self.client.users.by_user_id(microsoft_user.microsoft_id).delete()
-                )
-            elif self.provider.user_delete_action == OutgoingSyncDeleteAction.SUSPEND:
-                response = self._request(
-                    self.client.users.by_user_id(microsoft_user.microsoft_id).patch(
-                        MSUser(account_enabled=False)
-                    )
-                )
-            microsoft_user.delete()
-        return response
+        MicrosoftEntraProviderUser.objects.filter(
+            provider=self.provider, microsoft_id=identifier
+        ).delete()
+        if self.provider.user_delete_action == OutgoingSyncDeleteAction.DELETE:
+            return self._request(self.client.users.by_user_id(identifier).delete())
+        if self.provider.user_delete_action == OutgoingSyncDeleteAction.SUSPEND:
+            return self._request(
+                self.client.users.by_user_id(identifier).patch(MSUser(account_enabled=False))
+            )
 
     def get_select_fields(self) -> list[str]:
         """All fields that should be selected when we fetch user data."""
@@ -89,7 +78,8 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
         microsoft_user = self.to_schema(user, None)
-        self.check_email_valid(microsoft_user.user_principal_name)
+        if microsoft_user.user_principal_name:
+            self.check_email_valid(microsoft_user.user_principal_name)
         with transaction.atomic():
             try:
                 response = self._request(self.client.users.post(microsoft_user))
@@ -129,7 +119,8 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
     def update(self, user: User, connection: MicrosoftEntraProviderUser):
         """Update existing user"""
         microsoft_user = self.to_schema(user, connection)
-        self.check_email_valid(microsoft_user.user_principal_name)
+        if microsoft_user.user_principal_name:
+            self.check_email_valid(microsoft_user.user_principal_name)
         response = self._request(
             self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user)
         )

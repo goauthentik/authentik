@@ -1,17 +1,23 @@
 import { CURRENT_CLASS, EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import {
+    CommandPaletteState,
+    PaletteCommandAction,
+    PaletteCommandDefinitionInit,
+} from "#elements/commands/shared";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
+import Styles from "#elements/Tabs.css" with { type: "bundled-text" };
 import { ifPresent } from "#elements/utils/attributes";
 import { isFocusable } from "#elements/utils/focus";
 
-import { msg } from "@lit/localize";
-import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
+import { capitalCase } from "change-case";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
-
-import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
-import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-tabs")
 export class Tabs extends AKElement {
@@ -19,28 +25,7 @@ export class Tabs extends AKElement {
         ...LitElement.shadowRootOptions,
         delegatesFocus: true,
     };
-    static styles: CSSResult[] = [
-        PFGlobal,
-        PFTabs,
-        css`
-            :host([vertical]) {
-                display: grid;
-                grid-template-columns: auto 1fr;
-
-                .pf-c-tabs {
-                    width: auto !important;
-                }
-
-                .pf-c-tabs__list {
-                    height: 100%;
-                }
-
-                .pf-c-tabs .pf-c-tabs__list::before {
-                    border-color: transparent;
-                }
-            }
-        `,
-    ];
+    static styles: CSSResult[] = [Styles];
 
     @property({ type: String })
     public pageIdentifier = "page";
@@ -53,9 +38,16 @@ export class Tabs extends AKElement {
 
     @state()
     protected tabs: ReadonlyMap<string, Element> = new Map();
+    /**
+     * Whether the tab is visible in the viewport.
+     */
+    @intersectionObserver()
+    public visible = false;
 
     #focusTargetRef = createRef<HTMLSlotElement>();
     #observer: MutationObserver | null = null;
+
+    #commands = new CommandPaletteState<string>();
 
     #updateTabs = (): void => {
         this.tabs = new Map(
@@ -63,6 +55,42 @@ export class Tabs extends AKElement {
                 return [element.getAttribute("slot") || "", element];
             }),
         );
+
+        requestAnimationFrame(this.#updateCommands);
+    };
+
+    #updateCommands = (): void => {
+        const commands: PaletteCommandDefinitionInit<string>[] = [];
+
+        if (!this.visible) {
+            this.#commands.clear();
+            return;
+        }
+
+        const group = msg(str`Landmark: ${capitalCase(this.pageIdentifier)}`);
+        const prefix = msg("Switch to tab", { id: "command-palette.switch-to-tab" });
+
+        const action: PaletteCommandAction<string> = (slotName) => {
+            this.activateTab(slotName);
+        };
+
+        for (const [slotName, tabPanel] of this.tabs) {
+            if (this.activeTabName === slotName) {
+                continue;
+            }
+
+            const label = tabPanel.getAttribute("aria-label") || slotName;
+
+            commands.push({
+                label,
+                action,
+                group,
+                prefix,
+                details: slotName,
+            });
+        }
+
+        this.#commands.set(commands);
     };
 
     public override connectedCallback(): void {
@@ -95,11 +123,26 @@ export class Tabs extends AKElement {
             childList: true,
             subtree: true,
         });
+
+        this.dispatchActivateEvent();
     }
 
     public override disconnectedCallback(): void {
         this.#observer?.disconnect();
+        this.#commands.clear();
         super.disconnectedCallback();
+    }
+
+    public override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("visible")) {
+            this.#updateCommands();
+        }
+    }
+
+    public findActiveTabPanel(): Element | null {
+        return this.querySelector(`[slot='${this.activeTabName}']`);
     }
 
     public activateTab(nextTabName: string): void {
@@ -125,11 +168,17 @@ export class Tabs extends AKElement {
 
         this.activeTabName = nextTabName;
 
-        const page = this.querySelector(`[slot='${this.activeTabName}']`);
-        if (!page) return;
+        this.dispatchActivateEvent();
+    }
 
-        page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
-        page.dispatchEvent(new CustomEvent("activate"));
+    public dispatchActivateEvent(tabPanel = this.findActiveTabPanel()): void {
+        if (!tabPanel) {
+            console.warn("Cannot dispatch activate event, no tab panel found");
+            return;
+        }
+
+        tabPanel.dispatchEvent(new CustomEvent(EVENT_REFRESH));
+        tabPanel.dispatchEvent(new CustomEvent("activate"));
     }
 
     #delegateFocusListener = (event: FocusEvent) => {
@@ -151,18 +200,21 @@ export class Tabs extends AKElement {
 
     renderTab(slotName: string, tabPanel: Element): TemplateResult {
         return html` <li
+            part="tab-item"
             class="pf-c-tabs__item ${slotName === this.activeTabName ? CURRENT_CLASS : ""}"
         >
             <button
                 type="button"
                 role="tab"
+                part="tab-button"
                 id=${`${slotName}-tab`}
+                name=${slotName}
                 aria-selected=${slotName === this.activeTabName ? "true" : "false"}
                 aria-controls=${ifPresent(slotName)}
                 class="pf-c-tabs__link"
                 @click=${() => this.activateTab(slotName)}
             >
-                <span class="pf-c-tabs__item-text"> ${tabPanel.getAttribute("aria-label")}</span>
+                <span class="pf-c-tabs__item-text">${tabPanel.getAttribute("aria-label")}</span>
             </button>
         </li>`;
     }
@@ -172,7 +224,10 @@ export class Tabs extends AKElement {
             return html`<h1>${msg("no tabs defined")}</h1>`;
         }
 
-        return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
+        return html`<div
+                class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}"
+                part="container ${this.vertical ? "column" : "row"}"
+            >
                 <ul
                     class="pf-c-tabs__list"
                     role="tablist"

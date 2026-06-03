@@ -1,3 +1,6 @@
+import "#components/ak-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-toggle-group";
@@ -18,12 +21,7 @@ import {
     oauth2SourcesSelector,
 } from "#admin/providers/oauth2/OAuth2Sources";
 
-import {
-    FlowsInstancesListDesignationEnum,
-    ProxyMode,
-    ProxyProvider,
-    ValidationError,
-} from "@goauthentik/api";
+import { FlowDesignationEnum, ProxyMode, ProxyProvider, ValidationError } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
 
@@ -86,22 +84,26 @@ function renderProxySettings(provider: Partial<ProxyProvider> = {}, errors: Vali
         <ak-text-input
             name="externalHost"
             label=${msg("External host")}
+            input-hint="code"
+            inputmode="url"
+            placeholder=${msg("https://...")}
             value="${ifDefined(provider.externalHost)}"
             required
             .errorMessages=${errors.externalHost}
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
-            input-hint="code"
         ></ak-text-input>
         <ak-text-input
             name="internalHost"
             label=${msg("Internal host")}
+            input-hint="code"
+            inputmode="url"
+            placeholder=${msg("http(s)://...")}
             value="${ifDefined(provider.internalHost)}"
             required
             .errorMessages=${errors.internalHost}
             help=${msg("Upstream host that the requests are forwarded to.")}
-            input-hint="code"
         ></ak-text-input>
 
         <ak-switch-input
@@ -125,13 +127,15 @@ function renderForwardSingleSettings(
         <ak-text-input
             name="externalHost"
             label=${msg("External host")}
+            input-hint="code"
+            inputmode="url"
+            placeholder=${msg("https://...")}
             value="${ifDefined(provider.externalHost)}"
             required
             .errorMessages=${errors.externalHost}
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
-            input-hint="code"
         ></ak-text-input>`;
 }
 
@@ -158,6 +162,9 @@ function renderForwardDomainSettings(
         <ak-text-input
             name="externalHost"
             label=${msg("Authentication URL")}
+            input-hint="code"
+            inputmode="url"
+            placeholder=${msg("https://...")}
             value="${provider.externalHost ?? window.location.origin}"
             required
             .errorMessages=${errors.externalHost}
@@ -168,6 +175,8 @@ function renderForwardDomainSettings(
 
         <ak-text-input
             label=${msg("Cookie domain")}
+            input-hint="code"
+            placeholder=${msg("domain.tld")}
             name="cookieDomain"
             value="${ifDefined(provider.cookieDomain)}"
             required
@@ -203,18 +212,20 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
         <ak-text-input
             name="name"
             value=${ifDefined(provider.name)}
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
             .errorMessages=${errors.name}
             required
         ></ak-text-input>
 
         <ak-form-element-horizontal
-            label=${msg("Authorization flow")}
+            label=${msg("Authorization Flow")}
             required
             name="authorizationFlow"
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
                 required
             ></ak-flow-search>
@@ -323,7 +334,7 @@ ${provider.skipPathRegex}</textarea
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Federated OIDC Providers")}
+                    label=${msg("Federated OAuth2/OpenID Providers")}
                     name="jwtFederationProviders"
                 >
                     <ak-dual-select-dynamic-selected
@@ -344,11 +355,11 @@ ${provider.skipPathRegex}</textarea
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Authentication flow")}
+                    label=${msg("Authentication Flow")}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
@@ -358,12 +369,12 @@ ${provider.skipPathRegex}</textarea
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
+                    label=${msg("Invalidation Flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
                         required

@@ -163,4 +163,5 @@ def outpost_pre_delete_cleanup(sender, instance: Outpost, **_):
 @receiver(pre_delete, sender=AuthenticatedSession)
 def outpost_logout_revoke(sender: type[AuthenticatedSession], instance: AuthenticatedSession, **_):
     """Catch logout by expiring sessions being deleted"""
-    outpost_session_end.send(instance.session.session_key)
+    if Outpost.objects.exists():
+        outpost_session_end.send(instance.session.session_key)

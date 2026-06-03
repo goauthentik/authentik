@@ -7,23 +7,24 @@ import "@goauthentik/core/environment/load/node";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
+import { copyAssets } from "./build-assets.mjs";
+
 /**
  * @file ESBuild script for building the authentik web UI.
  *
- * @import { BuildOptions } from "esbuild";
+ * @import { BuildOptions, Plugin } from "esbuild";
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
+import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
 import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
 
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
-import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
+import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 import { BuildIdentifier } from "@goauthentik/core/version/node";
 
-import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
-import { copy } from "esbuild-plugin-copy";
 
 /// <reference types="../types/esbuild.js" />
 
@@ -36,10 +37,37 @@ const publicBundledDefinitions = Object.fromEntries(
 );
 logger.info(publicBundledDefinitions, "Bundle definitions");
 
-const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
+const entryPointNames = Object.keys(EntryPoint);
+const entryPoints = Object.values(EntryPoint);
+const entryPointsDescription = entryPointNames.join("\n\t");
 
 /**
- * @type {Readonly<BuildOptions>}
+ * @type {Plugin[]}
+ */
+const BASE_ESBUILD_PLUGINS = [
+    {
+        name: "copy",
+        setup(build) {
+            build.onEnd(async () => {
+                /**
+                 * @type {import('esbuild').PartialMessage[]}
+                 */
+                const errors = [];
+
+                await copyAssets();
+
+                return { errors };
+            });
+        },
+    },
+
+    mdxPlugin({
+        root: MonoRepoRoot,
+    }),
+];
+
+/**
+ * @type {BuildOptions}
  */
 const BASE_ESBUILD_OPTIONS = {
     entryNames: `[dir]/[name]-${BuildIdentifier}`,
@@ -52,58 +80,45 @@ const BASE_ESBUILD_OPTIONS = {
     minify: NodeEnvironment === "production",
     legalComments: "external",
     splitting: true,
+    color: !process.env.NO_COLOR,
     treeShaking: true,
-    external: ["*.woff", "*.woff2"],
     tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
     loader: {
         ".css": "text",
+        ".woff": "file",
+        ".woff2": "file",
+        ".jpg": "file",
+        ".png": "file",
+        ".svg": "file",
     },
-    plugins: [
-        copy({
-            assets: [
-                {
-                    from: path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup", "**"),
-                    to: path.dirname(EntryPoint.StandaloneLoading.out),
-                },
-
-                {
-                    from: path.join(patternflyPath, "patternfly.min.css"),
-                    to: ".",
-                },
-                {
-                    from: path.join(patternflyPath, "assets", "**"),
-                    to: "./assets",
-                },
-                {
-                    from: path.resolve(PackageRoot, "src", "common", "styles", "**"),
-                    to: ".",
-                },
-                {
-                    from: path.resolve(PackageRoot, "src", "assets", "images", "**"),
-                    to: "./assets/images",
-                },
-                {
-                    from: path.resolve(PackageRoot, "icons", "*"),
-                    to: "./assets/icons",
-                },
-            ],
-        }),
-        mdxPlugin({
-            root: MonoRepoRoot,
-        }),
-    ],
+    /**
+     * Conditions for module resolution.
+     *
+     * @see https://esbuild.github.io/api/#conditions
+     * @see https://nodejs.org/api/packages.html#packages_conditional_exports
+     */
+    conditions: NodeEnvironment === "production" ? ["production"] : ["development", "production"],
+    plugins: BASE_ESBUILD_PLUGINS,
     define: bundleDefinitions,
     format: "esm",
-    logOverride: {
-        /**
-         * HACK: Silences issue originating in ESBuild.
-         *
-         * @see {@link https://github.com/evanw/esbuild/blob/b914dd30294346aa15fcc04278f4b4b51b8b43b5/internal/logger/msg_ids.go#L211 ESBuild source}
-         * @expires 2025-08-11
-         */
-        "invalid-source-url": "silent",
-    },
 };
+
+/**
+ * Creates an ESBuild options, extending the base options with the given overrides.
+ *
+ * @param {BuildOptions["entryPoints"]} entryPoints
+ * @param {Plugin[]} plugIns
+ * @returns {BuildOptions}
+ */
+export function createESBuildOptions(entryPoints, plugIns = []) {
+    const plugins = [...BASE_ESBUILD_PLUGINS, ...plugIns];
+
+    return {
+        ...BASE_ESBUILD_OPTIONS,
+        entryPoints,
+        plugins,
+    };
+}
 
 async function cleanDistDirectory() {
     logger.info(`♻️ Cleaning previous builds...`);
@@ -120,57 +135,41 @@ async function cleanDistDirectory() {
     logger.info(`♻️ Done!`);
 }
 
-/**
- * Creates an ESBuild options, extending the base options with the given overrides.
- *
- * @param {BuildOptions} overrides
- * @returns {BuildOptions}
- */
-export function createESBuildOptions(overrides) {
-    /**
-     * @type {BuildOptions}
-     */
-    const mergedOptions = deepmerge(BASE_ESBUILD_OPTIONS, overrides);
-
-    return mergedOptions;
-}
-
 function doHelp() {
     logger.info(`Build the authentik UI
 
         options:
             -w, --watch: Build all interfaces
-            -p, --proxy: Build only the polyfills and the loading application
-            -h, --help: This help message
-`);
+            -s, --styles-only: Build the static CSS`);
 
     process.exit(0);
 }
 
+/**
+ *
+ * @returns {Promise<() => Promise<void>>} dispose
+ */
 async function doWatch() {
-    const { promise, resolve, reject } = Promise.withResolvers();
-
-    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
-
-    const entryPoints = Object.values(EntryPoint);
+    logger.info(`🤖 Watching entry points:\n\t${entryPointsDescription}`);
 
     const developmentPlugins = await import("@goauthentik/esbuild-plugin-live-reload/plugin")
         .then(({ liveReloadPlugin }) => [
             liveReloadPlugin({
                 relativeRoot: PackageRoot,
-                logger: logger.child({ name: "Live Reload" }),
+                logger: logger.child({
+                    name: "Live Reload",
+                }),
             }),
         ])
         .catch(() => []);
 
-    const buildOptions = createESBuildOptions({
-        entryPoints,
-        plugins: developmentPlugins,
-    });
+    const buildOptions = createESBuildOptions(entryPoints, [
+        ...developmentPlugins,
+        styleLoaderPlugin({ logger, watch: true }),
+    ]);
 
     const buildContext = await esbuild.context(buildOptions);
 
-    await buildContext.rebuild();
     await buildContext.watch();
 
     const httpURL = new URL("http://localhost");
@@ -184,35 +183,19 @@ async function doWatch() {
     logger.info(`🔓 ${httpURL.href}`);
     logger.info(`🔒 ${httpsURL.href}`);
 
-    let disposing = false;
-
-    const delegateShutdown = () => {
+    return () => {
         logger.flush();
-        console.log("");
+        console.info("");
+        console.info("🛑 Stopping file watcher...");
 
-        // We prevent multiple attempts to dispose the context
-        // because ESBuild will repeatedly restart its internal clean-up logic.
-        // However, sending a second SIGINT will still exit the process immediately.
-        if (disposing) return;
-
-        disposing = true;
-
-        return buildContext.dispose().then(resolve).catch(reject);
+        return buildContext.dispose();
     };
-
-    process.on("SIGINT", delegateShutdown);
-
-    return promise;
 }
 
 async function doBuild() {
-    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
+    logger.info(`🤖 Building entry points:\n\t${entryPointsDescription}`);
 
-    const entryPoints = Object.values(EntryPoint);
-
-    const buildOptions = createESBuildOptions({
-        entryPoints,
-    });
+    const buildOptions = createESBuildOptions(entryPoints, [styleLoaderPlugin({ logger })]);
 
     await esbuild.build(buildOptions);
 
@@ -220,11 +203,12 @@ async function doBuild() {
 }
 
 async function doProxy() {
-    const entryPoints = [EntryPoint.StandaloneLoading];
-
-    const buildOptions = createESBuildOptions({
-        entryPoints,
-    });
+    const entryPoints = [
+        EntryPoint.InterfaceStyles,
+        EntryPoint.StaticStyles,
+        EntryPoint.FlowStyles,
+    ];
+    const buildOptions = createESBuildOptions(entryPoints, [styleLoaderPlugin({ logger })]);
 
     await esbuild.build(buildOptions);
     logger.info("Proxy build complete");
@@ -241,8 +225,8 @@ async function delegateCommand() {
         case "--watch":
             return doWatch();
         // There's no watch-for-proxy, sorry.
-        case "-p":
-        case "--proxy":
+        case "-s":
+        case "--styles-only":
             return doProxy();
         default:
             return doBuild();
@@ -253,11 +237,43 @@ await cleanDistDirectory()
     // ---
     .then(() =>
         delegateCommand()
-            .then(() => {
-                process.exit(0);
+            .then((dispose) => {
+                if (!dispose) {
+                    process.exit(0);
+                }
+
+                /**
+                 * @type {Promise<void>}
+                 */
+                const signalListener = new Promise((resolve) => {
+                    // We prevent multiple attempts to dispose the context
+                    // because ESBuild will repeatedly restart its internal clean-up logic.
+                    // However, sending a second SIGINT will still exit the process immediately.
+                    let signalCount = 0;
+
+                    process.on("SIGINT", () => {
+                        if (signalCount > 3) {
+                            // Something is taking too long and the user wants to exit now.
+                            console.log("🛑 Forcing exit...");
+                            process.exit(0);
+                        }
+                    });
+
+                    process.once("SIGINT", () => {
+                        signalCount++;
+
+                        dispose().finally(() => {
+                            console.log("✅ Done!");
+
+                            resolve();
+                        });
+                    });
+
+                    logger.info("🚪 Press Ctrl+C to exit.");
+                });
+
+                return signalListener;
             })
-            .catch((error) => {
-                logger.error(error);
-                process.exit(1);
-            }),
+            .then(() => process.exit(0))
+            .catch(() => process.exit(1)),
     );

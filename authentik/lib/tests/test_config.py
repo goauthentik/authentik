@@ -129,7 +129,7 @@ class TestConfig(TestCase):
         test_value = b' "foo": "bar"     '
         b64_value = base64.b64encode(test_value)
         config.set("foo", b64_value)
-        self.assertEqual(config.get_dict_from_b64_json("foo"), {"foo": "bar"})
+        self.assertEqual(config.get_dict_from_b64_json("foo"), {})
 
     def test_get_dict_from_b64_json_invalid(self):
         """Test get_dict_from_b64_json with invalid value"""
@@ -315,7 +315,7 @@ class TestConfig(TestCase):
             {
                 "default": {
                     "DISABLE_SERVER_SIDE_CURSORS": True,
-                    "CONN_MAX_AGE": None,
+                    "CONN_MAX_AGE": 0,
                     "CONN_HEALTH_CHECKS": False,
                     "ENGINE": "psqlextra.backend",
                     "HOST": "foo",

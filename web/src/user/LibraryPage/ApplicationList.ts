@@ -1,16 +1,13 @@
 import type { AppGroupEntry } from "./types.js";
 
-import { rootInterface } from "#common/theme";
 import { LayoutType } from "#common/ui/config";
 
+import { ApplicationRoute } from "#elements/router/builders";
 import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { UserInterface } from "#user/index.entrypoint";
 import { AnchorPositionSupported } from "#user/LibraryApplication/CardMenu";
 import { AKLibraryApp } from "#user/LibraryApplication/index";
-
-import { ApplicationRoute } from "#admin/Routes";
 
 import { Application } from "@goauthentik/api";
 
@@ -19,7 +16,7 @@ import { kebabCase } from "change-case";
 import { HTMLAttributes } from "react";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { RefOrCallback } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
 
@@ -30,6 +27,7 @@ const LayoutColumnCount = {
 } as const satisfies Record<LayoutType, number>;
 
 export interface AKLibraryApplicationListProps extends HTMLAttributes<HTMLDivElement> {
+    editable?: boolean;
     groupedApps: AppGroupEntry[];
     layout: LayoutType;
     background?: string | null;
@@ -41,6 +39,7 @@ export interface AKLibraryApplicationListProps extends HTMLAttributes<HTMLDivEle
  * Renders the current library list of a User's Applications.
  */
 export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
+    editable,
     groupedApps,
     layout = LayoutType.row,
     background,
@@ -49,8 +48,6 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
     ...props
 }) => {
     const columnCount = LayoutColumnCount[layout] ?? 1;
-    const { me, uiConfig } = rootInterface<UserInterface>();
-    const canEdit = !!(uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser);
 
     return html`<div
         role="presentation"
@@ -64,18 +61,16 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
             ([groupLabel]) => groupLabel,
             ([groupLabel, apps], groupIndex) => {
                 const groupID = kebabCase(groupLabel);
-                const activeDescendantID =
-                    selectedApp && apps.includes(selectedApp) ? `app-${selectedApp.pk}` : nothing;
 
                 return html`<fieldset
+                    class="ak-c-fieldset"
                     data-group-id=${ifPresent(groupID)}
                     part="app-group"
                     data-group-index=${groupIndex}
                     data-app-count=${apps.length}
-                    aria-activedescendant=${activeDescendantID}
                 >
                     <legend
-                        class="pf-c-content ${!groupLabel ? "less-contrast-sr-only" : ""}"
+                        class="pf-c-content ${!groupLabel ? "sr-only more-contrast-only" : ""}"
                         part="app-group-header"
                     >
                         <h2 id=${`app-group-${groupID}`}>${groupLabel || msg("Ungrouped")}</h2>
@@ -83,21 +78,18 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
                     ${repeat(
                         apps,
                         (application) => application.pk,
-                        (application, appIndex) => {
+                        (application) => {
                             const selected = selectedApp === application;
 
-                            const editURL = canEdit
+                            const editURL = editable
                                 ? ApplicationRoute.EditURL(application.slug)
                                 : null;
 
                             return AKLibraryApp({
                                 application,
-                                appIndex,
-                                groupIndex,
                                 background,
                                 editURL,
-                                "targetRef": selected ? targetRef : null,
-                                "aria-selected": selected,
+                                targetRef: selected ? targetRef : null,
                             });
                         },
                     )}

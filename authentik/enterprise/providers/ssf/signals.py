@@ -3,7 +3,6 @@ from hashlib import sha256
 from django.db.models import Model
 from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
-from guardian.shortcuts import assign_perm
 
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
@@ -13,7 +12,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.core.signals import password_changed
+from authentik.core.signals import password_changed, password_hash_changed
 from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
@@ -44,7 +43,7 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
             "path": USER_PATH_PROVIDERS_SSF,
         },
     )
-    assign_perm("add_stream", user, instance)
+    user.assign_perms_to_managed_role("authentik_providers_ssf.add_stream", instance)
     token, token_created = Token.objects.update_or_create(
         identifier=identifier,
         defaults={
@@ -85,14 +84,13 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
     )
 
 
-@receiver(password_changed)
-def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
+def _send_password_credential_change(user: User, change_type: str):
     """Credential change trigger (password changed)"""
     send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         {
             "credential_type": "password",
-            "change_type": "revoke" if password is None else "update",
+            "change_type": change_type,
         },
         sub_id={
             "format": "complex",
@@ -102,6 +100,16 @@ def ssf_password_changed_cred_change(sender, user: User, password: str | None, *
             },
         },
     )
+
+
+@receiver(password_hash_changed)
+@receiver(password_changed)
+def ssf_password_changed_cred_change(signal, sender, user: User, password: str | None = None, **_):
+    """Credential change trigger (password changed)"""
+    if signal is password_hash_changed:
+        _send_password_credential_change(user, "update")
+        return
+    _send_password_credential_change(user, "revoke" if password is None else "update")
 
 
 device_type_map = {

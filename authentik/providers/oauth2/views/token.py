@@ -4,6 +4,7 @@ from base64 import b64decode
 from binascii import Error
 from dataclasses import InitVar, dataclass
 from datetime import datetime
+from hmac import compare_digest
 from re import error as RegexError
 from re import fullmatch
 from typing import Any
@@ -19,24 +20,7 @@ from jwt import PyJWK, PyJWT, PyJWTError, decode
 from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
-from authentik.core.middleware import CTX_AUTH_VIA
-from authentik.core.models import (
-    USER_ATTRIBUTE_EXPIRES,
-    USER_ATTRIBUTE_GENERATED,
-    USER_PATH_SYSTEM_PREFIX,
-    Application,
-    Token,
-    TokenIntents,
-    User,
-    UserTypes,
-)
-from authentik.events.middleware import audit_ignore
-from authentik.events.models import Event, EventAction
-from authentik.events.signals import get_login_event
-from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
-from authentik.lib.utils.time import timedelta_from_string
-from authentik.policies.engine import PolicyEngine
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     CLIENT_ASSERTION,
     CLIENT_ASSERTION_TYPE,
     CLIENT_ASSERTION_TYPE_JWT,
@@ -49,12 +33,32 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
 )
+from authentik.core.apps import AppAccessWithoutBindings
+from authentik.core.middleware import CTX_AUTH_VIA
+from authentik.core.models import (
+    USER_ATTRIBUTE_EXPIRES,
+    USER_ATTRIBUTE_GENERATED,
+    USER_PATH_SYSTEM_PREFIX,
+    USERNAME_MAX_LENGTH,
+    Application,
+    Token,
+    TokenIntents,
+    User,
+    UserTypes,
+)
+from authentik.core.sources.mapper import SourceMapper
+from authentik.events.middleware import audit_ignore
+from authentik.events.models import Event, EventAction
+from authentik.events.signals import get_login_event
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
+from authentik.lib.utils.time import timedelta_from_string
+from authentik.policies.engine import PolicyEngine
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    ClientTypes,
+    ClientType,
     DeviceToken,
     OAuth2Provider,
     RedirectURIMatchingMode,
@@ -104,7 +108,7 @@ class TokenParams:
         provider: OAuth2Provider,
         client_id: str,
         client_secret: str,
-    ) -> "TokenParams":
+    ) -> TokenParams:
         """Parse params for request"""
         return TokenParams(
             # Init vars
@@ -144,6 +148,7 @@ class TokenParams:
         ):
             user = self.user if self.user else get_anonymous_user()
             engine = PolicyEngine(app, user, request)
+            engine.empty_result = AppAccessWithoutBindings.get()
             # Don't cache as for client_credentials flows the user will not be set
             # so we'll get generic cache results
             engine.use_cache = False
@@ -160,10 +165,21 @@ class TokenParams:
                 raise TokenError("invalid_grant")
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
-        if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
-            if (
-                self.provider.client_type == ClientTypes.CONFIDENTIAL
-                and self.provider.client_secret != self.client_secret
+        if self.grant_type not in self.provider.grant_types:
+            LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
+            raise TokenError("invalid_grant").with_cause("grant_type_not_configured")
+
+        # Confidential clients MUST authenticate to the token endpoint per
+        # RFC 6749 §2.3.1. The device code grant (RFC 8628 §3.4) inherits
+        # that requirement - the device_code alone is not a substitute for
+        # client credentials.
+        if self.grant_type in [
+            GRANT_TYPE_AUTHORIZATION_CODE,
+            GRANT_TYPE_REFRESH_TOKEN,
+            GRANT_TYPE_DEVICE_CODE,
+        ]:
+            if self.provider.client_type == ClientType.CONFIDENTIAL and not compare_digest(
+                self.provider.client_secret, self.client_secret
             ):
                 LOGGER.warning(
                     "Invalid client secret",
@@ -237,7 +253,7 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
     def __check_redirect_uri(self, request: HttpRequest):
-        allowed_redirect_urls = self.provider.redirect_uris
+        allowed_redirect_urls = self.provider.authorization_redirect_uris
         # At this point, no provider should have a blank redirect_uri, in case they do
         # this will check an empty array and raise an error
 
@@ -329,17 +345,17 @@ class TokenParams:
         try:
             user, _, password = b64decode(self.client_secret).decode("utf-8").partition(":")
             return self.__post_init_client_credentials_creds(request, user, password)
-        except (ValueError, Error):
+        except ValueError, Error:
             raise TokenError("invalid_grant") from None
 
     def __post_init_client_credentials_creds(
         self, request: HttpRequest, username: str, password: str
     ):
         # Authenticate user based on credentials
-        user = User.objects.filter(username=username).first()
+        user = User.objects.filter(username=username, is_active=True).first()
         if not user:
             raise TokenError("invalid_grant")
-        token: Token = Token.filter_not_expired(
+        token: Token = Token.objects.filter(
             key=password, intent=TokenIntents.INTENT_APP_PASSWORD, user=user
         ).first()
         if not token or token.user.uid != user.uid:
@@ -367,7 +383,7 @@ class TokenParams:
     ) -> tuple[dict, OAuthSource] | tuple[None, None]:
         # Fully decode the JWT without verifying the signature, so we can get access to
         # the header.
-        # Get the Key ID from the header, and use that to optimise our source query to only find
+        # Get the Key ID from the header, and use that to optimize our source query to only find
         # sources that have a JWK for that Key ID
         # The Key ID doesn't have a fixed format, but must match between an issued JWT
         # and whatever is returned by the JWKS endpoint
@@ -475,7 +491,7 @@ class TokenParams:
 
         self.__check_policy_access(app, request, oauth_jwt=token)
         if not provider:
-            self.__create_user_from_jwt(token, app, source)
+            self.__create_user_from_jwt(token, app, source, request)
 
         method_args = {
             "jwt": token,
@@ -502,7 +518,7 @@ class TokenParams:
             self.user, _ = User.objects.update_or_create(
                 # trim username to ensure the entire username is max 150 chars
                 # (22 chars being the length of the "template")
-                username=f"ak-{self.provider.name[:150-22]}-client_credentials",
+                username=f"ak-{self.provider.name[: USERNAME_MAX_LENGTH - 22]}-client_credentials",
                 defaults={
                     "last_login": timezone.now(),
                     "name": f"Autogenerated user from application {app.name} (client credentials)",
@@ -529,18 +545,30 @@ class TokenParams:
             raise TokenError("invalid_grant")
         self.device_code = code
 
-    def __create_user_from_jwt(self, token: dict[str, Any], app: Application, source: OAuthSource):
+    def __create_user_from_jwt(
+        self, token: dict[str, Any], app: Application, source: OAuthSource, request: HttpRequest
+    ):
         """Create user from JWT"""
         with audit_ignore():
+            # Run the JWT payload through the core mapping engine
+            mapped = SourceMapper(source).build_object_properties(
+                User, request=request, info=token, oauth_userinfo=token
+            )
+
             self.user, created = User.objects.update_or_create(
-                username=f"{self.provider.name}-{token.get('sub')}",
+                username=mapped.get("username", f"{self.provider.name}-{token.get('sub')}")[
+                    :USERNAME_MAX_LENGTH
+                ],
                 defaults={
                     "last_login": timezone.now(),
-                    "name": (
-                        f"Autogenerated user from application {app.name} (client credentials JWT)"
+                    "name": mapped.get(
+                        "name",
+                        f"Autogenerated user from application {app.name} (client credentials JWT)",
                     ),
+                    "email": mapped.get("email", ""),
                     "path": source.get_user_path(),
                     "type": UserTypes.SERVICE_ACCOUNT,
+                    "attributes": mapped.get("attributes", {}),
                 },
             )
             self.user.attributes[USER_ATTRIBUTE_GENERATED] = True
@@ -557,6 +585,8 @@ class TokenView(View):
 
     provider: OAuth2Provider | None = None
     params: TokenParams | None = None
+    params_class = TokenParams
+    provider_class = OAuth2Provider
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
@@ -576,12 +606,14 @@ class TokenView(View):
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
-                self.provider = OAuth2Provider.objects.filter(client_id=client_id).first()
+                self.provider = self.provider_class.objects.filter(client_id=client_id).first()
                 if not self.provider:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
+                self.params = self.params_class.parse(
+                    request, self.provider, client_id, client_secret
+                )
                 CTX_AUTH_VIA.set("oauth_client_secret")
-                self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
 
             with start_span(
                 op="authentik.providers.oauth2.post.response",
@@ -699,7 +731,7 @@ class TokenView(View):
         refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
         if (
             refresh_token_threshold.total_seconds() == 0
-            or (now - self.params.refresh_token.expires) > refresh_token_threshold
+            or (self.params.refresh_token.expires - now) < refresh_token_threshold
         ):
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(

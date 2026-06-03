@@ -40,7 +40,7 @@ export class UserApplicationTable extends Table<Application> {
 
     row(item: Application): SlottedTemplateResult[] {
         return [
-            html`<ak-app-icon name=${item.name} icon=${ifPresent(item.metaIcon)}></ak-app-icon>`,
+            html`<ak-app-icon name=${item.name} icon=${ifPresent(item.metaIconUrl)}></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
@@ -54,7 +54,7 @@ export class UserApplicationTable extends Table<Application> {
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Application")}</span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>

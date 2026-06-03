@@ -19,6 +19,8 @@ from authentik.stages.captcha.models import CaptchaStage
 
 LOGGER = get_logger()
 PLAN_CONTEXT_CAPTCHA = "captcha"
+PLAN_CONTEXT_CAPTCHA_SITE_KEY = "goauthentik.io/stages/captcha/site_key"
+PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY = "goauthentik.io/stages/captcha/private_key"
 
 
 class CaptchaChallenge(WithUserInfoChallenge):
@@ -31,7 +33,7 @@ class CaptchaChallenge(WithUserInfoChallenge):
     interactive = BooleanField(required=True)
 
 
-def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str):
+def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str, key: str | None = None):
     """Validate captcha token"""
     try:
         response = get_http_session().post(
@@ -40,7 +42,7 @@ def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str):
                 "Content-type": "application/x-www-form-urlencoded",
             },
             data={
-                "secret": stage.private_key,
+                "secret": key or stage.private_key,
                 "response": token,
                 "remoteip": remote_ip,
             },
@@ -56,7 +58,7 @@ def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str):
                 # [reCAPTCHA](https://developers.google.com/recaptcha/docs/verify#error_code_reference)
                 # [hCaptcha](https://docs.hcaptcha.com/#siteverify-error-codes-table)
                 # [Turnstile](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/#error-codes)
-                retriable_error_codes = [
+                retryable_error_codes = [
                     "missing-input-response",
                     "invalid-input-response",
                     "timeout-or-duplicate",
@@ -64,7 +66,7 @@ def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str):
                     "already-seen-response",
                 ]
 
-                if set(error_codes).issubset(set(retriable_error_codes)):
+                if set(error_codes).issubset(set(retryable_error_codes)):
                     error_message = _("Invalid captcha response. Retrying may solve this issue.")
                 else:
                     error_message = _("Invalid captcha response")
@@ -92,7 +94,12 @@ class CaptchaChallengeResponse(ChallengeResponse):
         stage: CaptchaStage = self.stage.executor.current_stage
         client_ip = ClientIPMiddleware.get_client_ip(self.stage.request)
 
-        return verify_captcha_token(stage, token, client_ip)
+        return verify_captcha_token(
+            stage,
+            token,
+            client_ip,
+            key=self.stage.executor.plan.context.get(PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY),
+        )
 
 
 class CaptchaStageView(ChallengeStageView):
@@ -101,10 +108,13 @@ class CaptchaStageView(ChallengeStageView):
     response_class = CaptchaChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        site_key = self.executor.plan.context.get(
+            PLAN_CONTEXT_CAPTCHA_SITE_KEY, self.executor.current_stage.public_key
+        )
         return CaptchaChallenge(
             data={
                 "js_url": self.executor.current_stage.js_url,
-                "site_key": self.executor.current_stage.public_key,
+                "site_key": site_key,
                 "interactive": self.executor.current_stage.interactive,
             }
         )

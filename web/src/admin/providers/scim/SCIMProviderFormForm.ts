@@ -1,27 +1,28 @@
 import "#components/ak-hidden-text-input";
 import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/CodeMirror";
-import "#admin/common/ak-license-notice";
+import "#elements/LicenseNotice";
 import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
+import {
+    groupsProvider,
+    groupsSelector,
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "./SCIMProviderFormHelpers.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
-
 import {
     CompatibilityModeEnum,
-    CoreApi,
-    CoreGroupsListRequest,
-    Group,
     OAuthSource,
     SCIMAuthenticationModeEnum,
     SCIMProvider,
@@ -48,7 +49,7 @@ export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: Valida
     ></ak-hidden-text-input>`;
 }
 
-export function renderAuthOAuth(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
+export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
     return html`<ak-form-element-horizontal label=${msg("OAuth Source")} name="authOauth">
             <ak-search-select
                 .fetchObjects=${async (query?: string): Promise<OAuthSource[]> => {
@@ -78,10 +79,7 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, errors: Valida
             </p>
         </ak-form-element-horizontal>
         <ak-form-element-horizontal label=${msg("OAuth Parameters")} name="authOauthParams">
-            <ak-codemirror
-                mode=${CodeMirrorMode.YAML}
-                value="${YAML.stringify(provider?.authOauthParams ?? {})}"
-            >
+            <ak-codemirror mode="yaml" value="${YAML.stringify(provider?.authOauthParams ?? {})}">
             </ak-codemirror>
             <p class="pf-c-form__helper-text">
                 ${msg("Additional OAuth parameters, such as grant_type.")}
@@ -95,22 +93,28 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
         case SCIMAuthenticationModeEnum.Token:
             return renderAuthToken(provider, errors);
         case SCIMAuthenticationModeEnum.Oauth:
+        case SCIMAuthenticationModeEnum.OauthInteractive:
             return renderAuthOAuth(provider, errors);
     }
 }
 
 export interface SCIMProviderFormProps {
     update: () => void;
-    provider?: Partial<SCIMProvider>;
-    errors?: ValidationError;
+    provider?: Partial<SCIMProvider> | null;
+    errors?: ValidationError | null;
 }
 
-export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderFormProps) {
+export function renderForm({ provider, errors, update }: SCIMProviderFormProps) {
+    provider ||= {};
+    errors ||= {};
+
     return html`
         <ak-text-input
             name="name"
             value=${ifDefined(provider.name)}
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
             .errorMessages=${errors.name}
             required
         ></ak-text-input>
@@ -157,11 +161,17 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                                 )}`,
                             },
                             {
-                                label: msg("OAuth"),
+                                label: msg("OAuth (Silent)"),
                                 value: SCIMAuthenticationModeEnum.Oauth,
-                                default: true,
                                 description: html`${msg("Authenticate SCIM requests using OAuth.")}
                                     <ak-license-notice></ak-license-notice>`,
+                            },
+                            {
+                                label: msg("OAuth (Interactive)"),
+                                value: SCIMAuthenticationModeEnum.OauthInteractive,
+                                description: html`${msg(
+                                        "Authenticate SCIM requests using OAuth, interactively authorized.",
+                                    )} <ak-license-notice></ak-license-notice>`,
                             },
                         ]}
                     ></ak-radio>
@@ -198,34 +208,49 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                             value: CompatibilityModeEnum.Sfdc,
                             description: html`${msg("Altered behavior for usage with Salesforce.")}`,
                         },
+                        {
+                            label: msg("Webex"),
+                            value: CompatibilityModeEnum.Webex,
+                            description: html`${msg("Altered behavior for usage with Cisco Webex.")}`,
+                        },
+                        {
+                            label: msg("vCenter"),
+                            value: CompatibilityModeEnum.Vcenter,
+                            description: html`${msg(
+                                "Altered behavior for usage with VMware vCenter.",
+                            )}`,
+                        },
                     ]}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
                     )}
                 ></ak-radio-input>
-                <ak-form-element-horizontal name="dryRun">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${provider.dryRun ?? false}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Enable dry-run mode")}</span>
-                    </label>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "When enabled, mutating requests will be dropped and logged instead.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
+                <ak-text-input
+                    name="serviceProviderConfigCacheTimeout"
+                    label=${msg("Service Provider Config cache timeout")}
+                    input-hint="code"
+                    required
+                    value="${provider.serviceProviderConfigCacheTimeout ?? "hours=1"}"
+                    .errorMessages=${errors.service_provider_config_cache_timeout}
+                    .bighelp=${html`<p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable caching.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+                >
+                </ak-text-input>
+                <ak-switch-input
+                    name="dryRun"
+                    label=${msg("Enable dry-run mode")}
+                    ?checked=${provider.dryRun ?? false}
+                    help=${msg(
+                        "When enabled, mutating requests will be dropped and logged instead.",
+                    )}
+                ></ak-switch-input>
             </div>
         </ak-form-group>
-        <ak-form-group open label="${msg("User filtering")}">
+        <ak-form-group open label="${msg("Filtering")}">
             <div class="pf-c-form">
                 <ak-switch-input
                     name="excludeUsersServiceAccount"
@@ -234,33 +259,15 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                 >
                 </ak-switch-input>
 
-                <ak-form-element-horizontal label=${msg("Group")} name="filterGroup">
-                    <ak-search-select
-                        .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                            const args: CoreGroupsListRequest = {
-                                ordering: "name",
-                                includeUsers: false,
-                            };
-                            if (query !== undefined) {
-                                args.search = query;
-                            }
-                            const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
-                            return groups.results;
-                        }}
-                        .renderElement=${(group: Group): string => {
-                            return group.name;
-                        }}
-                        .value=${(group: Group | undefined): string | undefined => {
-                            return group ? group.pk : undefined;
-                        }}
-                        .selected=${(group: Group): boolean => {
-                            return group.pk === provider.filterGroup;
-                        }}
-                        blankable
-                    >
-                    </ak-search-select>
+                <ak-form-element-horizontal label=${msg("Group Filter")} name="groupFilters">
+                    <ak-dual-select-dynamic-selected
+                        .provider=${groupsProvider}
+                        .selector=${groupsSelector(provider?.groupFilters, null)}
+                        available-label=${msg("Available Groups")}
+                        selected-label=${msg("Selected Groups")}
+                    ></ak-dual-select-dynamic-selected>
                     <p class="pf-c-form__helper-text">
-                        ${msg("Only sync users within the selected group.")}
+                        ${msg("Groups to be synced. If empty, all groups will be synced.")}
                     </p>
                 </ak-form-element-horizontal>
             </div>
@@ -310,7 +317,7 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                 <ak-number-input
                     label=${msg("Page size")}
                     required
-                    name="pageSize"
+                    name="syncPageSize"
                     value="${provider.syncPageSize ?? 100}"
                     help=${msg("Controls the number of objects synced in a single task.")}
                 ></ak-number-input>

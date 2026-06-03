@@ -9,19 +9,20 @@ from django.utils.timezone import now
 from jwt import decode
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application, Group
-from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
-from authentik.lib.generators import generate_id
-from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     GRANT_TYPE_CLIENT_CREDENTIALS,
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
     TOKEN_TYPE,
 )
+from authentik.core.models import Application, Group
+from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
+from authentik.lib.generators import generate_id
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
     AccessToken,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -55,6 +56,7 @@ class TestTokenClientCredentialsJWTProvider(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.cert,
+            grant_types=[GrantType.CLIENT_CREDENTIALS],
         )
         self.provider.jwt_federation_providers.add(self.other_provider)
         self.provider.property_mappings.set(ScopeMapping.objects.all())

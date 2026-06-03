@@ -4,7 +4,7 @@ sidebar_label: ArgoCD
 support_level: community
 ---
 
-## What is ArgoCD
+## What is ArgoCD?
 
 > Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes.
 >
@@ -28,14 +28,14 @@ To support the integration of ArgoCD with authentik, you need to create an appli
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Add two `Strict` redirect URI and set them to `https://argocd.company/api/dex/callback` and `https://localhost:8085/auth/callback`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -45,7 +45,7 @@ Using the authentik Admin interface, navigate to **Directory** > **Groups** and 
 
 After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed.
 
-## ArgoCD Configuration
+## ArgoCD configuration
 
 :::info
 We're not going to use the oidc config, but instead the "dex", oidc doesn't allow ArgoCD CLI usage while DEX does.
@@ -68,9 +68,9 @@ configs:
             dex.authentik.clientSecret: "${argocd_authentik_client_secret}"
 ```
 
-### Step 2 - Configure ArgoCD to use authentik as OIDC backend
+### Step 2 - configure ArgoCD to use authentik as OIDC backend
 
-In the `argocd-cm` ConfigMap, add the following to the data field :
+In the `argocd-cm` ConfigMap, add the following to the data field:
 
 ```yaml
 url: https://argocd.company
@@ -92,7 +92,7 @@ dex.config: |
 
 ### Step 3 - Map the `ArgoCD Admins` group to ArgoCD's admin role
 
-In the `argocd-rbac-cm` ConfigMap, add the following to the data field (or create it if it's not already there) :
+In the `argocd-rbac-cm` ConfigMap, add the following to the data field (or create it if it's not already there):
 
 ```yaml
 policy.csv: |
@@ -103,4 +103,4 @@ policy.csv: |
 If you already had an "admin" group and thus didn't create the `ArgoCD Admins` one, just replace `ArgoCD Admins` with your existing group name.
 If you did not opt to create a read-only group, or chose to use one with a different name in authentik, rename or remove here accordingly.
 
-Apply all the modified manifests, and you should be able to login to ArgoCD both through the UI and the CLI.
+Apply all the modified manifests, and you should be able to log in to ArgoCD both through the UI and the CLI.

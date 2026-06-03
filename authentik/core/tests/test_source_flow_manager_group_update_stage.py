@@ -54,7 +54,7 @@ class TestSourceFlowManager(FlowTestCase):
         )
         self.assertTrue(stage.handle_groups())
         self.assertTrue(Group.objects.filter(name="group 1").exists())
-        self.assertTrue(self.user.ak_groups.filter(name="group 1").exists())
+        self.assertTrue(self.user.groups.filter(name="group 1").exists())
         self.assertTrue(
             GroupOAuthSourceConnection.objects.filter(
                 group=Group.objects.get(name="group 1"), source=self.source
@@ -88,7 +88,7 @@ class TestSourceFlowManager(FlowTestCase):
         )
         self.assertTrue(stage.handle_groups())
         self.assertTrue(Group.objects.filter(name="group 1").exists())
-        self.assertTrue(self.user.ak_groups.filter(name="group 1").exists())
+        self.assertTrue(self.user.groups.filter(name="group 1").exists())
         self.assertTrue(
             GroupOAuthSourceConnection.objects.filter(
                 group=Group.objects.get(name="group 1"), source=self.source
@@ -123,7 +123,7 @@ class TestSourceFlowManager(FlowTestCase):
         )
         self.assertTrue(stage.handle_groups())
         self.assertTrue(Group.objects.filter(name="group 1").exists())
-        self.assertTrue(self.user.ak_groups.filter(name="group 1").exists())
+        self.assertTrue(self.user.groups.filter(name="group 1").exists())
         self.assertTrue(
             GroupOAuthSourceConnection.objects.filter(group=group, source=self.source).exists()
         )
@@ -155,7 +155,7 @@ class TestSourceFlowManager(FlowTestCase):
         )
         self.assertTrue(stage.handle_groups())
         self.assertTrue(Group.objects.filter(name="group 1").exists())
-        self.assertTrue(self.user.ak_groups.filter(name="group 1").exists())
+        self.assertTrue(self.user.groups.filter(name="group 1").exists())
         self.assertTrue(
             GroupOAuthSourceConnection.objects.filter(
                 group=Group.objects.get(name="group 1"), source=self.source
@@ -189,7 +189,7 @@ class TestSourceFlowManager(FlowTestCase):
             request=request,
         )
         self.assertFalse(stage.handle_groups())
-        self.assertFalse(self.user.ak_groups.filter(name="group 1").exists())
+        self.assertFalse(self.user.groups.filter(name="group 1").exists())
         self.assertFalse(
             GroupOAuthSourceConnection.objects.filter(group=group, source=self.source).exists()
         )
@@ -201,7 +201,7 @@ class TestSourceFlowManager(FlowTestCase):
         other_group = Group.objects.create(name="other group")
         old_group = Group.objects.create(name="old group")
         new_group = Group.objects.create(name="new group")
-        self.user.ak_groups.set([other_group, old_group])
+        self.user.groups.set([other_group, old_group])
         GroupOAuthSourceConnection.objects.create(
             group=old_group, source=self.source, identifier=old_group.name
         )
@@ -231,7 +231,7 @@ class TestSourceFlowManager(FlowTestCase):
             request=request,
         )
         self.assertTrue(stage.handle_groups())
-        self.assertFalse(self.user.ak_groups.filter(name="old group").exists())
-        self.assertTrue(self.user.ak_groups.filter(name="other group").exists())
-        self.assertTrue(self.user.ak_groups.filter(name="new group").exists())
-        self.assertEqual(self.user.ak_groups.count(), 2)
+        self.assertFalse(self.user.groups.filter(name="old group").exists())
+        self.assertTrue(self.user.groups.filter(name="other group").exists())
+        self.assertTrue(self.user.groups.filter(name="new group").exists())
+        self.assertEqual(self.user.groups.count(), 2)

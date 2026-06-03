@@ -1,4 +1,4 @@
-"""Authentik policies app config
+"""authentik policies app config
 
 Every system policy should be its own Django app under the `policies` app.
 For example: The 'dummy' policy is available at `authentik.policies.dummy`.
@@ -7,7 +7,6 @@ For example: The 'dummy' policy is available at `authentik.policies.dummy`.
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
-from authentik.tenants.flags import Flag
 
 GAUGE_POLICIES_CACHED = Gauge(
     "authentik_policies_cached",
@@ -32,12 +31,6 @@ HIST_POLICIES_EXECUTION_TIME = Histogram(
 )
 
 
-class BufferedPolicyAccessViewFlag(Flag[bool], key="policies_buffered_access_view"):
-
-    default = False
-    visibility = "public"
-
-
 class AuthentikPoliciesConfig(ManagedAppConfig):
     """authentik policies app config"""
 
@@ -45,4 +38,3 @@ class AuthentikPoliciesConfig(ManagedAppConfig):
     label = "authentik_policies"
     verbose_name = "authentik Policies"
     default = True
-    mountpoint = "policy/"

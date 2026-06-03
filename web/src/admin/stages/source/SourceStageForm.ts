@@ -39,7 +39,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <span
                 >${msg(

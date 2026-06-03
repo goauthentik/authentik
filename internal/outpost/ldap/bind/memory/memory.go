@@ -46,7 +46,7 @@ func NewSessionBinder(si server.LDAPServerInstance, oldBinder bind.Binder) *Sess
 func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResultCode, error) {
 	item := sb.sessions.Get(Credentials{
 		DN:       req.BindDN,
-		Password: req.BindPW,
+		Password: req.Password,
 	})
 	if item != nil {
 		sb.log.WithField("bindDN", req.BindDN).Info("authenticated from session")
@@ -63,7 +63,7 @@ func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResu
 		}
 		sb.sessions.Set(Credentials{
 			DN:       req.BindDN,
-			Password: req.BindPW,
+			Password: req.Password,
 		}, result, time.Until(flags.Session.Expires))
 	}
 	return result, err

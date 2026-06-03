@@ -18,7 +18,7 @@ entries:
       name: foo
       title: foo
     permissions:
-      - permission: view_flow
+      - permission: authentik_flows.view_flow
         user: !KeyOf user
-      - permission: view_flow
+      - permission: authentik_flows.view_flow
         role: !KeyOf role

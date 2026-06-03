@@ -20,7 +20,7 @@ from authentik.events.utils import sanitize_item
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import get_http_session
-from authentik.stages.authenticator.models import SideChannelDevice
+from authentik.stages.authenticator.models import SideChannelDevice, ThrottlingMixin
 
 LOGGER = get_logger()
 
@@ -68,7 +68,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         help_text=_("Optionally modify the payload being sent to custom providers."),
     )
 
-    def send(self, request: HttpRequest, token: str, device: "SMSDevice"):
+    def send(self, request: HttpRequest, token: str, device: SMSDevice):
         """Send message via selected provider"""
         if self.provider == SMSProviders.TWILIO:
             return self.send_twilio(request, token, device)
@@ -80,7 +80,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         """Get SMS message"""
         return _("Use this code to authenticate in authentik: {token}".format_map({"token": token}))
 
-    def send_twilio(self, request: HttpRequest, token: str, device: "SMSDevice"):
+    def send_twilio(self, request: HttpRequest, token: str, device: SMSDevice):
         """send sms via twilio provider"""
         client = Client(self.account_sid, self.auth)
         message_body = str(self.get_message(token))
@@ -105,7 +105,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             LOGGER.warning("Error sending token by Twilio SMS", exc=exc, msg=exc.msg)
             raise ValidationError(exc.msg) from None
 
-    def send_generic(self, request: HttpRequest, token: str, device: "SMSDevice"):
+    def send_generic(self, request: HttpRequest, token: str, device: SMSDevice):
         """Send SMS via outside API"""
         payload = {
             "From": self.from_number,
@@ -197,7 +197,7 @@ def hash_phone_number(phone_number: str) -> str:
     return "hash:" + sha256(phone_number.encode()).hexdigest()
 
 
-class SMSDevice(SerializerModel, SideChannelDevice):
+class SMSDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
     """SMS Device"""
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
@@ -224,11 +224,19 @@ class SMSDevice(SerializerModel, SideChannelDevice):
 
         return SMSDeviceSerializer
 
-    def verify_token(self, token):
-        valid = super().verify_token(token)
-        if valid:
-            self.save()
-        return valid
+    def verify_token(self, token: str) -> bool:
+        verify_allowed, _ = self.verify_is_allowed()
+        if verify_allowed:
+            verified = super().verify_token(token)
+
+            if verified:
+                self.throttle_reset()
+            else:
+                self.throttle_increment()
+        else:
+            verified = False
+
+        return verified
 
     def __str__(self):
         return str(self.name) or str(self.user_id)

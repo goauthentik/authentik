@@ -13,7 +13,7 @@ import (
 )
 
 func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request) {
-	state := a.stateFromRequest(r)
+	state := a.stateFromRequest(rw, r)
 	if state == nil {
 		a.log.Warning("invalid state")
 		a.redirect(rw, r)

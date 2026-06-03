@@ -3,12 +3,13 @@ import "#user/LibraryApplication/RACLaunchEndpointModal";
 
 import { PFSize } from "#common/enums";
 
+import { modalInvoker } from "#elements/dialogs";
 import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { CardHeader } from "#user/LibraryApplication/CardHeader";
 import { CardMenu } from "#user/LibraryApplication/CardMenu";
-import { RACLaunchEndpointModal } from "#user/LibraryApplication/RACLaunchEndpointModal";
+import { RACLaunchEndpointLaunch } from "#user/LibraryApplication/RACLaunchEndpointModal";
 
 import { Application } from "@goauthentik/api";
 
@@ -19,7 +20,7 @@ import type { HTMLAttributes } from "react";
 import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
-import { createRef, ref, RefOrCallback } from "lit/directives/ref.js";
+import { ref, RefOrCallback } from "lit/directives/ref.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 const RAC_LAUNCH_URL = "goauthentik.io://providers/rac/launch";
@@ -28,8 +29,6 @@ export interface AKLibraryAppProps extends HTMLAttributes<HTMLDivElement> {
     application?: Application;
     editURL?: string | URL | null;
     background?: string | null;
-    appIndex: number;
-    groupIndex: number;
     targetRef?: RefOrCallback | null;
 }
 
@@ -37,8 +36,6 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     application,
     editURL,
     background,
-    appIndex,
-    groupIndex,
     className = "",
     targetRef,
     ...props
@@ -53,12 +50,6 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
 
     const dataID = kebabCase(application.name);
 
-    const modalRef = createRef<RACLaunchEndpointModal>();
-
-    const launchModal = () => {
-        modalRef.value?.show();
-    };
-
     const cardID = `app-${application.pk}`;
     const titleID = `${cardID}-title`;
     const descriptionID = `${cardID}-description`;
@@ -71,7 +62,10 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     const primaryRef = targetRef ? ref(targetRef) : nothing;
 
     const extendedProps = {
-        "aria-label": msg(str`Open "${application.name}"`),
+        "aria-label": msg(str`Open "${application.name}"`, {
+            id: "library.application.card.aria-label",
+            desc: "Screen reader label for the application card",
+        }),
         "tabindex": "0",
         "class": "card-header-aspect-wrapper",
         "title": ifPresent(application.name),
@@ -82,34 +76,31 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     return html`<div
         part="card-wrapper"
         data-application-name=${ifPresent(dataID)}
-        aria-describedby=${descriptionID}
         style=${styleMap({ background: background || null })}
-        ${spread(props)}
     >
         <div part="card" class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}">
             <ak-app-icon
                 exportparts="icon:card-header-icon"
                 size=${PFSize.Large}
                 name=${application.name}
-                icon=${ifPresent(application.metaIcon)}
+                icon=${ifPresent(application.metaIconUrl)}
+                .iconThemedUrls=${application.metaIconThemedUrls}
             ></ak-app-icon>
             ${rac
                 ? html`<div
                       ${primaryRef}
                       role="button"
-                      @click=${launchModal}
+                      aria-describedby=${descriptionID}
+                      ${modalInvoker(RACLaunchEndpointLaunch, { app: application })}
                       ${spread(extendedProps)}
                   >
-                      <ak-library-rac-endpoint-launch
-                          ${ref(modalRef)}
-                          .app=${application}
-                      ></ak-library-rac-endpoint-launch>
                       ${cardHeader}
                   </div>`
                 : html`<a
                       ${primaryRef}
                       href=${ifPresent(application.launchUrl)}
                       target=${ifPresent(application.openInNewTab, "_blank")}
+                      aria-describedby=${descriptionID}
                       ${spread(extendedProps)}
                       >${cardHeader}</a
                   >`}

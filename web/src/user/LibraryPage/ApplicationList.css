@@ -37,9 +37,6 @@
 }
 
 [part="card"] {
-    --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md-bottom);
-    --pf-c-card--BackgroundColor: var(--pf-global--BackgroundColor--150);
-
     transition: box-shadow 150ms ease-in-out;
     border: 0.5px solid var(--pf-global--BorderColor--100);
     height: 100%;
@@ -135,7 +132,7 @@ ak-app-icon {
 
 [part="app-group-header"] {
     @media not (prefers-contrast: more) {
-        --ak-legend-padding-inline-base: 1rem;
+        --ak-c-fieldset__legend--PaddingInlineBase: 1rem;
         padding-block-start: 0 !important;
         padding-inline: 0 !important;
         margin-inline: 0 !important;

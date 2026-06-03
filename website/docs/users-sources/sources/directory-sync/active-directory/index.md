@@ -15,7 +15,7 @@ The following placeholders are used in this guide:
 To support the integration of Active Directory with authentik, you need to create a service account in Active Directory.
 
 1. Open **Active Directory Users and Computers** on a domain controller or computer with **Active Directory Remote Server Administration Tools** installed.
-2. Navigate to an Organizational Unit, right click on it, and select **New** > **User**.
+2. Navigate to an Organizational Unit, right-click it, and select **New** > **User**.
 3. Create a service account, matching your naming scheme, for example:
 
     ![](./01_user_create.png)
@@ -38,7 +38,22 @@ To support the integration of Active Directory with authentik, you need to creat
 
     ![](./02_delegate.png)
 
-## authentik Setup
+:::note Limiting service account permissions
+Optionally, if you don't want authentik to be able to view and sync objects within certain Organizational Units, you can limit the service account's permissions:
+
+1. Right click the Organizational Unit in question and navigate to **Properties** > **Security**.
+2. Select the authentik service account that you created.
+3. Under the **Deny** column, check **Read**.
+4. Click **Apply**.
+
+You can repeat this process for other OUs and objects within Active Directory.
+:::
+
+:::note LDAP signing
+By default, Windows Server 2025 requires LDAP signing, which can disrupt authentik’s Active Directory connectivity if LDAPS is not in use. This can be addressed by enabling LDAPS or by disabling LDAP signing on the domain controller, with the understanding that the latter option carries security implications.
+:::
+
+## authentik setup
 
 To support the integration of authentik with Active Directory, you will need to create a new LDAP Source in authentik.
 
@@ -70,12 +85,13 @@ To support the integration of authentik with Active Directory, you will need to 
     - **Group object filter**: which objects should be considered groups (e.g `(objectClass=group)`).
     - **Lookup using a user attribute**: acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories and nested groups memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
     - **Group membership field**: the user object attribute or the group object attribute that determines the group membership of a user (e.g. `member`). If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
+    - **User membership attribute**: ensure that this is set to `distinguishedName`.
     - **Object uniqueness field**: a user attribute that contains a unique identifier (e.g. `objectSid`).
 
 5. Click **Finish** to save the LDAP Source. An LDAP synchronization will begin in the background. Once completed, you can view the summary by navigating to **Dashboards** > **System Tasks**:
 
     ![](./03_additional_perms.png)
 
-6. To finalise the Active Directory setup, you need to enable the backend "authentik LDAP" in the Password Stage.
+6. To finalize the Active Directory setup, you need to enable the backend "authentik LDAP" in the Password Stage.
 
     ![](./11_ak_stage.png)

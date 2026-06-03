@@ -141,15 +141,14 @@ const container = (testItem: TemplateResult) =>
         <div id="action-button-message-pad" style="margin-top: 1em"></div>
     </div>`;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleMoveChanged = (result: any) => {
+const handleMoveChanged = (result: CustomEvent<{ value: Array<[string, string]> }>) => {
     const target = document.querySelector("#action-button-message-pad");
     target!.innerHTML = "";
-    // @ts-ignore
+
     target!.append(result.detail.value.map(([k, _]) => k).join(", "));
 };
 
-window.addEventListener("change", handleMoveChanged);
+window.addEventListener("change", handleMoveChanged as unknown as EventListener);
 
 type Story = StoryObj;
 

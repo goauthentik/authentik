@@ -4,7 +4,7 @@ sidebar_label: Ironclad
 support_level: community
 ---
 
-## What is Ironclad
+## What is Ironclad?
 
 > Ironclad is a contract lifecycle management (CLM) platform that gives business and legal teams an easy-to-use platform with AI-powered tools to handle every aspect of the contract lifecycle.
 >
@@ -22,7 +22,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Ironclad with authentik, you need to create three property mappings, and an application/provider pair in authentik.
+To support the integration of Ironclad with authentik, you need to create three property mappings and an application/provider pair in authentik.
 
 ### Create property mappings
 
@@ -62,12 +62,11 @@ Ironclad requires both a first and last name for each user, but by default, auth
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Temporarily set the **ACS URL** to `https://temp.temp`
-        - Set **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
             - Set an available **Signing certificate**.
             - Toggle off **Sign assertions**.
@@ -76,7 +75,7 @@ Ironclad requires both a first and last name for each user, but by default, auth
                 - Click the **x** button to remove all selected property mappings.
                 - Under **Selected User Property Mappings**, add the `firstName`, `lastName`, and `email` property mappings that were created in the previous section.
 
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -92,22 +91,22 @@ Ironclad requires both a first and last name for each user, but by default, auth
 ## Reconfigure authentik provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Push Security provider.
-3. Under **Protocol settings**, set the following required configurations:
-    - **ACS URL**: Set to the **Callback** URL provided by Ironclad (e.g. `https://ironcladapp.com/saml/<customer-ID>/callback`).
-    - **Issuer**: Set to the **Service Provider Identifier** provided by Ironclad (e.g. `na1.ironcladapp.com`).
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Ironclad provider.
+3. Under **Protocol settings**:
+    - Set the **ACS URL** to the **Callback** URL provided by Ironclad (e.g. `https://ironcladapp.com/saml/<customer-ID>/callback`).
+    - Set the **Audience** to the **Service Provider Identifier** provided by Ironclad (e.g. `na1.ironcladapp.com`).
 4. Click **Update**.
 
 ## Download the metadata file
 
-1. Log into authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created Ironclad provider.
 3. Under **Metadata** click **Download**. This metadata file will be required in the next section.
 
 ## Complete Ironclad configuration
 
-1. Return to the Ironclad SAML configuration page and under **IdP Configuration XML** click on **Choose file**. Select the metadata file that you downloaded from authentik.
-2. Set **Entry point** to `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`.
+1. Return to the Ironclad SAML configuration page and under **IdP Configuration XML**, click **Choose file**. Select the metadata file that you downloaded from authentik.
+2. Set **Entry point** to `https://authentik.company/application/saml/<application-slug>/`.
 3. Click **Save**.
 
 :::info
@@ -118,4 +117,4 @@ For new user accounts, SSO login can be selected when creating the account.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Ironclad, log out and log back in via the [Ironclad Sign In page](https://ironcladapp.com/signin). Enter the email address of an Ironclad SSO enabled account, click **Continue**, and then **Sign in**. Uou should be redirected to authentik to login, and if successful, you should then be redirected to the Ironclad dashboard.
+To confirm that authentik is properly configured with Ironclad, log out and log back in via the [Ironclad Sign In page](https://ironcladapp.com/signin). Enter the email address of an Ironclad SSO-enabled account, click **Continue**, and then **Sign in**. You should be redirected to authentik to log in, and if successful, you should then be redirected to the Ironclad dashboard.

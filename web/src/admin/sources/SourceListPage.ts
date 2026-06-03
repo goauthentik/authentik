@@ -1,4 +1,4 @@
-import "#admin/sources/SourceWizard";
+import "#admin/sources/ak-source-wizard";
 import "#admin/sources/kerberos/KerberosSourceForm";
 import "#admin/sources/ldap/LDAPSourceForm";
 import "#admin/sources/oauth/OAuthSourceForm";
@@ -6,39 +6,40 @@ import "#admin/sources/plex/PlexSourceForm";
 import "#admin/sources/saml/SAMLSourceForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKSourceWizard } from "#admin/sources/ak-source-wizard";
+
 import { Source, SourcesApi } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
-    public pageTitle = msg("Federation and Social login");
-    public pageDescription = msg(
+    public override pageTitle = msg("Federation and Social login");
+    public override pageDescription = msg(
         "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.",
     );
-    public pageIcon = "pf-icon pf-icon-middleware";
+    public override pageIcon = "pf-icon pf-icon-middleware";
     protected override searchEnabled = true;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override searchPlaceholder = msg("Search for a source...");
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Source>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Source>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(await this.defaultEndpointConfig());
     }
 
@@ -49,13 +50,13 @@ export class SourceListPage extends TablePage<Source> {
         ["", null, msg("Row Actions")],
     ];
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled =
             this.selectedElements.length < 1 ||
             this.selectedElements.some((item) => item.component === "");
         const nonBuiltInSources = this.selectedElements.filter((item) => item.component !== "");
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Source(s)")}
+            object-label=${msg("Source(s)")}
             .objects=${nonBuiltInSources}
             .usedBy=${(item: Source) => {
                 return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
@@ -74,10 +75,11 @@ export class SourceListPage extends TablePage<Source> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Source): SlottedTemplateResult[] {
-        if (item.component === "") {
+    protected override row(item: Source): SlottedTemplateResult[] {
+        if (!item.component) {
             return this.rowInbuilt(item);
         }
+
         return [
             html`<a href="#/core/sources/${item.slug}">
                 <div>${item.name}</div>
@@ -87,28 +89,14 @@ export class SourceListPage extends TablePage<Source> {
                           ${msg("Disabled")}</ak-label
                       >`}
             </a>`,
-            html`${item.verboseName}`,
-            html` <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
-                        instancePk: item.slug,
-                    }}
-                    type=${ifDefined(item.component)}
-                >
-                </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            item.verboseName,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButtonByTagName(item.component, item.slug, item.verboseName)}
+            </div>`,
         ];
     }
 
-    rowInbuilt(item: Source): SlottedTemplateResult[] {
+    protected rowInbuilt(item: Source): SlottedTemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>
@@ -119,8 +107,8 @@ export class SourceListPage extends TablePage<Source> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html`<ak-source-wizard> </ak-source-wizard> `;
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(AKSourceWizard);
     }
 }
 

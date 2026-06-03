@@ -28,7 +28,7 @@ yarn-debug.log*
 yarn-error.log*
 
 !integrations/**/media
-**/static/docker-compose.yml
+**/static/compose.yml
 **/static/releases.gen.json
 **/static/schema.yml
 api/reference

@@ -3,8 +3,11 @@ package proxyv2
 import (
 	"context"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
+	"os"
+	"path"
 
 	"github.com/getsentry/sentry-go"
 	"goauthentik.io/internal/constants"
@@ -15,7 +18,7 @@ import (
 )
 
 func (ps *ProxyServer) Refresh() error {
-	req := ps.akAPI.Client.OutpostsApi.OutpostsProxyList(context.Background())
+	req := ps.akAPI.Client.OutpostsAPI.OutpostsProxyList(context.Background())
 	ps.log.WithField("outpost_pk", ps.akAPI.Outpost.Pk).Debug("Requesting providers for outpost")
 	providers, err := ak.Paginator(req, ak.PaginatorOptions{
 		PageSize: 100,
@@ -28,7 +31,7 @@ func (ps *ProxyServer) Refresh() error {
 		return err
 	}
 	ps.log.WithField("count", len(providers)).Debug("Fetched providers")
-	if len(providers) == 0 {
+	if len(providers) == 0 && !ps.akAPI.IsEmbedded() {
 		ps.log.Warning("No providers assigned to this outpost, check outpost configuration in authentik")
 	}
 	for i, p := range providers {
@@ -38,12 +41,22 @@ func (ps *ProxyServer) Refresh() error {
 	for _, provider := range providers {
 		rsp := sentry.StartSpan(context.Background(), "authentik.outposts.proxy.application_ss")
 		ua := fmt.Sprintf(" (provider=%s)", provider.Name)
+		var transport http.RoundTripper
+		if ps.akAPI.IsEmbedded() {
+			transport = &http.Transport{
+				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+					return net.Dial("unix", path.Join(os.TempDir(), "authentik.sock"))
+				},
+			}
+		} else {
+			transport = ak.GetTLSTransport()
+		}
 		hc := &http.Client{
 			Transport: web.NewUserAgentTransport(
 				constants.UserAgentOutpost()+ua,
 				web.NewTracingTransport(
 					rsp.Context(),
-					ak.GetTLSTransport(),
+					transport,
 				),
 			),
 		}

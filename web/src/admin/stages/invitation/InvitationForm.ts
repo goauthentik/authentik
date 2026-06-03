@@ -1,4 +1,6 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-switch-input";
+import "#components/ak-slug-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
@@ -6,10 +8,9 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { dateTimeLocal } from "#common/temporal";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import { FlowsInstancesListDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
+import { FlowDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -19,6 +20,9 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-invitation-form")
 export class InvitationForm extends ModelForm<Invitation, string> {
+    public static override verboseName = msg("Invitation");
+    public static override verboseNamePlural = msg("Invitations");
+
     loadInstance(pk: string): Promise<Invitation> {
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsRetrieve({
             inviteUuid: pk,
@@ -43,29 +47,16 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         });
     }
 
-    renderForm(): TemplateResult {
-        const checkSlug = (ev: InputEvent) => {
-            if (ev && ev.target && ev.target instanceof HTMLInputElement) {
-                ev.target.value = (ev.target.value ?? "").replace(/[^a-z0-9-]/g, "");
-            }
-        };
-
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    id="admin-stages-invitation-name"
-                    value="${this.instance?.name || ""}"
-                    class="pf-c-form-control"
-                    required
-                    @input=${(ev: InputEvent) => checkSlug(ev)}
-                    data-ak-slug="true"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+    protected override renderForm(): TemplateResult {
+        return html`<ak-slug-input
+                label=${msg("Invitation Name")}
+                required
+                name="name"
+                value="${this.instance?.name || ""}"
+                help=${msg(
+                    "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
+                )}
+            ></ak-slug-input>
             <ak-form-element-horizontal label=${msg("Expires")} required name="expires">
                 <input
                     type="datetime-local"
@@ -77,7 +68,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                    flowType=${FlowDesignationEnum.Enrollment}
                     .currentFlow=${this.instance?.flow}
                 ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
@@ -88,7 +79,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(this.instance?.fixedData ?? {})}"
                 >
                 </ak-codemirror>
@@ -98,24 +89,12 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="singleUse">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.singleUse ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Single use")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("When enabled, the invitation will be deleted after usage.")}
-                </p>
-            </ak-form-element-horizontal>`;
+            <ak-switch-input
+                name="singleUse"
+                label=${msg("Single use")}
+                ?checked=${this.instance?.singleUse ?? true}
+                help=${msg("When enabled, the invitation will be deleted after usage.")}
+            ></ak-switch-input>`;
     }
 }
 

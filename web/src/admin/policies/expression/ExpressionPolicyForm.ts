@@ -1,11 +1,10 @@
+import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { docLink } from "#common/global";
-
-import { CodeMirrorMode } from "#elements/CodeMirror";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
@@ -36,7 +35,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Executes the python snippet to determine whether to allow or deny a request.",
@@ -50,26 +49,15 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="executionLogging">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.executionLogging ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="executionLogging"
+                label=${msg("Execution logging")}
+                ?checked=${this.instance?.executionLogging ?? false}
+                help=${msg(
+                    "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                )}
+            >
+            </ak-switch-input>
             <ak-form-group open label="${msg("Policy-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
@@ -78,7 +66,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                         name="expression"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.Python}
+                            mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >
                         </ak-codemirror>

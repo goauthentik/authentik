@@ -9,7 +9,6 @@ import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface TreeViewItem {
     id?: string;
@@ -166,7 +165,7 @@ export class TreeViewNode extends AKElement {
 
 @customElement("ak-treeview")
 export class TreeView extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFTreeView];
+    static styles: CSSResult[] = [PFTreeView];
 
     @property({ type: String })
     public label: string | null = null;

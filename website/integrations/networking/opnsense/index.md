@@ -4,7 +4,7 @@ sidebar_label: OPNsense
 support_level: community
 ---
 
-## What is OPNsense
+## What is OPNsense?
 
 > OPNsense is a free and Open-Source FreeBSD-based firewall and routing software. It is licensed under an Open Source Initiative approved license.
 >
@@ -29,7 +29,7 @@ This documentation lists only the settings that you need to change from their de
 ### Step 1
 
 In authentik, go and 'Create Service account' (under _Directory/Users_) for OPNsense to use as the LDAP Binder, leaving 'Create group' ticked as we'll need that group for the provider.
-In this example, we'll use `opnsense-user` as the Service account's username
+In this example, we'll use `opnsense-user` as the Service account's username.
 
 :::info
 Take note of the password for this user as you'll need to give it to OPNsense in _Step 4_.
@@ -63,7 +63,7 @@ Only settings that have been modified from default have been listed.
 
 ### Step 4
 
-In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` that uses the LDAP Application you created in _Step 2_.
+In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` that uses the LDAP Application you created in _Step 3_.
 
 :::info
 Only settings that have been modified from default have been listed.
@@ -98,7 +98,7 @@ In OPNsense, go to _System/Settings/Administration_ and under _Authentication_ a
 
 ### Step 7
 
-You can now either import users, or synchronize from Authentik LDAP. See https://docs.opnsense.org/manual/how-tos/user-ldap.html for more.
+You can now either import users, or synchronize from authentik LDAP. See https://docs.opnsense.org/manual/how-tos/user-ldap.html for more.
 
 ## Notes
 

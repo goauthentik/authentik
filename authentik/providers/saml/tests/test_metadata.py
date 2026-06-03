@@ -5,6 +5,7 @@ from defusedxml.lxml import fromstring
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
 
+from authentik.common.saml.constants import ECDSA_SHA256, NS_MAP, NS_SAML_METADATA
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.crypto.builder import PrivateKeyAlg
@@ -15,7 +16,6 @@ from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, S
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 from authentik.sources.saml.models import SAMLNameIDPolicy
-from authentik.sources.saml.processors.constants import ECDSA_SHA256, NS_MAP, NS_SAML_METADATA
 
 
 class TestServiceProviderMetadataParser(TestCase):
@@ -85,7 +85,6 @@ class TestServiceProviderMetadataParser(TestCase):
         metadata = ServiceProviderMetadataParser().parse(load_fixture("fixtures/simple.xml"))
         provider = metadata.to_provider("test", self.flow, self.flow)
         self.assertEqual(provider.acs_url, "http://localhost:8080/saml/acs")
-        self.assertEqual(provider.issuer, "http://localhost:8080/saml/metadata")
         self.assertEqual(provider.sp_binding, SAMLBindings.POST)
         self.assertEqual(provider.default_name_id_policy, SAMLNameIDPolicy.EMAIL)
         self.assertEqual(
@@ -99,13 +98,12 @@ class TestServiceProviderMetadataParser(TestCase):
         metadata = ServiceProviderMetadataParser().parse(load_fixture("fixtures/cert.xml"))
         provider = metadata.to_provider("test", self.flow, self.flow)
         self.assertEqual(provider.acs_url, "http://localhost:8080/apps/user_saml/saml/acs")
-        self.assertEqual(provider.issuer, "http://localhost:8080/apps/user_saml/saml/metadata")
         self.assertEqual(provider.sp_binding, SAMLBindings.POST)
         self.assertEqual(
             provider.verification_kp.certificate_data, load_fixture("fixtures/cert.pem")
         )
         self.assertIsNotNone(provider.signing_kp)
-        self.assertEqual(provider.audience, "")
+        self.assertEqual(provider.audience, "http://localhost:8080/apps/user_saml/saml/metadata")
 
     def test_with_signing_cert_invalid_signature(self):
         """Test Metadata with signing cert (invalid signature)"""

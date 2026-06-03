@@ -37,7 +37,11 @@ class PromptStageSerializer(StageSerializer):
 class PromptStageViewSet(UsedByMixin, ModelViewSet):
     """PromptStage Viewset"""
 
-    queryset = PromptStage.objects.all()
+    queryset = PromptStage.objects.prefetch_related(
+        "flow_set",
+        "fields",
+        "validation_policies",
+    ).all()
     serializer_class = PromptStageSerializer
     filterset_fields = "__all__"
     ordering = ["name"]
@@ -73,7 +77,12 @@ class PromptSerializer(ModelSerializer):
 class PromptViewSet(UsedByMixin, ModelViewSet):
     """Prompt Viewset"""
 
-    queryset = Prompt.objects.all().prefetch_related("promptstage_set")
+    queryset = Prompt.objects.all().prefetch_related(
+        "promptstage_set",
+        "promptstage_set__flow_set",
+        "promptstage_set__fields",
+        "promptstage_set__validation_policies",
+    )
     serializer_class = PromptSerializer
     ordering = ["field_key"]
     filterset_fields = ["field_key", "name", "label", "type", "placeholder"]

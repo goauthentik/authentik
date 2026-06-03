@@ -5,6 +5,7 @@ from datetime import timedelta
 from json import dumps
 from re import error as RegexError
 from re import fullmatch
+from typing import Any
 from urllib.parse import parse_qs, quote, urlencode, urlparse, urlsplit, urlunparse, urlunsplit
 from uuid import uuid4
 
@@ -16,6 +17,20 @@ from django.utils import timezone, translation
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import (
+    FORBIDDEN_URI_SCHEMES,
+    PKCE_METHOD_PLAIN,
+    PKCE_METHOD_S256,
+    PROMPT_CONSENT,
+    PROMPT_LOGIN,
+    PROMPT_NONE,
+    QS_LOGIN_HINT,
+    SCOPE_GITHUB,
+    SCOPE_OFFLINE_ACCESS,
+    SCOPE_OPENID,
+    TOKEN_TYPE,
+    UI_LOCALES,
+)
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
@@ -25,25 +40,13 @@ from authentik.flows.challenge import (
     HttpChallengeResponse,
 )
 from authentik.flows.exceptions import FlowNonApplicableException
-from authentik.flows.models import in_memory_stage
+from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
-from authentik.flows.stage import StageView
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
-from authentik.policies.views import BufferedPolicyAccessView, RequestValidationError
-from authentik.providers.oauth2.constants import (
-    PKCE_METHOD_PLAIN,
-    PKCE_METHOD_S256,
-    PROMPT_CONSENT,
-    PROMPT_LOGIN,
-    PROMPT_NONE,
-    SCOPE_GITHUB,
-    SCOPE_OFFLINE_ACCESS,
-    SCOPE_OPENID,
-    TOKEN_TYPE,
-    UI_LOCALES,
-)
+from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
     ClientIdError,
@@ -54,9 +57,8 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    GrantTypes,
+    GrantType,
     OAuth2Provider,
-    RedirectURI,
     RedirectURIMatchingMode,
     ResponseMode,
     ResponseTypes,
@@ -76,7 +78,6 @@ PLAN_CONTEXT_PARAMS = "goauthentik.io/providers/oauth2/params"
 SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
-FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
 
 
 @dataclass(slots=True)
@@ -105,7 +106,7 @@ class OAuthAuthorizationParams:
     github_compat: InitVar[bool] = False
 
     @staticmethod
-    def from_request(request: HttpRequest, github_compat=False) -> "OAuthAuthorizationParams":
+    def from_request(request: HttpRequest, github_compat=False) -> OAuthAuthorizationParams:
         """
         Get all the params used by the Authorization Code Flow
         (and also for the Implicit and Hybrid).
@@ -163,44 +164,39 @@ class OAuthAuthorizationParams:
         """Check grant"""
         # Determine which flow to use.
         if self.response_type in [ResponseTypes.CODE]:
-            self.grant_type = GrantTypes.AUTHORIZATION_CODE
+            self.grant_type = GrantType.AUTHORIZATION_CODE
         elif self.response_type in [
             ResponseTypes.ID_TOKEN,
             ResponseTypes.ID_TOKEN_TOKEN,
         ]:
-            self.grant_type = GrantTypes.IMPLICIT
+            self.grant_type = GrantType.IMPLICIT
         elif self.response_type in [
             ResponseTypes.CODE_TOKEN,
             ResponseTypes.CODE_ID_TOKEN,
             ResponseTypes.CODE_ID_TOKEN_TOKEN,
         ]:
-            self.grant_type = GrantTypes.HYBRID
-
+            self.grant_type = GrantType.HYBRID
         # Grant type validation.
         if not self.grant_type:
             LOGGER.warning("Invalid response type", type=self.response_type)
             raise AuthorizeError(self.redirect_uri, "unsupported_response_type", "", self.state)
 
+        if self.grant_type not in self.provider.grant_types:
+            LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
+            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
+
         if self.response_mode not in ResponseMode.values:
             self.response_mode = ResponseMode.QUERY
 
-            if self.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+            if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID]:
                 self.response_mode = ResponseMode.FRAGMENT
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
-        allowed_redirect_urls = self.provider.redirect_uris
+        allowed_redirect_urls = self.provider.authorization_redirect_uris
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls).with_cause("redirect_uri_missing")
-
-        if len(allowed_redirect_urls) < 1:
-            LOGGER.info("Setting redirect for blank redirect_uris", redirect=self.redirect_uri)
-            self.provider.redirect_uris = [
-                RedirectURI(RedirectURIMatchingMode.STRICT, self.redirect_uri)
-            ]
-            self.provider.save()
-            allowed_redirect_urls = self.provider.redirect_uris
 
         match_found = False
         for allowed in allowed_redirect_urls:
@@ -253,7 +249,7 @@ class OAuthAuthorizationParams:
             )
             self.scope = self.scope.intersection(default_scope_names)
         if SCOPE_OPENID not in self.scope and (
-            self.grant_type == GrantTypes.HYBRID
+            self.grant_type == GrantType.HYBRID
             or self.response_type in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
         ):
             LOGGER.warning("Missing 'openid' scope.")
@@ -336,7 +332,7 @@ class OAuthAuthorizationParams:
         return code
 
 
-class AuthorizationFlowInitView(BufferedPolicyAccessView):
+class AuthorizationFlowInitView(PolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
     params: OAuthAuthorizationParams
@@ -378,6 +374,11 @@ class AuthorizationFlowInitView(BufferedPolicyAccessView):
         client_id = self.request.GET.get("client_id")
         self.provider = get_object_or_404(OAuth2Provider, client_id=client_id)
         self.application = self.provider.application
+
+    def modify_flow_context(self, flow: Flow, context: dict[str, Any]) -> dict[str, Any]:
+        if QS_LOGIN_HINT in self.request.GET:
+            context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = self.request.GET.get(QS_LOGIN_HINT)
+        return super().modify_flow_context(flow, context)
 
     def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
         request.context["oauth_scopes"] = self.params.scope
@@ -425,7 +426,7 @@ class AuthorizationFlowInitView(BufferedPolicyAccessView):
         return response
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
-        # Activate language before parsing params (error messages should be localised)
+        # Activate language before parsing params (error messages should be localized)
         return self.dispatch_with_language(request, *args, **kwargs)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -599,8 +600,8 @@ class OAuthFulfillmentStage(StageView):
             code = None
 
             if self.params.grant_type in [
-                GrantTypes.AUTHORIZATION_CODE,
-                GrantTypes.HYBRID,
+                GrantType.AUTHORIZATION_CODE,
+                GrantType.HYBRID,
             ]:
                 code = self.params.create_code(self.request)
                 code.save()
@@ -615,7 +616,7 @@ class OAuthFulfillmentStage(StageView):
 
             if self.params.response_mode == ResponseMode.FRAGMENT:
                 query_fragment = {}
-                if self.params.grant_type in [GrantTypes.AUTHORIZATION_CODE]:
+                if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     query_fragment["code"] = code.code
                     query_fragment["state"] = [str(self.params.state) if self.params.state else ""]
                 else:
@@ -629,7 +630,7 @@ class OAuthFulfillmentStage(StageView):
 
             if self.params.response_mode == ResponseMode.FORM_POST:
                 post_params = {}
-                if self.params.grant_type in [GrantTypes.AUTHORIZATION_CODE]:
+                if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     post_params["code"] = code.code
                     post_params["state"] = [str(self.params.state) if self.params.state else ""]
                 else:
@@ -698,7 +699,7 @@ class OAuthFulfillmentStage(StageView):
         token.save()
 
         # Code parameter must be present if it's Hybrid Flow.
-        if self.params.grant_type == GrantTypes.HYBRID:
+        if self.params.grant_type == GrantType.HYBRID:
             query_fragment["code"] = code.code
 
         query_fragment["token_type"] = TOKEN_TYPE

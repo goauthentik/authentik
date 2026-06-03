@@ -49,47 +49,47 @@ authentik
 ├── lib - Generic library of functions, few dependencies on other packages.
 ├── outposts - Configure and deploy outposts on Kubernetes and Docker.
 ├── policies - General PolicyEngine
-│   ├── dummy - A Dummy policy used for testing
-│   ├── event_matcher - Match events based on different criteria
-│   ├── expiry - Check when a user's password was last set
-│   ├── expression - Execute any arbitrary python code
-│   ├── password - Check a password against several rules
-│   └── reputation - Check the user's/client's reputation
+│   ├── dummy - A Dummy policy used for testing
+│   ├── event_matcher - Match events based on different criteria
+│   ├── expiry - Check when a user's password was last set
+│   ├── expression - Execute any arbitrary python code
+│   ├── password - Check a password against several rules
+│   └── reputation - Check the user's/client's reputation
 ├── providers
-│   ├── ldap - Provide LDAP access to authentik users/groups using an outpost
-│   ├── oauth2 - OIDC-compliant OAuth2 provider
-│   ├── proxy - Provides an identity-aware proxy using an outpost
-│   ├── radius - Provides a RADIUS server that authenticates using flows
-│   ├── saml - SAML2 provider
-│   └── scim - SCIM provider
+│   ├── ldap - Provide LDAP access to authentik users/groups using an outpost
+│   ├── oauth2 - OIDC-compliant OAuth2 provider
+│   ├── proxy - Provides an identity-aware proxy using an outpost
+│   ├── radius - Provides a RADIUS server that authenticates using flows
+│   ├── saml - SAML2 provider
+│   └── scim - SCIM provider
 ├── recovery - Generate keys to use in case you lock yourself out
 ├── root - Root Django application, contains global settings and routes
 ├── sources
-│   ├── kerberos - Sync Kerberos users into authentik
-│   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
-│   ├── oauth - OAuth1 and OAuth2 source
-│   ├── plex - Plex source
-│   ├── saml - SAML2 source
-│   └── telegram - Telegram source
+│   ├── kerberos - Sync Kerberos users into authentik
+│   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
+│   ├── oauth - OAuth1 and OAuth2 source
+│   ├── plex - Plex source
+│   ├── saml - SAML2 source
+│   └── telegram - Telegram source
 ├── stages
-│   ├── authenticator_duo - Configure a DUO authenticator
-│   ├── authenticator_static - Configure TOTP backup keys
-│   ├── authenticator_totp - Configure a TOTP authenticator
-│   ├── authenticator_validate - Validate any authenticator
-│   ├── authenticator_webauthn - Configure a WebAuthn / Passkeys authenticator
-│   ├── captcha - Make the user pass a captcha
-│   ├── consent - Let the user decide if they want to consent to an action
-│   ├── deny - Static deny, can be used with policies
-│   ├── dummy - Dummy stage to test
-│   ├── email - Send the user an email and block execution until they click the link
-│   ├── identification - Identify a user with any combination of fields
-│   ├── invitation - Invitation system to limit flows to certain users
-│   ├── password - Password authentication
-│   ├── prompt - Arbitrary prompts
-│   ├── user_delete - Delete the currently pending user
-│   ├── user_login - Login the currently pending user
-│   ├── user_logout - Logout the currently pending user
-│   └── user_write - Write any currently pending data to the user.
+│   ├── authenticator_duo - Configure a DUO authenticator
+│   ├── authenticator_static - Configure TOTP backup keys
+│   ├── authenticator_totp - Configure a TOTP authenticator
+│   ├── authenticator_validate - Validate any authenticator
+│   ├── authenticator_webauthn - Configure a WebAuthn / Passkeys authenticator
+│   ├── captcha - Make the user pass a captcha
+│   ├── consent - Let the user decide if they want to consent to an action
+│   ├── deny - Static deny, can be used with policies
+│   ├── dummy - Dummy stage to test
+│   ├── email - Send the user an email and block execution until they click the link
+│   ├── identification - Identify a user with any combination of fields
+│   ├── invitation - Invitation system to limit flows to certain users
+│   ├── password - Password authentication
+│   ├── prompt - Arbitrary prompts
+│   ├── user_delete - Delete the currently pending user
+│   ├── user_login - Login the currently pending user
+│   ├── user_logout - Logout the currently pending user
+│   └── user_write - Write any currently pending data to the user.
 ├── tasks - Background tasks
 └── tenants - Soft tenancy, configure defaults and branding per domain
 ```
@@ -120,13 +120,13 @@ When you are creating an enhancement suggestion, please fill in [the template](h
 
 authentik can be run locally, although depending on which part you want to work on, different prerequisites are required.
 
-This is documented in the [developer docs](./setup/frontend-dev-environment.md).
+This is documented in the [developer docs](./setup/frontend-dev-environment.mdx).
 
 ### Help with the docs
 
 Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
 
-Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
+Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [GitHub repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
 ### Pull requests
 
@@ -136,6 +136,39 @@ The process described here has several goals:
 - Fix problems that are important to users
 - Engage the community in working toward the best possible authentik
 - Enable a sustainable system for authentik's maintainers to review contributions
+
+#### Always use feature branches
+
+**DO NOT open pull requests from your `main` branch.** Always create a feature branch for your changes.
+
+Here's one way to do it correctly (your own preferred git commands may differ):
+
+```bash
+# Create and switch to a new feature branch
+git checkout -b feature/my-awesome-feature
+
+# Make your changes, then commit and push
+git add .
+git commit -m "providers/oauth2: add awesome feature"
+git push -u origin feature/my-awesome-feature
+```
+
+Then open your PR from the feature branch.
+
+:::tip Accidentally made changes on main?
+If you already started working on `main` (even if you've already made commits), you can still recover by creating a branch from your current state, then resetting `main`:
+
+```bash
+# Create a new branch with your current changes/commits
+git checkout -b feature/my-awesome-feature
+
+# Switch back to main and reset it to match origin
+git checkout main
+git reset --hard origin/main
+```
+
+Your changes are now safely on the feature branch, and `main` is back in sync with the remote.
+:::
 
 Please follow these steps to have your contribution considered by the maintainers:
 
@@ -163,24 +196,24 @@ While the prerequisites above must be satisfied prior to having your pull reques
 - Reference issues and pull requests liberally after the first line
 - Naming of commits within a PR does not need to adhere to the guidelines as we squash merge PRs
 
-### Python Style Guide
+### Python style guide
 
 All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
-authentik runs on Python 3.13 at the time of writing this.
+authentik runs on Python 3.14 at the time of writing this.
 
 - Use native type-annotations wherever possible.
 - Add meaningful docstrings when possible.
 - Ensure any database migrations work properly from the last stable version (this is checked via CI)
 - If your code changes central functions, make sure nothing else is broken.
 
-### Documentation Style Guide
+### Documentation style guide
 
 Refer to the full [Style Guide](../developer-docs/docs/style-guide.mdx) for details, but here are some important highlights:
 
-- Our product name is authentik, with a lower-case "a" and a "k" on the end. Our company name is Authentik Security.
+- Our product name is authentik, with a lowercase "a" and a "k" on the end. Our company name is Authentik Security.
 
-- We use sentence style case in our titles and headings.
+- We use sentence case in our titles and headings.
 
 - We use **bold** text to name UI components, and _italic_ text for variables.
 

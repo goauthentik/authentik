@@ -4,7 +4,7 @@ sidebar_label: Cloudflare Access
 support_level: community
 ---
 
-## What is Cloudflare Access
+## What is Cloudflare Access?
 
 > Cloudflare Access is a secure, cloud-based zero-trust solution for managing and authenticating user access to internal applications and resources.
 >
@@ -26,7 +26,6 @@ This documentation lists only the settings that you need to change from their de
 :::info
 Looking to integrate authentik with your Cloudflare Dashboard? See our [integration guide](../../platforms/cloudflare/index.md) for more information.
 :::
-:::
 
 ## authentik configuration
 
@@ -35,7 +34,7 @@ To support the integration of Cloudflare Access with authentik, you need to crea
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -43,14 +42,14 @@ To support the integration of Cloudflare Access with authentik, you need to crea
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://company.cloudflareaccess.com/cdn-cgi/access/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Cloudflare Access configuration
 
-1. Open the [Cloudflare Access dashboard](https://one.dash.cloudflare.com) and navigate to **Settings** > **Authentication**.
-2. Click **Login methods**, and then select **Add** > **OpenID Connect**.
+1. Open the [Cloudflare Access dashboard](https://one.dash.cloudflare.com) and navigate to **Integrations** > **Identity provider**.
+2. Click **Add an identity provider**, and then select **OpenID Connect**.
 3. From the authentik provider you created earlier, copy the following details and paste them into the corresponding fields:
     - **Client ID** > App ID
     - **Client Secret** > Client Secret
@@ -62,7 +61,7 @@ To support the integration of Cloudflare Access with authentik, you need to crea
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Cloudflare Access, click the **Test** button found right next-to the **Save** button from the previous step.
+To confirm that authentik is properly configured with Cloudflare Access, click the **Test** button found right next to the **Save** button from the previous step.
 
 ## Resources
 

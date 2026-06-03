@@ -42,14 +42,6 @@ export class RouteMatch {
     }
 }
 
-export function getURLParam<T>(key: string, fallback: T): T {
-    const params = getURLParams();
-    if (key in params) {
-        return params[key] as T;
-    }
-    return fallback;
-}
-
 export function getURLParams(): RouteParameterRecord {
     const params = {};
     if (window.location.hash.includes(ROUTE_SEPARATOR)) {
@@ -62,6 +54,14 @@ export function getURLParams(): RouteParameterRecord {
         }
     }
     return params;
+}
+
+export function getURLParam<T>(key: string, fallback: T): T {
+    const params = getURLParams();
+    if (key in params) {
+        return params[key] as T;
+    }
+    return fallback;
 }
 
 /**

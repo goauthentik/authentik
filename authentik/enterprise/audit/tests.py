@@ -7,10 +7,12 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.enterprise.audit.apps import AuditIncludeExpandedDiff
 from authentik.enterprise.audit.middleware import EnterpriseAuditMiddleware
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import sanitize_item
 from authentik.lib.generators import generate_id
+from authentik.tenants.flags import patch_flag
 
 
 class TestEnterpriseAudit(APITestCase):
@@ -179,6 +181,61 @@ class TestEnterpriseAudit(APITestCase):
         self.assertEqual(
             diff,
             {"users": {"add": [user.pk]}},
+        )
+
+    @patch(
+        "authentik.enterprise.audit.middleware.EnterpriseAuditMiddleware.enabled",
+        PropertyMock(return_value=True),
+    )
+    @patch_flag(AuditIncludeExpandedDiff, True)
+    def test_m2m_add_expanded(self):
+        """Test m2m add audit log"""
+        user = create_test_admin_user()
+        group = Group.objects.create(name=generate_id())
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("authentik_api:group-add-user", kwargs={"pk": group.group_uuid}),
+            data={
+                "pk": user.pk,
+            },
+        )
+        self.assertEqual(response.status_code, 204)
+        events = Event.objects.filter(
+            action=EventAction.MODEL_UPDATED,
+            context__model__model_name="group",
+            context__model__app="authentik_core",
+            context__model__pk=group.pk.hex,
+        )
+        event = events.first()
+        self.assertIsNotNone(event)
+        self.assertIsNotNone(event.context["diff"])
+        diff = event.context["diff"]
+        self.assertEqual(
+            diff,
+            {
+                "users": {
+                    "add": [
+                        {
+                            "attributes": {},
+                            "date_joined": sanitize_item(user.date_joined),
+                            "email": user.email,
+                            "first_name": "",
+                            "id": user.pk,
+                            "is_active": True,
+                            "last_login": None,
+                            "last_name": "",
+                            "last_updated": sanitize_item(user.last_updated),
+                            "name": user.name,
+                            "password": "********************",
+                            "password_change_date": sanitize_item(user.password_change_date),
+                            "path": "users",
+                            "type": "internal",
+                            "username": user.username,
+                            "uuid": user.uuid.hex,
+                        }
+                    ]
+                }
+            },
         )
 
     @patch(

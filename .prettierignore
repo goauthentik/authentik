@@ -1,6 +1,7 @@
 # Prettier Ignorefile
 
 ## Static Files
+CODEOWNERS
 **/LICENSE
 
 authentik/stages/**/*
@@ -25,6 +26,10 @@ website/api/reference
 ## Node
 node_modules
 coverage
+
+## Vendored files
+vendored
+*.min.js
 
 ## Configs
 *.log

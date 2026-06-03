@@ -129,7 +129,7 @@ To allow un-authenticated requests to certain paths/URLs, you can use the _Unaut
 
 Each new line is interpreted as a regular expression, and is compiled and checked using the standard Golang regex parser.
 
-The behaviour of this field changes depending on which mode you're in.
+The behavior of this field changes depending on which mode you're in.
 
 ### Proxy and Forward auth (single application)
 
@@ -182,3 +182,11 @@ return {
 ```
 
 Afterwards, edit the proxy provider and add this new mapping. The expression is only evaluated when the user logs into the application.
+
+## Proxy authentication
+
+When a user authenticates to the proxy, authentik uses the OAuth client credentials grant as described in the [Header authentication](./header_authentication.mdx) and [Machine-to-Machine](../oauth2/machine_to_machine.mdx) documentation.
+
+## Troubleshooting
+
+To obtain more detailed information on a failure, you can search the logs of the server container. You will need to search for the `client_id` of the proxy provider that you're experiencing issues with. The `client_id` of a proxy provider can be obtained from its **Authentication** tab.
