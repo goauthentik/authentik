@@ -786,13 +786,13 @@ class TestFlowExecutor(FlowTestCase):
         )
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
-            + f"?{urlencode({QS_QUERY: urlencode({NEXT_ARG_NAME: '/foo'})})}"
+            + f"?{urlencode({QS_QUERY: urlencode({NEXT_ARG_NAME: "/foo"})})}"
         )
         self.assertStageResponse(res, flow, component="ak-stage-identification")
 
         res = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
-            + f"?{urlencode({QS_QUERY: urlencode({NEXT_ARG_NAME: '/foo'})})}",
+            + f"?{urlencode({QS_QUERY: urlencode({NEXT_ARG_NAME: "/foo"})})}",
             data={"component": "ak-stage-identification", "uid_field": generate_id()},
             follow=True,
         )
