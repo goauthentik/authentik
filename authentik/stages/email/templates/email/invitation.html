@@ -26,7 +26,7 @@
       {% if expires %}
       <tr>
         <td align="center" style="max-width: 300px; padding: 10px 0; color: #212124; font-size: 12px;">
-          {% blocktrans with expires=expires|naturaltime %}
+          {% blocktrans with expires=expires|timeuntil %}
           This invitation expires {{ expires }}.
           {% endblocktrans %}
         </td>
