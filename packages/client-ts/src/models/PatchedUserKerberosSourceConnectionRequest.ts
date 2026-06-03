@@ -20,12 +20,6 @@
 export interface PatchedUserKerberosSourceConnectionRequest {
     /**
      *
-     * @type {number}
-     * @memberof PatchedUserKerberosSourceConnectionRequest
-     */
-    user?: number;
-    /**
-     *
      * @type {string}
      * @memberof PatchedUserKerberosSourceConnectionRequest
      */
@@ -61,7 +55,6 @@ export function PatchedUserKerberosSourceConnectionRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"] == null ? undefined : json["user"],
         source: json["source"] == null ? undefined : json["source"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
     };
@@ -82,7 +75,6 @@ export function PatchedUserKerberosSourceConnectionRequestToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };
