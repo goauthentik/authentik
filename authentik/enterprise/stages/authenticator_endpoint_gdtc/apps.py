@@ -10,4 +10,3 @@ class AuthentikStageAuthenticatorEndpointConfig(EnterpriseConfig):
     label = "authentik_stages_authenticator_endpoint_gdtc"
     verbose_name = "authentik Enterprise.Stages.Authenticator.Endpoint GDTC"
     default = True
-    mountpoint = "endpoint/gdtc/"

@@ -1544,46 +1544,6 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
                             "const": "authentik_stages_mtls.mutualtlsstage"
                         },
                         "id": {
@@ -6329,18 +6289,6 @@
                             "authentik_stages_authenticator_email.delete_emaildevice",
                             "authentik_stages_authenticator_email.view_authenticatoremailstage",
                             "authentik_stages_authenticator_email.view_emaildevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.add_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.add_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.add_endpointdeviceconnection",
-                            "authentik_stages_authenticator_endpoint_gdtc.change_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.change_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.change_endpointdeviceconnection",
-                            "authentik_stages_authenticator_endpoint_gdtc.delete_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.delete_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.delete_endpointdeviceconnection",
-                            "authentik_stages_authenticator_endpoint_gdtc.view_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.view_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.view_endpointdeviceconnection",
                             "authentik_stages_authenticator_sms.add_authenticatorsmsstage",
                             "authentik_stages_authenticator_sms.add_smsdevice",
                             "authentik_stages_authenticator_sms.change_authenticatorsmsstage",
@@ -7718,18 +7666,6 @@
                             "authentik_stages_authenticator_email.delete_emaildevice",
                             "authentik_stages_authenticator_email.view_authenticatoremailstage",
                             "authentik_stages_authenticator_email.view_emaildevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.add_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.add_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.add_endpointdeviceconnection",
-                            "authentik_stages_authenticator_endpoint_gdtc.change_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.change_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.change_endpointdeviceconnection",
-                            "authentik_stages_authenticator_endpoint_gdtc.delete_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.delete_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.delete_endpointdeviceconnection",
-                            "authentik_stages_authenticator_endpoint_gdtc.view_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.view_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.view_endpointdeviceconnection",
                             "authentik_stages_authenticator_sms.add_authenticatorsmsstage",
                             "authentik_stages_authenticator_sms.add_smsdevice",
                             "authentik_stages_authenticator_sms.change_authenticatorsmsstage",
@@ -9789,58 +9725,6 @@
                 }
             }
         },
-        "model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "configure_flow": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Configure flow",
-                    "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
-                },
-                "friendly_name": {
-                    "type": "string",
-                    "title": "Friendly name"
-                },
-                "credentials": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Credentials"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_authenticatorendpointgdtcstage",
-                            "change_authenticatorendpointgdtcstage",
-                            "delete_authenticatorendpointgdtcstage",
-                            "view_authenticatorendpointgdtcstage"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "model_authentik_stages_mtls.mutualtlsstage": {
             "type": "object",
             "properties": {
@@ -11143,7 +11027,6 @@
                         "authentik_requests.requestrule",
                         "authentik_requests.grantrequest",
                         "authentik_stages_account_lockdown.accountlockdownstage",
-                        "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage"
                     ],
@@ -14118,18 +14001,6 @@
                             "authentik_stages_authenticator_email.delete_emaildevice",
                             "authentik_stages_authenticator_email.view_authenticatoremailstage",
                             "authentik_stages_authenticator_email.view_emaildevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.add_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.add_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.add_endpointdeviceconnection",
-                            "authentik_stages_authenticator_endpoint_gdtc.change_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.change_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.change_endpointdeviceconnection",
-                            "authentik_stages_authenticator_endpoint_gdtc.delete_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.delete_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.delete_endpointdeviceconnection",
-                            "authentik_stages_authenticator_endpoint_gdtc.view_authenticatorendpointgdtcstage",
-                            "authentik_stages_authenticator_endpoint_gdtc.view_endpointdevice",
-                            "authentik_stages_authenticator_endpoint_gdtc.view_endpointdeviceconnection",
                             "authentik_stages_authenticator_sms.add_authenticatorsmsstage",
                             "authentik_stages_authenticator_sms.add_smsdevice",
                             "authentik_stages_authenticator_sms.change_authenticatorsmsstage",
