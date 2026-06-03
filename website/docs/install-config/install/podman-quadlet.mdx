@@ -35,14 +35,14 @@ import Tabs from "@theme/Tabs";
 
 Choose one mode and stay with it. The unit content is identical; only the install paths, socket locations, and `systemctl` invocation differ.
 
-| Aspect                          | Rootful                                         | Rootless                                                  |
-| ------------------------------- | ----------------------------------------------- | --------------------------------------------------------- |
-| Unit directory                  | `/etc/containers/systemd/`                      | `~/.config/containers/systemd/`                           |
-| Reload command                  | `sudo systemctl daemon-reload`                  | `systemctl --user daemon-reload`                          |
-| Start command                   | `sudo systemctl start authentik-server.service` | `systemctl --user start authentik-server.service`         |
-| Podman API socket path          | `/run/podman/podman.sock`                       | `$XDG_RUNTIME_DIR/podman/podman.sock`                     |
-| Support for Outpost auto-deploy | Yes                                             | Yes, with `loginctl enable-linger`                        |
-| Binding ports below 1024        | Yes                                             | Requires sysctl, firewall, socket activation, or an LB    |
+| Aspect                          | Rootful                                         | Rootless                                               |
+| ------------------------------- | ----------------------------------------------- | ------------------------------------------------------ |
+| Unit directory                  | `/etc/containers/systemd/`                      | `~/.config/containers/systemd/`                        |
+| Reload command                  | `sudo systemctl daemon-reload`                  | `systemctl --user daemon-reload`                       |
+| Start command                   | `sudo systemctl start authentik-server.service` | `systemctl --user start authentik-server.service`      |
+| Podman API socket path          | `/run/podman/podman.sock`                       | `$XDG_RUNTIME_DIR/podman/podman.sock`                  |
+| Support for Outpost auto-deploy | Yes                                             | Yes, with `loginctl enable-linger`                     |
+| Binding ports below 1024        | Yes                                             | Requires sysctl, firewall, socket activation, or an LB |
 
 Every command in this guide is shown for both modes — pick the tab that matches your deployment.
 
