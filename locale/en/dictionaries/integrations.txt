@@ -36,6 +36,7 @@ Kubeconfig
 Mautic
 Mobilizon
 myabsorb
+Nexterm
 Observium
 Ofair
 Ollama

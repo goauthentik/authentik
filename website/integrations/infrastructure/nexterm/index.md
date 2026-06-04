@@ -28,7 +28,7 @@ To support the integration of Nexterm with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -50,11 +50,10 @@ To support the integration of Nexterm with authentik, you need to create an appl
     - **Client ID**: Client ID from authentik
     - **Client Secret**: Client secret from authentik
     - **Redirect URI**: `https://nexterm.company/api/auth/oidc/callback`
-    - **Scope**: `openid profile email`
 5. Save the provider.
 
-:::info
-The trailing slash in the **Issuer URL** is required. You can verify the exact issuer value at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`.
+:::info Issuer URL
+The trailing slash in the **Issuer URL** is required.
 :::
 
 ## Configuration verification
