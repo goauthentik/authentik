@@ -28,7 +28,7 @@ export const LifecycleIterationStatus: LitFC<LifecycleIterationStatusProps> = ({
         )
         .with(
             LifecycleIterationStateEnum.Canceled,
-            () => html`<ak-label color=${PFColor.Grey}>${msg("Canceled")}</ak-label>`,
+            () => html`<ak-label color=${PFColor.Gray}>${msg("Canceled")}</ak-label>`,
         )
-        .otherwise(() => html`<ak-label color=${PFColor.Grey}>${msg("Unknown")}</ak-label>`);
+        .otherwise(() => html`<ak-label color=${PFColor.Gray}>${msg("Unknown")}</ak-label>`);
 };

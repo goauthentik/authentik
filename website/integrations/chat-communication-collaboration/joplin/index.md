@@ -54,6 +54,7 @@ To support the integration of Joplin with authentik, you need to create property
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+    - Set the **Launch URL** to `https://joplin.company/login/sso-saml`.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://joplin.company/api/saml`.

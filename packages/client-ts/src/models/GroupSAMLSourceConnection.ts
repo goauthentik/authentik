@@ -32,7 +32,7 @@ export interface GroupSAMLSourceConnection {
      * @type {string}
      * @memberof GroupSAMLSourceConnection
      */
-    group: string;
+    readonly group: string;
     /**
      *
      * @type {string}
@@ -110,7 +110,7 @@ export function GroupSAMLSourceConnectionToJSON(json: any): GroupSAMLSourceConne
 export function GroupSAMLSourceConnectionToJSONTyped(
     value?: Omit<
         GroupSAMLSourceConnection,
-        "pk" | "source_obj" | "created" | "last_updated"
+        "pk" | "group" | "source_obj" | "created" | "last_updated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -119,7 +119,6 @@ export function GroupSAMLSourceConnectionToJSONTyped(
     }
 
     return {
-        group: value["group"],
         source: value["source"],
         identifier: value["identifier"],
     };
