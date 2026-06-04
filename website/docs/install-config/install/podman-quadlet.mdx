@@ -17,16 +17,7 @@ Quadlet turns Podman `.container`, `.pod`, and `.volume` files into systemd serv
 
 ## Rootful vs. rootless
 
-| Aspect                          | Rootful                        | Rootless                                               |
-| ------------------------------- | ------------------------------ | ------------------------------------------------------ |
-| Unit directory                  | `/etc/containers/systemd/`     | `~/.config/containers/systemd/`                        |
-| Reload command                  | `sudo systemctl daemon-reload` | `systemctl --user daemon-reload`                       |
-| Service manager                 | system service manager         | user service manager                                   |
-| Podman API socket path          | `/run/podman/podman.sock`      | `$XDG_RUNTIME_DIR/podman/podman.sock`                  |
-| Support for Outpost auto-deploy | Yes                            | Yes, with `loginctl enable-linger`                     |
-| Binding ports below 1024        | Yes                            | Requires sysctl, firewall, socket activation, or proxy |
-
-Every command in this guide is shown for both modes; pick the tab that matches your deployment.
+Quadlet can run authentik as rootful system services or as rootless user services. Every command in this guide is shown for both modes; pick the tab that matches your deployment.
 
 ## Prepare the host
 
