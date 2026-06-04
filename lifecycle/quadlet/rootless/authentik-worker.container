@@ -23,7 +23,7 @@ Volume=%h/.local/share/authentik/custom-templates:/templates:Z
 PodmanArgs=--shm-size=512m
 
 [Service]
-Restart=unless-stopped
+Restart=always
 
 [Install]
 WantedBy=default.target

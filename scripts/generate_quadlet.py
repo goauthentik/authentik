@@ -77,7 +77,7 @@ HealthTimeout=5s
 HealthRetries=5
 
 [Service]
-Restart=unless-stopped
+Restart=always
 
 [Install]
 WantedBy=default.target
@@ -105,7 +105,7 @@ Volume={data_dir}/custom-templates:/templates:Z
 PodmanArgs=--shm-size=512m
 
 [Service]
-Restart=unless-stopped
+Restart=always
 
 [Install]
 WantedBy=default.target
@@ -138,7 +138,7 @@ Volume={data_dir}/custom-templates:/templates:Z
 PodmanArgs=--shm-size=512m
 
 [Service]
-Restart=unless-stopped
+Restart=always
 
 [Install]
 WantedBy=default.target

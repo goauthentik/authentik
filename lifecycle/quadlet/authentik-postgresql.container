@@ -17,7 +17,7 @@ HealthTimeout=5s
 HealthRetries=5
 
 [Service]
-Restart=unless-stopped
+Restart=always
 
 [Install]
 WantedBy=default.target
