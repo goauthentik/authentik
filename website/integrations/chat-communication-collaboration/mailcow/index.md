@@ -31,22 +31,11 @@ To support the integration of mailcow with authentik, you need to create a prope
 
 ### Create a property mapping
 
-Mailcow requires that users have a verified email address. The required attribute can be returned via a scope mapping in combination with user attributes. For more information, see [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification).
+Mailcow requires that users have a verified email address. The required attribute can be returned via a scope mapping in combination with user attributes.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
-3. Select **Scope Mapping** as the property mapping type and set the following configuration:
-    - **Name**: Provide a descriptive name
-    - **Scope Name**: `email`
-    - **Expression**:
-
-        ```python
-        return {
-            "email": request.user.email,
-            "email_verified": request.user.attributes.get("email_verified", False)
-        }
-        ```
-
+3. Select **Scope Mapping** as the property mapping type. Use `email` as the scope name, and copy the user attribute expression from [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification).
 4. Click **Create**.
 
 ### Set `email_verified` user attribute
@@ -55,7 +44,7 @@ Mailcow requires that users have a verified email address. The required attribut
 2. Navigate to **Directory** > **Users** and select a user that will use the Mailcow integration.
 3. Click **Edit User**.
 4. Add `email_verified: true` to the **Attributes** field.
-5. Click **Save Changes**
+5. Click **Save Changes**.
 
 Repeat these steps for all users that need to use the Mailcow integration.
 
