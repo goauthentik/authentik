@@ -735,6 +735,7 @@ const items = [
                     "sys-mgmt/events/event-actions",
                 ],
             },
+            "sys-mgmt/akql",
             "sys-mgmt/certificates",
             "sys-mgmt/settings",
             "sys-mgmt/service-accounts",
