@@ -3,7 +3,6 @@
 from datetime import datetime, timedelta
 from json import loads
 
-from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.urls.base import reverse
 from django.utils.timezone import now
@@ -12,7 +11,9 @@ from rest_framework.test import APITestCase
 from authentik.brands.models import Brand
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
+    AuthenticatedSession,
     Group,
+    Session,
     Token,
     User,
     UserTypes,

@@ -10,7 +10,6 @@ from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import (
-    QS_LOGIN_HINT,
     SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
     TOKEN_TYPE,
@@ -18,7 +17,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
-from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
