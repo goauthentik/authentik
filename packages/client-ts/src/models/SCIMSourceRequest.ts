@@ -54,6 +54,12 @@ export interface SCIMSourceRequest {
      * @memberof SCIMSourceRequest
      */
     userPathTemplate?: string;
+    /**
+     * Only manage users and groups created by this SCIM source.
+     * @type {boolean}
+     * @memberof SCIMSourceRequest
+     */
+    managedObjectsOnly?: boolean;
 }
 
 /**
@@ -86,6 +92,8 @@ export function SCIMSourceRequestFromJSONTyped(
             json["group_property_mappings"] == null ? undefined : json["group_property_mappings"],
         userPathTemplate:
             json["user_path_template"] == null ? undefined : json["user_path_template"],
+        managedObjectsOnly:
+            json["managed_objects_only"] == null ? undefined : json["managed_objects_only"],
     };
 }
 
@@ -108,5 +116,6 @@ export function SCIMSourceRequestToJSONTyped(
         user_property_mappings: value["userPropertyMappings"],
         group_property_mappings: value["groupPropertyMappings"],
         user_path_template: value["userPathTemplate"],
+        managed_objects_only: value["managedObjectsOnly"],
     };
 }

@@ -94,6 +94,12 @@ export interface SCIMSource {
      */
     userPathTemplate?: string;
     /**
+     * Only manage users and groups created by this SCIM source.
+     * @type {boolean}
+     * @memberof SCIMSource
+     */
+    managedObjectsOnly?: boolean;
+    /**
      * Get Root URL
      * @type {string}
      * @memberof SCIMSource
@@ -148,6 +154,8 @@ export function SCIMSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         managed: json["managed"],
         userPathTemplate:
             json["user_path_template"] == null ? undefined : json["user_path_template"],
+        managedObjectsOnly:
+            json["managed_objects_only"] == null ? undefined : json["managed_objects_only"],
         rootUrl: json["root_url"],
         tokenObj: TokenFromJSON(json["token_obj"]),
     };
@@ -182,5 +190,6 @@ export function SCIMSourceToJSONTyped(
         user_property_mappings: value["userPropertyMappings"],
         group_property_mappings: value["groupPropertyMappings"],
         user_path_template: value["userPathTemplate"],
+        managed_objects_only: value["managedObjectsOnly"],
     };
 }

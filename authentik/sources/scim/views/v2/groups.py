@@ -16,6 +16,7 @@ from scim2_filter_parser.attr_paths import AttrPath
 from authentik.core.models import Group, User
 from authentik.providers.scim.clients.schema import SCIM_GROUP_SCHEMA, PatchOp, PatchOperation
 from authentik.providers.scim.clients.schema import Group as SCIMGroupModel
+from authentik.sources.scim.managed import filter_group_members, resolve_group
 from authentik.sources.scim.models import SCIMSourceGroup
 from authentik.sources.scim.patch.processor import SCIMPatchProcessor
 from authentik.sources.scim.views.v2.base import SCIMObjectView
@@ -94,9 +95,7 @@ class GroupsView(SCIMObjectView):
         if not properties.get("name"):
             raise ValidationError("Invalid group")
 
-        group = connection.group if connection else Group()
-        if _group := Group.objects.filter(name=properties.get("name")).first():
-            group = _group
+        group = resolve_group(self.source, connection, properties.get("name"))
 
         group.update_attributes(properties)
 
@@ -110,7 +109,7 @@ class GroupsView(SCIMObjectView):
                     continue
                 query |= Q(uuid=member.value)
             if query:
-                group.users.set(User.objects.filter(query))
+                group.users.set(filter_group_members(self.source, User.objects.filter(query)))
         data["members"] = self._convert_members(group)
         if not connection:
             connection, _ = SCIMSourceGroup.objects.update_or_create(
@@ -178,7 +177,9 @@ class GroupsView(SCIMObjectView):
                     for member in operation.value:
                         query |= Q(uuid=member["value"])
                     if query:
-                        connection.group.users.add(*User.objects.filter(query))
+                        connection.group.users.add(
+                            *filter_group_members(self.source, User.objects.filter(query))
+                        )
                 elif operation.op == PatchOp.remove:
                     if not isinstance(operation.value, list):
                         operation.value = [operation.value]
@@ -186,7 +187,9 @@ class GroupsView(SCIMObjectView):
                     for member in operation.value:
                         query |= Q(uuid=member["value"])
                     if query:
-                        connection.group.users.remove(*User.objects.filter(query))
+                        connection.group.users.remove(
+                            *filter_group_members(self.source, User.objects.filter(query))
+                        )
         patcher = SCIMPatchProcessor()
         patched_data = patcher.apply_patches(
             connection.attributes, request.data.get("Operations", [])
@@ -204,6 +207,9 @@ class GroupsView(SCIMObjectView):
         ).first()
         if not connection:
             raise SCIMNotFoundError("Group not found.")
+        if self.source.managed_objects_only:
+            connection.delete()
+            return Response(status=204)
         connection.group.delete()
         connection.delete()
         return Response(status=204)

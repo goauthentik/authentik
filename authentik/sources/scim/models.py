@@ -17,6 +17,14 @@ class SCIMSource(Source):
     cross-system user provisioning"""
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
+    managed_objects_only = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Only manage users and groups created by this SCIM source. "
+            "Disables tenant-wide correlation, restricts group membership, "
+            "and unlinks objects on DELETE instead of deleting them."
+        ),
+    )
 
     @property
     def service_account_identifier(self) -> str:

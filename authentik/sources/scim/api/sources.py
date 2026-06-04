@@ -42,6 +42,7 @@ class SCIMSourceSerializer(SourceSerializer):
             "meta_model_name",
             "managed",
             "user_path_template",
+            "managed_objects_only",
             "root_url",
             "token_obj",
         ]

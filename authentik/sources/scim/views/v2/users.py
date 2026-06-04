@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from authentik.core.models import User
 from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA, Email
 from authentik.providers.scim.clients.schema import User as SCIMUserModel
+from authentik.sources.scim.managed import filter_group_members, resolve_group, resolve_user
 from authentik.sources.scim.models import SCIMSourceUser
 from authentik.sources.scim.patch.processor import SCIMPatchProcessor
 from authentik.sources.scim.views.v2.base import SCIMObjectView
@@ -97,9 +98,7 @@ class UsersView(SCIMObjectView):
         if not properties.get("username"):
             raise ValidationError("Invalid user")
 
-        user = connection.user if connection else User()
-        if _user := User.objects.filter(username=properties.get("username")).first():
-            user = _user
+        user = resolve_user(self.source, connection, properties.get("username"))
         user.update_attributes(properties)
 
         if not connection:
@@ -158,6 +157,9 @@ class UsersView(SCIMObjectView):
         connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
         if not connection:
             raise SCIMNotFoundError("User not found.")
+        if self.source.managed_objects_only:
+            connection.delete()
+            return Response(status=204)
         connection.user.delete()
         connection.delete()
         return Response(status=204)
