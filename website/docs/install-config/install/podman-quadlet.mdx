@@ -114,7 +114,7 @@ done
 </Tabs>
 
 :::note SELinux
-On SELinux-enabled hosts, the units label bind mounts with `:Z`, including the Podman socket mount. If that does not fit your policy, edit `authentik-worker.container` before starting authentik.
+On SELinux-enabled hosts, the units label bind mounts with `:Z`, including the Podman socket mount. If that does not fit your policy, edit the affected `.container` files before starting authentik.
 :::
 
 The units create one Podman pod named `authentik` with three containers: PostgreSQL, server, and worker. Containers in the pod share a network namespace, so the worker listens on `:9001` for HTTP and `:9301` for metrics to avoid port conflicts with the server.
