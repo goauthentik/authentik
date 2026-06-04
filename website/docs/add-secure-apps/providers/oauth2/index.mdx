@@ -2,7 +2,7 @@
 title: OAuth2/OpenID provider
 ---
 
-In authentik, an [OAuth 2.0](https://oauth.net/2/) provider authenticates users to an associated application. The provider supports generic OAuth 2.0 clients and OpenID Connect (OIDC) relying parties.
+In authentik, you can [create](./create-oauth2-provider.md) an [OAuth 2.0](https://oauth.net/2/) provider that authenticates users to an associated application. The provider supports generic OAuth 2.0 clients and OpenID Connect (OIDC) relying parties.
 
 ## authentik and OAuth 2.0
 
@@ -48,7 +48,7 @@ sequenceDiagram
     rp->>user: User is logged in
 ```
 
-## OAuth2 endpoints and bindings
+## OAuth 2.0 endpoints and bindings
 
 | Endpoint             | URL                                                                  |
 | -------------------- | -------------------------------------------------------------------- |
@@ -63,12 +63,12 @@ sequenceDiagram
 | OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration` |
 
 :::caution Reserved application slugs
-Due to how the OAuth2/OpenID provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke` as these would conflict with the global OAuth2 endpoints.
+Due to how the OAuth2/OpenID provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke` as these would conflict with the global OAuth 2.0 endpoints.
 :::
 
 ### Cross-provider token introspection and revocation
 
-The token introspection and revocation endpoints are global OAuth2 endpoints, but access to tokens is still scoped by provider. A client can introspect or revoke tokens issued by the same OAuth2 provider that authenticated the request.
+The token introspection and revocation endpoints are global OAuth 2.0 endpoints, but access to tokens is still scoped by provider. A client can introspect or revoke tokens issued by the same OAuth2 provider that authenticated the request.
 
 For cross-provider introspection or revocation, authenticate the request with a confidential provider. Then, on the provider that issues the token, select the authenticating provider under **Federated OAuth2/OpenID Providers**. This allows the authenticating provider to introspect and revoke tokens issued by the federated provider.
 
@@ -85,6 +85,25 @@ For advanced use cases, an authentik administrator can use regular expressions i
 Using back-channel logout (a server-to-server notification mechanism) allows an identity provider to notify connected OAuth2/OpenID clients whenever a user's session is terminated.
 
 For more information, see our [OAuth2/OpenID Connect front-channel and back-channel logout](./frontchannel_and_backchannel_logout.mdx) documentation.
+
+## Issuer mode
+
+The **Issuer mode** setting (under **Advanced protocol settings**) controls the value that authentik uses for the `iss` (issuer) claim in the tokens it signs, and for the `issuer` field in the provider's [OpenID Connect discovery document](#oauth-20-endpoints-and-bindings).
+
+| Mode (UI label)                                                                   | `iss` value                                                   |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Each provider has a different issuer, based on the application slug** (default) | `https://authentik.company/application/o/<application_slug>/` |
+| **Same identifier is used for all providers**                                     | `https://authentik.company/`                                  |
+
+By default, authentik uses per-provider mode: every provider has a unique issuer derived from its application slug. This is the recommended setting, and matches how the discovery and JWKS endpoints are structured, since both are served under the per-application `/application/o/<application_slug>/` path.
+
+### Global issuer mode
+
+Setting the issuer mode to **Same identifier is used for all providers** (referred to internally as **global** mode) makes every OAuth 2.0 provider configured with this mode share the same issuer: the root URL of the instance (`https://authentik.company/`).
+
+:::info Well-known location
+Global issuer mode still serves the discovery document at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`, not at the root issuer URL.
+:::
 
 ## OAuth 2.0 flows and grant types
 
