@@ -181,26 +181,7 @@ If you run into issues, refer to our [troubleshooting docs](../../troubleshootin
 
 ## Upgrading
 
-Podman can update these containers with `podman-auto-update.timer` because the Quadlet `.container` files set `AutoUpdate=registry`:
-
-<Tabs groupId="install-mode">
-<TabItem value="rootful" label="Rootful" default>
-
-```shell
-sudo systemctl enable --now podman-auto-update.timer
-```
-
-</TabItem>
-<TabItem value="rootless" label="Rootless">
-
-```shell
-systemctl --user enable --now podman-auto-update.timer
-```
-
-</TabItem>
-</Tabs>
-
-To upgrade on demand:
+The Quadlet `.container` files set `AutoUpdate=registry`, so Podman can pull newer digests for the configured image tags. To upgrade on demand:
 
 <Tabs groupId="install-mode">
 <TabItem value="rootful" label="Rootful" default>
@@ -218,6 +199,8 @@ podman auto-update
 
 </TabItem>
 </Tabs>
+
+For scheduled updates, use Podman's `podman-auto-update.timer`.
 
 To upgrade to a new authentik release, download the current Quadlet units again or edit the `Image=` line in `authentik-server.container` and `authentik-worker.container`. Then reload systemd and restart the services.
 
