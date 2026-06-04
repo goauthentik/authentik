@@ -8,7 +8,7 @@
 {% trans 'Accept Invitation' %}: {{ url }}
 
 {% if expires %}
-{% blocktrans with expires=expires|timeuntil %}This invitation expires {{ expires }}.{% endblocktrans %}
+{% blocktrans with expires=expires|naturaltime %}This invitation expires {{ expires }}.{% endblocktrans %}
 {% endif %}
 
 {% blocktrans %}If you cannot click the link above, please copy and paste the following URL into your browser:{% endblocktrans %}
