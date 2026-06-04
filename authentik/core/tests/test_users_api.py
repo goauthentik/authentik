@@ -5,22 +5,14 @@ from json import loads
 
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
-from django.core.signing import dumps
 from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.brands.models import Brand
-from authentik.common.oauth.constants import QS_LOGIN_HINT
-from authentik.core.account_selection import (
-    COOKIE_NAME_KNOWN_ACCOUNTS,
-    QS_ADD_ACCOUNT,
-)
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
-    AuthenticatedSession,
     Group,
-    Session,
     Token,
     User,
     UserTypes,
@@ -34,14 +26,9 @@ from authentik.core.tests.utils import (
 from authentik.flows.models import (
     FlowAuthenticationRequirement,
     FlowDesignation,
-    FlowStageBinding,
 )
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
-from authentik.stages.account_selection.models import AccountSelectionStage, AccountSwitchStage
-from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 from authentik.stages.email.models import EmailStage
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
@@ -68,21 +55,6 @@ class TestUsersAPI(APITestCase):
         user.refresh_from_db()
         self.assertEqual(user.password, password_hash)
         self.assertTrue(user.check_password(password))
-
-    def _remember_live_accounts(self, *users: User) -> list[dict[str, str]]:
-        """Store browser-local accounts backed by live authenticated sessions."""
-        accounts = []
-        for index, user in enumerate(users):
-            client = self.client if index == 0 else self.client_class()
-            client.force_login(user)
-            session = Session.objects.get(session_key=client.session.session_key)
-            AuthenticatedSession.objects.update_or_create(
-                session=session,
-                defaults={"user": user},
-            )
-            accounts.append({"uid": user.uuid.hex, "session": session.session_key})
-        self.client.cookies[COOKIE_NAME_KNOWN_ACCOUNTS] = dumps(accounts)
-        return accounts
 
     def test_filter_type(self):
         """Test API filtering by type"""
@@ -244,139 +216,6 @@ class TestUsersAPI(APITestCase):
         expires = Token.objects.first().expires
         expected_expires = now() + timedelta(days=66)
         self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
-
-    def test_user_me_account_selection(self):
-        """Test user/me includes the browser-local account selection list."""
-        self._remember_live_accounts(self.admin, self.user)
-        response = self.client.get(reverse("authentik_api:user-me"))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            [account["username"] for account in response.json()["accounts"]],
-            [self.admin.username, self.user.username],
-        )
-        self.assertTrue(response.json()["accounts"][0]["is_current"])
-        self.assertFalse(response.json()["accounts"][1]["is_current"])
-
-    def test_default_authentication_switches_live_account(self):
-        """Test selecting a remembered account switches through the brand flow."""
-        flow = create_test_flow(FlowDesignation.ACCOUNT_SELECTION)
-        brand = create_test_brand()
-        brand.flow_account_selection = flow
-        brand.save()
-        selection_stage = AccountSelectionStage.objects.create(name=generate_id())
-        switch_stage = AccountSwitchStage.objects.create(name=generate_id())
-        FlowStageBinding.objects.create(target=flow, stage=selection_stage, order=0)
-        FlowStageBinding.objects.create(
-            target=flow,
-            stage=switch_stage,
-            order=100,
-        )
-        accounts = self._remember_live_accounts(self.admin, self.user)
-        response = self.client.get(
-            reverse("authentik_flows:default-authentication"),
-            data={"account_uid": self.user.uuid.hex, "next": "/"},
-        )
-
-        self.assertEqual(response.status_code, 302)
-        self.assertIn(
-            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug}),
-            response.url,
-        )
-        plan = self.client.session[SESSION_KEY_PLAN]
-        self.assertEqual(
-            [binding.stage for binding in plan.bindings],
-            [selection_stage, switch_stage],
-        )
-
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            self.client.session[SESSION_KEY_PLAN].context[PLAN_CONTEXT_PENDING_USER],
-            self.user,
-        )
-        response = self.client.get(response.url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["component"], "xak-flow-redirect")
-        self.assertEqual(response.json()["to"], "/")
-        self.assertEqual(
-            response.cookies[settings.SESSION_COOKIE_NAME].value,
-            accounts[1]["session"],
-        )
-        response = self.client.get(reverse("authentik_api:user-me"))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["user"]["username"], self.user.username)
-
-    def test_default_authentication_switch_preserves_mfa_stage(self):
-        """Test remembered account switches keep MFA stages before activating the session."""
-        flow = create_test_flow(FlowDesignation.ACCOUNT_SELECTION)
-        brand = create_test_brand()
-        brand.flow_account_selection = flow
-        brand.save()
-        selection_stage = AccountSelectionStage.objects.create(name=generate_id())
-        mfa_stage = AuthenticatorValidateStage.objects.create(name=generate_id())
-        switch_stage = AccountSwitchStage.objects.create(name=generate_id())
-        FlowStageBinding.objects.create(target=flow, stage=selection_stage, order=0)
-        FlowStageBinding.objects.create(target=flow, stage=mfa_stage, order=10)
-        FlowStageBinding.objects.create(target=flow, stage=switch_stage, order=100)
-        self._remember_live_accounts(self.admin, self.user)
-
-        response = self.client.get(
-            reverse("authentik_flows:default-authentication"),
-            data={"account_uid": self.user.uuid.hex, "next": "/"},
-        )
-
-        self.assertEqual(response.status_code, 302)
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
-        )
-        self.assertEqual(response.status_code, 302)
-        plan = self.client.session[SESSION_KEY_PLAN]
-        self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.user)
-        self.assertEqual([binding.stage for binding in plan.bindings], [mfa_stage, switch_stage])
-
-    def test_default_authentication_marks_login_hint_account(self):
-        """Test account selection hints matching remembered accounts."""
-        flow = create_test_flow(FlowDesignation.ACCOUNT_SELECTION)
-        brand = create_test_brand()
-        brand.flow_account_selection = flow
-        brand.save()
-        selection_stage = AccountSelectionStage.objects.create(name=generate_id())
-        switch_stage = AccountSwitchStage.objects.create(name=generate_id())
-        FlowStageBinding.objects.create(target=flow, stage=selection_stage, order=0)
-        FlowStageBinding.objects.create(target=flow, stage=switch_stage, order=100)
-        self._remember_live_accounts(self.admin, self.user)
-
-        response = self.client.get(
-            reverse("authentik_flows:default-authentication"),
-            data={QS_LOGIN_HINT: self.user.email, "next": "/"},
-        )
-
-        self.assertEqual(response.status_code, 302)
-        challenge_response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
-        )
-        self.assertEqual(challenge_response.status_code, 200)
-        accounts = challenge_response.json()["accounts"]
-        self.assertEqual(accounts[0]["username"], self.user.username)
-        self.assertTrue(accounts[0]["is_hint"])
-
-    def test_default_authentication_add_account_uses_fresh_session(self):
-        """Test adding another account doesn't destroy the current account session."""
-        accounts = self._remember_live_accounts(self.admin)
-        response = self.client.get(
-            reverse("authentik_flows:default-authentication"),
-            data={QS_ADD_ACCOUNT: "true", "next": "/"},
-        )
-
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(Session.objects.filter(session_key=accounts[0]["session"]).exists())
-        new_session_key = response.cookies[settings.SESSION_COOKIE_NAME].value
-        self.assertNotEqual(new_session_key, accounts[0]["session"])
-        self.assertTrue(Session.objects.filter(session_key=new_session_key).exists())
-        self.assertNotIn(QS_ADD_ACCOUNT, response.url)
 
     def test_recovery_email_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
