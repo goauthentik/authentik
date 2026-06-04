@@ -2,28 +2,28 @@
 title: OAuth 2.0 provider
 ---
 
-In authentik, you can [create](./create-oauth2-provider.md) an [OAuth 2.0](https://oauth.net/2/) provider that authentik uses to authenticate the user to the associated application. This provider supports both generic OAuth2 as well as OpenID Connect (OIDC).
+In authentik, you can [create](./create-oauth2-provider.md) an [OAuth 2.0](https://oauth.net/2/) provider that authentik uses to authenticate the user to the associated application. This provider supports both generic OAuth 2.0 as well as OpenID Connect (OIDC).
 
 ## authentik and OAuth 2.0
 
 It's important to understand how authentik works with and supports the OAuth 2.0 protocol, so before taking a [closer look at OAuth 2.0 protocol](#about-oauth-20-and-oidc) itself, let's cover a bit about authentik.
 
-authentik can act either as the OP, (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth 2.0 to authenticate). If you want to configure authentik as an OP, then you create a provider, then use the OAuth 2.0 provider. If you want authentik to serve as the RP, then configure a [source](../../../users-sources/sources/index.md). Of course, authentik can serve as both the RP and OP, if you want to use the authentik OAuth provider and also use sources.
+authentik can act either as the OP (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth 2.0 to authenticate). If you want to configure authentik as an OP, create an OAuth 2.0 provider. If you want authentik to serve as the RP, then configure a [source](../../../users-sources/sources/index.md). Of course, authentik can serve as both the RP and OP, if you want to use the authentik OAuth provider and also use sources.
 
-All standard OAuth 2.0 flows (authorization code, client_credentials, implicit, hybrid, device code) and grant types are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth 2.0 in authentik supports OAuth, PKCE, [GitHub compatibility](./github-compatibility.md), and the RP receives data from our scope mapping system.
+authentik supports all standard OAuth 2.0 flows (authorization code, client_credentials, implicit, hybrid, device code) and grant types, and follows the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth 2.0 in authentik supports PKCE, [GitHub compatibility](./github-compatibility.md), and the RP receives data from our scope mapping system.
 
-The authentik OAuth 2.0 provider comes with all the standard functionality and features of OAuth 2.0, including the OAuth 2.0 security principles such as no cleartext storage of credentials, configurable encryption, configurable short expiration times, and the configuration of automatic rotation of refresh tokens. In short, our OAuth 2.0 protocol support provides full coverage.
+The authentik OAuth 2.0 provider comes with all the standard functionality and features of OAuth 2.0, including the OAuth 2.0 security principles such as no cleartext storage of credentials, configurable encryption, configurable short expiration times, and the configuration of automatic rotation of refresh tokens. In short, authentik offers comprehensive OAuth 2.0 support.
 
 ## About OAuth 2.0 and OIDC
 
-OAuth 2.0 is an authorization protocol that allows an application (the RP) to delegate authorization to an OP. OIDC is an authentication protocol built on top of OAuth2, which provides identity credentials and other data on top of OAuth2.
+OAuth 2.0 is an authorization protocol that allows an application (the RP) to delegate authorization to an OP. OIDC is an authentication protocol built on top of OAuth 2.0, which provides identity credentials and other data on top of OAuth 2.0.
 
 **OAuth 2.0** typically requires two requests (unlike the previous "three-legged" OAuth 1.0). The two "legs", or requests, for OAuth 2.0 are:
 
 1. An authorization request is prepared by the RP and contains parameters for its implementation of OAuth and which data it requires, and then the User's browser is redirected to that URL.
 2. The RP sends a request to authentik in the background to exchange the access code for an access token (and optionally a refresh token).
 
-In detail, with OAuth2 when a user accesses the application (the RP) via their browser, the RP then prepares a URL with parameters for the OpenID Provider (OP), which the user's browser is redirected to. The OP authenticates the user and generates an authorization code. The OP then redirects the client (the user's browser) back to the RP, along with that authorization code. In the background, the RP then sends that same authorization code in a request authenticated by the `client_id` and `client_secret` to the OP. Finally, the OP responds by sending an Access Token saying this user has been authorized (the RP is recommended to validate this token using cryptography) and optionally a Refresh Token.
+In detail, with OAuth 2.0 when a user accesses the application (the RP) via their browser, the RP then prepares a URL with parameters for the OpenID Provider (OP), which the user's browser is redirected to. The OP authenticates the user and generates an authorization code. The OP then redirects the client (the user's browser) back to the RP, along with that authorization code. In the background, the RP then sends that same authorization code in a request authenticated by the `client_id` and `client_secret` to the OP. Finally, the OP responds by sending an Access Token saying this user has been authorized (the RP is recommended to validate this token using cryptography) and optionally a Refresh Token.
 
 The image below shows a typical authorization code flow.
 
@@ -48,7 +48,7 @@ sequenceDiagram
     rp->>user: User is logged in
 ```
 
-## OAuth2 endpoints and bindings
+## OAuth 2.0 endpoints and bindings
 
 | Endpoint             | URL                                                                  |
 | -------------------- | -------------------------------------------------------------------- |
@@ -63,12 +63,12 @@ sequenceDiagram
 | OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration` |
 
 :::caution Reserved application slugs
-Due to how the OAuth2 provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke` as these would conflict with the global OAuth2 endpoints.
+Due to how the OAuth2 provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke` as these would conflict with the global OAuth 2.0 endpoints.
 :::
 
 ### Cross-provider token introspection and revocation
 
-The token introspection and revocation endpoints are global OAuth2 endpoints, but access to tokens is still scoped by provider. A client can introspect or revoke tokens issued by the same OAuth2 provider that authenticated the request.
+The token introspection and revocation endpoints are global OAuth 2.0 endpoints, but access to tokens is still scoped by provider. A client can introspect or revoke tokens issued by the same OAuth2 provider that authenticated the request.
 
 For cross-provider introspection or revocation, authenticate the request with a confidential provider. Then, on the provider that issues the token, select the authenticating provider under **Federated OAuth2/OpenID Providers**. This allows the authenticating provider to introspect and revoke tokens issued by the federated provider.
 
@@ -85,6 +85,25 @@ For advanced use cases, an authentik admin can use regular expressions (regex) i
 Using back-channel logout (a server-to-server notification mechanism) allows an identity provider to notify connected OAuth2/OpenID clients whenever a user's session is terminated.
 
 For more information, see our [OAuth2/OpenID Connect front-channel and back-channel logout](./frontchannel_and_backchannel_logout.mdx) documentation.
+
+## Issuer mode
+
+The **Issuer mode** setting (under **Advanced protocol settings**) controls the value that authentik uses for the `iss` (issuer) claim in the tokens it signs, and for the `issuer` field in the provider's [OpenID Connect discovery document](#oauth-20-endpoints-and-bindings).
+
+| Mode (UI label)                                                                   | `iss` value                                                   |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Each provider has a different issuer, based on the application slug** (default) | `https://authentik.company/application/o/<application_slug>/` |
+| **Same identifier is used for all providers**                                     | `https://authentik.company/`                                  |
+
+By default, authentik uses per-provider mode: every provider has a unique issuer derived from its application slug. This is the recommended setting, and matches how the discovery and JWKS endpoints are structured, since both are served under the per-application `/application/o/<application_slug>/` path.
+
+### Global issuer mode
+
+Setting the issuer mode to **Same identifier is used for all providers** (referred to internally as **global** mode) makes every OAuth 2.0 provider configured with this mode share the same issuer: the root URL of the instance (`https://authentik.company/`).
+
+:::info Well-known location
+Global issuer mode still serves the discovery document at `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`, not at the root issuer URL.
+:::
 
 ## OAuth 2.0 flows and grant types
 
@@ -108,7 +127,7 @@ The flows and grant types used in this case are those used for a typical authori
 
 #### Authorization code
 
-The authorization code is for environments with both a Client and an application server, where the back and forth happens between the client and an app server (the logic lives on app server). The RP needs to authorize itself to the OP. Client ID (public, identifies which app is talking to it) and client secret (the password) that the RP uses to authenticate.
+The authorization code is for environments with both a client and an application server, where the back and forth happens between the client and an app server (the logic lives on app server). The RP needs to authorize itself to the OP. Client ID (public, identifies which app is talking to it) and client secret (the password) that the RP uses to authenticate.
 
 If you configure authentik to use "Offline access" then during the initial auth the OP sends two tokens, an access token (short-lived, hours, can be customized) and a refresh token (typically longer validity, days or infinite). The RP (the app) saves both tokens. When the access token is about to expire, the RP sends the saved refresh token back to the OP, and requests a new access token. When the refresh token itself is about to expire, the RP can also ask for a new refresh token. This can all happen without user interaction if you configured the offline access.
 
@@ -124,11 +143,11 @@ The authorization code grant type is used to convert an authorization code to an
 The OAuth 2.0 [Security Best Current Practice document](https://tools.ietf.org/html/draft-ietf-oauth-security-topics) recommends against using the Implicit flow entirely, and OAuth 2.0 for Browser-Based Apps describes the technique of using the authorization code flow with PKCE instead. ([source](https://oauth.net/2/grant-types/implicit/))
 :::
 
-This flow is for more modern single page-applications, or ones you download, that are all client-side (all JS, no backend logic, etc) and have no server to make tokens. Because the secret cannot be stored on the client machine, the implicit flow is required in these architectures. With the implicit flow, the flow skips the second part of the two requests seen in the authorization flow; after the initial author request, the implicit flow receives a token, and then with cryptocracy and with PKCE, it can validate that it is the correct client, and that is safe to send a token. The RP (still called that with this implicit flow) can use cryptography to validate the token.
+This flow is intended for modern single‑page applications or downloaded apps that run entirely on the client side (all JavaScript, no backend logic) and have no server that can safely store secrets or exchange tokens. Because the client secret cannot be kept secure on the user’s device, the implicit flow is required in these architectures. With the implicit flow, the application skips the second request in the authorization code flow: after the initial authorization request, the client receives a token directly. Using cryptographic checks such as PKCE, the client can verify that it is the intended recipient and that it is safe to use the token. The RP can then use cryptography to validate the token.
 
 #### Hybrid
 
-The Hybrid Flow is an OpenID Connect flow that incorporates traits of both the Implicit flow and the Authorization Code flow. It provides an application instant access to an ID token while ensuring secure and safe retrieval of access tokens and refresh tokens. This can be useful in situations where the application needs to quickly access information about the user, while in the background doing further processing to get additional tokens before gaining access to additional resources.
+The Hybrid flow is an OpenID Connect flow that incorporates traits of both the Implicit flow and the Authorization Code flow. It provides an application instant access to an ID token while ensuring secure and safe retrieval of access tokens and refresh tokens. This can be useful in situations where the application needs to quickly access information about the user, while in the background doing further processing to get additional tokens before gaining access to additional resources.
 
 ### 2. Client credentials
 
