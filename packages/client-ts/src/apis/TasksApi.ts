@@ -12,28 +12,22 @@
  * Do not edit the class manually.
  */
 
-import type {
-    GlobalTaskStatus,
-    PaginatedScheduleList,
-    PaginatedTaskList,
-    PatchedScheduleRequest,
-    Schedule,
-    ScheduleRequest,
-    Task,
-    TaskAggregatedStatusEnum,
-    TaskStatusEnum,
-    Worker,
-} from "../models/index";
+import { type GlobalTaskStatus, GlobalTaskStatusFromJSON } from "../models/GlobalTaskStatus";
 import {
-    GlobalTaskStatusFromJSON,
+    type PaginatedScheduleList,
     PaginatedScheduleListFromJSON,
-    PaginatedTaskListFromJSON,
+} from "../models/PaginatedScheduleList";
+import { type PaginatedTaskList, PaginatedTaskListFromJSON } from "../models/PaginatedTaskList";
+import {
+    type PatchedScheduleRequest,
     PatchedScheduleRequestToJSON,
-    ScheduleFromJSON,
-    ScheduleRequestToJSON,
-    TaskFromJSON,
-    WorkerFromJSON,
-} from "../models/index";
+} from "../models/PatchedScheduleRequest";
+import { type Schedule, ScheduleFromJSON } from "../models/Schedule";
+import { type ScheduleRequest, ScheduleRequestToJSON } from "../models/ScheduleRequest";
+import { type Task, TaskFromJSON } from "../models/Task";
+import { type TaskAggregatedStatusEnum } from "../models/TaskAggregatedStatusEnum";
+import { type TaskStatusEnum } from "../models/TaskStatusEnum";
+import { type Worker, WorkerFromJSON } from "../models/Worker";
 import * as runtime from "../runtime";
 
 export interface TasksSchedulesListRequest {
@@ -218,7 +212,7 @@ export class TasksApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/tasks/schedules/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -281,7 +275,7 @@ export class TasksApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/tasks/schedules/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -340,7 +334,7 @@ export class TasksApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/tasks/schedules/{id}/send/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -409,7 +403,7 @@ export class TasksApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/tasks/schedules/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -573,7 +567,7 @@ export class TasksApi extends runtime.BaseAPI {
 
         let urlPath = `/tasks/tasks/{message_id}/`;
         urlPath = urlPath.replace(
-            `{${"message_id"}}`,
+            "{message_id}",
             encodeURIComponent(String(requestParameters["messageId"])),
         );
 
@@ -635,7 +629,7 @@ export class TasksApi extends runtime.BaseAPI {
 
         let urlPath = `/tasks/tasks/{message_id}/retry/`;
         urlPath = urlPath.replace(
-            `{${"message_id"}}`,
+            "{message_id}",
             encodeURIComponent(String(requestParameters["messageId"])),
         );
 
