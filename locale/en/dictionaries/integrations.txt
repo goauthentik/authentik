@@ -25,6 +25,7 @@ Gravitee
 grommunio
 HACS
 Homarr
+Icinga
 Informatique
 Jellyseerr
 Kimai
@@ -36,6 +37,7 @@ Kubeconfig
 Mautic
 Mobilizon
 myabsorb
+Nexterm
 Observium
 Ofair
 Ollama

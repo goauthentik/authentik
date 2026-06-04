@@ -277,7 +277,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-form-group
                 label=${msg("Flags")}
                 description=${msg(
-                    "Flags allow you to enable new functionality and behaviour in authentik early.",
+                    "Flags allow you to enable new functionality and behavior in authentik early.",
                 )}
             >
                 <div class="pf-c-form">

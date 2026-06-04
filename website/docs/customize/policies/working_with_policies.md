@@ -67,7 +67,7 @@ When you bind a policy to a stage binding, this task is done per flow, and does 
 5. Click the arrow (**>**) beside the name of the stage to which you want to bind a policy. The details for that stage are displayed.
 6. Either create and bind a new policy, or bind an existing policy, group, or user.
 
-If the policy depends on request data that is only known after the user has interacted with the flow, configure the stage binding to **Evaluate when stage is run** instead of only at planning time.
+If the policy depends on request data that is only known after the user has interacted with the flow, configure the stage binding to **Evaluate when stage is run**. For more information, see [Planning and stage policies](../../add-secure-apps/flows-stages/flow/planner.md#planning-and-stage-policies).
 
 ### Bind a policy to an application
 

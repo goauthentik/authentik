@@ -69,7 +69,7 @@ jobs:
         name: Generate app token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
+          client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
       - id: get-user-id
         name: Get GitHub app user ID
@@ -121,7 +121,7 @@ jobs:
         name: Generate app token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
+          client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
           repositories: helm
       - id: get-user-id
@@ -163,7 +163,7 @@ jobs:
         name: Generate app token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
+          client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
           repositories: version
       - id: get-user-id
