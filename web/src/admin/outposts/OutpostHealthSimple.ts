@@ -52,7 +52,7 @@ export class OutpostHealthSimpleElement extends AKElement {
             return html`<ak-spinner></ak-spinner>`;
         }
         if (!this.outpostHealths || this.outpostHealths.length === 0) {
-            return html`<ak-label color=${PFColor.Grey}>${msg("Not available")}</ak-label>`;
+            return html`<ak-label color=${PFColor.Gray}>${msg("Not available")}</ak-label>`;
         }
         const outdatedOutposts = this.outpostHealths.filter((h) => h.versionOutdated);
         if (outdatedOutposts.length > 0) {

@@ -12,110 +12,117 @@
  * Do not edit the class manually.
  */
 
-import type {
-    Application,
-    ApplicationEntitlement,
-    ApplicationEntitlementRequest,
-    ApplicationRequest,
-    AuthenticatedSession,
-    Brand,
-    BrandRequest,
-    BulkDeleteSessionResponse,
-    CurrentBrand,
-    DataExport,
-    Group,
-    GroupRequest,
-    ImpersonationRequest,
-    IntentEnum,
-    Link,
-    PaginatedApplicationEntitlementList,
-    PaginatedApplicationList,
-    PaginatedAuthenticatedSessionList,
-    PaginatedBrandList,
-    PaginatedGroupList,
-    PaginatedTokenList,
-    PaginatedUserConsentList,
-    PaginatedUserList,
-    PatchedApplicationEntitlementRequest,
-    PatchedApplicationRequest,
-    PatchedBrandRequest,
-    PatchedGroupRequest,
-    PatchedTokenRequest,
-    PatchedUserRequest,
-    PolicyTestResult,
-    SessionUser,
-    Token,
-    TokenRequest,
-    TokenSetKeyRequest,
-    TokenView,
-    TransactionApplicationRequest,
-    TransactionApplicationResponse,
-    UsedBy,
-    User,
-    UserAccountLockdownRequest,
-    UserAccountRequest,
-    UserConsent,
-    UserPasswordHashSetRequest,
-    UserPasswordSetRequest,
-    UserPath,
-    UserRecoveryEmailRequest,
-    UserRecoveryLinkRequest,
-    UserRequest,
-    UserServiceAccountRequest,
-    UserServiceAccountResponse,
-    UserTypeEnum,
-} from "../models/index";
+import { type Application, ApplicationFromJSON } from "../models/Application";
 import {
+    type ApplicationEntitlement,
     ApplicationEntitlementFromJSON,
+} from "../models/ApplicationEntitlement";
+import {
+    type ApplicationEntitlementRequest,
     ApplicationEntitlementRequestToJSON,
-    ApplicationFromJSON,
-    ApplicationRequestToJSON,
+} from "../models/ApplicationEntitlementRequest";
+import { type ApplicationRequest, ApplicationRequestToJSON } from "../models/ApplicationRequest";
+import {
+    type AuthenticatedSession,
     AuthenticatedSessionFromJSON,
-    BrandFromJSON,
-    BrandRequestToJSON,
+} from "../models/AuthenticatedSession";
+import { type Brand, BrandFromJSON } from "../models/Brand";
+import { type BrandRequest, BrandRequestToJSON } from "../models/BrandRequest";
+import {
+    type BulkDeleteSessionResponse,
     BulkDeleteSessionResponseFromJSON,
-    CurrentBrandFromJSON,
-    DataExportFromJSON,
-    GroupFromJSON,
-    GroupRequestToJSON,
+} from "../models/BulkDeleteSessionResponse";
+import { type CurrentBrand, CurrentBrandFromJSON } from "../models/CurrentBrand";
+import { type DataExport, DataExportFromJSON } from "../models/DataExport";
+import { type Group, GroupFromJSON } from "../models/Group";
+import { type GroupRequest, GroupRequestToJSON } from "../models/GroupRequest";
+import {
+    type ImpersonationRequest,
     ImpersonationRequestToJSON,
-    LinkFromJSON,
+} from "../models/ImpersonationRequest";
+import { type IntentEnum } from "../models/IntentEnum";
+import { type Link, LinkFromJSON } from "../models/Link";
+import {
+    type PaginatedApplicationEntitlementList,
     PaginatedApplicationEntitlementListFromJSON,
+} from "../models/PaginatedApplicationEntitlementList";
+import {
+    type PaginatedApplicationList,
     PaginatedApplicationListFromJSON,
+} from "../models/PaginatedApplicationList";
+import {
+    type PaginatedAuthenticatedSessionList,
     PaginatedAuthenticatedSessionListFromJSON,
-    PaginatedBrandListFromJSON,
-    PaginatedGroupListFromJSON,
-    PaginatedTokenListFromJSON,
+} from "../models/PaginatedAuthenticatedSessionList";
+import { type PaginatedBrandList, PaginatedBrandListFromJSON } from "../models/PaginatedBrandList";
+import { type PaginatedGroupList, PaginatedGroupListFromJSON } from "../models/PaginatedGroupList";
+import { type PaginatedTokenList, PaginatedTokenListFromJSON } from "../models/PaginatedTokenList";
+import {
+    type PaginatedUserConsentList,
     PaginatedUserConsentListFromJSON,
-    PaginatedUserListFromJSON,
+} from "../models/PaginatedUserConsentList";
+import { type PaginatedUserList, PaginatedUserListFromJSON } from "../models/PaginatedUserList";
+import {
+    type PatchedApplicationEntitlementRequest,
     PatchedApplicationEntitlementRequestToJSON,
+} from "../models/PatchedApplicationEntitlementRequest";
+import {
+    type PatchedApplicationRequest,
     PatchedApplicationRequestToJSON,
-    PatchedBrandRequestToJSON,
-    PatchedGroupRequestToJSON,
-    PatchedTokenRequestToJSON,
-    PatchedUserRequestToJSON,
-    PolicyTestResultFromJSON,
-    SessionUserFromJSON,
-    TokenFromJSON,
-    TokenRequestToJSON,
-    TokenSetKeyRequestToJSON,
-    TokenViewFromJSON,
+} from "../models/PatchedApplicationRequest";
+import { type PatchedBrandRequest, PatchedBrandRequestToJSON } from "../models/PatchedBrandRequest";
+import { type PatchedGroupRequest, PatchedGroupRequestToJSON } from "../models/PatchedGroupRequest";
+import { type PatchedTokenRequest, PatchedTokenRequestToJSON } from "../models/PatchedTokenRequest";
+import { type PatchedUserRequest, PatchedUserRequestToJSON } from "../models/PatchedUserRequest";
+import { type PolicyTestResult, PolicyTestResultFromJSON } from "../models/PolicyTestResult";
+import { type SessionUser, SessionUserFromJSON } from "../models/SessionUser";
+import { type Token, TokenFromJSON } from "../models/Token";
+import { type TokenRequest, TokenRequestToJSON } from "../models/TokenRequest";
+import { type TokenSetKeyRequest, TokenSetKeyRequestToJSON } from "../models/TokenSetKeyRequest";
+import { type TokenView, TokenViewFromJSON } from "../models/TokenView";
+import {
+    type TransactionApplicationRequest,
     TransactionApplicationRequestToJSON,
+} from "../models/TransactionApplicationRequest";
+import {
+    type TransactionApplicationResponse,
     TransactionApplicationResponseFromJSON,
-    UsedByFromJSON,
+} from "../models/TransactionApplicationResponse";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+import { type User, UserFromJSON } from "../models/User";
+import {
+    type UserAccountLockdownRequest,
     UserAccountLockdownRequestToJSON,
-    UserAccountRequestToJSON,
-    UserConsentFromJSON,
-    UserFromJSON,
+} from "../models/UserAccountLockdownRequest";
+import { type UserAccountRequest, UserAccountRequestToJSON } from "../models/UserAccountRequest";
+import { type UserConsent, UserConsentFromJSON } from "../models/UserConsent";
+import {
+    type UserPasswordHashSetRequest,
     UserPasswordHashSetRequestToJSON,
+} from "../models/UserPasswordHashSetRequest";
+import {
+    type UserPasswordSetRequest,
     UserPasswordSetRequestToJSON,
-    UserPathFromJSON,
+} from "../models/UserPasswordSetRequest";
+import { type UserPath, UserPathFromJSON } from "../models/UserPath";
+import {
+    type UserRecoveryEmailRequest,
     UserRecoveryEmailRequestToJSON,
+} from "../models/UserRecoveryEmailRequest";
+import {
+    type UserRecoveryLinkRequest,
     UserRecoveryLinkRequestToJSON,
-    UserRequestToJSON,
+} from "../models/UserRecoveryLinkRequest";
+import { type UserRequest, UserRequestToJSON } from "../models/UserRequest";
+import {
+    type UserServiceAccountRequest,
     UserServiceAccountRequestToJSON,
+} from "../models/UserServiceAccountRequest";
+import {
+    type UserServiceAccountResponse,
     UserServiceAccountResponseFromJSON,
-} from "../models/index";
+} from "../models/UserServiceAccountResponse";
+import { type UserTypeEnum } from "../models/UserTypeEnum";
 import * as runtime from "../runtime";
 
 export interface CoreApplicationEntitlementsCreateRequest {
@@ -635,7 +642,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/application_entitlements/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -788,7 +795,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/application_entitlements/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -861,7 +868,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/application_entitlements/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -940,7 +947,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/application_entitlements/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -1013,7 +1020,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/application_entitlements/{pbm_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -1084,10 +1091,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/applications/{slug}/check_access/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1217,10 +1221,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/applications/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1389,10 +1390,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/applications/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1458,10 +1456,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/applications/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1531,10 +1526,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/applications/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1596,10 +1588,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/applications/{slug}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1730,10 +1719,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/authenticated_sessions/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1881,10 +1867,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/authenticated_sessions/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -1951,10 +1934,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/authenticated_sessions/{uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2134,7 +2114,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/brands/{brand_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"brand_uuid"}}`,
+            "{brand_uuid}",
             encodeURIComponent(String(requestParameters["brandUuid"])),
         );
 
@@ -2339,7 +2319,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/brands/{brand_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"brand_uuid"}}`,
+            "{brand_uuid}",
             encodeURIComponent(String(requestParameters["brandUuid"])),
         );
 
@@ -2404,7 +2384,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/brands/{brand_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"brand_uuid"}}`,
+            "{brand_uuid}",
             encodeURIComponent(String(requestParameters["brandUuid"])),
         );
 
@@ -2477,7 +2457,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/brands/{brand_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"brand_uuid"}}`,
+            "{brand_uuid}",
             encodeURIComponent(String(requestParameters["brandUuid"])),
         );
 
@@ -2542,7 +2522,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/brands/{brand_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"brand_uuid"}}`,
+            "{brand_uuid}",
             encodeURIComponent(String(requestParameters["brandUuid"])),
         );
 
@@ -2615,7 +2595,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/groups/{group_uuid}/add_user/`;
         urlPath = urlPath.replace(
-            `{${"group_uuid"}}`,
+            "{group_uuid}",
             encodeURIComponent(String(requestParameters["groupUuid"])),
         );
 
@@ -2742,7 +2722,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/groups/{group_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"group_uuid"}}`,
+            "{group_uuid}",
             encodeURIComponent(String(requestParameters["groupUuid"])),
         );
 
@@ -2914,7 +2894,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/groups/{group_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"group_uuid"}}`,
+            "{group_uuid}",
             encodeURIComponent(String(requestParameters["groupUuid"])),
         );
 
@@ -2988,7 +2968,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/groups/{group_uuid}/remove_user/`;
         urlPath = urlPath.replace(
-            `{${"group_uuid"}}`,
+            "{group_uuid}",
             encodeURIComponent(String(requestParameters["groupUuid"])),
         );
 
@@ -3068,7 +3048,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/groups/{group_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"group_uuid"}}`,
+            "{group_uuid}",
             encodeURIComponent(String(requestParameters["groupUuid"])),
         );
 
@@ -3141,7 +3121,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/groups/{group_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"group_uuid"}}`,
+            "{group_uuid}",
             encodeURIComponent(String(requestParameters["groupUuid"])),
         );
 
@@ -3206,7 +3186,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/groups/{group_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"group_uuid"}}`,
+            "{group_uuid}",
             encodeURIComponent(String(requestParameters["groupUuid"])),
         );
 
@@ -3333,7 +3313,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/tokens/{identifier}/`;
         urlPath = urlPath.replace(
-            `{${"identifier"}}`,
+            "{identifier}",
             encodeURIComponent(String(requestParameters["identifier"])),
         );
 
@@ -3497,7 +3477,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/tokens/{identifier}/`;
         urlPath = urlPath.replace(
-            `{${"identifier"}}`,
+            "{identifier}",
             encodeURIComponent(String(requestParameters["identifier"])),
         );
 
@@ -3562,7 +3542,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/tokens/{identifier}/`;
         urlPath = urlPath.replace(
-            `{${"identifier"}}`,
+            "{identifier}",
             encodeURIComponent(String(requestParameters["identifier"])),
         );
 
@@ -3635,7 +3615,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/tokens/{identifier}/set_key/`;
         urlPath = urlPath.replace(
-            `{${"identifier"}}`,
+            "{identifier}",
             encodeURIComponent(String(requestParameters["identifier"])),
         );
 
@@ -3708,7 +3688,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/tokens/{identifier}/`;
         urlPath = urlPath.replace(
-            `{${"identifier"}}`,
+            "{identifier}",
             encodeURIComponent(String(requestParameters["identifier"])),
         );
 
@@ -3773,7 +3753,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/tokens/{identifier}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"identifier"}}`,
+            "{identifier}",
             encodeURIComponent(String(requestParameters["identifier"])),
         );
 
@@ -3837,7 +3817,7 @@ export class CoreApi extends runtime.BaseAPI {
 
         let urlPath = `/core/tokens/{identifier}/view_key/`;
         urlPath = urlPath.replace(
-            `{${"identifier"}}`,
+            "{identifier}",
             encodeURIComponent(String(requestParameters["identifier"])),
         );
 
@@ -3971,7 +3951,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/user_consent/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4110,7 +4090,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/user_consent/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4171,7 +4151,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/user_consent/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4355,7 +4335,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4595,7 +4575,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/users/{id}/impersonate/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4944,7 +4924,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -5065,7 +5045,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/users/{id}/recovery/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -5136,7 +5116,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/users/{id}/recovery_email/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -5198,7 +5178,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -5337,7 +5317,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/users/{id}/set_password/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -5407,7 +5387,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/users/{id}/set_password_hash/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -5478,7 +5458,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -5540,7 +5520,7 @@ export class CoreApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/core/users/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,

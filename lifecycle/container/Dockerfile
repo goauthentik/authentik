@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:1e738cb88890a15c71880323fbc35a739b7bbc703d72e8bfd1613128f8182f78 AS node-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:aa27a5fbf5acb298116a38133794f080406c6f8dfe52e2e2836bb55dc7cae8f0 AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -116,9 +116,9 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 RUN cat /root/.rustup/settings.toml
 
 # Stage: Download uv
-FROM ghcr.io/astral-sh/uv:0.11.16@sha256:440fd6477af86a2f1b38080c539f1672cd22acb1b1a47e321dba5158ab08864d AS uv
+FROM ghcr.io/astral-sh/uv:0.11.19@sha256:b46b03ddfcfbf8f547af7e9eaefdf8a39c8cebcba7c98858d3162bd28cf536f6 AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.5-slim-trixie-fips@sha256:85dbb3afa319d0ab9432d8e4eb01517f85a294e4ec996b5163fe491349976830 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.5-slim-trixie-fips@sha256:b332680f098882472bc13d5452b7b348bf8e7ef4400588d85aca41acde77c1f4 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
