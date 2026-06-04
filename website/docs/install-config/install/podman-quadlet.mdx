@@ -113,6 +113,10 @@ done
 </TabItem>
 </Tabs>
 
+:::note SELinux
+On SELinux-enabled hosts, the units label bind mounts with `:Z`, including the Podman socket mount. If that does not fit your policy, edit `authentik-worker.container` before starting authentik.
+:::
+
 The units create one Podman pod named `authentik` with three containers: PostgreSQL, server, and worker. Containers in the pod share a network namespace, so the worker listens on `:9001` for HTTP and `:9301` for metrics to avoid port conflicts with the server.
 
 The worker runs as UID 0 inside the container. This lets it read the root-owned socket in rootful mode; in rootless mode, container UID 0 maps back to the calling user.
@@ -203,12 +207,6 @@ podman auto-update
 For scheduled updates, use Podman's `podman-auto-update.timer`.
 
 To upgrade to a new authentik release, download the current Quadlet units again or edit the `Image=` line in `authentik-server.container` and `authentik-worker.container`. Then reload systemd and restart the services.
-
-## SELinux
-
-On SELinux-enabled distributions such as RHEL, Rocky Linux, and Fedora, every `Volume=` line uses the `:Z` suffix. This gives the host path a private container label.
-
-The Podman socket bind mount also uses `:Z`. To avoid relabeling the system socket, use `:z` (shared label) or drop the suffix and add an explicit policy.
 
 ## Use a Podman socket on earlier authentik versions
 
