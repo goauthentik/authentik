@@ -12,25 +12,26 @@
  * Do not edit the class manually.
  */
 
-import type {
-    CertificateData,
-    CertificateGenerationRequest,
-    CertificateKeyPair,
-    CertificateKeyPairRequest,
-    KeyTypeEnum,
-    PaginatedCertificateKeyPairList,
-    PatchedCertificateKeyPairRequest,
-    UsedBy,
-} from "../models/index";
+import { type CertificateData, CertificateDataFromJSON } from "../models/CertificateData";
 import {
-    CertificateDataFromJSON,
+    type CertificateGenerationRequest,
     CertificateGenerationRequestToJSON,
-    CertificateKeyPairFromJSON,
+} from "../models/CertificateGenerationRequest";
+import { type CertificateKeyPair, CertificateKeyPairFromJSON } from "../models/CertificateKeyPair";
+import {
+    type CertificateKeyPairRequest,
     CertificateKeyPairRequestToJSON,
+} from "../models/CertificateKeyPairRequest";
+import { type KeyTypeEnum } from "../models/KeyTypeEnum";
+import {
+    type PaginatedCertificateKeyPairList,
     PaginatedCertificateKeyPairListFromJSON,
+} from "../models/PaginatedCertificateKeyPairList";
+import {
+    type PatchedCertificateKeyPairRequest,
     PatchedCertificateKeyPairRequestToJSON,
-    UsedByFromJSON,
-} from "../models/index";
+} from "../models/PatchedCertificateKeyPairRequest";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface CryptoCertificatekeypairsCreateRequest {
@@ -185,7 +186,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"kp_uuid"}}`,
+            "{kp_uuid}",
             encodeURIComponent(String(requestParameters["kpUuid"])),
         );
 
@@ -413,7 +414,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"kp_uuid"}}`,
+            "{kp_uuid}",
             encodeURIComponent(String(requestParameters["kpUuid"])),
         );
 
@@ -486,7 +487,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"kp_uuid"}}`,
+            "{kp_uuid}",
             encodeURIComponent(String(requestParameters["kpUuid"])),
         );
 
@@ -565,7 +566,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"kp_uuid"}}`,
+            "{kp_uuid}",
             encodeURIComponent(String(requestParameters["kpUuid"])),
         );
 
@@ -636,7 +637,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"kp_uuid"}}`,
+            "{kp_uuid}",
             encodeURIComponent(String(requestParameters["kpUuid"])),
         );
 
@@ -708,7 +709,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/view_certificate/`;
         urlPath = urlPath.replace(
-            `{${"kp_uuid"}}`,
+            "{kp_uuid}",
             encodeURIComponent(String(requestParameters["kpUuid"])),
         );
 
@@ -784,7 +785,7 @@ export class CryptoApi extends runtime.BaseAPI {
 
         let urlPath = `/crypto/certificatekeypairs/{kp_uuid}/view_private_key/`;
         urlPath = urlPath.replace(
-            `{${"kp_uuid"}}`,
+            "{kp_uuid}",
             encodeURIComponent(String(requestParameters["kpUuid"])),
         );
 
