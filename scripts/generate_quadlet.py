@@ -102,7 +102,7 @@ Environment=AUTHENTIK_POSTGRESQL__NAME=authentik
 Environment=AUTHENTIK_POSTGRESQL__USER=authentik
 Volume={data_dir}/data:/data:Z
 Volume={data_dir}/custom-templates:/templates:Z
-PodmanArgs=--shm-size=512m
+ShmSize=512m
 
 [Service]
 Restart=always
@@ -135,7 +135,7 @@ Volume={podman_sock_dir}/podman/podman.sock:/run/podman/podman.sock:Z
 Volume={data_dir}/data:/data:Z
 Volume={data_dir}/certs:/certs:Z
 Volume={data_dir}/custom-templates:/templates:Z
-PodmanArgs=--shm-size=512m
+ShmSize=512m
 
 [Service]
 Restart=always

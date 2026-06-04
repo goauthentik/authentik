@@ -15,7 +15,7 @@ Environment=AUTHENTIK_POSTGRESQL__NAME=authentik
 Environment=AUTHENTIK_POSTGRESQL__USER=authentik
 Volume=%h/.local/share/authentik/data:/data:Z
 Volume=%h/.local/share/authentik/custom-templates:/templates:Z
-PodmanArgs=--shm-size=512m
+ShmSize=512m
 
 [Service]
 Restart=always

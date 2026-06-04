@@ -20,7 +20,7 @@ Volume=%t/podman/podman.sock:/run/podman/podman.sock:Z
 Volume=%h/.local/share/authentik/data:/data:Z
 Volume=%h/.local/share/authentik/certs:/certs:Z
 Volume=%h/.local/share/authentik/custom-templates:/templates:Z
-PodmanArgs=--shm-size=512m
+ShmSize=512m
 
 [Service]
 Restart=always
