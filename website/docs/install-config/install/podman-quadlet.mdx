@@ -169,20 +169,15 @@ journalctl --user -u authentik-server.service -u authentik-worker.service -u aut
 
 To start the initial setup, navigate to `http://<your server's IP or hostname>:9000`.
 
+:::note Rootless ports
+Rootless Podman cannot bind ports below 1024 by default. Use the published ports shown in this guide, or place a reverse proxy in front of authentik.
+:::
+
 You are then prompted to set a password for the `akadmin` user (the default user).
 
 :::info Issues with initial setup
 If you run into issues, refer to our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
 :::
-
-## Privileged ports (below 1024)
-
-Rootless containers cannot bind ports below 1024 by default. Common options include:
-
-- **Reverse proxy or load balancer**: terminate TLS at nginx, Caddy, Traefik, or HAProxy and forward to authentik on the published ports.
-- **Firewall port-forwarding**: redirect `80` to `9000` and `443` to `9443` at the host firewall (`iptables`, `nftables`, or `firewalld`).
-- **systemd socket activation**: have systemd bind the privileged socket and pass it to the pod.
-- **Lower the unprivileged port floor**: `sudo sysctl net.ipv4.ip_unprivileged_port_start=80`, persisted in `/etc/sysctl.d/`. This changes the limit for the whole system; see the [Rootless Privileged Ports discussion](https://tangentsoft.com/podman/wiki?name=Rootless+Privileged+Ports&p) for the trade-offs.
 
 ## Upgrading
 
