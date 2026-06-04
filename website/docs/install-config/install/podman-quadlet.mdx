@@ -76,9 +76,7 @@ loginctl enable-linger "$USER"
 
 ## Download the Quadlet units
 
-Download the units from `docs.goauthentik.io/quadlet/`. They are generated from [`lifecycle/quadlet/`](https://github.com/goauthentik/authentik/tree/main/lifecycle/quadlet) and pin the same authentik image tag as the [Docker Compose file](./docker-compose.mdx).
-
-Rootless units are published under `/quadlet/rootless/`. They use `%h` for the home directory and `%t` for `$XDG_RUNTIME_DIR`.
+Download the Quadlet units for the mode you chose:
 
 <Tabs groupId="install-mode">
 <TabItem value="rootful" label="Rootful" default>
