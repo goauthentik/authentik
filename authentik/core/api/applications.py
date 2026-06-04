@@ -121,6 +121,7 @@ class ApplicationSerializer(ModelSerializer):
             "policy_engine_mode",
             "group",
             "meta_hide",
+            "pbm_uuid",
         ]
         extra_kwargs = {
             "backchannel_providers": {"required": False},

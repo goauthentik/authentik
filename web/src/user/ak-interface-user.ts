@@ -1,47 +1,48 @@
-import "#components/ak-nav-buttons";
-import "#elements/banner/EnterpriseStatusBanner";
-import "#components/notifications/APIDrawer";
-import "#components/notifications/NotificationDrawer";
-import "#elements/router/RouterOutlet";
+import '#components/ak-nav-buttons';
+import '#elements/banner/EnterpriseStatusBanner';
+import '#components/notifications/APIDrawer';
+import '#components/notifications/NotificationDrawer';
+import '#elements/router/RouterOutlet';
+import '#user/nav-tabs';
 
-import { globalAK } from "#common/global";
-import { configureSentry } from "#common/sentry/index";
-import { isGuest } from "#common/users";
-import { WebsocketClient } from "#common/ws/WebSocketClient";
+import { globalAK } from '#common/global';
+import { configureSentry } from '#common/sentry/index';
+import { isGuest } from '#common/users';
+import { WebsocketClient } from '#common/ws/WebSocketClient';
 
-import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
-import { listen } from "#elements/decorators/listen";
-import { WithBrandConfig } from "#elements/mixins/branding";
-import { canAccessAdmin, WithSession } from "#elements/mixins/session";
-import { ifPresent } from "#elements/utils/attributes";
-import { ThemedImage } from "#elements/utils/images";
+import { AuthenticatedInterface } from '#elements/AuthenticatedInterface';
+import { listen } from '#elements/decorators/listen';
+import { WithBrandConfig } from '#elements/mixins/branding';
+import { canAccessAdmin, WithSession } from '#elements/mixins/session';
+import { ifPresent } from '#elements/utils/attributes';
+import { ThemedImage } from '#elements/utils/images';
 
-import { AKDrawerChangeEvent } from "#components/notifications/events";
+import { AKDrawerChangeEvent } from '#components/notifications/events';
 import {
-    DrawerState,
-    persistDrawerParams,
-    readDrawerParams,
-    renderNotificationDrawerPanel,
-} from "#components/notifications/utils";
+  DrawerState,
+  persistDrawerParams,
+  readDrawerParams,
+  renderNotificationDrawerPanel,
+} from '#components/notifications/utils';
 
-import Styles from "#user/ak-interface-user.css";
-import { ROUTES } from "#user/Routes";
+import Styles from '#user/ak-interface-user.css';
+import { ROUTES } from '#user/Routes';
 
-import { ConsoleLogger } from "#logger/browser";
+import { ConsoleLogger } from '#logger/browser';
 
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { guard } from "lit/directives/guard.js";
+import { msg } from '@lit/localize';
+import { html, nothing } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { guard } from 'lit/directives/guard.js';
 
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
-import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
-import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFAvatar from '@patternfly/patternfly/components/Avatar/avatar.css';
+import PFBrand from '@patternfly/patternfly/components/Brand/brand.css';
+import PFButton from '@patternfly/patternfly/components/Button/button.css';
+import PFDrawer from '@patternfly/patternfly/components/Drawer/drawer.css';
+import PFDropdown from '@patternfly/patternfly/components/Dropdown/dropdown.css';
+import PFNotificationBadge from '@patternfly/patternfly/components/NotificationBadge/notification-badge.css';
+import PFPage from '@patternfly/patternfly/components/Page/page.css';
+import PFDisplay from '@patternfly/patternfly/utilities/Display/display.css';
 
 @customElement("ak-interface-user")
 class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface)) {
@@ -156,6 +157,13 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                             })}
                         </a>
                     </div>
+                    <ak-nav-tabs
+                        class="pf-c-page__header-nav"
+                        .items=${[
+                            { label: msg("Applications"), link: "/library" },
+                            { label: msg("Discover"), link: "/discover" },
+                        ]}
+                    ></ak-nav-tabs>
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
                 </header>
                 <div class="pf-c-page__drawer">

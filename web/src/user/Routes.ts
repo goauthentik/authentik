@@ -1,4 +1,5 @@
 import "#user/LibraryPage/ak-library";
+import "#user/DiscoverPage";
 
 import { Route } from "#elements/router/Route";
 
@@ -9,6 +10,7 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/$")).redirect("/library"),
     new Route(new RegExp("^#.*")).redirect("/library"),
     new Route(new RegExp("^/library$"), async () => html`<ak-library></ak-library>`),
+    new Route(new RegExp("^/discover$"), async () => html`<ak-discovery></ak-discovery>`),
     new Route(new RegExp("^/settings$"), async () => {
         await import("#user/user-settings/UserSettingsPage");
         return html`<ak-user-settings></ak-user-settings>`;

@@ -34593,12 +34593,17 @@ components:
         meta_hide:
           type: boolean
           description: Hide this application from the user's My applications page.
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
       required:
       - backchannel_providers_obj
       - launch_url
       - meta_icon_themed_urls
       - meta_icon_url
       - name
+      - pbm_uuid
       - pk
       - provider_obj
       - slug

@@ -14,7 +14,8 @@ class GrantRequestFinalStageView(StageView):
         pbms = self.executor.plan.context.get(PLAN_CONTEXT_GRANT_REQUESTED_PBMS)
         with transaction.atomic():
             req = GrantRequest(
-                created_by=user, data=self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
+                created_by=user, data=self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}),
+                expiring=True,
             )
             for pbm in pbms:
                 GrantRequestTarget.objects.create(

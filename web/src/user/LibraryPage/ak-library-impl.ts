@@ -431,7 +431,7 @@ export class LibraryPage extends WithSession(AKElement) {
     protected override render() {
         return html`<div class="pf-c-page__main">
             <div class="pf-c-page__header pf-c-content">
-                <h1 class="pf-c-page__title">${msg("Application Dashboard")}</h1>
+                <h1 class="pf-c-page__title">${msg(str`Hello ${this.currentUser?.name}!`)}</h1>
                 ${this.searchEnabled ? this.renderSearch() : nothing}
             </div>
             <main
