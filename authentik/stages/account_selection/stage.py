@@ -1,5 +1,6 @@
 """authentik account selection stage."""
 
+from typing import Any, cast
 from urllib.parse import urlencode
 
 from django.http import HttpRequest, HttpResponse
@@ -27,7 +28,7 @@ from authentik.core.account_selection import (
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, AuthenticatedSession, User
 from authentik.flows.challenge import Challenge, ChallengeResponse
-from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_REDIRECT
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_REDIRECT, FlowPlan
 from authentik.flows.stage import ChallengeStageView, StageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
 
@@ -68,6 +69,11 @@ class AccountSelectionStageView(ChallengeStageView):
 
     response_class = AccountSelectionChallengeResponse
 
+    @property
+    def plan(self) -> FlowPlan:
+        """Return the active flow plan."""
+        return cast(FlowPlan, self.executor.plan)
+
     def get_account_users(self, hint: str = "") -> list[User]:
         """Get known users for this browser session in display order."""
         current_account = []
@@ -80,19 +86,19 @@ class AccountSelectionStageView(ChallengeStageView):
 
     def get_account_hint(self) -> str:
         """Return a suggested account identifier from the flow context or query."""
-        return (
-            self.executor.plan.context.get(PLAN_CONTEXT_ACCOUNT_SELECTION_LOGIN_HINT)
-            or self.request.session.get(SESSION_KEY_GET, {}).get(QS_LOGIN_HINT)
-            or ""
-        )
+        hint = self.plan.context.get(PLAN_CONTEXT_ACCOUNT_SELECTION_LOGIN_HINT)
+        if isinstance(hint, str):
+            return hint
+        session_hint = self.request.session.get(SESSION_KEY_GET, {}).get(QS_LOGIN_HINT)
+        return session_hint if isinstance(session_hint, str) else ""
 
     def get_requested_account_uid(self) -> str:
         """Return an explicitly requested account UID from the flow context or query."""
-        return (
-            self.executor.plan.context.get(PLAN_CONTEXT_ACCOUNT_SELECTION_USER_UID)
-            or self.request.session.get(SESSION_KEY_GET, {}).get(QS_ACCOUNT_UID)
-            or ""
-        )
+        account_uid = self.plan.context.get(PLAN_CONTEXT_ACCOUNT_SELECTION_USER_UID)
+        if isinstance(account_uid, str):
+            return account_uid
+        session_account_uid = self.request.session.get(SESSION_KEY_GET, {}).get(QS_ACCOUNT_UID)
+        return session_account_uid if isinstance(session_account_uid, str) else ""
 
     def serialize_account(self, user: User, hint: str = "") -> dict[str, object]:
         """Serialize a selectable account."""
@@ -100,7 +106,7 @@ class AccountSelectionStageView(ChallengeStageView):
 
     def get_challenge(self) -> AccountSelectionChallenge:
         """Show the current account and live remembered accounts for this browser."""
-        application = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION, Application())
+        application = self.plan.context.get(PLAN_CONTEXT_APPLICATION, Application())
         hint = self.get_account_hint()
         accounts = [self.serialize_account(user, hint) for user in self.get_account_users(hint)]
         return AccountSelectionChallenge(
@@ -111,7 +117,7 @@ class AccountSelectionStageView(ChallengeStageView):
             }
         )
 
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Auto-select an account when authentik requested a specific account UID."""
         selected_account = self.get_requested_account_uid()
         if selected_account:
@@ -120,11 +126,16 @@ class AccountSelectionStageView(ChallengeStageView):
 
     def get_next_url(self) -> str:
         """Return the flow's final destination."""
-        next_url = self.executor.plan.context.get(PLAN_CONTEXT_REDIRECT)
-        if next_url:
+        next_url = self.plan.context.get(PLAN_CONTEXT_REDIRECT)
+        if isinstance(next_url, str) and next_url:
             return next_url
-        return self.request.session.get(SESSION_KEY_GET, {}).get(
+        session_next_url = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, reverse("authentik_core:root-redirect")
+        )
+        return (
+            session_next_url
+            if isinstance(session_next_url, str)
+            else reverse("authentik_core:root-redirect")
         )
 
     def use_another_account(self) -> HttpResponse:
@@ -133,7 +144,7 @@ class AccountSelectionStageView(ChallengeStageView):
             NEXT_ARG_NAME: self.get_next_url(),
         }
         url = reverse("authentik_flows:default-authentication")
-        self.executor.cancel()
+        self.executor.cancel()  # type: ignore[no-untyped-call]
         return start_fresh_session(redirect(f"{url}?{urlencode(query)}"), self.request)
 
     def get_current_account_session(self, selected_user: User) -> AuthenticatedSession | None:
@@ -159,27 +170,33 @@ class AccountSelectionStageView(ChallengeStageView):
         if not account_session or not account_session.session:
             return self.executor.stage_invalid()
         set_account_selection_context(
-            self.executor.plan.context,
+            self.plan.context,
             selected_user,
             account_session.session.session_key,
         )
         return self.executor.stage_ok()
 
-    def challenge_valid(self, response: AccountSelectionChallengeResponse) -> HttpResponse:
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         """Continue, switch to a remembered account, or use another account."""
-        action = response.validated_data["action"]
+        account_response = cast(AccountSelectionChallengeResponse, response)
+        action = account_response.validated_data["action"]
         if action == "login":
             return self.use_another_account()
-        return self.switch_to_account(response.validated_data.get("selected_account", ""))
+        return self.switch_to_account(account_response.validated_data.get("selected_account", ""))
 
 
 class AccountSwitchStageView(StageView):
     """Activate the account selected by an earlier Account Selection stage."""
 
+    @property
+    def plan(self) -> FlowPlan:
+        """Return the active flow plan."""
+        return cast(FlowPlan, self.executor.plan)
+
     def get(self, request: HttpRequest) -> HttpResponse:
         """Switch the primary browser session after the account selection flow passed."""
-        account_uid = self.executor.plan.context.get(PLAN_CONTEXT_ACCOUNT_SWITCH_USER_UID)
-        session_key = self.executor.plan.context.get(PLAN_CONTEXT_ACCOUNT_SWITCH_SESSION_KEY)
+        account_uid = self.plan.context.get(PLAN_CONTEXT_ACCOUNT_SWITCH_USER_UID)
+        session_key = self.plan.context.get(PLAN_CONTEXT_ACCOUNT_SWITCH_SESSION_KEY)
         if not isinstance(account_uid, str) or not isinstance(session_key, str):
             return self.executor.stage_invalid()
         account_session = get_live_account_session(account_uid, session_key)

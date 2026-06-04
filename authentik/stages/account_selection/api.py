@@ -15,7 +15,7 @@ class AccountSelectionStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields
 
 
-class AccountSelectionStageViewSet(UsedByMixin, ModelViewSet):
+class AccountSelectionStageViewSet(UsedByMixin, ModelViewSet[AccountSelectionStage]):
     """AccountSelectionStage viewset."""
 
     queryset = AccountSelectionStage.objects.all()
@@ -33,7 +33,7 @@ class AccountSwitchStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields
 
 
-class AccountSwitchStageViewSet(UsedByMixin, ModelViewSet):
+class AccountSwitchStageViewSet(UsedByMixin, ModelViewSet[AccountSwitchStage]):
     """AccountSwitchStage viewset."""
 
     queryset = AccountSwitchStage.objects.all()
