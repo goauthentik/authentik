@@ -274,5 +274,7 @@ run()
         } else {
             logger.info("✅ Lockfile is in sync.");
         }
+
+        process.exit(0);
     })
     .catch((error) => reportAndExit(error, logger));
