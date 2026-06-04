@@ -6,21 +6,24 @@ tags:
     - gitlab
 ---
 
-Allows users to authenticate using their GitLab credentials by configuring GitLab as a federated identity provider via OAuth2.
+Allows users to authenticate using their GitLab credentials by configuring GitLab as a federated identity provider via OAuth 2.0.
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `www.my.company` is the Homepage URL for your site
+- `gitlab.company` is the FQDN of the GitLab installation. Use `gitlab.com` for GitLab SaaS.
 
 ## GitLab configuration
 
 To integrate GitLab with authentik, you need to create an OAuth application in GitLab.
 
-1. Log in to GitLab and navigate to **User Settings** > **Applications** (for a personal app), or use your group or project settings for a group/project-scoped application.
-2. Click **Add new application** and set the following values:
+1. Log in to GitLab and navigate to the application settings:
+    - For a user-owned application, select your avatar, click **Edit profile**, and then navigate to **Access** > **Applications**.
+    - For a group-owned application, navigate to the group and then click **Settings** > **Applications**.
+    - For an instance-wide application, navigate to **Admin** > **Applications**.
+2. Click **Add new application** or **New application** and set the following values:
     - **Name**: `authentik`
     - **Redirect URI**: `https://authentik.company/source/oauth/callback/gitlab/`
     - **Scopes**: select all four of the following:
@@ -29,11 +32,7 @@ To integrate GitLab with authentik, you need to create an OAuth application in G
         - `profile`
         - `email`
 
-    :::warning
-    All four scopes must be selected. authentik requests all of them unconditionally, and GitLab will reject the login with an "invalid scope" error if any are missing.
-    :::
-
-3. Click **Save application** and take note of the **Application ID** and **Secret**. These values will be required in the next section.
+3. Click **Save application** and take note of the **Application ID** and **Secret**. These values are required in the next section.
 
 ## authentik configuration
 
@@ -43,9 +42,15 @@ To support the integration of GitLab with authentik, you need to create a GitLab
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **GitLab OAuth Source** as the source type.
     - **Create GitLab OAuth Source**: provide a name, a slug which must match the slug used in the GitLab **Redirect URI** field (e.g. `gitlab`), and set the following required configurations:
-        - **Protocol settings**
-            - **Consumer Key**: `<application_ID>`
-            - **Consumer Secret**: `<secret>`
+        - Under **Protocol settings**:
+            - **Consumer key**: set the **Application ID** from GitLab.
+            - **Consumer secret**: set the **Secret** from GitLab.
+        - Under **URL settings** _(self-hosted GitLab instances only)_:
+            - **Authorization URL**: `https://gitlab.company/oauth/authorize`
+            - **Access token URL**: `https://gitlab.company/oauth/token`
+            - **Profile URL**: `https://gitlab.company/oauth/userinfo`
+            - **OIDC Well-known URL**: `https://gitlab.company/.well-known/openid-configuration`
+            - **OIDC JWKS URL**: `https://gitlab.company/oauth/discovery/keys`
 3. Click **Finish** to save your settings.
 
 :::info Display new source on login screen
@@ -56,21 +61,10 @@ For instructions on how to display the new source on the authentik login page, r
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
 :::
 
-## Optional additional configuration
-
-### Self-hosted GitLab instances
-
-If you are running a self-hosted GitLab instance, you can point the source at your own instance instead of `gitlab.com`.
-
-1. Edit the GitLab OAuth source in authentik.
-2. Under **Protocol settings**, update the following URLs, replacing `gitlab.company` with your GitLab instance hostname:
-    - **Authorization URL**: `https://gitlab.company/oauth/authorize`
-    - **Access Token URL**: `https://gitlab.company/oauth/token`
-    - **Profile URL**: `https://gitlab.company/oauth/userinfo`
-3. Update the GitLab application **Redirect URI** to use your authentik hostname as well.
-
 ## Source property mappings
 
 Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.md) for more information.
 
 ## Resources
+
+- [GitLab Docs - Configure GitLab as an OAuth 2.0 authentication identity provider](https://docs.gitlab.com/integration/oauth_provider/)
