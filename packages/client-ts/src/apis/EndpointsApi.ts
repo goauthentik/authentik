@@ -12,110 +12,152 @@
  * Do not edit the class manually.
  */
 
-import type {
-    AgentAuthenticationResponse,
-    AgentConfig,
-    AgentConnector,
-    AgentConnectorRequest,
-    AgentPSSODeviceRegistrationRequest,
-    AgentPSSODeviceRegistrationResponse,
-    AgentPSSOUserRegistrationRequest,
-    AgentTokenResponse,
-    AppleIndependentSecureEnclave,
-    AppleIndependentSecureEnclaveRequest,
-    Connector,
-    DeviceAccessGroup,
-    DeviceAccessGroupRequest,
-    DeviceFactsRequest,
-    DeviceSummary,
-    DeviceUserBinding,
-    DeviceUserBindingRequest,
-    EndpointDevice,
-    EndpointDeviceDetails,
-    EndpointDeviceRequest,
-    EnrollmentToken,
-    EnrollmentTokenRequest,
-    EnrollRequest,
-    FleetConnector,
-    FleetConnectorRequest,
-    GoogleChromeConnector,
-    GoogleChromeConnectorRequest,
-    MDMConfigRequest,
-    MDMConfigResponse,
-    PaginatedAgentConnectorList,
-    PaginatedAppleIndependentSecureEnclaveList,
-    PaginatedConnectorList,
-    PaginatedDeviceAccessGroupList,
-    PaginatedDeviceUserBindingList,
-    PaginatedEndpointDeviceList,
-    PaginatedEnrollmentTokenList,
-    PaginatedFleetConnectorList,
-    PaginatedGoogleChromeConnectorList,
-    PatchedAgentConnectorRequest,
-    PatchedAppleIndependentSecureEnclaveRequest,
-    PatchedDeviceAccessGroupRequest,
-    PatchedDeviceUserBindingRequest,
-    PatchedEndpointDeviceRequest,
-    PatchedEnrollmentTokenRequest,
-    PatchedFleetConnectorRequest,
-    PatchedGoogleChromeConnectorRequest,
-    TokenView,
-    TypeCreate,
-    UsedBy,
-    UserSelf,
-} from "../models/index";
 import {
+    type AgentAuthenticationResponse,
     AgentAuthenticationResponseFromJSON,
-    AgentConfigFromJSON,
-    AgentConnectorFromJSON,
+} from "../models/AgentAuthenticationResponse";
+import { type AgentConfig, AgentConfigFromJSON } from "../models/AgentConfig";
+import { type AgentConnector, AgentConnectorFromJSON } from "../models/AgentConnector";
+import {
+    type AgentConnectorRequest,
     AgentConnectorRequestToJSON,
+} from "../models/AgentConnectorRequest";
+import {
+    type AgentPSSODeviceRegistrationRequest,
     AgentPSSODeviceRegistrationRequestToJSON,
+} from "../models/AgentPSSODeviceRegistrationRequest";
+import {
+    type AgentPSSODeviceRegistrationResponse,
     AgentPSSODeviceRegistrationResponseFromJSON,
+} from "../models/AgentPSSODeviceRegistrationResponse";
+import {
+    type AgentPSSOUserRegistrationRequest,
     AgentPSSOUserRegistrationRequestToJSON,
-    AgentTokenResponseFromJSON,
+} from "../models/AgentPSSOUserRegistrationRequest";
+import { type AgentTokenResponse, AgentTokenResponseFromJSON } from "../models/AgentTokenResponse";
+import {
+    type AppleIndependentSecureEnclave,
     AppleIndependentSecureEnclaveFromJSON,
+} from "../models/AppleIndependentSecureEnclave";
+import {
+    type AppleIndependentSecureEnclaveRequest,
     AppleIndependentSecureEnclaveRequestToJSON,
-    ConnectorFromJSON,
-    DeviceAccessGroupFromJSON,
+} from "../models/AppleIndependentSecureEnclaveRequest";
+import { type Connector, ConnectorFromJSON } from "../models/Connector";
+import { type DeviceAccessGroup, DeviceAccessGroupFromJSON } from "../models/DeviceAccessGroup";
+import {
+    type DeviceAccessGroupRequest,
     DeviceAccessGroupRequestToJSON,
-    DeviceFactsRequestToJSON,
-    DeviceSummaryFromJSON,
-    DeviceUserBindingFromJSON,
+} from "../models/DeviceAccessGroupRequest";
+import { type DeviceFactsRequest, DeviceFactsRequestToJSON } from "../models/DeviceFactsRequest";
+import { type DeviceSummary, DeviceSummaryFromJSON } from "../models/DeviceSummary";
+import { type DeviceUserBinding, DeviceUserBindingFromJSON } from "../models/DeviceUserBinding";
+import {
+    type DeviceUserBindingRequest,
     DeviceUserBindingRequestToJSON,
+} from "../models/DeviceUserBindingRequest";
+import { type EndpointDevice, EndpointDeviceFromJSON } from "../models/EndpointDevice";
+import {
+    type EndpointDeviceDetails,
     EndpointDeviceDetailsFromJSON,
-    EndpointDeviceFromJSON,
+} from "../models/EndpointDeviceDetails";
+import {
+    type EndpointDeviceRequest,
     EndpointDeviceRequestToJSON,
-    EnrollmentTokenFromJSON,
+} from "../models/EndpointDeviceRequest";
+import { type EnrollmentToken, EnrollmentTokenFromJSON } from "../models/EnrollmentToken";
+import {
+    type EnrollmentTokenRequest,
     EnrollmentTokenRequestToJSON,
-    EnrollRequestToJSON,
-    FleetConnectorFromJSON,
+} from "../models/EnrollmentTokenRequest";
+import { type EnrollRequest, EnrollRequestToJSON } from "../models/EnrollRequest";
+import { type FleetConnector, FleetConnectorFromJSON } from "../models/FleetConnector";
+import {
+    type FleetConnectorRequest,
     FleetConnectorRequestToJSON,
+} from "../models/FleetConnectorRequest";
+import {
+    type GoogleChromeConnector,
     GoogleChromeConnectorFromJSON,
+} from "../models/GoogleChromeConnector";
+import {
+    type GoogleChromeConnectorRequest,
     GoogleChromeConnectorRequestToJSON,
-    MDMConfigRequestToJSON,
-    MDMConfigResponseFromJSON,
+} from "../models/GoogleChromeConnectorRequest";
+import { type MDMConfigRequest, MDMConfigRequestToJSON } from "../models/MDMConfigRequest";
+import { type MDMConfigResponse, MDMConfigResponseFromJSON } from "../models/MDMConfigResponse";
+import {
+    type PaginatedAgentConnectorList,
     PaginatedAgentConnectorListFromJSON,
+} from "../models/PaginatedAgentConnectorList";
+import {
+    type PaginatedAppleIndependentSecureEnclaveList,
     PaginatedAppleIndependentSecureEnclaveListFromJSON,
+} from "../models/PaginatedAppleIndependentSecureEnclaveList";
+import {
+    type PaginatedConnectorList,
     PaginatedConnectorListFromJSON,
+} from "../models/PaginatedConnectorList";
+import {
+    type PaginatedDeviceAccessGroupList,
     PaginatedDeviceAccessGroupListFromJSON,
+} from "../models/PaginatedDeviceAccessGroupList";
+import {
+    type PaginatedDeviceUserBindingList,
     PaginatedDeviceUserBindingListFromJSON,
+} from "../models/PaginatedDeviceUserBindingList";
+import {
+    type PaginatedEndpointDeviceList,
     PaginatedEndpointDeviceListFromJSON,
+} from "../models/PaginatedEndpointDeviceList";
+import {
+    type PaginatedEnrollmentTokenList,
     PaginatedEnrollmentTokenListFromJSON,
+} from "../models/PaginatedEnrollmentTokenList";
+import {
+    type PaginatedFleetConnectorList,
     PaginatedFleetConnectorListFromJSON,
+} from "../models/PaginatedFleetConnectorList";
+import {
+    type PaginatedGoogleChromeConnectorList,
     PaginatedGoogleChromeConnectorListFromJSON,
+} from "../models/PaginatedGoogleChromeConnectorList";
+import {
+    type PatchedAgentConnectorRequest,
     PatchedAgentConnectorRequestToJSON,
+} from "../models/PatchedAgentConnectorRequest";
+import {
+    type PatchedAppleIndependentSecureEnclaveRequest,
     PatchedAppleIndependentSecureEnclaveRequestToJSON,
+} from "../models/PatchedAppleIndependentSecureEnclaveRequest";
+import {
+    type PatchedDeviceAccessGroupRequest,
     PatchedDeviceAccessGroupRequestToJSON,
+} from "../models/PatchedDeviceAccessGroupRequest";
+import {
+    type PatchedDeviceUserBindingRequest,
     PatchedDeviceUserBindingRequestToJSON,
+} from "../models/PatchedDeviceUserBindingRequest";
+import {
+    type PatchedEndpointDeviceRequest,
     PatchedEndpointDeviceRequestToJSON,
+} from "../models/PatchedEndpointDeviceRequest";
+import {
+    type PatchedEnrollmentTokenRequest,
     PatchedEnrollmentTokenRequestToJSON,
+} from "../models/PatchedEnrollmentTokenRequest";
+import {
+    type PatchedFleetConnectorRequest,
     PatchedFleetConnectorRequestToJSON,
+} from "../models/PatchedFleetConnectorRequest";
+import {
+    type PatchedGoogleChromeConnectorRequest,
     PatchedGoogleChromeConnectorRequestToJSON,
-    TokenViewFromJSON,
-    TypeCreateFromJSON,
-    UsedByFromJSON,
-    UserSelfFromJSON,
-} from "../models/index";
+} from "../models/PatchedGoogleChromeConnectorRequest";
+import { type TokenView, TokenViewFromJSON } from "../models/TokenView";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+import { type UserSelf, UserSelfFromJSON } from "../models/UserSelf";
 import * as runtime from "../runtime";
 
 export interface EndpointsAgentsConnectorsAuthFedCreateRequest {
@@ -736,7 +778,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -952,7 +994,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/connectors/{connector_uuid}/mdm_config/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -1025,7 +1067,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -1098,7 +1140,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -1177,7 +1219,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -1248,7 +1290,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/connectors/{connector_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -1385,7 +1427,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/enrollment_tokens/{token_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"token_uuid"}}`,
+            "{token_uuid}",
             encodeURIComponent(String(requestParameters["tokenUuid"])),
         );
 
@@ -1534,7 +1576,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/enrollment_tokens/{token_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"token_uuid"}}`,
+            "{token_uuid}",
             encodeURIComponent(String(requestParameters["tokenUuid"])),
         );
 
@@ -1607,7 +1649,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/enrollment_tokens/{token_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"token_uuid"}}`,
+            "{token_uuid}",
             encodeURIComponent(String(requestParameters["tokenUuid"])),
         );
 
@@ -1686,7 +1728,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/enrollment_tokens/{token_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"token_uuid"}}`,
+            "{token_uuid}",
             encodeURIComponent(String(requestParameters["tokenUuid"])),
         );
 
@@ -1757,7 +1799,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/enrollment_tokens/{token_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"token_uuid"}}`,
+            "{token_uuid}",
             encodeURIComponent(String(requestParameters["tokenUuid"])),
         );
 
@@ -1825,7 +1867,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/agents/enrollment_tokens/{token_uuid}/view_key/`;
         urlPath = urlPath.replace(
-            `{${"token_uuid"}}`,
+            "{token_uuid}",
             encodeURIComponent(String(requestParameters["tokenUuid"])),
         );
 
@@ -1963,10 +2005,7 @@ export class EndpointsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/endpoints/agents/psso/ise/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2108,10 +2147,7 @@ export class EndpointsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/endpoints/agents/psso/ise/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2181,10 +2217,7 @@ export class EndpointsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/endpoints/agents/psso/ise/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2260,10 +2293,7 @@ export class EndpointsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/endpoints/agents/psso/ise/{uuid}/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2333,10 +2363,7 @@ export class EndpointsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/endpoints/agents/psso/ise/{uuid}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"uuid"}}`,
-            encodeURIComponent(String(requestParameters["uuid"])),
-        );
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
 
         return {
             path: urlPath,
@@ -2520,7 +2547,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -2654,7 +2681,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -2772,7 +2799,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/connectors/{connector_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -2909,7 +2936,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/device_access_groups/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -3058,7 +3085,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/device_access_groups/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -3131,7 +3158,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/device_access_groups/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -3210,7 +3237,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/device_access_groups/{pbm_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -3281,7 +3308,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/device_access_groups/{pbm_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"pbm_uuid"}}`,
+            "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
         );
 
@@ -3418,7 +3445,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/device_bindings/{policy_binding_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"policy_binding_uuid"}}`,
+            "{policy_binding_uuid}",
             encodeURIComponent(String(requestParameters["policyBindingUuid"])),
         );
 
@@ -3586,7 +3613,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/device_bindings/{policy_binding_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"policy_binding_uuid"}}`,
+            "{policy_binding_uuid}",
             encodeURIComponent(String(requestParameters["policyBindingUuid"])),
         );
 
@@ -3659,7 +3686,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/device_bindings/{policy_binding_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"policy_binding_uuid"}}`,
+            "{policy_binding_uuid}",
             encodeURIComponent(String(requestParameters["policyBindingUuid"])),
         );
 
@@ -3738,7 +3765,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/device_bindings/{policy_binding_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"policy_binding_uuid"}}`,
+            "{policy_binding_uuid}",
             encodeURIComponent(String(requestParameters["policyBindingUuid"])),
         );
 
@@ -3809,7 +3836,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/device_bindings/{policy_binding_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"policy_binding_uuid"}}`,
+            "{policy_binding_uuid}",
             encodeURIComponent(String(requestParameters["policyBindingUuid"])),
         );
 
@@ -3877,7 +3904,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/devices/{device_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"device_uuid"}}`,
+            "{device_uuid}",
             encodeURIComponent(String(requestParameters["deviceUuid"])),
         );
 
@@ -4021,7 +4048,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/devices/{device_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"device_uuid"}}`,
+            "{device_uuid}",
             encodeURIComponent(String(requestParameters["deviceUuid"])),
         );
 
@@ -4094,7 +4121,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/devices/{device_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"device_uuid"}}`,
+            "{device_uuid}",
             encodeURIComponent(String(requestParameters["deviceUuid"])),
         );
 
@@ -4220,7 +4247,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/devices/{device_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"device_uuid"}}`,
+            "{device_uuid}",
             encodeURIComponent(String(requestParameters["deviceUuid"])),
         );
 
@@ -4287,7 +4314,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/devices/{device_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"device_uuid"}}`,
+            "{device_uuid}",
             encodeURIComponent(String(requestParameters["deviceUuid"])),
         );
 
@@ -4420,7 +4447,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/fleet/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -4565,7 +4592,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/fleet/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -4638,7 +4665,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/fleet/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -4717,7 +4744,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/fleet/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -4788,7 +4815,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/fleet/connectors/{connector_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -4927,7 +4954,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/google_chrome/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -5072,7 +5099,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/google_chrome/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -5145,7 +5172,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/google_chrome/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -5224,7 +5251,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/google_chrome/connectors/{connector_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
@@ -5297,7 +5324,7 @@ export class EndpointsApi extends runtime.BaseAPI {
 
         let urlPath = `/endpoints/google_chrome/connectors/{connector_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"connector_uuid"}}`,
+            "{connector_uuid}",
             encodeURIComponent(String(requestParameters["connectorUuid"])),
         );
 
