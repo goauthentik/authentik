@@ -26,6 +26,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.urls import is_url_absolute
 from authentik.policies.engine import PolicyEngine
 from authentik.root.middleware import SessionMiddleware
@@ -58,6 +59,35 @@ def _coerce_known_account(raw_account: object) -> KnownAccount | None:
     if not isinstance(uid, str) or not isinstance(session_key, str):
         return None
     return KnownAccount(uid=uid, session_key=session_key)
+
+
+def user_matches_hint(user: User, hint: str) -> bool:
+    """Check whether an account matches the supplied login hint."""
+    return hint in {user.uuid.hex, user.email, user.username}
+
+
+def serialize_account_selection_user(
+    request: HttpRequest,
+    user: User,
+    hint: str | None = None,
+) -> dict[str, object]:
+    """Serialize a browser-local account for account selection surfaces."""
+    is_current = (
+        request.user.is_authenticated
+        and not isinstance(request.user, AnonymousUser)
+        and user.pk == request.user.pk
+    )
+    data = {
+        "uid": user.uuid.hex,
+        "username": user.username,
+        "name": user.name,
+        "email": user.email,
+        "avatar": get_avatar(user, request),
+        "is_current": is_current,
+    }
+    if hint is not None:
+        data["is_hint"] = bool(hint and user_matches_hint(user, hint))
+    return data
 
 
 def get_known_accounts(request: HttpRequest) -> list[KnownAccount]:

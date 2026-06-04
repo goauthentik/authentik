@@ -2,7 +2,6 @@
 
 from urllib.parse import urlencode
 
-from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -19,9 +18,11 @@ from authentik.core.account_selection import (
     get_known_account_session,
     get_known_account_users,
     get_live_account_session,
+    serialize_account_selection_user,
     set_account_selection_context,
     set_session_cookie,
     start_fresh_session,
+    user_matches_hint,
 )
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, AuthenticatedSession, User
@@ -29,7 +30,6 @@ from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_REDIRECT
 from authentik.flows.stage import ChallengeStageView, StageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
-from authentik.lib.avatars import get_avatar
 
 LOGGER = get_logger()
 COMPONENT = "ak-stage-account-selection"
@@ -45,11 +45,6 @@ class AccountSelectionChallengeUser(PassiveSerializer):
     avatar = CharField()
     is_current = BooleanField()
     is_hint = BooleanField()
-
-
-def user_matches_hint(user: User, hint: str) -> bool:
-    """Check whether an account matches the supplied login hint."""
-    return hint in {user.uuid.hex, user.email, user.username}
 
 
 class AccountSelectionChallenge(Challenge):
@@ -101,20 +96,7 @@ class AccountSelectionStageView(ChallengeStageView):
 
     def serialize_account(self, user: User, hint: str = "") -> dict[str, object]:
         """Serialize a selectable account."""
-        is_current = (
-            self.request.user.is_authenticated
-            and not isinstance(self.request.user, AnonymousUser)
-            and user.pk == self.request.user.pk
-        )
-        return {
-            "uid": user.uuid.hex,
-            "username": user.username,
-            "name": user.name,
-            "email": user.email,
-            "avatar": get_avatar(user, self.request),
-            "is_current": is_current,
-            "is_hint": bool(hint and user_matches_hint(user, hint)),
-        }
+        return serialize_account_selection_user(self.request, user, hint)
 
     def get_challenge(self) -> AccountSelectionChallenge:
         """Show the current account and live remembered accounts for this browser."""

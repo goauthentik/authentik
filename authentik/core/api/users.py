@@ -65,7 +65,10 @@ from authentik.api.search.fields import (
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
-from authentik.core.account_selection import get_known_account_users
+from authentik.core.account_selection import (
+    get_known_account_users,
+    serialize_account_selection_user,
+)
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     JSONDictField,
@@ -811,14 +814,7 @@ class UserViewSet(
 
     def _serialize_account_selection_user(self, user: User) -> dict[str, Any]:
         """Serialize an account remembered by this browser."""
-        return {
-            "uid": user.uuid.hex,
-            "username": user.username,
-            "name": user.name,
-            "email": user.email,
-            "avatar": get_avatar(user, self.request),
-            "is_current": user.pk == self.request.user.pk,
-        }
+        return serialize_account_selection_user(self.request, user)
 
     def _get_account_selection_users(self) -> list[User]:
         """Return active known accounts, including the current session user first."""
