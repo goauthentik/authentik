@@ -36,7 +36,7 @@ jobs:
     with:
       image_name: ${{ inputs.image_name }}
       image_arch: arm64
-      runs-on: ubuntu-22.04-arm
+      runs-on: ubuntu-24.04-arm
       registry_dockerhub: ${{ inputs.registry_dockerhub }}
       registry_ghcr: ${{ inputs.registry_ghcr }}
       release: ${{ inputs.release }}
