@@ -88,6 +88,7 @@ TENANT_APPS = [
     "authentik.admin.files",
     "authentik.flows",
     "authentik.outposts",
+    "authentik.pam",
     "authentik.policies.dummy",
     "authentik.policies.event_matcher",
     "authentik.policies.expiry",

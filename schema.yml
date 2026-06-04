@@ -11016,6 +11016,99 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /pam/grant_requests/:
+    get:
+      operationId: pam_grant_requests_list
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGrantRequestList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: pam_grant_requests_create
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantRequestCreateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /pam/grant_requests/{uuid}/:
+    get:
+      operationId: pam_grant_requests_retrieve
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this grant request.
+        required: true
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantRequest'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: pam_grant_requests_destroy
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this grant request.
+        required: true
+      tags:
+      - pam
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /policies/all/:
     get:
       operationId: policies_all_list
@@ -34285,6 +34378,7 @@ components:
       - authentik.admin.files
       - authentik.flows
       - authentik.outposts
+      - authentik.pam
       - authentik.policies.dummy
       - authentik.policies.event_matcher
       - authentik.policies.expiry
@@ -40417,6 +40511,61 @@ components:
       - google_id
       - provider
       - user
+    GrantRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        expiring:
+          type: boolean
+        data:
+          type: object
+          additionalProperties: {}
+        status:
+          $ref: '#/components/schemas/GrantStatusEnum'
+        created_by:
+          type: integer
+        targets:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+      required:
+      - created
+      - created_by
+      - last_updated
+      - targets
+    GrantRequestCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - pbms
+    GrantStatusEnum:
+      enum:
+      - created
+      - approved
+      - denied
+      type: string
     GrantTypesEnum:
       enum:
       - authorization_code
@@ -43418,6 +43567,8 @@ components:
       - authentik_outposts.dockerserviceconnection
       - authentik_outposts.kubernetesserviceconnection
       - authentik_outposts.outpost
+      - authentik_pam.persona
+      - authentik_pam.grantrequest
       - authentik_policies_dummy.dummypolicy
       - authentik_policies_event_matcher.eventmatcherpolicy
       - authentik_policies_expiry.passwordexpirypolicy
@@ -45715,6 +45866,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GoogleWorkspaceProviderUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedGrantRequestList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantRequest'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
