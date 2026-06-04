@@ -59,7 +59,7 @@ systemctl --user enable --now podman.socket
 loginctl enable-linger "$USER"
 ```
 
-The worker's startup discovery task checks `/var/run/docker.sock`, `/run/podman/podman.sock`, and `$XDG_RUNTIME_DIR/podman/podman.sock` inside the worker container. It creates a local Docker service connection for the first readable socket that it finds. Mount your Podman socket into the worker at one of those paths.
+Mount the Podman socket into the worker container at `/run/podman/podman.sock`. authentik also detects `/var/run/docker.sock` for Docker deployments.
 
 ## Docker Socket Proxy
 
