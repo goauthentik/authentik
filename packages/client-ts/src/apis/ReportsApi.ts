@@ -12,8 +12,11 @@
  * Do not edit the class manually.
  */
 
-import type { DataExport, PaginatedDataExportList } from "../models/index";
-import { DataExportFromJSON, PaginatedDataExportListFromJSON } from "../models/index";
+import { type DataExport, DataExportFromJSON } from "../models/DataExport";
+import {
+    type PaginatedDataExportList,
+    PaginatedDataExportListFromJSON,
+} from "../models/PaginatedDataExportList";
 import * as runtime from "../runtime";
 
 export interface ReportsExportsDestroyRequest {
@@ -62,7 +65,7 @@ export class ReportsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/reports/exports/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -189,7 +192,7 @@ export class ReportsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/reports/exports/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,

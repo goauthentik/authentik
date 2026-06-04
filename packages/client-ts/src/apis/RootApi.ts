@@ -12,8 +12,7 @@
  * Do not edit the class manually.
  */
 
-import type { Config } from "../models/index";
-import { ConfigFromJSON } from "../models/index";
+import { type Config, ConfigFromJSON } from "../models/Config";
 import * as runtime from "../runtime";
 
 /**
