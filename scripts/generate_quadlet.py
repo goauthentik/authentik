@@ -70,7 +70,6 @@ Volume=authentik-database.volume:/var/lib/postgresql/data
 EnvironmentFile={env_file}
 Environment=POSTGRES_DB=authentik
 Environment=POSTGRES_USER=authentik
-Environment=POSTGRES_PASSWORD=${{PG_PASS}}
 HealthCmd=pg_isready -d authentik -U authentik
 HealthInterval=30s
 HealthStartPeriod=20s

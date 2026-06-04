@@ -55,7 +55,7 @@ Create a state directory for the containers to mount, and generate a PostgreSQL 
 sudo mkdir -p /var/lib/authentik/{data,certs,custom-templates}
 sudo mkdir -p /etc/authentik
 sudo tee /etc/authentik/authentik.env > /dev/null <<EOF
-PG_PASS=$(openssl rand -base64 36 | tr -d '\n')
+POSTGRES_PASSWORD=$(openssl rand -base64 36 | tr -d '\n')
 AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')
 AUTHENTIK_ERROR_REPORTING__ENABLED=true
 EOF
@@ -69,7 +69,7 @@ sudo chmod 600 /etc/authentik/authentik.env
 mkdir -p ~/.local/share/authentik/{data,certs,custom-templates}
 mkdir -p ~/.config/authentik
 tee ~/.config/authentik/authentik.env > /dev/null <<EOF
-PG_PASS=$(openssl rand -base64 36 | tr -d '\n')
+POSTGRES_PASSWORD=$(openssl rand -base64 36 | tr -d '\n')
 AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')
 AUTHENTIK_ERROR_REPORTING__ENABLED=true
 EOF
