@@ -1,0 +1,10 @@
+[Unit]
+Description=authentik
+
+[Pod]
+PodName=authentik
+PublishPort=9000:9000
+PublishPort=9443:9443
+
+[Install]
+WantedBy=default.target

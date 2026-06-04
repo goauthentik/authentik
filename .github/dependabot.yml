@@ -320,6 +320,13 @@ updates:
     directories:
       - /lifecycle/container
       - /website
+      # The Quadlet unit files pin the same images as compose.yml. Dependabot
+      # does not parse `.container` files yet (tracked upstream at
+      # dependabot/dependabot-core#13066), so these entries are a no-op for
+      # now — the authentik image tag is bumped via `make bump` (gen-quadlet),
+      # and other pinned images will start updating once upstream support lands.
+      - /lifecycle/quadlet
+      - /lifecycle/quadlet/rootless
     schedule:
       interval: daily
       time: "04:00"

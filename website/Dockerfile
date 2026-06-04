@@ -43,6 +43,7 @@ COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
 COPY ./schema.yml /work/
 COPY ./lifecycle/container/compose.yml /work/lifecycle/container/
+COPY ./lifecycle/quadlet /work/lifecycle/quadlet
 COPY ./SECURITY.md /work/
 
 RUN  --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
