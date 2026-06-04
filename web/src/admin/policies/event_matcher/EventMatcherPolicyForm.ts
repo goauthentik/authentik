@@ -85,7 +85,9 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             <a
                                 rel="noopener noreferrer"
                                 target="_blank"
-                                href=${docLink("/sys-mgmt/events/logging-events/#advanced-queries")}
+                                href=${docLink(
+                                    "/sys-mgmt/akql/#use-akql-in-an-event-matcher-policy",
+                                )}
                             >
                                 ${msg("See documentation for examples.")}
                             </a>
