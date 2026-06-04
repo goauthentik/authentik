@@ -1,6 +1,7 @@
 """Docker controller"""
 
 from time import sleep
+from typing import Any
 from urllib.parse import urlparse
 
 from django.conf import settings
@@ -28,6 +29,16 @@ from authentik.outposts.models import (
 DOCKER_MAX_ATTEMPTS = 10
 
 
+def local_docker_client_kwargs(url: str) -> dict[str, Any]:
+    """Return Docker SDK kwargs for a local Unix socket connection."""
+    if not url:
+        return kwargs_from_env()
+    parsed_url = urlparse(url)
+    if parsed_url.scheme:
+        return {"base_url": url}
+    return {"base_url": f"unix://{url}"}
+
+
 class DockerClient(UpstreamDockerClient, BaseClient):
     """Custom docker client, which can handle TLS and SSH from a database."""
 
@@ -39,8 +50,7 @@ class DockerClient(UpstreamDockerClient, BaseClient):
         self.ssh = None
         self.logger = get_logger()
         if connection.local:
-            # Same result as DockerClient.from_env
-            super().__init__(**kwargs_from_env())
+            super().__init__(**local_docker_client_kwargs(connection.url))
         else:
             parsed_url = urlparse(connection.url)
             tls_config = False

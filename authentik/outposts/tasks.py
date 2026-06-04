@@ -1,7 +1,7 @@
 """outpost tasks"""
 
 from hashlib import sha256
-from os import R_OK, access, environ
+from os import R_OK, access, getenv
 from pathlib import Path
 from socket import gethostname
 from typing import Any
@@ -42,6 +42,40 @@ from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
+
+
+def local_docker_socket_paths(runtime_dir: str | None = None) -> list[str]:
+    """Return Docker-compatible socket paths to probe for local outpost management."""
+    candidate_sockets = [
+        urlparse(DEFAULT_UNIX_SOCKET).path,
+        "/run/podman/podman.sock",
+    ]
+    if runtime_dir:
+        candidate_sockets.append(f"{runtime_dir}/podman/podman.sock")
+    return candidate_sockets
+
+
+def docker_socket_url(socket_path: str) -> str:
+    """Return a Docker SDK-compatible URL for a Unix socket path."""
+    return f"unix://{socket_path}"
+
+
+def discover_local_docker_connection(task: Any, socket_paths: list[str]) -> None:
+    """Create a local Docker service connection for the first readable socket."""
+    for socket_path in socket_paths:
+        socket = Path(socket_path)
+        if not (socket.exists() and access(socket, R_OK)):
+            continue
+        task.info(f"Detected local container socket at {socket_path}")
+        if DockerServiceConnection.objects.filter(local=True).exists():
+            break
+        task.info("Created Service Connection for local container socket")
+        DockerServiceConnection.objects.create(
+            name="Local Docker connection",
+            local=True,
+            url=docker_socket_url(socket_path),
+        )
+        break
 
 
 def hash_session_key(session_key: str) -> str:
@@ -189,30 +223,7 @@ def outpost_connection_discovery():
                     name=kubeconfig_local_name,
                     kubeconfig=safe_load(_kubeconfig),
                 )
-    # Detect a local Docker-API-compatible socket. Docker, Podman (rootful and
-    # rootless), and socket proxies all expose the same API surface, so any of
-    # these can drive the outpost controller.
-    candidate_sockets: list[str] = [urlparse(DEFAULT_UNIX_SOCKET).path]
-    # Podman rootful socket (managed by `podman.socket` systemd unit).
-    candidate_sockets.append("/run/podman/podman.sock")
-    # Podman rootless socket (per-user, started via `systemctl --user`).
-    runtime_dir = environ.get("XDG_RUNTIME_DIR")
-    if runtime_dir:
-        candidate_sockets.append(f"{runtime_dir}/podman/podman.sock")
-    for candidate in candidate_sockets:
-        socket = Path(candidate)
-        if not (socket.exists() and access(socket, R_OK)):
-            continue
-        self.info(f"Detected local container socket at {candidate}")
-        if DockerServiceConnection.objects.filter(local=True).exists():
-            break
-        self.info("Created Service Connection for local container socket")
-        DockerServiceConnection.objects.create(
-            name="Local Docker connection",
-            local=True,
-            url=candidate,
-        )
-        break
+    discover_local_docker_connection(self, local_docker_socket_paths(getenv("XDG_RUNTIME_DIR")))
 
 
 @actor(description=_("Terminate session on all outposts."))
