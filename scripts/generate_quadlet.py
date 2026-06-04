@@ -40,114 +40,121 @@ POSTGRES_IMAGE = "docker.io/library/postgres:16-alpine"
 OUTPUT_DIR = Path("lifecycle/quadlet")
 ROOTLESS_DIR = OUTPUT_DIR / "rootless"
 
-POD = """[Unit]
-Description=authentik
-
-[Pod]
-PodName=authentik
-PublishPort=9000:9000
-PublishPort=9443:9443
-
-[Install]
-WantedBy=default.target
-"""
-
-DATABASE_VOLUME = """[Volume]
-VolumeName=authentik-database
-"""
+Entry = tuple[str, str]
+Unit = dict[str, tuple[Entry, ...]]
 
 
-def postgresql_container(env_file: str) -> str:
-    return f"""[Unit]
-Description=authentik PostgreSQL
-
-[Container]
-ContainerName=authentik-postgresql
-Image={POSTGRES_IMAGE}
-AutoUpdate=registry
-Pod=authentik.pod
-Volume=authentik-database.volume:/var/lib/postgresql/data
-EnvironmentFile={env_file}
-Environment=POSTGRES_DB=authentik
-Environment=POSTGRES_USER=authentik
-HealthCmd=pg_isready -d authentik -U authentik
-HealthInterval=30s
-HealthStartPeriod=20s
-HealthTimeout=5s
-HealthRetries=5
-
-[Service]
-Restart=always
-
-[Install]
-WantedBy=default.target
-"""
+def render_unit(sections: Unit) -> str:
+    rendered_sections = []
+    for name, entries in sections.items():
+        lines = [f"[{name}]"]
+        lines.extend(f"{key}={value}" for key, value in entries)
+        rendered_sections.append("\n".join(lines))
+    return "\n\n".join(rendered_sections) + "\n"
 
 
-def server_container(env_file: str, data_dir: str) -> str:
-    return f"""[Unit]
-Description=authentik server
-Requires=authentik-postgresql.container
-After=authentik-postgresql.container
-
-[Container]
-ContainerName=authentik-server
-Image={AUTHENTIK_IMAGE}
-AutoUpdate=registry
-Pod=authentik.pod
-Exec=server
-EnvironmentFile={env_file}
-Environment=AUTHENTIK_POSTGRESQL__HOST=localhost
-Environment=AUTHENTIK_POSTGRESQL__NAME=authentik
-Environment=AUTHENTIK_POSTGRESQL__USER=authentik
-Volume={data_dir}/data:/data:Z
-Volume={data_dir}/custom-templates:/templates:Z
-ShmSize=512m
-
-[Service]
-Restart=always
-
-[Install]
-WantedBy=default.target
-"""
+def pod() -> Unit:
+    return {
+        "Unit": (("Description", "authentik"),),
+        "Pod": (
+            ("PodName", "authentik"),
+            ("PublishPort", "9000:9000"),
+            ("PublishPort", "9443:9443"),
+        ),
+        "Install": (("WantedBy", "default.target"),),
+    }
 
 
-def worker_container(env_file: str, data_dir: str, podman_sock_dir: str) -> str:
-    return f"""[Unit]
-Description=authentik worker
-Requires=authentik-postgresql.container
-After=authentik-postgresql.container
+def database_volume() -> Unit:
+    return {"Volume": (("VolumeName", "authentik-database"),)}
 
-[Container]
-ContainerName=authentik-worker
-Image={AUTHENTIK_IMAGE}
-AutoUpdate=registry
-Pod=authentik.pod
-Exec=worker
-User=0:0
-EnvironmentFile={env_file}
-Environment=AUTHENTIK_POSTGRESQL__HOST=localhost
-Environment=AUTHENTIK_POSTGRESQL__NAME=authentik
-Environment=AUTHENTIK_POSTGRESQL__USER=authentik
-Environment=AUTHENTIK_LISTEN__HTTP=0.0.0.0:9001
-Environment=AUTHENTIK_LISTEN__METRICS=0.0.0.0:9301
-Volume={podman_sock_dir}/podman/podman.sock:/run/podman/podman.sock:Z
-Volume={data_dir}/data:/data:Z
-Volume={data_dir}/certs:/certs:Z
-Volume={data_dir}/custom-templates:/templates:Z
-ShmSize=512m
 
-[Service]
-Restart=always
+def postgresql_container(env_file: str) -> Unit:
+    return {
+        "Unit": (("Description", "authentik PostgreSQL"),),
+        "Container": (
+            ("ContainerName", "authentik-postgresql"),
+            ("Image", POSTGRES_IMAGE),
+            ("AutoUpdate", "registry"),
+            ("Pod", "authentik.pod"),
+            ("Volume", "authentik-database.volume:/var/lib/postgresql/data"),
+            ("EnvironmentFile", env_file),
+            ("Environment", "POSTGRES_DB=authentik"),
+            ("Environment", "POSTGRES_USER=authentik"),
+            ("HealthCmd", "pg_isready -d authentik -U authentik"),
+            ("HealthInterval", "30s"),
+            ("HealthStartPeriod", "20s"),
+            ("HealthTimeout", "5s"),
+            ("HealthRetries", "5"),
+        ),
+        "Service": (("Restart", "always"),),
+        "Install": (("WantedBy", "default.target"),),
+    }
 
-[Install]
-WantedBy=default.target
-"""
+
+def server_container(env_file: str, data_dir: str) -> Unit:
+    return {
+        "Unit": (
+            ("Description", "authentik server"),
+            ("Requires", "authentik-postgresql.container"),
+            ("After", "authentik-postgresql.container"),
+        ),
+        "Container": (
+            ("ContainerName", "authentik-server"),
+            ("Image", AUTHENTIK_IMAGE),
+            ("AutoUpdate", "registry"),
+            ("Pod", "authentik.pod"),
+            ("Exec", "server"),
+            ("EnvironmentFile", env_file),
+            ("Environment", "AUTHENTIK_POSTGRESQL__HOST=localhost"),
+            ("Environment", "AUTHENTIK_POSTGRESQL__NAME=authentik"),
+            ("Environment", "AUTHENTIK_POSTGRESQL__USER=authentik"),
+            ("Volume", f"{data_dir}/data:/data:Z"),
+            ("Volume", f"{data_dir}/custom-templates:/templates:Z"),
+            ("ShmSize", "512m"),
+        ),
+        "Service": (("Restart", "always"),),
+        "Install": (("WantedBy", "default.target"),),
+    }
+
+
+def worker_container(env_file: str, data_dir: str, podman_sock_dir: str) -> Unit:
+    return {
+        "Unit": (
+            ("Description", "authentik worker"),
+            ("Requires", "authentik-postgresql.container"),
+            ("After", "authentik-postgresql.container"),
+        ),
+        "Container": (
+            ("ContainerName", "authentik-worker"),
+            ("Image", AUTHENTIK_IMAGE),
+            ("AutoUpdate", "registry"),
+            ("Pod", "authentik.pod"),
+            ("Exec", "worker"),
+            ("User", "0:0"),
+            ("EnvironmentFile", env_file),
+            ("Environment", "AUTHENTIK_POSTGRESQL__HOST=localhost"),
+            ("Environment", "AUTHENTIK_POSTGRESQL__NAME=authentik"),
+            ("Environment", "AUTHENTIK_POSTGRESQL__USER=authentik"),
+            ("Environment", "AUTHENTIK_LISTEN__HTTP=0.0.0.0:9001"),
+            ("Environment", "AUTHENTIK_LISTEN__METRICS=0.0.0.0:9301"),
+            (
+                "Volume",
+                f"{podman_sock_dir}/podman/podman.sock:/run/podman/podman.sock:Z",
+            ),
+            ("Volume", f"{data_dir}/data:/data:Z"),
+            ("Volume", f"{data_dir}/certs:/certs:Z"),
+            ("Volume", f"{data_dir}/custom-templates:/templates:Z"),
+            ("ShmSize", "512m"),
+        ),
+        "Service": (("Restart", "always"),),
+        "Install": (("WantedBy", "default.target"),),
+    }
 
 
 ROOTFUL = {
-    "authentik.pod": POD,
-    "authentik-database.volume": DATABASE_VOLUME,
+    "authentik.pod": pod(),
+    "authentik-database.volume": database_volume(),
     "authentik-postgresql.container": postgresql_container(
         env_file="/etc/authentik/authentik.env",
     ),
@@ -163,8 +170,8 @@ ROOTFUL = {
 }
 
 ROOTLESS = {
-    "authentik.pod": POD,
-    "authentik-database.volume": DATABASE_VOLUME,
+    "authentik.pod": pod(),
+    "authentik-database.volume": database_volume(),
     "authentik-postgresql.container": postgresql_container(
         env_file="%h/.config/authentik/authentik.env",
     ),
@@ -180,10 +187,10 @@ ROOTLESS = {
 }
 
 
-def write(target: Path, units: dict[str, str]) -> None:
+def write(target: Path, units: dict[str, Unit]) -> None:
     target.mkdir(parents=True, exist_ok=True)
-    for name, body in units.items():
-        (target / name).write_text(body)
+    for name, unit in units.items():
+        (target / name).write_text(render_unit(unit))
 
 
 write(OUTPUT_DIR, ROOTFUL)
