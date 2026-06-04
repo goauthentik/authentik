@@ -170,7 +170,7 @@ journalctl --user -u authentik-server.service -u authentik-worker.service -u aut
 To start the initial setup, navigate to `http://<your server's IP or hostname>:9000`.
 
 :::note Rootless ports
-Rootless Podman cannot bind ports below 1024 by default. Use the published ports shown in this guide, or place a reverse proxy in front of authentik.
+Rootless Podman cannot bind ports below 1024 by default. Use the published ports shown in this guide, or place a reverse proxy in front of authentik. Other options include firewall port forwarding, systemd socket activation, or changing the system's unprivileged port range.
 :::
 
 You are then prompted to set a password for the `akadmin` user (the default user).
