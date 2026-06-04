@@ -36,6 +36,7 @@ To support the integration of Komodo with authentik, you need to create an appli
         - Set a `Strict` redirect URI to `https://komodo.company/auth/oidc/callback`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Configure Launch URL** _(optional)_: set the [Launch URL](/docs/add-secure-apps/applications/#appearance) to `https://komodo.company/auth/oidc/login` to allow automatic login to Komodo when clicking the application from within authentik.
 
 3. Click **Submit** to save the new application and provider.
 
