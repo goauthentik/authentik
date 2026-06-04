@@ -113,7 +113,7 @@ done
 </TabItem>
 </Tabs>
 
-The units create one Podman pod named `authentik` with three containers: PostgreSQL, server, and worker. Containers in the pod share a network namespace, so the worker listens on `:9001` for HTTP and `:9301` for metrics to avoid port conflicts with the server. It also mounts the Podman socket so authentik can deploy outposts.
+The units create one Podman pod named `authentik` with three containers: PostgreSQL, server, and worker. Containers in the pod share a network namespace, so the worker listens on `:9001` for HTTP and `:9301` for metrics to avoid port conflicts with the server.
 
 The worker runs as UID 0 inside the container. This lets it read the root-owned socket in rootful mode; in rootless mode, container UID 0 maps back to the calling user.
 
