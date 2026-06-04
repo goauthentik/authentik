@@ -67,9 +67,9 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v2
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
+          client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
       - id: get-user-id
         name: Get GitHub app user ID
@@ -82,10 +82,14 @@ jobs:
           token: "${{ steps.app-token.outputs.token }}"
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          dependencies: "system,python,go,node,runtime,rust-nightly"
       - name: Run migrations
         run: make migrate
       - name: Bump version
         run: "make bump version=${{ inputs.version }}"
+      - name: Re-generate API Clients
+        run: make gen
       - name: Commit and push
         run: |
           # ID from https://api.github.com/users/authentik-automation[bot]
@@ -115,9 +119,9 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v2
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
+          client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
           repositories: helm
       - id: get-user-id
@@ -157,9 +161,9 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v2
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
+          client-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIV_KEY }}
           repositories: version
       - id: get-user-id

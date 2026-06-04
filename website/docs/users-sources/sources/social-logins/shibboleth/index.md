@@ -27,7 +27,7 @@ To integrate Shibboleth with authentik you will need to create a SAML source in 
 2. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
 3. Select **SAML Source** and configure the following settings:
     - Set **Name** to `Shibboleth`.
-    - Set **Slug** to `shibboleth` (this sets the slug used in Shibboleth's metadata url).
+    - Set **Slug** to `shibboleth` (this sets the slug used in Shibboleth's metadata URL).
     - Set **SSO URL** to `https://shibboleth.company/idp/profile/SAML2/Redirect/SSO`.
     - Set **Binding Type** to `Redirect`.
     - Set **Issuer** to `https://authentik.company/source/saml/<shibboleth-slug>/metadata/`.

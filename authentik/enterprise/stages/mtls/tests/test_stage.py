@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 from urllib.parse import quote_plus
 
 from django.urls import reverse
+from freezegun import freeze_time
 
 from authentik.core.models import User
 from authentik.core.tests.utils import (
@@ -28,6 +29,7 @@ from authentik.outposts.models import Outpost, OutpostType
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
+@freeze_time("2026-05-10 12:38:46")
 class MTLSStageTests(FlowTestCase):
 
     def setUp(self):

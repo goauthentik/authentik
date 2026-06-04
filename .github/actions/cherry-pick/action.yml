@@ -20,12 +20,22 @@ runs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
+        # Untrusted/event-derived values are passed via the environment (never
+        # interpolated into the script body) to avoid template injection.
+        EVENT_NAME: ${{ github.event_name }}
+        REPOSITORY: ${{ github.repository }}
+        ISSUE_NUMBER: ${{ github.event.issue.number }}
+        LABEL_NAME_CTX: ${{ github.event.label.name }}
+        PR_NUMBER_CTX: ${{ github.event.pull_request.number }}
+        MERGE_COMMIT_SHA_CTX: ${{ github.event.pull_request.merge_commit_sha }}
+        EVENT_ACTION: ${{ github.event.action }}
+        PR_MERGED_CTX: ${{ github.event.pull_request.merged }}
       run: |
         set -e -o pipefail
         # For issues events, check if it's actually a PR
-        if [ "${{ github.event_name }}" = "issues" ]; then
+        if [ "$EVENT_NAME" = "issues" ]; then
           # Check if this issue is actually a PR
-          PR_DATA=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }} 2>/dev/null || echo "null")
+          PR_DATA=$(gh api "repos/${REPOSITORY}/pulls/${ISSUE_NUMBER}" 2>/dev/null || echo "null")
           if [ "$PR_DATA" = "null" ]; then
             echo "should_run=false" >> $GITHUB_OUTPUT
             echo "reason=not_a_pr" >> $GITHUB_OUTPUT
@@ -35,11 +45,11 @@ runs:
 
           # Get PR data
           PR_MERGED=$(echo "$PR_DATA" | jq -r '.merged')
-          PR_NUMBER="${{ github.event.issue.number }}"
+          PR_NUMBER="$ISSUE_NUMBER"
           MERGE_COMMIT_SHA=$(echo "$PR_DATA" | jq -r '.merge_commit_sha')
 
           # Check if it's a backport label
-          LABEL_NAME="${{ github.event.label.name }}"
+          LABEL_NAME="$LABEL_NAME_CTX"
           if [[ "$LABEL_NAME" =~ ^backport/(.+)$ ]]; then
             if [ "$PR_MERGED" = "true" ]; then
               echo "should_run=true" >> $GITHUB_OUTPUT
@@ -61,11 +71,11 @@ runs:
         fi
 
         # For pull_request and pull_request_target events
-        PR_NUMBER="${{ github.event.pull_request.number }}"
-        MERGE_COMMIT_SHA="${{ github.event.pull_request.merge_commit_sha }}"
+        PR_NUMBER="$PR_NUMBER_CTX"
+        MERGE_COMMIT_SHA="$MERGE_COMMIT_SHA_CTX"
 
         # Case 1: PR was just merged (closed + merged = true)
-        if [ "${{ github.event.action }}" = "closed" ] && [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+        if [ "$EVENT_ACTION" = "closed" ] && [ "$PR_MERGED_CTX" = "true" ]; then
           echo "should_run=true" >> $GITHUB_OUTPUT
           echo "reason=pr_merged" >> $GITHUB_OUTPUT
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
@@ -74,12 +84,12 @@ runs:
         fi
 
         # Case 2: Label was added
-        if [ "${{ github.event.action }}" = "labeled" ]; then
-          LABEL_NAME="${{ github.event.label.name }}"
+        if [ "$EVENT_ACTION" = "labeled" ]; then
+          LABEL_NAME="$LABEL_NAME_CTX"
           # Check if it's a backport label
           if [[ "$LABEL_NAME" =~ ^backport/(.+)$ ]]; then
             # Check if PR is already merged
-            if [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+            if [ "$PR_MERGED_CTX" = "true" ]; then
               echo "should_run=true" >> $GITHUB_OUTPUT
               echo "reason=label_added_to_merged_pr" >> $GITHUB_OUTPUT
               echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
@@ -117,16 +127,18 @@ runs:
         GITHUB_TOKEN: ${{ inputs.token }}
         PR_NUMBER: ${{ steps.should_run.outputs.pr_number }}
         REASON: ${{ steps.should_run.outputs.reason }}
+        EVENT_NAME: ${{ github.event_name }}
+        LABEL_NAME_CTX: ${{ github.event.label.name }}
       run: |
         set -e -o pipefail
 
         # Determine which labels to process
         if [ "${REASON}" = "label_added_to_merged_pr" ]; then
           # Only process the specific label that was just added
-          if [ "${{ github.event_name }}" = "issues" ]; then
-            LABEL_NAME="${{ github.event.label.name }}"
+          if [ "$EVENT_NAME" = "issues" ]; then
+            LABEL_NAME="$LABEL_NAME_CTX"
           else
-            LABEL_NAME="${{ github.event.label.name }}"
+            LABEL_NAME="$LABEL_NAME_CTX"
           fi
 
           if [[ "$LABEL_NAME" =~ ^backport/(.+)$ ]]; then
@@ -150,10 +162,11 @@ runs:
         PR_TITLE: ${{ github.event.pull_request.title }}
         PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         LABELS: '${{ steps.pr_details.outputs.labels }}'
+        REASON: '${{ steps.should_run.outputs.reason }}'
       run: |
         set -e -o pipefail
 
-        echo "Processing PR #$PR_NUMBER (reason: ${{ steps.should_run.outputs.reason }})"
+        echo "Processing PR #$PR_NUMBER (reason: ${REASON})"
         echo "Found backport labels: $LABELS"
 
         # Process each backport label

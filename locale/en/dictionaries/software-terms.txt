@@ -75,6 +75,7 @@ aaguid
 adsi
 akflow
 akprox
+allinone
 asns
 cbor
 copylefted
@@ -92,6 +93,7 @@ frie
 gcsp
 geoip
 glpi
+gosaml
 grecaptcha
 guac
 guacd
@@ -112,6 +114,7 @@ microsoft
 mmdb
 noopener
 noreferrer
+oktadev
 openidc
 ouia
 ouid
@@ -164,3 +167,4 @@ yamltags
 zxcvbn
 ~uuid
 ~uuids
+wreply

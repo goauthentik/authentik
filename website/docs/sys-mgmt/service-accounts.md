@@ -1,6 +1,6 @@
 ---
-title: Service Accounts
-sidebar_label: Service Accounts
+title: Service accounts
+sidebar_label: Service accounts
 ---
 
 Service accounts are specialized user accounts for machine-to-machine authentication and automation. Use them when an external service, script, integration, or protocol client needs to authenticate to authentik without representing a human user.
@@ -16,10 +16,10 @@ authentik has two service account types:
 
 ## How service accounts work
 
-A user-created service account is an authentik user with the `Service account` type and an unusable password. Instead of a normal password, it authenticates with tokens:
+A user-created service account is an authentik user of type `Service account` that authenticates using:
 
-- **App passwords** authenticate to flows and protocol clients that accept a username and password, such as LDAP bind clients. When you create a service account from **Directory** > **Users**, authentik creates an app password for the account and shows it once in the confirmation screen.
-- **API tokens** authenticate to the authentik API with HTTP Bearer authentication. Use API tokens for scripts, CI/CD jobs, and other automation that calls `/api/v3/` endpoints.
+- **App passwords**: Authenticate to flows and protocol clients that accept a username and password, such as LDAP bind clients. When you create a service account from **Directory** > **Users**, authentik creates an app password for the account and shows it once in the confirmation screen.
+- **API tokens**: Authenticate to the authentik API with HTTP Bearer authentication. Use API tokens for scripts, CI/CD jobs, and other automation that calls `/api/v3/` endpoints.
 
 A service account is still a user object for authorization purposes. You can add it to groups, add it to roles, assign object permissions, and include or exclude it from application access through bindings and policies.
 
@@ -27,8 +27,8 @@ A service account is still a user object for authorization purposes. You can add
 
 Service accounts differ from regular users in the following ways:
 
-- They are intended for non-interactive use and cannot access the authentik user or Admin interfaces. If a service account authenticates in a browser, authentik redirects it to the brand's default application when one is configured; otherwise access to the interface is denied.
-- They do not have a usable account password. Use an app password or API token instead.
+- They are intended for non-interactive use and cannot access the authentik user or Admin interfaces. If a service account authenticates in a browser, authentik redirects it to the brand's default application when configured; otherwise, access to the interface is denied.
+- They do not have a usable account password. They instead use app passwords or API tokens.
 - They cannot complete interactive MFA setup or other human-driven account settings flows.
 - They should not be used to represent a person. Create a regular internal or external user for human access.
 - Internal service accounts are managed by authentik and cannot be modified directly.
@@ -37,20 +37,29 @@ Service accounts differ from regular users in the following ways:
 
 To create a service account:
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Users**.
-3. Click **Create a service account**.
-4. Configure the following settings:
+1. In the authentik **Admin interface**, navigate to **Directory** > **Users**.
+2. Click **New User**, and then select **Service Account**.
+3. Configure the following settings:
     - **Username**: the primary identifier for the service account. This value is used as the username for app-password authentication.
-    - **Create group**: creates a group with the same name as the service account and adds the service account to it. This can be useful when you want to grant access through group membership.
+    - **Create Group** (_optional_): creates a group with the same name as the service account and adds the service account to it. This can be useful when you want to grant access through group membership.
     - **Expiring**: controls whether the generated app password expires.
     - **Expires on**: sets the expiration date for the generated app password. If no date is provided, the default is 360 days.
-5. Click **Create**.
-6. Copy the generated username and password from the confirmation screen and store the password in a secure secret store.
+4. Click **Next**.
+   View the confirmation screen that shows the username and generated password. Copy this information and store the password in a secure secret store.
+5. Click **Close**.
 
 :::warning Store the generated password securely
 The generated password is the service account's initial app password. Treat it like any other secret. Anyone with this value can authenticate as the service account anywhere that app passwords are accepted.
 :::
+
+## Token properties
+
+Service account tokens have the following properties:
+
+- **Expiration**: by default, tokens expire after 360 days but can be configured to be non-expiring.
+- **Custom expiration date**: you can set a specific expiration date when creating the service account.
+- **Revocation**: tokens can be revoked at any time by deleting them or generating new ones. OAuth2 access tokens associated with service accounts can also be introspected or revoked through the OAuth2 provider endpoints when the authenticating provider is the issuing provider or is configured for [cross-provider token introspection and revocation](../add-secure-apps/providers/oauth2/index.mdx#cross-provider-token-introspection-and-revocation).
+- **Automatic rotation**: when a token expires, authentik automatically rotates API tokens to maintain security.
 
 ## Manage service account tokens
 
