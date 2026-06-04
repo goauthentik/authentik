@@ -181,7 +181,7 @@ If you run into issues, refer to our [troubleshooting docs](../../troubleshootin
 
 ## Upgrading
 
-The `.container` files set `AutoUpdate=registry`. Podman can pull newer digests for the configured image tag and restart the containers. Enable the timer:
+Podman can update these containers with `podman-auto-update.timer` because the Quadlet `.container` files set `AutoUpdate=registry`:
 
 <Tabs groupId="install-mode">
 <TabItem value="rootful" label="Rootful" default>
