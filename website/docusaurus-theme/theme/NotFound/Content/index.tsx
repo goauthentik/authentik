@@ -8,10 +8,11 @@ import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
 
 import { Redirect } from "@docusaurus/router";
 import Translate from "@docusaurus/Translate";
+import useIsBrowser from "@docusaurus/useIsBrowser";
 import Heading from "@theme/Heading";
 import type { Props } from "@theme/NotFound/Content";
 import clsx from "clsx";
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect } from "react";
 
 const NotFound: React.FC<Props> = ({ className }) => {
     return (
@@ -95,12 +96,9 @@ const RedirectFound: React.FC<RedirectFoundProps> = ({ nextURL, className }) => 
 };
 
 const NotFoundContentRouter: React.FC<Props> = (props) => {
-    const [routeURL, setRouteURL] = useState<URL>();
+    const browser = useIsBrowser();
+    const routeURL = browser ? new URL(window.location.href) : undefined;
     const redirects = useRedirectEntries();
-
-    useEffect(() => {
-        setRouteURL(new URL(window.location.href));
-    }, []);
 
     if (typeof routeURL === "undefined") {
         return null;

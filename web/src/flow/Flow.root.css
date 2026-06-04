@@ -6,7 +6,7 @@
 
     --ak-v2-c-flow-sidebar-inline-size: clamp(20rem, 32vw, 32rem);
     --ak-v2-c-flow__footer--Gap: var(--ak-v2-global--spacer-sm);
-    
+
     /* Translucent band that reads against a photographic background. */
     --ak-v2-c-flow__footer--Background: var(--ak-v2-global--BackgroundColor--over-photo-filter);
     --ak-v2-c-flow__footer--Color: var(--ak-v2-global--SecondaryReverseColor);

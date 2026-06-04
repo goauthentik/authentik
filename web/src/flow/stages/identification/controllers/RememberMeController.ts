@@ -77,7 +77,7 @@ export class RememberMeController implements ReactiveController {
             identificationFieldRef,
             passwordFieldRef,
             identificationFieldID,
-        }: RememberMeControllerInit
+        }: RememberMeControllerInit,
     ) {
         this.identificationFieldRef = identificationFieldRef;
         this.passwordFieldRef = passwordFieldRef || null;
@@ -216,7 +216,7 @@ export class RememberMeController implements ReactiveController {
             class="pf-c-switch remember-me-switch"
             for="authentik-remember-me"
             aria-description=${msg(
-                "When enabled, your username will be remembered on this device for future logins."
+                "When enabled, your username will be remembered on this device for future logins.",
             )}
         >
             <input

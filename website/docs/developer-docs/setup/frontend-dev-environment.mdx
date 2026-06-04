@@ -8,6 +8,8 @@ tags:
     - docker
 ---
 
+import NPMInstallScriptsAdmonition from "./\_npm-install-scripts-admonition.mdx";
+
 If you're focusing solely on frontend development, you can create a minimal development environment using Docker and Node.js. This setup allows you to make and preview changes to the frontend in real-time, without needing to interact with the backend.
 
 ### Prerequisites
@@ -54,6 +56,8 @@ If you're focusing solely on frontend development, you can create a minimal deve
     make node-install
     make web-watch
     ```
+
+    <NPMInstallScriptsAdmonition />
 
 5. In a new terminal, navigate to the cloned repository root and start the backend containers with Docker Compose.
 

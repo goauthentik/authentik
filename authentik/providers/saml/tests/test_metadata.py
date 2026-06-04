@@ -103,7 +103,7 @@ class TestServiceProviderMetadataParser(TestCase):
             provider.verification_kp.certificate_data, load_fixture("fixtures/cert.pem")
         )
         self.assertIsNotNone(provider.signing_kp)
-        self.assertEqual(provider.audience, "")
+        self.assertEqual(provider.audience, "http://localhost:8080/apps/user_saml/saml/metadata")
 
     def test_with_signing_cert_invalid_signature(self):
         """Test Metadata with signing cert (invalid signature)"""
