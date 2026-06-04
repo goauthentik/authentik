@@ -10,6 +10,8 @@ export function DesignationToLabel(designation: FlowDesignationEnum): string {
     switch (designation) {
         case FlowDesignationEnum.Authentication:
             return msg("Authentication");
+        case FlowDesignationEnum.AccountSelection:
+            return msg("Account selection");
         case FlowDesignationEnum.Authorization:
             return msg("Authorization");
         case FlowDesignationEnum.Enrollment:
