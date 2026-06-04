@@ -41,23 +41,25 @@ authentik requires the following permissions from the Docker API:
 
 ## Podman :ak-version[2026.8]
 
-Podman exposes a Docker-compatible REST API, so the Docker integration works against Podman's socket. The socket lives at a different path depending on whether Podman is running rootful or rootless:
+Podman exposes a Docker-compatible API, so the Docker integration can use a Podman socket. The socket path depends on the Podman mode:
 
-- Rootful (system-wide): `/run/podman/podman.sock`
-- Rootless (per-user): `$XDG_RUNTIME_DIR/podman/podman.sock` (typically `/run/user/<uid>/podman/podman.sock`)
+- Rootful: `/run/podman/podman.sock`
+- Rootless: `$XDG_RUNTIME_DIR/podman/podman.sock`, typically `/run/user/<uid>/podman/podman.sock`
 
-Enable the API socket:
+To enable the socket for rootful Podman, run:
 
 ```shell
-# Rootful
 sudo systemctl enable --now podman.socket
+```
 
-# Rootless
+To enable the socket for rootless Podman, run:
+
+```shell
 systemctl --user enable --now podman.socket
 loginctl enable-linger "$USER"
 ```
 
-The worker's startup discovery task scans a candidate list of socket paths _inside the container_ (`/var/run/docker.sock`, `/run/podman/podman.sock`, and `$XDG_RUNTIME_DIR/podman/podman.sock`) and creates a local service connection for the first one it finds. Mount your Podman socket into the worker at any of those paths.
+The worker's startup discovery task checks `/var/run/docker.sock`, `/run/podman/podman.sock`, and `$XDG_RUNTIME_DIR/podman/podman.sock` inside the worker container. It creates a local Docker service connection for the first readable socket that it finds. Mount your Podman socket into the worker at one of those paths.
 
 ## Docker Socket Proxy
 
