@@ -12,226 +12,358 @@
  * Do not edit the class manually.
  */
 
-import type {
-    BindingTypeEnum,
-    DigestAlgorithmEnum,
-    GroupKerberosSourceConnection,
-    GroupKerberosSourceConnectionRequest,
-    GroupLDAPSourceConnection,
-    GroupLDAPSourceConnectionRequest,
-    GroupMatchingModeEnum,
-    GroupOAuthSourceConnection,
-    GroupOAuthSourceConnectionRequest,
-    GroupPlexSourceConnection,
-    GroupPlexSourceConnectionRequest,
-    GroupSAMLSourceConnection,
-    GroupSAMLSourceConnectionRequest,
-    GroupSourceConnection,
-    GroupSourceConnectionRequest,
-    GroupTelegramSourceConnection,
-    GroupTelegramSourceConnectionRequest,
-    KadminTypeEnum,
-    KerberosSource,
-    KerberosSourceRequest,
-    LDAPDebug,
-    LDAPSource,
-    LDAPSourceRequest,
-    OAuthSource,
-    OAuthSourceRequest,
-    PaginatedGroupKerberosSourceConnectionList,
-    PaginatedGroupLDAPSourceConnectionList,
-    PaginatedGroupOAuthSourceConnectionList,
-    PaginatedGroupPlexSourceConnectionList,
-    PaginatedGroupSAMLSourceConnectionList,
-    PaginatedGroupSourceConnectionList,
-    PaginatedGroupTelegramSourceConnectionList,
-    PaginatedKerberosSourceList,
-    PaginatedLDAPSourceList,
-    PaginatedOAuthSourceList,
-    PaginatedPlexSourceList,
-    PaginatedSAMLSourceList,
-    PaginatedSCIMSourceGroupList,
-    PaginatedSCIMSourceList,
-    PaginatedSCIMSourceUserList,
-    PaginatedSourceList,
-    PaginatedTelegramSourceList,
-    PaginatedUserKerberosSourceConnectionList,
-    PaginatedUserLDAPSourceConnectionList,
-    PaginatedUserOAuthSourceConnectionList,
-    PaginatedUserPlexSourceConnectionList,
-    PaginatedUserSAMLSourceConnectionList,
-    PaginatedUserSourceConnectionList,
-    PaginatedUserTelegramSourceConnectionList,
-    PatchedGroupKerberosSourceConnectionRequest,
-    PatchedGroupLDAPSourceConnectionRequest,
-    PatchedGroupOAuthSourceConnectionRequest,
-    PatchedGroupPlexSourceConnectionRequest,
-    PatchedGroupSAMLSourceConnectionRequest,
-    PatchedGroupSourceConnectionRequest,
-    PatchedGroupTelegramSourceConnectionRequest,
-    PatchedKerberosSourceRequest,
-    PatchedLDAPSourceRequest,
-    PatchedOAuthSourceRequest,
-    PatchedPlexSourceRequest,
-    PatchedSAMLSourceRequest,
-    PatchedSCIMSourceGroupRequest,
-    PatchedSCIMSourceRequest,
-    PatchedSCIMSourceUserRequest,
-    PatchedTelegramSourceRequest,
-    PatchedUserKerberosSourceConnectionRequest,
-    PatchedUserLDAPSourceConnectionRequest,
-    PatchedUserOAuthSourceConnectionRequest,
-    PatchedUserPlexSourceConnectionRequest,
-    PatchedUserSAMLSourceConnectionRequest,
-    PatchedUserSourceConnectionRequest,
-    PatchedUserTelegramSourceConnectionRequest,
-    PlexSource,
-    PlexSourceRequest,
-    PlexTokenRedeemRequest,
-    PolicyEngineMode,
-    RedirectChallenge,
-    SAMLMetadata,
-    SAMLNameIDPolicyEnum,
-    SAMLSource,
-    SAMLSourceRequest,
-    SCIMSource,
-    SCIMSourceGroup,
-    SCIMSourceGroupRequest,
-    SCIMSourceRequest,
-    SCIMSourceUser,
-    SCIMSourceUserRequest,
-    SignatureAlgorithmEnum,
-    Source,
-    SourceType,
-    SyncStatus,
-    TelegramAuthRequest,
-    TelegramSource,
-    TelegramSourceRequest,
-    TypeCreate,
-    UsedBy,
-    UserKerberosSourceConnection,
-    UserKerberosSourceConnectionRequest,
-    UserLDAPSourceConnection,
-    UserLDAPSourceConnectionRequest,
-    UserMatchingModeEnum,
-    UserOAuthSourceConnection,
-    UserOAuthSourceConnectionRequest,
-    UserPlexSourceConnection,
-    UserPlexSourceConnectionRequest,
-    UserSAMLSourceConnection,
-    UserSAMLSourceConnectionRequest,
-    UserSetting,
-    UserSourceConnection,
-    UserSourceConnectionRequest,
-    UserTelegramSourceConnection,
-    UserTelegramSourceConnectionRequest,
-} from "../models/index";
+import { type BindingTypeEnum } from "../models/BindingTypeEnum";
+import { type DigestAlgorithmEnum } from "../models/DigestAlgorithmEnum";
 import {
+    type GroupKerberosSourceConnection,
     GroupKerberosSourceConnectionFromJSON,
+} from "../models/GroupKerberosSourceConnection";
+import {
+    type GroupKerberosSourceConnectionRequest,
     GroupKerberosSourceConnectionRequestToJSON,
+} from "../models/GroupKerberosSourceConnectionRequest";
+import {
+    type GroupLDAPSourceConnection,
     GroupLDAPSourceConnectionFromJSON,
+} from "../models/GroupLDAPSourceConnection";
+import {
+    type GroupLDAPSourceConnectionRequest,
     GroupLDAPSourceConnectionRequestToJSON,
+} from "../models/GroupLDAPSourceConnectionRequest";
+import { type GroupMatchingModeEnum } from "../models/GroupMatchingModeEnum";
+import {
+    type GroupOAuthSourceConnection,
     GroupOAuthSourceConnectionFromJSON,
+} from "../models/GroupOAuthSourceConnection";
+import {
+    type GroupOAuthSourceConnectionRequest,
     GroupOAuthSourceConnectionRequestToJSON,
+} from "../models/GroupOAuthSourceConnectionRequest";
+import {
+    type GroupPlexSourceConnection,
     GroupPlexSourceConnectionFromJSON,
+} from "../models/GroupPlexSourceConnection";
+import {
+    type GroupPlexSourceConnectionRequest,
     GroupPlexSourceConnectionRequestToJSON,
+} from "../models/GroupPlexSourceConnectionRequest";
+import {
+    type GroupSAMLSourceConnection,
     GroupSAMLSourceConnectionFromJSON,
+} from "../models/GroupSAMLSourceConnection";
+import {
+    type GroupSAMLSourceConnectionRequest,
     GroupSAMLSourceConnectionRequestToJSON,
+} from "../models/GroupSAMLSourceConnectionRequest";
+import {
+    type GroupSourceConnection,
     GroupSourceConnectionFromJSON,
+} from "../models/GroupSourceConnection";
+import {
+    type GroupSourceConnectionRequest,
     GroupSourceConnectionRequestToJSON,
+} from "../models/GroupSourceConnectionRequest";
+import {
+    type GroupTelegramSourceConnection,
     GroupTelegramSourceConnectionFromJSON,
+} from "../models/GroupTelegramSourceConnection";
+import {
+    type GroupTelegramSourceConnectionRequest,
     GroupTelegramSourceConnectionRequestToJSON,
-    KerberosSourceFromJSON,
+} from "../models/GroupTelegramSourceConnectionRequest";
+import { type KadminTypeEnum } from "../models/KadminTypeEnum";
+import { type KerberosSource, KerberosSourceFromJSON } from "../models/KerberosSource";
+import {
+    type KerberosSourceRequest,
     KerberosSourceRequestToJSON,
-    LDAPDebugFromJSON,
-    LDAPSourceFromJSON,
-    LDAPSourceRequestToJSON,
-    OAuthSourceFromJSON,
-    OAuthSourceRequestToJSON,
+} from "../models/KerberosSourceRequest";
+import { type LDAPDebug, LDAPDebugFromJSON } from "../models/LDAPDebug";
+import { type LDAPSource, LDAPSourceFromJSON } from "../models/LDAPSource";
+import { type LDAPSourceRequest, LDAPSourceRequestToJSON } from "../models/LDAPSourceRequest";
+import { type OAuthSource, OAuthSourceFromJSON } from "../models/OAuthSource";
+import { type OAuthSourceRequest, OAuthSourceRequestToJSON } from "../models/OAuthSourceRequest";
+import {
+    type PaginatedGroupKerberosSourceConnectionList,
     PaginatedGroupKerberosSourceConnectionListFromJSON,
+} from "../models/PaginatedGroupKerberosSourceConnectionList";
+import {
+    type PaginatedGroupLDAPSourceConnectionList,
     PaginatedGroupLDAPSourceConnectionListFromJSON,
+} from "../models/PaginatedGroupLDAPSourceConnectionList";
+import {
+    type PaginatedGroupOAuthSourceConnectionList,
     PaginatedGroupOAuthSourceConnectionListFromJSON,
+} from "../models/PaginatedGroupOAuthSourceConnectionList";
+import {
+    type PaginatedGroupPlexSourceConnectionList,
     PaginatedGroupPlexSourceConnectionListFromJSON,
+} from "../models/PaginatedGroupPlexSourceConnectionList";
+import {
+    type PaginatedGroupSAMLSourceConnectionList,
     PaginatedGroupSAMLSourceConnectionListFromJSON,
+} from "../models/PaginatedGroupSAMLSourceConnectionList";
+import {
+    type PaginatedGroupSourceConnectionList,
     PaginatedGroupSourceConnectionListFromJSON,
+} from "../models/PaginatedGroupSourceConnectionList";
+import {
+    type PaginatedGroupTelegramSourceConnectionList,
     PaginatedGroupTelegramSourceConnectionListFromJSON,
+} from "../models/PaginatedGroupTelegramSourceConnectionList";
+import {
+    type PaginatedKerberosSourceList,
     PaginatedKerberosSourceListFromJSON,
+} from "../models/PaginatedKerberosSourceList";
+import {
+    type PaginatedLDAPSourceList,
     PaginatedLDAPSourceListFromJSON,
+} from "../models/PaginatedLDAPSourceList";
+import {
+    type PaginatedOAuthSourceList,
     PaginatedOAuthSourceListFromJSON,
+} from "../models/PaginatedOAuthSourceList";
+import {
+    type PaginatedPlexSourceList,
     PaginatedPlexSourceListFromJSON,
+} from "../models/PaginatedPlexSourceList";
+import {
+    type PaginatedSAMLSourceList,
     PaginatedSAMLSourceListFromJSON,
+} from "../models/PaginatedSAMLSourceList";
+import {
+    type PaginatedSCIMSourceGroupList,
     PaginatedSCIMSourceGroupListFromJSON,
+} from "../models/PaginatedSCIMSourceGroupList";
+import {
+    type PaginatedSCIMSourceList,
     PaginatedSCIMSourceListFromJSON,
+} from "../models/PaginatedSCIMSourceList";
+import {
+    type PaginatedSCIMSourceUserList,
     PaginatedSCIMSourceUserListFromJSON,
+} from "../models/PaginatedSCIMSourceUserList";
+import {
+    type PaginatedSourceList,
     PaginatedSourceListFromJSON,
+} from "../models/PaginatedSourceList";
+import {
+    type PaginatedTelegramSourceList,
     PaginatedTelegramSourceListFromJSON,
+} from "../models/PaginatedTelegramSourceList";
+import {
+    type PaginatedUserKerberosSourceConnectionList,
     PaginatedUserKerberosSourceConnectionListFromJSON,
+} from "../models/PaginatedUserKerberosSourceConnectionList";
+import {
+    type PaginatedUserLDAPSourceConnectionList,
     PaginatedUserLDAPSourceConnectionListFromJSON,
+} from "../models/PaginatedUserLDAPSourceConnectionList";
+import {
+    type PaginatedUserOAuthSourceConnectionList,
     PaginatedUserOAuthSourceConnectionListFromJSON,
+} from "../models/PaginatedUserOAuthSourceConnectionList";
+import {
+    type PaginatedUserPlexSourceConnectionList,
     PaginatedUserPlexSourceConnectionListFromJSON,
+} from "../models/PaginatedUserPlexSourceConnectionList";
+import {
+    type PaginatedUserSAMLSourceConnectionList,
     PaginatedUserSAMLSourceConnectionListFromJSON,
+} from "../models/PaginatedUserSAMLSourceConnectionList";
+import {
+    type PaginatedUserSourceConnectionList,
     PaginatedUserSourceConnectionListFromJSON,
+} from "../models/PaginatedUserSourceConnectionList";
+import {
+    type PaginatedUserTelegramSourceConnectionList,
     PaginatedUserTelegramSourceConnectionListFromJSON,
+} from "../models/PaginatedUserTelegramSourceConnectionList";
+import {
+    type PatchedGroupKerberosSourceConnectionRequest,
     PatchedGroupKerberosSourceConnectionRequestToJSON,
+} from "../models/PatchedGroupKerberosSourceConnectionRequest";
+import {
+    type PatchedGroupLDAPSourceConnectionRequest,
     PatchedGroupLDAPSourceConnectionRequestToJSON,
+} from "../models/PatchedGroupLDAPSourceConnectionRequest";
+import {
+    type PatchedGroupOAuthSourceConnectionRequest,
     PatchedGroupOAuthSourceConnectionRequestToJSON,
+} from "../models/PatchedGroupOAuthSourceConnectionRequest";
+import {
+    type PatchedGroupPlexSourceConnectionRequest,
     PatchedGroupPlexSourceConnectionRequestToJSON,
+} from "../models/PatchedGroupPlexSourceConnectionRequest";
+import {
+    type PatchedGroupSAMLSourceConnectionRequest,
     PatchedGroupSAMLSourceConnectionRequestToJSON,
+} from "../models/PatchedGroupSAMLSourceConnectionRequest";
+import {
+    type PatchedGroupSourceConnectionRequest,
     PatchedGroupSourceConnectionRequestToJSON,
+} from "../models/PatchedGroupSourceConnectionRequest";
+import {
+    type PatchedGroupTelegramSourceConnectionRequest,
     PatchedGroupTelegramSourceConnectionRequestToJSON,
+} from "../models/PatchedGroupTelegramSourceConnectionRequest";
+import {
+    type PatchedKerberosSourceRequest,
     PatchedKerberosSourceRequestToJSON,
+} from "../models/PatchedKerberosSourceRequest";
+import {
+    type PatchedLDAPSourceRequest,
     PatchedLDAPSourceRequestToJSON,
+} from "../models/PatchedLDAPSourceRequest";
+import {
+    type PatchedOAuthSourceRequest,
     PatchedOAuthSourceRequestToJSON,
+} from "../models/PatchedOAuthSourceRequest";
+import {
+    type PatchedPlexSourceRequest,
     PatchedPlexSourceRequestToJSON,
+} from "../models/PatchedPlexSourceRequest";
+import {
+    type PatchedSAMLSourceRequest,
     PatchedSAMLSourceRequestToJSON,
+} from "../models/PatchedSAMLSourceRequest";
+import {
+    type PatchedSCIMSourceGroupRequest,
     PatchedSCIMSourceGroupRequestToJSON,
+} from "../models/PatchedSCIMSourceGroupRequest";
+import {
+    type PatchedSCIMSourceRequest,
     PatchedSCIMSourceRequestToJSON,
+} from "../models/PatchedSCIMSourceRequest";
+import {
+    type PatchedSCIMSourceUserRequest,
     PatchedSCIMSourceUserRequestToJSON,
+} from "../models/PatchedSCIMSourceUserRequest";
+import {
+    type PatchedTelegramSourceRequest,
     PatchedTelegramSourceRequestToJSON,
+} from "../models/PatchedTelegramSourceRequest";
+import {
+    type PatchedUserKerberosSourceConnectionRequest,
     PatchedUserKerberosSourceConnectionRequestToJSON,
+} from "../models/PatchedUserKerberosSourceConnectionRequest";
+import {
+    type PatchedUserLDAPSourceConnectionRequest,
     PatchedUserLDAPSourceConnectionRequestToJSON,
+} from "../models/PatchedUserLDAPSourceConnectionRequest";
+import {
+    type PatchedUserOAuthSourceConnectionRequest,
     PatchedUserOAuthSourceConnectionRequestToJSON,
+} from "../models/PatchedUserOAuthSourceConnectionRequest";
+import {
+    type PatchedUserPlexSourceConnectionRequest,
     PatchedUserPlexSourceConnectionRequestToJSON,
+} from "../models/PatchedUserPlexSourceConnectionRequest";
+import {
+    type PatchedUserSAMLSourceConnectionRequest,
     PatchedUserSAMLSourceConnectionRequestToJSON,
+} from "../models/PatchedUserSAMLSourceConnectionRequest";
+import {
+    type PatchedUserSourceConnectionRequest,
     PatchedUserSourceConnectionRequestToJSON,
+} from "../models/PatchedUserSourceConnectionRequest";
+import {
+    type PatchedUserTelegramSourceConnectionRequest,
     PatchedUserTelegramSourceConnectionRequestToJSON,
-    PlexSourceFromJSON,
-    PlexSourceRequestToJSON,
+} from "../models/PatchedUserTelegramSourceConnectionRequest";
+import { type PlexSource, PlexSourceFromJSON } from "../models/PlexSource";
+import { type PlexSourceRequest, PlexSourceRequestToJSON } from "../models/PlexSourceRequest";
+import {
+    type PlexTokenRedeemRequest,
     PlexTokenRedeemRequestToJSON,
-    RedirectChallengeFromJSON,
-    SAMLMetadataFromJSON,
-    SAMLSourceFromJSON,
-    SAMLSourceRequestToJSON,
-    SCIMSourceFromJSON,
-    SCIMSourceGroupFromJSON,
+} from "../models/PlexTokenRedeemRequest";
+import { type PolicyEngineMode } from "../models/PolicyEngineMode";
+import { type RedirectChallenge, RedirectChallengeFromJSON } from "../models/RedirectChallenge";
+import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata";
+import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum";
+import { type SAMLSource, SAMLSourceFromJSON } from "../models/SAMLSource";
+import { type SAMLSourceRequest, SAMLSourceRequestToJSON } from "../models/SAMLSourceRequest";
+import { type SCIMSource, SCIMSourceFromJSON } from "../models/SCIMSource";
+import { type SCIMSourceGroup, SCIMSourceGroupFromJSON } from "../models/SCIMSourceGroup";
+import {
+    type SCIMSourceGroupRequest,
     SCIMSourceGroupRequestToJSON,
-    SCIMSourceRequestToJSON,
-    SCIMSourceUserFromJSON,
+} from "../models/SCIMSourceGroupRequest";
+import { type SCIMSourceRequest, SCIMSourceRequestToJSON } from "../models/SCIMSourceRequest";
+import { type SCIMSourceUser, SCIMSourceUserFromJSON } from "../models/SCIMSourceUser";
+import {
+    type SCIMSourceUserRequest,
     SCIMSourceUserRequestToJSON,
-    SourceFromJSON,
-    SourceTypeFromJSON,
-    SyncStatusFromJSON,
-    TelegramAuthRequestToJSON,
-    TelegramSourceFromJSON,
+} from "../models/SCIMSourceUserRequest";
+import { type SignatureAlgorithmEnum } from "../models/SignatureAlgorithmEnum";
+import { type Source, SourceFromJSON } from "../models/Source";
+import { type SourceType, SourceTypeFromJSON } from "../models/SourceType";
+import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus";
+import { type TelegramAuthRequest, TelegramAuthRequestToJSON } from "../models/TelegramAuthRequest";
+import { type TelegramSource, TelegramSourceFromJSON } from "../models/TelegramSource";
+import {
+    type TelegramSourceRequest,
     TelegramSourceRequestToJSON,
-    TypeCreateFromJSON,
-    UsedByFromJSON,
+} from "../models/TelegramSourceRequest";
+import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+import {
+    type UserKerberosSourceConnection,
     UserKerberosSourceConnectionFromJSON,
+} from "../models/UserKerberosSourceConnection";
+import {
+    type UserKerberosSourceConnectionRequest,
     UserKerberosSourceConnectionRequestToJSON,
+} from "../models/UserKerberosSourceConnectionRequest";
+import {
+    type UserLDAPSourceConnection,
     UserLDAPSourceConnectionFromJSON,
+} from "../models/UserLDAPSourceConnection";
+import {
+    type UserLDAPSourceConnectionRequest,
     UserLDAPSourceConnectionRequestToJSON,
+} from "../models/UserLDAPSourceConnectionRequest";
+import { type UserMatchingModeEnum } from "../models/UserMatchingModeEnum";
+import {
+    type UserOAuthSourceConnection,
     UserOAuthSourceConnectionFromJSON,
+} from "../models/UserOAuthSourceConnection";
+import {
+    type UserOAuthSourceConnectionRequest,
     UserOAuthSourceConnectionRequestToJSON,
+} from "../models/UserOAuthSourceConnectionRequest";
+import {
+    type UserPlexSourceConnection,
     UserPlexSourceConnectionFromJSON,
+} from "../models/UserPlexSourceConnection";
+import {
+    type UserPlexSourceConnectionRequest,
     UserPlexSourceConnectionRequestToJSON,
+} from "../models/UserPlexSourceConnectionRequest";
+import {
+    type UserSAMLSourceConnection,
     UserSAMLSourceConnectionFromJSON,
+} from "../models/UserSAMLSourceConnection";
+import {
+    type UserSAMLSourceConnectionRequest,
     UserSAMLSourceConnectionRequestToJSON,
-    UserSettingFromJSON,
+} from "../models/UserSAMLSourceConnectionRequest";
+import { type UserSetting, UserSettingFromJSON } from "../models/UserSetting";
+import {
+    type UserSourceConnection,
     UserSourceConnectionFromJSON,
+} from "../models/UserSourceConnection";
+import {
+    type UserSourceConnectionRequest,
     UserSourceConnectionRequestToJSON,
+} from "../models/UserSourceConnectionRequest";
+import {
+    type UserTelegramSourceConnection,
     UserTelegramSourceConnectionFromJSON,
+} from "../models/UserTelegramSourceConnection";
+import {
+    type UserTelegramSourceConnectionRequest,
     UserTelegramSourceConnectionRequestToJSON,
-} from "../models/index";
+} from "../models/UserTelegramSourceConnectionRequest";
 import * as runtime from "../runtime";
 
 export interface SourcesAllDestroyRequest {
@@ -1212,10 +1344,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/all/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1362,10 +1491,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/all/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1477,10 +1603,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/all/{slug}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1592,7 +1715,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -1738,7 +1861,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -1808,7 +1931,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -1884,7 +2007,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -1954,7 +2077,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/all/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -2090,7 +2213,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -2236,7 +2359,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -2306,7 +2429,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -2382,7 +2505,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -2452,7 +2575,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/kerberos/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -2588,7 +2711,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -2734,7 +2857,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -2804,7 +2927,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -2880,7 +3003,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -2950,7 +3073,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/ldap/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -3086,7 +3209,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -3232,7 +3355,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -3302,7 +3425,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -3378,7 +3501,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -3448,7 +3571,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/oauth/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -3584,7 +3707,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -3730,7 +3853,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -3800,7 +3923,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -3876,7 +3999,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -3946,7 +4069,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/plex/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4082,7 +4205,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4228,7 +4351,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4298,7 +4421,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4374,7 +4497,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4444,7 +4567,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/saml/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4580,7 +4703,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4726,7 +4849,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4796,7 +4919,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4872,7 +4995,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -4942,7 +5065,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/group_connections/telegram/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -5072,10 +5195,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -5253,10 +5373,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -5326,10 +5443,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -5392,10 +5506,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/sync/status/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -5469,10 +5580,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -5536,10 +5644,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/kerberos/{slug}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -5663,10 +5768,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/debug/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -5727,10 +5829,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -5974,10 +6073,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -6039,10 +6135,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -6103,10 +6196,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/sync/status/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -6180,10 +6270,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -6245,10 +6332,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/ldap/{slug}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -6372,10 +6456,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/oauth/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -6576,10 +6657,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/oauth/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -6641,10 +6719,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/oauth/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -6776,10 +6851,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/oauth/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -6841,10 +6913,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/oauth/{slug}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -6968,10 +7037,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/plex/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -7148,10 +7214,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/plex/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -7353,10 +7416,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/plex/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -7426,10 +7486,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/plex/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -7491,10 +7548,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/plex/{slug}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -7618,10 +7672,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -7849,10 +7900,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/metadata/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -7920,10 +7968,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -7985,10 +8030,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -8058,10 +8100,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -8123,10 +8162,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/saml/{slug}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -8250,10 +8286,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -8378,7 +8411,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -8523,7 +8556,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -8593,7 +8626,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -8665,7 +8698,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_groups/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -8729,7 +8762,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_groups/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -8878,10 +8911,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -8943,10 +8973,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -9016,10 +9043,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -9081,10 +9105,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim/{slug}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -9210,7 +9231,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -9355,7 +9376,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -9425,7 +9446,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -9497,7 +9518,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_users/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -9561,7 +9582,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/scim_users/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -9631,10 +9652,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/connect_user/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -9767,10 +9785,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -9947,10 +9962,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -10020,10 +10032,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -10095,10 +10104,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -10162,10 +10168,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/telegram/{slug}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -10226,7 +10229,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -10372,7 +10375,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -10442,7 +10445,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -10518,7 +10521,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/all/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -10588,7 +10591,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/all/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -10724,7 +10727,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -10870,7 +10873,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -10940,7 +10943,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -11016,7 +11019,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/kerberos/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -11086,7 +11089,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/kerberos/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -11222,7 +11225,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -11368,7 +11371,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -11438,7 +11441,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -11514,7 +11517,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/ldap/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -11584,7 +11587,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/ldap/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -11720,7 +11723,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -11866,7 +11869,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -11936,7 +11939,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -12012,7 +12015,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/oauth/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -12082,7 +12085,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/oauth/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -12218,7 +12221,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -12364,7 +12367,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -12434,7 +12437,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -12510,7 +12513,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/plex/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -12580,7 +12583,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/plex/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -12716,7 +12719,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -12862,7 +12865,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -12932,7 +12935,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -13008,7 +13011,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/saml/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -13078,7 +13081,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/saml/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -13214,7 +13217,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -13360,7 +13363,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -13430,7 +13433,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -13506,7 +13509,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/telegram/{id}/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
@@ -13576,7 +13579,7 @@ export class SourcesApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/sources/user_connections/telegram/{id}/used_by/`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters["id"])));
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
             path: urlPath,
