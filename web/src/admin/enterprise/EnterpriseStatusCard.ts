@@ -31,7 +31,7 @@ export class EnterpriseStatusCard extends AKElement {
             case LicenseSummaryStatusEnum.ExpirySoon:
                 return html`<ak-label color=${PFColor.Orange}>${msg("Expiring soon")}</ak-label>`;
             case LicenseSummaryStatusEnum.Unlicensed:
-                return html`<ak-label color=${PFColor.Grey}>${msg("Unlicensed")}</ak-label>`;
+                return html`<ak-label color=${PFColor.Gray}>${msg("Unlicensed")}</ak-label>`;
             case LicenseSummaryStatusEnum.ReadOnly:
                 return html`<ak-label color=${PFColor.Red}>${msg("Read Only")}</ak-label>`;
             case LicenseSummaryStatusEnum.Valid:

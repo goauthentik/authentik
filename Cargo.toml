@@ -51,7 +51,7 @@ pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.28.3"
 pyo3-build-config = "= 0.28.3"
 regex = "= 1.12.3"
-reqwest = { version = "= 0.13.3", features = [
+reqwest = { version = "= 0.13.4", features = [
   "form",
   "json",
   "multipart",
@@ -112,7 +112,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.1", features = ["serde", "v4"] }
+uuid = { version = "= 1.23.2", features = ["serde", "v4"] }
 which = "= 8.0.2"
 
 ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }
