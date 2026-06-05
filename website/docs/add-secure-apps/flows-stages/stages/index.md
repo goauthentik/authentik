@@ -54,7 +54,7 @@ You can use a binding to determine which exact [stages](../stages/index.md) (all
 For an overview about all the different types of bindings in authentik and how they are used, refer to [About authentik bindings](../../bindings-overview/index.md).
 
 :::info
-Be aware that some stages and flows do not allow user or group bindings, because in certain scenarios (authentication or enrollment), the flow plan doesn't yet know who the user or group is.
+Be aware that some stages and flows do not allow user or group bindings, because in certain scenarios (authentication or enrollment), the [flow plan](../flow/planner.md) doesn't yet know who the user or group is.
 :::
 
 ### Bind a stage to a flow

@@ -10,7 +10,7 @@ require (
 	github.com/getsentry/sentry-go v0.46.2
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.13
-	github.com/go-openapi/runtime v0.31.0
+	github.com/go-openapi/runtime v0.32.2
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/handlers v1.5.2
