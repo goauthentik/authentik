@@ -61,7 +61,7 @@ After you've created the policies to match the events you want, create a notific
 
 4. In the list of notification rules, click the arrow in the row of the notification rule to expand the details of the rule.
 
-5. Click **Bind existing Policy/Group/User** and in the **Create Binding** modal, select the policy that you created for this notification rule and then click **Create Policy Binding** to finalize the binding.
+5. Click **Create or bind...**. Under **Bind Existing...**, select **Bind an existing policy**. In the **Create Binding** modal, select the policy that you created for this notification rule, and then click **Create** to finalize the binding.
 
 :::info
 Be aware that policies are executed even when no group is selected.

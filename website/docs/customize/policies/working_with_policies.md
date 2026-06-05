@@ -49,8 +49,8 @@ These bindings control which users can access a flow.
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows**.
 3. In the list of flows, click on the name of the flow to which you want to bind a policy.
-4. Click on the **Policy/Group/User Bindings** tab at the top of the page.
-5. Either create a new policy and bind it immediately with **Create and bind Policy**, or attach an existing policy, group, or user with **Bind existing policy/group/user**.
+4. Click on the **Policy / Group / User Bindings** tab at the top of the page.
+5. Click **Create or bind...**. You can then create a new policy and bind it to the flow, or select **Bind an existing policy** under **Bind Existing...**.
 
 ### Bind a policy to a stage binding
 
@@ -76,8 +76,8 @@ These bindings control which users or groups can access an application.
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications**.
 3. In the list of applications, click on the name of the application to which you want to bind a policy.
-4. Click on the **Policy/Group/User Bindings** tab at the top of the page.
-5. Either create and bind a new policy, or bind an existing policy, group, or user.
+4. Click on the **Policy / Group / User Bindings** tab at the top of the page.
+5. Click **Create or bind...**. You can then create a new policy and bind it to the application, or select **Bind an existing policy** under **Bind Existing...**.
 
 ### Bind a policy to a source
 
