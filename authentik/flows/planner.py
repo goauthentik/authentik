@@ -279,7 +279,6 @@ class FlowPlanner:
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)
             engine.use_cache = self.use_cache
-            span.set_data("context", cleanse_dict(context))
             engine.request.context.update(context)
             engine.build()
             result = engine.result
