@@ -8,7 +8,7 @@ from django.utils.timezone import now
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
-from authentik.pam.models import GrantRequest, GrantRequestTarget, RequestState
+from authentik.pam.models import GrantRequest, GrantRequestTarget, RequestStatus
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONTEXT_GRANT_REQUESTED_PBMS = "goauthentik.io/pam/requested-pbms"
@@ -26,7 +26,7 @@ class GrantRequestFinalStageView(StageView):
                 data=self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}),
                 expiring=True,
                 expires=expires,
-                status=RequestState.CREATED,
+                status=RequestStatus.CREATED,
             )
             for pbm in pbms:
                 GrantRequestTarget.objects.create(

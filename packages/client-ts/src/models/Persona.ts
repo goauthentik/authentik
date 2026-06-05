@@ -12,8 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { UserTypeEnum } from "./UserTypeEnum";
-import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Partial User Serializer, does not include child relations.
@@ -26,7 +26,37 @@ export interface Persona {
      * @type {number}
      * @memberof Persona
      */
-    readonly id: number;
+    readonly pk: number;
+    /**
+     * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+     * @type {string}
+     * @memberof Persona
+     */
+    username: string;
+    /**
+     * User's display name.
+     * @type {string}
+     * @memberof Persona
+     */
+    name: string;
+    /**
+     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+     * @type {boolean}
+     * @memberof Persona
+     */
+    isActive?: boolean;
+    /**
+     *
+     * @type {Date}
+     * @memberof Persona
+     */
+    lastLogin?: Date | null;
+    /**
+     *
+     * @type {string}
+     * @memberof Persona
+     */
+    email?: string;
     /**
      *
      * @type {{ [key: string]: any; }}
@@ -41,129 +71,21 @@ export interface Persona {
     readonly uid: string;
     /**
      *
-     * @type {string}
+     * @type {PartialUser}
      * @memberof Persona
      */
-    password: string;
-    /**
-     *
-     * @type {Date}
-     * @memberof Persona
-     */
-    lastLogin?: Date | null;
-    /**
-     * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-     * @type {string}
-     * @memberof Persona
-     */
-    username: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Persona
-     */
-    firstName?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Persona
-     */
-    lastName?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Persona
-     */
-    email?: string;
-    /**
-     * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-     * @type {boolean}
-     * @memberof Persona
-     */
-    isActive?: boolean;
-    /**
-     *
-     * @type {Date}
-     * @memberof Persona
-     */
-    dateJoined?: Date;
-    /**
-     *
-     * @type {string}
-     * @memberof Persona
-     */
-    readonly uuid: string;
-    /**
-     * User's display name.
-     * @type {string}
-     * @memberof Persona
-     */
-    name: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Persona
-     */
-    path?: string;
-    /**
-     *
-     * @type {UserTypeEnum}
-     * @memberof Persona
-     */
-    type?: UserTypeEnum;
-    /**
-     *
-     * @type {Date}
-     * @memberof Persona
-     */
-    readonly passwordChangeDate: Date;
-    /**
-     *
-     * @type {Date}
-     * @memberof Persona
-     */
-    readonly lastUpdated: Date;
-    /**
-     *
-     * @type {number}
-     * @memberof Persona
-     */
-    parent: number;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof Persona
-     */
-    readonly sources: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof Persona
-     */
-    groups: Array<string>;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof Persona
-     */
-    roles?: Array<string>;
+    readonly parent: PartialUser;
 }
 
 /**
  * Check if a given object implements the Persona interface.
  */
 export function instanceOfPersona(value: object): value is Persona {
-    if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("uid" in value) || value["uid"] === undefined) return false;
-    if (!("password" in value) || value["password"] === undefined) return false;
+    if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("username" in value) || value["username"] === undefined) return false;
-    if (!("uuid" in value) || value["uuid"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("passwordChangeDate" in value) || value["passwordChangeDate"] === undefined) return false;
-    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
+    if (!("uid" in value) || value["uid"] === undefined) return false;
     if (!("parent" in value) || value["parent"] === undefined) return false;
-    if (!("sources" in value) || value["sources"] === undefined) return false;
-    if (!("groups" in value) || value["groups"] === undefined) return false;
     return true;
 }
 
@@ -176,27 +98,15 @@ export function PersonaFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         return json;
     }
     return {
-        id: json["id"],
+        pk: json["pk"],
+        username: json["username"],
+        name: json["name"],
+        isActive: json["is_active"] == null ? undefined : json["is_active"],
+        lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
+        email: json["email"] == null ? undefined : json["email"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],
-        password: json["password"],
-        lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
-        username: json["username"],
-        firstName: json["first_name"] == null ? undefined : json["first_name"],
-        lastName: json["last_name"] == null ? undefined : json["last_name"],
-        email: json["email"] == null ? undefined : json["email"],
-        isActive: json["is_active"] == null ? undefined : json["is_active"],
-        dateJoined: json["date_joined"] == null ? undefined : new Date(json["date_joined"]),
-        uuid: json["uuid"],
-        name: json["name"],
-        path: json["path"] == null ? undefined : json["path"],
-        type: json["type"] == null ? undefined : UserTypeEnumFromJSON(json["type"]),
-        passwordChangeDate: new Date(json["password_change_date"]),
-        lastUpdated: new Date(json["last_updated"]),
-        parent: json["parent"],
-        sources: json["sources"],
-        groups: json["groups"],
-        roles: json["roles"] == null ? undefined : json["roles"],
+        parent: PartialUserFromJSON(json["parent"]),
     };
 }
 
@@ -205,10 +115,7 @@ export function PersonaToJSON(json: any): Persona {
 }
 
 export function PersonaToJSONTyped(
-    value?: Omit<
-        Persona,
-        "id" | "uid" | "uuid" | "password_change_date" | "last_updated" | "sources"
-    > | null,
+    value?: Omit<Persona, "pk" | "uid" | "parent"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -216,22 +123,12 @@ export function PersonaToJSONTyped(
     }
 
     return {
-        attributes: value["attributes"],
-        password: value["password"],
+        username: value["username"],
+        name: value["name"],
+        is_active: value["isActive"],
         last_login:
             value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
-        username: value["username"],
-        first_name: value["firstName"],
-        last_name: value["lastName"],
         email: value["email"],
-        is_active: value["isActive"],
-        date_joined:
-            value["dateJoined"] == null ? value["dateJoined"] : value["dateJoined"].toISOString(),
-        name: value["name"],
-        path: value["path"],
-        type: UserTypeEnumToJSON(value["type"]),
-        parent: value["parent"],
-        groups: value["groups"],
-        roles: value["roles"],
+        attributes: value["attributes"],
     };
 }

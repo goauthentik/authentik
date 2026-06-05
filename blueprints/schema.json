@@ -8990,6 +8990,10 @@
                 "created_by": {
                     "type": "integer",
                     "title": "Created by"
+                },
+                "fulfilled_by": {
+                    "type": "integer",
+                    "title": "Fulfilled by"
                 }
             },
             "required": []

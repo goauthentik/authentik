@@ -18,110 +18,89 @@ import { RequestStatusFromJSON, RequestStatusToJSON } from "./RequestStatus";
 /**
  *
  * @export
- * @interface GrantRequest
+ * @interface GrantRequestRequest
  */
-export interface GrantRequest {
+export interface GrantRequestRequest {
     /**
      *
      * @type {string}
-     * @memberof GrantRequest
+     * @memberof GrantRequestRequest
      */
     uuid?: string;
     /**
      *
      * @type {Date}
-     * @memberof GrantRequest
-     */
-    readonly created: Date;
-    /**
-     *
-     * @type {Date}
-     * @memberof GrantRequest
-     */
-    readonly lastUpdated: Date;
-    /**
-     *
-     * @type {Date}
-     * @memberof GrantRequest
+     * @memberof GrantRequestRequest
      */
     expires?: Date | null;
     /**
      *
      * @type {boolean}
-     * @memberof GrantRequest
+     * @memberof GrantRequestRequest
      */
     expiring?: boolean;
     /**
      *
      * @type {{ [key: string]: any; }}
-     * @memberof GrantRequest
+     * @memberof GrantRequestRequest
      */
     data?: { [key: string]: any };
     /**
      *
      * @type {RequestStatus}
-     * @memberof GrantRequest
+     * @memberof GrantRequestRequest
      */
     status?: RequestStatus;
     /**
      *
      * @type {number}
-     * @memberof GrantRequest
+     * @memberof GrantRequestRequest
      */
     createdBy: number;
     /**
      *
      * @type {number}
-     * @memberof GrantRequest
+     * @memberof GrantRequestRequest
      */
     fulfilledBy?: number | null;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof GrantRequest
-     */
-    readonly targets: Array<string>;
 }
 
 /**
- * Check if a given object implements the GrantRequest interface.
+ * Check if a given object implements the GrantRequestRequest interface.
  */
-export function instanceOfGrantRequest(value: object): value is GrantRequest {
-    if (!("created" in value) || value["created"] === undefined) return false;
-    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
+export function instanceOfGrantRequestRequest(value: object): value is GrantRequestRequest {
     if (!("createdBy" in value) || value["createdBy"] === undefined) return false;
-    if (!("targets" in value) || value["targets"] === undefined) return false;
     return true;
 }
 
-export function GrantRequestFromJSON(json: any): GrantRequest {
-    return GrantRequestFromJSONTyped(json, false);
+export function GrantRequestRequestFromJSON(json: any): GrantRequestRequest {
+    return GrantRequestRequestFromJSONTyped(json, false);
 }
 
-export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): GrantRequest {
+export function GrantRequestRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): GrantRequestRequest {
     if (json == null) {
         return json;
     }
     return {
         uuid: json["uuid"] == null ? undefined : json["uuid"],
-        created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         data: json["data"] == null ? undefined : json["data"],
         status: json["status"] == null ? undefined : RequestStatusFromJSON(json["status"]),
         createdBy: json["created_by"],
         fulfilledBy: json["fulfilled_by"] == null ? undefined : json["fulfilled_by"],
-        targets: json["targets"],
     };
 }
 
-export function GrantRequestToJSON(json: any): GrantRequest {
-    return GrantRequestToJSONTyped(json, false);
+export function GrantRequestRequestToJSON(json: any): GrantRequestRequest {
+    return GrantRequestRequestToJSONTyped(json, false);
 }
 
-export function GrantRequestToJSONTyped(
-    value?: Omit<GrantRequest, "created" | "last_updated" | "targets"> | null,
+export function GrantRequestRequestToJSONTyped(
+    value?: GrantRequestRequest | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

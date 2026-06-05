@@ -17,6 +17,7 @@ import {
     type GrantRequestCreateRequest,
     GrantRequestCreateRequestToJSON,
 } from "../models/GrantRequestCreateRequest";
+import { type GrantRequestRequest, GrantRequestRequestToJSON } from "../models/GrantRequestRequest";
 import { type Link, LinkFromJSON } from "../models/Link";
 import {
     type PaginatedGrantRequestList,
@@ -35,6 +36,11 @@ export interface PamGrantRequestsCreateRequest {
 
 export interface PamGrantRequestsDestroyRequest {
     uuid: string;
+}
+
+export interface PamGrantRequestsFulfillCreateRequest {
+    uuid: string;
+    grantRequestRequest: GrantRequestRequest;
 }
 
 export interface PamGrantRequestsListRequest {
@@ -184,6 +190,81 @@ export class PamApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<void> {
         await this.pamGrantRequestsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for pamGrantRequestsFulfillCreate without sending the request
+     */
+    async pamGrantRequestsFulfillCreateRequestOpts(
+        requestParameters: PamGrantRequestsFulfillCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["uuid"] == null) {
+            throw new runtime.RequiredError(
+                "uuid",
+                'Required parameter "uuid" was null or undefined when calling pamGrantRequestsFulfillCreate().',
+            );
+        }
+
+        if (requestParameters["grantRequestRequest"] == null) {
+            throw new runtime.RequiredError(
+                "grantRequestRequest",
+                'Required parameter "grantRequestRequest" was null or undefined when calling pamGrantRequestsFulfillCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/grant_requests/{uuid}/fulfill/`;
+        urlPath = urlPath.replace("{uuid}", encodeURIComponent(String(requestParameters["uuid"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: GrantRequestRequestToJSON(requestParameters["grantRequestRequest"]),
+        };
+    }
+
+    /**
+     */
+    async pamGrantRequestsFulfillCreateRaw(
+        requestParameters: PamGrantRequestsFulfillCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GrantRequest>> {
+        const requestOptions =
+            await this.pamGrantRequestsFulfillCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GrantRequestFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async pamGrantRequestsFulfillCreate(
+        requestParameters: PamGrantRequestsFulfillCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GrantRequest> {
+        const response = await this.pamGrantRequestsFulfillCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
     }
 
     /**

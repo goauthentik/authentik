@@ -28,7 +28,8 @@ class Grant(ExpiringModel, CreatedUpdatedModel):
     target = models.ForeignKey(PolicyBindingModel, on_delete=models.CASCADE)
 
 
-class RequestState(models.TextChoices):
+class RequestStatus(models.TextChoices):
+
     CREATED = "created"
     APPROVED = "approved"
     DENIED = "denied"
@@ -55,7 +56,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
     # Justification data, inputted by the `created_by` user via a flow, used for approve/deny
     data = models.JSONField(default=dict)
 
-    status = models.TextField(choices=RequestState.choices, default=RequestState.CREATED)
+    status = models.TextField(choices=RequestStatus.choices, default=RequestStatus.CREATED)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -67,7 +68,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
     def fulfill(self, user: User):
         self.fulfilled_by = user
         self.save()
-        if self.status != RequestState.APPROVED:
+        if self.status != RequestStatus.APPROVED:
             return
         for target in GrantRequestTarget.objects.filter(request=self).all():
             target_binding = PolicyBinding.objects.create(

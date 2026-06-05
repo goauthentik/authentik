@@ -11109,6 +11109,38 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /pam/grant_requests/{uuid}/fulfill/:
+    post:
+      operationId: pam_grant_requests_fulfill_create
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this grant request.
+        required: true
+      tags:
+      - pam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantRequestRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantRequest'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /pam/personas/:
     get:
       operationId: pam_personas_list
@@ -40608,9 +40640,12 @@ components:
           type: object
           additionalProperties: {}
         status:
-          $ref: '#/components/schemas/GrantStatusEnum'
+          $ref: '#/components/schemas/RequestStatus'
         created_by:
           type: integer
+        fulfilled_by:
+          type: integer
+          nullable: true
         targets:
           type: array
           items:
@@ -40633,12 +40668,30 @@ components:
             format: uuid
       required:
       - pbms
-    GrantStatusEnum:
-      enum:
-      - created
-      - approved
-      - denied
-      type: string
+    GrantRequestRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        expiring:
+          type: boolean
+        data:
+          type: object
+          additionalProperties: {}
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+        created_by:
+          type: integer
+        fulfilled_by:
+          type: integer
+          nullable: true
+      required:
+      - created_by
     GrantTypesEnum:
       enum:
       - authorization_code
@@ -51999,96 +52052,49 @@ components:
       type: object
       description: Partial User Serializer, does not include child relations.
       properties:
-        id:
+        pk:
           type: integer
           readOnly: true
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
-        password:
-          type: string
-          maxLength: 128
-        last_login:
-          type: string
-          format: date-time
-          nullable: true
+          title: ID
         username:
           type: string
           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.
           pattern: ^[\w.@+-]+$
           maxLength: 150
-        first_name:
+        name:
           type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
+          description: User's display name.
         is_active:
           type: boolean
           title: Active
           description: Designates whether this user should be treated as active. Unselect
             this instead of deleting accounts.
-        date_joined:
+        last_login:
           type: string
           format: date-time
-        uuid:
+          nullable: true
+        email:
           type: string
-          format: uuid
-          readOnly: true
-        name:
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
           type: string
-          description: User's display name.
-        path:
-          type: string
-        type:
-          $ref: '#/components/schemas/UserTypeEnum'
-        password_change_date:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
           readOnly: true
         parent:
-          type: integer
-        sources:
-          type: array
-          items:
-            type: string
-            format: uuid
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
-        groups:
-          type: array
-          items:
-            type: string
-            format: uuid
-        roles:
-          type: array
-          items:
-            type: string
-            format: uuid
       required:
-      - groups
-      - id
-      - last_updated
       - name
       - parent
-      - password
-      - password_change_date
-      - sources
+      - pk
       - uid
       - username
-      - uuid
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
@@ -54160,6 +54166,12 @@ components:
           minimum: -2147483648
       required:
       - name
+    RequestStatus:
+      enum:
+      - created
+      - approved
+      - denied
+      type: string
     Review:
       type: object
       description: |-

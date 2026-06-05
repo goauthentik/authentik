@@ -10,11 +10,15 @@ from authentik.pam.models import Persona
 
 
 class PersonaSerializer(PartialUserSerializer):
+
+    parent = PartialUserSerializer(read_only=True)
+
     class Meta:
         model = Persona
-        fields = "__all__"
+        fields = PartialUserSerializer.Meta.fields + ["parent"]
 
 
 class PersonaViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
+
     queryset = Persona.objects.all()
     serializer_class = PersonaSerializer
