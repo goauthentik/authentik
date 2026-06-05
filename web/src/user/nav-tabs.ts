@@ -1,12 +1,13 @@
-import { ROUTE_SEPARATOR } from '#common/constants';
+import { ROUTE_SEPARATOR } from "#common/constants";
 
-import { AKElement } from '#elements/Base';
-import { listen } from '#elements/decorators/listen';
+import { AKElement } from "#elements/Base";
+import { listen } from "#elements/decorators/listen";
 
-import { html } from 'lit-html';
-import { customElement, property, state } from 'lit/decorators.js';
+import { css } from "lit";
+import { html } from "lit-html";
+import { customElement, property, state } from "lit/decorators.js";
 
-import PFNav from '@patternfly/patternfly/components/Nav/nav.css';
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 
 export interface NavItem {
     link: string;
@@ -15,7 +16,18 @@ export interface NavItem {
 
 @customElement("ak-nav-tabs")
 export class NavTabs extends AKElement {
-    public static readonly styles = [PFNav];
+    public static readonly styles = [
+        PFNav,
+        css`
+            .pf-c-nav.pf-m-horizontal {
+                --pf-c-nav__link--m-current--Color: var(--ak-accent);
+                --pf-c-nav__link--hover--Color: var(--ak-accent);
+                --pf-c-nav__link--focus--Color: var(--ak-accent);
+                --pf-c-nav__link--active--Color: var(--ak-accent);
+                --pf-c-nav__link--before--BorderColor: var(--ak-accent);
+            }
+        `,
+    ];
 
     @property({ attribute: false })
     items: NavItem[] = [];
@@ -26,7 +38,7 @@ export class NavTabs extends AKElement {
     @listen("hashchange", { target: window })
     public synchronize = (): void => {
         const activePath = window.location.hash.slice(1).split(ROUTE_SEPARATOR)[0];
-        const currents = this.items.filter(item => {
+        const currents = this.items.filter((item) => {
             const ourPath = item.link.split(";")[0];
             const pathIsWholePath = new RegExp(`^${ourPath}$`).test(activePath);
             return pathIsWholePath;
