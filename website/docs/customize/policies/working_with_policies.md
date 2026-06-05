@@ -49,8 +49,8 @@ These bindings control which users can access a flow.
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows**.
 3. In the list of flows, click on the name of the flow to which you want to bind a policy.
-4. Click on the **Policy/Group/User Bindings** tab at the top of the page.
-5. Either create a new policy and bind it immediately with **Create and bind Policy**, or attach an existing policy, group, or user with **Bind existing policy/group/user**.
+4. Click on the **Policy / Group / User Bindings** tab at the top of the page.
+5. Click **Create or bind...**. You can then create a new policy and bind it to the flow, or select **Bind an existing policy** under **Bind Existing...**.
 
 ### Bind a policy to a stage binding
 
@@ -67,7 +67,7 @@ When you bind a policy to a stage binding, this task is done per flow, and does 
 5. Click the arrow (**>**) beside the name of the stage to which you want to bind a policy. The details for that stage are displayed.
 6. Either create and bind a new policy, or bind an existing policy, group, or user.
 
-If the policy depends on request data that is only known after the user has interacted with the flow, configure the stage binding to **Evaluate when stage is run** instead of only at planning time.
+If the policy depends on request data that is only known after the user has interacted with the flow, configure the stage binding to **Evaluate when stage is run**. For more information, see [Planning and stage policies](../../add-secure-apps/flows-stages/flow/planner.md#planning-and-stage-policies).
 
 ### Bind a policy to an application
 
@@ -76,8 +76,8 @@ These bindings control which users or groups can access an application.
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications**.
 3. In the list of applications, click on the name of the application to which you want to bind a policy.
-4. Click on the **Policy/Group/User Bindings** tab at the top of the page.
-5. Either create and bind a new policy, or bind an existing policy, group, or user.
+4. Click on the **Policy / Group / User Bindings** tab at the top of the page.
+5. Click **Create or bind...**. You can then create a new policy and bind it to the application, or select **Bind an existing policy** under **Bind Existing...**.
 
 ### Bind a policy to a source
 

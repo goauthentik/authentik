@@ -27,7 +27,7 @@ You will need to create a policy (either the **Event Matcher** policy or a custo
 
 ### Event Matcher policy
 
-For simple event matching you can create and configure an [Event Matcher Policy](../../customize/policies/types/event-matcher.md) to define which events (known as _Actions_ in the policy) will trigger a notification. For example, whenever a user deletes a model object, or whenever any user fails to successfully log in.
+For simple event matching, create and configure an [Event Matcher policy](../../customize/policies/types/event-matcher.md) to define which events trigger a notification. Use the policy's [AKQL query](../akql.mdx#use-akql-in-an-event-matcher-policy) when you need to match event context fields such as `context.geo.country` or `context.authorized_application.name`.
 
 Be aware that an event has to match all configured fields in the policy, otherwise the notification rule will not trigger.
 
@@ -61,7 +61,7 @@ After you've created the policies to match the events you want, create a notific
 
 4. In the list of notification rules, click the arrow in the row of the notification rule to expand the details of the rule.
 
-5. Click **Bind existing Policy/Group/User** and in the **Create Binding** modal, select the policy that you created for this notification rule and then click **Create Policy Binding** to finalize the binding.
+5. Click **Create or bind...**. Under **Bind Existing...**, select **Bind an existing policy**. In the **Create Binding** modal, select the policy that you created for this notification rule, and then click **Create** to finalize the binding.
 
 :::info
 Be aware that policies are executed even when no group is selected.
