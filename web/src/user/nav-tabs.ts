@@ -26,6 +26,9 @@ export class NavTabs extends AKElement {
                 --pf-c-nav__link--active--Color: var(--ak-accent);
                 --pf-c-nav__link--before--BorderColor: var(--ak-accent);
             }
+            .pf-c-nav__link {
+                --pf-c-nav__link--Color: var(--pf-global--Color--100);
+            }
         `,
     ];
 

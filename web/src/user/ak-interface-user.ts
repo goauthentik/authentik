@@ -162,6 +162,7 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                         .items=${[
                             { label: msg("Applications"), link: "/library" },
                             { label: msg("Discover"), link: "/discover" },
+                            { label: msg("Agents"), link: "/agents" },
                         ]}
                     ></ak-nav-tabs>
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>

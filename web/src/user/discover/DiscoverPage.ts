@@ -1,3 +1,5 @@
+import Styles from "../LibraryPage/ak-library-impl.css";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse } from "#common/api/responses";
 
@@ -16,7 +18,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-discovery")
 export class DiscoverPage extends AKElement {
-    static styles = [PFPage, PFForm, PFContent, PFFormControl];
+    static styles = [PFPage, PFForm, PFContent, PFFormControl, Styles];
 
     @state()
     apps?: PaginatedResponse<Application>;
