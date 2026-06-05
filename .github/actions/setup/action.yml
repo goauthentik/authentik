@@ -64,7 +64,7 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@e49978b799e49ff429d162b7a30601a569ab6538 # v2
+      uses: taiki-e/install-action@6887963ccf37a9ddcd8c5fa4baeb3e1e5fd61fa1 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup node (root, web)
@@ -79,7 +79,7 @@ runs:
         go-version-file: "${{ inputs.working-directory }}go.mod"
     - name: Setup docker cache
       if: ${{ contains(inputs.dependencies, 'runtime') }}
-      uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
+      uses: AndreKurait/docker-cache@7a3887908bdb97935395833df69b060cfcca0f7f
       with:
         key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies
