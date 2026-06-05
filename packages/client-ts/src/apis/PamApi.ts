@@ -22,6 +22,11 @@ import {
     type PaginatedGrantRequestList,
     PaginatedGrantRequestListFromJSON,
 } from "../models/PaginatedGrantRequestList";
+import {
+    type PaginatedPersonaList,
+    PaginatedPersonaListFromJSON,
+} from "../models/PaginatedPersonaList";
+import { type Persona, PersonaFromJSON } from "../models/Persona";
 import * as runtime from "../runtime";
 
 export interface PamGrantRequestsCreateRequest {
@@ -41,6 +46,21 @@ export interface PamGrantRequestsListRequest {
 
 export interface PamGrantRequestsRetrieveRequest {
     uuid: string;
+}
+
+export interface PamPersonasDestroyRequest {
+    id: number;
+}
+
+export interface PamPersonasListRequest {
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
+
+export interface PamPersonasRetrieveRequest {
+    id: number;
 }
 
 /**
@@ -293,6 +313,192 @@ export class PamApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<GrantRequest> {
         const response = await this.pamGrantRequestsRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamPersonasDestroy without sending the request
+     */
+    async pamPersonasDestroyRequestOpts(
+        requestParameters: PamPersonasDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling pamPersonasDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/personas/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async pamPersonasDestroyRaw(
+        requestParameters: PamPersonasDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.pamPersonasDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async pamPersonasDestroy(
+        requestParameters: PamPersonasDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.pamPersonasDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for pamPersonasList without sending the request
+     */
+    async pamPersonasListRequestOpts(
+        requestParameters: PamPersonasListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/personas/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async pamPersonasListRaw(
+        requestParameters: PamPersonasListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedPersonaList>> {
+        const requestOptions = await this.pamPersonasListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedPersonaListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async pamPersonasList(
+        requestParameters: PamPersonasListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedPersonaList> {
+        const response = await this.pamPersonasListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for pamPersonasRetrieve without sending the request
+     */
+    async pamPersonasRetrieveRequestOpts(
+        requestParameters: PamPersonasRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling pamPersonasRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/pam/personas/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async pamPersonasRetrieveRaw(
+        requestParameters: PamPersonasRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Persona>> {
+        const requestOptions = await this.pamPersonasRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => PersonaFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async pamPersonasRetrieve(
+        requestParameters: PamPersonasRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Persona> {
+        const response = await this.pamPersonasRetrieveRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }
