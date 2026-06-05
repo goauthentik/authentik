@@ -10,7 +10,8 @@ Quadlet does not expand ``${VAR}`` in ``Image=``, so the tag is written
 literally rather than wrapped in a compose-style ``${AUTHENTIK_TAG:-...}``
 fallback.
 
-Two unit sets are emitted:
+Two unit sets are emitted from a single ``build_units()`` factory, parametrised
+by the paths that differ between rootful and rootless deployments:
 
 * ``lifecycle/quadlet/`` — rootful, dropped into ``/etc/containers/systemd/``.
 * ``lifecycle/quadlet/rootless/`` — rootless, dropped into
@@ -40,6 +41,10 @@ POSTGRES_IMAGE = "docker.io/library/postgres:16-alpine"
 OUTPUT_DIR = Path("lifecycle/quadlet")
 ROOTLESS_DIR = OUTPUT_DIR / "rootless"
 
+# Sentinel key in an ``Entry`` that renders as a ``# ...`` comment line instead
+# of a ``key=value`` directive.
+COMMENT = "#"
+
 Entry = tuple[str, str]
 Unit = dict[str, tuple[Entry, ...]]
 
@@ -48,7 +53,11 @@ def render_unit(sections: Unit) -> str:
     rendered_sections = []
     for name, entries in sections.items():
         lines = [f"[{name}]"]
-        lines.extend(f"{key}={value}" for key, value in entries)
+        for key, value in entries:
+            if key == COMMENT:
+                lines.append(f"# {value}")
+            else:
+                lines.append(f"{key}={value}")
         rendered_sections.append("\n".join(lines))
     return "\n\n".join(rendered_sections) + "\n"
 
@@ -86,6 +95,7 @@ def postgresql_container(env_file: str) -> Unit:
             ("HealthStartPeriod", "20s"),
             ("HealthTimeout", "5s"),
             ("HealthRetries", "5"),
+            ("Notify", "healthy"),
         ),
         "Service": (("Restart", "always"),),
         "Install": (("WantedBy", "default.target"),),
@@ -112,6 +122,10 @@ def server_container(env_file: str, data_dir: str) -> Unit:
             ("Volume", f"{data_dir}/data:/data:Z"),
             ("Volume", f"{data_dir}/custom-templates:/templates:Z"),
             ("ShmSize", "512m"),
+            ("HealthCmd", "curl -fI http://127.0.0.1:9000/-/health/ready/"),
+            ("HealthRetries", "5"),
+            ("HealthTimeout", "5s"),
+            ("Notify", "healthy"),
         ),
         "Service": (("Restart", "always"),),
         "Install": (("WantedBy", "default.target"),),
@@ -131,11 +145,11 @@ def worker_container(env_file: str, data_dir: str, podman_sock_dir: str) -> Unit
             ("AutoUpdate", "registry"),
             ("Pod", "authentik.pod"),
             ("Exec", "worker"),
-            ("User", "0:0"),
             ("EnvironmentFile", env_file),
             ("Environment", "AUTHENTIK_POSTGRESQL__HOST=localhost"),
             ("Environment", "AUTHENTIK_POSTGRESQL__NAME=authentik"),
             ("Environment", "AUTHENTIK_POSTGRESQL__USER=authentik"),
+            (COMMENT, "Different ports from the server — both share the pod's network namespace."),
             ("Environment", "AUTHENTIK_LISTEN__HTTP=0.0.0.0:9001"),
             ("Environment", "AUTHENTIK_LISTEN__METRICS=0.0.0.0:9301"),
             (
@@ -146,45 +160,43 @@ def worker_container(env_file: str, data_dir: str, podman_sock_dir: str) -> Unit
             ("Volume", f"{data_dir}/certs:/certs:Z"),
             ("Volume", f"{data_dir}/custom-templates:/templates:Z"),
             ("ShmSize", "512m"),
+            ("HealthCmd", "curl -fI http://127.0.0.1:9001/-/health/ready/"),
+            ("HealthRetries", "5"),
+            ("HealthTimeout", "5s"),
+            ("Notify", "healthy"),
         ),
         "Service": (("Restart", "always"),),
         "Install": (("WantedBy", "default.target"),),
     }
 
 
-ROOTFUL = {
-    "authentik.pod": pod(),
-    "authentik-database.volume": database_volume(),
-    "authentik-postgresql.container": postgresql_container(
-        env_file="/etc/authentik/authentik.env",
-    ),
-    "authentik-server.container": server_container(
-        env_file="/etc/authentik/authentik.env",
-        data_dir="/var/lib/authentik",
-    ),
-    "authentik-worker.container": worker_container(
-        env_file="/etc/authentik/authentik.env",
-        data_dir="/var/lib/authentik",
-        podman_sock_dir="/run",
-    ),
-}
+def build_units(env_file: str, data_dir: str, podman_sock_dir: str) -> dict[str, Unit]:
+    return {
+        "authentik.pod": pod(),
+        "authentik-database.volume": database_volume(),
+        "authentik-postgresql.container": postgresql_container(env_file=env_file),
+        "authentik-server.container": server_container(
+            env_file=env_file,
+            data_dir=data_dir,
+        ),
+        "authentik-worker.container": worker_container(
+            env_file=env_file,
+            data_dir=data_dir,
+            podman_sock_dir=podman_sock_dir,
+        ),
+    }
 
-ROOTLESS = {
-    "authentik.pod": pod(),
-    "authentik-database.volume": database_volume(),
-    "authentik-postgresql.container": postgresql_container(
-        env_file="%h/.config/authentik/authentik.env",
-    ),
-    "authentik-server.container": server_container(
-        env_file="%h/.config/authentik/authentik.env",
-        data_dir="%h/.local/share/authentik",
-    ),
-    "authentik-worker.container": worker_container(
-        env_file="%h/.config/authentik/authentik.env",
-        data_dir="%h/.local/share/authentik",
-        podman_sock_dir="%t",
-    ),
-}
+
+ROOTFUL = build_units(
+    env_file="/etc/authentik/authentik.env",
+    data_dir="/var/lib/authentik",
+    podman_sock_dir="/run",
+)
+ROOTLESS = build_units(
+    env_file="%h/.config/authentik/authentik.env",
+    data_dir="%h/.local/share/authentik",
+    podman_sock_dir="%t",
+)
 
 
 def write(target: Path, units: dict[str, Unit]) -> None:

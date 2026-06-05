@@ -9,11 +9,11 @@ Image=ghcr.io/goauthentik/server:2026.8.0-rc1
 AutoUpdate=registry
 Pod=authentik.pod
 Exec=worker
-User=0:0
 EnvironmentFile=/etc/authentik/authentik.env
 Environment=AUTHENTIK_POSTGRESQL__HOST=localhost
 Environment=AUTHENTIK_POSTGRESQL__NAME=authentik
 Environment=AUTHENTIK_POSTGRESQL__USER=authentik
+# Different ports from the server — both share the pod's network namespace.
 Environment=AUTHENTIK_LISTEN__HTTP=0.0.0.0:9001
 Environment=AUTHENTIK_LISTEN__METRICS=0.0.0.0:9301
 Volume=/run/podman/podman.sock:/run/podman/podman.sock:Z
@@ -21,6 +21,10 @@ Volume=/var/lib/authentik/data:/data:Z
 Volume=/var/lib/authentik/certs:/certs:Z
 Volume=/var/lib/authentik/custom-templates:/templates:Z
 ShmSize=512m
+HealthCmd=curl -fI http://127.0.0.1:9001/-/health/ready/
+HealthRetries=5
+HealthTimeout=5s
+Notify=healthy
 
 [Service]
 Restart=always
