@@ -8,7 +8,7 @@ support_level: community
 
 > Atlantis is an application for automating Terraform via pull requests.
 >
-> -- https://www.runatlantis.io/guide
+> -- https://www.runatlantis.io
 
 Atlantis does not provide native SSO for the web UI. Use authentik as a forward auth proxy in front of Atlantis, and allow the Atlantis webhook endpoint to remain reachable by your Git host.
 
