@@ -68,7 +68,7 @@ Configure your reverse proxy to use the authentik outpost as the forward auth en
 
 Requests to `/outpost.goauthentik.io` must be routed to the authentik outpost. All other requests, including `/events`, must continue to be routed to Atlantis.
 
-Configure your Git host webhook URL to `https://atlantis.company/events`. The `/events` endpoint is skipped by authentik so that Git host webhooks can reach Atlantis. Atlantis should still validate those webhook requests with its existing webhook secret or webhook authentication settings.
+Set your Git host webhook URL to `https://atlantis.company/events`. The `/events` endpoint is skipped by authentik so that Git host webhooks can reach Atlantis. Atlantis should still validate those webhook requests with its existing webhook secret or webhook authentication settings.
 
 ## Configuration verification
 
