@@ -24,8 +24,8 @@ This documentation lists only the settings that you need to change from their de
 
 Create an application in authentik. Create a SAML Provider with the following values
 
-- ACS URL: `https://sentry.company/saml/acs/<sentry organisation name>/`
-- Audience: `https://sentry.company/saml/metadata/<sentry organisation name>/`
+- ACS URL: `https://sentry.company/saml/acs/<sentry organization name>/`
+- Audience: `https://sentry.company/saml/metadata/<sentry organization name>/`
 
 Under _Advanced protocol settings_, set the following:
 
