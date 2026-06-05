@@ -34,23 +34,19 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     class GrantRequestCreateSerializer(PassiveSerializer):
         pbms = ListField(child=PrimaryKeyRelatedField(queryset=PolicyBindingModel.objects.all()))
 
-    @extend_schema(
-        request=GrantRequestCreateSerializer,
-        responses={
-            200: LinkSerializer
-        }
-    )
+    @extend_schema(request=GrantRequestCreateSerializer, responses={200: LinkSerializer})
     @validate(GrantRequestCreateSerializer)
     def create(self, request: Request, body: GrantRequestCreateSerializer) -> Response:
         # TODO: Select a flow somewhere
         flow = Flow.objects.get(slug="request-access")
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
-        plan = planner.plan(request, {
-            PLAN_CONTEXT_GRANT_REQUESTED_PBMS: body.validated_data["pbms"],
-            PLAN_CONTEXT_PENDING_USER: request.user
-        })
+        plan = planner.plan(
+            request,
+            {
+                PLAN_CONTEXT_GRANT_REQUESTED_PBMS: body.validated_data["pbms"],
+                PLAN_CONTEXT_PENDING_USER: request.user,
+            },
+        )
         plan.append_stage(in_memory_stage(GrantRequestFinalStageView))
-        return Response({
-            "link": plan.to_redirect(request, flow)
-        })
+        return Response({"link": plan.to_redirect(request, flow)})

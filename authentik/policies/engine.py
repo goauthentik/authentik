@@ -110,24 +110,21 @@ class PolicyEngine:
                 "pk", filter=Q(Q(group__isnull=False) | Q(user__isnull=False), policy=None)
             ),
         }
-        _now = now()
         if self.request.user.pk:
             all_groups = self.request.user.all_groups()
-            exp_query = Q(expiring=False) | Q(expiring=True, expires__lt=_now)
             aggrs["passing"] = Count(
                 "pk",
                 filter=Q(
                     Q(
                         Q(user=self.request.user) | Q(group__in=all_groups),
-                        # exp_query,
                         negate=False,
                     )
                     | Q(
                         Q(~Q(user=self.request.user), user__isnull=False)
                         | Q(~Q(group__in=all_groups), group__isnull=False),
-                        # exp_query,
                         negate=True,
                     ),
+                    Q(expiring=False) | Q(expiring=True, expires__lt=now()),
                     enabled=True,
                 ),
             )

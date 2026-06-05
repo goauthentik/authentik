@@ -182,6 +182,6 @@ class ExpiringModel(models.Model):
     @property
     def is_expired(self) -> bool:
         """Check if token is expired yet."""
-        if not self.expiring:
+        if not self.expiring or not self.expires:
             return False
         return now() > self.expires
