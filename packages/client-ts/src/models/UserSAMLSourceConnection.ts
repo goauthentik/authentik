@@ -32,7 +32,7 @@ export interface UserSAMLSourceConnection {
      * @type {number}
      * @memberof UserSAMLSourceConnection
      */
-    user: number;
+    readonly user: number;
     /**
      *
      * @type {string}
@@ -108,7 +108,10 @@ export function UserSAMLSourceConnectionToJSON(json: any): UserSAMLSourceConnect
 }
 
 export function UserSAMLSourceConnectionToJSONTyped(
-    value?: Omit<UserSAMLSourceConnection, "pk" | "source_obj" | "created" | "last_updated"> | null,
+    value?: Omit<
+        UserSAMLSourceConnection,
+        "pk" | "user" | "source_obj" | "created" | "last_updated"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -116,7 +119,6 @@ export function UserSAMLSourceConnectionToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };

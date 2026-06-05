@@ -12,44 +12,37 @@
  * Do not edit the class manually.
  */
 
-import type {
-    Cache,
-    ChallengeTypes,
-    DeniedActionEnum,
-    Flow,
-    FlowChallengeResponseRequest,
-    FlowDesignationEnum,
-    FlowDiagram,
-    FlowInspection,
-    FlowRequest,
-    FlowStageBinding,
-    FlowStageBindingRequest,
-    InvalidResponseActionEnum,
-    Link,
-    PaginatedFlowList,
-    PaginatedFlowStageBindingList,
-    PatchedFlowRequest,
-    PatchedFlowStageBindingRequest,
-    PolicyEngineMode,
-    UsedBy,
-} from "../models/index";
+import { type Cache, CacheFromJSON } from "../models/Cache";
+import { type ChallengeTypes, ChallengeTypesFromJSON } from "../models/ChallengeTypes";
+import { type DeniedActionEnum } from "../models/DeniedActionEnum";
+import { type Flow, FlowFromJSON } from "../models/Flow";
 import {
-    CacheFromJSON,
-    ChallengeTypesFromJSON,
+    type FlowChallengeResponseRequest,
     FlowChallengeResponseRequestToJSON,
-    FlowDiagramFromJSON,
-    FlowFromJSON,
-    FlowInspectionFromJSON,
-    FlowRequestToJSON,
-    FlowStageBindingFromJSON,
+} from "../models/FlowChallengeResponseRequest";
+import { type FlowDesignationEnum } from "../models/FlowDesignationEnum";
+import { type FlowDiagram, FlowDiagramFromJSON } from "../models/FlowDiagram";
+import { type FlowInspection, FlowInspectionFromJSON } from "../models/FlowInspection";
+import { type FlowRequest, FlowRequestToJSON } from "../models/FlowRequest";
+import { type FlowStageBinding, FlowStageBindingFromJSON } from "../models/FlowStageBinding";
+import {
+    type FlowStageBindingRequest,
     FlowStageBindingRequestToJSON,
-    LinkFromJSON,
-    PaginatedFlowListFromJSON,
+} from "../models/FlowStageBindingRequest";
+import { type InvalidResponseActionEnum } from "../models/InvalidResponseActionEnum";
+import { type Link, LinkFromJSON } from "../models/Link";
+import { type PaginatedFlowList, PaginatedFlowListFromJSON } from "../models/PaginatedFlowList";
+import {
+    type PaginatedFlowStageBindingList,
     PaginatedFlowStageBindingListFromJSON,
-    PatchedFlowRequestToJSON,
+} from "../models/PaginatedFlowStageBindingList";
+import { type PatchedFlowRequest, PatchedFlowRequestToJSON } from "../models/PatchedFlowRequest";
+import {
+    type PatchedFlowStageBindingRequest,
     PatchedFlowStageBindingRequestToJSON,
-    UsedByFromJSON,
-} from "../models/index";
+} from "../models/PatchedFlowStageBindingRequest";
+import { type PolicyEngineMode } from "../models/PolicyEngineMode";
+import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface FlowsBindingsCreateRequest {
@@ -257,7 +250,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         let urlPath = `/flows/bindings/{fsb_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"fsb_uuid"}}`,
+            "{fsb_uuid}",
             encodeURIComponent(String(requestParameters["fsbUuid"])),
         );
 
@@ -433,7 +426,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         let urlPath = `/flows/bindings/{fsb_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"fsb_uuid"}}`,
+            "{fsb_uuid}",
             encodeURIComponent(String(requestParameters["fsbUuid"])),
         );
 
@@ -502,7 +495,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         let urlPath = `/flows/bindings/{fsb_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"fsb_uuid"}}`,
+            "{fsb_uuid}",
             encodeURIComponent(String(requestParameters["fsbUuid"])),
         );
 
@@ -577,7 +570,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         let urlPath = `/flows/bindings/{fsb_uuid}/`;
         urlPath = urlPath.replace(
-            `{${"fsb_uuid"}}`,
+            "{fsb_uuid}",
             encodeURIComponent(String(requestParameters["fsbUuid"])),
         );
 
@@ -644,7 +637,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         let urlPath = `/flows/bindings/{fsb_uuid}/used_by/`;
         urlPath = urlPath.replace(
-            `{${"fsb_uuid"}}`,
+            "{fsb_uuid}",
             encodeURIComponent(String(requestParameters["fsbUuid"])),
         );
 
@@ -719,7 +712,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         let urlPath = `/flows/executor/{flow_slug}/`;
         urlPath = urlPath.replace(
-            `{${"flow_slug"}}`,
+            "{flow_slug}",
             encodeURIComponent(String(requestParameters["flowSlug"])),
         );
 
@@ -798,7 +791,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         let urlPath = `/flows/executor/{flow_slug}/`;
         urlPath = urlPath.replace(
-            `{${"flow_slug"}}`,
+            "{flow_slug}",
             encodeURIComponent(String(requestParameters["flowSlug"])),
         );
 
@@ -867,7 +860,7 @@ export class FlowsApi extends runtime.BaseAPI {
 
         let urlPath = `/flows/inspector/{flow_slug}/`;
         urlPath = urlPath.replace(
-            `{${"flow_slug"}}`,
+            "{flow_slug}",
             encodeURIComponent(String(requestParameters["flowSlug"])),
         );
 
@@ -1092,10 +1085,7 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1155,10 +1145,7 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/diagram/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1223,10 +1210,7 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/execute/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1291,10 +1275,7 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/export/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1452,10 +1433,7 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1520,10 +1498,7 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1593,10 +1568,7 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,
@@ -1658,10 +1630,7 @@ export class FlowsApi extends runtime.BaseAPI {
         }
 
         let urlPath = `/flows/instances/{slug}/used_by/`;
-        urlPath = urlPath.replace(
-            `{${"slug"}}`,
-            encodeURIComponent(String(requestParameters["slug"])),
-        );
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
             path: urlPath,

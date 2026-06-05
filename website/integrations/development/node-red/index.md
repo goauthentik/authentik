@@ -82,9 +82,6 @@ adminAuth: {
                         callbackURL: 'https://nodered.company/auth/strategy/callback/',
                         scope: ['email', 'profile', 'openid'],
                         proxy: true,
-                        verify: function(context, issuer, profile, done) {
-                                return done(null, profile);
-                        },
                 }
         },
         users: function(user) {

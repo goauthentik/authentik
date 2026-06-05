@@ -100,7 +100,7 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<div>
                 <div>${item.name}</div>
-                <ak-label color=${PFColor.Grey} compact> ${msg("Built-in")}</ak-label>
+                <ak-label color=${PFColor.Gray} compact> ${msg("Built-in")}</ak-label>
             </div>`,
             html`${msg("Built-in")}`,
             nothing,

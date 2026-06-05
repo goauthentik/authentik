@@ -110,5 +110,6 @@ async function main() {
 main()
     .then(() => {
         logger.info("✅ Node.js and npm versions are in sync.");
+        process.exit(0);
     })
     .catch((error) => reportAndExit(error, logger));
