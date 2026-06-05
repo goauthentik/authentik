@@ -1,0 +1,58 @@
+.account-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.account-selection-help {
+    color: var(--pf-global--Color--200);
+    font-size: var(--pf-global--FontSize--sm);
+    line-height: 1.4;
+    margin-block: 0;
+}
+
+.account-selection-help a {
+    margin-inline-start: 0.25rem;
+}
+
+.account-button {
+    align-items: center;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    min-height: 3.75rem;
+    padding: 0.625rem 0.75rem;
+    text-align: left;
+    width: 100%;
+}
+
+.account-button-hint {
+    box-shadow: inset 0.25rem 0 0 var(--pf-global--primary-color--100);
+}
+
+.account-button-hint .account-name {
+    color: var(--pf-global--primary-color--100);
+}
+
+.account-button img {
+    border-radius: 50%;
+    height: 2.25rem;
+    width: 2.25rem;
+}
+
+.account-name,
+.account-meta {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.account-name {
+    font-weight: 600;
+}
+
+.account-meta {
+    color: var(--pf-global--Color--200);
+    font-size: 0.875rem;
+}

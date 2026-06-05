@@ -2,7 +2,7 @@
     display: contents;
 }
 
-.account-switcher {
+[part="switcher"] {
     font-size: var(--pf-global--FontSize--md);
     line-height: var(--pf-global--LineHeight--md);
     display: flex;
@@ -10,21 +10,21 @@
     flex-wrap: wrap;
 }
 
-.account-switcher-container {
+[part="container"] {
     display: flex;
     align-items: center;
     min-height: 100%;
 }
 
-.account-switcher .pf-c-dropdown__menu {
+[part="menu"] {
     min-width: 18rem;
 }
 
-.account-switcher .pf-c-dropdown__menu-item {
+[part="menu-item"] {
     gap: var(--pf-global--spacer--sm);
 }
 
-.pf-c-dropdown__toggle.pf-m-plain.account-switcher-toggle {
+[part="toggle"] {
     display: flex;
     align-items: center;
     gap: var(--pf-global--spacer--sm);
@@ -36,7 +36,7 @@
     vertical-align: middle;
 }
 
-.account-switcher-toggle-label {
+[part="toggle-label"] {
     display: inline-flex;
     align-items: center;
     min-height: 2rem;
@@ -47,14 +47,14 @@
     white-space: nowrap;
 }
 
-.account-switcher-toggle .pf-c-dropdown__toggle-icon {
+[part="toggle-icon"] {
     display: inline-flex;
     align-items: center;
     margin-block-start: 0;
     line-height: 1;
 }
 
-.account-switcher-avatar {
+[part="avatar"] {
     display: inline-flex;
     flex: 0 0 2rem;
     align-items: center;
@@ -71,7 +71,7 @@
     overflow: hidden;
 }
 
-.account-switcher-avatar img {
+[part="avatar-image"] {
     display: block;
     width: 100%;
     max-width: 100%;
@@ -80,7 +80,7 @@
     object-fit: cover;
 }
 
-.account-switcher-item {
+[part="item"] {
     display: grid;
     grid-template-columns: 2rem minmax(0, 1fr) auto;
     align-items: center;
@@ -88,28 +88,28 @@
     width: 100%;
 }
 
-.account-switcher-labels {
+[part="labels"] {
     display: flex;
     min-width: 0;
     flex-direction: column;
 }
 
-.account-switcher-name,
-.account-switcher-description {
+[part="name"],
+[part="description"] {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.account-switcher-description {
+[part="description"] {
     color: var(--pf-global--Color--200);
     font-size: var(--pf-global--FontSize--sm);
 }
 
-.account-switcher-current {
+[part="current-indicator"] {
     color: var(--pf-global--success-color--100);
 }
 
-:host([theme="dark"]) .account-switcher-avatar {
+:host([theme="dark"]) [part="avatar"] {
     background-color: var(--pf-global--BackgroundColor--dark-300);
 }

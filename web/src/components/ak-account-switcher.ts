@@ -6,14 +6,16 @@ import { formatUserDisplayName } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithSession } from "#elements/mixins/session";
+import type { SlottedTemplateResult } from "#elements/types";
 import { isDefaultAvatar } from "#elements/utils/images";
 
+import { buildAuthenticationFlowURL } from "#components/ak-account-switcher-url";
 import Styles from "#components/ak-account-switcher.css";
 
 import type { AccountSelectionUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -31,54 +33,44 @@ export class AccountSwitcher extends WithSession(AKElement) {
     }
 
     protected authenticationFlowURL(account?: AccountSelectionUser): string {
-        const query = new URLSearchParams({
+        return buildAuthenticationFlowURL({
+            account,
+            accountSelectionFlow: globalAK().brand.flowAccountSelection,
+            apiBase: globalAK().api.base,
             next: `${window.location.pathname}${window.location.search}${window.location.hash}`,
         });
-        const loginHint = account?.email || account?.username;
-        const accountSelectionFlow = globalAK().brand.flowAccountSelection;
-        if (account?.uid && accountSelectionFlow) {
-            query.set("account_uid", account.uid);
-            return `${globalAK().api.base}if/flow/${accountSelectionFlow}/?${query.toString()}`;
-        }
-        if (!account?.uid) {
-            query.set("add_account", "true");
-        }
-        if (loginHint) {
-            query.set("login_hint", loginHint);
-        }
-        return `${globalAK().api.base}flows/-/default/authentication/?${query.toString()}`;
     }
 
-    protected renderAvatar(account?: Pick<AccountSelectionUser, "avatar">) {
+    protected renderAvatar(account?: Pick<AccountSelectionUser, "avatar">): SlottedTemplateResult {
         if (account?.avatar && !isDefaultAvatar(account.avatar)) {
-            return html`<span class="account-switcher-avatar">
-                <img src=${account.avatar} alt="" />
+            return html`<span part="avatar">
+                <img part="avatar-image" src=${account.avatar} alt="" />
             </span>`;
         }
-        return html`<span class="account-switcher-avatar">
+        return html`<span part="avatar">
             <i class="fas fa-user" aria-hidden="true"></i>
         </span>`;
     }
 
-    protected renderAccount(account: AccountSelectionUser) {
+    protected renderAccount(account: AccountSelectionUser): SlottedTemplateResult {
         const label = account.name || account.username;
         const description = account.email || account.username;
         const content = html`
-            <span class="pf-c-dropdown__menu-item-main account-switcher-item">
+            <span class="pf-c-dropdown__menu-item-main" part="item">
                 ${this.renderAvatar(account)}
-                <span class="account-switcher-labels">
-                    <span class="account-switcher-name">${label}</span>
-                    <span class="account-switcher-description">${description}</span>
+                <span part="labels">
+                    <span part="name">${label}</span>
+                    <span part="description">${description}</span>
                 </span>
                 ${account.isCurrent
-                    ? html`<i class="fas fa-check account-switcher-current" aria-hidden="true"></i>`
-                    : nothing}
+                    ? html`<i class="fas fa-check" part="current-indicator" aria-hidden="true"></i>`
+                    : null}
             </span>
         `;
 
         if (account.isCurrent) {
             return html`<li role="presentation">
-                <button class="pf-c-dropdown__menu-item" role="menuitem" disabled>
+                <button class="pf-c-dropdown__menu-item" part="menu-item" role="menuitem" disabled>
                     ${content}
                 </button>
             </li>`;
@@ -87,6 +79,7 @@ export class AccountSwitcher extends WithSession(AKElement) {
         return html`<li role="presentation">
             <a
                 class="pf-c-dropdown__menu-item"
+                part="menu-item"
                 role="menuitem"
                 href=${this.authenticationFlowURL(account)}
             >
@@ -95,30 +88,36 @@ export class AccountSwitcher extends WithSession(AKElement) {
         </li>`;
     }
 
-    render() {
+    render(): SlottedTemplateResult {
         const currentUser = this.currentUser;
         if (!currentUser) {
-            return nothing;
+            return null;
         }
         const displayName =
             formatUserDisplayName(currentUser, this.uiConfig) || currentUser.username;
         const currentAccount = this.accounts.find((account) => account.isCurrent);
 
-        return html`<div class="account-switcher-container">
-            <ak-dropdown class="pf-c-dropdown account-switcher">
+        return html`<div part="container">
+            <ak-dropdown class="pf-c-dropdown" part="switcher">
                 <button
-                    class="pf-c-dropdown__toggle pf-m-plain account-switcher-toggle"
+                    class="pf-c-dropdown__toggle pf-m-plain"
+                    part="toggle"
                     type="button"
                     id="account-switcher-toggle"
                     aria-haspopup="menu"
                     aria-controls="account-switcher-menu"
                 >
                     ${this.renderAvatar(currentAccount)}
-                    <span class="account-switcher-toggle-label">${displayName}</span>
-                    <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
+                    <span part="toggle-label">${displayName}</span>
+                    <i
+                        class="fas fa-caret-down pf-c-dropdown__toggle-icon"
+                        part="toggle-icon"
+                        aria-hidden="true"
+                    ></i>
                 </button>
                 <menu
                     class="pf-c-dropdown__menu pf-m-align-right"
+                    part="menu"
                     hidden
                     id="account-switcher-menu"
                     aria-labelledby="account-switcher-toggle"
@@ -127,25 +126,31 @@ export class AccountSwitcher extends WithSession(AKElement) {
                     ${this.accounts.map((account) => this.renderAccount(account))}
                     ${this.accounts.length
                         ? html`<li class="pf-c-dropdown__separator" role="separator"></li>`
-                        : nothing}
+                        : null}
                     <li role="presentation">
                         <a
                             class="pf-c-dropdown__menu-item"
+                            part="menu-item"
                             role="menuitem"
                             href=${this.authenticationFlowURL()}
                         >
                             <i class="fas fa-plus" aria-hidden="true"></i>
-                            ${msg("Add another account")}
+                            ${msg("Add another account", {
+                                id: "account-switcher.actions.add-account.label",
+                            })}
                         </a>
                     </li>
                     <li role="presentation">
                         <a
                             class="pf-c-dropdown__menu-item"
+                            part="menu-item"
                             role="menuitem"
                             href="${globalAK().api.base}flows/-/default/invalidation/"
                         >
                             <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-                            ${msg("Sign out current account")}
+                            ${msg("Sign out current account", {
+                                id: "account-switcher.actions.sign-out-current.label",
+                            })}
                         </a>
                     </li>
                 </menu>
