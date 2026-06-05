@@ -2,9 +2,12 @@
 title: Proxy provider
 ---
 
-The proxy provider protects applications that do not support a native authentication protocol such as OIDC, SAML, or LDAP.
+The proxy provider protects applications that do not support native authentication protocols such as OIDC, SAML, or LDAP.
 
-Depending on the selected mode, either the authentik outpost proxies requests to the upstream application, or your existing reverse proxy handles the application traffic and asks the authentik outpost to check authentication and authorization.
+Depending on the selected mode, one of the following happens:
+
+1. The authentik outpost proxies requests to the upstream application.
+2. Your existing reverse proxy handles the application traffic and asks the authentik outpost to check authentication and authorization.
 
 Refer to the [create a proxy provider](./create-proxy-provider.md) documentation for setup instructions.
 
@@ -91,7 +94,7 @@ To log out, navigate to `/outpost.goauthentik.io/sign_out` on the host that serv
 - In proxy mode and forward auth single-application mode, use the protected application host, for example `https://app.company/outpost.goauthentik.io/sign_out`.
 - In forward auth domain-level mode, use the authentication URL configured for the provider, for example `https://auth.company/outpost.goauthentik.io/sign_out`.
 
-Starting with authentik 2023.2, logging out of a provider invalidates all sessions for that user within the respective outpost.
+Logging out of a provider invalidates all sessions for that user within the respective outpost.
 
 ## Allowing unauthenticated requests
 

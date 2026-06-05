@@ -2,7 +2,7 @@
 title: Forward auth
 ---
 
-Forward auth uses your existing reverse proxy for application traffic and uses the authentik outpost only to check authentication and authorization.
+Forward auth uses your existing reverse proxy for application traffic and relies on the authentik outpost only to check authentication and authorization.
 
 To use forward auth, select one of the forward auth modes on the proxy provider and configure your reverse proxy to send authentication checks to the outpost.
 
@@ -10,7 +10,7 @@ To use forward auth, select one of the forward auth modes on the proxy provider 
 
 ### Single application
 
-Single-application mode works for one application hosted on its own domain or subdomain. Configure **External host** as the application URL.
+Single-application mode works for one application hosted on its own domain or subdomain. Set **External host** to the application URL.
 
 In this mode, only `/outpost.goauthentik.io` on the application domain is routed to the authentik outpost. The application traffic itself continues to be routed to the upstream application by your reverse proxy.
 
@@ -18,7 +18,7 @@ Use this mode when each application should have its own provider, policies, bind
 
 ### Domain level
 
-Domain-level mode works for multiple applications under the same parent domain. Configure **Authentication URL** as the URL used for authentication, and configure **Cookie domain** as the parent domain shared by the protected applications.
+Domain-level mode works for multiple applications under the same parent domain. Set **Authentication URL** to the URL used for authentication, and **Cookie domain** to the parent domain shared by the protected applications.
 
 This mode differs from _Forward auth (single application)_ mode in the following ways:
 
@@ -30,7 +30,7 @@ Use single-application mode when each application needs separate access rules.
 
 ## Configuration templates
 
-For configuration templates for supported reverse proxies, refer to the following:
+For reverse proxy configuration templates, refer to the following:
 
 import DocCardList from "@theme/DocCardList";
 

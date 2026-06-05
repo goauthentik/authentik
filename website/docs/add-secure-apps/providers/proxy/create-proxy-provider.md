@@ -54,7 +54,7 @@ Domain-level forward auth reduces the number of providers you need to create, bu
 
 Configure the following settings:
 
-- **Authentication URL**: the external URL used for authentication, commonly the authentik URL for the protected domain, for example `https://auth.company`.
+- **Authentication URL**: the external URL used for authentication, typically the authentik URL for the protected domain, for example `https://auth.company`.
 - **Cookie domain**: the parent domain where the authentication cookie is valid, for example `domain.tld`.
 
 If your applications run on subdomains such as `app1.domain.tld` and `app2.domain.tld`, set the cookie domain to `domain.tld`.
@@ -90,7 +90,7 @@ For forward auth configuration examples, see:
 
 ## Verify access
 
-Open the protected application URL in a browser.
+Open the protected application URL in your browser.
 
 If you are not already authenticated, authentik should redirect you to the configured authentication flow. After successful authentication and authorization, authentik redirects you back to the application.
 

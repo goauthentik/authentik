@@ -6,7 +6,7 @@ title: Header authentication
 
 ### Send HTTP Basic authentication
 
-Proxy providers can send HTTP basic authentication credentials to the upstream application. To use this behavior, enable **Send HTTP-Basic Authentication** on the proxy provider and configure the user and password attribute keys.
+Proxy providers can send HTTP Basic authentication credentials to the upstream application. To use this behavior, enable **Send HTTP-Basic Authentication** on the proxy provider and configure the user and password attribute keys.
 
 For example, with **HTTP-Basic Username Key** set to `app_username` and **HTTP-Basic Password Key** set to `app_password`, set the following attributes on a user or a group that the user is a member of:
 
@@ -21,32 +21,32 @@ If the user does not have a matching attribute, authentik falls back to using th
 
 ## Receiving authentication
 
-By default, when **Intercept header authentication** is enabled, authentik intercepts the `Authorization` header. If the `Authorization` header value is invalid, authentik returns an error response with a `401` status code. Requests without an `Authorization` header are still redirected to the standard login flow.
+By default, when **Intercept header authentication** is enabled, authentik intercepts the `Authorization` header. If the `Authorization` header value is invalid, authentik returns an HTTP `401` error response. Requests without an `Authorization` header are still redirected to the standard login flow.
 
 If the proxied application requires the `Authorization` header, disable **Intercept header authentication**. When this setting is disabled, authentik still tries to interpret the `Authorization` header and falls back to the default behavior when it cannot interpret the header.
 
 ### Receiving HTTP Basic authentication
 
-Proxy providers can receive HTTP basic authentication credentials. The password must be an app password because the credentials are used internally with the [OAuth2 machine-to-machine authentication flow](../oauth2/machine_to_machine.mdx).
+Proxy providers can receive HTTP Basic authentication credentials. The password must be an app password because the credentials are used internally with the [OAuth2 machine-to-machine authentication flow](../oauth2/machine_to_machine.mdx).
 
 Access control uses the policies bound to the application being accessed.
 
 If the received credentials are invalid, authentik starts the standard authentication flow. If the credentials are correct, authentik removes the `Authorization` header to prevent sending the credentials to the proxied application.
 
 :::danger
-We strongly recommend that the client sending requests with HTTP basic authentication persists the cookies returned by the outpost. Otherwise, every request must be authenticated independently, which increases load on the authentik server and causes a performance impact.
+We strongly recommend that the client sending requests with HTTP Basic authentication persists the cookies returned by the outpost. Otherwise, every request must be authenticated independently, which increases load on the authentik server and causes a performance impact.
 :::
 
 Starting with authentik 2023.2, logging in with the reserved username `goauthentik.io/token` behaves as if a bearer token was used. The same options as described below apply. This allows token-based authentication for applications that only support basic authentication.
 
 ### Receiving HTTP Bearer authentication
 
-Proxy providers can receive HTTP bearer authentication credentials. The token must be a JWT token issued for the proxy provider. The [OAuth2 machine-to-machine authentication flow](../oauth2/machine_to_machine.mdx) documentation describes this behavior using the `client_id` value shown in the admin interface. Both static and JWT authentication methods are supported.
+Proxy providers can receive HTTP Bearer authentication credentials. The token must be a JWT token issued for the proxy provider. The [OAuth2 machine-to-machine authentication flow](../oauth2/machine_to_machine.mdx) documentation describes this behavior using the `client_id` value shown in the admin interface. Both static and JWT authentication methods are supported.
 
 Access control uses the policies bound to the application being accessed.
 
 If the received credentials are invalid, authentik starts the standard authentication flow. If the credentials are correct, authentik removes the `Authorization` header to prevent sending the credentials to the proxied application.
 
 :::caution
-We recommend that the client sending requests with HTTP bearer authentication persists the cookies returned by the outpost. For bearer authentication, this has a smaller impact than for basic authentication, but each request is still verified with the authentik server.
+We recommend that the client sending requests with HTTP Bearer authentication persists the cookies returned by the outpost. For bearer authentication, this has a smaller impact than for basic authentication, but each request is still verified with the authentik server.
 :::
