@@ -5,7 +5,7 @@ import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -37,7 +37,7 @@ export class TokenForm extends ModelForm<Token, string> {
     }
 
     async loadInstance(pk: string): Promise<Token> {
-        const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
+        const token = await aki(CoreApi).coreTokensRetrieve({
             identifier: pk,
         });
 
@@ -56,12 +56,12 @@ export class TokenForm extends ModelForm<Token, string> {
 
     async send(data: Token): Promise<Token> {
         if (this.instance?.identifier) {
-            return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
+            return aki(CoreApi).coreTokensUpdate({
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
         }
-        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+        return aki(CoreApi).coreTokensCreate({
             tokenRequest: data,
         });
     }
@@ -113,7 +113,7 @@ export class TokenForm extends ModelForm<Token, string> {
                             args.search = query;
                         }
 
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
+                        const users = await aki(CoreApi).coreUsersList(args);
                         const instanceUser = this.instance?.userObj;
 
                         if (!instanceUser) {

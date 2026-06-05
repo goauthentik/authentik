@@ -3,7 +3,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -35,7 +35,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
-        return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
+        return aki(RacApi).racConnectionTokensList({
             ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
             sessionUser: this.userId,
@@ -54,12 +54,12 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
                 ];
             }}
             .usedBy=${(item: ConnectionToken) => {
-                return new RacApi(DEFAULT_CONFIG).racConnectionTokensUsedByList({
+                return aki(RacApi).racConnectionTokensUsedByList({
                     connectionTokenUuid: item.pk || "",
                 });
             }}
             .delete=${(item: ConnectionToken) => {
-                return new RacApi(DEFAULT_CONFIG).racConnectionTokensDestroy({
+                return aki(RacApi).racConnectionTokensDestroy({
                     connectionTokenUuid: item.pk || "",
                 });
             }}

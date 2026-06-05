@@ -5,7 +5,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -30,7 +30,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-authenticator-email-form")
 export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmailStage> {
     async loadInstance(pk: string): Promise<AuthenticatorEmailStage> {
-        const stage = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailRetrieve({
+        const stage = await aki(StagesApi).stagesAuthenticatorEmailRetrieve({
             stageUuid: pk,
         });
         this.showConnectionSettings = !stage.useGlobalSettings;
@@ -38,7 +38,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
     }
 
     async load(): Promise<void> {
-        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+        this.templates = await aki(StagesApi).stagesEmailTemplatesList();
     }
 
     templates?: TypeCreate[];
@@ -48,12 +48,12 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
 
     async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailUpdate({
+            return aki(StagesApi).stagesAuthenticatorEmailUpdate({
                 stageUuid: this.instance.pk || "",
                 authenticatorEmailStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailCreate({
+        return aki(StagesApi).stagesAuthenticatorEmailCreate({
             authenticatorEmailStageRequest: data,
         });
     }
@@ -215,9 +215,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

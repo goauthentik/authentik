@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -12,27 +12,21 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-property-mapping-provider-microsoft-entra-form")
 export class PropertyMappingProviderMicrosoftEntraForm extends BasePropertyMappingForm<MicrosoftEntraProviderMapping> {
     loadInstance(pk: string): Promise<MicrosoftEntraProviderMapping> {
-        return new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsProviderMicrosoftEntraRetrieve({
+        return aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: MicrosoftEntraProviderMapping): Promise<MicrosoftEntraProviderMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(
-                DEFAULT_CONFIG,
-            ).propertymappingsProviderMicrosoftEntraUpdate({
+            return aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraUpdate({
                 pmUuid: this.instance.pk,
                 microsoftEntraProviderMappingRequest: data,
             });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderMicrosoftEntraCreate(
-            {
-                microsoftEntraProviderMappingRequest: data,
-            },
-        );
+        return aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraCreate({
+            microsoftEntraProviderMappingRequest: data,
+        });
     }
 }
 

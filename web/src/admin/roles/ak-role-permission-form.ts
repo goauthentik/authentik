@@ -6,7 +6,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent } from "#elements/forms/Form";
@@ -48,7 +48,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         if (!this.roleUUID) {
             return;
         }
-        await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
+        await aki(RbacApi).rbacPermissionsAssignedByRolesAssign({
             uuid: this.roleUUID,
             permissionAssignRequest: {
                 permissions: data.permissions,
