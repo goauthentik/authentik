@@ -27,7 +27,7 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
 )
-from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
+from authentik.core.models import Group, PropertyMapping, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
@@ -37,7 +37,7 @@ from authentik.events.utils import (
     sanitize_dict,
     sanitize_item,
 )
-from authentik.lib.models import DomainlessURLValidator, SerializerModel
+from authentik.lib.models import DomainlessURLValidator, ExpiringModel, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session

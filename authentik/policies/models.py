@@ -9,6 +9,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.lib.models import (
     CreatedUpdatedModel,
+    ExpiringModel,
     InheritanceAutoManager,
     InheritanceForeignKey,
     SerializerModel,
@@ -59,7 +60,7 @@ class BoundPolicyQuerySet(models.QuerySet):
         return self.filter(policy__in=policy._default_manager.all()).filter(enabled=True)
 
 
-class PolicyBinding(SerializerModel):
+class PolicyBinding(ExpiringModel, SerializerModel):
     """Relationship between a Policy and a PolicyBindingModel."""
 
     policy_binding_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -110,6 +111,8 @@ class PolicyBinding(SerializerModel):
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if request passes this PolicyBinding, check policy, group or user"""
+        if self.is_expired:
+            return PolicyResult(False)
         if self.policy:
             self.policy: Policy
             return self.policy.passes(request)
@@ -162,7 +165,7 @@ class PolicyBinding(SerializerModel):
         verbose_name = _("Policy Binding")
         verbose_name_plural = _("Policy Bindings")
         unique_together = ("policy", "target", "order")
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["policy"]),
             models.Index(fields=["group"]),
             models.Index(fields=["user"]),

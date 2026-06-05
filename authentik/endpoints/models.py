@@ -11,11 +11,16 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.models import AttributesMixin, ExpiringModel
+from authentik.core.models import AttributesMixin
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
 from authentik.lib.merge import MERGE_LIST_UNIQUE
-from authentik.lib.models import InheritanceForeignKey, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    ExpiringModel,
+    InheritanceForeignKey,
+    InternallyManagedMixin,
+    SerializerModel,
+)
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -81,7 +86,7 @@ class DeviceUserBinding(PolicyBinding):
     # by a connector and not manually
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE, null=True)
 
-    class Meta(PolicyBinding.Meta):
+    class Meta:
         verbose_name = _("Device User binding")
         verbose_name_plural = _("Device User bindings")
 
@@ -223,6 +228,6 @@ class EndpointStage(Stage):
     def component(self) -> str:
         return "ak-endpoints-stage-form"
 
-    class Meta(PolicyBinding.Meta):
+    class Meta:
         verbose_name = _("Endpoint Stage")
         verbose_name_plural = _("Endpoint Stages")
