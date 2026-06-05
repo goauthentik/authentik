@@ -16,6 +16,10 @@ Environment=AUTHENTIK_POSTGRESQL__USER=authentik
 Volume=%h/.local/share/authentik/data:/data:Z
 Volume=%h/.local/share/authentik/custom-templates:/templates:Z
 ShmSize=512m
+HealthCmd=curl -fI http://127.0.0.1:9000/-/health/ready/
+HealthRetries=5
+HealthTimeout=5s
+Notify=healthy
 
 [Service]
 Restart=always

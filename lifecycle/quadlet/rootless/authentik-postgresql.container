@@ -15,6 +15,7 @@ HealthInterval=30s
 HealthStartPeriod=20s
 HealthTimeout=5s
 HealthRetries=5
+Notify=healthy
 
 [Service]
 Restart=always
