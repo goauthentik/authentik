@@ -52,7 +52,7 @@ To support the integration of Atlantis with authentik, you need to create an app
 
 The proxy provider requires an authentik proxy outpost. If you do not already have a proxy outpost, follow the [outpost documentation](/docs/add-secure-apps/outposts/) to create and deploy one.
 
-Add the Atlantis application to the proxy outpost that should serve it:
+Add the Atlantis application to a proxy outpost that will serve it:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Outposts**.
