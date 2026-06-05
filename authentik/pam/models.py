@@ -39,7 +39,16 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)
 
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="grant_requests_created"
+    )
+    fulfilled_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_DEFAULT,
+        related_name="grant_requests_fulfilled",
+        null=True,
+        default=None,
+    )
 
     # Targets access was requested to
     targets = models.ManyToManyField(PolicyBindingModel, through="GrantRequestTarget")
@@ -55,7 +64,9 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         return GrantRequestSerializer
 
     @transaction.atomic
-    def fulfill(self):
+    def fulfill(self, user: User):
+        self.fulfilled_by = user
+        self.save()
         if self.status != RequestState.APPROVED:
             return
         for target in GrantRequestTarget.objects.filter(request=self).all():

@@ -6,3 +6,4 @@
 - [ ] Figure out how credentials for Personas work (API Key?)
 - [ ] Check if we need a new stage type for requesting access
 - [ ] Figure out how to configure which apps are "discoverable"
+- [ ] Figure out where to configure approvals

@@ -1,5 +1,5 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework.fields import ListField
+from rest_framework.decorators import action
 from rest_framework.mixins import (
     DestroyModelMixin,
     ListModelMixin,
@@ -32,7 +32,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     serializer_class = GrantRequestSerializer
 
     class GrantRequestCreateSerializer(PassiveSerializer):
-        pbms = ListField(child=PrimaryKeyRelatedField(queryset=PolicyBindingModel.objects.all()))
+        pbms = PrimaryKeyRelatedField(queryset=PolicyBindingModel.objects.all(), many=True)
 
     @extend_schema(request=GrantRequestCreateSerializer, responses={200: LinkSerializer})
     @validate(GrantRequestCreateSerializer)
@@ -49,4 +49,11 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             },
         )
         plan.append_stage(in_memory_stage(GrantRequestFinalStageView))
-        return Response({"link": plan.to_redirect(request, flow)})
+        return Response({"link": plan.to_redirect(request, flow).url})
+
+    @action(["POST"], detail=True)
+    def fulfill(self, request: Request, *args, **kwargs):
+        grant: GrantRequest = self.get_object()
+        # TODO: Check if this user can fulfill this grant
+        grant.fulfill(request.user)
+        return Response(status=204)
