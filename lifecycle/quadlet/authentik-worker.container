@@ -9,6 +9,8 @@ Image=ghcr.io/goauthentik/server:2026.8.0-rc1
 AutoUpdate=registry
 Pod=authentik.pod
 Exec=worker
+# Run as root: the worker reads the root-owned podman/docker socket (mounted below) to deploy outposts; a non-root process can't.
+User=0:0
 EnvironmentFile=/etc/authentik/authentik.env
 Environment=AUTHENTIK_POSTGRESQL__HOST=localhost
 Environment=AUTHENTIK_POSTGRESQL__NAME=authentik

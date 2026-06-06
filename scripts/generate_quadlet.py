@@ -145,6 +145,12 @@ def worker_container(env_file: str, data_dir: str, podman_sock_dir: str) -> Unit
             ("AutoUpdate", "registry"),
             ("Pod", "authentik.pod"),
             ("Exec", "worker"),
+            (
+                COMMENT,
+                "Run as root: the worker reads the root-owned podman/docker socket "
+                "(mounted below) to deploy outposts; a non-root process can't.",
+            ),
+            ("User", "0:0"),
             ("EnvironmentFile", env_file),
             ("Environment", "AUTHENTIK_POSTGRESQL__HOST=localhost"),
             ("Environment", "AUTHENTIK_POSTGRESQL__NAME=authentik"),
