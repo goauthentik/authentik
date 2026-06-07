@@ -28,6 +28,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import StageView
 from authentik.lib.utils.email import mask_email
+from authentik.lib.utils.sms import mask_phone_number
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import devices_for_user
@@ -63,8 +64,26 @@ def get_challenge_for_device(
         return get_webauthn_challenge(stage_view, stage, device)
     if isinstance(device, EmailDevice):
         return {"email": mask_email(device.email)}
+    if isinstance(device, SMSDevice):
+        return get_sms_challenge(device)
     # Code-based challenges have no hints
     return {}
+
+
+def get_sms_challenge(device: SMSDevice) -> dict:
+    """Generate hints for an SMS device.
+
+    Surfaces the (masked) destination and the configured delivery method so the
+    user can tell where a code was sent. Multiple SMS stages can use distinct
+    friendly names (e.g. "SMS", "WhatsApp") to differentiate delivery channels.
+    """
+    challenge: dict = {}
+    # A hashed phone number cannot be masked into anything meaningful.
+    if not device.is_hashed:
+        challenge["phone_number"] = mask_phone_number(device.phone_number)
+    if device.stage.friendly_name:
+        challenge["delivery_method"] = device.stage.friendly_name
+    return challenge
 
 
 def get_webauthn_challenge_without_user(

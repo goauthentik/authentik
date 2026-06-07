@@ -102,8 +102,23 @@ export function formatDeviceChallengeMessage(deviceChallenge?: DeviceChallenge |
                 ? msg(str`A code has been sent to your address: ${email}`)
                 : msg("A code has been sent to your email address.");
         }
-        case DeviceClassesEnum.Sms:
+        case DeviceClassesEnum.Sms: {
+            const { phone_number: phoneNumber, delivery_method: deliveryMethod } =
+                deviceChallenge.challenge;
+
+            if (deliveryMethod && phoneNumber) {
+                return msg(str`A code has been sent via ${deliveryMethod} to ${phoneNumber}.`);
+            }
+            if (deliveryMethod) {
+                return msg(str`A code has been sent to you via ${deliveryMethod}.`);
+            }
+            if (phoneNumber) {
+                return msg(
+                    str`A one-time use code has been sent to you via SMS to ${phoneNumber}.`,
+                );
+            }
             return msg("A one-time use code has been sent to you via SMS text message.");
+        }
         case DeviceClassesEnum.Totp:
             return msg("Open your authenticator app to retrieve a one-time use code.");
         case DeviceClassesEnum.Static:
