@@ -40,15 +40,6 @@ services:
     volumes:
     - ./data:/data
     - ./custom-templates:/templates
-  tiles:
-    image: ${AUTHENTIK_TILES_IMAGE:-ghcr.io/goauthentik/authentik-tiles:latest}
-    ports:
-    - ${COMPOSE_PORT_TILES:-8484}:8484
-    profiles:
-    - tiles
-    restart: unless-stopped
-    volumes:
-    - ./tiles:/tiles:ro
   worker:
     command: worker
     depends_on:

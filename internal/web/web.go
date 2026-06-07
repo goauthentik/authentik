@@ -92,7 +92,6 @@ func NewWebServer() *WebServer {
 	}
 	ws.mainRouter.PathPrefix(config.Get().Web.Path).Path("/-/metrics/").Handler(http.NotFoundHandler())
 	ws.configureStatic()
-	ws.configureTiles()
 	ws.configureProxy()
 	// Redirect for sub-folder
 	if sp := config.Get().Web.Path; sp != "/" {
