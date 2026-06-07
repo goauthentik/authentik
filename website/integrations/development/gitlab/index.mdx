@@ -157,3 +157,27 @@ For further GitLab provider arguments, check the [GitLab docs](https://docs.gitl
 
 </TabItem>
 </Tabs>
+
+## SCIM provisioning _(optional)_
+
+GitLab self-managed instances expose SCIM endpoints for user and group provisioning when SCIM is enabled in GitLab. Use the SCIM API endpoint URL and token shown in GitLab's SCIM configuration.
+
+### Create a SCIM provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click **Create**.
+3. Select **SCIM Provider** as the provider type and click **Next**.
+4. Enter the following values:
+    - **Name**: Choose a descriptive name.
+    - **URL**: Paste the SCIM API endpoint URL from GitLab.
+    - **Token**: Paste the SCIM token from GitLab.
+    - **Compatibility Mode**: Select **GitLab**.
+5. Click **Finish** to save the provider.
+
+### Add the SCIM provider to your application
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and select your GitLab application.
+3. Click **Edit**.
+4. In the **Backchannel Providers** field, select the SCIM provider you created.
+5. Click **Update** to save the application.
