@@ -73,9 +73,14 @@ export class EventMap extends WithBrandConfig(AKElement) {
 
     render(): TemplateResult {
         const theme = this.activeTheme === "dark" ? "dark" : "light";
+        // Prefer a brand-configured PMTiles archive; otherwise fall back to the
+        // basemap bundled as a static asset (served at static/dist/assets/).
+        const pmtilesUrl =
+            this.brandingMapTiles ||
+            `${globalAK().api.base}static/dist/assets/basemap.pmtiles`;
         return html`<div class="pf-c-card">
             <ak-map
-                tile-url=${this.brandingMapTiles}
+                pmtiles-url=${pmtilesUrl}
                 theme=${theme}
                 .markers=${this.markers}
                 fit-padding=${this.zoomPaddingPx}

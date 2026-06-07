@@ -48,6 +48,10 @@ const assets = [
         path.dirname(EntryPoint.StandaloneLoading.out),
     ],
     [path.resolve(PackageRoot, "src", "assets", "images"), "./assets/images"],
+    [
+        path.resolve(PackageRoot, "src", "assets", "basemap.pmtiles"),
+        "./assets/basemap.pmtiles",
+    ],
     [path.resolve(PackageRoot, "icons"), "./assets/icons"],
 ];
 

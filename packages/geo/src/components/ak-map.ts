@@ -1,6 +1,7 @@
-import { type BasemapTheme, buildBasemapStyle } from "../style.js";
+import { type BasemapTheme, buildBasemapStyle, type FlavorName } from "../style.js";
 
 import maplibregl, { type LngLatBoundsLike, type Map as MapLibreMap } from "maplibre-gl";
+import { Protocol } from "pmtiles";
 
 import { css, html, LitElement, type PropertyValues, unsafeCSS } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
@@ -20,17 +21,36 @@ export interface MarkerSelectDetail {
 
 const DEFAULT_FIT_PADDING = 64;
 const MAX_FIT_ZOOM = 4.5;
+// The bundled archive tops out at z7; allow a little overzoom (the simplified
+// coast stays smooth) but cap it so labels/roads don't thin out into nothing.
+const DEFAULT_MAX_ZOOM = 10;
+
+// Register the pmtiles:// protocol once per document, lazily.
+let pmtilesProtocolRegistered = false;
+function ensurePmtilesProtocol(): void {
+    if (pmtilesProtocolRegistered) return;
+    maplibregl.addProtocol("pmtiles", new Protocol().tile);
+    pmtilesProtocolRegistered = true;
+}
 
 @customElement("ak-map")
 export class AkMap extends LitElement {
-    @property({ type: String, attribute: "tile-url" })
-    tileUrl = "/tiles/{z}/{x}/{y}.mvt";
+    /** URL of the static PMTiles basemap archive. */
+    @property({ type: String, attribute: "pmtiles-url" })
+    pmtilesUrl = "/tiles/basemap.pmtiles";
 
     @property({ type: String })
     theme: BasemapTheme = "light";
 
+    /** Optional explicit flavor; overrides `theme` (light/dark/grayscale/black). */
+    @property({ type: String })
+    flavor?: FlavorName;
+
     @property({ type: String, attribute: "lang" })
     lang = "en";
+
+    @property({ type: Number, attribute: "max-zoom" })
+    maxZoom = DEFAULT_MAX_ZOOM;
 
     @property({ type: Number, attribute: "fit-padding" })
     fitPadding = DEFAULT_FIT_PADDING;
@@ -79,8 +99,11 @@ export class AkMap extends LitElement {
 
     updated(changed: PropertyValues<this>): void {
         if (!this.#map) return;
-        if (changed.has("tileUrl") || changed.has("theme") || changed.has("lang")) {
+        if (changed.has("pmtilesUrl") || changed.has("theme") || changed.has("flavor") || changed.has("lang")) {
             this.#applyStyle();
+        }
+        if (changed.has("maxZoom")) {
+            this.#map.setMaxZoom(this.maxZoom);
         }
         if (changed.has("markers")) {
             this.#syncMarkers();
@@ -93,6 +116,7 @@ export class AkMap extends LitElement {
 
     #initialiseMap() {
         if (!this.mapContainer || this.#map) return;
+        ensurePmtilesProtocol();
         this.#map = new maplibregl.Map({
             container: this.mapContainer,
             style: this.#styleSpec(),
@@ -100,6 +124,7 @@ export class AkMap extends LitElement {
             cooperativeGestures: false,
             center: [0, 20],
             zoom: 1,
+            maxZoom: this.maxZoom,
         });
         this.#map.once("load", () => {
             this.#mapReady = true;
@@ -119,8 +144,9 @@ export class AkMap extends LitElement {
 
     #styleSpec() {
         return buildBasemapStyle({
-            tileUrl: this.tileUrl,
+            pmtilesUrl: this.pmtilesUrl,
             theme: this.theme,
+            flavor: this.flavor,
             lang: this.lang,
         });
     }

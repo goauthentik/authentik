@@ -3,6 +3,7 @@ export {
     type BasemapTheme,
     buildBasemapStyle,
     type BuildStyleOptions,
+    type FlavorName,
     flavorForTheme,
     resolveTileUrl,
 } from "./style.js";
