@@ -33,9 +33,7 @@
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
         "prettier": "prettier --write .",
-        "prettier-check": "prettier --check .",
-        "tiles:pull": "node scripts/pull.mjs",
-        "tiles:serve": "node scripts/serve.mjs"
+        "prettier-check": "prettier --check ."
     },
     "dependencies": {
         "@protomaps/basemaps": "^5.7.2",
@@ -55,9 +53,7 @@
     },
     "files": [
         "out/**/*",
-        "src/**/*",
-        "scripts/**/*",
-        "Dockerfile"
+        "src/**/*"
     ],
     "engines": {
         "node": ">=24",
