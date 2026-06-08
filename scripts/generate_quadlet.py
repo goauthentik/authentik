@@ -10,7 +10,7 @@ Quadlet does not expand ``${VAR}`` in ``Image=``, so the tag is written
 literally rather than wrapped in a compose-style ``${AUTHENTIK_TAG:-...}``
 fallback.
 
-Two unit sets are emitted from a single ``build_units()`` factory, parametrised
+Two unit sets are emitted from a single ``build_units()`` factory, parameterized
 by the paths that differ between rootful and rootless deployments:
 
 * ``lifecycle/quadlet/`` — rootful, dropped into ``/etc/containers/systemd/``.
