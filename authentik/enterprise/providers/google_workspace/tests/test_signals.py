@@ -1,5 +1,6 @@
 """Google Workspace outgoing sync signal tests"""
 
+from importlib import import_module
 from json import dumps
 
 from django.db import transaction
@@ -8,15 +9,15 @@ from dramatiq.broker import get_broker
 
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.models import Application, Group
-
-# Ensure the shared outgoing sync signal handlers are registered.
-from authentik.enterprise.providers.google_workspace import signals as _signals  # noqa: F401
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.enterprise.providers.google_workspace.tasks import (
     google_workspace_sync_direct_dispatch,
 )
 from authentik.lib.generators import generate_id
 from authentik.tasks.models import Task
+
+# Ensure the shared outgoing sync signal handlers are registered.
+import_module("authentik.enterprise.providers.google_workspace.signals")
 
 
 class GoogleWorkspaceSignalTests(TestCase):
