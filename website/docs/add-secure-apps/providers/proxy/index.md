@@ -102,11 +102,7 @@ To allow unauthenticated requests to specific paths or URLs, use the **Unauthent
 
 Each new line is interpreted as a regular expression and is compiled and checked using the standard Golang regex parser.
 
-<<<<<<< HEAD
-The behaviour of this field changes depending on which mode you're in.
-=======
 The behavior of this field changes depending on the selected mode.
->>>>>>> 0bc2f57a10 (website/docs: clean up proxy provider docs (#22870))
 
 ### Proxy and Forward auth (single application)
 

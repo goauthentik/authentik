@@ -23,11 +23,7 @@ If the user does not have a matching attribute, authentik falls back to using th
 
 By default, when **Intercept header authentication** is enabled, authentik intercepts the `Authorization` header. If the `Authorization` header value is invalid, authentik returns an HTTP `401` error response. Requests without an `Authorization` header are still redirected to the standard login flow.
 
-<<<<<<< HEAD
-If the proxied application requires usage of the "Authorization" header, the setting should be disabled. When this setting is disabled, authentik will still attempt to interpret the "Authorization" header, and fall back to the default behaviour if it can't.
-=======
 If the proxied application requires the `Authorization` header, disable **Intercept header authentication**. When this setting is disabled, authentik still tries to interpret the `Authorization` header and falls back to the default behavior when it cannot interpret the header.
->>>>>>> 0bc2f57a10 (website/docs: clean up proxy provider docs (#22870))
 
 ### Receiving HTTP Basic authentication
 
