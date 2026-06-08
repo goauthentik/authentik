@@ -6,7 +6,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/Alert";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { Level } from "#elements/Alert";
 import { SlottedTemplateResult } from "#elements/types";
@@ -39,7 +39,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     public static override readonly styles = [...super.styles, Styles];
 
-    #api = new StagesApi(DEFAULT_CONFIG);
+    #api = aki(StagesApi);
 
     //#region Lifecycle
 
