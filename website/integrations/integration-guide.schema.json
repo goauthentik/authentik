@@ -1,0 +1,472 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "https://integrations.goauthentik.io/integration-guide.schema.json",
+    "title": "authentik integration guide",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "metadata",
+        "imports",
+        "overview",
+        "preparation",
+        "sections",
+        "resources"
+    ],
+    "properties": {
+        "schema_version": {
+            "const": 1
+        },
+        "metadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "title",
+                "sidebar_label",
+                "support_level",
+                "integration_beta",
+                "category",
+                "slug"
+            ],
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "sidebar_label": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "support_level": {
+                    "enum": ["authentik", "community", "deprecated", "vendor"]
+                },
+                "integration_beta": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "category": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "slug": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9.-]*$"
+                }
+            }
+        },
+        "imports": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "from"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z][A-Za-z0-9]*$"
+                    },
+                    "from": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "default": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        },
+        "overview": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["heading", "quote", "paragraphs"],
+            "properties": {
+                "heading": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "quote": {
+                    "$ref": "#/definitions/quote"
+                },
+                "paragraphs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            }
+        },
+        "preparation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["placeholders", "admonitions"],
+            "properties": {
+                "placeholders": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["token", "description"],
+                        "properties": {
+                            "token": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "description": {
+                                "type": "string",
+                                "minLength": 1
+                            }
+                        }
+                    }
+                },
+                "admonitions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/admonition"
+                    }
+                }
+            }
+        },
+        "sections": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/section"
+            }
+        },
+        "resources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["title", "url"],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "admonition": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "kind", "blocks"],
+            "properties": {
+                "type": {
+                    "const": "admonition"
+                },
+                "kind": {
+                    "enum": ["caution", "danger", "info", "note", "tip", "warning"]
+                },
+                "title": {
+                    "type": "string"
+                },
+                "blocks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/block"
+                    }
+                }
+            }
+        },
+        "block": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/admonition"
+                },
+                {
+                    "$ref": "#/definitions/code"
+                },
+                {
+                    "$ref": "#/definitions/component"
+                },
+                {
+                    "$ref": "#/definitions/heading"
+                },
+                {
+                    "$ref": "#/definitions/list"
+                },
+                {
+                    "$ref": "#/definitions/markdown"
+                },
+                {
+                    "$ref": "#/definitions/paragraph"
+                },
+                {
+                    "$ref": "#/definitions/section"
+                },
+                {
+                    "$ref": "#/definitions/settings"
+                },
+                {
+                    "$ref": "#/definitions/table"
+                },
+                {
+                    "$ref": "#/definitions/tabs"
+                }
+            ]
+        },
+        "code": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "language", "text"],
+            "properties": {
+                "type": {
+                    "const": "code"
+                },
+                "language": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "show_line_numbers": {
+                    "type": "boolean"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "component": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "name"],
+            "properties": {
+                "type": {
+                    "const": "component"
+                },
+                "name": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9]*$"
+                }
+            }
+        },
+        "heading": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "level", "text"],
+            "properties": {
+                "type": {
+                    "const": "heading"
+                },
+                "level": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 6
+                },
+                "text": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "list": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "style", "items"],
+            "properties": {
+                "type": {
+                    "const": "list"
+                },
+                "style": {
+                    "enum": ["ordered", "unordered"]
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/listItem"
+                    }
+                }
+            }
+        },
+        "listItem": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["text"],
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "blocks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/block"
+                    }
+                }
+            }
+        },
+        "markdown": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "text"],
+            "properties": {
+                "type": {
+                    "const": "markdown"
+                },
+                "text": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "paragraph": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "text"],
+            "properties": {
+                "type": {
+                    "const": "paragraph"
+                },
+                "text": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "quote": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["text", "source"],
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "source": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "section": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "level", "heading", "blocks"],
+            "properties": {
+                "type": {
+                    "const": "section"
+                },
+                "level": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 6
+                },
+                "heading": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "blocks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/block"
+                    }
+                }
+            }
+        },
+        "settings": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "items"],
+            "properties": {
+                "type": {
+                    "const": "settings"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["label", "value"],
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "value": {
+                                "type": "string"
+                            },
+                            "blocks": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/block"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "table": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "columns", "rows"],
+            "properties": {
+                "type": {
+                    "const": "table"
+                },
+                "columns": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "rows": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "tabs": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "default_value", "items"],
+            "properties": {
+                "type": {
+                    "const": "tabs"
+                },
+                "default_value": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["label", "value", "blocks"],
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "value": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "blocks": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/block"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

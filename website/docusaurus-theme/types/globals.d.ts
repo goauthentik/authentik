@@ -21,6 +21,7 @@ declare global {
      */
     export interface DocFrontMatter {
         support_level?: string;
+        integration_beta?: string;
         authentik_version?: string;
         authentik_preview: boolean;
         authentik_enterprise: boolean;

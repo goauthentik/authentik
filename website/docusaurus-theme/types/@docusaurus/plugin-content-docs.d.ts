@@ -24,6 +24,7 @@ declare module "@docusaurus/plugin-content-docs/client" {
     export interface DocFrontMatter extends BaseDocFrontMatter {
         beta?: boolean;
         support_level?: string;
+        integration_beta?: string;
         authentik_version?: string;
         authentik_preview: boolean;
         authentik_enterprise: boolean;

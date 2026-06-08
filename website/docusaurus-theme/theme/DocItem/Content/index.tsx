@@ -85,6 +85,7 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
     const {
         // ---
         support_level,
+        integration_beta,
         authentik_version,
         authentik_enterprise,
         authentik_preview,
@@ -102,6 +103,10 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
 
     if (support_level) {
         badges.push(<SupportBadge level={support_level} />);
+    }
+
+    if (integration_beta) {
+        badges.push(<span className="badge badge--warning">Beta: {integration_beta}</span>);
     }
 
     if (authentik_preview) {

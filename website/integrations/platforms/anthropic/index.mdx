@@ -2,7 +2,10 @@
 title: Integrate with Anthropic
 sidebar_label: Anthropic
 support_level: community
+integration_beta: YAML integration
 ---
+
+<!-- Generated from guide.yml by scripts/generate-yaml-guides.mjs. -->
 
 import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
@@ -44,48 +47,49 @@ To support the integration of Anthropic with authentik, create SAML property map
 Create SAML property mappings for the attributes that WorkOS expects from the identity provider.
 
 1. Log in to authentik as an administrator.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create the following **SAML Provider Property Mapping** entries:
-    - **ID mapping:**
-        - **Name**: choose a descriptive name.
-        - **SAML Attribute Name**: `id`
-        - **Friendly Name**: leave blank.
-        - **Expression**:
-            ```python
-            return str(request.user.uuid)
-            ```
-    - **Email mapping:**
-        - **Name**: choose a descriptive name.
-        - **SAML Attribute Name**: `email`
-        - **Friendly Name**: leave blank.
-        - **Expression**:
-            ```python
-            return request.user.email
-            ```
-    - **First name mapping:**
-        - **Name**: choose a descriptive name.
-        - **SAML Attribute Name**: `firstName`
-        - **Friendly Name**: leave blank.
-        - **Expression**:
-            ```python
-            return request.user.name.split(" ", 1)[0] if request.user.name else request.user.username
-            ```
-    - **Last name mapping:**
-        - **Name**: choose a descriptive name.
-        - **SAML Attribute Name**: `lastName`
-        - **Friendly Name**: leave blank.
-        - **Expression**:
-            ```python
-            return request.user.name.rsplit(" ", 1)[-1] if " " in request.user.name else " "
-            ```
-    - **Entitlements mapping** _(required for JIT entitlement mappings)_:
-        - **Name**: choose a descriptive name.
-        - **SAML Attribute Name**: `groups`
-        - **Friendly Name**: leave blank.
-        - **Expression**:
-            ```python
-            for entitlement in request.user.app_entitlements(provider.application):
-                yield entitlement.name
-            ```
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create the following **SAML Provider Property Mapping** entries.
+
+- **ID mapping**:
+    - **Name**: choose a descriptive name.
+    - **SAML Attribute Name**: `id`
+    - **Friendly Name**: leave blank.
+    - **Expression**:
+        ```python
+        return str(request.user.uuid)
+        ```
+- **Email mapping**:
+    - **Name**: choose a descriptive name.
+    - **SAML Attribute Name**: `email`
+    - **Friendly Name**: leave blank.
+    - **Expression**:
+        ```python
+        return request.user.email
+        ```
+- **First name mapping**:
+    - **Name**: choose a descriptive name.
+    - **SAML Attribute Name**: `firstName`
+    - **Friendly Name**: leave blank.
+    - **Expression**:
+        ```python
+        return request.user.name.split(" ", 1)[0] if request.user.name else request.user.username
+        ```
+- **Last name mapping**:
+    - **Name**: choose a descriptive name.
+    - **SAML Attribute Name**: `lastName`
+    - **Friendly Name**: leave blank.
+    - **Expression**:
+        ```python
+        return request.user.name.rsplit(" ", 1)[-1] if " " in request.user.name else " "
+        ```
+- **Entitlements mapping _(required for JIT entitlement mappings)_**:
+    - **Name**: choose a descriptive name.
+    - **SAML Attribute Name**: `groups`
+    - **Friendly Name**: leave blank.
+    - **Expression**:
+        ```python
+        for entitlement in request.user.app_entitlements(provider.application):
+            yield entitlement.name
+        ```
 
 ### Create an application and provider in authentik
 
@@ -102,7 +106,9 @@ Create SAML property mappings for the attributes that WorkOS expects from the id
             - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
             - Add the property mappings that you created earlier.
-    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page. When a SCIM provider is added as a backchannel provider later, only users who can view this application are synchronized.
+
+    - **Configure Bindings _(optional)_**: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page. When a SCIM provider is added as a backchannel provider later, only users who can view this application are synchronized.
+
 3. Click **Submit** to save the new application and provider.
 
 ### Copy the metadata URL
@@ -121,6 +127,7 @@ This guide expects that you have already reviewed Anthropic's SSO considerations
 3. Copy the following WorkOS service provider values. You will use these values to update the authentik provider:
     - **ACS URL**
     - **SP Entity ID**
+
 4. Paste the authentik metadata URL into the WorkOS identity provider metadata field.
 5. Map the SAML attributes as follows:
     - `id` to the user ID field.
@@ -136,6 +143,7 @@ This guide expects that you have already reviewed Anthropic's SSO considerations
 3. Update the provider with the WorkOS values:
     - **ACS URL**: set to the WorkOS **ACS URL**.
     - **Audience**: set to the WorkOS **SP Entity ID**.
+
 4. Click **Update** to save the provider.
 
 ### Test and enforce SSO
@@ -160,7 +168,7 @@ To provision users automatically, choose one of the options below:
   defaultValue="jit"
   values={[
     { label: "JIT", value: "jit" },
-    { label: "SCIM", value: "scim" },
+    { label: "SCIM", value: "scim" }
   ]}>
   <TabItem value="jit">
 
@@ -240,7 +248,8 @@ Use SCIM provisioning to automatically create, update, and remove users and grou
     - **URL**: enter the WorkOS SCIM **Endpoint**.
     - **Token**: paste the WorkOS SCIM **Bearer Token**.
     - **Authentication Mode**: select **Static token**.
-    - **Group filters** _(optional)_: select only the Anthropic-specific groups that should be synchronized.
+    - **Group filters _(optional)_**: select only the Anthropic-specific groups that should be synchronized.
+
 4. Click **Finish**.
 5. Navigate to **Applications** > **Applications** and open the Anthropic application.
 6. Add the SCIM provider to **Backchannel Providers**.
