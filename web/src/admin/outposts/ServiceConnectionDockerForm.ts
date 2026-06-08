@@ -82,6 +82,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
             >
                 <ak-crypto-certificate-search
                     .certificate=${this.instance?.tlsVerification}
+                    nokey
                 ></ak-crypto-certificate-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(
