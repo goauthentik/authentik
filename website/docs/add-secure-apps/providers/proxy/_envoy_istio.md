@@ -27,7 +27,7 @@ spec:
                       - cookie
 ```
 
-Afterwards, you can create _AuthorizationPolicy_ resources to protect your applications like this:
+You can then create _AuthorizationPolicy_ resources to protect your applications like this:
 
 ```yaml
 apiVersion: security.istio.io/v1beta1

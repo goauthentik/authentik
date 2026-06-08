@@ -6,7 +6,7 @@ tags:
     - flows
 ---
 
-[Flow context](../../../../add-secure-apps/flows-stages/flow/context/index.mdx) can be read and updated from an [Expression policy](./index.mdx) through `context["flow_plan"].context`.
+[Flow context](../../../../add-secure-apps/flows-stages/flow/context/index.mdx) can be read and updated from an [Expression policy](./index.mdx) through `context["flow_plan"].context`. For more information about the active plan, see [Flow Planner](../../../../add-secure-apps/flows-stages/flow/planner.md).
 
 This is useful when you want to influence later stages in the same flow, such as changing a redirect target or passing data to another stage.
 

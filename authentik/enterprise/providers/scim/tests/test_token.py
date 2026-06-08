@@ -104,6 +104,7 @@ class TestSCIMOAuthToken(APITestCase):
             source=self.source,
             user=self.provider.auth_oauth_user,
         ).first()
+        self.assertEqual(conn.refresh_token, refresh_token)
         self.assertIsNotNone(conn)
         self.assertTrue(conn.is_valid)
         auth = (

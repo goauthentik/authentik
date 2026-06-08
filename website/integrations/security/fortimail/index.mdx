@@ -4,6 +4,7 @@ sidebar_label: FortiMail
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
@@ -48,6 +49,8 @@ You can configure either Admin Portal SSO or User Portal SSO, or both, depending
   <TabItem value="admin">
 
 ### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -120,6 +123,8 @@ When administrator SSO-only login is enabled, the built-in `admin` account canno
   <TabItem value="user">
 
 ### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
