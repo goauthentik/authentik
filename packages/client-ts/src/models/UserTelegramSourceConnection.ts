@@ -32,7 +32,7 @@ export interface UserTelegramSourceConnection {
      * @type {number}
      * @memberof UserTelegramSourceConnection
      */
-    user: number;
+    readonly user: number;
     /**
      *
      * @type {string}
@@ -110,7 +110,7 @@ export function UserTelegramSourceConnectionToJSON(json: any): UserTelegramSourc
 export function UserTelegramSourceConnectionToJSONTyped(
     value?: Omit<
         UserTelegramSourceConnection,
-        "pk" | "source_obj" | "created" | "last_updated"
+        "pk" | "user" | "source_obj" | "created" | "last_updated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -119,7 +119,6 @@ export function UserTelegramSourceConnectionToJSONTyped(
     }
 
     return {
-        user: value["user"],
         source: value["source"],
         identifier: value["identifier"],
     };
