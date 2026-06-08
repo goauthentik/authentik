@@ -38,7 +38,7 @@ class GrantRequestFinalStageView(StageView):
                 EventAction.MODEL_CREATED,
                 model=req,
                 hyperlink=request.build_absolute_uri(reverse("authentik_core:if-admin"))
-                + "#/pam/requests/respond",
+                + f"#/pam/requests/{req.uuid}/respond",
                 hyperlink_label="Respond",
             ).from_http(request, user)
         return self.executor.stage_ok()

@@ -8,7 +8,7 @@ from authentik.lib.models import SerializerModel
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 
-class Persona(User):
+class Persona(ExpiringModel, User):
     # Inherited:
     #  - parent.email
     #  - parent.name (customisable)

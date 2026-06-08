@@ -8,5 +8,3 @@ class AccessRequestPolicy(Policy):
 
     approver_groups = models.ManyToManyField(Group)
     approver_users = models.ManyToManyField(User)
-
-

@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.validation import validate
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import LinkSerializer, ModelSerializer, PassiveSerializer
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
@@ -21,9 +22,19 @@ from authentik.policies.models import PolicyBindingModel
 
 class GrantRequestSerializer(ModelSerializer):
 
+    created_by = PartialUserSerializer(read_only=True)
+
     class Meta:
         model = GrantRequest
-        fields = "__all__"
+        fields = [
+            "created",
+            "created_by",
+            "data",
+            "expires",
+            "status",
+            "targets",
+            "uuid",
+        ]
 
 
 class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
