@@ -59,6 +59,10 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 		return settings
 	}
 
+	tlsConfig := utils.GetTLSConfig()
+	tlsConfig.Certificates = []ttls.Certificate{*cert}
+	tlsConfig.ClientAuth = ttls.RequireAnyClientCert
+
 	settings.Protocols = append(settings.Protocols, tls.Protocol, peap.Protocol)
 	settings.ProtocolPriority = []protocol.Type{
 		identity.TypeIdentity,
@@ -66,10 +70,7 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 	}
 	settings.ProtocolSettings = map[protocol.Type]any{
 		tls.TypeTLS: tls.Settings{
-			Config: &ttls.Config{
-				Certificates: []ttls.Certificate{*cert},
-				ClientAuth:   ttls.RequireAnyClientCert,
-			},
+			Config: tlsConfig,
 			HandshakeSuccessful: func(ctx protocol.Context, certs []*x509.Certificate) protocol.Status {
 				ident := ctx.GetProtocolState(identity.TypeIdentity).(*identity.State).Identity
 
