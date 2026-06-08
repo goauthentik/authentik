@@ -80,7 +80,7 @@ No SSO configuration is required in IIS for this option. The authentik proxy out
 
 Use this option when IIS should receive requests for `https://iis.company` and forward them to the authentik proxy outpost. The authentik proxy outpost then forwards authenticated requests to the IIS backend site.
 
-:::warning[ARR host header setting]
+:::warning ARR host header setting
 `preserveHostHeader` is a server-level ARR setting. Review other IIS reverse proxy sites before changing it on a shared IIS server.
 :::
 
