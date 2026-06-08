@@ -1,9 +1,11 @@
 """Test blueprints v1"""
 
+from json import dumps
 from os import chmod, environ, unlink, write
 from tempfile import mkstemp
+from unittest.mock import patch
 
-from django.test import TransactionTestCase
+from django.test import TransactionTestCase, override_settings
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.blueprints.v1.exporter import FlowExporter
@@ -127,6 +129,38 @@ class TestBlueprintsV1(TransactionTestCase):
         self.assertTrue(importer.apply())
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
+
+    @override_settings(TEST=True)
+    def test_reapply_unchanged_group_skips_save(self):
+        """Test re-applying an unchanged object doesn't save it again"""
+        group_name = generate_id()
+        blueprint = dumps(
+            {
+                "version": 1,
+                "entries": [
+                    {
+                        "identifiers": {"name": group_name},
+                        "attrs": {
+                            "name": group_name,
+                            "attributes": {"foo": "bar"},
+                        },
+                        "model": "authentik_core.Group",
+                    }
+                ],
+            }
+        )
+
+        importer = Importer.from_string(blueprint)
+        self.assertTrue(importer.apply())
+
+        importer = Importer.from_string(blueprint)
+        with patch.object(
+            Group,
+            "save",
+            side_effect=AssertionError("unchanged group was saved"),
+        ) as save:
+            self.assertTrue(importer.apply())
+        self.assertFalse(save.called)
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_import_yaml_tags(self):

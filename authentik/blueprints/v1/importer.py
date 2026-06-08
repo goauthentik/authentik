@@ -10,7 +10,7 @@ from dacite.exceptions import DaciteError
 from deepmerge import always_merger
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import FieldError
+from django.core.exceptions import FieldDoesNotExist, FieldError
 from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
@@ -370,6 +370,52 @@ class Importer:
                 role = Role.objects.get(pk=perm.role)
                 role.assign_perms(perm.permission, obj=instance)
 
+    def _related_pk_set(self, value) -> set | None:
+        """Convert serializer relationship values to a primary-key set."""
+        try:
+            return {getattr(item, "pk", item) for item in value}
+        except TypeError:
+            return None
+
+    def _serializer_would_change_instance(self, serializer: BaseSerializer) -> bool:
+        """Check if saving an existing serializer would change the model instance."""
+        instance = serializer.instance
+        if not isinstance(instance, Model) or instance._state.adding:
+            return True
+
+        validated_data = getattr(serializer, "validated_data", None)
+        if validated_data is None:
+            return True
+
+        for attr, value in validated_data.items():
+            if attr in {"password", "password_hash", "permissions"}:
+                return True
+
+            try:
+                field = instance._meta.get_field(attr)
+            except FieldDoesNotExist:
+                return True
+
+            if getattr(field, "many_to_many", False):
+                current = set(getattr(instance, attr).values_list("pk", flat=True))
+                desired = self._related_pk_set(value)
+                if desired is None or current != desired:
+                    return True
+                continue
+
+            if getattr(field, "many_to_one", False) or getattr(field, "one_to_one", False):
+                if getattr(instance, field.attname) != getattr(value, "pk", value):
+                    return True
+                continue
+
+            if not getattr(field, "concrete", False):
+                return True
+
+            if getattr(instance, attr) != value:
+                return True
+
+        return False
+
     def apply(self) -> bool:
         """Apply (create/update) models yaml, in database transaction"""
         try:
@@ -424,6 +470,18 @@ class Importer:
                 ):
                     self.logger.debug(
                         "Instance exists, skipping",
+                        model=model,
+                        instance=instance,
+                        pk=instance.pk,
+                    )
+                elif (
+                    instance
+                    and not instance._state.adding
+                    and state == BlueprintEntryDesiredState.PRESENT
+                    and not self._serializer_would_change_instance(serializer)
+                ):
+                    self.logger.debug(
+                        "Instance unchanged, skipping",
                         model=model,
                         instance=instance,
                         pk=instance.pk,
