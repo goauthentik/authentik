@@ -10,6 +10,14 @@ import { map } from "lit/directives/map.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
+/*
+ * LDAPSourceConnectivity
+ *
+ * @summary The authentik server can use LDAP servers as sources of identity. This component
+ * displays the reachability and, if available, vendor and version details about LDAP source servers
+ * currently configured in the authentik instance.
+ */
+
 @customElement("ak-source-ldap-connectivity")
 export class LDAPSourceConnectivity extends AKElement {
     @property()
