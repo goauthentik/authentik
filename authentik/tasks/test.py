@@ -2,6 +2,7 @@ from queue import PriorityQueue
 
 from django.utils.module_loading import import_string
 from django_dramatiq_postgres.conf import Conf
+from django_dramatiq_postgres.models import TaskState
 from dramatiq import set_broker
 from dramatiq.broker import Broker, MessageProxy, get_broker
 from dramatiq.middleware.middleware import Middleware
@@ -62,8 +63,12 @@ class TestBroker(PostgresBroker):
 
     def enqueue(self, *args, **kwargs):
         message = super().enqueue(*args, **kwargs).copy(queue_name=TESTING_QUEUE)
-        if not self.worker:
+        if not self.worker or message.options.get("task_coalesced", False):
             return message
+        task = message.options["task"]
+        task.queue_name = TESTING_QUEUE
+        task.state = TaskState.CONSUMED
+        task.save(update_fields=["queue_name", "state"])
         self.worker.process_message(MessageProxy(message))
         return message
 

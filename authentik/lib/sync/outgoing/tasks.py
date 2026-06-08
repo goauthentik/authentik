@@ -232,6 +232,7 @@ class SyncTasks:
                 args=(model, pk, provider.pk),
                 rel_obj=provider,
                 uid=f"{provider.name}:{model_class._meta.model_name}:{pk}:direct",
+                deduplicate_by_uid=True,
             )
 
     def sync_signal_direct(

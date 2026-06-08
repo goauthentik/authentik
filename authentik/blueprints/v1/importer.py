@@ -46,6 +46,7 @@ from authentik.events.utils import cleanse_dict
 from authentik.flows.models import Stage
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
@@ -457,6 +458,7 @@ class Importer:
         with (
             transaction_rollback(),
             capture_logs() as logs,
+            sync_outgoing_inhibit_dispatch(),
         ):
             successful = self._apply_models(raise_errors=raise_validation_errors)
             if not successful:

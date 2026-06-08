@@ -44,6 +44,7 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
     rel_obj = GenericForeignKey("rel_obj_content_type", "rel_obj_id")
 
     _uid = models.TextField(blank=True, null=True)
+    _deduplicate_by_uid = models.BooleanField(default=False)
     _messages = models.JSONField(default=list)
     _previous_messages = models.JSONField(default=list)
 
@@ -56,6 +57,15 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
         ]
         indexes = TaskBase.Meta.indexes + (
             models.Index(fields=("rel_obj_content_type", "rel_obj_id")),
+        )
+        constraints = (
+            models.UniqueConstraint(
+                fields=("tenant", "queue_name", "actor_name", "_uid"),
+                condition=models.Q(_deduplicate_by_uid=True)
+                & models.Q(_uid__isnull=False)
+                & ~models.Q(state__in=(TaskState.DONE, TaskState.REJECTED)),
+                name="authentik_task_active_dedup_uid",
+            ),
         )
         triggers = TaskBase.Meta.triggers + (
             pgtrigger.Trigger(

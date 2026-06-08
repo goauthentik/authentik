@@ -1,7 +1,11 @@
+from collections.abc import Callable
 from contextlib import contextmanager
 from contextvars import ContextVar
 
+from django.conf import settings
+from django.db import transaction
 from django.db.models import Model
+from django.db.models.query_utils import Q
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 from dramatiq.actor import Actor
 
@@ -20,11 +24,26 @@ def sync_outgoing_inhibit_dispatch():
     """
     Prevent direct and m2m tasks from being dispatched when User/Group/membership change
     """
-    _CTX_INHIBIT_DISPATCH.set(True)
+    token = _CTX_INHIBIT_DISPATCH.set(True)
     try:
         yield
     finally:
-        _CTX_INHIBIT_DISPATCH.set(False)
+        _CTX_INHIBIT_DISPATCH.reset(token)
+
+
+def _assigned_provider_filter() -> Q:
+    return Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+
+
+def _has_assigned_provider(provider_type: type[OutgoingSyncProvider]) -> bool:
+    return provider_type.objects.filter(_assigned_provider_filter()).exists()
+
+
+def _dispatch_on_commit(callback: Callable[[], None]) -> None:
+    if settings.TEST:
+        callback()
+        return
+    transaction.on_commit(callback)
 
 
 def register_signals(
@@ -50,11 +69,16 @@ def register_signals(
             return
         if _CTX_INHIBIT_DISPATCH.get():
             return
-        if not provider_type.objects.exists():
+        if not _has_assigned_provider(provider_type):
             return
-        task_sync_direct_dispatch.send(
-            class_to_path(instance.__class__),
-            instance.pk,
+        model_path = class_to_path(instance.__class__)
+        instance_pk = instance.pk
+        _dispatch_on_commit(
+            lambda: task_sync_direct_dispatch.send_with_options(
+                args=(model_path, instance_pk),
+                uid=f"{model_path}:{instance_pk}:direct-dispatch",
+                deduplicate_by_uid=True,
+            )
         )
 
     post_save.connect(model_post_save, User, dispatch_uid=uid, weak=False)
@@ -67,9 +91,12 @@ def register_signals(
         mappings = provider_type.get_object_mappings(instance)
         if not mappings:
             return
-        task_sync_delete_dispatch.send(
-            class_to_path(instance.__class__),
-            mappings,
+        model_path = class_to_path(instance.__class__)
+        _dispatch_on_commit(
+            lambda: task_sync_delete_dispatch.send(
+                model_path,
+                mappings,
+            )
         )
 
     pre_delete.connect(model_pre_delete, User, dispatch_uid=uid, weak=False)
@@ -83,8 +110,12 @@ def register_signals(
             return
         if _CTX_INHIBIT_DISPATCH.get():
             return
-        if not provider_type.objects.exists():
+        if not _has_assigned_provider(provider_type):
             return
-        task_sync_m2m_dispatch.send(instance.pk, action, list(pk_set), reverse)
+        instance_pk = instance.pk
+        pk_list = list(pk_set)
+        _dispatch_on_commit(
+            lambda: task_sync_m2m_dispatch.send(instance_pk, action, pk_list, reverse)
+        )
 
     m2m_changed.connect(model_m2m_changed, User.groups.through, dispatch_uid=uid, weak=False)

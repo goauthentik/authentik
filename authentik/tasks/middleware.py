@@ -59,17 +59,23 @@ class TenantMiddleware(Middleware):
 class ModelDataMiddleware(Middleware):
     @property
     def actor_options(self):
-        return {"rel_obj", "uid"}
+        return {"rel_obj", "uid", "deduplicate_by_uid"}
 
     def before_enqueue(self, broker: Broker, message: Message, delay: int):
         if "rel_obj" in message.options:
             message.options["model_defaults"]["rel_obj"] = message.options.pop("rel_obj")
         if "uid" in message.options:
             message.options["model_defaults"]["_uid"] = message.options.pop("uid")
+        if "deduplicate_by_uid" in message.options:
+            message.options["model_defaults"]["_deduplicate_by_uid"] = message.options.pop(
+                "deduplicate_by_uid"
+            )
 
 
 class TaskLogMiddleware(Middleware):
     def after_enqueue(self, broker: Broker, message: Message, delay: int | None):
+        if message.options.get("task_coalesced", False):
+            return
         task: Task = message.options["task"]
         task_created: bool = message.options["task_created"]
         if task_created:
@@ -142,6 +148,8 @@ class LoggingMiddleware(Middleware):
         self.logger = get_logger()
 
     def after_enqueue(self, broker: Broker, message: Message, delay: int):
+        if message.options.get("task_coalesced", False):
+            return
         self.logger.info(
             "Task enqueued",
             task_id=message.message_id,
