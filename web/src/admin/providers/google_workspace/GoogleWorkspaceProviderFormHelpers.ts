@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -7,8 +7,8 @@ import { GoogleWorkspaceProviderMapping, PropertymappingsApi } from "@goauthenti
 const mappingToSelect = (m: GoogleWorkspaceProviderMapping) => [m.pk, m.name, m.name, m];
 
 export async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
+    const propertyMappings = await aki(
+        PropertymappingsApi,
     ).propertymappingsProviderGoogleWorkspaceList({
         ordering: "managed",
         pageSize: 20,
@@ -34,7 +34,7 @@ export function propertyMappingsSelector(
     }
 
     return async () => {
-        const pm = new PropertymappingsApi(DEFAULT_CONFIG);
+        const pm = aki(PropertymappingsApi);
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
                 pm.propertymappingsProviderGoogleWorkspaceRetrieve({ pmUuid: instanceId }),

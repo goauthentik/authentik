@@ -9,7 +9,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
@@ -58,7 +58,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     protected override async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
         try {
             // Check if any invitation stages exist
-            const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
+            const stages = await aki(StagesApi).stagesInvitationStagesList({
                 noFlows: false,
             });
             this.invitationStageExists = stages.pagination.count > 0;
@@ -74,7 +74,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         } catch {
             // assuming we can't fetch stages, ignore the error
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsList({
+        return aki(StagesApi).stagesInvitationInvitationsList({
             ...(await this.defaultEndpointConfig()),
         });
     }
@@ -92,12 +92,12 @@ export class InvitationListPage extends TablePage<Invitation> {
             object-label=${msg("Invitation(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Invitation) => {
-                return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUsedByList({
+                return aki(StagesApi).stagesInvitationInvitationsUsedByList({
                     inviteUuid: item.pk,
                 });
             }}
             .delete=${(item: Invitation) => {
-                return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsDestroy({
+                return aki(StagesApi).stagesInvitationInvitationsDestroy({
                     inviteUuid: item.pk,
                 });
             }}

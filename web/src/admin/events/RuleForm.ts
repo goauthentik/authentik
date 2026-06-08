@@ -7,7 +7,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { eventTransportsProvider, eventTransportsSelector } from "./RuleFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { severityToLabel } from "#common/labels";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -36,13 +36,13 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
     eventTransports?: PaginatedNotificationTransportList;
 
     loadInstance(pk: string): Promise<NotificationRule> {
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesRetrieve({
+        return aki(EventsApi).eventsRulesRetrieve({
             pbmUuid: pk,
         });
     }
 
     async load(): Promise<void> {
-        this.eventTransports = await new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
+        this.eventTransports = await aki(EventsApi).eventsTransportsList({
             ordering: "name",
         });
     }
@@ -55,12 +55,12 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
 
     async send(data: NotificationRule): Promise<NotificationRule> {
         if (this.instance) {
-            return new EventsApi(DEFAULT_CONFIG).eventsRulesUpdate({
+            return aki(EventsApi).eventsRulesUpdate({
                 pbmUuid: this.instance.pk || "",
                 notificationRuleRequest: data,
             });
         }
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesCreate({
+        return aki(EventsApi).eventsRulesCreate({
             notificationRuleRequest: data,
         });
     }
@@ -87,7 +87,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                             args.search = query;
                         }
 
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                        const groups = await aki(CoreApi).coreGroupsList(args);
 
                         return groups.results;
                     }}

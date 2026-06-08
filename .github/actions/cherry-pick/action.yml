@@ -134,12 +134,7 @@ runs:
 
         # Determine which labels to process
         if [ "${REASON}" = "label_added_to_merged_pr" ]; then
-          # Only process the specific label that was just added
-          if [ "$EVENT_NAME" = "issues" ]; then
-            LABEL_NAME="$LABEL_NAME_CTX"
-          else
-            LABEL_NAME="$LABEL_NAME_CTX"
-          fi
+          LABEL_NAME="$LABEL_NAME_CTX"
 
           if [[ "$LABEL_NAME" =~ ^backport/(.+)$ ]]; then
             echo "labels=$LABEL_NAME" >> $GITHUB_OUTPUT

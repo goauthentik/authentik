@@ -36,9 +36,7 @@ export class RouteMatch {
     }
 
     toString(): string {
-        return `<RouteMatch url=${this.sanitizedURL()} route=${this.route} arguments=${JSON.stringify(
-            this.arguments,
-        )}>`;
+        return `<RouteMatch url=${this.sanitizedURL()} route=${this.route} arguments=${JSON.stringify(this.arguments)}>`;
     }
 }
 
