@@ -723,6 +723,7 @@ const items = [
                         items: ["sys-mgmt/events/notification_rule_expression_policies"],
                     },
                     "sys-mgmt/events/transports",
+                    "sys-mgmt/events/splunk-forwarding",
                     "sys-mgmt/events/logging-events",
                     "sys-mgmt/events/event-actions",
                 ],
