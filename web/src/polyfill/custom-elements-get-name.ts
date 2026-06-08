@@ -22,8 +22,17 @@
  * Exported separately from the side-effect import so that unit tests can drive
  * the polyfill against a fake registry without touching the global one.
  */
-export function applyCustomElementsGetNamePolyfill(registry: CustomElementRegistry): void {
+export function applyCustomElementsGetNamePolyfill(
+    registry: Partial<CustomElementRegistry>,
+): asserts registry is CustomElementRegistry {
     if (typeof registry.getName === "function") return;
+
+    if (typeof registry.define !== "function") {
+        console.warn(
+            "CustomElementRegistry.getName polyfill: registry lacks define() method, cannot install polyfill",
+        );
+        return;
+    }
 
     const nameByCtor = new WeakMap<CustomElementConstructor, string>();
     const originalDefine = registry.define.bind(registry);
