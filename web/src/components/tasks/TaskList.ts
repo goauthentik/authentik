@@ -13,7 +13,13 @@ import { EVENT_REFRESH } from "#common/constants";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { GlobalTaskStatus, Task, TaskAggregatedStatusEnum, TasksApi, TaskStatusEnum } from "@goauthentik/api";
+import {
+    GlobalTaskStatus,
+    Task,
+    TaskAggregatedStatusEnum,
+    TasksApi,
+    TaskStatusEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -26,7 +32,9 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 /**
  * TaskList
  *
- * @summary Displays lists of running tasks performed by the authentik service
+ * @summary Displays lists of running tasks performed by the authentik service. Often specialized to
+ * a specific object types within the service, or even individual objects.
+ *
  */
 
 @customElement("ak-task-list")
@@ -70,7 +78,11 @@ export class TaskList extends Table<Task> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =
-            typeof this.relObjId !== "undefined" ? undefined : this.showOnlyStandalone ? true : undefined;
+            typeof this.relObjId !== "undefined"
+                ? undefined
+                : this.showOnlyStandalone
+                  ? true
+                  : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
                   TaskAggregatedStatusEnum.WaitingForDependencies,
@@ -146,7 +158,9 @@ export class TaskList extends Table<Task> {
                                       <i class="fas fa-check" aria-hidden="true"> </i>
                                   </span>
                               </span>
-                              <span class="pf-c-switch__label"> ${msg("Show only standalone tasks")} </span>
+                              <span class="pf-c-switch__label">
+                                  ${msg("Show only standalone tasks")}
+                              </span>
                           </label>`
                         : nothing}
                     <label class="pf-c-switch">
@@ -190,7 +204,7 @@ export class TaskList extends Table<Task> {
                                       new CustomEvent(EVENT_REFRESH, {
                                           bubbles: true,
                                           composed: true,
-                                      })
+                                      }),
                                   );
                               });
                       }}

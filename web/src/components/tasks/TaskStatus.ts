@@ -31,6 +31,14 @@ const statusRepresentation: StatusRepresentation[] = [
     [msg("Error"),           C.Red,    TA.Rejected, LT.Rejected, TA.Error, LT.Error],
 ];
 
+/*
+ * TaskStatus
+ *
+ * A specialized wrapper around `<ak-label />` that understands the Task Status indicator as used on
+ * the authentik server and presents a chip with a distinct color and unified labeling scheme for
+ * different conditions.  Used in a lot of Task Status and Schedule Status tables.
+ */
+
 @customElement("ak-task-status")
 export class TaskStatus extends AKElement {
     public static styles: CSSResult[] = [PFButton];
@@ -42,10 +50,9 @@ export class TaskStatus extends AKElement {
 
     willUpdate(changed: PropertyValues<this>) {
         if (changed.has("status")) {
-            this.rep = statusRepresentation.find((s) => s.slice(2).find((t) => t === this.status)) ?? [
-                msg("Unknown"),
-                C.Gray,
-            ];
+            this.rep = statusRepresentation.find((s) =>
+                s.slice(2).find((t) => t === this.status),
+            ) ?? [msg("Unknown"), C.Gray];
         }
     }
 
