@@ -41922,7 +41922,7 @@ components:
           readOnly: true
         application_slug:
           type: string
-          description: Prioritise backchannel slug over direct application slug
+          description: Prioritize backchannel slug over direct application slug
           readOnly: true
         certificate:
           type: string
