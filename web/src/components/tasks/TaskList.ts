@@ -13,13 +13,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    GlobalTaskStatus,
-    Task,
-    TaskAggregatedStatusEnum,
-    TasksApi,
-    TaskStatusEnum,
-} from "@goauthentik/api";
+import { GlobalTaskStatus, Task, TaskAggregatedStatusEnum, TasksApi, TaskStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -28,6 +22,12 @@ import { customElement, property, state } from "lit/decorators.js";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
+
+/**
+ * TaskList
+ *
+ * @summary Displays lists of running tasks performed by the authentik service
+ */
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
@@ -44,8 +44,10 @@ export class TaskList extends Table<Task> {
 
     @property()
     relObjAppLabel?: string;
+
     @property()
     relObjModel?: string;
+
     @property()
     relObjId?: string | number;
 
@@ -68,11 +70,7 @@ export class TaskList extends Table<Task> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =
-            typeof this.relObjId !== "undefined"
-                ? undefined
-                : this.showOnlyStandalone
-                  ? true
-                  : undefined;
+            typeof this.relObjId !== "undefined" ? undefined : this.showOnlyStandalone ? true : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
                   TaskAggregatedStatusEnum.WaitingForDependencies,
@@ -148,9 +146,7 @@ export class TaskList extends Table<Task> {
                                       <i class="fas fa-check" aria-hidden="true"> </i>
                                   </span>
                               </span>
-                              <span class="pf-c-switch__label">
-                                  ${msg("Show only standalone tasks")}
-                              </span>
+                              <span class="pf-c-switch__label"> ${msg("Show only standalone tasks")} </span>
                           </label>`
                         : nothing}
                     <label class="pf-c-switch">
@@ -180,7 +176,7 @@ export class TaskList extends Table<Task> {
             html`${item.retries}`,
             item.eta !== undefined ? Timestamp(item.eta) : nothing,
             Timestamp(item.mtime ?? new Date()),
-            html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
+            html`<ak-task-status status=${item.aggregatedStatus}></ak-task-status>`,
             item.state === TaskStatusEnum.Rejected
                 ? html`<ak-action-button
                       class="pf-m-plain"
@@ -194,7 +190,7 @@ export class TaskList extends Table<Task> {
                                       new CustomEvent(EVENT_REFRESH, {
                                           bubbles: true,
                                           composed: true,
-                                      }),
+                                      })
                                   );
                               });
                       }}

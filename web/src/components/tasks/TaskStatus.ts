@@ -1,7 +1,7 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AKElement } from "#elements/Base";
-import { PFColor } from "#elements/Label";
+import { akLabel, PFColor } from "#elements/Label";
 
 import { LastTaskStatusEnum, TaskAggregatedStatusEnum } from "@goauthentik/api";
 
@@ -42,14 +42,15 @@ export class TaskStatus extends AKElement {
 
     willUpdate(changed: PropertyValues<this>) {
         if (changed.has("status")) {
-            this.rep = statusRepresentation.find((s) =>
-                s.slice(2).find((t) => t === this.status),
-            ) ?? [msg("Unknown"), C.Gray];
+            this.rep = statusRepresentation.find((s) => s.slice(2).find((t) => t === this.status)) ?? [
+                msg("Unknown"),
+                C.Gray,
+            ];
         }
     }
 
     render() {
-        return `<ak-label color=${this.rep[0]}>${this.rep[1]}</ak-label>`;
+        return akLabel({ color: this.rep[1] }, this.rep[0]);
     }
 }
 
