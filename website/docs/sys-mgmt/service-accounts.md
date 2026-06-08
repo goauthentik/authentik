@@ -38,17 +38,8 @@ Service accounts differ from regular users in the following ways:
 To create a service account:
 
 1. In the authentik **Admin interface**, navigate to **Directory** > **Users**.
-2. Click the **Create Service Account** button.
+2. Click **New User**, and then select **Service Account**.
 3. Configure the following settings:
-<<<<<<< HEAD
-    - **Username**: The user's primary identifier (150 characters or fewer).
-    - **Create Group**: Enabling this toggle will create a group named after the user, with the user as a member.
-    - **Expiring**: If selected, the token will expire and be automatically rotated upon expiration.
-    - **Expires on**: Sets the expiration date (defaults to 1 year from the creation date).
-4. Click **Create Service Account**.
-
-After creating the service account, you'll see a confirmation screen that shows the username and generated password (token). Make sure to copy this information somewhere secure because you'll need it for authentication.
-=======
     - **Username**: the primary identifier for the service account. This value is used as the username for app-password authentication.
     - **Create Group** (_optional_): creates a group with the same name as the service account and adds the service account to it. This can be useful when you want to grant access through group membership.
     - **Expiring**: controls whether the generated app password expires.
@@ -56,7 +47,6 @@ After creating the service account, you'll see a confirmation screen that shows 
 4. Click **Next**.
    View the confirmation screen that shows the username and generated password. Copy this information and store the password in a secure secret store.
 5. Click **Close**.
->>>>>>> 63ed60bdab (website/docs: improve service account docs (#22145))
 
 :::warning Store the generated password securely
 The generated password is the service account's initial app password. Treat it like any other secret. Anyone with this value can authenticate as the service account anywhere that app passwords are accepted.
