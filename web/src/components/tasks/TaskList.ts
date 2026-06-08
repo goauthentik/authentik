@@ -3,8 +3,8 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/events/LogViewer";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/tasks/TaskStatus";
-import "#elements/tasks/TaskStatusSummary";
+import "#components/tasks/TaskStatus";
+import "#components/tasks/TaskStatusSummary";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
