@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://dozzle.dev/guide/what-is-dozzle
 
-Dozzle supports forward-proxy authentication. Use authentik as a forward auth proxy in front of Dozzle, and configure Dozzle to read the authenticated user details from authentik's proxy headers.
+Dozzle supports forward-proxy authentication. Use authentik as a forward auth proxy in front of Dozzle, and configure Dozzle to read the authenticated user details from the proxy headers set by authentik.
 
 ## Preparation
 
